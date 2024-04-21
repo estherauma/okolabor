@@ -1,0 +1,215 @@
+{% load static%} 			
+			<!--APP-SIDEBAR-->
+			<div class="app-sidebar__overlay" data-bs-toggle="sidebar"></div>
+				<aside class="app-sidebar">
+					<div class="side-header">
+						<a class="header-brand1" href="index">
+							<img src="{% static ''%}assets/images/brand/logo.png" class="header-brand-img desktop-logo" alt="logo">
+							<img src="{% static ''%}assets/images/brand/logo-1.png" class="header-brand-img toggle-logo" alt="logo">
+							<img src="{% static ''%}assets/images/brand/logo-2.png" class="header-brand-img light-logo" alt="logo">
+							<img src="{% static ''%}assets/images/brand/logo-3.png" class="header-brand-img light-logo1" alt="logo">
+						</a><!-- LOGO -->
+					</div>
+					<ul class="side-menu">
+						<li><h3>Main</h3></li>
+						<li class="slide">
+							<a class="side-menu__item"  data-bs-toggle="slide" href="index"><i class="side-menu__icon fe fe-home"></i><span class="side-menu__label">Dashboard</span></a>
+						</li>
+						<li><h3>Widgets & Maps</h3></li>
+						<li>
+							<a class="side-menu__item" href="widgets"><i class="side-menu__icon fe fe-grid"></i><span class="side-menu__label">Widgets</span></a>
+						</li>
+						<li class="slide">
+							<a class="side-menu__item" data-bs-toggle="slide" href="#"><i class="side-menu__icon fe fe-globe"></i><span class="side-menu__label">Maps</span><i class="angle fa fa-angle-right"></i></a>
+							<ul class="slide-menu">
+								<li><a href="maps1" class="slide-item">Leaflet Maps</a></li>
+								<li><a href="maps2" class="slide-item">Mapel Maps</a></li>
+								<li><a href="maps" class="slide-item">Vector Maps</a></li>
+							</ul>
+						</li>
+						<li><h3>Elements</h3></li>
+						<li class="slide">
+							<a class="side-menu__item" data-bs-toggle="slide" href="#"><i class="side-menu__icon fe fe-database"></i><span class="side-menu__label">Components</span><i class="angle fa fa-angle-right"></i></a>
+							<ul class="slide-menu">
+								<li><a href="cards" class="slide-item"> Cards design</a></li>
+								<li><a href="calendar" class="slide-item"> Default calendar</a></li>
+								<li><a href="calendar2" class="slide-item"> Full calendar</a></li>
+								<li><a href="chat" class="slide-item"> Default Chat</a></li>
+								<li><a href="notify" class="slide-item"> Notifications</a></li>
+								<li><a href="sweetalert" class="slide-item"> Sweet alerts</a></li>
+								<li><a href="rangeslider" class="slide-item"> Range slider</a></li>
+								<li><a href="scroll" class="slide-item"> Content Scroll bar</a></li>
+								<li><a href="loaders" class="slide-item"> Loaders</a></li>
+								<li><a href="counters" class="slide-item"> Counters</a></li>
+								<li><a href="rating" class="slide-item"> Rating</a></li>
+								<li><a href="timeline" class="slide-item"> Timeline</a></li>
+								<li><a href="treeview" class="slide-item"> Treeview</a></li>
+							</ul>
+						</li>
+						<li class="slide">
+							<a class="side-menu__item" data-bs-toggle="slide" href="#"><i class="side-menu__icon fe fe-package"></i><span class="side-menu__label">Elements</span><i class="angle fa fa-angle-right"></i></a>
+							<ul class="slide-menu">
+								<li><a href="alerts" class="slide-item"> Alerts</a></li>
+								<li><a href="buttons" class="slide-item"> Buttons</a></li>
+								<li><a href="colors" class="slide-item"> Colors</a></li>
+								<li><a href="avatarsquare" class="slide-item"> Avatar-Square</a></li>
+								<li><a href="avatarround" class="slide-item"> Avatar-Rounded</a></li>
+								<li><a href="avatarradius" class="slide-item"> Avatar-Radius</a></li>
+								<li><a href="dropdown" class="slide-item"> Drop downs</a></li>
+								<li><a href="list" class="slide-item"> List</a></li>
+								<li><a href="tags" class="slide-item"> Tags</a></li>
+								<li><a href="pagination" class="slide-item"> Pagination</a></li>
+								<li><a href="navigation" class="slide-item"> Navigation</a></li>
+								<li><a href="typography" class="slide-item"> Typography</a></li>
+								<li><a href="breadcrumbs" class="slide-item"> Breadcrumbs</a></li>
+								<li><a href="badge" class="slide-item"> Badges</a></li>
+								<li><a href="panels" class="slide-item"> Panels</a></li>
+								<li><a href="thumbnails" class="slide-item"> Thumbnails</a></li>
+							</ul>
+						</li>
+						<li class="slide">
+							<a class="side-menu__item" data-bs-toggle="slide" href="#"><i class="side-menu__icon fe fe-file"></i><span class="side-menu__label">Advanced Elements</span><i class="angle fa fa-angle-right"></i></a>
+							<ul class="slide-menu">
+								<li><a href="mediaobject" class="slide-item"> Media Object</a></li>
+								<li><a href="accordion" class="slide-item"> Accordions</a></li>
+								<li><a href="tabs" class="slide-item"> Tabs</a></li>
+								<li><a href="chart" class="slide-item"> Charts</a></li>
+								<li><a href="modal" class="slide-item"> Modal</a></li>
+								<li><a href="tooltipandpopover" class="slide-item"> Tooltip and popover</a></li>
+								<li><a href="progress" class="slide-item"> Progress</a></li>
+								<li><a href="carousel" class="slide-item"> Carousels</a></li>
+								<li><a href="headers" class="slide-item"> Headers</a></li>
+								<li><a href="footers" class="slide-item"> Footers</a></li>
+								<li><a href="userslist" class="slide-item"> User List</a></li>
+								<li><a href="search" class="slide-item">Search</a></li>
+								<li><a href="cryptocurrencies" class="slide-item"> Crypto-currencies</a></li>
+							</ul>
+						</li>
+						<li><h3>Charts & Tables</h3></li>
+						<li class="slide">
+							<a class="side-menu__item" data-bs-toggle="slide" href="#"><i class="side-menu__icon fe fe-pie-chart"></i><span class="side-menu__label">Charts</span><i class="angle fa fa-angle-right"></i></a>
+							<ul class="slide-menu">
+								<li><a href="chartchartist" class="slide-item">Chart Js</a></li>
+								<li><a href="chartflot" class="slide-item"> Flot Charts</a></li>
+								<li><a href="chartechart" class="slide-item"> ECharts</a></li>
+								<li><a href="chartmorris" class="slide-item"> Morris Charts</a></li>
+								<li><a href="chartnvd3" class="slide-item"> Nvd3 Charts</a></li>
+								<li><a href="charts" class="slide-item"> C3 Bar Charts</a></li>
+								<li><a href="chartline" class="slide-item"> C3 Line Charts</a></li>
+								<li><a href="chartdonut" class="slide-item"> C3 Donut Charts</a></li>
+								<li><a href="chartpie" class="slide-item"> C3 Pie charts</a></li>
+							</ul>
+						</li>
+						<li class="slide">
+							<a class="side-menu__item" data-bs-toggle="slide" href="#"><i class="side-menu__icon fe fe-clipboard"></i><span class="side-menu__label">Tables</span><span class="badge bg-secondary side-badge">2</span></a>
+							<ul class="slide-menu">
+								<li><a href="tables" class="slide-item">Default table</a></li>
+								<li><a href="datatable" class="slide-item"> Data Tables</a></li>
+							</ul>
+						</li>
+						<li><h3>Forms & Icons</h3></li>
+						<li class="slide">
+							<a class="side-menu__item" data-bs-toggle="slide" href="#"><i class="side-menu__icon fe fe-file-text"></i><span class="side-menu__label">Forms</span><span class="badge bg-success side-badge">5</span></a>
+							<ul class="slide-menu">
+								<li><a href="formelements" class="slide-item"> Form Elements</a></li>
+								<li><a href="formadvanced" class="slide-item"> Form Advanced</a></li>
+								<li><a href="wysiwyag" class="slide-item"> Form Editor</a></li>
+								<li><a href="formwizard" class="slide-item"> Form Wizard</a></li>
+								<li><a href="formvalidation" class="slide-item"> Form Validation</a></li>
+							</ul>
+						</li>
+						<li class="slide">
+							<a class="side-menu__item" data-bs-toggle="slide" href="#"><i class="side-menu__icon fe fe-command"></i><span class="side-menu__label">Icons</span><i class="angle fa fa-angle-right"></i></a>
+							<ul class="slide-menu">
+								<li><a href="icons" class="slide-item"> Font Awesome</a></li>
+								<li><a href="icons2" class="slide-item"> Material Design Icons</a></li>
+								<li><a href="icons3" class="slide-item"> Simple Line Icons</a></li>
+								<li><a href="icons4" class="slide-item"> Feather Icons</a></li>
+								<li><a href="icons5" class="slide-item"> Ionic Icons</a></li>
+								<li><a href="icons6" class="slide-item"> Flag Icons</a></li>
+								<li><a href="icons7" class="slide-item"> pe7 Icons</a></li>
+								<li><a href="icons8" class="slide-item"> Themify Icons</a></li>
+								<li><a href="icons9" class="slide-item">Typicons Icons</a></li>
+								<li><a href="icons10" class="slide-item">Weather Icons</a></li>
+							</ul>
+						</li>
+						<li><h3>Pages</h3></li>
+						<li class="slide">
+							<a class="side-menu__item" data-bs-toggle="slide" href="#"><i class="side-menu__icon fe fe-layers"></i><span class="side-menu__label">Pages</span><i class="angle fa fa-angle-right"></i></a>
+							<ul class="slide-menu">
+								<li><a href="profile" class="slide-item"> Profile</a></li>
+								<li><a href="editprofile" class="slide-item"> Edit Profile</a></li>
+								<li><a href="email" class="slide-item"> Mail-Inbox</a></li>
+								<li><a href="emailservices" class="slide-item"> Mail-Compose</a></li>
+								<li><a href="gallery" class="slide-item"> Gallery</a></li>
+								<li><a href="about" class="slide-item"> About Company</a></li>
+								<li><a href="services" class="slide-item"> Services</a></li>
+								<li><a href="faq" class="slide-item"> FAQS</a></li>
+								<li><a href="terms" class="slide-item"> Terms</a></li>
+								<li><a href="invoice" class="slide-item"> Invoice</a></li>
+								<li><a href="pricing" class="slide-item"> Pricing Tables</a></li>
+								<li><a href="blog" class="slide-item"> Blog</a></li>
+								<li><a href="empty" class="slide-item"> Empty Page</a></li>
+								<li><a href="construction" class="slide-item"> Under Construction</a></li>
+							</ul>
+						</li>
+						<li><h3>E-Commerce</h3></li>
+						<li class="slide">
+							<a class="side-menu__item" data-bs-toggle="slide" href="#"><i class="side-menu__icon fe fe-shopping-cart"></i><span class="side-menu__label">E-Commerce</span><i class="angle fa fa-angle-right"></i></a>
+							<ul class="slide-menu">
+								<li><a href="shop" class="slide-item"> Shop</a></li>
+								<li><a href="shopdescription" class="slide-item">Product Details</a></li>
+								<li><a href="cart" class="slide-item"> Shopping Cart</a></li>
+								<li><a href="wishlist" class="slide-item"> Wishlist</a></li>
+								<li><a href="checkout" class="slide-item"> Checkout</a></li>
+							</ul>
+						</li>
+						<li><h3>Custom & Error Pages</h3></li>
+						<li class="slide">
+							<a class="side-menu__item" data-bs-toggle="slide" href="#"><i class="side-menu__icon fe fe-settings"></i><span class="side-menu__label">Custom Pages</span><i class="angle fa fa-angle-right"></i></a>
+							<ul class="slide-menu">
+								<li><a href="login" class="slide-item"> Login</a></li>
+								<li><a href="register" class="slide-item"> Register</a></li>
+								<li><a href="forgotpassword" class="slide-item"> Forgot Password</a></li>
+								<li><a href="lockscreen" class="slide-item"> Lock screen</a></li>
+							</ul>
+						</li>
+						<li class="slide">
+							<a class="side-menu__item" data-bs-toggle="slide" href="#"><i class="side-menu__icon fe fe-info"></i><span class="side-menu__label">Error Pages</span><i class="angle fa fa-angle-right"></i></a>
+							<ul class="slide-menu">
+								<li><a href="error400" class="slide-item"> 400</a></li>
+								<li><a href="error401" class="slide-item"> 401</a></li>
+								<li><a href="error403" class="slide-item"> 403</a></li>
+								<li><a href="error404" class="slide-item"> 404</a></li>
+								<li><a href="error500" class="slide-item"> 500</a></li>
+								<li><a href="error503" class="slide-item"> 503</a></li>
+							</ul>
+						</li>
+						<li class="slide">
+							<a class="side-menu__item" data-bs-toggle="slide" href="#">
+							<i class="side-menu__icon fe fe-sliders"></i>
+							<span class="side-menu__label">Submenus</span><i class="angle fa fa-angle-right"></i></a>
+							<ul class="slide-menu">
+								<li><a href="#" class="slide-item">Level-1</a></li>
+								<li class="sub-slide">
+									<a class="sub-side-menu__item" data-bs-toggle="sub-slide" href="#"><span class="sub-side-menu__label">Level-2</span><i class="sub-angle fa fa-angle-right"></i></a>
+									<ul class="sub-slide-menu">
+										<li><a class="sub-slide-item" href="#">Level-2.1</a></li>
+										<li><a class="sub-slide-item" href="#">Level-2.2</a></li>
+										<li class="sub-slide2">
+											<a class="sub-side-menu__item2" href="#" data-bs-toggle="sub-slide2"><span class="sub-side-menu__label2">Level-2.3</span><i class="sub-angle2 fa fa-angle-right"></i></a>
+											<ul class="sub-slide-menu2">
+												<li><a href="#" class="sub-slide-item2">Level-2.3.1</a></li>
+												<li><a href="#" class="sub-slide-item2">Level-2.3.2</a></li>
+												<li><a href="#" class="sub-slide-item2">Level-2.3.3</a></li>
+											</ul>
+										</li>
+										<li><a class="sub-slide-item" href="#">Level-2.4</a></li>
+										<li><a class="sub-slide-item" href="#">Level-2.5</a></li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</aside>
+				<!--/APP-SIDEBAR-->

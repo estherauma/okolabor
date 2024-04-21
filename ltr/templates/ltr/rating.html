@@ -1,0 +1,235 @@
+{% extends 'components/base.html' %}
+{% load static%}
+
+		{% block styles %}
+		<!-- INTERNAl FONT-ICONS CSS -->
+		<link href="{% static ''%}assets/plugins/iconfonts/icons.css" rel="stylesheet" />
+
+		<!-- INTERNAl Themes  css-->
+		<link rel="stylesheet" href="{% static ''%}assets/plugins/rating/dist/themes/themes.css">
+		{% endblock styles %}
+
+						{% block body %}
+						<!-- PAGE-HEADER -->
+						<div class="page-header">
+							<div>
+								<h1 class="page-title">Rating</h1>
+								<ol class="breadcrumb">
+									<li class="breadcrumb-item"><a href="#">Components</a></li>
+									<li class="breadcrumb-item active" aria-current="page">Rating</li>
+								</ol>
+							</div>
+							<div class="ms-auto pageheader-btn">
+								<a href="#" class="btn btn-primary btn-icon text-white me-2">
+									<span>
+										<i class="fe fe-plus"></i>
+									</span> Add Account
+								</a>
+								<a href="#" class="btn btn-success btn-icon text-white">
+									<span>
+										<i class="fe fe-log-in"></i>
+									</span> Export
+								</a>
+							</div>
+						</div>
+						<!-- PAGE-HEADER END -->
+
+						<!-- Row -->
+						<div class="row ">
+							<div class="col-md-12 col-lg-6 col-xl-4">
+								<div class="card">
+									<div class="card-header border-bottom-0">
+										<h3 class="card-title">Static Star Rating</h3>
+									</div>
+									<div class="card-body">
+										<div class="text-warning text-center fs-25">
+											<span class="fa fa-star"></span>
+											<span class="fa fa-star"></span>
+											<span class="fa fa-star"></span>
+											<span class="fa fa-star-half-o"></span>
+											<span class="fa fa-star-o"></span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12 col-lg-6 col-xl-4">
+								<div class="card">
+									<div class="card-header border-bottom-0">
+										<h3 class="card-title">Static Heart Rating</h3>
+									</div>
+									<div class="card-body">
+										<div class="text-danger text-center fs-25">
+											<span class="fa fa-heart"></span>
+											<span class="fa fa-heart"></span>
+											<span class="fa fa-heart"></span>
+											<span class="fa fa-heart"></span>
+											<span class="fa fa-heart-o"></span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12 col-lg-6 col-xl-4">
+								<div class="card">
+									<div class="card-header border-bottom-0">
+										<h3 class="card-title">Fractional Star rating</h3>
+									</div>
+									<div class="card-body">
+										<div class="star-ratings">
+											<div class="stars stars-example-fontawesome-o">
+												<select id="example-fontawesome-o" name="rating" data-bs-current-rating="3.6" autocomplete="off">
+													<option value="0">0</option>
+													<option value="1">1</option>
+													<option value="2">2</option>
+													<option value="3">3</option>
+													<option value="4">4</option>
+													<option value="5">5</option>
+													<option value="6">6</option>
+													<option value="7">7</option>
+													<option value="8">8</option>
+													<option value="9">9</option>
+													<option value="10">10</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12 col-lg-6 col-xl-4">
+								<div class="card">
+									<div class="card-header border-bottom-0">
+										<h3 class="card-title">Font Awesome Star Rating</h3>
+									</div>
+									<div class="card-body text-center">
+										<div class="star-ratings start-ratings-main clearfix">
+											<div class="stars stars-example-fontawesome">
+												<select id="example-fontawesome" name="rating" autocomplete="off">
+													<option value="1">1</option>
+													<option value="2">2</option>
+													<option value="3">3</option>
+													<option value="4">4</option>
+													<option value="5">5</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12 col-lg-6 col-xl-4">
+								<div class="card">
+									<div class="card-header border-bottom-0">
+										<h3 class="card-title">Bar 1/10 Rating</h3>
+									</div>
+									<div class="card-body">
+										<div class="box  box-example-1to10">
+											<div class="box-body">
+												<select id="example-1to10" name="rating" autocomplete="off">
+													<option value="1">1</option>
+													<option value="2">2</option>
+													<option value="3">3</option>
+													<option value="4">4</option>
+													<option value="5">5</option>
+													<option value="6">6</option>
+													<option value="7" selected="selected">7</option>
+													<option value="8">8</option>
+													<option value="9">9</option>
+													<option value="10">10</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12 col-lg-6 col-xl-4">
+								<div class="card">
+									<div class="card-header border-bottom-0">
+										<h3 class="card-title">Opinion rating</h3>
+									</div>
+									<div class="card-body">
+										<div class="box box-example-movie">
+											<div class="box-body">
+												<select id="example-movie" name="rating" autocomplete="off">
+													<option value="Bad">Bad</option>
+													<option value="Mediocre">Mediocre</option>
+													<option value="Good" selected="selected">Good</option>
+													<option value="Awesome">Awesome</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12 col-lg-6 col-xl-4">
+								<div class="card">
+									<div class="card-header border-bottom-0">
+										<h3 class="card-title">Square Rating</h3>
+									</div>
+									<div class="card-body">
+										<div class="box box-example-square">
+											<div class="box-body">
+												<select id="example-square" name="rating" autocomplete="off">
+													<option value="1">1</option>
+													<option value="2">2</option>
+													<option value="3">3</option>
+													<option value="4">4</option>
+													<option value="5">5</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12 col-lg-6 col-xl-4">
+								<div class="card">
+									<div class="card-header border-bottom-0">
+										<h3 class="card-title">Grade Rating</h3>
+									</div>
+									<div class="card-body">
+										<div class="box  box-example-pill">
+											<div class="box-body">
+												<select id="example-pill" name="rating" autocomplete="off">
+													<option value="A">A</option>
+													<option value="B">B</option>
+													<option value="C">C</option>
+													<option value="D">D</option>
+													<option value="E">E</option>
+													<option value="F">F</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12 col-lg-6 col-xl-4">
+								<div class="card">
+									<div class="card-header border-bottom-0">
+										<h3 class="card-title">Horizontal Bar Rating</h3>
+									</div>
+									<div class="card-body">
+										<div class="box box-large box-example-horizontal">
+											<div class="box-body">
+												<select id="example-horizontal" name="rating" autocomplete="off">
+													<option value="10">10</option>
+													<option value="9">9</option>
+													<option value="8">8</option>
+													<option value="7">7</option>
+													<option value="6">6</option>
+													<option value="5">5</option>
+													<option value="4">4</option>
+													<option value="3">3</option>
+													<option value="2">2</option>
+													<option value="1" selected="selected">1</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- End Row -->
+						{% endblock body %}
+					
+		{% block scripts %}
+		<!-- INTERNAL Rating js-->
+		<script src="{% static ''%}assets/plugins/rating/jquery.barrating.js"></script>
+		<script src="{% static ''%}assets/plugins/rating/js/examples.js"></script>
+		{% endblock scripts %}

@@ -1,0 +1,875 @@
+{% extends 'components/base.html' %}
+{% load static%}
+
+		{% block styles %}
+		<!--Internal  treeview -->
+		<link href="{% static ''%}assets/plugins/treeview/treeview.css" rel="stylesheet" type="text/css" />
+		{% endblock styles %}
+
+						{% block body %}
+						<!-- PAGE-HEADER -->
+						<div class="page-header">
+							<div>
+								<h1 class="page-title">Treeview</h1>
+								<ol class="breadcrumb">
+									<li class="breadcrumb-item"><a href="#">Home</a></li>
+									<li class="breadcrumb-item active" aria-current="page">Treeview</li>
+								</ol>
+							</div>
+							<div class="ms-auto pageheader-btn">
+								<a href="#" class="btn btn-primary btn-icon text-white me-2">
+									<span>
+										<i class="fe fe-plus"></i>
+									</span> Add Account
+								</a>
+								<a href="#" class="btn btn-success btn-icon text-white">
+									<span>
+										<i class="fe fe-log-in"></i>
+									</span> Export
+								</a>
+							</div>
+						</div>
+						<!-- PAGE-HEADER END -->
+
+						<!-- row -->
+						<div class="row">
+							<div class="col-md-12">
+								<div class="card mg-b-20">
+									<div class="card-body">
+										<div class="main-content-label mg-b-5">
+											Basic Treeview
+										</div>
+										<p class="mg-b-20 card-sub-title tx-12 text-muted">It is Very Easy to Customize and it uses in website apllication.</p>
+										<div class="row">
+											<!-- col -->
+											<div class="col-lg-4">
+												<ul id="treeview1">
+													<li><a href="#">TECH</a>
+														<ul>
+															<li>Company Maintenance</li>
+															<li>Employees
+																<ul>
+																	<li>Reports</li>
+																</ul>
+															</li>
+															<li>Human Resources</li>
+														</ul>
+													</li>
+													<li>XRP
+														<ul>
+															<li>Company Maintenance</li>
+															<li>Employees
+																<ul>
+																	<li>Reports</li>
+																</ul>
+															</li>
+															<li>Human Resources</li>
+														</ul>
+													</li>
+												</ul>
+											</div>
+											<!-- /col -->
+
+											<!-- col -->
+											<div class="col-lg-4 mt-4 mt-lg-0">
+												<ul id="treeview2">
+													<li><a href="#">TECH</a>
+														<ul>
+															<li>Company Maintenance</li>
+															<li>Employees
+																<ul>
+																	<li>Reports</li>
+																</ul>
+															</li>
+															<li>Human Resources</li>
+														</ul>
+													</li>
+													<li>XRP
+														<ul>
+															<li>Company Maintenance</li>
+															<li>Employees
+																<ul>
+																	<li>Reports</li>
+																</ul>
+															</li>
+															<li>Human Resources</li>
+														</ul>
+													</li>
+												</ul>
+											</div>
+											<!-- /col -->
+
+											<!-- col -->
+											<div class="col-lg-4 mt-4 mt-lg-0">
+												<ul id="treeview3">
+													<li><a href="#">TECH</a>
+														<ul>
+															<li>Company Maintenance</li>
+															<li>Employees
+																<ul>
+																	<li>Reports</li>
+																</ul>
+															</li>
+															<li>Human Resources</li>
+														</ul>
+													</li>
+													<li>XRP
+														<ul>
+															<li>Company Maintenance</li>
+															<li>Employees
+																<ul>
+																	<li>Reports</li>
+																</ul>
+															</li>
+															<li>Human Resources</li>
+														</ul>
+													</li>
+												</ul>
+											</div>
+											<!-- /col -->
+										</div>
+									</div>
+								</div>
+								<div class="card">
+									<div class="card-body">
+										<div class="main-content-label mg-b-5">
+											Tree View Styles
+										</div>
+										<p class="mg-b-20 card-sub-title tx-12 text-muted">It is Very Easy to Customize and it uses in website apllication.</p>
+										<div class="row">
+											<!-- col -->
+											<div class="col-lg-4">
+												<ul id="tree1">
+													<li><a href="#">Treeview1</a>
+														<ul>
+															<li>Company Maintenance</li>
+															<li>Employees
+																<ul>
+																	<li>Reports
+																		<ul>
+																			<li>Report1</li>
+																			<li>Report2</li>
+																			<li>Report3</li>
+																		</ul>
+																	</li>
+																	<li>Employee Maint.
+																		<ul>
+																			<li>Reports
+																				<ul>
+																					<li>Report1</li>
+																					<li>Report2</li>
+																					<li>Report3</li>
+																				</ul>
+																			</li>
+																			<li>Employee Maint.<ul>
+																					<li>Reports
+																						<ul>
+																							<li>Report1</li>
+																							<li>Report2</li>
+																							<li>Report3</li>
+																						</ul>
+																					</li>
+																					<li>Employee Maint.</li>
+																				</ul>
+																			</li>
+																		</ul>
+																	</li>
+																</ul>
+															</li>
+															<li>Human Resources</li>
+														</ul>
+													</li>
+													<li><a href="#">Treeview2</a>
+														<ul>
+															<li>Company Maintenance</li>
+															<li>Employees
+																<ul>
+																	<li>Reports
+																		<ul>
+																			<li>Report1</li>
+																			<li>Report2</li>
+																			<li>Report3</li>
+																		</ul>
+																	</li>
+																	<li>Employee Maint.
+																		<ul>
+																			<li>Reports
+																				<ul>
+																					<li>Report1</li>
+																					<li>Report2</li>
+																					<li>Report3</li>
+																				</ul>
+																			</li>
+																			<li>Employee Maint.<ul>
+																					<li>Reports
+																						<ul>
+																							<li>Report1</li>
+																							<li>Report2</li>
+																							<li>Report3</li>
+																						</ul>
+																					</li>
+																					<li>Employee Maint.</li>
+																				</ul>
+																			</li>
+																		</ul>
+																	</li>
+																</ul>
+															</li>
+															<li>Human Resources</li>
+														</ul>
+													</li>
+													<li><a href="#">Treeview3</a>
+														<ul>
+															<li>Company Maintenance</li>
+															<li>Employees
+																<ul>
+																	<li>Reports
+																		<ul>
+																			<li>Report1</li>
+																			<li>Report2</li>
+																			<li>Report3</li>
+																		</ul>
+																	</li>
+																	<li>Employee Maint.
+																		<ul>
+																			<li>Reports
+																				<ul>
+																					<li>Report1</li>
+																					<li>Report2</li>
+																					<li>Report3</li>
+																				</ul>
+																			</li>
+																			<li>Employee Maint.<ul>
+																					<li>Reports
+																						<ul>
+																							<li>Report1</li>
+																							<li>Report2</li>
+																							<li>Report3</li>
+																						</ul>
+																					</li>
+																					<li>Employee Maint.</li>
+																				</ul>
+																			</li>
+																		</ul>
+																	</li>
+																</ul>
+															</li>
+															<li>Human Resources</li>
+														</ul>
+													</li>
+													<li><a href="#">Treeview4</a>
+														<ul>
+															<li>Company Maintenance</li>
+															<li>Employees
+																<ul>
+																	<li>Reports
+																		<ul>
+																			<li>Report1</li>
+																			<li>Report2</li>
+																			<li>Report3</li>
+																		</ul>
+																	</li>
+																	<li>Employee Maint.
+																		<ul>
+																			<li>Reports
+																				<ul>
+																					<li>Report1</li>
+																					<li>Report2</li>
+																					<li>Report3</li>
+																				</ul>
+																			</li>
+																			<li>Employee Maint.<ul>
+																					<li>Reports
+																						<ul>
+																							<li>Report1</li>
+																							<li>Report2</li>
+																							<li>Report3</li>
+																						</ul>
+																					</li>
+																					<li>Employee Maint.</li>
+																				</ul>
+																			</li>
+																		</ul>
+																	</li>
+																</ul>
+															</li>
+															<li>Human Resources</li>
+														</ul>
+													</li>
+													<li><a href="#">Treeview5</a>
+														<ul>
+															<li>Company Maintenance</li>
+															<li>Employees
+																<ul>
+																	<li>Reports
+																		<ul>
+																			<li>Report1</li>
+																			<li>Report2</li>
+																			<li>Report3</li>
+																		</ul>
+																	</li>
+																	<li>Employee Maint.
+																		<ul>
+																			<li>Reports
+																				<ul>
+																					<li>Report1</li>
+																					<li>Report2</li>
+																					<li>Report3</li>
+																				</ul>
+																			</li>
+																			<li>Employee Maint.<ul>
+																					<li>Reports
+																						<ul>
+																							<li>Report1</li>
+																							<li>Report2</li>
+																							<li>Report3</li>
+																						</ul>
+																					</li>
+																					<li>Employee Maint.</li>
+																				</ul>
+																			</li>
+																		</ul>
+																	</li>
+																</ul>
+															</li>
+															<li>Human Resources</li>
+														</ul>
+													</li>
+													<li><a href="#">Treeview6</a>
+														<ul>
+															<li>Company Maintenance</li>
+															<li>Employees
+																<ul>
+																	<li>Reports
+																		<ul>
+																			<li>Report1</li>
+																			<li>Report2</li>
+																			<li>Report3</li>
+																		</ul>
+																	</li>
+																	<li>Employee Maint.
+																		<ul>
+																			<li>Reports
+																				<ul>
+																					<li>Report1</li>
+																					<li>Report2</li>
+																					<li>Report3</li>
+																				</ul>
+																			</li>
+																			<li>Employee Maint.<ul>
+																					<li>Reports
+																						<ul>
+																							<li>Report1</li>
+																							<li>Report2</li>
+																							<li>Report3</li>
+																						</ul>
+																					</li>
+																					<li>Employee Maint.</li>
+																				</ul>
+																			</li>
+																		</ul>
+																	</li>
+																</ul>
+															</li>
+															<li>Human Resources</li>
+														</ul>
+													</li>
+												</ul>
+											</div>
+											<!-- /col -->
+
+											<!-- col -->
+											<div class="col-lg-4 mt-4 mt-lg-0">
+												<ul id="tree2">
+													<li><a href="#">Treeview1</a>
+														<ul>
+															<li>Company Maintenance</li>
+															<li>Employees
+																<ul>
+																	<li>Reports
+																		<ul>
+																			<li>Report1</li>
+																			<li>Report2</li>
+																			<li>Report3</li>
+																		</ul>
+																	</li>
+																	<li>Employee Maint.
+																		<ul>
+																			<li>Reports
+																				<ul>
+																					<li>Report1</li>
+																					<li>Report2</li>
+																					<li>Report3</li>
+																				</ul>
+																			</li>
+																			<li>Employee Maint.<ul>
+																					<li>Reports
+																						<ul>
+																							<li>Report1</li>
+																							<li>Report2</li>
+																							<li>Report3</li>
+																						</ul>
+																					</li>
+																					<li>Employee Maint.</li>
+																				</ul>
+																			</li>
+																		</ul>
+																	</li>
+																</ul>
+															</li>
+															<li>Human Resources</li>
+														</ul>
+													</li>
+													<li><a href="#">Treeview2</a>
+														<ul>
+															<li>Company Maintenance</li>
+															<li>Employees
+																<ul>
+																	<li>Reports
+																		<ul>
+																			<li>Report1</li>
+																			<li>Report2</li>
+																			<li>Report3</li>
+																		</ul>
+																	</li>
+																	<li>Employee Maint.
+																		<ul>
+																			<li>Reports
+																				<ul>
+																					<li>Report1</li>
+																					<li>Report2</li>
+																					<li>Report3</li>
+																				</ul>
+																			</li>
+																			<li>Employee Maint.<ul>
+																					<li>Reports
+																						<ul>
+																							<li>Report1</li>
+																							<li>Report2</li>
+																							<li>Report3</li>
+																						</ul>
+																					</li>
+																					<li>Employee Maint.</li>
+																				</ul>
+																			</li>
+																		</ul>
+																	</li>
+																</ul>
+															</li>
+															<li>Human Resources</li>
+														</ul>
+													</li>
+													<li><a href="#">Treeview3</a>
+														<ul>
+															<li>Company Maintenance</li>
+															<li>Employees
+																<ul>
+																	<li>Reports
+																		<ul>
+																			<li>Report1</li>
+																			<li>Report2</li>
+																			<li>Report3</li>
+																		</ul>
+																	</li>
+																	<li>Employee Maint.
+																		<ul>
+																			<li>Reports
+																				<ul>
+																					<li>Report1</li>
+																					<li>Report2</li>
+																					<li>Report3</li>
+																				</ul>
+																			</li>
+																			<li>Employee Maint.<ul>
+																					<li>Reports
+																						<ul>
+																							<li>Report1</li>
+																							<li>Report2</li>
+																							<li>Report3</li>
+																						</ul>
+																					</li>
+																					<li>Employee Maint.</li>
+																				</ul>
+																			</li>
+																		</ul>
+																	</li>
+																</ul>
+															</li>
+															<li>Human Resources</li>
+														</ul>
+													</li>
+													<li><a href="#">Treeview4</a>
+														<ul>
+															<li>Company Maintenance</li>
+															<li>Employees
+																<ul>
+																	<li>Reports
+																		<ul>
+																			<li>Report1</li>
+																			<li>Report2</li>
+																			<li>Report3</li>
+																		</ul>
+																	</li>
+																	<li>Employee Maint.
+																		<ul>
+																			<li>Reports
+																				<ul>
+																					<li>Report1</li>
+																					<li>Report2</li>
+																					<li>Report3</li>
+																				</ul>
+																			</li>
+																			<li>Employee Maint.<ul>
+																					<li>Reports
+																						<ul>
+																							<li>Report1</li>
+																							<li>Report2</li>
+																							<li>Report3</li>
+																						</ul>
+																					</li>
+																					<li>Employee Maint.</li>
+																				</ul>
+																			</li>
+																		</ul>
+																	</li>
+																</ul>
+															</li>
+															<li>Human Resources</li>
+														</ul>
+													</li>
+													<li><a href="#">Treeview5</a>
+														<ul>
+															<li>Company Maintenance</li>
+															<li>Employees
+																<ul>
+																	<li>Reports
+																		<ul>
+																			<li>Report1</li>
+																			<li>Report2</li>
+																			<li>Report3</li>
+																		</ul>
+																	</li>
+																	<li>Employee Maint.
+																		<ul>
+																			<li>Reports
+																				<ul>
+																					<li>Report1</li>
+																					<li>Report2</li>
+																					<li>Report3</li>
+																				</ul>
+																			</li>
+																			<li>Employee Maint.<ul>
+																					<li>Reports
+																						<ul>
+																							<li>Report1</li>
+																							<li>Report2</li>
+																							<li>Report3</li>
+																						</ul>
+																					</li>
+																					<li>Employee Maint.</li>
+																				</ul>
+																			</li>
+																		</ul>
+																	</li>
+																</ul>
+															</li>
+															<li>Human Resources</li>
+														</ul>
+													</li>
+													<li><a href="#">Treeview6</a>
+														<ul>
+															<li>Company Maintenance</li>
+															<li>Employees
+																<ul>
+																	<li>Reports
+																		<ul>
+																			<li>Report1</li>
+																			<li>Report2</li>
+																			<li>Report3</li>
+																		</ul>
+																	</li>
+																	<li>Employee Maint.
+																		<ul>
+																			<li>Reports
+																				<ul>
+																					<li>Report1</li>
+																					<li>Report2</li>
+																					<li>Report3</li>
+																				</ul>
+																			</li>
+																			<li>Employee Maint.<ul>
+																					<li>Reports
+																						<ul>
+																							<li>Report1</li>
+																							<li>Report2</li>
+																							<li>Report3</li>
+																						</ul>
+																					</li>
+																					<li>Employee Maint.</li>
+																				</ul>
+																			</li>
+																		</ul>
+																	</li>
+																</ul>
+															</li>
+															<li>Human Resources</li>
+														</ul>
+													</li>
+												</ul>
+											</div>
+											<!-- /col -->
+
+											<!-- col -->
+											<div class="col-lg-4 mt-4 mt-lg-0">
+												<ul id="tree3">
+													<li><a href="#">Treeview1</a>
+														<ul>
+															<li>Company Maintenance</li>
+															<li>Employees
+																<ul>
+																	<li>Reports
+																		<ul>
+																			<li>Report1</li>
+																			<li>Report2</li>
+																			<li>Report3</li>
+																		</ul>
+																	</li>
+																	<li>Employee Maint.
+																		<ul>
+																			<li>Reports
+																				<ul>
+																					<li>Report1</li>
+																					<li>Report2</li>
+																					<li>Report3</li>
+																				</ul>
+																			</li>
+																			<li>Employee Maint.<ul>
+																					<li>Reports
+																						<ul>
+																							<li>Report1</li>
+																							<li>Report2</li>
+																							<li>Report3</li>
+																						</ul>
+																					</li>
+																					<li>Employee Maint.</li>
+																				</ul>
+																			</li>
+																		</ul>
+																	</li>
+																</ul>
+															</li>
+															<li>Human Resources</li>
+														</ul>
+													</li>
+													<li><a href="#">Treeview2</a>
+														<ul>
+															<li>Company Maintenance</li>
+															<li>Employees
+																<ul>
+																	<li>Reports
+																		<ul>
+																			<li>Report1</li>
+																			<li>Report2</li>
+																			<li>Report3</li>
+																		</ul>
+																	</li>
+																	<li>Employee Maint.
+																		<ul>
+																			<li>Reports
+																				<ul>
+																					<li>Report1</li>
+																					<li>Report2</li>
+																					<li>Report3</li>
+																				</ul>
+																			</li>
+																			<li>Employee Maint.<ul>
+																					<li>Reports
+																						<ul>
+																							<li>Report1</li>
+																							<li>Report2</li>
+																							<li>Report3</li>
+																						</ul>
+																					</li>
+																					<li>Employee Maint.</li>
+																				</ul>
+																			</li>
+																		</ul>
+																	</li>
+																</ul>
+															</li>
+															<li>Human Resources</li>
+														</ul>
+													</li>
+													<li><a href="#">Treeview3</a>
+														<ul>
+															<li>Company Maintenance</li>
+															<li>Employees
+																<ul>
+																	<li>Reports
+																		<ul>
+																			<li>Report1</li>
+																			<li>Report2</li>
+																			<li>Report3</li>
+																		</ul>
+																	</li>
+																	<li>Employee Maint.
+																		<ul>
+																			<li>Reports
+																				<ul>
+																					<li>Report1</li>
+																					<li>Report2</li>
+																					<li>Report3</li>
+																				</ul>
+																			</li>
+																			<li>Employee Maint.<ul>
+																					<li>Reports
+																						<ul>
+																							<li>Report1</li>
+																							<li>Report2</li>
+																							<li>Report3</li>
+																						</ul>
+																					</li>
+																					<li>Employee Maint.</li>
+																				</ul>
+																			</li>
+																		</ul>
+																	</li>
+																</ul>
+															</li>
+															<li>Human Resources</li>
+														</ul>
+													</li>
+													<li><a href="#">Treeview4</a>
+														<ul>
+															<li>Company Maintenance</li>
+															<li>Employees
+																<ul>
+																	<li>Reports
+																		<ul>
+																			<li>Report1</li>
+																			<li>Report2</li>
+																			<li>Report3</li>
+																		</ul>
+																	</li>
+																	<li>Employee Maint.
+																		<ul>
+																			<li>Reports
+																				<ul>
+																					<li>Report1</li>
+																					<li>Report2</li>
+																					<li>Report3</li>
+																				</ul>
+																			</li>
+																			<li>Employee Maint.<ul>
+																					<li>Reports
+																						<ul>
+																							<li>Report1</li>
+																							<li>Report2</li>
+																							<li>Report3</li>
+																						</ul>
+																					</li>
+																					<li>Employee Maint.</li>
+																				</ul>
+																			</li>
+																		</ul>
+																	</li>
+																</ul>
+															</li>
+															<li>Human Resources</li>
+														</ul>
+													</li>
+													<li><a href="#">Treeview5</a>
+														<ul>
+															<li>Company Maintenance</li>
+															<li>Employees
+																<ul>
+																	<li>Reports
+																		<ul>
+																			<li>Report1</li>
+																			<li>Report2</li>
+																			<li>Report3</li>
+																		</ul>
+																	</li>
+																	<li>Employee Maint.
+																		<ul>
+																			<li>Reports
+																				<ul>
+																					<li>Report1</li>
+																					<li>Report2</li>
+																					<li>Report3</li>
+																				</ul>
+																			</li>
+																			<li>Employee Maint.
+																				<ul>
+																					<li>Reports
+																						<ul>
+																							<li>Report1</li>
+																							<li>Report2</li>
+																							<li>Report3</li>
+																						</ul>
+																					</li>
+																					<li>Employee Maint.</li>
+																				</ul>
+																			</li>
+																		</ul>
+																	</li>
+																</ul>
+															</li>
+															<li>Human Resources</li>
+														</ul>
+													</li>
+													<li><a href="#">Treeview6</a>
+														<ul>
+															<li>Company Maintenance</li>
+															<li>Employees
+																<ul>
+																	<li>Reports
+																		<ul>
+																			<li>Report1</li>
+																			<li>Report2</li>
+																			<li>Report3</li>
+																		</ul>
+																	</li>
+																	<li>Employee Maint.
+																		<ul>
+																			<li>Reports
+																				<ul>
+																					<li>Report1</li>
+																					<li>Report2</li>
+																					<li>Report3</li>
+																				</ul>
+																			</li>
+																			<li>Employee Maint.<ul>
+																					<li>Reports
+																						<ul>
+																							<li>Report1</li>
+																							<li>Report2</li>
+																							<li>Report3</li>
+																						</ul>
+																					</li>
+																					<li>Employee Maint.</li>
+																				</ul>
+																			</li>
+																		</ul>
+																	</li>
+																</ul>
+															</li>
+															<li>Human Resources</li>
+														</ul>
+													</li>
+												</ul>
+											</div>
+											<!-- /col -->
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- row -->
+						{% endblock body %}
+					
+		{% block scripts %}
+		<!-- Internal Treeview js -->
+		<script src="{% static ''%}assets/plugins/treeview/treeview.js"></script>
+		{% endblock scripts %}
+

@@ -1,0 +1,88 @@
+{% extends 'components/base.html' %}
+{% load static%}
+
+		{% block styles %}
+		{% endblock styles %}
+
+						{% block body %}
+						<!-- PAGE-HEADER -->
+						<div class="page-header">
+							<div>
+								<h1 class="page-title">Maps</h1>
+								<ol class="breadcrumb">
+									<li class="breadcrumb-item"><a href="#">Home</a></li>
+									<li class="breadcrumb-item active" aria-current="page">Maps</li>
+								</ol>
+							</div>
+							<div class="ms-auto pageheader-btn">
+								<a href="#" class="btn btn-primary btn-icon text-white me-2">
+									<span>
+										<i class="fe fe-plus"></i>
+									</span> Add Account
+								</a>
+								<a href="#" class="btn btn-success btn-icon text-white">
+									<span>
+										<i class="fe fe-log-in"></i>
+									</span> Export
+								</a>
+							</div>
+						</div>
+						<!-- PAGE-HEADER END -->
+
+						<!-- Row -->
+						<div class="row">
+							<div class="col-lg-12 col-md-12">
+								<div class="card">
+									<div class="card-header">
+										<h4  class="card-title">Map with links between the plotted cities</h4>
+									</div>
+									<div class="card-body">
+										<div class="mapcontainer4">
+											<div class="map pt-0">
+												<span>Alternative content for the map</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6 col-md-12">
+								<div class="card">
+									<div class="card-header">
+										<h4 class="card-title">Static MapelMaps</h4>
+									</div>
+									<div class="card-body">
+										<div class="mapcontainer">
+											<div class="map pt-0">
+												<span>Alternative content for the map</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6 col-md-12">
+								<div class="card">
+									<div class="card-header">
+										<h4 class="card-title"> Map with a legend for areas</h4>
+									</div>
+									<div class="card-body">
+										<div class="mapcontainer1">
+											<div class="map pt-0">
+												<span>Alternative content for the map</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- /Row -->
+						{% endblock body %}
+					
+		{% block scripts %}
+		<!-- INTERNAL Mapel Plugin -->
+		<script src="{% static ''%}assets/plugins/mapel/raphael.min.js"></script>
+		<script src="{% static ''%}assets/plugins/mapel/jquery.mapael.js"></script>
+		<script src="{% static ''%}assets/plugins/mapel/maps/france_departments.js"></script>
+		<script src="{% static ''%}assets/plugins/mapel/maps/world_countries.js"></script>
+		<script src="{% static ''%}assets/plugins/mapel/maps/usa_states.js"></script>
+		<script src="{% static ''%}assets/js/mapelmaps.js"></script>
+		{% endblock scripts %}
