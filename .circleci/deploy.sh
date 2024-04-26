@@ -1,12 +1,11 @@
 #!/bin/bash
 shopt -s expand_aliases
-source /root/.bash_aliases
 branch="$1"
 sudo su
 
 start_ssh_agent() {
   echo 'Starting ssh-agent'
-  eval "$(ssh-agent -s)"
+  sudo eval "$(ssh-agent -s)"
   sudo ssh-add /root/.ssh/id_github_deploy
 }
 
@@ -40,12 +39,18 @@ kill_process() {
   sudo systemctl stop gunicorn.socket gunicorn.service
 }
 
+collect_static() {
+  echo 'Collecting static files'
+  source /var/www/jaguar-web-api/venv/bin/activate
+  python manage.py collectstatic --noinput
+}
+
 start_process() {
   echo 'Restarting the application'
   sudo systemctl start gunicorn.socket gunicorn.service
 }
 
 echo "Deploying branch $branch of the CMS"
-start_ssh_agent && go_to_path_to_deploy && pull_latest_code && kill_process && start_process
+start_ssh_agent && go_to_path_to_deploy && pull_latest_code && kill_process && collect_static && start_process
 
 exit 0
