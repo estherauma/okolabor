@@ -7,7 +7,7 @@ sudo su
 start_ssh_agent() {
   echo 'Starting ssh-agent'
   eval "$(ssh-agent -s)"
-  ssh-add /root/.ssh/id_ed25519_github_deploy
+  sudo ssh-add /root/.ssh/id_github_deploy
 }
 
 go_to_path_to_deploy() {
