@@ -30,11 +30,11 @@ jobs:
       - run:
           name: deploy to production
           command: |
-            echo "deploying to production"
+            echo "**** Deploying to production ****"
             # Set up ssh key
             echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa_deploy_key
             chmod 600 ~/.ssh/id_rsa_deploy_key
-            echo "Set up login credentials"
+            echo "Set up login credentials------ OK"
             # Set up login credentials
             server_ipaddress="$SERVER_IP"
             server_username="$SERVER_USERNAME"

@@ -20,11 +20,32 @@ go_to_path_to_deploy() {
     cd "/var/www/staging/"
   elif [ "$branch" = "skapeyi/58-2915-set-up-automatic-deployment-for-strapi" ]; then
     echo 'Going to path to deploy dev branch'
-    cd "/var/www/dev/"
+    cd "/var/www/jaguar-web-api/"
   else
     echo 'We can only deploy master, staging or dev branches'
   fi
   pwd
 }
+
+pull_latest_code() {
+  echo "Pulling latest code from $branch"
+  git stash
+  git pull origin "$branch"
+  yarn install
+  yarn build
+}
+
+kill_process() {
+  echo "Stopping the application"
+  sudo systemctl stop gunicorn.socket gunicorn.service
+}
+
+start_process() {
+  echo 'Restarting the application'
+  sudo systemctl start gunicorn.socket gunicorn.service
+}
+
+echo "Deploying branch $branch of the CMS"
+start_ssh_agent && go_to_path_to_deploy && pull_latest_code && kill_process && start_process
 
 exit 0
