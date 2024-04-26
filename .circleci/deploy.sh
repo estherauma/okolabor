@@ -16,7 +16,7 @@ go_to_path_to_deploy() {
   elif [ "$branch" = "staging" ]; then
     echo "Going to path to deploy staging branch"
     cd "/var/www/staging/"
-  elif [ "$branch" = "skapeyi/58-2867-set-up-continuous-deployment-of-the-web-application" ]; then
+  elif [ "$branch" = "dev" ]; then
     echo "Going to path to deploy dev branch"
     cd "/var/www/jaguar-web-api/"
   else
