@@ -41,7 +41,7 @@ jobs:
             user_serverip="$SERVER_USERNAME@$SERVER_IP"
             # Connect to the server and pass deploy script for execution
             chmod 755 .circleci/deploy.sh
-            ssh -i ~/.ssh/id_rsa_deploy_key $user_serverip 'bash -s' $CIRCLE_BRANCH < .circleci/deploy.sh
+            ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa_deploy_key $user_serverip 'bash -s' $CIRCLE_BRANCH < .circleci/deploy.sh
 
 workflows:
   version: 2
