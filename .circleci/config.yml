@@ -22,7 +22,42 @@ jobs:
       - store_test_results:
           path: test-reports
 
+  deploy:
+    docker:
+      - image: cimg/python:3.10.1
+    steps:
+      - checkout
+      - run:
+          name: deploy to production
+          command: echo "deploying to production"
+      - setup_ssh_key:
+          name: Set up SSH key
+          command: |
+            echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa_deploy_key
+            chmod 600 ~/.ssh/id_rsa_deploy_key
+      - setup_login_credentials:
+          name: Set up login credentials
+          command: |
+            server_ipaddress="$SERVER_IP"
+            server_username="$SERVER_USERNAME"
+            user_serverip="$SERVER_USERNAME@$SERVER_IP"
+      - connect_to_ssh:
+          name: Connect to SSH
+          command: |
+            ssh -i ~/.ssh/id_rsa_deploy_key $user_serverip
+
+
 workflows:
-  build-and-test-workflow:
+  version: 2
+  test-deploy:
     jobs:
       - test-and-lint
+      - deploy:
+          requires:
+            - test-and-lint
+          filters:
+            branches:
+              only:
+                - main
+                - staging
+                - dev
