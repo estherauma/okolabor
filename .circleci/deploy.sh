@@ -2,6 +2,7 @@
 shopt -s expand_aliases
 source /root/.bash_aliases
 branch="$1"
+sudo su
 
 start_ssh_agent() {
   echo 'Starting ssh-agent'
