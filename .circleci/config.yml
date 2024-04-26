@@ -42,10 +42,6 @@ jobs:
             # Connect to the server and pass deploy script for execution
             chmod 755 .circleci/deploy.sh
             ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa_deploy_key $user_serverip 'bash -s' $CIRCLE_BRANCH < .circleci/deploy.sh
-      - connect_to_ssh:
-          name: Connect to SSH
-          command: |
-            ssh -i ~/.ssh/id_rsa_deploy_key $user_serverip
 
 workflows:
   version: 2
