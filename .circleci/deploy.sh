@@ -9,7 +9,7 @@ start_ssh_agent() {
 }
 
 go_to_path_to_deploy() {
-  echo "************* Changing path *********************************"
+  echo '\n************* Changing path *********************************\n'
   echo "Currrent branch variable is: $branch"
   if [ "$branch" = "main" ]; then
     echo 'Going to path to deploy master branch'
@@ -25,44 +25,39 @@ go_to_path_to_deploy() {
     exit 0
   fi
   pwd
-  echo "*******************************************************"
 }
 
 pull_latest_code() {
-  echo "************* Fetching changes ***************************************"
+  echo '\n ************* Fetching changes *************************************** \n'
   echo "Pulling latest code from $branch"
   git stash
   git pull origin "$branch"
   yarn install
   yarn build
-  echo "*******************************************************"
 }
 
 kill_process() {
-  echo "******************** Stopping the applicaiton *******************************"
+  echo '\n ******************** Stopping the applicaiton ******************************* \n'
   echo "Stopping the application"
   systemctl stop gunicorn.socket gunicorn.service
-  echo "*******************************************************"
 }
 
 collect_static() {
-  echo "************** Collecting static ******************************"
+  echo '\n************** Collecting static ****************************** \n'
   echo 'Collecting static files'
   source /var/www/jaguar-web-api/venv/bin/activate
-  python manage.py collectstatic --noinput
-  echo "*******************************************************"
+  # python manage.py collectstatic --noinput
 }
 
 start_process() {
-  echo "*********** Stating the process ******************"
+  echo '\n*********** Stating the process ******************\n'
   echo 'Restarting the application'
   systemctl start gunicorn.socket gunicorn.service
-  echo "*******************************************************"
 }
 
 echo "Deploying branch $branch of the web application"
-echo "************  Starting deploy********************************\n"
+echo '************  Starting deploy* *******************************/n'
 start_ssh_agent && go_to_path_to_deploy && pull_latest_code && kill_process && collect_static && start_process
 
-echo "************  Deployed successfully ********************************\n"
+echo '************  Deployed successfully ********************************\n'
 exit 0
