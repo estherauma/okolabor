@@ -1,7 +1,6 @@
 #!/bin/bash
 branch="$1"
 
-
 start_ssh_agent() {
   echo 'Starting ssh-agent'
   eval "$(ssh-agent -s)"
@@ -32,8 +31,6 @@ pull_latest_code() {
   echo "Pulling latest code from $branch"
   git stash
   git pull origin "$branch"
-  yarn install
-  yarn build
 }
 
 kill_process() {
@@ -42,10 +39,11 @@ kill_process() {
   systemctl stop gunicorn.socket gunicorn.service
 }
 
-collect_static() {
+install_depedencies_and_collect_static() {
   echo '\n************** Collecting static ****************************** \n'
   echo 'Collecting static files'
   source /var/www/jaguar-web-api/venv/bin/activate
+  pip install -r requirements.txt
   # python manage.py collectstatic --noinput
 }
 
@@ -57,7 +55,7 @@ start_process() {
 
 echo "Deploying branch $branch of the web application"
 echo '************  Starting deploy* *******************************/n'
-start_ssh_agent && go_to_path_to_deploy && pull_latest_code && kill_process && collect_static && start_process
+start_ssh_agent && go_to_path_to_deploy && pull_latest_code && kill_process && install_depedencies_and_collect_static && start_process
 
 echo '************  Deployed successfully ********************************\n'
 exit 0
