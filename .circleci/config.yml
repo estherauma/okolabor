@@ -1,0 +1,28 @@
+version: 2.1
+
+jobs:
+  test-and-lint:
+    docker:
+      - image: cimg/python:3.10.1
+      - image: cimg/postgres:14.1
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: test_db
+          POSTGRES_PASSWORD: postgres
+    steps:
+      - checkout # check out the code into the working directory
+      - run:
+          name: install dependencies
+          command: pip install -r requirements.txt
+
+      - run:
+          name: run tests
+          command: python manage.py test
+
+      - store_test_results:
+          path: test-reports
+
+workflows:
+  build-and-test-workflow:
+    jobs:
+      - test-and-lint

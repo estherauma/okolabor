@@ -135,3 +135,9 @@ STATICFILES_DIRS = [STATIC_DIR]
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# XML test runner
+TEST_RUNNER = 'xmlrunner.extra.djangotestrunner.XMLTestRunner'
+TEST_OUTPUT_DIR = './test-reports'
+TEST_OUTPUT_FILE_NAME = 'results.xml'
