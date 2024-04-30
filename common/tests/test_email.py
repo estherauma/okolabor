@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch
 from common.email import EmailHelper
 
+
 class EmailTestCase(unittest.TestCase):
     @patch('common.email.send_mail')
     @patch('common.email.render_to_string')
@@ -58,6 +59,7 @@ class EmailTestCase(unittest.TestCase):
         mock_render.assert_called_once_with('emails/template_name', {"body": body})
         mock_send_mail.assert_called_once()
         self.assertFalse(result)
+
 
 if __name__ == '__main__':
     unittest.main()

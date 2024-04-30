@@ -1,6 +1,7 @@
 import unittest
 from common.push_id import PushID
 
+
 class PushIDTestCase(unittest.TestCase):
     def setUp(self):
         self.push_id = PushID()
@@ -15,6 +16,7 @@ class PushIDTestCase(unittest.TestCase):
         # Generate an ID and check if its length is 20
         unique_id = self.push_id.next_id()
         self.assertEqual(len(unique_id), 20)
+
 
 if __name__ == '__main__':
     unittest.main()
