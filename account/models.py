@@ -55,7 +55,7 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
     address_line_3 = models.CharField(_('address_line_3'), null=True, blank=True, max_length=30)
     city = models.CharField(_('city'), null=True, blank=True, max_length=30)
     passport_number = models.CharField(_('passport_number'), null=True, blank=True, max_length=30)
-    gender = models.CharField(max_length=15,blank=True, null=True)
+    gender = models.CharField(max_length=15,  blank=True, null=True)
     dob = models.DateField(null=True, blank=True)
 
     USERNAME_FIELD = 'curp'
