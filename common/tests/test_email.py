@@ -49,7 +49,7 @@ class EmailTestCase(unittest.TestCase):
         body = 'Test Body'
         template = 'template_name'
         from_email = 'noreply@example.com'
-        mock_send_mail.side_effect = Exception('Test Exception')
+        mock_send_mail.side_effect = Exception('')
 
         # Act
         mailer = EmailHelper()

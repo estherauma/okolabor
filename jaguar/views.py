@@ -4,10 +4,14 @@ from rest_framework import status
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 
 
 class IndexView(APIView):
-
+    @swagger_auto_schema(
+        operation_description="This is the root of the API",
+        responses={200: 'Hello, World!'}
+    )
     def get(self, request):
         return Response({'message': 'Hello, World! Go to api/docs to see documentation'}, status.HTTP_200_OK)
 

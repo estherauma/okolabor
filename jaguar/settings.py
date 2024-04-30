@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'theme',
     'rest_framework',
+    'account',
 ]
 
 MIDDLEWARE = [
@@ -172,3 +173,5 @@ REST_FRAMEWORK = {
         'djangorestframework_camel_case.parser.CamelCaseJSONParser',
     ),
 }
+
+AUTH_USER_MODEL = 'account.User'
