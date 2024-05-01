@@ -1,6 +1,6 @@
 from account.serializers import RegistrationSerializer, UserSerilizer, LoginSerializer
 from account.models import User
-
+from account.jwt_manager import JwtManager
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -40,7 +40,20 @@ class LoginView(APIView):
             if not user.is_verified:
                 return Response({'message': 'Account not verified'}, status=status.HTTP_403_FORBIDDEN)
             if user.check_password(serializer.validated_data['password']):
-                return Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
+                identity_manager = JwtManager()
+                payload = {
+                            'email': user.email,
+                            'id': user.pk,
+                            'firstName': user.first_name,
+                            'lastName': user.last_name,
+                            'isAdmin': user.is_admin,
+                            'roles': list(user.groups.values_list('name', flat=True)) if user.groups.exists() else [],
+                        }
+                token = identity_manager.encode(payload)
+                return Response({
+                    'token': token,
+                    'data': payload
+                    }, status=status.HTTP_200_OK)
             else:
                 return Response({'message': 'Invalid credentials'}, status=status.HTTP_403_FORBIDDEN)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
