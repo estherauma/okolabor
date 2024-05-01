@@ -4,7 +4,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
-User = get_user_model()    
+User = get_user_model()
+
 
 class RegistrationAPITestCase(APITestCase):
     def setUp(self):
@@ -38,7 +39,7 @@ class RegistrationAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(User.objects.count(), 0)
         self.assertEqual(response.data['email'][0], 'Enter a valid email address.')
-        
+
     def test_registration_curp(self):
         url = reverse('account:api-register')
         data = {
@@ -51,7 +52,7 @@ class RegistrationAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(User.objects.count(), 0)
         self.assertEqual(response.data['curp'][0], 'CURP cannot be less than 18 characters long')
-        
+
     def test_registration_invalid_password(self):
         url = reverse('account:api-register')
         data = {
@@ -64,7 +65,6 @@ class RegistrationAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(User.objects.count(), 0)
         self.assertEqual(response.data['password'][0], 'Passwords do not match')
-
 
 
 if __name__ == '__main__':

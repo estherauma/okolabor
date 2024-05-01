@@ -1,10 +1,10 @@
 from account.serializers import RegistrationSerializer, UserSerilizer, LoginSerializer
 from account.models import User
 from account.jwt_manager import JwtManager
-from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
+
 
 class RegisterView(APIView):
     def post(self, request):
@@ -30,13 +30,13 @@ class LoginView(APIView):
         if serializer.is_valid():
             email_or_curp = serializer.validated_data['identifier']
             try:
-                user = User.objects.get(email=email_or_curp) 
+                user = User.objects.get(email=email_or_curp)
             except User.DoesNotExist:
                 try:
                     user = User.objects.get(curp=email_or_curp)
                 except User.DoesNotExist:
                     return Response({'message': 'User with given information does not exist'}, status=status.HTTP_404_NOT_FOUND)
-                
+
             if not user.is_verified:
                 return Response({'message': 'Account not verified'}, status=status.HTTP_403_FORBIDDEN)
             if user.check_password(serializer.validated_data['password']):
