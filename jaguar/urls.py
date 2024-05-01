@@ -15,8 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from jaguar.views import IndexView, schema_view
+
 
 urlpatterns = [
+    path('api/', IndexView.as_view(), name='api-home'),
+    path('api/docs/', schema_view.with_ui(
+        'redoc', cache_timeout=0), name='schema-redoc'),
     path('admin/', admin.site.urls),
-    path('', include('ltr.urls')),
+    path('', include('theme.urls')),
+    path('api/account/', include('account.urls.api')),
 ]
