@@ -39,3 +39,16 @@ class UserSerilizer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'email', 'curp', 'is_active', 'is_verified')
+
+
+class LoginSerializer(serializers.Serializer):
+    identifier = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
+
+
+    def validate_identifier(self, value):
+        if not User.objects.filter(email=value).exists() and not User.objects.filter(curp=value).exists():
+            raise serializers.ValidationError('User with given information does not exist')
+        return value
+    
+   
