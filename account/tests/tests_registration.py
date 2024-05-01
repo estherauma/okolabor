@@ -15,7 +15,7 @@ class RegistrationAPITestCase(APITestCase):
         url = reverse('account:api-register')
         data = {
             'email': 'test@example.com',
-            'curp': 'LJZOA53TFUJSDFS2G3',
+            'curp': 'HEGJ820506HBCRRN09',
             'password': 'adminwert1A',
             'password_repeat': 'adminwert1A'
         }
@@ -23,7 +23,7 @@ class RegistrationAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(User.objects.first().email, 'test@example.com')
-        self.assertEqual(User.objects.first().curp, 'LJZOA53TFUJSDFS2G3')
+        self.assertEqual(User.objects.first().curp, 'HEGJ820506HBCRRN09')
         self.assertFalse(User.objects.first().is_active)
         self.assertFalse(User.objects.first().is_verified)
 
@@ -31,7 +31,7 @@ class RegistrationAPITestCase(APITestCase):
         url = reverse('account:api-register')
         data = {
             'email': 'invalid_email',
-            'curp': 'LJZOA53TFUJSDFS2',
+            'curp': 'HEGJ820506HBCRRN09',
             'password': 'testpassword',
             'password_repeat': 'testpassword'
         }
@@ -44,7 +44,7 @@ class RegistrationAPITestCase(APITestCase):
         url = reverse('account:api-register')
         data = {
             'email': 'invalid_email',
-            'curp': 'LJZOA53TFUJSS2',
+            'curp': 'HEGJ820506HBCRRN',
             'password': 'testpassword',
             'password_repeat': 'testpassword'
         }
@@ -57,7 +57,7 @@ class RegistrationAPITestCase(APITestCase):
         url = reverse('account:api-register')
         data = {
             'email': 'invalid_email',
-            'curp': 'LJZOA53TFUJSDFS2',
+            'curp': 'HEGJ820506HBCRRN09',
             'password': 'testpassword',
             'password_repeat': 'testpas'
         }
