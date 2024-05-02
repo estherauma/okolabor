@@ -1,0 +1,65 @@
+{
+    "clientName": "Thunder Client",
+    "collectionName": "Okolabor",
+    "collectionId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
+    "dateExported": "2024-05-01T11:46:55.884Z",
+    "version": "1.2",
+    "folders": [
+        {
+            "_id": "24530ad4-9fcf-4c74-a018-a487cf9a0e97",
+            "name": "auth",
+            "containerId": "",
+            "created": "2024-05-01T05:16:30.263Z",
+            "sortNum": 20000
+        }
+    ],
+    "requests": [
+        {
+            "_id": "ccd97f7f-3b86-442f-9ada-ccdaf9300323",
+            "colId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
+            "containerId": "",
+            "name": "api-default",
+            "url": "{{api-url}}/api",
+            "method": "GET",
+            "sortNum": 10000,
+            "created": "2024-04-30T06:24:20.306Z",
+            "modified": "2024-05-01T06:12:07.338Z",
+            "headers": []
+        },
+        {
+            "_id": "8a276e05-dcef-461a-9eeb-ee9aabb70de9",
+            "colId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
+            "containerId": "24530ad4-9fcf-4c74-a018-a487cf9a0e97",
+            "name": "register",
+            "url": "{{api-url}}/api/account/register/",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2024-05-01T05:16:38.533Z",
+            "modified": "2024-05-01T11:10:22.922Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"email\": \"johny@gmail.com\",\n  \"curp\": \"HEGJ820506HBCRRN09\",\n  \"password\": \"adminwert1A\",\n  \"passwordRepeat\": \"adminwert\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "431337fe-3743-44c6-bcf7-ec08ce2f6d78",
+            "colId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
+            "containerId": "24530ad4-9fcf-4c74-a018-a487cf9a0e97",
+            "name": "login",
+            "url": "{{api-url}}/api/account/login",
+            "method": "POST",
+            "sortNum": 30000,
+            "created": "2024-05-01T09:48:04.000Z",
+            "modified": "2024-05-01T11:37:16.223Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"identifier\": \"HEGJ820506HBCRRN09SDF\",\n  \"password\": \"adminwert1\"\n}",
+                "form": []
+            }
+        }
+    ],
+    "ref": "8EWDJTj4EV04cYtR5RfaN91ZAKqLcUXVEFyQ7midw_s_OGApQSK0_Dcil6erXzUL6R4mjQr3HgMlfc49MjLopg"
+}

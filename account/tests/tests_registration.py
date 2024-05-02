@@ -4,7 +4,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
-User = get_user_model()    
+User = get_user_model()
+
 
 class RegistrationAPITestCase(APITestCase):
     def setUp(self):
@@ -14,7 +15,7 @@ class RegistrationAPITestCase(APITestCase):
         url = reverse('account:api-register')
         data = {
             'email': 'test@example.com',
-            'curp': 'LJZOA53TFUJSDFS2G3',
+            'curp': 'HEGJ820506HBCRRN09',
             'password': 'adminwert1A',
             'password_repeat': 'adminwert1A'
         }
@@ -22,7 +23,7 @@ class RegistrationAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(User.objects.first().email, 'test@example.com')
-        self.assertEqual(User.objects.first().curp, 'LJZOA53TFUJSDFS2G3')
+        self.assertEqual(User.objects.first().curp, 'HEGJ820506HBCRRN09')
         self.assertFalse(User.objects.first().is_active)
         self.assertFalse(User.objects.first().is_verified)
 
@@ -30,7 +31,7 @@ class RegistrationAPITestCase(APITestCase):
         url = reverse('account:api-register')
         data = {
             'email': 'invalid_email',
-            'curp': 'LJZOA53TFUJSDFS2',
+            'curp': 'HEGJ820506HBCRRN09',
             'password': 'testpassword',
             'password_repeat': 'testpassword'
         }
@@ -38,12 +39,12 @@ class RegistrationAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(User.objects.count(), 0)
         self.assertEqual(response.data['email'][0], 'Enter a valid email address.')
-        
+
     def test_registration_curp(self):
         url = reverse('account:api-register')
         data = {
             'email': 'invalid_email',
-            'curp': 'LJZOA53TFUJSS2',
+            'curp': 'HEGJ820506HBCRRN',
             'password': 'testpassword',
             'password_repeat': 'testpassword'
         }
@@ -51,12 +52,12 @@ class RegistrationAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(User.objects.count(), 0)
         self.assertEqual(response.data['curp'][0], 'CURP cannot be less than 18 characters long')
-        
+
     def test_registration_invalid_password(self):
         url = reverse('account:api-register')
         data = {
             'email': 'invalid_email',
-            'curp': 'LJZOA53TFUJSDFS2',
+            'curp': 'HEGJ820506HBCRRN09',
             'password': 'testpassword',
             'password_repeat': 'testpas'
         }
@@ -64,7 +65,6 @@ class RegistrationAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(User.objects.count(), 0)
         self.assertEqual(response.data['password'][0], 'Passwords do not match')
-
 
 
 if __name__ == '__main__':

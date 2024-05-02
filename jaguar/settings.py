@@ -172,6 +172,14 @@ REST_FRAMEWORK = {
         'djangorestframework_camel_case.parser.CamelCaseMultiPartParser',
         'djangorestframework_camel_case.parser.CamelCaseJSONParser',
     ),
+     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'account.backends.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
 }
+
+# JWT token settings
+TOKEN_ISSUER = config('TOKEN_ISSUER', '50Eight')
+TOKEN_EXPIRATION_TIME = config('TOKEN_EXPIRATION_TIME', default=432000)
 
 AUTH_USER_MODEL = 'account.User'
