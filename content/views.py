@@ -107,12 +107,15 @@ class ContentAPI():
 
 class AggregatedContentView(APIView):
     def get(self, request):
-        latest = AggregatedContent.objects.order_by('-created_at')[:1].get()
-        serializer = AggregatedContentSerializer(latest, many=False)
-        return Response({
-            'data': [serializer.data],
-            'error_messages': []
-        }, status.HTTP_200_OK)
+        try:
+            latest = AggregatedContent.objects.latest('created_at')
+            serializer = AggregatedContentSerializer(latest, many=False)
+            return Response({
+                'data': [serializer.data],
+                'error_messages': []
+            }, status.HTTP_200_OK)
+        except AggregatedContent.DoesNotExist:
+            return Response({}, status.HTTP_200_OK)
 
 class StartContentAggregation(APIView):
     def get(self, request):
