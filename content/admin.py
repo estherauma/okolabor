@@ -1,3 +1,4 @@
 from django.contrib import admin
+from content.models import AggregatedContent
 
-# Register your models here.
+admin.site.register(AggregatedContent)

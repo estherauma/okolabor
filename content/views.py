@@ -45,10 +45,18 @@ class ContentAPI():
             additional_text = []
             for item in form_qn_data['dynamic_zone']:
                 if item['__component'] == 'okolabor.form-questions':
-                    pass
-                
+                    question_data.append({
+                        'key': item['Key'],
+                        'label': item['Label'],
+                        'category': item['Category'],
+                        'help_text': item['HelpText'],
+                        'required': item['Required'],
+                        'placeholder': item['Placeholder'],
+                        'question_type': item['QuestionType'],
+                    })
+
                 if item['__component'] == 'okolabor.additional-text':
-                    pass
+                    additional_text = aggregate_key_value_text(item['repeatable_zone'])
             return question_data, additional_text
 
         def aggregate_key_value_text(common_text_data):
@@ -59,7 +67,7 @@ class ContentAPI():
                     'value': item['value']
                 })
             return common_texts
-            
+
         def generate_select_options(z):
             pass
 
@@ -74,9 +82,8 @@ class ContentAPI():
                     'additional_text': aggregation_response[1]
                 }
                 aggregated_content[item['page_id']] = page_data
-                
-        
-            if  item['custom_type'] == 'common_text':
+
+            if item['custom_type'] == 'common_text':
                 aggregation_response = aggregate_key_value_text(item['dynamic_zone'])
                 page_data = {
                     'page_id': item['page_id'],
@@ -85,9 +92,8 @@ class ContentAPI():
                     'data': aggregation_response
                 }
                 aggregated_content[item['page_id']] = page_data
-    
-        print(aggregated_content)
         return aggregated_content
+
 
 class AggregatedContentView(APIView):
     def get(self, request):
