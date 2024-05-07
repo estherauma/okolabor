@@ -1,8 +1,12 @@
 from decouple import config
+from django.utils.dateparse import parse_datetime
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 import requests
+
+from content.models import AggregatedContent
+from content.serializers import AggregatedContentSerializer
 
 
 class ContentAPI():
@@ -18,7 +22,9 @@ class ContentAPI():
 
     def start_content_fetch(self):
         try:
+           
             response = requests.get(self.api_url, headers=self.headers)
+            print(response)
             self.content = response.json()
             self.languages = self.content['locales']
             self.documents = self.start_document_fetch()
@@ -35,6 +41,10 @@ class ContentAPI():
             url = f"{self.api_url}?locale={language['code']}"
             language_docs = requests.get(url, headers=self.headers).json()
             documents[language['code']] = self.aggregate_content(language_docs)
+        # save content to the database
+        aggregated_content = AggregatedContent()
+        aggregated_content.content = documents
+        aggregated_content.save();
         return documents
 
     def aggregate_content(self, lang_content):
@@ -97,16 +107,42 @@ class ContentAPI():
 
 class AggregatedContentView(APIView):
     def get(self, request):
+        latest = AggregatedContent.objects.order_by('-created_at')[:1].get()
+        serializer = AggregatedContentSerializer(latest, many=False)
+        return Response({
+            'data': [serializer.data],
+            'error_messages': []
+        }, status.HTTP_200_OK)
+
+class StartContentAggregation(APIView):
+    def get(self, request):
         api = ContentAPI()
         documents = api.start_document_fetch()
         return Response(documents, status.HTTP_200_OK)
-
+    
 
 class ContentUpdateView(APIView):
+    # ToDo: Set up workflow for webhooks
     def post(self, request):
         return Response({}, status.HTTP_200_OK)
 
 
 class CompareContent(APIView):
     def get(self, request):
-        return Response({}, status.HTTP_200_OK)
+        app_content_created_at = request.query_params.get('app_content_created_at')
+        parsed_app_content_created_at = parse_datetime(app_content_created_at)
+        latest_content = AggregatedContent.objects.order_by('-created_at')[:1].get()
+        serializer = AggregatedContentSerializer(latest_content, many=False)
+        latest_content_created_at = parse_datetime(serializer.data['created_at'])
+        if latest_content_created_at == parsed_app_content_created_at:
+            return Response({
+                'data': "",
+                'new': False,
+                'error_messages': []
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({
+                'data': serializer.data,
+                'new': True,
+                'error_messages': []
+            }, status=status.HTTP_200_OK)
