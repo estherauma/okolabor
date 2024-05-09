@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'theme',
     'rest_framework',
     'account',
+    'content',
 ]
 
 MIDDLEWARE = [
