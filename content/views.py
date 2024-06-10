@@ -22,9 +22,7 @@ class ContentAPI():
 
     def start_content_fetch(self):
         try:
-           
             response = requests.get(self.api_url, headers=self.headers)
-            print(response)
             self.content = response.json()
             self.languages = self.content['locales']
             self.documents = self.start_document_fetch()
@@ -49,7 +47,7 @@ class ContentAPI():
 
     def aggregate_content(self, lang_content):
         aggregated_content = {}
-
+        aggregated_content['languages'] = self.languages
         def aggregate_form_questions(form_qn_data):
             question_data = []
             additional_text = []
@@ -120,7 +118,7 @@ class AggregatedContentView(APIView):
 class StartContentAggregation(APIView):
     def get(self, request):
         api = ContentAPI()
-        documents = api.start_document_fetch()
+        documents = api.start_content_fetch()
         return Response(documents, status.HTTP_200_OK)
     
 
