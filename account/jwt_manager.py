@@ -3,7 +3,7 @@ import jwt
 from django.conf import settings
 from rest_framework import exceptions
 
-from common.logger import logger
+from common.logger import AppLogger
 
 INVALID_TOKEN_MSG = "Authorization failed due to an Invalid token.",
 EXPIRED_TOKEN_MSG = "Token expired. Please login to get a new token",
@@ -46,7 +46,7 @@ class JwtManager():
         ) as error:
             message, status_code = EXCEPTION_MAPPER.get(
                 type(error), (SERVER_ERROR_MESSAGE, 500))
-            logger.error('%s: %s', message, status_code)
+            AppLogger.error('%s: %s', message, status_code)
             raise exceptions.AuthenticationFailed(
                 detail={'message': message}, code=status_code) from error
         except Exception as e:
