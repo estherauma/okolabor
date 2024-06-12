@@ -19,7 +19,7 @@ class ContentAPI():
         self.languages = []
         self.start_content_fetch()
         self.documents = {}
-
+       
     def start_content_fetch(self):
         try:
             response = requests.get(self.api_url, headers=self.headers)
@@ -48,6 +48,7 @@ class ContentAPI():
     def aggregate_content(self, lang_content):
         aggregated_content = {}
         aggregated_content['languages'] = self.languages
+        
         def aggregate_form_questions(form_qn_data):
             question_data = []
             additional_text = []
@@ -78,6 +79,19 @@ class ContentAPI():
 
         def generate_select_options(z):
             pass
+        
+        def aggregate_menu_content(menu_content_data):
+            menu_content = []
+            for item in menu_content_data:
+                menu_content.append({
+                    'url': item.get('Url', None),
+                    'icon': item.get('Icon', None),
+                    'title': item.get('Title', None),
+                    'enabled': item.get('Enabled', None),
+                    'label': item.get('Label(Translate)', None),
+                    'order': item.get('Order', None),
+                })
+            return menu_content
 
         for item in lang_content['data']:
             if item['custom_type'] == 'form_questions':
@@ -97,6 +111,17 @@ class ContentAPI():
                     'page_id': item['page_id'],
                     'page_title': item['page_title'],
                     'preview_title': item['preview_title'],
+                    'data': aggregation_response
+                }
+                aggregated_content[item['page_id']] = page_data
+            
+            if item['custom_type'] == 'menu_content':
+                aggregation_response = aggregate_menu_content(item['dynamic_zone'])
+                page_data = {
+                    'page_id': item['page_id'],
+                    'page_title': item['page_title'],
+                    'preview_title': item['preview_title'],
+                    'last_updated': item['last_published_at'],
                     'data': aggregation_response
                 }
                 aggregated_content[item['page_id']] = page_data
