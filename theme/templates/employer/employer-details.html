@@ -8,6 +8,7 @@
     <link href="{% static 'assets/plugins/datatable/css/dataTables.bootstrap5.css' %}" rel="stylesheet" />
     <link href="{% static 'assets/plugins/datatable/css/buttons.bootstrap5.min.css' %}" rel="stylesheet">
     <link href="{% static 'assets/plugins/datatable/responsive.bootstrap5.css' %}" rel="stylesheet" />
+    
 {% endblock styles %}
 
 {% block body %}
@@ -17,6 +18,23 @@
         <h1 class="page-title">Employer Information</h1>
     </div>
 </div>
+<hr>
+
+<div style="position: relative; display: inline-block;">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" style="position: absolute; top: 0; left: 0;">
+        <path fill="none" d="M0 0h24v24H0z"/>
+        <path d="M18.4 11H7.8l3.3-3.29a1 1 0 0 0-1.42-1.42l-5 5a1 1 0 0 0 0 1.42l5 5a1 1 0 0 0 1.42-1.42L7.8 13h10.6a1 1 0 0 0 0-2z"/>
+    </svg>
+    <span style="margin-left: 20px;">Back</span>
+</div>
+<br>
+<br>
+<div>
+    <h5 style="margin-right: 10px;">Utah Fruit Farms <a href="#" style="text-decoration: underline;">Edit Employer</a></h5>
+</div>
+
+
+
 
 
 <div class="row">
@@ -24,20 +42,39 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Contact</h5>
-                <h6>CONTACT NAME</h6>
-                <h6>Ashley Mackmullins</h6>
-                <h6>COMPANY ADDRESS</h6>
-                <h6>814 State Line Drive</h6>
-                <h6>CITY</h6>
-                <h6>Park City</h6>
-                <h6>STATE</h6>
-                <h6>Utah</h6>
-                <h6>ZIP</h6>
-                <h6>84060</h6>
-                <h6>PHONE NUMBER</h6>
-                <h6>+14350982987</h6>
-                <h6>ASSIGNED TO</h6>
-                <h6>Peter Goulding</h6>
+                <div class="table-responsive ">
+                    <table class="table row table-borderless">
+                        <tbody class="col-lg-12 col-xl-6 p-0">
+                            <tr>
+                                <td><strong>CONTACT NAME :</strong> Ashley Macmullins</td>
+                            </tr>
+                            <tr>
+                                <td><strong>COMPANY ADDRESS:</strong> 814 State Line Drive</td>
+                            </tr>
+                            <tr>
+                                <td><strong>CITY :</strong> Park City</td>
+                            </tr>
+                            <tr>
+                                <td><strong>STATE:</strong> Utah</td>
+                            </tr>
+                        </tbody>
+                        <tbody class="col-lg-12 col-xl-6 p-0">
+                            
+                            <tr>
+                                <td><strong>ZIP :</strong> 84060</td>
+                            </tr>
+                            <tr>
+                                <td><strong>EMAIL:</strong>AshleyMacmullins@utahFruits.com </td>
+                            </tr>
+                            <tr>
+                                <td><strong>PHONE NUMBER:</strong> +14350982987 </td>
+                            </tr>
+                            <tr>
+                                <td><strong>ASSIGNED TO :</strong> Peter Goulding </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -48,7 +85,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Deleted Row DataTable</h3>
+                        <h3 class="card-title">New Worker Requests</h3>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive deleted-table">
@@ -90,17 +127,25 @@
                                         <td>$86,000</td>
                                     </tr>
                                 </tbody>
+                                
                             </table>
+                            <div style="display: inline-block;">
+                                <button id="button" class="btn btn-secondary" style="margin-right: 10px;">Decline</button>
+                    
+                                <button class="btn btn-success">Accept</button>
+                            </div>
+                            
+                            
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-     >
+     
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Basic Datatable</h3>
+                <h3 class="card-title">Active Worker Requests</h3>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -140,7 +185,7 @@
 
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Another Basic Datatable</h3>
+                <h3 class="card-title">Worker Requests History</h3>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
