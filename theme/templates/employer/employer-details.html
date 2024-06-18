@@ -1,14 +1,24 @@
 {% extends 'components/base.html' %}
-{% block body%}
-<!-- PAGE-HEADER -->
+{% load static %}
+{% block styles %}
+    <!-- SELECT2 CSS -->
+    <link href="{% static 'assets/plugins/select2/select2.min.css' %}" rel="stylesheet"/>
+
+    <!-- DATA TABLE CSS -->
+    <link href="{% static 'assets/plugins/datatable/css/dataTables.bootstrap5.css' %}" rel="stylesheet" />
+    <link href="{% static 'assets/plugins/datatable/css/buttons.bootstrap5.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/plugins/datatable/responsive.bootstrap5.css' %}" rel="stylesheet" />
+{% endblock styles %}
+
+{% block body %}
+
 <div class="page-header">
     <div>
         <h1 class="page-title">Employer Information</h1>
     </div>
-    
 </div>
 
-<!-- ROW-1 OPEN -->
+
 <div class="row">
     <div class="col-xl-6 col-md-12">
         <div class="card">
@@ -30,53 +40,97 @@
                 <h6>Peter Goulding</h6>
             </div>
         </div>
-    </div><!-- COL END -->
+    </div>
+
     <div class="col-xl-6 col-md-12">
+       
+        <div class="row row-sm">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Deleted Row DataTable</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive deleted-table">
+                            
+                            <table id="delete-datatable" class="table table-bordered text-nowrap border-bottom">
+                                <thead>
+                                    <tr>
+                                        <th class="border-bottom-0">Name</th>
+                                        <th class="border-bottom-0">Position</th>
+                                        <th class="border-bottom-0">Office</th>
+                                        <th class="border-bottom-0">Age</th>
+                                        <th class="border-bottom-0">Start date</th>
+                                        <th class="border-bottom-0">Salary</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Tiger Nixon</td>
+                                        <td>System Architect</td>
+                                        <td>Edinburgh</td>
+                                        <td>61</td>
+                                        <td>2011/04/25</td>
+                                        <td>$320,800</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Garrett Winters</td>
+                                        <td>Accountant</td>
+                                        <td>Tokyo</td>
+                                        <td>63</td>
+                                        <td>2011/07/25</td>
+                                        <td>$170,750</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ashton Cox</td>
+                                        <td>Junior Technical Author</td>
+                                        <td>San Francisco</td>
+                                        <td>66</td>
+                                        <td>2009/01/12</td>
+                                        <td>$86,000</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+     >
         <div class="card">
             <div class="card-header">
-                <div class="card-title">New Worker Request</div>
+                <h3 class="card-title">Basic Datatable</h3>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table border text-nowrap text-md-nowrap table-bordered mg-b-0">
+                    <table class="table table-bordered text-nowrap border-bottom" id="basic-datatable">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Position</th>
-                                <th>Salary</th>
+                                <th class="wd-15p border-bottom-0">First name</th>
+                                <th class="wd-15p border-bottom-0">Last name</th>
+                                <th class="wd-20p border-bottom-0">Position</th>
+                                <th class="wd-15p border-bottom-0">Start date</th>
+                                <th class="wd-10p border-bottom-0">Salary</th>
+                                <th class="wd-25p border-bottom-0">E-mail</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>1</td>
-                                <td>Joan Powell</td>
-                                <td>Associate Developer</td>
-                                <td>$450,870</td>
+                                <td>Bella</td>
+                                <td>Chloe</td>
+                                <td>System Developer</td>
+                                <td>2018/03/12</td>
+                                <td>$654,765</td>
+                                <td>b.Chloe@datatables.net</td>
                             </tr>
                             <tr>
-                                <td>2</td>
-                                <td>Gavin Gibson</td>
-                                <td>Account manager</td>
-                                <td>$230,540</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>Julian Kerr</td>
-                                <td>Senior Javascript Developer</td>
-                                <td>$55,300</td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>Cedric Kelly</td>
-                                <td>Accountant</td>
-                                <td>$234,100</td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>Samantha May</td>
-                                <td>Junior Technical Author</td>
-                                <td>$43,198</td>
+                                <td>Donna</td>
+                                <td>Bond</td>
+                                <td>Account Manager</td>
+                                <td>2012/02/21</td>
+                                <td>$543,654</td>
+                                <td>d.bond@datatables.net</td>
                             </tr>
                         </tbody>
                     </table>
@@ -86,116 +140,81 @@
 
         <div class="card">
             <div class="card-header">
-                <div class="card-title">New Worker Request</div>
+                <h3 class="card-title">Another Basic Datatable</h3>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table border text-nowrap text-md-nowrap table-bordered mg-b-0">
+                    <table class="table table-bordered text-nowrap border-bottom" id="another-basic-datatable">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Position</th>
-                                <th>Salary</th>
+                                <th class="wd-15p border-bottom-0">First name</th>
+                                <th class="wd-15p border-bottom-0">Last name</th>
+                                <th class="wd-20p border-bottom-0">Position</th>
+                                <th class="wd-15p border-bottom-0">Start date</th>
+                                <th class="wd-10p border-bottom-0">Salary</th>
+                                <th class="wd-25p border-bottom-0">E-mail</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>1</td>
-                                <td>Joan Powell</td>
-                                <td>Associate Developer</td>
-                                <td>$450,870</td>
+                                <td>John</td>
+                                <td>Doe</td>
+                                <td>Software Engineer</td>
+                                <td>2019/10/12</td>
+                                <td>$123,456</td>
+                                <td>j.doe@datatables.net</td>
                             </tr>
                             <tr>
-                                <td>2</td>
-                                <td>Gavin Gibson</td>
-                                <td>Account manager</td>
-                                <td>$230,540</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>Julian Kerr</td>
-                                <td>Senior Javascript Developer</td>
-                                <td>$55,300</td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>Cedric Kelly</td>
-                                <td>Accountant</td>
-                                <td>$234,100</td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>Samantha May</td>
-                                <td>Junior Technical Author</td>
-                                <td>$43,198</td>
+                                <td>Jane</td>
+                                <td>Smith</td>
+                                <td>Project Manager</td>
+                                <td>2015/05/23</td>
+                                <td>$98,765</td>
+                                <td>j.smith@datatables.net</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-            <div class="card-footer">
-                <div class="card-title">Card-footer</div>
-            </div>
         </div>
-
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">New Worker Request</div>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table border text-nowrap text-md-nowrap table-bordered mg-b-0">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Position</th>
-                                <th>Salary</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Joan Powell</td>
-                                <td>Associate Developer</td>
-                                <td>$450,870</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Gavin Gibson</td>
-                                <td>Account manager</td>
-                                <td>$230,540</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>Julian Kerr</td>
-                                <td>Senior Javascript Developer</td>
-                                <td>$55,300</td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>Cedric Kelly</td>
-                                <td>Accountant</td>
-                                <td>$234,100</td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>Samantha May</td>
-                                <td>Junior Technical Author</td>
-                                <td>$43,198</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="card-footer">
-                <div class="card-title">Card-footer</div>
-            </div>
-        </div>
-    </div><!-- COL END -->
-    
+    </div>
 </div>
-<!-- ROW-1 CLOSED -->
 
-{% endblock body%}
+
+{% endblock body %}
+
+{% block scripts %}
+    <!-- INTERNAL SELECT2 JS -->
+    <script src="{% static 'assets/plugins/select2/select2.full.min.js' %}"></script>
+
+    <!-- DATA TABLE JS -->
+    <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/js/jszip.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/pdfmake/pdfmake.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/pdfmake/vfs_fonts.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/js/buttons.colVis.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'assets/js/table-data.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#delete-datatable').DataTable();
+            $('#basic-datatable').DataTable();
+            $('#another-basic-datatable').DataTable();
+        });
+
+        $('#button').click(function() {
+            var table = $('#delete-datatable').DataTable();
+            table.row('.selected').remove().draw(false);
+        });
+
+        $('#delete-datatable tbody').on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+    </script>
+{% endblock scripts %}
