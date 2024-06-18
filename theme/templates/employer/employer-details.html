@@ -1,160 +1,201 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employer</title>
-    <link rel="stylesheet" href="{% static 'assets/css/employer.css' %}">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
-
-</head>
-<body style="background-color: #FAFAE6;">
-    <div class="sidebar">
-        <h1 style="margin-bottom: 0;">CSI</h1>
-        <p style="margin-top: 0; text-align: center; color: white;">VISA PROCESSING</p>
-        <ul>
-            <li>
-                <a href="#" style="display: flex; align-items: center;">
-                    <i class="material-icons-outlined" style="margin-right: 5px;">home</i>
-                    Home
-                </a>
-            </li>
-            
-            <li>
-                <a href="#" style="display: flex; align-items: center;">
-                    <i class="material-icons-outlined" style="margin-right: 5px;">account_circle</i>
-                    Workers
-                </a>
-            </li>
-            
-            <li>
-                <a href="#" style="display: flex; align-items: center;">
-                    <div class="icon" style="margin-right: 5px; font-size: 24px;">
-                        <span>i</span>
-                    </div> 
-                    <span style="margin-left: 8px;">Employers</span>
-                </a>
-            </li>
-            
-            
-            <li>
-                <a href="#" style="display: flex; align-items: center;">
-                    <i class="material-icons-outlined" style="margin-right: 5px;">description</i>
-                    Worker Requests
-                </a>
-            </li>
-            
-            <li>
-                <a href="#" style="display: flex; align-items: center;">
-                    <i class="material-icons-outlined" style="margin-right: 5px;">work_outline</i>
-                    My Work
-                </a>
-            </li>
-            <br><br>
-            <p style="color: #2A7A62;">Quick Actions</p>
-            <li>
-                <a href="#" style="display: block; padding: 10px; background-color: #2A7A62;
-                 border-radius: 5px; text-align: center; text-decoration: none; color: white; font-weight: bold;">
-                    Manage Users
-                </a>
-            </li>
-            <li>
-                <a href="#" style="display: block; padding: 10px; background-color: #2A7A62;
-                 border-radius: 5px; text-align: center; text-decoration: none; color: white; font-weight: bold;">
-                    +Add Employers
-                </a>
-            </li>
-            
-        </ul>
-        
-        
+{% extends 'components/base.html' %}
+{% block body%}
+<!-- PAGE-HEADER -->
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Employer Information</h1>
     </div>
-    <div class="content">
-        <h2 class="text-left">Employer Information</h2>
-        <ul class="icon-list">
-            <li>
-                <a href="#">
-                    <i class="material-icons-outlined">search</i>
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <i class="material-icons-outlined">notifications</i>
-                </a>
-            </li>
+    
+</div>
 
-            <li>
-                <a href="#">
-                    <i class="material-icons-outlined">account_circle</i>
-                </a>
-            </li>
-        </ul>
-        
-        <br>
-        <div class="container text-center">
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Contact</h5>
-                            <p>CONTACT NAME</p>
-                            <p>Ashley Mcmullins</p>
-                            <p>COMPANY ADDRESS</p>
-                            <p>814 State Line Drive</p>
-                            <p>CITY</p>
-                            <p>Park City</p>
-                            <p>ZIP</p>
-                            <p>Utah</p>
-                            <p>EMAIL</p>
-                            <p>AshleyMcmullins@utahfruits.com</p>
-                            <p>PHONE NUMBER</p>
-                            <p>+14350982987</p>
-                            <p>ASSIGN TO</p>
-                            <p>Peter Goulding</p>
-
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <h6 class="card-subtitle mb-2 text-body-secondary">Card subtitle</h6>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                            <a href="#" class="card-link">Card link</a>
-                            <a href="#" class="card-link">Another link</a>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <h6 class="card-subtitle mb-2 text-body-secondary">Card subtitle</h6>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                            <a href="#" class="card-link">Card link</a>
-                            <a href="#" class="card-link">Another link</a>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <h6 class="card-subtitle mb-2 text-body-secondary">Card subtitle</h6>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                            <a href="#" class="card-link">Card link</a>
-                            <a href="#" class="card-link">Another link</a>
-                        </div>
-                    </div>
-                </div>
-                
+<!-- ROW-1 OPEN -->
+<div class="row">
+    <div class="col-xl-6 col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Contact</h5>
+                <h6>CONTACT NAME</h6>
+                <h6>Ashley Mackmullins</h6>
+                <h6>COMPANY ADDRESS</h6>
+                <h6>814 State Line Drive</h6>
+                <h6>CITY</h6>
+                <h6>Park City</h6>
+                <h6>STATE</h6>
+                <h6>Utah</h6>
+                <h6>ZIP</h6>
+                <h6>84060</h6>
+                <h6>PHONE NUMBER</h6>
+                <h6>+14350982987</h6>
+                <h6>ASSIGNED TO</h6>
+                <h6>Peter Goulding</h6>
             </div>
         </div>
+    </div><!-- COL END -->
+    <div class="col-xl-6 col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">New Worker Request</div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table border text-nowrap text-md-nowrap table-bordered mg-b-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Salary</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Joan Powell</td>
+                                <td>Associate Developer</td>
+                                <td>$450,870</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Gavin Gibson</td>
+                                <td>Account manager</td>
+                                <td>$230,540</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Julian Kerr</td>
+                                <td>Senior Javascript Developer</td>
+                                <td>$55,300</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Cedric Kelly</td>
+                                <td>Accountant</td>
+                                <td>$234,100</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>Samantha May</td>
+                                <td>Junior Technical Author</td>
+                                <td>$43,198</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">New Worker Request</div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table border text-nowrap text-md-nowrap table-bordered mg-b-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Salary</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Joan Powell</td>
+                                <td>Associate Developer</td>
+                                <td>$450,870</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Gavin Gibson</td>
+                                <td>Account manager</td>
+                                <td>$230,540</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Julian Kerr</td>
+                                <td>Senior Javascript Developer</td>
+                                <td>$55,300</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Cedric Kelly</td>
+                                <td>Accountant</td>
+                                <td>$234,100</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>Samantha May</td>
+                                <td>Junior Technical Author</td>
+                                <td>$43,198</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="card-title">Card-footer</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">New Worker Request</div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table border text-nowrap text-md-nowrap table-bordered mg-b-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Salary</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Joan Powell</td>
+                                <td>Associate Developer</td>
+                                <td>$450,870</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Gavin Gibson</td>
+                                <td>Account manager</td>
+                                <td>$230,540</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Julian Kerr</td>
+                                <td>Senior Javascript Developer</td>
+                                <td>$55,300</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Cedric Kelly</td>
+                                <td>Accountant</td>
+                                <td>$234,100</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>Samantha May</td>
+                                <td>Junior Technical Author</td>
+                                <td>$43,198</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="card-title">Card-footer</div>
+            </div>
+        </div>
+    </div><!-- COL END -->
     
-        
-    </div>
-</body>
-</html>
+</div>
+<!-- ROW-1 CLOSED -->
+
+{% endblock body%}
