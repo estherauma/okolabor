@@ -223,4 +223,7 @@ urlpatterns = [
     path("wishlist", views.wishlist, name='wishlist'),
 
     path("wysiwyag", views.wysiwyag, name='wysiwyag'),
+
+    #workers
+    path("workers", views.workers, name='workers'),
 ]
