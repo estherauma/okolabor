@@ -1,1 +1,146 @@
-{% extends 'components/base%}
+{% extends 'components/base.html' %}
+{% load static %}
+
+{% block styles %}
+<!-- SELECT2 CSS -->
+<link href="{% static ''%}assets/plugins/select2/select2.min.css" rel="stylesheet" />
+
+<!-- DATA TABLE CSS -->
+<link href="{% static ''%}assets/plugins/datatable/css/dataTables.bootstrap5.css" rel="stylesheet" />
+<link href="{% static ''%}assets/plugins/datatable/css/buttons.bootstrap5.min.css" rel="stylesheet">
+<link href="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.css" rel="stylesheet" />
+{% endblock styles %}
+{% block body %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Workers</h1>
+
+    </div>
+
+</div>
+<hr>
+
+<button class="btn btn-success mb-2"
+    style="margin-left: 1500px; font-weight: bolder; border-radius: 50%; width: 50px; height: 50px; padding: 0;">+</button>
+<li class="slide">
+    <a href="index"><i class="side-menu__icon icon-settings"></i><span></span></a>
+</li>
+<br>
+<div class="row row-sm">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered text-nowrap border-bottom" id="basic-datatable">
+                        <thead>
+                            <tr>
+                                <th class="wd-15p border-bottom-0">Name</th>
+                                <th class="wd-15p border-bottom-0">Town</th>
+                                <th class="wd-20p border-bottom-0">Profile Completion</th>
+                                <th class="wd-15p border-bottom-0">Experience</th>
+                                <th class="wd-10p border-bottom-0">English proficiency</th>
+                                <th class="wd-25p border-bottom-0">Location preference</th>
+                                <th class="wd-25p border-bottom-0">Offer status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Dorah</td>
+                                <td>Chloe</td>
+                                <td>30%</td>
+                                <td>Harvesting, Fruit picking</td>
+                                <td>Intermediate</td>
+                                <td>Any</td>
+                                <td>Pending</td>
+                            </tr>
+                            <tr>
+                                <td>Blessed</td>
+                                <td>Chloe</td>
+                                <td>10%</td>
+                                <td>Harvesting, Fruit picking</td>
+                                <td>Intermediate</td>
+                                <td>Any</td>
+                                <td>Pending</td>
+                            </tr>
+                            <tr>
+                                <td>Bless</td>
+                                <td>Chloe</td>
+                                <td>70%</td>
+                                <td>Harvesting, Fruit picking</td>
+                                <td>Intermediate</td>
+                                <td>Any</td>
+                                <td>Pending</td>
+                            </tr>
+                            <tr>
+                                <td>Betty</td>
+                                <td>Chloe</td>
+                                <td>90%</td>
+                                <td>Harvesting, Fruit picking</td>
+                                <td>Intermediate</td>
+                                <td>Any</td>
+                                <td>Pending</td>
+                            </tr>
+                            <tr>
+                                <td>Vella</td>
+                                <td>Chloe</td>
+                                <td>70%</td>
+                                <td>Harvesting, Fruit picking</td>
+                                <td>Intermediate</td>
+                                <td>Any</td>
+                                <td>Pending</td>
+                            </tr>
+                            <tr>
+                                <td>Deo</td>
+                                <td>Chloe</td>
+                                <td>10%</td>
+                                <td>Harvesting, Fruit picking</td>
+                                <td>Intermediate</td>
+                                <td>Any</td>
+                                <td>Pending</td>
+                            </tr>
+                            <tr>
+                                <td>Olive</td>
+                                <td>Chloe</td>
+                                <td>60%</td>
+                                <td>Harvesting, Fruit picking</td>
+                                <td>Intermediate</td>
+                                <td>Any</td>
+                                <td>Pending</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<button class="btn btn-success mb-2"
+    style="margin-left: 1500px; font-weight: bolder; border-radius: 50%; width: 50px; height: 50px; padding: 0;">+</button>
+
+
+{% endblock body %}
+
+{% block scripts %}
+<!-- INTERNAL SELECT2 JS -->
+<script src="{% static ''%}assets/plugins/select2/select2.full.min.js"></script>
+
+<!-- DATA TABLE JS-->
+<script src="{% static ''%}assets/plugins/datatable/js/jquery.dataTables.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/dataTables.bootstrap5.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/dataTables.buttons.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.bootstrap5.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/jszip.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/pdfmake/pdfmake.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/pdfmake/vfs_fonts.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.html5.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.print.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.colVis.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/dataTables.responsive.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.min.js"></script>
+<script src="{% static ''%}assets/js/table-data.js"></script>
+{% endblock scripts %}

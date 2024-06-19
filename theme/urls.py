@@ -224,6 +224,9 @@ urlpatterns = [
 
     path("wysiwyag", views.wysiwyag, name='wysiwyag'),
 
+    #workers
+    path("workers", views.workers, name='workers'),
+
     #employer
     path("employer", views.employer_details, name='employer'),
 ]
