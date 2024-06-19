@@ -309,3 +309,6 @@ def wysiwyag(request):
 
 def workers(request):
     return render(request, 'workers/workers.html')
+  
+def employer_details(request):
+    return render(request, 'employer/employer-details.html')
