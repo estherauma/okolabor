@@ -1,3 +1,105 @@
 {% extends 'components/base.html' %}
+{% load static %}
+
+{% block styles %}
+		<!-- SELECT2 CSS -->
+		<link href="{% static ''%}assets/plugins/select2/select2.min.css" rel="stylesheet"/>
+
+		<!-- DATA TABLE CSS -->
+		<link href="{% static ''%}assets/plugins/datatable/css/dataTables.bootstrap5.css" rel="stylesheet" />
+		<link href="{% static ''%}assets/plugins/datatable/css/buttons.bootstrap5.min.css"  rel="stylesheet">
+		<link href="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.css" rel="stylesheet" />
+		{% endblock styles %}
 {% block body %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Employer</h1>
+        
+    </div>
+    
+</div>
+
+
+<div class="row row-sm">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Basic Datatable</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered text-nowrap border-bottom" id="basic-datatable">
+                        <thead>
+                            <tr>
+                                <th class="wd-15p border-bottom-0">First name</th>
+                                <th class="wd-15p border-bottom-0">Last name</th>
+                                <th class="wd-20p border-bottom-0">Position</th>
+                                <th class="wd-15p border-bottom-0">Start date</th>
+                                <th class="wd-10p border-bottom-0">Salary</th>
+                                <th class="wd-25p border-bottom-0">E-mail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Bella</td>
+                                <td>Chloe</td>
+                                <td>System Developer</td>
+                                <td>2018/03/12</td>
+                                <td>$654,765</td>
+                                <td>b.Chloe@datatables.net</td>
+                            </tr>
+                            <tr>
+                                <td>Donna</td>
+                                <td>Bond</td>
+                                <td>Account Manager</td>
+                                <td>2012/02/21</td>
+                                <td>$543,654</td>
+                                <td>d.bond@datatables.net</td>
+                            </tr>
+                            <tr>
+                                <td>Harry</td>
+                                <td>Carr</td>
+                                <td>Technical Manager</td>
+                                <td>20011/02/87</td>
+                                <td>$86,000</td>
+                                <td>h.carr@datatables.net</td>
+                            </tr>
+                            <tr>
+                                <td>Lucas</td>
+                                <td>Dyer</td>
+                                <td>Javascript Developer</td>
+                                <td>2014/08/23</td>
+                                <td>$456,123</td>
+                                <td>l.dyer@datatables.net</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Row -->
+
+
 {% endblock body %}
+
+{% block scripts %}
+		<!-- INTERNAL SELECT2 JS -->
+		<script src="{% static ''%}assets/plugins/select2/select2.full.min.js"></script>
+
+		<!-- DATA TABLE JS-->
+		<script src="{% static ''%}assets/plugins/datatable/js/jquery.dataTables.min.js"></script>
+		<script src="{% static ''%}assets/plugins/datatable/js/dataTables.bootstrap5.js"></script>
+		<script src="{% static ''%}assets/plugins/datatable/js/dataTables.buttons.min.js"></script>
+		<script src="{% static ''%}assets/plugins/datatable/js/buttons.bootstrap5.min.js"></script>
+		<script src="{% static ''%}assets/plugins/datatable/js/jszip.min.js"></script>
+		<script src="{% static ''%}assets/plugins/datatable/pdfmake/pdfmake.min.js"></script>
+		<script src="{% static ''%}assets/plugins/datatable/pdfmake/vfs_fonts.js"></script>
+		<script src="{% static ''%}assets/plugins/datatable/js/buttons.html5.min.js"></script>
+		<script src="{% static ''%}assets/plugins/datatable/js/buttons.print.min.js"></script>
+		<script src="{% static ''%}assets/plugins/datatable/js/buttons.colVis.min.js"></script>
+		<script src="{% static ''%}assets/plugins/datatable/dataTables.responsive.min.js"></script>
+		<script src="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.min.js"></script>
+		<script src="{% static ''%}assets/js/table-data.js"></script>
+		{% endblock scripts %}
