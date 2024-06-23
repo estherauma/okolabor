@@ -307,6 +307,8 @@ def wishlist(request):
 def wysiwyag(request):
     return render(request, 'ltr/wysiwyag.html')
 
+def worker_details(request):
+    return render(request, 'worker-details/worker-details.html')
 def employer_list(request):
     return render(request, 'employer-list/employer-list.html')
 
