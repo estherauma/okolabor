@@ -231,4 +231,7 @@ urlpatterns = [
 
     #employer
     path("employer", views.employer_details, name='employer'),
+
+    #worker requests
+    path("worker-requests", views.worker_requests, name='worker-requests'),
 ]
