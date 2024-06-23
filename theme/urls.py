@@ -232,9 +232,13 @@ urlpatterns = [
     #employer
     path("employer", views.employer_details, name='employer'),
 
+    #worker requests
+    path("worker-requests", views.worker_requests, name='worker-requests'),
+
     #users
     path("users", views.users, name='users'),
 
     #worker details
     path("worker-details", views.worker_details, name='worker-details'),
+
 ]
