@@ -317,3 +317,6 @@ def workers(request):
   
 def employer_details(request):
     return render(request, 'employer/employer-details.html')
+
+def users(request):
+    return render(request, 'users/users.html')
