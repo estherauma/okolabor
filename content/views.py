@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 import requests
+import re
 
 from content.models import AggregatedContent
 from content.serializers import AggregatedContentSerializer
@@ -19,12 +20,10 @@ class ContentAPI():
         self.languages = []
         self.start_content_fetch()
         self.documents = {}
-
+       
     def start_content_fetch(self):
         try:
-           
             response = requests.get(self.api_url, headers=self.headers)
-            print(response)
             self.content = response.json()
             self.languages = self.content['locales']
             self.documents = self.start_document_fetch()
@@ -44,17 +43,22 @@ class ContentAPI():
         # save content to the database
         aggregated_content = AggregatedContent()
         aggregated_content.content = documents
-        aggregated_content.save();
+        aggregated_content.save()
         return documents
 
     def aggregate_content(self, lang_content):
         aggregated_content = {}
-
+        aggregated_content['languages'] = self.languages
+        
         def aggregate_form_questions(form_qn_data):
             question_data = []
             additional_text = []
             for item in form_qn_data['dynamic_zone']:
                 if item['__component'] == 'okolabor.form-questions':
+                    question_options = []
+                    if item['Options'] and item['OptionTranslations']:
+                        question_options = generate_select_options(
+                            item['Options'], item['OptionTranslations'])
                     question_data.append({
                         'key': item['Key'],
                         'label': item['Label'],
@@ -63,10 +67,13 @@ class ContentAPI():
                         'required': item['Required'],
                         'placeholder': item['Placeholder'],
                         'question_type': item['QuestionType'],
+                        'options': question_options
                     })
 
                 if item['__component'] == 'okolabor.additional-text':
-                    additional_text = aggregate_key_value_text(item['repeatable_zone'])
+                    additional_text = aggregate_key_value_text(
+                        item['repeatable_zone']
+                    )
             return question_data, additional_text
 
         def aggregate_key_value_text(common_text_data):
@@ -78,8 +85,28 @@ class ContentAPI():
                 })
             return common_texts
 
-        def generate_select_options(z):
-            pass
+        def generate_select_options(options, options_translations):
+            options = re.split(r',\s*|\s*,\s*', options)
+            options_translations = re.split(
+                r',\s*|\s*,\s*', options_translations)
+            final_options_array = [
+                    {"value": value, "label": key}
+                    for key, value in zip(options_translations, options)
+            ]
+            return final_options_array
+        
+        def aggregate_menu_content(menu_content_data):
+            menu_content = []
+            for item in menu_content_data:
+                menu_content.append({
+                    'url': item.get('Url', None),
+                    'icon': item.get('Icon', None),
+                    'title': item.get('Title', None),
+                    'enabled': item.get('Enabled', None),
+                    'label': item.get('Label(Translate)', None),
+                    'order': item.get('Order', None),
+                })
+            return menu_content
 
         for item in lang_content['data']:
             if item['custom_type'] == 'form_questions':
@@ -94,11 +121,23 @@ class ContentAPI():
                 aggregated_content[item['page_id']] = page_data
 
             if item['custom_type'] == 'common_text':
-                aggregation_response = aggregate_key_value_text(item['dynamic_zone'])
+                aggregation_response = aggregate_key_value_text(
+                    item['dynamic_zone'])
                 page_data = {
                     'page_id': item['page_id'],
                     'page_title': item['page_title'],
                     'preview_title': item['preview_title'],
+                    'data': aggregation_response
+                }
+                aggregated_content[item['page_id']] = page_data
+            
+            if item['custom_type'] == 'menu_content':
+                aggregation_response = aggregate_menu_content(item['dynamic_zone'])
+                page_data = {
+                    'page_id': item['page_id'],
+                    'page_title': item['page_title'],
+                    'preview_title': item['preview_title'],
+                    'last_updated': item['last_published_at'],
                     'data': aggregation_response
                 }
                 aggregated_content[item['page_id']] = page_data
@@ -117,12 +156,13 @@ class AggregatedContentView(APIView):
         except AggregatedContent.DoesNotExist:
             return Response({}, status.HTTP_200_OK)
 
+
 class StartContentAggregation(APIView):
     def get(self, request):
         api = ContentAPI()
-        documents = api.start_document_fetch()
+        documents = api.start_content_fetch()
         return Response(documents, status.HTTP_200_OK)
-    
+
 
 class ContentUpdateView(APIView):
     # ToDo: Set up workflow for webhooks
@@ -132,11 +172,16 @@ class ContentUpdateView(APIView):
 
 class CompareContent(APIView):
     def get(self, request):
-        app_content_created_at = request.query_params.get('app_content_created_at')
+        app_content_created_at = request.query_params.get(
+            'app_content_created_at'
+        )
         parsed_app_content_created_at = parse_datetime(app_content_created_at)
-        latest_content = AggregatedContent.objects.order_by('-created_at')[:1].get()
+        latest_content = AggregatedContent.objects.order_by(
+            '-created_at')[:1].get()
         serializer = AggregatedContentSerializer(latest_content, many=False)
-        latest_content_created_at = parse_datetime(serializer.data['created_at'])
+        latest_content_created_at = parse_datetime(
+            serializer.data['created_at']
+        )
         if latest_content_created_at == parsed_app_content_created_at:
             return Response({
                 'data': "",
