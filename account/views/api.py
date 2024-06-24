@@ -1,5 +1,5 @@
-from account.serializers import RegistrationSerializer, UserSerilizer, LoginSerializer
-from account.models import User
+from account.serializers import RegistrationSerializer, UpdateUserPreferencesSerializer, UserSerilizer, LoginSerializer
+from account.models import User, UserPreference
 from account.jwt_manager import JwtManager
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -56,4 +56,21 @@ class LoginView(APIView):
                     }, status=status.HTTP_200_OK)
             else:
                 return Response({'message': 'Invalid credentials'}, status=status.HTTP_403_FORBIDDEN)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UserPreferencesUpdateView(APIView):
+    def post(self, request, user_id):
+        user = User.objects.get(pk=user_id)
+        serializer = UpdateUserPreferencesSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            for pref_data in serializer.validated_data['preferences']:
+                key = pref_data['key']
+                value = pref_data['value']
+                UserPreference.objects.update_or_create(
+                    user=user, key=key,
+                    defaults={'value': value}
+                )
+            return Response(status=status.HTTP_200_OK)
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

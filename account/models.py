@@ -91,4 +91,4 @@ class UserPreference(AuditableModel):
         return f'{self.user.curp} - {self.key}'
 
     class Meta:
-        db_table = 'user_preferences'
+        db_table = 'account_user_preferences'
