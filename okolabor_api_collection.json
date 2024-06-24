@@ -2,7 +2,7 @@
     "clientName": "Thunder Client",
     "collectionName": "Okolabor",
     "collectionId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
-    "dateExported": "2024-05-07T12:10:05.910Z",
+    "dateExported": "2024-06-24T20:50:27.866Z",
     "version": "1.2",
     "folders": [
         {
@@ -18,6 +18,20 @@
             "containerId": "",
             "created": "2024-05-06T12:02:12.398Z",
             "sortNum": 30000
+        },
+        {
+            "_id": "fd5818d3-9445-4dff-826f-57060c10c504",
+            "name": "strapi",
+            "containerId": "846c413e-a941-41ef-bd68-1fccd17caa13",
+            "created": "2024-06-11T19:01:03.955Z",
+            "sortNum": 40000
+        },
+        {
+            "_id": "b667ccff-3880-4dc6-9c7f-f8dae3cf040f",
+            "name": "account",
+            "containerId": "",
+            "created": "2024-06-24T20:26:15.591Z",
+            "sortNum": 50000
         }
     ],
     "requests": [
@@ -38,11 +52,11 @@
             "colId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
             "containerId": "846c413e-a941-41ef-bd68-1fccd17caa13",
             "name": "start-aggregration",
-            "url": "{{api-url}}/api/content/start-aggregation",
+            "url": "{{api-url}}/api/content/start-aggregation/",
             "method": "GET",
             "sortNum": 10000,
             "created": "2024-05-06T12:00:24.984Z",
-            "modified": "2024-05-07T11:51:17.850Z",
+            "modified": "2024-06-11T18:59:48.346Z",
             "headers": []
         },
         {
@@ -66,11 +80,11 @@
             "method": "POST",
             "sortNum": 20000,
             "created": "2024-05-01T05:16:38.533Z",
-            "modified": "2024-05-01T11:10:22.922Z",
+            "modified": "2024-06-14T04:29:55.322Z",
             "headers": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"email\": \"johny@gmail.com\",\n  \"curp\": \"HEGJ820506HBCRRN09\",\n  \"password\": \"adminwert1A\",\n  \"passwordRepeat\": \"adminwert\"\n}",
+                "raw": "{\n  \"email\": \"samsonkapeyi@fiftyeight.io\",\n  \"curp\": \"HEGJ820506HBCRRN09\",\n  \"password\": \"adminwert1A\",\n  \"passwordRepeat\": \"adminwert1A\"\n}",
                 "form": []
             }
         },
@@ -102,14 +116,77 @@
             "method": "POST",
             "sortNum": 30000,
             "created": "2024-05-01T09:48:04.000Z",
-            "modified": "2024-05-01T11:37:16.223Z",
+            "modified": "2024-06-16T17:37:01.360Z",
             "headers": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"identifier\": \"HEGJ820506HBCRRN09SDF\",\n  \"password\": \"adminwert1\"\n}",
+                "raw": "{\n  \"identifier\": \"{{api-username}}\",\n  \"password\": \"{{api-password}}\"\n}",
                 "form": []
             }
+        },
+        {
+            "_id": "bf61a8c4-1841-4f6e-bcfe-05322d02a987",
+            "colId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
+            "containerId": "846c413e-a941-41ef-bd68-1fccd17caa13",
+            "name": "strapi-locales",
+            "url": "{{strapi-api-url}}/api/i18n/locales",
+            "method": "GET",
+            "sortNum": 40000,
+            "created": "2024-06-10T11:21:11.947Z",
+            "modified": "2024-06-10T11:50:46.730Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "\"Bearer 202cd42b385dba5c090bed79cee6eeb3f800f3519670fb4d2429486bd471705b7a9366565334b5375bc0ebc1aa1dcb17f345871760ab76c0d6640c1161c9db3992ff1bbd267407ddadb03fceed61aedba7160980e5f0f7e35bcd6003857df76896b9576a9e47d8333b364b2ba3a81fa748e6315095f6fcd1cffda11dca519b5b\""
+                }
+            ]
+        },
+        {
+            "_id": "fa379d67-1212-472a-b7fd-19ca16c3d0ad",
+            "colId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
+            "containerId": "fd5818d3-9445-4dff-826f-57060c10c504",
+            "name": "get-content",
+            "url": "{{cms-api-url}}",
+            "method": "GET",
+            "sortNum": 50000,
+            "created": "2024-06-11T19:01:17.543Z",
+            "modified": "2024-06-11T19:06:24.455Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "Bearer {{cms-api-token}}"
+                }
+            ]
+        },
+        {
+            "_id": "9629da69-be9a-483f-9496-73e88192c9ce",
+            "colId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
+            "containerId": "b667ccff-3880-4dc6-9c7f-f8dae3cf040f",
+            "name": "create-update-preferences",
+            "url": "{{api-url}}/api/account/-O-K-_sxdlgSYo9b2i7I/preferences/",
+            "method": "POST",
+            "sortNum": 60000,
+            "created": "2024-06-24T20:26:25.955Z",
+            "modified": "2024-06-24T20:49:12.480Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"preferences\": [\n        {\"key\": \"theme\", \"value\": \"dark\"},\n        {\"key\": \"notifications_email\", \"value\": \"true\"},\n        {\"key\": \"notifications_sms\", \"value\": \"false\"},\n        {\"key\": \"language\", \"value\": \"en\"},\n        {\"key\": \"laptop_type\", \"value\": \"Mac\"}\n    ]\n}\n",
+                "form": []
+            }
+        },
+        {
+            "_id": "14fb7b29-af93-4065-9bbe-275421a3a2c7",
+            "colId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
+            "containerId": "b667ccff-3880-4dc6-9c7f-f8dae3cf040f",
+            "name": "get-preferences",
+            "url": "{{api-url}}/api/account/-O-K-_sxdlgSYo9b2i7I/preferences/",
+            "method": "GET",
+            "sortNum": 70000,
+            "created": "2024-06-24T20:40:05.383Z",
+            "modified": "2024-06-24T20:40:13.941Z",
+            "headers": []
         }
     ],
-    "ref": "8EWDJTj4EV04cYtR5RfaNx-DxONmcU0-M7CPMjt0CLJQqJyCtIcl_W4y-uaEfx5ajgHvS3PH_9pbOGonMbb4GA"
+    "ref": "8EWDJTj4EV04cYtR5RfaN2jnRgpTxfoBIF8KkEaoBjpjBzQcmNtq4OeYRtgmWRxRJoH0olFupy5G0CJTh9VuWQ"
 }
