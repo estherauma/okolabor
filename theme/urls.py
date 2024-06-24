@@ -226,4 +226,17 @@ urlpatterns = [
 
     #employer list
     path("employer-list", views.employer_list, name='employer-list'),
+    path("employers", views.employer_list, name='employer-list'),
+    path("employer-detail", views.employer_details, name='employer'),
+    
+    #workers
+    path("workers", views.workers, name='workers'),
+    path("worker-details", views.worker_details, name='worker-details'),
+
+    #worker requests
+    path("worker-requests", views.worker_requests, name='worker-requests'),
+    path("worker-request-detail", views.worker_requests_details, name='worker-request-detail'),
+
+    #users
+    path("users", views.users, name='users'),
 ]
