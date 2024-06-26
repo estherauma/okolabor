@@ -325,7 +325,7 @@ def worker_requests(request):
     return render(request, 'workers/worker-requests.html')
 
 def worker_requests_details(request):
-    return render(request, 'workers/worker-requests2.html')
+    return render(request, 'workers/worker-requests-details.html')
 
 def users(request):
     return render(request, 'users/users.html')
