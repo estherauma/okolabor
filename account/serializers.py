@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from account.models import User
+from account.models import User, UserPreference
 import re
 
 
@@ -51,3 +51,11 @@ class LoginSerializer(serializers.Serializer):
         if not User.objects.filter(email=value).exists() and not User.objects.filter(curp=value).exists():
             raise serializers.ValidationError('User with given information does not exist')
         return value
+
+class UserPreferenceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserPreference
+        fields = ['key', 'value']
+
+class UpdateUserPreferencesSerializer(serializers.Serializer):
+    preferences = UserPreferenceSerializer(many=True)

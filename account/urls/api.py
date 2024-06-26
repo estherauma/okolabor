@@ -1,9 +1,10 @@
-from django.urls import path
-from account.views.api import RegisterView, LoginView
+from django.urls import path, re_path
+from account.views.api import RegisterView, LoginView, UserPreferencesUpdateView
 
 app_name = 'account'
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='api-register'),
-    path('login', LoginView.as_view(), name='api-login')
+    path('login', LoginView.as_view(), name='api-login'),
+    re_path(r'(?P<user_id>[-\w]+)/preferences/$', UserPreferencesUpdateView.as_view(), name='update-user-preferences'),
 ]

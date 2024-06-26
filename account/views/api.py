@@ -1,6 +1,7 @@
-from account.serializers import RegistrationSerializer, UserSerilizer, LoginSerializer
-from account.models import User
+from account.serializers import RegistrationSerializer, UpdateUserPreferencesSerializer, UserPreferenceSerializer, UserSerilizer, LoginSerializer
+from account.models import User, UserPreference
 from account.jwt_manager import JwtManager
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
@@ -56,4 +57,32 @@ class LoginView(APIView):
                     }, status=status.HTTP_200_OK)
             else:
                 return Response({'message': 'Invalid credentials'}, status=status.HTTP_403_FORBIDDEN)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UserPreferencesUpdateView(APIView):
+    def return_preferences(self, user):
+        preferences = UserPreference.objects.filter(user=user)
+        serializer = UserPreferenceSerializer(preferences, many=True)
+        return serializer.data
+    
+    def get(self, request, user_id):
+        user = get_object_or_404(User, pk=user_id)
+        preferences = self.return_preferences(user)
+        return Response(preferences, status=status.HTTP_200_OK)
+    
+    def post(self, request, user_id):
+        user = get_object_or_404(User,pk=user_id)
+        serializer = UpdateUserPreferencesSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            for pref_data in serializer.validated_data['preferences']:
+                key = pref_data['key']
+                value = pref_data['value']
+                UserPreference.objects.update_or_create(
+                    user=user, key=key,
+                    defaults={'value': value}
+                )
+            preferences = self.return_preferences(user)
+            return Response(preferences, status=status.HTTP_200_OK)
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
