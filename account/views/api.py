@@ -1,6 +1,7 @@
 from account.serializers import RegistrationSerializer, UpdateUserPreferencesSerializer, UserPreferenceSerializer, UserSerilizer, LoginSerializer
 from account.models import User, UserPreference
 from account.jwt_manager import JwtManager
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
@@ -65,12 +66,12 @@ class UserPreferencesUpdateView(APIView):
         return serializer.data
     
     def get(self, request, user_id):
-        user = User.objects.get(pk=user_id)
+        user = get_object_or_404(User, pk=user_id)
         preferences = self.return_preferences(user)
         return Response(preferences, status=status.HTTP_200_OK)
     
     def post(self, request, user_id):
-        user = User.objects.get(pk=user_id)
+        user = get_object_or_404(User,pk=user_id)
         serializer = UpdateUserPreferencesSerializer(data=request.data)
         
         if serializer.is_valid():
