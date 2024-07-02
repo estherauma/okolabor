@@ -365,3 +365,5 @@ def users(request):
 
 def add_worker(request):
     return render(request, 'workers/add-workers.html')
+def worker_request_form(request):
+    return render(request, 'workers/worker-request-form.html')
