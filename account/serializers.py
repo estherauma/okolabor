@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from account.models import User, UserPreference
+from account.models import User, UserPreference, UserWorkExperience
 import re
 
 
@@ -59,3 +59,18 @@ class UserPreferenceSerializer(serializers.ModelSerializer):
 
 class UpdateUserPreferencesSerializer(serializers.Serializer):
     preferences = UserPreferenceSerializer(many=True)
+
+
+class UserWorkexperienceSerializer(serializers.ModelSerializer):
+    company = serializers.CharField(required=True)
+    location = serializers.CharField(required=True)
+    start_date = serializers.DateField(required=True)
+    end_date = serializers.DateField(required=False)
+    work_type = serializers.CharField(required=True)
+    work_title = serializers.CharField(required=True)
+    supervisor_name = serializers.CharField(required=True)
+    supervisor_tel = serializers.CharField(required=True)
+    supervisor_email = serializers.EmailField(required=True)
+    class Meta:
+        model = UserWorkExperience
+        fields = ['company','location', 'start_date', 'end_date', 'work_type', 'work_title', 'supervisor_name', 'supervisor_tel', 'supervisor_email']
