@@ -234,6 +234,7 @@ urlpatterns = [
     path("worker-details", views.worker_details, name='worker-details'),
     path("add-workers", views.add_worker, name='add-workers'),
 
+    path("worker-request-form", views.worker_request_form, name='worker-request-form'),
     #worker requests
     path("worker-requests", views.worker_requests, name='worker-requests'),
     path("worker-request-detail", views.worker_requests_details, name='worker-request-detail'),
