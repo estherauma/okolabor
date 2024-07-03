@@ -2,6 +2,9 @@ from django.shortcuts import render,redirect
 from .forms import RegistrationForm, LoginForm, ResetPasswordForm
 from django.contrib import messages
 from django.shortcuts import render,redirect
+from .forms import ResetPasswordForm
+from django.shortcuts import render,redirect
+from .forms import LoginForm
 
 # Create your views here.
 def index(request):
@@ -217,9 +220,12 @@ def login(request):
         if form.is_valid():
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
+            print(f"Email: {email}")
+            print(f"Password: {password}")
             return redirect('index')
         else:
-            messages.error(request, form.errors) 
+            print("Form is not valid")
+            print(form.errors) 
     else: 
         form = LoginForm()
     return render(request, 'ltr/login.html', {'form': form})
