@@ -62,15 +62,16 @@ class UpdateUserPreferencesSerializer(serializers.Serializer):
 
 
 class UserWorkexperienceSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
     company = serializers.CharField(required=True)
     location = serializers.CharField(required=True)
     start_date = serializers.DateField(required=True)
     end_date = serializers.DateField(required=False)
     work_type = serializers.CharField(required=True)
-    work_title = serializers.CharField(required=True)
+    work_title = serializers.CharField(required=False)
     supervisor_name = serializers.CharField(required=True)
     supervisor_tel = serializers.CharField(required=True)
     supervisor_email = serializers.EmailField(required=True)
     class Meta:
         model = UserWorkExperience
-        fields = ['company','location', 'start_date', 'end_date', 'work_type', 'work_title', 'supervisor_name', 'supervisor_tel', 'supervisor_email']
+        fields = ['id', 'company','location', 'start_date', 'end_date', 'work_type', 'work_title', 'supervisor_name', 'supervisor_tel', 'supervisor_email']

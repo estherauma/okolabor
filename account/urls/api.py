@@ -8,4 +8,5 @@ urlpatterns = [
     path('login', LoginView.as_view(), name='api-login'),
     re_path(r'(?P<user_id>[-\w]+)/preferences/$', UserPreferencesUpdateView.as_view(), name='update-user-preferences'),
     re_path(r'(?P<user_id>[-\w]+)/work-experience/$', UserWorkExperienceView.as_view(), name='api-work-experience'),
+    re_path(r'^(?P<user_id>[-\w]+)/work-experience/(?P<experience_id>[-\w]+)/$', UserWorkExperienceView.as_view(), name='api-work-experience-update'),
 ]
