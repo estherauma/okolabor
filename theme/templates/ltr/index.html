@@ -1,303 +1,316 @@
 {% extends 'components/base.html' %}
 {% load static%}
 
-		{% block styles %}
-		<!-- SELECT2 CSS -->
-		<link href="{% static ''%}assets/plugins/select2/select2.min.css" rel="stylesheet"/>
-		
-		<!-- INTERNAL GALLERY CSS -->
-		<link href="{% static ''%}assets/plugins/gallery/gallery.css" rel="stylesheet">
-		
-		<!-- INTERNAL Data table css -->
-		<link href="{% static ''%}assets/plugins/datatable/css/dataTables.bootstrap5.css" rel="stylesheet" />
-		<link href="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.css" rel="stylesheet" />
-		{% endblock styles %}
+{% block styles %}
+<!-- SELECT2 CSS -->
+<link href="{% static ''%}assets/plugins/select2/select2.min.css" rel="stylesheet" />
 
-						{% block body %}
-						<div class="page-header">
-							<div>
-								<h1 class="page-title">Good morning,Pall</h1>
-								
-							</div>
-							
-						</div>	
-						
-						<div class="row">
-							<div class="col-xl-6 col-md-12">
-								<div class="card">
-									<div class="card-body">
-										<div class="col d-flex justify-content-between align-items-center">
-											<div>
-												<i class="side-menu__icon icon icon-user" style="color: #2A7A62;"></i>
-												<span class="side-menu__label" style="color: #2A7A62;">Workers</span>
-											</div>
-											<button class="btn btn-primary">See All</button>
-										</div>
-										<br><br>
-										
-										<div class="row">
-											<div class="col-md-4">
-												
-												<div class="text-center">
-													
-													<h2 class="mb-2 mt-0">5</h2>
-													<div id="circle" class="mt-3 mb-3 chart-dropshadow-secondary"></div>
-													
-													<p class="mb-0"><span class="dot-label bg-secondary me-2"></span>Open Requests</p>
-													<br>
-													<button class="btn btn-primary">View All</button>
-												</div>
-												
-											</div>
-											
-											<div class="col-md-4">
-												
-												<div class="widget text-center">
-													
-													<h2 class="mb-2 mt-0">84</h2>
-													<div id="circle-1" class="mt-3 mb-3 chart-dropshadow-success"></div>
-													<p class="mb-0"><span class="dot-label bg-success me-2"></span>Pending responses</p>
-													<br>
-													<button class="btn btn-primary">View All</button>
-												</div>
-												
-											</div>
-											<div class="col-md-4">
-												<div class="widget text-center">
-													<h2 class="mb-2 mt-0">1</h2>
-													<div id="circle-2" class="mt-3 mb-3 chart-dropshadow-warning"></div>
-													<p class="mb-0"><span class="dot-label bg-warning me-2"></span>New Requests</p>
-													<br>
-													<button class="btn btn-primary">View All</button>
-												</div>
-												
-											</div>
-											
-										</div>
-										<br><br>
-										<hr>
-										<h5 style="color: #2A7A62;">Signup process</h5>
-										<div class="row">
-											<div class="col-md-7">
-												<table class="table row table-borderless">
-													<tbody class="col-lg-12 col-xl-6 p-0">
-														<tr>
-															<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Signedup :</strong> 812</td>
-														</tr>
-														<tr>
-															<td style="color: #7DBF96;"><strong style="color: #7DBF96;">Completed profiles :</strong> 588</td>
-														</tr>
-														
-													</tbody>
-													<tbody class="col-lg-12 col-xl-6 p-0">
-														
-													</tbody>
-												</table>
-											</div>
-											<div class="col-md-5">
-												<img src="{% static 'assets/images/graph.png'%}" alt="image" class="img-fluid">
-											</div>
-										</div>
-										<hr>
-										<h5 style="color: #2A7A62;">Onboarding pipeline</h5>
-										<div class="card-body">
-											
-											<div class="table-responsive">
-												<table class="table border text-nowrap text-md-nowrap table-striped mg-b-0">
-													<thead>
-														<tr>
-															
-														</tr>
-													</thead>
-													<tbody>
-														<tr>
-															
-															<td><img src="{% static 'assets/images/green.png'%}" alt="image" class="img-fluid"></td>
-															<td style="color: #7DBF96;">Who I am</td>
-															<td  style="color: #7DBF96;">95%</td>
-														</tr>
-														<tr>
-															
-															<td><img src="{% static 'assets/images/red.png'%}" alt="image" class="img-fluid"></td>
-															<td style="color: #F53131;">What I want</td>
-															<td style="color: #F53131;">21%</td>
-														</tr>
-														<tr>
-															
-															<td><img src="{% static 'assets/images/yellow.png'%}" alt="image" class="img-fluid"></td>
-															<td style="color: #F5BE31;">Work experience</td>
-															<td style="color: #F5BE31;">75%</td>
-														</tr>
-														
-														
-													</tbody>
-												</table>
-											</div>
-										</div>
-									</div>
-									
-								</div>
-								
-							</div>
-							<!-- COL END -->
-							<div class="col-xl-6 col-md-12">
-								<div class="card">
-									<div class="card-header">
-										<div class="col d-flex justify-content-between align-items-center">
-											<div>
-												<i class="side-menu__icon icon icon-user" style="color: #2A7A62;"></i>
-												<span class="side-menu__label" style="color: #2A7A62;">Feed</span>
-											</div>
-											<button class="btn btn-primary">See All</button>
-										</div>
-									</div>
-									<div class="card-body">
-										<div class="table-responsive">
-											<table class="table border text-nowrap text-md-nowrap table-striped mg-b-0">
-												<thead>
-													<tr>
-														
-													</tr>
-												</thead>
-												<tbody>
-													<tr>
-														
-														<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Utah Fruit Farm </strong> has sent a worker request</td>
-														<td>
-															<a href="#" style="color: #2A7A62;">See more</a>
-														</td>
-													</tr>
-													<tr>
-														
-														<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Spokane Fruits </strong>has marked a Work Order as complete</td>
-														<td>
-															<a href="#" style="color: #2A7A62;">See more</a>
-														</td>
-													</tr>
-													
-													<tr>
-														
-														<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Spokane Fruits</strong> has marked a Work Ordera s complete</td>
-														<td>
-															<a href="#" style="color: #2A7A62;">See more</a>
-														</td>
-													</tr>
-													<tr>
-														
-														<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Spokane Fruits</strong> has marked a Work Ordera s complete</td>
-														<td>
-															<a href="#" style="color: #2A7A62;">See more</a>
-														</td>
-													</tr>
-													
-												</tbody>
-											</table>
-											<br>
-											<div class="row">
-												<div class="col">
-													<div class="col d-flex justify-content-between align-items-center">
-														<div>
-															<i class="side-menu__icon icon icon-user" style="color: #2A7A62;"></i>
-															<span class="side-menu__label" style="color: #2A7A62;">Latest Work</span>
-														</div>
-														<button class="btn btn-primary">See All</button>
-													</div>
-												</div>
-												
-											</div>
-											<br>
-											
+<!-- INTERNAL GALLERY CSS -->
+<link href="{% static ''%}assets/plugins/gallery/gallery.css" rel="stylesheet">
 
-											<table class="table border text-nowrap text-md-nowrap table-striped mg-b-0">
-												<thead>
-													<tr>
-														
-													</tr>
-												</thead>
-												<tbody>
-													<tr>
-														
-														<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Utah Fruit Farm </strong> has sent a worker request</td>
-														<td style="color: #2A7A62;">
-															Jan24,2024
-														</td>
-													</tr>
-													<tr>
-														
-														<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Spokane Fruits </strong>has marked a Work Order as complete</td>
-														<td style="color: #2A7A62;">
-															Jan24,2024
-														</td>
-													</tr>
-													
-													<tr>
-														
-														<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Spokane Fruits</strong> has marked a Work Ordera s complete</td>
-														<td style="color: #2A7A62;">
-															Jan24,2024
-														</td>
-													</tr>
-													<tr>
-														
-														<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Spokane Fruits</strong> has marked a Work Ordera s complete</td>
-														<td style="color: #2A7A62;">
-															Jan24,2024
-														</td>
-													</tr>
-													
-												</tbody>
-											</table>
-										</div>
-									</div>
-								</div>
-							</div><!-- COL END -->
-							
+<!-- INTERNAL Data table css -->
+<link href="{% static ''%}assets/plugins/datatable/css/dataTables.bootstrap5.css" rel="stylesheet" />
+<link href="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.css" rel="stylesheet" />
+{% endblock styles %}
+
+{% block body %}
+<div class="page-header">
+	<div>
+		<h1 class="page-title">Good morning,Pall</h1>
+
+	</div>
+
+</div>
+
+<div class="row">
+	<div class="col-xl-6 col-md-12">
+		<div class="card">
+			<div class="card-body">
+				<div class="col d-flex justify-content-between align-items-center">
+					<div>
+						<i class="side-menu__icon icon icon-user" style="color: #2A7A62;"></i>
+						<span class="side-menu__label" style="color: #2A7A62;">Workers</span>
+					</div>
+					<button class="btn btn-primary">See All</button>
+				</div>
+				<br><br>
+
+				<div class="row">
+					<div class="col-md-4">
+
+						<div class="text-center">
+
+							<h2 class="mb-2 mt-0">5</h2>
+							<div id="circle" class="mt-3 mb-3 chart-dropshadow-secondary"></div>
+
+							<p class="mb-0"><span class="dot-label bg-secondary me-2"></span>Open Requests</p>
+							<br>
+							<button class="btn btn-primary">View All</button>
 						</div>
-						<!-- ROW-1 CLOSED -->
 
-						{% endblock body %}
-					
-		{% block scripts %}
-		<!-- INTERNAL SELECT2 JS -->
-		<script src="{% static ''%}assets/plugins/select2/select2.full.min.js"></script>
+					</div>
 
-		<!-- INTERNAL Data tables js-->
-		<script src="{% static ''%}assets/plugins/datatable/js/jquery.dataTables.min.js"></script>
-		<script src="{% static ''%}assets/plugins/datatable/js/dataTables.bootstrap5.js"></script>
-		<script src="{% static ''%}assets/plugins/datatable/dataTables.responsive.min.js"></script>
+					<div class="col-md-4">
 
-		<!-- ECHART JS-->
-		<script src="{% static ''%}assets/plugins/echarts/echarts.js"></script>
+						<div class="widget text-center">
 
-		<!-- APEXCHART JS -->
-		<script src="{% static ''%}assets/js/apexcharts.js"></script>
+							<h2 class="mb-2 mt-0">84</h2>
+							<div id="circle-1" class="mt-3 mb-3 chart-dropshadow-success"></div>
+							<p class="mb-0"><span class="dot-label bg-success me-2"></span>Pending responses</p>
+							<br>
+							<button class="btn btn-primary">View All</button>
+						</div>
 
-		<!-- INDEX JS -->
-		<script src="{% static ''%}assets/js/index1.js"></script>
+					</div>
+					<div class="col-md-4">
+						<div class="widget text-center">
+							<h2 class="mb-2 mt-0">1</h2>
+							<div id="circle-2" class="mt-3 mb-3 chart-dropshadow-warning"></div>
+							<p class="mb-0"><span class="dot-label bg-warning me-2"></span>New Requests</p>
+							<br>
+							<button class="btn btn-primary">View All</button>
+						</div>
 
-		
-		<!-- CHART-CIRCLE JS-->
-		<script src="{% static ''%}assets/js/circle-progress.min.js"></script>
+					</div>
 
-		<!-- MORRIS CHART JS-->
-		<script src="{% static ''%}assets/plugins/morris/raphael-min.js"></script>
-		<script src="{% static ''%}assets/plugins/morris/morris.js"></script>
+				</div>
+				<br><br>
+				<hr>
+				<h5 style="color: #2A7A62;">Signup process</h5>
+				<div class="row">
+					<div class="col-md-7">
+						<table class="table row table-borderless">
+							<tbody class="col-lg-12 col-xl-6 p-0">
+								<tr>
+									<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Signedup :</strong> 812
+									</td>
+								</tr>
+								<tr>
+									<td style="color: #7DBF96;"><strong style="color: #7DBF96;">Completed profiles
+											:</strong> 588</td>
+								</tr>
 
-		<!-- CHARTJS CHART JS-->
-		<script src="{% static ''%}assets/plugins/chart/Chart.bundle.js"></script>
-		<script src="{% static ''%}assets/plugins/chart/utils.js"></script>
+							</tbody>
+							<tbody class="col-lg-12 col-xl-6 p-0">
 
-		<!-- INTERNAL GALLERY JS -->
-		<script src="{% static ''%}assets/plugins/gallery/picturefill.js"></script>
-        <script src="{% static ''%}assets/plugins/gallery/lightgallery.js"></script>
-		<script src="{% static ''%}assets/plugins/gallery/lightgallery-1.js"></script>
-        <script src="{% static ''%}assets/plugins/gallery/lg-pager.js"></script>
-        <script src="{% static ''%}assets/plugins/gallery/lg-autoplay.js"></script>
-        <script src="{% static ''%}assets/plugins/gallery/lg-fullscreen.js"></script>
-        <script src="{% static ''%}assets/plugins/gallery/lg-zoom.js"></script>
-        <script src="{% static ''%}assets/plugins/gallery/lg-hash.js"></script>
-        <script src="{% static ''%}assets/plugins/gallery/lg-share.js"></script>
+							</tbody>
+						</table>
+					</div>
+					<div class="col-md-5">
+						<img src="{% static 'assets/images/graph.png'%}" alt="image" class="img-fluid">
+					</div>
+				</div>
+				<hr>
+				<h5 style="color: #2A7A62;">Onboarding pipeline</h5>
+				<div class="card-body">
 
-		<!-- INDEX JS -->
-		<script src="{% static ''%}assets/js/widget.js"></script>
-		{% endblock scripts %}
+					<div class="table-responsive">
+						<table class="table border text-nowrap text-md-nowrap table-striped mg-b-0">
+							<thead>
+								<tr>
+
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+
+									<td><img src="{% static 'assets/images/green.png'%}" alt="image" class="img-fluid">
+									</td>
+									<td style="color: #7DBF96;">Who I am</td>
+									<td style="color: #7DBF96;">95%</td>
+								</tr>
+								<tr>
+
+									<td><img src="{% static 'assets/images/red.png'%}" alt="image" class="img-fluid">
+									</td>
+									<td style="color: #F53131;">What I want</td>
+									<td style="color: #F53131;">21%</td>
+								</tr>
+								<tr>
+
+									<td><img src="{% static 'assets/images/yellow.png'%}" alt="image" class="img-fluid">
+									</td>
+									<td style="color: #F5BE31;">Work experience</td>
+									<td style="color: #F5BE31;">75%</td>
+								</tr>
+
+
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+	<!-- COL END -->
+	<div class="col-xl-6 col-md-12">
+		<div class="card">
+			<div class="card-header">
+				<div class="col d-flex justify-content-between align-items-center">
+					<div>
+						<i class="side-menu__icon icon icon-user" style="color: #2A7A62;"></i>
+						<span class="side-menu__label" style="color: #2A7A62;">Feed</span>
+					</div>
+					<button class="btn btn-primary">See All</button>
+				</div>
+			</div>
+			<div class="card-body">
+				<div class="table-responsive">
+					<table class="table border text-nowrap text-md-nowrap table-striped mg-b-0">
+						<thead>
+							<tr>
+
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+
+								<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Utah Fruit Farm </strong>
+									has sent a worker request</td>
+								<td>
+									<a href="#" style="color: #2A7A62;">See more</a>
+								</td>
+							</tr>
+							<tr>
+
+								<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Spokane Fruits </strong>has
+									marked a Work Order as complete</td>
+								<td>
+									<a href="#" style="color: #2A7A62;">See more</a>
+								</td>
+							</tr>
+
+							<tr>
+
+								<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Spokane Fruits</strong> has
+									marked a Work Ordera s complete</td>
+								<td>
+									<a href="#" style="color: #2A7A62;">See more</a>
+								</td>
+							</tr>
+							<tr>
+
+								<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Spokane Fruits</strong> has
+									marked a Work Ordera s complete</td>
+								<td>
+									<a href="#" style="color: #2A7A62;">See more</a>
+								</td>
+							</tr>
+
+						</tbody>
+					</table>
+					<br>
+					<div class="row">
+						<div class="col">
+							<div class="col d-flex justify-content-between align-items-center">
+								<div>
+									<i class="side-menu__icon icon icon-user" style="color: #2A7A62;"></i>
+									<span class="side-menu__label" style="color: #2A7A62;">Latest Work</span>
+								</div>
+								<button class="btn btn-primary">See All</button>
+							</div>
+						</div>
+
+					</div>
+					<br>
+
+
+					<table class="table border text-nowrap text-md-nowrap table-striped mg-b-0">
+						<thead>
+							<tr>
+
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+
+								<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Utah Fruit Farm </strong>
+									has sent a worker request</td>
+								<td style="color: #2A7A62;">
+									Jan24,2024
+								</td>
+							</tr>
+							<tr>
+
+								<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Spokane Fruits </strong>has
+									marked a Work Order as complete</td>
+								<td style="color: #2A7A62;">
+									Jan24,2024
+								</td>
+							</tr>
+
+							<tr>
+
+								<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Spokane Fruits</strong> has
+									marked a Work Ordera s complete</td>
+								<td style="color: #2A7A62;">
+									Jan24,2024
+								</td>
+							</tr>
+							<tr>
+
+								<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Spokane Fruits</strong> has
+									marked a Work Ordera s complete</td>
+								<td style="color: #2A7A62;">
+									Jan24,2024
+								</td>
+							</tr>
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div><!-- COL END -->
+
+</div>
+<!-- ROW-1 CLOSED -->
+
+{% endblock body %}
+
+{% block scripts %}
+<!-- INTERNAL SELECT2 JS -->
+<script src="{% static ''%}assets/plugins/select2/select2.full.min.js"></script>
+
+<!-- INTERNAL Data tables js-->
+<script src="{% static ''%}assets/plugins/datatable/js/jquery.dataTables.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/dataTables.bootstrap5.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/dataTables.responsive.min.js"></script>
+
+<!-- ECHART JS-->
+<script src="{% static ''%}assets/plugins/echarts/echarts.js"></script>
+
+<!-- APEXCHART JS -->
+<script src="{% static ''%}assets/js/apexcharts.js"></script>
+
+<!-- INDEX JS -->
+<script src="{% static ''%}assets/js/index1.js"></script>
+
+
+<!-- CHART-CIRCLE JS-->
+<script src="{% static ''%}assets/js/circle-progress.min.js"></script>
+
+<!-- MORRIS CHART JS-->
+<script src="{% static ''%}assets/plugins/morris/raphael-min.js"></script>
+<script src="{% static ''%}assets/plugins/morris/morris.js"></script>
+
+<!-- CHARTJS CHART JS-->
+<script src="{% static ''%}assets/plugins/chart/Chart.bundle.js"></script>
+<script src="{% static ''%}assets/plugins/chart/utils.js"></script>
+
+<!-- INTERNAL GALLERY JS -->
+<script src="{% static ''%}assets/plugins/gallery/picturefill.js"></script>
+<script src="{% static ''%}assets/plugins/gallery/lightgallery.js"></script>
+<script src="{% static ''%}assets/plugins/gallery/lightgallery-1.js"></script>
+<script src="{% static ''%}assets/plugins/gallery/lg-pager.js"></script>
+<script src="{% static ''%}assets/plugins/gallery/lg-autoplay.js"></script>
+<script src="{% static ''%}assets/plugins/gallery/lg-fullscreen.js"></script>
+<script src="{% static ''%}assets/plugins/gallery/lg-zoom.js"></script>
+<script src="{% static ''%}assets/plugins/gallery/lg-hash.js"></script>
+<script src="{% static ''%}assets/plugins/gallery/lg-share.js"></script>
+
+<!-- INDEX JS -->
+<script src="{% static ''%}assets/js/widget.js"></script>
+{% endblock scripts %}
