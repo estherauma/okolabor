@@ -55,7 +55,7 @@ class LoginSerializer(serializers.Serializer):
 class UserPreferenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserPreference
-        fields = ['key', 'value']
+        fields = ['key', 'value', 'kind']
 
 class UpdateUserPreferencesSerializer(serializers.Serializer):
     preferences = UserPreferenceSerializer(many=True)
