@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
+from .forms import RegistrationForm
+
 
 # Create your views here.
 def index(request):
@@ -248,7 +250,25 @@ def rating(request):
     return render(request, 'ltr/rating.html')
 
 def register(request):
-    return render(request, 'ltr/register.html')
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+
+            # Extract the cleaned data
+            username = form.cleaned_data['username']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            
+            # Print the extracted data
+            print(f"Username: {username}")
+            print(f"Email: {email}")
+            print(f"Password: {password}")
+            
+            return redirect('login')  
+    else:
+        form = RegistrationForm()
+    
+    return render(request, 'ltr/register.html', {'form': form})
 
 def scroll(request):
     return render(request, 'ltr/scroll.html')
