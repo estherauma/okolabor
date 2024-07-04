@@ -1,58 +1,74 @@
 <!doctype html>
 {% load static%}
 <html lang="en" dir="ltr">
-	<head>
-		<!-- META DATA -->
-		<meta charset="UTF-8">
-		<meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=0'>
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="description" content="Okolabor">
-		<meta name="author" content="FiftyEight">
-		<meta name="keywords" content="admin, dashboard, admin template, crm, codeigniter, codeigniter admin panel, codeigniter admin template, codeigniter dasdhboard, codeigniter dasdhboard template, codeigniter ui template, codeigniter framework, codeigniter admin dashboard, admin theme, Bootstrap Admin Themes, bootstrap">
 
-        {% include 'components/layouts/vertical/styles.html' %}
-		{% block styles %}{% endblock styles %}
+<head>
+	<!-- META DATA -->
+	<meta charset="UTF-8">
+	<meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=0'>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="description" content="Okolabor">
+	<meta name="author" content="FiftyEight">
+	<meta name="keywords"
+		content="admin, dashboard, admin template, crm, codeigniter, codeigniter admin panel, codeigniter admin template, codeigniter dasdhboard, codeigniter dasdhboard template, codeigniter ui template, codeigniter framework, codeigniter admin dashboard, admin theme, Bootstrap Admin Themes, bootstrap">
 
-	</head>
+	{% include 'components/layouts/vertical/styles.html' %}
+	{% block styles %}{% endblock styles %}
 
-    <body class="app sidebar-mini">
+</head>
 
-		<!-- GLOBAL-LOADER -->
-		<div id="global-loader">
-			<img src="{% static ''%}assets/images/loader.svg" class="loader-img" alt="Loader">
+<body class="app sidebar-mini">
+
+	<!-- GLOBAL-LOADER -->
+	<div id="global-loader">
+		<img src="{% static ''%}assets/images/loader.svg" class="loader-img" alt="Loader">
+	</div>
+	<!-- /GLOBAL-LOADER -->
+
+	<!-- PAGE -->
+	<div class="page">
+		<div class="page-main">
+
+			{% include 'components/layouts/vertical/app-sidebar.html' %}
+
+			{% include 'components/layouts/vertical/main-header.html' %}
+
+			<!--app-content open-->
+			<div class="app-content">
+				<div class="side-app">
+					<div class="container mt-3">
+						{% if messages %}
+						<div class="alert-container">
+							{% for message in messages %}
+
+							<div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+								{{ message }}
+								<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">&times</button>
+							  </div>
+							{% endfor %}
+						</div>
+						{% endif %}
+					</div>
+
+					{% block body %}{% endblock body %}
+
+				</div>
+			</div>
+			<!-- main-content closed -->
 		</div>
-		<!-- /GLOBAL-LOADER -->
 
-		<!-- PAGE -->
-		<div class="page">
-			<div class="page-main">
+		{% include 'components/sidebar-right.html' %}
 
-                {% include 'components/layouts/vertical/app-sidebar.html' %}
+		{% block modal %}{% endblock modal %}
 
-                {% include 'components/layouts/vertical/main-header.html' %}
+		{% include 'components/footer.html' %}
 
-                <!--app-content open-->
-				<div class="app-content">
-					<div class="side-app">
+	</div>
+	<!-- End Page -->
 
-                    {% block body %}{% endblock body %}
+	{% include 'components/layouts/vertical/scripts.html' %}
+	{% block scripts %}{% endblock scripts %}
 
-                    </div>
-                </div>
-			    <!-- main-content closed -->
-            </div>
+</body>
 
-            {% include 'components/sidebar-right.html' %}
-
-            {% block modal %}{% endblock modal %}
-
-            {% include 'components/footer.html' %}
-
-        </div>
-		<!-- End Page -->
-
-        {% include 'components/layouts/vertical/scripts.html' %}
-		{% block scripts %}{% endblock scripts %}
-
-    </body>
 </html>
