@@ -24,7 +24,7 @@ class JWTAuthentication(authentication.BaseAuthentication):
             raise exceptions.AuthenticationFailed(
                 "Bad request, missing token after 'Bearer' ", 400)
         try:
-            user = User.objects.get(id=payload['id'], is_verified=True)
+            user = User.objects.get(pk=payload['id'], is_verified=True)
         except User.DoesNotExist:
             raise exceptions.NotAuthenticated('User not authenticated', 401)
         return user, token
