@@ -86,6 +86,7 @@ class UserPreference(AuditableModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     key = models.CharField(max_length=256, null=False, blank=False)
     value = models.CharField(max_length=256, null=False, blank=False)
+    kind = models.CharField(max_length=256, null=False, default='preference', blank=False)
 
     def __str__(self):
         return f'{self.user.curp} - {self.key}'

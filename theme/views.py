@@ -1,6 +1,8 @@
 from django.shortcuts import render,redirect
 from .forms import RegistrationForm
 
+from django.contrib import messages
+from django.shortcuts import render
 
 # Create your views here.
 def index(request):
