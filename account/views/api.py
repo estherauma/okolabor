@@ -38,7 +38,7 @@ class LoginView(APIView):
                 except User.DoesNotExist:
                     return Response({'message': 'User with given information does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
-            if not user.is_verified:
+            if not user.is_verified or not user.is_active:
                 return Response({'message': 'Account not verified'}, status=status.HTTP_403_FORBIDDEN)
             if user.check_password(serializer.validated_data['password']):
                 identity_manager = JwtManager()
