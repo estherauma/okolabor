@@ -330,3 +330,7 @@ def worker_requests_details(request):
 
 def users(request):
     return render(request, 'users/users.html')
+
+
+def add_worker(request):
+    return render(request, 'workers/add-workers.html')
