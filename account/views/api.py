@@ -88,5 +88,5 @@ class UserPreferencesUpdateView(APIView):
                     defaults={'value': value, 'kind': pref_data.get('kind', 'preference')}
                 )
             preferences = self.return_preferences(user)
-            return Response(preferences, status=status.HTTP_201_CREATED)
+            return Response(preferences, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
