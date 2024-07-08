@@ -1,8 +1,7 @@
 from django.shortcuts import render,redirect
-from .forms import RegistrationForm
-
+from .forms import RegistrationForm, LoginForm, ResetPasswordForm
 from django.contrib import messages
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 
 # Create your views here.
 def index(request):
@@ -144,7 +143,13 @@ def footers(request):
     return render(request, 'ltr/footers.html')
 
 def forgotpassword(request):
-    return render(request, 'ltr/forgotpassword.html')
+    if request.method == 'POST':
+        form = ResetPasswordForm(request.POST)
+        if form.is_valid():
+            return redirect('login')
+    else:
+        form = ResetPasswordForm()
+    return render(request, 'ltr/forgotpassword.html', {'form': form})
 
 def formadvanced(request):
     return render(request, 'ltr/formadvanced.html')
@@ -207,7 +212,19 @@ def lockscreen(request):
     return render(request, 'ltr/lockscreen.html')
 
 def login(request):
-    return render(request, 'ltr/login.html')
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password')
+            return redirect('index')
+        else:
+            messages.error(request, form.errors) 
+    else: 
+        form = LoginForm()
+    return render(request, 'ltr/login.html', {'form': form})
+
+
 
 def maps(request):
     return render(request, 'ltr/maps.html')
@@ -255,21 +272,14 @@ def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-
-            # Extract the cleaned data
             username = form.cleaned_data['username']
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
-            
-            # Print the extracted data
-            print(f"Username: {username}")
-            print(f"Email: {email}")
-            print(f"Password: {password}")
-            
-            return redirect('login')  
+            return redirect('login')
+        else:
+            messages.error(request, form.errors)
     else:
         form = RegistrationForm()
-    
     return render(request, 'ltr/register.html', {'form': form})
 
 def scroll(request):
@@ -351,3 +361,7 @@ def worker_requests_details(request):
 
 def users(request):
     return render(request, 'users/users.html')
+
+
+def add_worker(request):
+    return render(request, 'workers/add-workers.html')
