@@ -1,8 +1,7 @@
 from django.shortcuts import render,redirect
-from .forms import LoginForm
+from .forms import RegistrationForm, LoginForm, ResetPasswordForm
 from django.contrib import messages
 from django.shortcuts import render,redirect
-from .forms import ResetPasswordForm
 
 # Create your views here.
 def index(request):
@@ -270,7 +269,18 @@ def rating(request):
     return render(request, 'ltr/rating.html')
 
 def register(request):
-    return render(request, 'ltr/register.html')
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            return redirect('login')
+        else:
+            messages.error(request, form.errors)
+    else:
+        form = RegistrationForm()
+    return render(request, 'ltr/register.html', {'form': form})
 
 def scroll(request):
     return render(request, 'ltr/scroll.html')
