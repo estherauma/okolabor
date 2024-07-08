@@ -1,3 +1,5 @@
+from django.shortcuts import render,redirect
+from .forms import LoginForm
 from django.contrib import messages
 from django.shortcuts import render,redirect
 from .forms import ResetPasswordForm
@@ -145,7 +147,6 @@ def forgotpassword(request):
     if request.method == 'POST':
         form = ResetPasswordForm(request.POST)
         if form.is_valid():
-            print(form.cleaned_data['email'])
             return redirect('login')
     else:
         form = ResetPasswordForm()
@@ -212,7 +213,19 @@ def lockscreen(request):
     return render(request, 'ltr/lockscreen.html')
 
 def login(request):
-    return render(request, 'ltr/login.html')
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password')
+            return redirect('index')
+        else:
+            messages.error(request, form.errors) 
+    else: 
+        form = LoginForm()
+    return render(request, 'ltr/login.html', {'form': form})
+
+
 
 def maps(request):
     return render(request, 'ltr/maps.html')
@@ -338,3 +351,7 @@ def worker_requests_details(request):
 
 def users(request):
     return render(request, 'users/users.html')
+
+
+def add_worker(request):
+    return render(request, 'workers/add-workers.html')
