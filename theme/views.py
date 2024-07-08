@@ -1,5 +1,7 @@
 from django.shortcuts import render,redirect
 from .forms import LoginForm
+from django.contrib import messages
+from django.shortcuts import render
 
 # Create your views here.
 def index(request):
@@ -214,7 +216,7 @@ def login(request):
             return redirect('index')
         else:
             print("Form is not valid")
-            print(form.errors) 
+            messages.error(request, form.errors) 
     else: 
         form = LoginForm()
     return render(request, 'ltr/login.html', {'form': form})
@@ -345,3 +347,7 @@ def worker_requests_details(request):
 
 def users(request):
     return render(request, 'users/users.html')
+
+
+def add_worker(request):
+    return render(request, 'workers/add-workers.html')

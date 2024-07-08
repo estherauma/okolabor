@@ -86,9 +86,42 @@ class UserPreference(AuditableModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     key = models.CharField(max_length=256, null=False, blank=False)
     value = models.CharField(max_length=256, null=False, blank=False)
+    kind = models.CharField(max_length=256, null=False, default='preference', blank=False)
 
     def __str__(self):
         return f'{self.user.curp} - {self.key}'
 
     class Meta:
         db_table = 'account_user_preferences'
+
+
+class UserWorkExperience(AuditableModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='work_experiences')
+    company = models.CharField(max_length=256, null=False, blank=False)
+    location = models.CharField(max_length=256, null=False, blank=False)
+    start_date = models.DateField(null=False, blank=False)
+    end_date = models.DateField(null=True, blank=True)
+    work_type = models.CharField(max_length=256, null=True, blank=True)
+    work_title = models.CharField(max_length=256, null=True, blank=True)
+    supervisor_name = models.CharField(max_length=256, null=True, blank=True)
+    supervisor_tel = models.CharField(max_length=256, null=True, blank=True)
+    supervisor_email = models.EmailField(null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.user.curp} - {self.company}'
+
+    class Meta:
+        db_table = 'account_user_work_experience'
+
+
+class UserWorkExperienceDocuments(AuditableModel):
+    work_experience = models.ForeignKey(UserWorkExperience, on_delete=models.CASCADE, related_name='documents')
+    document = models.FileField(upload_to='documents/')
+    kind = models.CharField(max_length=256, null=False, blank=False) # e.g Visa, Certification or Gallery
+    
+
+    def __str__(self):
+        return f'{self.user.curp} - {self.document_type}'
+
+    class Meta:
+        db_table = 'account_user_work_experience_documents'
