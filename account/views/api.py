@@ -1,5 +1,5 @@
-from account.serializers import RegistrationSerializer, UpdateUserPreferencesSerializer, UserPreferenceSerializer, UserSerilizer, LoginSerializer
-from account.models import User, UserPreference
+from account.serializers import RegistrationSerializer, UpdateUserPreferencesSerializer, UserPreferenceSerializer, UserSerilizer, LoginSerializer, UserWorkexperienceSerializer
+from account.models import User, UserPreference, UserWorkExperience
 from account.jwt_manager import JwtManager
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
@@ -89,4 +89,37 @@ class UserPreferencesUpdateView(APIView):
                 )
             preferences = self.return_preferences(user)
             return Response(preferences, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserWorkExperienceView(APIView):
+    def get(self, request, user_id):
+        user = get_object_or_404(User, pk=user_id)
+        experiences = UserWorkExperience.objects.filter(user=user)
+        serializer = UserWorkexperienceSerializer(experiences, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request, user_id):
+        user = get_object_or_404(User, pk=user_id)
+        serializer = UserWorkexperienceSerializer(data=request.data)
+        if serializer.is_valid():
+           
+            if UserWorkExperience.objects.filter(
+                user=user,
+                company=serializer.validated_data['company'],
+                start_date=serializer.validated_data['start_date']
+            ).exists():
+                return Response({'message': 'Work experience with same company name and start date already exists'}, status=status.HTTP_400_BAD_REQUEST)
+            UserWorkExperience.objects.create(user=user, **serializer.validated_data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=400)
+        
+    def patch(self, request, user_id, experience_id):
+        user = get_object_or_404(User, pk=user_id)
+        experience = get_object_or_404(UserWorkExperience, pk=experience_id, user=user)
+        serializer = UserWorkexperienceSerializer(experience, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
