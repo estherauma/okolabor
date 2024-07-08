@@ -1,7 +1,8 @@
 from django.shortcuts import render,redirect
 from .forms import LoginForm
 from django.contrib import messages
-from django.shortcuts import render
+from django.shortcuts import render,redirect
+from .forms import ResetPasswordForm
 
 # Create your views here.
 def index(request):
@@ -143,7 +144,13 @@ def footers(request):
     return render(request, 'ltr/footers.html')
 
 def forgotpassword(request):
-    return render(request, 'ltr/forgotpassword.html')
+    if request.method == 'POST':
+        form = ResetPasswordForm(request.POST)
+        if form.is_valid():
+            return redirect('login')
+    else:
+        form = ResetPasswordForm()
+    return render(request, 'ltr/forgotpassword.html', {'form': form})
 
 def formadvanced(request):
     return render(request, 'ltr/formadvanced.html')
@@ -211,11 +218,8 @@ def login(request):
         if form.is_valid():
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
-            print(f"Email: {email}")
-            print(f"Password: {password}")
             return redirect('index')
         else:
-            print("Form is not valid")
             messages.error(request, form.errors) 
     else: 
         form = LoginForm()
