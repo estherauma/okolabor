@@ -1,3 +1,5 @@
+from django.shortcuts import render,redirect
+from .forms import LoginForm
 from django.contrib import messages
 from django.shortcuts import render
 
@@ -204,7 +206,22 @@ def lockscreen(request):
     return render(request, 'ltr/lockscreen.html')
 
 def login(request):
-    return render(request, 'ltr/login.html')
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password')
+            print(f"Email: {email}")
+            print(f"Password: {password}")
+            return redirect('index')
+        else:
+            print("Form is not valid")
+            messages.error(request, form.errors) 
+    else: 
+        form = LoginForm()
+    return render(request, 'ltr/login.html', {'form': form})
+
+
 
 def maps(request):
     return render(request, 'ltr/maps.html')
