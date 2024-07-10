@@ -4,6 +4,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
+from django.test.testcases import TestCase
 User = get_user_model()
 
 
@@ -65,7 +66,27 @@ class RegistrationAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(User.objects.count(), 0)
         self.assertEqual(response.data['password'][0], 'Passwords do not match')
+class RegistrationTestCase(TestCase):
+    def setUp(self):
+        self.client= APIClient()
+    def test_registration_template(self):
+        response = self.client.get('/register')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'ltr/register.html')
 
+    def test_registration_success(self):
+        response =self.client.post('/register',{
+           'email': 'test@example.com',
+            'curp': 'HEGJ820506HBCRRN09',
+            'password': 'adminwert1A',
+            'password_repeat': 'adminwert1A'
+        })
+        self.assertEquals(response.status_code, 200)
+        user =User.objects.get(email='test@example.com')
+        self.assertEquals(user.email, 'test@example.com')
 
+        
+        
 if __name__ == '__main__':
     unittest.main()
+
