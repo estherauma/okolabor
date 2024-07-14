@@ -95,8 +95,8 @@ class UserPreferencesUpdateView(APIView):
 class UserWorkExperienceView(APIView):
     def get(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
-        experiences = UserWorkexperienceSerializer.objects.filter(user=user)
-        serializer = UserPreferenceSerializer(experiences, many=True)
+        experiences = UserWorkExperience.objects.filter(user=user)
+        serializer = UserWorkexperienceSerializer(experiences, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request, user_id):
@@ -113,5 +113,15 @@ class UserWorkExperienceView(APIView):
             UserWorkExperience.objects.create(user=user, **serializer.validated_data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            print(serializer.errors)
+            
             return Response(serializer.errors, status=400)
+        
+    def patch(self, request, user_id, experience_id):
+        user = get_object_or_404(User, pk=user_id)
+        experience = get_object_or_404(UserWorkExperience, pk=experience_id)
+        serializer = UserWorkexperienceSerializer(experience, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
