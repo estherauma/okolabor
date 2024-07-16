@@ -83,8 +83,7 @@ class RegistrationTestCase(TestCase):
             'password_repeat': 'adminwert1A'
         })
         self.assertEquals(response.status_code, 200)
-        # user =User.objects.get(email='test@example.com')
-        # self.assertEquals(user.email, 'test@example.com')
+        
         
 
     def test_registration_invalid_credentials(self):
@@ -95,7 +94,7 @@ class RegistrationTestCase(TestCase):
             'password_repeat': 'adminwert1A'
         })
         self.assertEquals(response.status_code, 200)
-        # self.assertRedirects(response, '/login')
+        
      
 
 if __name__ == '__main__':
