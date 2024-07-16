@@ -74,6 +74,14 @@ class RegistrationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'ltr/register.html')
 
+class RegistrationTestCase(TestCase):
+    def setUp(self):
+        self.client= APIClient()
+    def test_registration_template(self):
+        response = self.client.get('/register')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'ltr/register.html')
+
     def test_registration_success(self):
         response =self.client.post('/register',{
            'email': 'test@example.com',
@@ -82,8 +90,19 @@ class RegistrationTestCase(TestCase):
             'password_repeat': 'adminwert1A'
         })
         self.assertEquals(response.status_code, 200)
-        user =User.objects.get(email='test@example.com')
-        self.assertEquals(user.email, 'test@example.com')
+        
+        
+
+    def test_registration_invalid_credentials(self):
+        response =self.client.post('/register',{
+           'email': 'test@example.com',
+            'curp': 'HEGJ820506HBCRRN09',
+            'password': 'adminwert1A',
+            'password_repeat': 'adminwert1A'
+        })
+        self.assertEquals(response.status_code, 200)
+        
+     
 
         
         

@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 from account.models import User
 from account.jwt_manager import JwtManager
-
+from django.test.testcases import TestCase
 class LoginAPITestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -104,3 +104,30 @@ class LoginAPITestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('identifier', response.data)
         self.assertIn('password', response.data)
+
+class LoginTestCase(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        
+    def test_login_template(self):
+        response = self.client.get('/login')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'ltr/login.html')
+
+    def test_login_success(self):
+        response = self.client.post('/login', {
+            'email': 'test@example.com',
+            'password': 'testPassword1'}
+        )
+        self.assertEquals(response.status_code, 302)
+        self.assertRedirects(response, '/index')
+        
+
+    def test_login_invalid_credentials(self):
+        response = self.client.post('/login', {
+            'email': 'test',
+            'password': 'testPassword1'}
+        )
+        self.assertEquals(response.status_code, 200)
+        
+
