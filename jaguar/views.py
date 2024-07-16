@@ -10,7 +10,8 @@ from drf_yasg.utils import swagger_auto_schema
 class IndexView(APIView):
     @swagger_auto_schema(
         operation_description="This is the root of the API",
-        responses={200: 'Hello, World!'}
+        responses={200: 'Hello, World!'},
+        tags=["Root"]
     )
     def get(self, request):
         return Response({'message': 'Hello, World! Go to api/docs to see documentation'}, status.HTTP_200_OK)

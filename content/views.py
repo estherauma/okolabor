@@ -8,7 +8,7 @@ import re
 
 from content.models import AggregatedContent
 from content.serializers import AggregatedContentSerializer
-
+from drf_yasg.utils import swagger_auto_schema
 
 class ContentAPI():
     def __init__(self) -> None:
@@ -145,6 +145,10 @@ class ContentAPI():
 
 
 class AggregatedContentView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Retrieve aggregated content",
+        tags=["Content"]
+    )
     def get(self, request):
         try:
             latest = AggregatedContent.objects.latest('created_at')
@@ -158,6 +162,10 @@ class AggregatedContentView(APIView):
 
 
 class StartContentAggregation(APIView):
+    @swagger_auto_schema(
+        operation_summary="Trigger content aggregation",
+        tags=["Content"]
+    )
     def get(self, request):
         api = ContentAPI()
         documents = api.start_content_fetch()
@@ -165,12 +173,19 @@ class StartContentAggregation(APIView):
 
 
 class ContentUpdateView(APIView):
-    # ToDo: Set up workflow for webhooks
+    @swagger_auto_schema(
+        operation_summary="Content webhook",
+        tags=["Content"]
+    )
     def post(self, request):
         return Response({}, status.HTTP_200_OK)
 
 
 class CompareContent(APIView):
+    @swagger_auto_schema(
+        operation_summary="Compare content",
+        tags=["Content"]
+    )
     def get(self, request):
         app_content_created_at = request.query_params.get(
             'app_content_created_at'
