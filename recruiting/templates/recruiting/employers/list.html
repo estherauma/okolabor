@@ -31,9 +31,9 @@
                         <thead>
                             <tr>
                                 <th>Company Name</th>
-                                <th>Contact Name</th>
                                 <th>Email</th>
-                                <th>Location</th>
+                                <th>Address</th>
+                                <th>Country</th>
                                 <th>Phone Number</th>
                                 <th>Actions</th>
                             </tr>
@@ -42,9 +42,9 @@
                             {% for employer in employers %}
                             <tr>
                                 <td>{{ employer.name }}</td>
-                                <td>{{ employer.contact_name}}</td>
                                 <td>{{ employer.email}}</td>
-                                <td>{{ employer.address }}</td>
+                                <td>{{ employer.address}}</td>
+                                <td>{{ employer.country }}</td>
                                 <td>{{ employer.phone }}</td>
                                 <td>
                                     <a href="/employers/{{employer.id}}" class="btn btn-primary"> <i

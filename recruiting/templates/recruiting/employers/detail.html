@@ -19,17 +19,52 @@
     </div>
 </div>
 
-<div>
+<!-- <div>
     <button id="button" class="btn btn-secondary" style="margin-right: 10px;">Edit Employer</button>
-</div>
+</div> -->
 <br>
 
 <div class="row">
     <div class="col-md-4">
         <div class="card">
             <div class="card-body">
+
                 <h5 class="card-title">Employer Details</h5>
-                
+                <ul class="list-group no-margin">
+                   
+                    <li class="list-group-item">
+                        <span><strong>Email: </strong></span> 
+                        <span class="">{{employer.email}}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span><strong>Phone: </strong></span> 
+                        <span class="">{{employer.phone}}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span><strong>Website: </strong></span> 
+                        <span class="">{{employer.website}}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span><strong>Address: </strong></span> 
+                        <span class="">{{employer.address}}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span><strong>City: </strong></span> 
+                        <span class="">{{employer.city}}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span><strong>State: </strong></span> 
+                        <span class="">{{employer.state}}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span><strong>Country: </strong></span> 
+                        <span class="">{{employer.country}}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span><strong>Zip Code: </strong></span> 
+                        <span class="">{{employer.zipcode}}</span>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
@@ -83,8 +118,7 @@
 
                     </table>
                     <div style="display: inline-block;">
-                        <button id="button" class="btn btn-secondary"
-                            style="margin-right: 10px;">Decline</button>
+                        <button id="button" class="btn btn-secondary" style="margin-right: 10px;">Decline</button>
 
                         <button class="btn btn-success">Accept</button>
                     </div>

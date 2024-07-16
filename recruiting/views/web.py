@@ -41,4 +41,5 @@ class EmployerDetailView(View):
     def get(self, request, pk):
         employer = get_object_or_404(Employer, pk=pk)
         context = {'employer': employer}
+        print(employer)
         return render(request, 'recruiting/employers/detail.html', context)

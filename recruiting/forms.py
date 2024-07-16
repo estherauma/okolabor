@@ -19,4 +19,23 @@ class EmployerForm(forms.ModelForm):
             'phone': forms.TextInput(attrs={
                 'class': 'form-control',
             }),
+            'website': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'address': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'city': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'state': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'country': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'zip_code': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+            
         }
