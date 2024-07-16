@@ -26,4 +26,5 @@ urlpatterns = [
     path('', include('theme.urls')),
     path('api/account/', include('account.urls.api')),
     path('api/content/', include('content.urls')),
+    path('', include('recruiting.urls.web')),
 ]

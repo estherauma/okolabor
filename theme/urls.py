@@ -223,11 +223,6 @@ urlpatterns = [
     path("wishlist", views.wishlist, name='wishlist'),
 
     path("wysiwyag", views.wysiwyag, name='wysiwyag'),
-
-    #employer list
-    path("employer-list", views.employer_list, name='employer-list'),
-    path("employers", views.employer_list, name='employer-list'),
-    path("employer-detail", views.employer_details, name='employer'),
     
     #workers
     path("workers", views.workers, name='workers'),

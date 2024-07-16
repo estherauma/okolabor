@@ -353,11 +353,6 @@ def workers(request):
 def worker_details(request):
     return render(request, 'worker-details/worker-details.html')
 
-def employer_list(request):
-    return render(request, 'employer-list/employer-list.html')
-  
-def employer_details(request):
-    return render(request, 'employer/employer-details.html')
 
 def worker_requests(request):
     return render(request, 'workers/worker-requests.html')
