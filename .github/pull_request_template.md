@@ -1,4 +1,4 @@
-# Title of Pull Request
+# Replace with general title of the pull request
 <!--- Provide a general summary of your changes in the Title above -->
 
 ## Description

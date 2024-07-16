@@ -6,8 +6,14 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 
+from drf_yasg.utils import swagger_auto_schema
+
 
 class RegisterView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Register",
+        tags=["Account Management"]
+    )
     def post(self, request):
         serializer = RegistrationSerializer(data=request.data)
         if serializer.is_valid():
@@ -26,6 +32,10 @@ class RegisterView(APIView):
 
 
 class LoginView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Login",
+        tags=["Account Management"]
+    )
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
@@ -69,12 +79,20 @@ class UserPreferencesUpdateView(APIView):
         serializer = UserPreferenceSerializer(preferences, many=True)
         return serializer.data
 
+    @swagger_auto_schema(
+        operation_summary="Get user preferences",
+        tags=["User preferences"]
+    )
     def get(self, request, user_id):
         kind = request.query_params.get('kind', None)
         user = get_object_or_404(User, pk=user_id)
         preferences = self.return_preferences(user, kind)
         return Response(preferences, status=status.HTTP_200_OK)
 
+    @swagger_auto_schema(
+        operation_summary="Create or update user preferences",
+        tags=["User preferences"]
+    )
     def post(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
         serializer = UpdateUserPreferencesSerializer(data=request.data)
@@ -93,12 +111,20 @@ class UserPreferencesUpdateView(APIView):
 
 
 class UserWorkExperienceView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Retrieve worker experience",
+        tags=["User Experience"]
+    )
     def get(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
         experiences = UserWorkExperience.objects.filter(user=user)
         serializer = UserWorkexperienceSerializer(experiences, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+    @swagger_auto_schema(
+        operation_summary="Create worker experiences",
+        tags=["User Experience"]
+    )
     def post(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
         serializer = UserWorkexperienceSerializer(data=request.data)
@@ -115,7 +141,11 @@ class UserWorkExperienceView(APIView):
         else:
             
             return Response(serializer.errors, status=400)
-        
+
+    @swagger_auto_schema(
+        operation_summary="Update user experience",
+        tags=["User Experience"]
+    )
     def patch(self, request, user_id, experience_id):
         user = get_object_or_404(User, pk=user_id)
         experience = get_object_or_404(UserWorkExperience, pk=experience_id)
@@ -124,4 +154,3 @@ class UserWorkExperienceView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-

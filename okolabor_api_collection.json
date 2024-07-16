@@ -2,7 +2,7 @@
     "clientName": "Thunder Client",
     "collectionName": "Okolabor",
     "collectionId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
-    "dateExported": "2024-06-24T20:50:27.866Z",
+    "dateExported": "2024-07-16T12:39:36.599Z",
     "version": "1.2",
     "folders": [
         {
@@ -32,6 +32,13 @@
             "containerId": "",
             "created": "2024-06-24T20:26:15.591Z",
             "sortNum": 50000
+        },
+        {
+            "_id": "f33e1910-b4c3-4dd5-86e8-9dcae711aaa9",
+            "name": "employers",
+            "containerId": "",
+            "created": "2024-07-16T12:39:22.115Z",
+            "sortNum": 60000
         }
     ],
     "requests": [
@@ -58,6 +65,23 @@
             "created": "2024-05-06T12:00:24.984Z",
             "modified": "2024-06-11T18:59:48.346Z",
             "headers": []
+        },
+        {
+            "_id": "64bbd10a-68d3-4efc-bedb-7bdcfb1ee68a",
+            "colId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
+            "containerId": "f33e1910-b4c3-4dd5-86e8-9dcae711aaa9",
+            "name": "employers",
+            "url": "{{api-url}}/api/recruiting/employers",
+            "method": "GET",
+            "sortNum": 10000,
+            "created": "2024-07-16T12:35:00.103Z",
+            "modified": "2024-07-16T12:37:18.340Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "Bearer {{api-token}}"
+                }
+            ]
         },
         {
             "_id": "eaeef20c-3b4b-463b-9eb0-17277a6a0c25",
@@ -167,7 +191,7 @@
             "method": "POST",
             "sortNum": 60000,
             "created": "2024-06-24T20:26:25.955Z",
-            "modified": "2024-06-24T20:49:12.480Z",
+            "modified": "2024-07-03T13:48:33.451Z",
             "headers": [],
             "body": {
                 "type": "json",
@@ -180,13 +204,59 @@
             "colId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
             "containerId": "b667ccff-3880-4dc6-9c7f-f8dae3cf040f",
             "name": "get-preferences",
-            "url": "{{api-url}}/api/account/-O-K-_sxdlgSYo9b2i7I/preferences/",
+            "url": "{{api-url}}/api/account/-O-K-_sxdlgSYo9b2i7I/preferences",
             "method": "GET",
             "sortNum": 70000,
             "created": "2024-06-24T20:40:05.383Z",
-            "modified": "2024-06-24T20:40:13.941Z",
+            "modified": "2024-07-03T14:03:41.588Z",
             "headers": []
+        },
+        {
+            "_id": "dfe12928-2a42-4bf6-8874-5b5efbd7ba6c",
+            "colId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
+            "containerId": "b667ccff-3880-4dc6-9c7f-f8dae3cf040f",
+            "name": "update-work-experience",
+            "url": "{{api-url}}/api/account/-O-K-_sxdlgSYo9b2i7I/work-experience/-O0tRM0ciup3MstPQZ-8/",
+            "method": "PATCH",
+            "sortNum": 80000,
+            "created": "2024-07-03T16:13:30.736Z",
+            "modified": "2024-07-03T16:45:48.649Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"company\": \"Utah Fruit Farm\",\n  \"location\": \"Utah, United States\",\n  \"startDate\": \"2022-01-01\",\n  \"workType\": \"Food safety\",\n  \"supervisorName\": \"B Ashley McDonough\",\n  \"supervisorTel\": \"+1231231231\",\n  \"supervisorEmail\": \"a.macdonout@fiftyeight.io\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "1bb77f04-c3f7-428d-b713-477a805665f4",
+            "colId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
+            "containerId": "b667ccff-3880-4dc6-9c7f-f8dae3cf040f",
+            "name": "get-work-experience",
+            "url": "{{api-url}}/api/account/-O-K-_sxdlgSYo9b2i7I/work-experience/",
+            "method": "GET",
+            "sortNum": 90000,
+            "created": "2024-07-03T16:28:22.020Z",
+            "modified": "2024-07-03T16:29:32.814Z",
+            "headers": []
+        },
+        {
+            "_id": "0d65977e-05f7-472b-952e-4abbee2472e5",
+            "colId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
+            "containerId": "b667ccff-3880-4dc6-9c7f-f8dae3cf040f",
+            "name": "create-work-experience Copy",
+            "url": "{{api-url}}/api/account/-O-K-_sxdlgSYo9b2i7I/work-experience/",
+            "method": "POST",
+            "sortNum": 90000,
+            "created": "2024-07-03T16:39:55.828Z",
+            "modified": "2024-07-03T16:39:55.828Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"company\": \"Utah Fruit Farm\",\n  \"location\": \"Utah, United States\",\n  \"startDate\": \"2022-01-01\",\n  \"workType\": \"Food safety\",\n  \"supervisorName\": \"Ashley McDonough\",\n  \"supervisorTel\": \"+1231231231\",\n  \"supervisorEmail\": \"a.macdonout@fiftyeight.io\"\n}",
+                "form": []
+            }
         }
     ],
-    "ref": "8EWDJTj4EV04cYtR5RfaN2jnRgpTxfoBIF8KkEaoBjpjBzQcmNtq4OeYRtgmWRxRJoH0olFupy5G0CJTh9VuWQ"
+    "ref": "8EWDJTj4EV04cYtR5RfaNzpn2Asx530O-k4mYLGBHWllOzhAbch4HGGnBK2HI97WjlIg0nGHm5i7k7phBx82_A"
 }
