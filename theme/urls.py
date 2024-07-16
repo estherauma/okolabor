@@ -232,9 +232,7 @@ urlpatterns = [
     path("edit-work-experience", views.edit_experience, name='edit-work-experience'),
 
     path("worker-request-form", views.worker_request_form, name='worker-request-form'),
-    #worker requests
-    path("worker-requests", views.worker_requests, name='worker-requests'),
-    path("worker-request-detail", views.worker_requests_details, name='worker-request-detail'),
+    
 
     #users
     path("users", views.users, name='users'),

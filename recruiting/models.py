@@ -45,7 +45,7 @@ class Role(models.Model):
 class Hours(models.Model):
     role = models.OneToOneField(Role, on_delete=models.CASCADE, related_name='hours')
     on_call = models.BooleanField()
-    anticipated
+    estimate_weekly_hours = models.CharField(max_length=50, null=True, blank=True)
     sunday_hours = models.CharField(max_length=50, blank=True, null=True)
     monday_hours = models.CharField(max_length=50, blank=True, null=True)
     tuesday_hours = models.CharField(max_length=50, blank=True, null=True)
