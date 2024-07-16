@@ -66,6 +66,13 @@ class RegistrationAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(User.objects.count(), 0)
         self.assertEqual(response.data['password'][0], 'Passwords do not match')
+class RegistrationTestCase(TestCase):
+    def setUp(self):
+        self.client= APIClient()
+    def test_registration_template(self):
+        response = self.client.get('/register')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'ltr/register.html')
 
 class RegistrationTestCase(TestCase):
     def setUp(self):
@@ -97,5 +104,8 @@ class RegistrationTestCase(TestCase):
         
      
 
+        
+        
 if __name__ == '__main__':
     unittest.main()
+

@@ -1,0 +1,160 @@
+{% extends 'components/base.html' %}
+{% load static%}
+
+{% block styles %}
+{% endblock styles %}
+
+{% block body %}
+
+<div class="page-header">
+    <div style="display: flex; align-items: center;">
+        <i class="mdi mdi-arrow-left"></i>
+        <span style="margin-left: 5px;">Back</span>
+        <h1 class="page-title" style="margin-left: 500px;">Form-Elements</h1>
+    </div>
+    
+    <div class="ms-auto pageheader-btn">
+        <a href="{% url 'work-experience' %}" class="btn btn-primary btn-icon text-white me-2">
+            <span>
+                
+            </span> Save $ Close
+        </a>
+        
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Details </h3>
+            </div>
+            <div class="card-body pb-2">
+                <div class="row row-sm">
+                    <div class="col-lg">
+                        <div class="form-group ">
+                            <label class="form-label">EMPLOYER</label>
+                            <select class="form-control select2 form-select" data-placeholder="Choose one">
+                                <option label="Choose one">
+                                </option>
+                                <option value="1">Utah Fruits</option>
+                                <option value="2">Sage Cattabriga-Alosa</option>
+                                <option value="3">Nikola Tesla</option>
+                                <option value="4">Cattabriga-Alosa</option>
+                                <option value="5">Nikola Alosa</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg mg-t-10 mg-lg-t-0">
+                        <div class="form-group ">
+                            <label class="form-label">STATE</label>
+                            <select class="form-control select2 form-select" data-placeholder="Choose one">
+                                <option label="Choose one">
+                                </option>
+                                <option value="1">Chuck Testa</option>
+                                <option value="2">Sage Cattabriga-Alosa</option>
+                                <option value="3">Nikola Tesla</option>
+                                <option value="4">Cattabriga-Alosa</option>
+                                <option value="5">Nikola Alosa</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg mg-t-10 mg-lg-t-0">
+                        <div class="form-group m-0">
+                            <div class="form-label">WAS THIS WORK UNDER IN THE US UNDER H2A PROGRAM?</div>
+                            <div class="custom-controls-stacked" style="display: flex; gap: 20px;">
+                                <label class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" name="example-checkbox1" value="option1" checked>
+                                    <span class="custom-control-label">Yes</span>
+                                </label>
+                                <label class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" name="example-checkbox2" value="option2">
+                                    <span class="custom-control-label">No</span>
+                                </label>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+                <div style="display: flex;">
+                    <div style="flex: 1; padding: 10px;">
+                        <div class="wd-200 mg-b-30">
+                            <label class="form-label">DATES OF EMPLOYMENT</label>
+                            <select name="user[month]" class="form-control form-select select2" data-bs-placeholder="Choose dates">
+                                <optgroup label="2024">
+                                    <option label="Select Month"></option>
+                                    <option value="1">January</option>
+                                    <option value="2">February</option>
+                                    <option value="3">March</option>
+                                    <option value="4">April</option>
+                                    <option value="5">May</option>
+                                    <option value="6">June</option>
+                                    <option value="7">July</option>
+                                    <option value="8">August</option>
+                                    <option value="9">September</option>
+                                    <option value="10">October</option>
+                                    <option value="11">November</option>
+                                    <option value="12">December</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="flex: 1; padding: 10px;">
+                        <div class="wd-200 mg-b-30">
+                            <label class="form-label">WHICH YEAR WAS THAT VISA?</label>
+                            <select name="user[year]" class="form-control form-select select2" data-bs-placeholder="Select Year">
+                                <option label="Select Year"></option>
+                                <option value="2014">2040</option>
+                                <option value="2014">2039</option>
+                                <option value="2014">2037</option>
+                                <option value="2014">2036</option>
+                                <option value="2014">2035</option>
+                                <option value="2014">2034</option>
+                                <option value="2014">2033</option>
+                                <option value="2014">2032</option>
+                                <option value="2014">2031</option>
+                                <option value="2014">2030</option>
+                                <option value="2014">2030</option>
+                                <option value="2013">2029</option>
+                                <option value="2012">2028</option>
+                                <option value="2011">2027</option>
+                                <option value="2010">2026</option>
+                                <option value="2009">2025</option>
+                                <option value="2008">2024</option>
+                                <option value="2007">2023</option>
+                                <option value="2006">2022</option>
+                                <option value="2005">2021</option>
+                                <option value="2004">2020</option>
+                                <option value="2003">2019</option>
+                                <option value="2002">2018</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <h3>Duties</h3>
+                <div class="form-group">
+                    <label class="form-label">PLEASE SELECT THE WORK ACTIVITIES DONE IN THE JOB</label>
+                    <select name="country" class="form-control form-select select2" data-bs-placeholder="Select Country">
+                        <option label="Select Country"></option>
+                        <option value="br">Harvesting</option>
+                        <option value="cz">Fruit picking</option>
+                        <option value="de">Another filter</option>
+                        <option value="pl" selected>Select from list</option>
+                    </select>
+                </div>
+                <p>PLEASE UPLOAD ANY CERTIFICATIONS THAT ARE RELEVANT TO THIS WORK EXPERIENCE</p>
+                <img src="{% static 'assets/images/profile/profile3.png' %}" alt="placeholder" style="width: 120px; height: 120px;">
+                <img src="{% static 'assets/images/profile/profile1.png' %}" alt="placeholder" style="width: 120px; height: 120px; margin-left: 20px;">
+                <img src="{% static 'assets/images/profile/profile1.png' %}" alt="placeholder" style="width: 120px; height: 120px;  margin-left: 20px;">
+                <br><br>
+                <p>PLEASE UPLOAD ANY MEDIA RELATED TO THIS WORK EXPERIENCE(PICTURES OR VIDEOS)</p>
+                <img src="{% static 'assets/images/profile/profile3.png' %}" alt="placeholder" style="width: 120px; height: 120px;">
+            </div>
+            
+
+        </div>
+    </div>
+</div>
+{% endblock body %}
+
