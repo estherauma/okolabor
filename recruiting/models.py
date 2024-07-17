@@ -30,12 +30,15 @@ class WorkRequests(AuditableModel):
     name = models.CharField(max_length=255, null=False, blank=False)
     start_date = models.DateField(null=False, blank=False)
     end_date = models.DateField(null=True, blank=True)
-    requiired_workers = models.IntegerField(null=False, blank=False)
+    required_workers = models.IntegerField(null=False, blank=False)
     employer = models.ForeignKey(Employer, on_delete=models.DO_NOTHING)
     status = models.CharField(
         max_length=255, null=False, blank=False,
         choices=STATUS_CHOICES, default='DRAFT'
     )
+    
+    def __str__(self) -> str:
+        return f'{self.name}'
 
 
 class Role(models.Model):

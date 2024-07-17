@@ -6,8 +6,8 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views import View
 
-from recruiting.forms import EmployerForm, WorkRequestForm
-from recruiting.models import Employer, WorkRequests
+from recruiting.forms import EmployerForm, WorkRequestForm, WorkRequestRoleForm
+from recruiting.models import Employer, Role, WorkRequests
 from django.views.generic import CreateView
 
 
@@ -81,3 +81,30 @@ class WorkRequestDetailView(View):
         work_request = get_object_or_404(WorkRequests, pk=pk)
         context = {'workrequest': work_request}
         return render(request, 'recruiting/work_requests/detail.html', context)
+
+
+class WorkRequestRoleCreateView(CreateView):
+    model = Role
+    form_class = WorkRequestRoleForm
+    template_name = 'recruiting/work_requests/create_role.html'
+    
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['work_request'] = self.kwargs.get('pk') 
+        return initial
+    
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        messages.success(self.request, 'Role created successfully')
+        return super().form_valid(form)
+
+    def form_invalid(self, form: BaseModelForm) -> HttpResponse:
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(self.request, f'{field}: {error}')
+        return super().form_invalid(form)
+    
+    def get_success_url(self) -> str:
+        return reverse(
+            'recruiting_web:workrequest_detail',
+            kwargs={'pk': self.object.work_request.pk}
+        )

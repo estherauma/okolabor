@@ -53,18 +53,18 @@ class LoginView(APIView):
             if user.check_password(serializer.validated_data['password']):
                 identity_manager = JwtManager()
                 payload = {
-                            'email': user.email,
-                            'id': user.pk,
-                            'firstName': user.first_name,
-                            'lastName': user.last_name,
-                            'isAdmin': user.is_admin,
-                            'roles': list(user.groups.values_list('name', flat=True)) if user.groups.exists() else [],
-                        }
+                    'email': user.email,
+                    'id': user.pk,
+                    'firstName': user.first_name,
+                    'lastName': user.last_name,
+                    'isAdmin': user.is_admin,
+                    'roles': list(user.groups.values_list('name', flat=True)) if user.groups.exists() else [],
+                }
                 token = identity_manager.encode(payload)
                 return Response({
                     'token': token,
                     'data': payload
-                    }, status=status.HTTP_200_OK)
+                }, status=status.HTTP_200_OK)
             else:
                 return Response({'message': 'Invalid credentials'}, status=status.HTTP_403_FORBIDDEN)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -120,7 +120,7 @@ class UserWorkExperienceView(APIView):
         experiences = UserWorkExperience.objects.filter(user=user)
         serializer = UserWorkexperienceSerializer(experiences, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
     @swagger_auto_schema(
         operation_summary="Create worker experiences",
         tags=["User Experience"]
@@ -135,11 +135,12 @@ class UserWorkExperienceView(APIView):
                 company=serializer.validated_data['company'],
                 start_date=serializer.validated_data['start_date']
             ).exists():
-                return Response({'message': 'Work experience with same company name and start date already exists'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'message': 'Work experience with same company name and start date already exists'},
+                                status=status.HTTP_400_BAD_REQUEST)
             UserWorkExperience.objects.create(user=user, **serializer.validated_data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            
+
             return Response(serializer.errors, status=400)
 
     @swagger_auto_schema(

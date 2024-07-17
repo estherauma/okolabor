@@ -76,6 +76,17 @@ class WorkRequestForm(forms.ModelForm):
                 'class': 'form-control',
             }),
         }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['work_request'].widget.attrs['readonly'] = True
+        self.fields['work_request'].required = False  # Prevent validation error
+
+    def clean(self):
+        cleaned_data = super().clean()
+        # Reassign work_request field value here
+        cleaned_data['work_request'] = self.initial.get('work_request')
+        return cleaned_data
 
 
 class WorkRequestRoleForm(forms.ModelForm):
@@ -98,6 +109,7 @@ class WorkRequestRoleForm(forms.ModelForm):
             }),
             'work_request': forms.Select(attrs={
                 'class': 'form-control',
+                'readonly': True
             }),
         }
 
