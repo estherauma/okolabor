@@ -18,8 +18,8 @@ class EmployerAPIListView(ListCreateAPIView):
         tags=['Employers']
     )
     def get(self, request, *args, **kwargs):
-       serializer = self.get_serializer(self.get_queryset(), many=True)
-       return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer = self.get_serializer(self.get_queryset(), many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
         operation_summary="Create employer",

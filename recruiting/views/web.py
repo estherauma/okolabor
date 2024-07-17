@@ -34,14 +34,16 @@ class EmployerCreateView(CreateView):
         return super().form_invalid(form)
 
     def get_success_url(self):
-        return reverse('recruiting_web:employer_detail', kwargs={'pk': self.object.pk})
+        return reverse(
+            'recruiting_web:employer_detail',
+            kwargs={'pk': self.object.pk}
+        )
 
 
 class EmployerDetailView(View):
     def get(self, request, pk):
         employer = get_object_or_404(Employer, pk=pk)
         context = {'employer': employer}
-        print(employer)
         return render(request, 'recruiting/employers/detail.html', context)
 
 
@@ -68,11 +70,14 @@ class WorkRequestCreateView(CreateView):
         return super().form_invalid(form)
 
     def get_success_url(self):
-        return reverse('recruiting_web:workrequest_detail', kwargs={'pk': self.object.pk})
+        return reverse(
+            'recruiting_web:workrequest_detail',
+            kwargs={'pk': self.object.pk}
+        )
 
 
 class WorkRequestDetailView(View):
     def get(self, request, pk):
         work_request = get_object_or_404(WorkRequests, pk=pk)
-        context = {'work_request': work_request}
+        context = {'workrequest': work_request}
         return render(request, 'recruiting/work_requests/detail.html', context)
