@@ -187,8 +187,8 @@ class ContentAPI():
                 aggregation_response = aggregate_form_questions(item)
                 page_data = {
                     'page_id': item['id'],
-                    'page_title': item['page_title'],
-                    'preview_title': item['preview_title'],
+                    'page_title': item.get('page_title', None),
+                    'preview_title': item.get('preview_title', None),
                     'form_questions': aggregation_response[0],
                     'additional_text': aggregation_response[1]
                 }
@@ -198,9 +198,9 @@ class ContentAPI():
                 aggregation_response = aggregate_key_value_text(
                     item['dynamic_zone'])
                 page_data = {
-                    'page_id': item['page_id'],
-                    'page_title': item['page_title'],
-                    'preview_title': item['preview_title'],
+                    'page_id': item.get('page_id', None),
+                    'page_title': item.get('page_title', None),
+                    'preview_title': item.get('preview_title', None),
                     'data': aggregation_response
                 }
                 aggregated_content[item['page_id']] = page_data
@@ -208,10 +208,10 @@ class ContentAPI():
             if item['custom_type'] == 'menu_content':
                 aggregation_response = aggregate_menu_content(item['dynamic_zone'])
                 page_data = {
-                    'page_id': item['page_id'],
-                    'page_title': item['page_title'],
-                    'preview_title': item['preview_title'],
-                    'last_updated': item['last_published_at'],
+                    'page_id': item.get('page_id', None),
+                    'page_title': item.get('page_title', None),
+                    'preview_title': item.get('preview_title', None),
+                    'last_updated': item.get('last_published_at', None),
                     'data': aggregation_response
                 }
                 aggregated_content[item['page_id']] = page_data
