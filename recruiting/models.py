@@ -45,7 +45,13 @@ class Role(models.Model):
     title = models.CharField(max_length=255)
     usdol_case_number = models.CharField(max_length=50)
     number_of_required_workers = models.IntegerField()
-    work_request = models.ForeignKey(WorkRequests, on_delete=models.DO_NOTHING)
+    work_request = models.ForeignKey(
+        WorkRequests, on_delete=models.DO_NOTHING,
+        related_name='roles'
+    )
+
+    def __str__(self):
+        return f'{self.title}'
 
 
 class Hours(models.Model):

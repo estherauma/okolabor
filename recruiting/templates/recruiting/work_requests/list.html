@@ -48,7 +48,11 @@
                                 <tr>
                                     <td>{{ item.name }}</td>
                                     <td>{{ item.start_date }}</td>
-                                    <td>{{ item.roles }}</td>
+                                    <td>
+                                        {% for role in item.roles.all %}
+                                            {{ role.title }} {% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                    </td>
                                     <td>{{ item.workers_required }}</td>
                                     <td>{{ item.employer }}</td>
                                     <td>{{ item.status }}</td>
