@@ -14,6 +14,7 @@ from drf_yasg.utils import swagger_auto_schema
 class ContentAPI():
     def __init__(self) -> None:
         self.api_url = config('CMS_API_URL')
+        self.cms_url = config('CMS_URL') if config('CMS_URL') else self.api_url.split('/api/okolabors')[0]
         self.access_token = config('CMS_API_TOKEN')
         self.headers = {
                 "Authorization": f"Bearer {self.access_token}"
@@ -113,12 +114,12 @@ class ContentAPI():
             try:
                 if not media_data or not media_data.get('url'):
                     return None
-                # add api-url to media url
+
                 return {
                     'name': media_data.get('name', None),
                     'mime': media_data.get('mime', None),
                     'hash': media_data.get('hash', None),
-                    'url': media_data.get('url', None),
+                    'url': f'{self.cms_url}{media_data["url"]}',
                     'size': media_data.get('size', None),
                     'ext': media_data.get('ext', None),
                     'kind': media_data['mime'].split('/')[0] if media_data.get('mime') else None,
