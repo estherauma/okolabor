@@ -30,6 +30,8 @@ class ContentAPI():
             self.languages = self.content['locales']
             self.documents = self.start_document_fetch()
         except requests.RequestException as e:
+            # TODO: Throw or log error instead of returning it
+            # This is to stop the execution of the function
             return {
                 "error": str(e)
             }
