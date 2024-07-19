@@ -161,26 +161,31 @@ class ContentAPI():
                 print('Could not aggregate list data', e)
                 return None
 
-        def aggregate_components(item):
-            try:
+        def aggregate_components(data):
+            result = []
+            for item in data:
                 component_type = item['__component']
+                try:
 
-                if component_type == 'okolabor.clickable-list':
-                    layout = item.get('layout', 'flow')
-                    return {
-                        'type': 'list',
-                        'layout': layout,
-                        'list': aggregate_lists(item['repeatable_zone'], layout)
-                    }
-                if component_type == 'okolabor.illustration':
-                    return {
-                        'type': 'illustration',
-                        'mediaData': aggregate_media_data(item['image']) if item.get('image') else None,
-                    }
+                    if component_type == 'okolabor.clickable-list':
+                        layout = item.get('layout', 'flow')
+                        list_data = {
+                            'type': 'clickable_list',
+                            'layout': layout,
+                            'list': aggregate_lists(item['repeatable_zone'], layout)
+                        }
+                        result.append(list_data)
+                    if component_type == 'okolabor.illustration':
+                        image_data = {
+                            'type': 'illustration',
+                            'mediaData': aggregate_media_data(item['image']) if item.get('image') else None,
+                        }
+                        result.append(image_data)
 
-            except Exception as e:
-                print(f'Could not aggregate {item["component_type"]} component', e)
-                return None
+                except Exception as e:
+                    print(f'Could not aggregate {component_type} component', e)
+                    return None
+            return result
 
         for item in lang_content['data']:
             if item['custom_type'] == 'form_questions':
@@ -224,7 +229,7 @@ class ContentAPI():
                     'preview_title': item.get('preview_title', None),
                     'last_updated': item.get('last_published_at', None),
                     'analytics_event_name': item.get('analytics_event_name', None),
-                    'data': aggregation_response
+                    'page_content': aggregation_response
                 }
                 aggregated_content[item['page_id']] = page_data
 
