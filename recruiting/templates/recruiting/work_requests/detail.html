@@ -1,0 +1,134 @@
+{% extends 'components/base.html' %}
+{% block styles %}
+{% endblock styles %}
+
+{% block body %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Worker Requests/ {{workrequest.name}}</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary">
+                <div class="card-title">
+                    <h3 class="card-title text-white">Request Overview</h3>
+                </div>
+            </div>
+            <div class="card-body">
+                <h5><strong>Employer:</strong> {{workrequest.employer}} </h5>
+                <h6><strong>Requirements</strong></h6>
+                <div class="table-responsive">
+                    <table class="table border text-nowrap text-md-nowrap table-striped mg-b-0">
+                        <thead>
+                            <tr>
+                                <th>Job Title</th>
+                                <th>Workers Required</th>
+                                <th>Months of experience</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Apple pickers</td>
+                                <td>32</td>
+                                <td>3</td>
+                            </tr>
+                            <tr>
+                                <td>Combined Harvester Driver</td>
+                                <td>24</td>
+                                <td>3</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- End request overview card -->
+        <div class="card">
+            <div class="card-header bg-primary">
+                <div class="card-title">
+                    <h3 class="card-title text-white">Requested Worker Categories</h3>
+                </div>
+                <div class="card-options">
+                    <a class="btn btn-light btn-sm" href="roles/create">Add Role</a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="accordion" id="rolesAccordion">
+                    {% for role in workrequest.roles.all %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="false"
+                                aria-controls="collapse{{ forloop.counter }}">
+                                Job Title: &nbsp; <strong> {{ role.title }}</strong>
+                            </button>
+                        </h2>
+                        <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse"
+                            aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#rolesAccordion">
+                            <div class="accordion-body">
+                                <div class="clearfix row mb-4">
+                                    <div class="col">
+                                        <div class="float-start">
+                                            <h5 class="mb-0">Number of workers required</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="float-end">
+                                            <h4 class="mt-2">{{role.number_of_required_workers}}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clearfix row mb-4">
+                                    <div class="col">
+                                        <div class="float-start">
+                                            <h5 class="mb-0">USDOL number</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="float-end">
+                                            <h4 class="mt-2">{{role.usdol_case_number}}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- You can add more details here -->
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <!-- approval card -->
+        <div class="card">
+            <div class="card-header bg-primary">
+                <div class="card-title">
+                    <h3 class="card-title text-white">Approval</h3>
+                </div>
+            </div>
+            <div class="card-body">
+
+            </div>
+        </div>
+
+        <!-- work information card -->
+        <div class="card">
+            <div class="card-header bg-primary">
+                <div class="card-title">
+                    <h3 class="card-title text-white">Worker information</h3>
+                </div>
+            </div>
+            <div class="card-body">
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}
