@@ -2,7 +2,7 @@ from django.urls import path
 
 from recruiting.views.web import (
     EmployerCreateView, EmployerDetailView,
-    EmployerListView, WorkRequestCreateView,
+    EmployerListView, RoleDeductionsCreateView, RoleEmpLocationCreateView, RoleHoursCreateView, RoleHousingCreateView, RoleMealsCreateView, RoleQualificationsCreateView, RoleWagesCreateView, WorkRequestCreateView,
     WorkRequestDetailView, WorkRequestRoleCreateView, WorkRequestsListView
 )
 
@@ -28,5 +28,27 @@ urlpatterns = [
          name='workrequest_detail'),
     path('work-requests/<pk>/roles/create/',
          WorkRequestRoleCreateView.as_view(),
+         name='workrequest_role_create'),
+    # Role relationships     
+    path('work-requests/role/<pk>/hours/create/',
+         RoleHoursCreateView.as_view(),
+         name='workrequest_hours_create'),
+    path('work-requests/role/<pk>/wages/create/',
+         RoleWagesCreateView.as_view(),
+         name='workrequest_wages_create'),
+    path('work-requests/role/<pk>/deductions/create/',
+         RoleDeductionsCreateView.as_view(),
+         name='workrequest_deductions_create'),
+    path('work-requests/role/<pk>/qualifications/create/',
+         RoleQualificationsCreateView.as_view(),
+         name='workrequest_role_create'),
+    path('work-requests/role/<pk>/location/create/',
+         RoleEmpLocationCreateView.as_view(),
+         name='workrequest_role_create'),
+    path('work-requests/role/<pk>/housing/create/',
+         RoleHousingCreateView.as_view(),
+         name='workrequest_role_create'),
+    path('work-requests/role/<pk>/meals/create/',
+         RoleMealsCreateView.as_view(),
          name='workrequest_role_create'),
 ]

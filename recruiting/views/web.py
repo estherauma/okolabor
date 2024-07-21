@@ -6,8 +6,12 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views import View
 
-from recruiting.forms import EmployerForm, WorkRequestForm, WorkRequestRoleForm
-from recruiting.models import Employer, Role, WorkRequests
+from recruiting.forms import (
+    EmployerForm, RoleDeductionForm,RoleEmploymentLocationForm,
+    RoleHoursForm, RoleHousingInformationForm, RoleQualificationForm,
+    RoleWagesForm, WorkRequestForm, WorkRequestRoleForm
+)
+from recruiting.models import Deduction, Employer, EmploymentLocation, Hours, HousingInformation, Qualification, Role, Wages, WorkRequests
 from django.views.generic import CreateView
 
 
@@ -108,3 +112,45 @@ class WorkRequestRoleCreateView(CreateView):
             'recruiting_web:workrequest_detail',
             kwargs={'pk': self.object.work_request.pk}
         )
+
+
+class RoleHoursCreateView(CreateView):
+    model = Hours
+    form_class = RoleHoursForm
+    template_name = 'recruiting/work_requests/create_hours.html'
+
+
+class RoleWagesCreateView(CreateView):
+    model = Wages
+    form_class = RoleWagesForm
+    template_name = 'recruiting/work_requests/create_wages.html'
+
+
+class RoleDeductionsCreateView(CreateView):
+    model = Deduction
+    form_class = RoleDeductionForm
+    template_name = 'recruiting/work_requests/create_deductions.html'
+
+
+class RoleQualificationsCreateView(CreateView):
+    model = Qualification
+    form_class = RoleQualificationForm
+    template_name = 'recruiting/work_requests/create_qualifcations.html'
+
+
+class RoleEmpLocationCreateView(CreateView):
+    model = EmploymentLocation
+    form_class = RoleEmploymentLocationForm
+    template_name = 'recruiting/work_requests/create_employment_location.html'
+    
+
+class RoleHousingCreateView(CreateView):
+    model = HousingInformation
+    form_class = RoleHousingInformationForm
+    template_name = 'recruiting/work_requests/create_housing_info.html'
+
+
+class RoleMealsCreateView(CreateView):
+    model = HousingInformation
+    form_class = RoleHousingInformationForm
+    template_name = 'recruiting/work_requests/create_meal_provision_info.html'
