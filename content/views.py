@@ -14,7 +14,7 @@ from drf_yasg.utils import swagger_auto_schema
 class ContentAPI():
     def __init__(self) -> None:
         self.api_url = config('CMS_API_URL')
-        self.cms_url = config('CMS_URL') if config('CMS_URL') else self.api_url.split('/api/okolabors')[0]
+        self.media_url = self.api_url.split('/api/okolabors')[0]
         self.access_token = config('CMS_API_TOKEN')
         self.headers = {
                 "Authorization": f"Bearer {self.access_token}"
@@ -30,8 +30,6 @@ class ContentAPI():
             self.languages = self.content['locales']
             self.documents = self.start_document_fetch()
         except requests.RequestException as e:
-            # TODO: Throw or log error instead of returning it
-            # This is to stop the execution of the function
             return {
                 "error": str(e)
             }
@@ -121,7 +119,7 @@ class ContentAPI():
                     'name': media_data.get('name', None),
                     'mime': media_data.get('mime', None),
                     'hash': media_data.get('hash', None),
-                    'url': f'{self.cms_url}{media_data["url"]}',
+                    'url': f'{self.media_url}{media_data["url"]}',
                     'size': media_data.get('size', None),
                     'ext': media_data.get('ext', None),
                     'kind': media_data['mime'].split('/')[0] if media_data.get('mime') else None,
