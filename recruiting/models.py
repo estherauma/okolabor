@@ -41,7 +41,7 @@ class WorkRequests(AuditableModel):
         return f'{self.name}'
 
 
-class Role(models.Model):
+class Role(AuditableModel):
     title = models.CharField(max_length=255)
     usdol_case_number = models.CharField(max_length=50)
     number_of_required_workers = models.IntegerField()
@@ -54,7 +54,7 @@ class Role(models.Model):
         return f'{self.title}'
 
 
-class Hours(models.Model):
+class Hours(AuditableModel):
     role = models.OneToOneField(
         Role, on_delete=models.CASCADE,
         related_name='hours'
@@ -73,7 +73,7 @@ class Hours(models.Model):
     job_description = models.TextField()
 
 
-class Wages(models.Model):
+class Wages(AuditableModel):
     role = models.OneToOneField(
         Role, on_delete=models.CASCADE, related_name='wages'
     )
@@ -98,7 +98,7 @@ class Wages(models.Model):
     start_timing = models.CharField(max_length=50)
 
 
-class Deduction(models.Model):
+class Deduction(AuditableModel):
     role = models.ForeignKey(
         Role, on_delete=models.CASCADE,
         related_name='deductions'
@@ -107,7 +107,7 @@ class Deduction(models.Model):
     deduction_amount = models.DecimalField(max_digits=10, decimal_places=2)
 
 
-class Qualification(models.Model):
+class Qualification(AuditableModel):
     role = models.OneToOneField(
         Role, on_delete=models.CASCADE,
         related_name='qualifications'
@@ -140,7 +140,7 @@ class Qualification(models.Model):
     other_qualifications = models.TextField(blank=True, null=True)
 
 
-class EmploymentLocation(models.Model):
+class EmploymentLocation(AuditableModel):
     role = models.OneToOneField(
         Role, on_delete=models.CASCADE,
         related_name='employment_location'
@@ -153,7 +153,7 @@ class EmploymentLocation(models.Model):
     additional_info = models.TextField(blank=True, null=True)
 
 
-class HousingInformation(models.Model):
+class HousingInformation(AuditableModel):
     role = models.OneToOneField(
         Role, on_delete=models.CASCADE,
         related_name='housing_information'
@@ -173,7 +173,7 @@ class HousingInformation(models.Model):
     additional_info = models.TextField(blank=True, null=True)
 
 
-class MealProvision(models.Model):
+class MealProvision(AuditableModel):
     role = models.OneToOneField(
         Role, on_delete=models.CASCADE,
         related_name='meal_provision'

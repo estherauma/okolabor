@@ -114,43 +114,50 @@ class WorkRequestRoleCreateView(CreateView):
         )
 
 
-class RoleHoursCreateView(CreateView):
+class RoleDataBaseView(CreateView):
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['role'] = self.kwargs.get('pk') 
+        return initial
+
+
+class RoleHoursCreateView(RoleDataBaseView):
     model = Hours
     form_class = RoleHoursForm
     template_name = 'recruiting/work_requests/create_hours.html'
 
 
-class RoleWagesCreateView(CreateView):
+class RoleWagesCreateView(RoleDataBaseView):
     model = Wages
     form_class = RoleWagesForm
     template_name = 'recruiting/work_requests/create_wages.html'
 
 
-class RoleDeductionsCreateView(CreateView):
+class RoleDeductionsCreateView(RoleDataBaseView):
     model = Deduction
     form_class = RoleDeductionForm
     template_name = 'recruiting/work_requests/create_deductions.html'
 
 
-class RoleQualificationsCreateView(CreateView):
+class RoleQualificationsCreateView(RoleDataBaseView):
     model = Qualification
     form_class = RoleQualificationForm
-    template_name = 'recruiting/work_requests/create_qualifcations.html'
+    template_name = 'recruiting/work_requests/create_qualifications.html'
 
 
-class RoleEmpLocationCreateView(CreateView):
+class RoleEmpLocationCreateView(RoleDataBaseView):
     model = EmploymentLocation
     form_class = RoleEmploymentLocationForm
     template_name = 'recruiting/work_requests/create_employment_location.html'
     
 
-class RoleHousingCreateView(CreateView):
+class RoleHousingCreateView(RoleDataBaseView):
     model = HousingInformation
     form_class = RoleHousingInformationForm
     template_name = 'recruiting/work_requests/create_housing_info.html'
 
 
-class RoleMealsCreateView(CreateView):
+class RoleMealsCreateView(RoleDataBaseView):
     model = HousingInformation
     form_class = RoleHousingInformationForm
-    template_name = 'recruiting/work_requests/create_meal_provision_info.html'
+    template_name = 'recruiting/work_requests/create_meal_provision.html'

@@ -41,7 +41,7 @@ urlpatterns = [
          name='workrequest_deductions_create'),
     path('work-requests/role/<pk>/qualifications/create/',
          RoleQualificationsCreateView.as_view(),
-         name='workrequest_role_create'),
+         name='workrequest_qualifications_create'),
     path('work-requests/role/<pk>/location/create/',
          RoleEmpLocationCreateView.as_view(),
          name='workrequest_role_create'),

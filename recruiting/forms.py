@@ -108,6 +108,7 @@ class RoleHoursForm(forms.ModelForm):
     class Meta:
         model = Hours
         fields = [
+            'role',
             'on_call',
             'estimate_weekly_hours',
             'sunday_hours',
@@ -119,6 +120,10 @@ class RoleHoursForm(forms.ModelForm):
             'saturday_hours',
             'job_description']
         widgets = {
+            'role': forms.Select(attrs={
+                'class': 'form-control',
+                'disabled': True
+            }),
             'on_call': forms.CheckboxInput(attrs={
                 'class': 'form-control',
             }),
@@ -156,11 +161,15 @@ class RoleWagesForm(forms.ModelForm):
     class Meta:
         model = Wages
         fields = [
-            'wage', 'wage_type', 'piece_rate_offerings',
+            'role', 'wage', 'wage_type', 'piece_rate_offerings',
             'frequency_of_pay', 'frequency_of_pay_other', 'start_timing'
         ]
 
         widgets = {
+            'role': forms.Select(attrs={
+                'class': 'form-control',
+                'disabled': True
+            }),
             'wage': forms.NumberInput(attrs={
                 'class': 'form-control',
             }),
@@ -185,9 +194,13 @@ class RoleWagesForm(forms.ModelForm):
 class RoleDeductionForm(forms.ModelForm):
     class Meta:
         model = Deduction
-        fields = ['description', 'deduction_amount']
+        fields = ['role','description', 'deduction_amount']
 
         widgets = {
+            'role': forms.Select(attrs={
+                'class': 'form-control',
+                'disabled': True
+            }),
             'description': forms.Textarea(attrs={
                 'class': 'form-control',
             }),
@@ -201,6 +214,7 @@ class RoleQualificationForm(forms.ModelForm):
     class Meta:
         model = Qualification
         fields = [
+            'role',
             'minimum_education_requirement',
             'experience_required',
             'number_of_months_experience_required',
@@ -219,6 +233,10 @@ class RoleQualificationForm(forms.ModelForm):
             'other_qualifications']
 
         widgets = {
+            'role': forms.Select(attrs={
+                'class': 'form-control',
+                'disabled': True
+            }),
             'minimum_education_requirement': forms.Select(attrs={
                 'class': 'form-control',
             }),
@@ -274,10 +292,14 @@ class RoleEmploymentLocationForm(forms.ModelForm):
     class Meta:
         model = EmploymentLocation
         fields = [
-            'address', 'city', 'county', 'state',
-            'postal_code', 'additional_info'
+            'role', 'address', 'city', 'county', 'state',
+            'postal_code', 'additional_info', 'role'
         ]
         widgets = {
+            'role': forms.Select(attrs={
+                'class': 'form-control',
+                'disabled': True
+            }),
             'address': forms.TextInput(attrs={
                 'class': 'form-control',
             }),
@@ -303,10 +325,14 @@ class RoleHousingInformationForm(forms.ModelForm):
     class Meta:
         model = HousingInformation
         fields = [
-            'address', 'city', 'county', 'state',
+            'role','address', 'city', 'county', 'state',
             'postal_code', 'type_of_housing', 'additional_info'
         ]
         widgets = {
+            'role': forms.Select(attrs={
+                'class': 'form-control',
+                'disabled': True
+            }),
             'address': forms.TextInput(attrs={
                 'class': 'form-control',
             }),
@@ -335,10 +361,15 @@ class RoleMealProvision(forms.ModelForm):
     class Meta:
         model = MealProvision
         fields = [
-            'will_provide_meals', 'meal_charge_amount',
-            'additional_info'
+            'role', 'will_provide_meals',
+            'meal_charge_amount',
+            'additional_info',
         ]
         widgets = {
+            'role': forms.Select(attrs={
+                'class': 'form-control',
+                'disabled': True
+            }),
             'will_provide_meals': forms.CheckboxInput(attrs={
                 'class': 'form-control',
             }),
