@@ -95,52 +95,99 @@
                                     </div>
                                 </div>
                                 <!-- You can add more details here -->
-                                 <div class="row">
+                                <div class="row">
                                     <div class="col-12">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <h6>Hours</h6>
-                                            <a class="btn btn-primary btn-sm" href="/work-requests/role/{{role.id}}/hours/create">Add hours</a>
+                                            <a class="btn btn-primary btn-sm"
+                                                href="/work-requests/role/{{role.id}}/hours/create">Add hours</a>
                                         </div>
                                         <hr class="border-bottom border-3 border-dark">
-                                    
+                                        {% if role.hours %}
+                                        <div class="hours-details">
+                                            <p><strong>On Call:</strong> {{ role.hours.on_call }}</p>
+                                            <p><strong>Estimated Weekly Hours:</strong> {{
+                                                role.hours.estimate_weekly_hours }}</p>
+                                            <p><strong>Sunday Hours:</strong> {{ role.hours.sunday_hours }}</p>
+                                            <p><strong>Monday Hours:</strong> {{ role.hours.monday_hours }}</p>
+                                            <p><strong>Tuesday Hours:</strong> {{ role.hours.tuesday_hours }}</p>
+                                            <p><strong>Wednesday Hours:</strong> {{ role.hours.wednesday_hours }}</p>
+                                            <p><strong>Thursday Hours:</strong> {{ role.hours.thursday_hours }}</p>
+                                            <p><strong>Friday Hours:</strong> {{ role.hours.friday_hours }}</p>
+                                            <p><strong>Saturday Hours:</strong> {{ role.hours.saturday_hours }}</p>
+                                            <p><strong>Job Description:</strong> {{ role.hours.job_description }}</p>
+                                        </div>
+                                        {% else %}
+                                        <p>No hours information available for this role.</p>
+                                        {% endif %}
+
+                                        <hr class="border-bottom border-dark">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <h6>Wages</h6>
-                                            <a class="btn btn-primary btn-sm" href="/work-requests/role/{{role.id}}/wages/create">Add wages</a>
+                                            <a class="btn btn-primary btn-sm"
+                                                href="/work-requests/role/{{role.id}}/wages/create">Add wages</a>
                                         </div>
                                         <hr class="border-bottom border-3 border-dark">
-                                    
+                                        {% if role.wages %}
+                                        <div class="wages-details">
+                                            <p><strong>Wage:</strong> ${{ role.wages.wage }}</p>
+                                            <p><strong>Wage Type:</strong> {{ role.wages.get_wage_type_display }}</p>
+                                        
+                                            {% if role.wages.piece_rate_offerings %}
+                                                <p><strong>Piece Rate Offerings:</strong> ${{ role.wages.piece_rate_offerings }}</p>
+                                                <p><strong>Piece Rate Offerings Type:</strong> {{ role.wages.get_piece_rate_offerings_type_display }}</p>
+                                            {% endif %}
+                                            
+                                            <p><strong>Frequency of Pay:</strong> {{ role.wages.frequency_of_pay }}</p>
+                                            {% if role.wages.details %}
+                                                <p><strong>Details:</strong> {{ role.wages.details }}</p>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        {% else %}
+                                        <p>No wages information available for this role.</p>
+                                        {% endif %}
+                                        <hr class="border-bottom border-dark">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <h6>Deductions</h6>
-                                            <a class="btn btn-primary btn-sm" href="/work-requests/role/{{role.id}}/deductions/create">Add deductions</a>
+                                            <a class="btn btn-primary btn-sm"
+                                                href="/work-requests/role/{{role.id}}/deductions/create">Add
+                                                deductions</a>
                                         </div>
                                         <hr class="border-bottom border-3 border-dark">
-                                    
+
                                         <div class="d-flex justify-content-between align-items-center">
                                             <h6>Qualifications</h6>
-                                            <a class="btn btn-primary btn-sm" href="/work-requests/role/{{role.id}}/qualifications/create">Add qualifiations</a>
+                                            <a class="btn btn-primary btn-sm"
+                                                href="/work-requests/role/{{role.id}}/qualifications/create">Add
+                                                qualifiations</a>
                                         </div>
                                         <hr class="border-bottom border-3 border-dark">
-                                    
+
                                         <div class="d-flex justify-content-between align-items-center">
                                             <h6>Place of Employment Information</h6>
-                                            <a class="btn btn-primary btn-sm" href="/work-requests/role/{{role.id}}/qualifications/create">Add location</a>
+                                            <a class="btn btn-primary btn-sm"
+                                                href="/work-requests/role/{{role.id}}/qualifications/create">Add
+                                                location</a>
                                         </div>
                                         <hr class="border-bottom border-3 border-dark">
-                                    
+
                                         <div class="d-flex justify-content-between align-items-center">
                                             <h6>Housing Information</h6>
-                                            <a class="btn btn-primary btn-sm" href="/work-requests/role/{{role.id}}/housing/create">Add housing</a>
+                                            <a class="btn btn-primary btn-sm"
+                                                href="/work-requests/role/{{role.id}}/housing/create">Add housing</a>
                                         </div>
                                         <hr class="border-bottom border-3 border-dark">
-                                    
+
                                         <div class="d-flex justify-content-between align-items-center">
                                             <h6>Provision of Meals</h6>
-                                            <a class="btn btn-primary btn-sm" href="/work-requests/role/{{role.id}}/meals/create">Add meals</a>
+                                            <a class="btn btn-primary btn-sm"
+                                                href="/work-requests/role/{{role.id}}/meals/create">Add meals</a>
                                         </div>
                                         <hr class="border-bottom border-3 border-dark">
                                     </div>
-                                    
-                                 </div>
+
+                                </div>
                             </div>
                         </div>
                     </div>

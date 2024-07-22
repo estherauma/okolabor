@@ -91,12 +91,18 @@ class Wages(AuditableModel):
         max_digits=10, decimal_places=2,
         blank=True, null=True
     )
-    frequency_of_pay = models.CharField(max_length=50)
-    frequency_of_pay_other = models.CharField(
-        max_length=50, blank=True, null=True
+    piece_rate_offerings_type = models.CharField(
+        max_length=50,
+        choices=[
+            ('Hourly', 'Hourly'),
+            ('Daily', 'Daily'),
+            ('Weekly', 'Weekly'),
+            ('Monthly', 'Monthly')
+        ]
     )
-    start_timing = models.CharField(max_length=50)
-
+    
+    frequency_of_pay = models.CharField(max_length=50)
+    details = models.CharField(max_length=100, null=True)
 
 class Deduction(AuditableModel):
     role = models.ForeignKey(

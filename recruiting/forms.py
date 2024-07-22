@@ -122,10 +122,11 @@ class RoleHoursForm(forms.ModelForm):
         widgets = {
             'role': forms.Select(attrs={
                 'class': 'form-control',
-                'disabled': True
+                'readonly': True
             }),
             'on_call': forms.CheckboxInput(attrs={
-                'class': 'form-control',
+                'class': 'form-check-input',
+                'type': 'checkbox'
             }),
             'estimate_weekly_hours': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -161,14 +162,15 @@ class RoleWagesForm(forms.ModelForm):
     class Meta:
         model = Wages
         fields = [
-            'role', 'wage', 'wage_type', 'piece_rate_offerings',
-            'frequency_of_pay', 'frequency_of_pay_other', 'start_timing'
+            'role', 'wage', 'wage_type', 'piece_rate_offerings', 
+            'piece_rate_offerings_type', 'frequency_of_pay',
+            'details'
         ]
 
         widgets = {
             'role': forms.Select(attrs={
                 'class': 'form-control',
-                'disabled': True
+                'readonly': True
             }),
             'wage': forms.NumberInput(attrs={
                 'class': 'form-control',
@@ -179,13 +181,14 @@ class RoleWagesForm(forms.ModelForm):
             'piece_rate_offerings': forms.NumberInput(attrs={
                 'class': 'form-control',
             }),
-            'frequency_of_pay': forms.Select(attrs={
+            'piece_rate_offerings_type': forms.Select(attrs={
                 'class': 'form-control',
             }),
-            'frequency_of_pay_other': forms.TextInput(attrs={
+            'frequency_of_pay': forms.TextInput(attrs={
                 'class': 'form-control',
             }),
-            'start_timing': forms.TextInput(attrs={
+        
+            'details': forms.TextInput(attrs={
                 'class': 'form-control',
             }),
         }

@@ -94,7 +94,8 @@ class WorkRequestRoleCreateView(CreateView):
     
     def get_initial(self):
         initial = super().get_initial()
-        initial['work_request'] = self.kwargs.get('pk') 
+        initial['work_request'] = self.kwargs.get('pk')
+
         return initial
     
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
@@ -117,20 +118,43 @@ class WorkRequestRoleCreateView(CreateView):
 class RoleDataBaseView(CreateView):
     def get_initial(self):
         initial = super().get_initial()
-        initial['role'] = self.kwargs.get('pk') 
+        initial['role'] = self.kwargs.get('pk')
         return initial
 
+    def get_success_url(self) -> str:
+        return reverse(
+            'recruiting_web:workrequest_detail',
+            kwargs={'pk': self.object.role.work_request.pk}
+        )
+
+    def form_invalid(self, form: BaseModelForm) -> HttpResponse:
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(self.request, f'{field}: {error}')
+        return super().form_invalid(form)
+
+    def form_valid(self, form):
+        form.instance.role_id = self.kwargs.get('pk')
+        return super().form_valid(form)
 
 class RoleHoursCreateView(RoleDataBaseView):
     model = Hours
     form_class = RoleHoursForm
     template_name = 'recruiting/work_requests/create_hours.html'
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Role hours successfully added')
+        return super().form_valid(form)
 
 
 class RoleWagesCreateView(RoleDataBaseView):
     model = Wages
     form_class = RoleWagesForm
     template_name = 'recruiting/work_requests/create_wages.html'
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Roles wages successfully added')
+        return super().form_valid(form)
 
 
 class RoleDeductionsCreateView(RoleDataBaseView):
