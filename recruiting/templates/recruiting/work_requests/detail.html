@@ -122,7 +122,7 @@
                                         {% endif %}
 
                                         <hr class="border-bottom border-dark">
-                                        <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex justify-content-between align-items-center mt-5">
                                             <h6>Wages</h6>
                                             <a class="btn btn-primary btn-sm"
                                                 href="/work-requests/role/{{role.id}}/wages/create">Add wages</a>
@@ -132,22 +132,25 @@
                                         <div class="wages-details">
                                             <p><strong>Wage:</strong> ${{ role.wages.wage }}</p>
                                             <p><strong>Wage Type:</strong> {{ role.wages.get_wage_type_display }}</p>
-                                        
+
                                             {% if role.wages.piece_rate_offerings %}
-                                                <p><strong>Piece Rate Offerings:</strong> ${{ role.wages.piece_rate_offerings }}</p>
-                                                <p><strong>Piece Rate Offerings Type:</strong> {{ role.wages.get_piece_rate_offerings_type_display }}</p>
+                                            <p><strong>Piece Rate Offerings:</strong> ${{
+                                                role.wages.piece_rate_offerings }}</p>
+                                            <p><strong>Piece Rate Offerings Type:</strong> {{
+                                                role.wages.get_piece_rate_offerings_type_display }}</p>
                                             {% endif %}
-                                            
+
                                             <p><strong>Frequency of Pay:</strong> {{ role.wages.frequency_of_pay }}</p>
                                             {% if role.wages.details %}
-                                                <p><strong>Details:</strong> {{ role.wages.details }}</p>
+                                            <p><strong>Details:</strong> {{ role.wages.details }}</p>
                                             {% endif %}
                                         </div>
-                                        
+
                                         {% else %}
                                         <p>No wages information available for this role.</p>
                                         {% endif %}
                                         <hr class="border-bottom border-dark">
+
                                         <div class="d-flex justify-content-between align-items-center">
                                             <h6>Deductions</h6>
                                             <a class="btn btn-primary btn-sm"
@@ -155,6 +158,29 @@
                                                 deductions</a>
                                         </div>
                                         <hr class="border-bottom border-3 border-dark">
+                                        <div class="deduction-details table-responsive">
+                                            <table class="table table-bordered text-nowrap border-bottom">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Description</th>
+                                                        <th>Deduction Amount</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for deduction in role.deductions.all %}
+                                                    <tr>
+                                                        <td>{{ deduction.description }}</td>
+                                                        <td>${{ deduction.deduction_amount }}</td>
+                                                    </tr>
+                                                    {% empty %}
+                                                    <tr>
+                                                        <td colspan="2">No deductions found.</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <hr class="border-bottom border-3">
 
                                         <div class="d-flex justify-content-between align-items-center">
                                             <h6>Qualifications</h6>
@@ -163,28 +189,92 @@
                                                 qualifiations</a>
                                         </div>
                                         <hr class="border-bottom border-3 border-dark">
+                                        {% if role.qualifications %}
+                                            <ul>
+                                                <li><strong>Minimum Education Requirement:</strong> {{ role.qualifications.minimum_education_requirement }}</li>
+                                                <li><strong>Experience Required:</strong> {{ role.qualifications.experience_required }}</li>
+                                                <li><strong>Number of Months Experience Required:</strong> {{ role.qualifications.number_of_months_experience_required }}</li>
+                                                <li><strong>Training Required</strong> {{ role.qualifications.training_required }}</li>
+                                                <li><strong>Number of Months Training Required:</strong> {{ role.qualifications.number_of_months_training_required }}</li>
+                                                <li><strong>Certification/License Requirements:</strong> {{ role.qualifications.certification_license_requirements|yesno:"Yes,No" }}</li>
+                                                <li><strong>Drug Screen:</strong> {{ role.qualifications.drug_screen|yesno:"Yes,No" }}</li>
+                                                <li><strong>Lifting Requirements:</strong> {{ role.qualifications.lifting_requirements }}</li>
+                                                <li><strong>Lifting Requirement Weight:</strong> {{ role.qualifications.lifting_requirement_weight }} lbs</li>
+                                                <li><strong>Exposure to Temperature:</strong> {{ role.qualifications.exposure_to_temperature|yesno:"Yes,No" }}</li>
+                                                <li><strong>Extensive Pushing or Pulling:</strong> {{ role.qualifications.extensive_pushing_or_pulling|yesno:"Yes,No" }}</li>
+                                                <li><strong>Extensive Sitting or Walking:</strong> {{ role.qualifications.extensive_sitting_or_walking|yesno:"Yes,No" }}</li>
+                                                <li><strong>Frequent Stooping or Bending Over:</strong> {{ role.qualifications.frequent_stooping_or_bending_over|yesno:"Yes,No" }}</li>
+                                                <li><strong>Repetitive Movements:</strong> {{ role.qualifications.repetitive_movements|yesno:"Yes,No" }}</li>
+                                                <li><strong>Support of Other Employees:</strong> {{ role.qualifications.support_of_other_employees|yesno:"Yes,No" }}</li>
+                                                {% if role.qualifications.other_qualifications %}
+                                                    <li><strong>Other Qualifications:</strong> {{ role.qualifications.other_qualifications }}</li>
+                                                {% endif %}
+                                            </ul>
+                                        {% else %}
+                                            <p>No qualifications found for this role.</p>
+                                        {% endif %}
+                                        <hr class="border-bottom border-3">
 
                                         <div class="d-flex justify-content-between align-items-center">
                                             <h6>Place of Employment Information</h6>
                                             <a class="btn btn-primary btn-sm"
-                                                href="/work-requests/role/{{role.id}}/qualifications/create">Add
+                                                href="/work-requests/role/{{role.id}}/location/create">Add
                                                 location</a>
                                         </div>
                                         <hr class="border-bottom border-3 border-dark">
-
+                                        {%  if role.employment_location %}
+                                            <ul>
+                                                <li><strong>Address:</strong> {{role.employment_location.address}}</li>
+                                                <li><strong>City:</strong> {{role.employment_location.city}}</li>
+                                                <li><strong>Country:</strong> {{role.employment_location.country}}</li>
+                                                <li><strong>State:</strong> {{role.employment_location.state}}</li>
+                                                <li><strong>Postal Code:</strong> {{role.employment_location.postal_code}}</li>
+                                                <li><strong>Additional Information:</strong> {{role.employment_location.additional_information}}</li>
+                                            </ul>
+                                        {% else %}
+                                            <p>No employment location information for this role</p>
+                                        {% endif %}
+                                        <hr class="border-bottom border-3">
+                                        <!-- End of employment location informations -->
+                                       
                                         <div class="d-flex justify-content-between align-items-center">
                                             <h6>Housing Information</h6>
                                             <a class="btn btn-primary btn-sm"
                                                 href="/work-requests/role/{{role.id}}/housing/create">Add housing</a>
                                         </div>
                                         <hr class="border-bottom border-3 border-dark">
+                                        {% if role.housing_information %}
+                                            <ul>
+                                                <li><strong>Address: </strong>{{role.housing_information.address}} </li>
+                                                <li><strong>City:  </strong>{{role.housing_information.city}}</li>
+                                                <li><strong>Country:  </strong>{{role.housing_information.county}}</li>
+                                                <li><strong>State:  </strong>{{role.housing_information.state}}</li>
+                                                <li><strong>Address:  </strong>{{role.housing_information.postal_code}}</li>
+                                                <li><strong>Housing Type:  </strong>{{role.housing_information.type_of_housing}}</li>
+                                                <li><strong>Additional Information:  </strong>{{role.housing_information.additional_information}}</li>
+                                            </ul>
+                                        {% else %}
+                                            <p>No housing information for this role</p>
+                                        {% endif %}
+                                        <hr class="border-bottom border-3">
+                                        <!-- End of housing informations -->
 
+                                      
                                         <div class="d-flex justify-content-between align-items-center">
                                             <h6>Provision of Meals</h6>
                                             <a class="btn btn-primary btn-sm"
                                                 href="/work-requests/role/{{role.id}}/meals/create">Add meals</a>
                                         </div>
                                         <hr class="border-bottom border-3 border-dark">
+                                        {% if role.meal_provision %}
+                                        <ul>
+                                            <li><strong>Are meals provided:</strong> {{ role.meal_provision|yesno:"Yes,No" }}</li>
+                                            <li><strong>Amount charged per day:</strong> {{ role.meal_provision.meal_charge_amount }}</li>
+                                            <li><strong>Additional information:</strong> {{ role.meal_provision.additional_info }}</li>
+                                        </ul>
+                                        {% else %}
+                                            <p>No meal information for this role</p>
+                                        {% endif %}
                                     </div>
 
                                 </div>

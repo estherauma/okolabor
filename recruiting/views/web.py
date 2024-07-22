@@ -8,10 +8,10 @@ from django.views import View
 
 from recruiting.forms import (
     EmployerForm, RoleDeductionForm,RoleEmploymentLocationForm,
-    RoleHoursForm, RoleHousingInformationForm, RoleQualificationForm,
+    RoleHoursForm, RoleHousingInformationForm, RoleMealProvision, RoleQualificationForm,
     RoleWagesForm, WorkRequestForm, WorkRequestRoleForm
 )
-from recruiting.models import Deduction, Employer, EmploymentLocation, Hours, HousingInformation, Qualification, Role, Wages, WorkRequests
+from recruiting.models import Deduction, Employer, EmploymentLocation, Hours, HousingInformation, MealProvision, Qualification, Role, Wages, WorkRequests
 from django.views.generic import CreateView
 
 
@@ -162,6 +162,11 @@ class RoleDeductionsCreateView(RoleDataBaseView):
     form_class = RoleDeductionForm
     template_name = 'recruiting/work_requests/create_deductions.html'
 
+    def form_valid(self, form):
+        messages.success(self.request, 'Roles deductions successfully added')
+        return super().form_valid(form)    
+    
+
 
 class RoleQualificationsCreateView(RoleDataBaseView):
     model = Qualification
@@ -174,14 +179,25 @@ class RoleEmpLocationCreateView(RoleDataBaseView):
     form_class = RoleEmploymentLocationForm
     template_name = 'recruiting/work_requests/create_employment_location.html'
     
+    def form_valid(self, form):
+        messages.success(self.request, 'Successfully added role location')
+        return super().form_valid(form)
+    
 
 class RoleHousingCreateView(RoleDataBaseView):
     model = HousingInformation
     form_class = RoleHousingInformationForm
     template_name = 'recruiting/work_requests/create_housing_info.html'
 
+    def form_valid(self, form):
+        messages.success(self.request, 'Successfully added role housing information')
+        return super().form_valid(form)
 
 class RoleMealsCreateView(RoleDataBaseView):
-    model = HousingInformation
-    form_class = RoleHousingInformationForm
+    model = MealProvision
+    form_class = RoleMealProvision
     template_name = 'recruiting/work_requests/create_meal_provision.html'
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Successfully added role meals information')
+        return super().form_valid(form)

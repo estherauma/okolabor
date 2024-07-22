@@ -202,7 +202,7 @@ class RoleDeductionForm(forms.ModelForm):
         widgets = {
             'role': forms.Select(attrs={
                 'class': 'form-control',
-                'disabled': True
+                'readonly': True
             }),
             'description': forms.Textarea(attrs={
                 'class': 'form-control',
@@ -238,7 +238,7 @@ class RoleQualificationForm(forms.ModelForm):
         widgets = {
             'role': forms.Select(attrs={
                 'class': 'form-control',
-                'disabled': True
+                'readonly': True
             }),
             'minimum_education_requirement': forms.Select(attrs={
                 'class': 'form-control',
@@ -256,33 +256,36 @@ class RoleQualificationForm(forms.ModelForm):
                 'class': 'form-control',
             }),
             'certification_license_requirements': forms.CheckboxInput(attrs={
-                'class': 'form-control',
+                'class': 'form-check-input',
             }),
             'drug_screen': forms.CheckboxInput(attrs={
-                'class': 'form-control',
+                'class': 'form-check-input',
             }),
-            'lifting_requirements': forms.TextInput(attrs={
-                'class': 'form-control',
+            'lifting_requirements': forms.CheckboxInput(attrs={
+                'class': 'form-check-input',
             }),
             'lifting_requirement_weight': forms.NumberInput(attrs={
                 'class': 'form-control',
             }),
             'exposure_to_temperature': forms.CheckboxInput(attrs={
-                'class': 'form-control',
+                'class': 'form-check-input',
             }),
             'extensive_pushing_or_pulling': forms.CheckboxInput(attrs={
-                'class': 'form-control',
+                'class': 'form-check-input',
             }),
             'extensive_sitting_or_walking': forms.CheckboxInput(attrs={
-                'class': 'form-control',
+                'class': 'form-check-input',
             }),
             'frequent_stooping_or_bending_over': forms.CheckboxInput(attrs={
-                'class': 'form-control',
+                'class': 'form-check-input',
             }),
             'repetitive_movements': forms.CheckboxInput(attrs={
-                'class': 'form-control',
+                'class': 'form-check-input',
             }),
             'support_of_other_employees': forms.CheckboxInput(attrs={
+                'class': 'form-check-input',
+            }),
+            'support_of_other_employees_number': forms.NumberInput(attrs={
                 'class': 'form-control',
             }),
             'other_qualifications': forms.Textarea(attrs={
@@ -301,7 +304,7 @@ class RoleEmploymentLocationForm(forms.ModelForm):
         widgets = {
             'role': forms.Select(attrs={
                 'class': 'form-control',
-                'disabled': True
+                'readonly': True
             }),
             'address': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -334,7 +337,7 @@ class RoleHousingInformationForm(forms.ModelForm):
         widgets = {
             'role': forms.Select(attrs={
                 'class': 'form-control',
-                'disabled': True
+                'readonly': True
             }),
             'address': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -371,10 +374,10 @@ class RoleMealProvision(forms.ModelForm):
         widgets = {
             'role': forms.Select(attrs={
                 'class': 'form-control',
-                'disabled': True
+                'readonly': True
             }),
             'will_provide_meals': forms.CheckboxInput(attrs={
-                'class': 'form-control',
+                'class': 'form-check-input',
             }),
             'meal_charge_amount': forms.NumberInput(attrs={
                 'class': 'form-control',

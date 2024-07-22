@@ -135,7 +135,7 @@ class Qualification(AuditableModel):
     number_of_months_training_required = models.IntegerField()
     certification_license_requirements = models.BooleanField()
     drug_screen = models.BooleanField()
-    lifting_requirements = models.CharField(max_length=50)
+    lifting_requirements = models.BooleanField(max_length=50)
     lifting_requirement_weight = models.IntegerField(blank=True, null=True)
     exposure_to_temperature = models.BooleanField()
     extensive_pushing_or_pulling = models.BooleanField()
@@ -143,6 +143,7 @@ class Qualification(AuditableModel):
     frequent_stooping_or_bending_over = models.BooleanField()
     repetitive_movements = models.BooleanField()
     support_of_other_employees = models.BooleanField()
+    support_of_other_employees_number = models.IntegerField(null=True, blank=True)
     other_qualifications = models.TextField(blank=True, null=True)
 
 
