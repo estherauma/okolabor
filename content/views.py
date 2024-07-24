@@ -319,6 +319,16 @@ class ContentAPI():
                             }
                         }
                         agg_result.append(audio_data)
+                    if component_type == 'common.highlighted-link':
+                        highlighted_link_data = {
+                            'type': 'highlighted_link',
+                            # test icon when data is available
+                            'icon': aggregate_media_data(item['icon'][0]) if item.get('icon') else None,
+                            # check description  # use agg text area
+                            'description': agg_rich_text(item['link_description'][0]['children']) if item.get('link_description') else None,
+                            'link': item.get('highlighted_link', None),
+                        }
+                        agg_result.append(highlighted_link_data)
                 except Exception as e:
                     print(f'Could not aggregate {component_type} component.', e)
                     return None
