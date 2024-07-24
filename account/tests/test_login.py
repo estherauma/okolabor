@@ -177,9 +177,9 @@ class UserWorkExperienceViewTestCase(APITestCase):
             company='Test Company',
             start_date='2024-01-01',
             end_date='2024-12-31',
-            # role='Tester'
+           
         )
-        # self.detail_url = reverse('account:api-work-experience', args=[self.user.pk, self.experience.pk])
+        
     def test_get_user_work_experience(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -248,7 +248,6 @@ class UserWorkExperienceViewTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     
-
 class UserPreferencesUpdateViewTestCase(APITestCase):
     def setUp(self):
         self.client = APIClient()
@@ -417,6 +416,8 @@ class UserPreferencesUpdateViewTestCase(APITestCase):
         }
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, 200)
+
+    
 
     
 
