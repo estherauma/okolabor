@@ -285,6 +285,24 @@ class ContentAPI():
                 print('Could not aggregate drop down content', e)
                 return None
 
+        def aggregate_images_slider(slider_data):
+            try:
+                slider_content = []
+                if not slider_data:
+                    return slider_content
+
+                for item in slider_data:
+                    slider_content.append({
+                        'title': item.get('title', None),
+                        # check image url, media url
+                        'image': aggregate_media_data(item['image']) if item.get('image') else None,
+                        'description': aggregate_text_area(item['description']) if item.get('description') else None,
+                    })
+                return slider_content
+            except Exception as e:
+                print('Could not aggregate images slider content', e)
+                return None
+
         def aggregate_components(data):
             agg_result = []
             for item in data:
@@ -371,6 +389,12 @@ class ContentAPI():
                             'data': aggregate_drop_down_content(item['repeatable_zone'])
                         }
                         agg_result.append(drop_down_content_data)
+                    if component_type == 'common.images-slider':
+                        images_slider_data = {
+                            'type': 'images_slider',
+                            'sliderContent': aggregate_images_slider(item['repeatable_zone'])
+                        }
+                        agg_result.append(images_slider_data)
                 except Exception as e:
                     print(f'Could not aggregate {component_type} component.', e)
                     return None
