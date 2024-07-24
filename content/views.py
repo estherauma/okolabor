@@ -184,6 +184,10 @@ class ContentAPI():
                             formatted_text += f'<code>{item["text"]}</code>'
                         else:
                             formatted_text += item['text']
+                    if item['type'] == 'link' and item.get('url'):
+                        url = item.get('url')
+                        link_text = item['children'][0]['text']
+                        formatted_text += f'<a href="{url}">{link_text}</a>'
                 return formatted_text
             except Exception as e:
                 print(f'Could not aggregate rich text data: {data}.', e)
@@ -197,37 +201,46 @@ class ContentAPI():
                     return result_data
 
                 for item in text_area_data:
-                    if 'heading' in item['type']:
-                        pass
-                        # result_data.append({
-                        #     item['type']: item['text']
-                        # })
-                    else:
-                        if item['type'] == 'paragraph':
-                            result_data.append({
-                                'paragraph': agg_rich_text(item['children']) if item['children'] else ''
-                            })
-                        elif item['type'] == 'image':
-                            pass
-                            # result_data.append({
-                            #     'image': item.get('url')
-                            # })
-                        elif item['type'] == 'list':
-                            list_format = item['format']
-                            list_data = []
-                            for y in item['children']:
-                                if y['type'] == 'list-item' and y['children']:
-                                    agg_text = agg_rich_text(y['children']) if y['children'] else ''
-                                    list_data.append(agg_text)
+                    if item['type'] == 'heading':
+                        level = item.get('level')
+                        text = agg_rich_text(item['children']) if item['children'] else ''
+                        result_data.append({
+                            f'heading{level}': f'<h{level}>{text}</h{level}>'
+                        })
+                    elif item['type'] == 'quote':
+                        text = agg_rich_text(item['children']) if item['children'] else ''
+                        result_data.append({
+                            'quote': f'<blockquote>{text}</blockquote>'
+                        })
+                    elif item['type'] == 'code':
+                        text = agg_rich_text(item['children']) if item['children'] else ''
+                        result_data.append({
+                            'code': f'<code>{text}</code>'
+                        })
+                    elif item['type'] == 'paragraph':
+                        result_data.append({
+                            'paragraph': agg_rich_text(item['children']) if item['children'] else ''
+                        })
+                    elif item['type'] == 'image' and item.get('image'):
+                        result_data.append({
+                            'image': item['image'].get('url', None)
+                        })
+                    elif item['type'] == 'list':
+                        list_format = item['format']
+                        list_data = []
+                        for y in item['children']:
+                            if y['type'] == 'list-item' and y['children']:
+                                agg_text = agg_rich_text(y['children']) if y['children'] else ''
+                                list_data.append(agg_text)
 
-                            if list_format == 'unordered':
-                                result_data.append({
-                                    'unorderedList': list_data
-                                })
-                            elif list_format == 'ordered':
-                                result_data.append({
-                                    'orderedList': list_data
-                                })
+                        if list_format == 'unordered':
+                            result_data.append({
+                                'unorderedList': list_data
+                            })
+                        elif list_format == 'ordered':
+                            result_data.append({
+                                'orderedList': list_data
+                            })
                 return result_data
             except Exception as e:
                 print(f'Could not aggregate text area data: {text_area_data}', e)
