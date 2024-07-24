@@ -264,6 +264,27 @@ class ContentAPI():
                 print(f'Could not aggregate text area data: {text_area_data}', e)
                 return None
 
+        def aggregate_drop_down_content(drop_down_data):
+            try:
+                drop_down_content = []
+                if not drop_down_data:
+                    return drop_down_content
+
+                for item in drop_down_data:
+                    drop_down_content.append({
+                        'title': agg_rich_text(item['title'][0]['children']) if item.get('title') else None,
+                        'titleAudioUrl': item.get('dd_title_audio', None),
+                        'titleAudio': {
+                            'url': item.get('dd_title_audio', None),
+                        },
+                        'showDescription': False,
+                        'description': aggregate_text_area(item['description']) if item.get('description') else None,
+                    })
+                return drop_down_content
+            except Exception as e:
+                print('Could not aggregate drop down content', e)
+                return None
+
         def aggregate_components(data):
             agg_result = []
             for item in data:
@@ -344,6 +365,12 @@ class ContentAPI():
                             'description': aggregate_text_area(item['warning_text']) if item.get('warning_text') else None,
                         }
                         agg_result.append(warning_box_data)
+                    if component_type == 'common.drop-down-content':
+                        drop_down_content_data = {
+                            'type': 'drop_down_content',
+                            'data': aggregate_drop_down_content(item['repeatable_zone'])
+                        }
+                        agg_result.append(drop_down_content_data)
                 except Exception as e:
                     print(f'Could not aggregate {component_type} component.', e)
                     return None
