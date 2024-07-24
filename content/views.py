@@ -252,7 +252,8 @@ class ContentAPI():
                 component_type = item['__component']
                 try:
 
-                    if component_type == 'okolabor.clickable-list':
+                    if component_type == 'okolabor.clickable-list' or\
+                            component_type == 'common.clickable-list':
                         layout = item.get('layout', 'flow')
                         list_data = {
                             'type': 'clickable_list',
