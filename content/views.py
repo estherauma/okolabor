@@ -329,6 +329,21 @@ class ContentAPI():
                             'link': item.get('highlighted_link', None),
                         }
                         agg_result.append(highlighted_link_data)
+                    if component_type == 'common.case-study':
+                        case_study_data = {
+                            'type': 'case_study',
+                            'document': item.get('link', None),
+                        }
+                        agg_result.append(case_study_data)
+                    if component_type == 'common.warning-box':
+                        # check title & icon when data is available
+                        warning_box_data = {
+                            'type': 'warning_box',
+                            'icon': aggregate_media_data(item['warning_icon'][0]) if item.get('warning_icon') else None,
+                            'title': item.get('warning_title', None),
+                            'description': aggregate_text_area(item['warning_text']) if item.get('warning_text') else None,
+                        }
+                        agg_result.append(warning_box_data)
                 except Exception as e:
                     print(f'Could not aggregate {component_type} component.', e)
                     return None
