@@ -163,7 +163,7 @@ class ContentAPI():
                 return None
 
         def aggregate_components(data):
-            result = []
+            agg_result = []
             for item in data:
                 component_type = item['__component']
                 try:
@@ -175,13 +175,13 @@ class ContentAPI():
                             'layout': layout,
                             'list': aggregate_lists(item['repeatable_zone'], layout)
                         }
-                        result.append(list_data)
+                        agg_result.append(list_data)
                     if component_type == 'okolabor.illustration':
                         image_data = {
                             'type': 'illustration',
                             'mediaData': aggregate_media_data(item['image']) if item.get('image') else None,
                         }
-                        result.append(image_data)
+                        agg_result.append(image_data)
 
                     if component_type == 'okolabor.additional-text':
                         result = aggregate_key_value_text(item['repeatable_zone'])
@@ -189,12 +189,12 @@ class ContentAPI():
                             'type': 'additional_text',
                             'additional_text': result
                         }
-                        result.append(additional_text)
+                        agg_result.append(additional_text)
 
                 except Exception as e:
                     print(f'Could not aggregate {component_type} component', e)
                     return None
-            return result
+            return agg_result
 
         for item in lang_content['data']:
             if item['custom_type'] == 'form_questions':
