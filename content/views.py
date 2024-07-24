@@ -162,6 +162,77 @@ class ContentAPI():
                 print('Could not aggregate list data', e)
                 return None
 
+        def agg_rich_text(data):
+            try:
+                formatted_text = ''
+                if not data:
+                    return formatted_text
+
+                for item in data:
+                    if item['type'] == 'text' and item.get('text'):
+                        item['text'] = item['text'].replace('\n', '<br>')
+
+                        if item.get('bold'):
+                            formatted_text += f'<b>{item["text"]}</b>'
+                        elif item.get('italic'):
+                            formatted_text += f'<i>{item["text"]}</i>'
+                        elif item.get('underline'):
+                            formatted_text += f'<u>{item["text"]}</u>'
+                        elif item.get('strikethrough'):
+                            formatted_text += f'<s>{item["text"]}</s>'
+                        elif item.get('code'):
+                            formatted_text += f'<code>{item["text"]}</code>'
+                        else:
+                            formatted_text += item['text']
+                return formatted_text
+            except Exception as e:
+                print(f'Could not aggregate rich text data: {data}.', e)
+                return None
+
+        def aggregate_text_area(text_area_data):
+            try:
+                result_data = []
+
+                if not text_area_data:
+                    return result_data
+
+                for item in text_area_data:
+                    if 'heading' in item['type']:
+                        pass
+                        # result_data.append({
+                        #     item['type']: item['text']
+                        # })
+                    else:
+                        if item['type'] == 'paragraph':
+                            result_data.append({
+                                'paragraph': agg_rich_text(item['children']) if item['children'] else ''
+                            })
+                        elif item['type'] == 'image':
+                            pass
+                            # result_data.append({
+                            #     'image': item.get('url')
+                            # })
+                        elif item['type'] == 'list':
+                            list_format = item['format']
+                            list_data = []
+                            for y in item['children']:
+                                if y['type'] == 'list-item' and y['children']:
+                                    agg_text = agg_rich_text(y['children']) if y['children'] else ''
+                                    list_data.append(agg_text)
+
+                            if list_format == 'unordered':
+                                result_data.append({
+                                    'unorderedList': list_data
+                                })
+                            elif list_format == 'ordered':
+                                result_data.append({
+                                    'orderedList': list_data
+                                })
+                return result_data
+            except Exception as e:
+                print(f'Could not aggregate text area data: {text_area_data}', e)
+                return None
+
         def aggregate_components(data):
             agg_result = []
             for item in data:
@@ -182,7 +253,6 @@ class ContentAPI():
                             'mediaData': aggregate_media_data(item['image']) if item.get('image') else None,
                         }
                         agg_result.append(image_data)
-
                     if component_type == 'okolabor.additional-text':
                         result = aggregate_key_value_text(item['repeatable_zone'])
                         additional_text = {
@@ -190,9 +260,15 @@ class ContentAPI():
                             'additional_text': result
                         }
                         agg_result.append(additional_text)
-
+                    if component_type == 'common.text-area':
+                        text_area_data = {
+                            'type': 'text_area',
+                            'title': item.get('h2_title_area', None),
+                            'description': aggregate_text_area(item['text_area']) if item.get('text_area') else None
+                        }
+                        agg_result.append(text_area_data)
                 except Exception as e:
-                    print(f'Could not aggregate {component_type} component', e)
+                    print(f'Could not aggregate {component_type} component.', e)
                     return None
             return agg_result
 
@@ -230,7 +306,8 @@ class ContentAPI():
                 }
                 aggregated_content[item['page_id']] = page_data
 
-            if item['custom_type'] == 'sub_chapter_list':
+            if item['custom_type'] == 'sub_chapter_list' or\
+                    item['custom_type'] == 'create_content_area':
                 aggregation_response = aggregate_components(item['dynamic_zone'])
                 page_data = {
                     'page_id': item.get('page_id', None),
