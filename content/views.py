@@ -10,9 +10,11 @@ from content.models import AggregatedContent
 from content.serializers import AggregatedContentSerializer
 from drf_yasg.utils import swagger_auto_schema
 
+
 class ContentAPI():
     def __init__(self) -> None:
         self.api_url = config('CMS_API_URL')
+        self.media_url = self.api_url.split('/api/okolabors')[0]
         self.access_token = config('CMS_API_TOKEN')
         self.headers = {
                 "Authorization": f"Bearer {self.access_token}"
@@ -20,7 +22,7 @@ class ContentAPI():
         self.languages = []
         self.start_content_fetch()
         self.documents = {}
-       
+
     def start_content_fetch(self):
         try:
             response = requests.get(self.api_url, headers=self.headers)
@@ -49,7 +51,7 @@ class ContentAPI():
     def aggregate_content(self, lang_content):
         aggregated_content = {}
         aggregated_content['languages'] = self.languages
-        
+
         def aggregate_form_questions(form_qn_data):
             question_data = []
             additional_text = []
@@ -94,7 +96,7 @@ class ContentAPI():
                     for key, value in zip(options_translations, options)
             ]
             return final_options_array
-        
+
         def aggregate_menu_content(menu_content_data):
             menu_content = []
             for item in menu_content_data:
@@ -108,13 +110,91 @@ class ContentAPI():
                 })
             return menu_content
 
+        def aggregate_media_data(media_data):
+            try:
+                if not media_data or not media_data.get('url'):
+                    return None
+
+                return {
+                    'name': media_data.get('name', None),
+                    'mime': media_data.get('mime', None),
+                    'hash': media_data.get('hash', None),
+                    'url': f'{self.media_url}{media_data["url"]}',
+                    'size': media_data.get('size', None),
+                    'ext': media_data.get('ext', None),
+                    'kind': media_data['mime'].split('/')[0] if media_data.get('mime') else None,
+                }
+            except Exception as e:
+                print(f'Could not aggregate media data: {media_data}', e)
+                return None
+
+        def aggregate_lists(list_data, layout):
+            try:
+                items = []
+                if not list_data:
+                    return []
+
+                if layout == 'grid':
+                    i = 0
+                    while i < len(list_data):
+                        row = []
+                        for j in range(2):
+                            if i < len(list_data):
+                                row.append({
+                                    'icon': aggregate_media_data(list_data[i]['icon']) if list_data[i]['icon'] else None,
+                                    'label': list_data[i].get('label', ''),
+                                    'page': list_data[i].get('page', ''),
+                                })
+                                i += 1
+                            else:
+                                break
+                        items.append(row)
+                        i -= 1
+                else:
+                    for item in list_data:
+                        items.append({
+                            'icon': aggregate_media_data(item['icon']) if item.get('icon') else None,
+                            'label': item.get('label', None),
+                            'page': item.get('page', None),
+                        })
+                return items
+            except Exception as e:
+                print('Could not aggregate list data', e)
+                return None
+
+        def aggregate_components(data):
+            result = []
+            for item in data:
+                component_type = item['__component']
+                try:
+
+                    if component_type == 'okolabor.clickable-list':
+                        layout = item.get('layout', 'flow')
+                        list_data = {
+                            'type': 'clickable_list',
+                            'layout': layout,
+                            'list': aggregate_lists(item['repeatable_zone'], layout)
+                        }
+                        result.append(list_data)
+                    if component_type == 'okolabor.illustration':
+                        image_data = {
+                            'type': 'illustration',
+                            'mediaData': aggregate_media_data(item['image']) if item.get('image') else None,
+                        }
+                        result.append(image_data)
+
+                except Exception as e:
+                    print(f'Could not aggregate {component_type} component', e)
+                    return None
+            return result
+
         for item in lang_content['data']:
             if item['custom_type'] == 'form_questions':
                 aggregation_response = aggregate_form_questions(item)
                 page_data = {
                     'page_id': item['id'],
-                    'page_title': item['page_title'],
-                    'preview_title': item['preview_title'],
+                    'page_title': item.get('page_title', None),
+                    'preview_title': item.get('preview_title', None),
                     'form_questions': aggregation_response[0],
                     'additional_text': aggregation_response[1]
                 }
@@ -124,23 +204,36 @@ class ContentAPI():
                 aggregation_response = aggregate_key_value_text(
                     item['dynamic_zone'])
                 page_data = {
-                    'page_id': item['page_id'],
-                    'page_title': item['page_title'],
-                    'preview_title': item['preview_title'],
+                    'page_id': item.get('page_id', None),
+                    'page_title': item.get('page_title', None),
+                    'preview_title': item.get('preview_title', None),
                     'data': aggregation_response
                 }
                 aggregated_content[item['page_id']] = page_data
-            
+
             if item['custom_type'] == 'menu_content':
                 aggregation_response = aggregate_menu_content(item['dynamic_zone'])
                 page_data = {
-                    'page_id': item['page_id'],
-                    'page_title': item['page_title'],
-                    'preview_title': item['preview_title'],
-                    'last_updated': item['last_published_at'],
+                    'page_id': item.get('page_id', None),
+                    'page_title': item.get('page_title', None),
+                    'preview_title': item.get('preview_title', None),
+                    'last_updated': item.get('last_published_at', None),
                     'data': aggregation_response
                 }
                 aggregated_content[item['page_id']] = page_data
+
+            if item['custom_type'] == 'sub_chapter_list':
+                aggregation_response = aggregate_components(item['dynamic_zone'])
+                page_data = {
+                    'page_id': item.get('page_id', None),
+                    'page_title': item.get('page_title', None),
+                    'preview_title': item.get('preview_title', None),
+                    'last_updated': item.get('last_published_at', None),
+                    'analytics_event_name': item.get('analytics_event_name', None),
+                    'page_content': aggregation_response
+                }
+                aggregated_content[item['page_id']] = page_data
+
         return aggregated_content
 
 
