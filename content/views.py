@@ -170,9 +170,9 @@ class ContentAPI():
 
                 for item in list_data:
                     items.append({
-                        # check description # use agg text area
+                        # TODO: check description # use agg text area
                         'description': agg_rich_text(item['description'][0]['children']) if item.get('description') else None,
-                        # check strapi, also media_url...
+                        # TODO: check strapi, also media_url...
                         'icon': aggregate_media_data(item['icon'][0]) if item.get('icon') else None,
                     })
                 return items
@@ -294,7 +294,7 @@ class ContentAPI():
                 for item in slider_data:
                     slider_content.append({
                         'title': item.get('title', None),
-                        # check image url, media url
+                        # TODO: check image url, media url
                         'image': aggregate_media_data(item['image']) if item.get('image') else None,
                         'description': aggregate_text_area(item['description']) if item.get('description') else None,
                     })
@@ -350,7 +350,7 @@ class ContentAPI():
                             'type': 'audio',
                             'title': item.get('audio_title', None),
                             'url': item.get('audio_link', None),
-                            # check description  # use agg text area
+                            # TODO: check description  # use agg text area
                             'description': agg_rich_text(item['audio_description'][0]['children'])
                             if item.get('audio_description') else None,
                             'mediaData': {
@@ -361,9 +361,9 @@ class ContentAPI():
                     if component_type == 'common.highlighted-link':
                         highlighted_link_data = {
                             'type': 'highlighted_link',
-                            # test icon when data is available
+                            # TODO: test icon when data is available
                             'icon': aggregate_media_data(item['icon'][0]) if item.get('icon') else None,
-                            # check description  # use agg text area
+                            # TODO: check description  # use agg text area
                             'description': agg_rich_text(item['link_description'][0]['children']) if item.get('link_description') else None,
                             'link': item.get('highlighted_link', None),
                         }
@@ -375,7 +375,7 @@ class ContentAPI():
                         }
                         agg_result.append(case_study_data)
                     if component_type == 'common.warning-box':
-                        # check title & icon when data is available
+                        # TODO: check title & icon when data is available
                         warning_box_data = {
                             'type': 'warning_box',
                             'icon': aggregate_media_data(item['warning_icon'][0]) if item.get('warning_icon') else None,
@@ -395,6 +395,17 @@ class ContentAPI():
                             'sliderContent': aggregate_images_slider(item['repeatable_zone'])
                         }
                         agg_result.append(images_slider_data)
+                    if component_type == 'common.question':
+                        # TODO: update qtn when data is updated
+                        qtn_data = {
+                            'type': 'question',
+                            'question': agg_rich_text(item['question'][0]['children']) if item.get('question') else None,
+                            'questionKey': item.get('question_key', None),
+                            'questionType': item.get('question_type', None),
+                            'isRequired': item.get('is_required', False),
+                            'displayQuestion': item.get('display_question', False),
+                        }
+                        agg_result.append(qtn_data)
                 except Exception as e:
                     print(f'Could not aggregate {component_type} component.', e)
                     return None
