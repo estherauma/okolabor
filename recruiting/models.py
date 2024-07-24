@@ -41,7 +41,7 @@ class WorkRequests(AuditableModel):
         return f'{self.name}'
 
 
-class Role(models.Model):
+class Role(AuditableModel):
     title = models.CharField(max_length=255)
     usdol_case_number = models.CharField(max_length=50)
     number_of_required_workers = models.IntegerField()
@@ -54,7 +54,7 @@ class Role(models.Model):
         return f'{self.title}'
 
 
-class Hours(models.Model):
+class Hours(AuditableModel):
     role = models.OneToOneField(
         Role, on_delete=models.CASCADE,
         related_name='hours'
@@ -73,7 +73,7 @@ class Hours(models.Model):
     job_description = models.TextField()
 
 
-class Wages(models.Model):
+class Wages(AuditableModel):
     role = models.OneToOneField(
         Role, on_delete=models.CASCADE, related_name='wages'
     )
@@ -91,14 +91,20 @@ class Wages(models.Model):
         max_digits=10, decimal_places=2,
         blank=True, null=True
     )
-    frequency_of_pay = models.CharField(max_length=50)
-    frequency_of_pay_other = models.CharField(
-        max_length=50, blank=True, null=True
+    piece_rate_offerings_type = models.CharField(
+        max_length=50,
+        choices=[
+            ('Hourly', 'Hourly'),
+            ('Daily', 'Daily'),
+            ('Weekly', 'Weekly'),
+            ('Monthly', 'Monthly')
+        ]
     )
-    start_timing = models.CharField(max_length=50)
+    
+    frequency_of_pay = models.CharField(max_length=50)
+    details = models.CharField(max_length=100, null=True)
 
-
-class Deduction(models.Model):
+class Deduction(AuditableModel):
     role = models.ForeignKey(
         Role, on_delete=models.CASCADE,
         related_name='deductions'
@@ -107,7 +113,7 @@ class Deduction(models.Model):
     deduction_amount = models.DecimalField(max_digits=10, decimal_places=2)
 
 
-class Qualification(models.Model):
+class Qualification(AuditableModel):
     role = models.OneToOneField(
         Role, on_delete=models.CASCADE,
         related_name='qualifications'
@@ -129,7 +135,7 @@ class Qualification(models.Model):
     number_of_months_training_required = models.IntegerField()
     certification_license_requirements = models.BooleanField()
     drug_screen = models.BooleanField()
-    lifting_requirements = models.CharField(max_length=50)
+    lifting_requirements = models.BooleanField(max_length=50)
     lifting_requirement_weight = models.IntegerField(blank=True, null=True)
     exposure_to_temperature = models.BooleanField()
     extensive_pushing_or_pulling = models.BooleanField()
@@ -137,10 +143,11 @@ class Qualification(models.Model):
     frequent_stooping_or_bending_over = models.BooleanField()
     repetitive_movements = models.BooleanField()
     support_of_other_employees = models.BooleanField()
+    support_of_other_employees_number = models.IntegerField(null=True, blank=True)
     other_qualifications = models.TextField(blank=True, null=True)
 
 
-class EmploymentLocation(models.Model):
+class EmploymentLocation(AuditableModel):
     role = models.OneToOneField(
         Role, on_delete=models.CASCADE,
         related_name='employment_location'
@@ -153,7 +160,7 @@ class EmploymentLocation(models.Model):
     additional_info = models.TextField(blank=True, null=True)
 
 
-class HousingInformation(models.Model):
+class HousingInformation(AuditableModel):
     role = models.OneToOneField(
         Role, on_delete=models.CASCADE,
         related_name='housing_information'
@@ -173,7 +180,7 @@ class HousingInformation(models.Model):
     additional_info = models.TextField(blank=True, null=True)
 
 
-class MealProvision(models.Model):
+class MealProvision(AuditableModel):
     role = models.OneToOneField(
         Role, on_delete=models.CASCADE,
         related_name='meal_provision'

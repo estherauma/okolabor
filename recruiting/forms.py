@@ -108,6 +108,7 @@ class RoleHoursForm(forms.ModelForm):
     class Meta:
         model = Hours
         fields = [
+            'role',
             'on_call',
             'estimate_weekly_hours',
             'sunday_hours',
@@ -119,8 +120,13 @@ class RoleHoursForm(forms.ModelForm):
             'saturday_hours',
             'job_description']
         widgets = {
-            'on_call': forms.CheckboxInput(attrs={
+            'role': forms.Select(attrs={
                 'class': 'form-control',
+                'readonly': True
+            }),
+            'on_call': forms.CheckboxInput(attrs={
+                'class': 'form-check-input',
+                'type': 'checkbox'
             }),
             'estimate_weekly_hours': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -156,11 +162,16 @@ class RoleWagesForm(forms.ModelForm):
     class Meta:
         model = Wages
         fields = [
-            'wage', 'wage_type', 'piece_rate_offerings',
-            'frequency_of_pay', 'frequency_of_pay_other', 'start_timing'
+            'role', 'wage', 'wage_type', 'piece_rate_offerings', 
+            'piece_rate_offerings_type', 'frequency_of_pay',
+            'details'
         ]
 
         widgets = {
+            'role': forms.Select(attrs={
+                'class': 'form-control',
+                'readonly': True
+            }),
             'wage': forms.NumberInput(attrs={
                 'class': 'form-control',
             }),
@@ -170,13 +181,14 @@ class RoleWagesForm(forms.ModelForm):
             'piece_rate_offerings': forms.NumberInput(attrs={
                 'class': 'form-control',
             }),
-            'frequency_of_pay': forms.Select(attrs={
+            'piece_rate_offerings_type': forms.Select(attrs={
                 'class': 'form-control',
             }),
-            'frequency_of_pay_other': forms.TextInput(attrs={
+            'frequency_of_pay': forms.TextInput(attrs={
                 'class': 'form-control',
             }),
-            'start_timing': forms.TextInput(attrs={
+        
+            'details': forms.TextInput(attrs={
                 'class': 'form-control',
             }),
         }
@@ -185,9 +197,13 @@ class RoleWagesForm(forms.ModelForm):
 class RoleDeductionForm(forms.ModelForm):
     class Meta:
         model = Deduction
-        fields = ['description', 'deduction_amount']
+        fields = ['role','description', 'deduction_amount']
 
         widgets = {
+            'role': forms.Select(attrs={
+                'class': 'form-control',
+                'readonly': True
+            }),
             'description': forms.Textarea(attrs={
                 'class': 'form-control',
             }),
@@ -201,6 +217,7 @@ class RoleQualificationForm(forms.ModelForm):
     class Meta:
         model = Qualification
         fields = [
+            'role',
             'minimum_education_requirement',
             'experience_required',
             'number_of_months_experience_required',
@@ -219,6 +236,10 @@ class RoleQualificationForm(forms.ModelForm):
             'other_qualifications']
 
         widgets = {
+            'role': forms.Select(attrs={
+                'class': 'form-control',
+                'readonly': True
+            }),
             'minimum_education_requirement': forms.Select(attrs={
                 'class': 'form-control',
             }),
@@ -235,33 +256,36 @@ class RoleQualificationForm(forms.ModelForm):
                 'class': 'form-control',
             }),
             'certification_license_requirements': forms.CheckboxInput(attrs={
-                'class': 'form-control',
+                'class': 'form-check-input',
             }),
             'drug_screen': forms.CheckboxInput(attrs={
-                'class': 'form-control',
+                'class': 'form-check-input',
             }),
-            'lifting_requirements': forms.TextInput(attrs={
-                'class': 'form-control',
+            'lifting_requirements': forms.CheckboxInput(attrs={
+                'class': 'form-check-input',
             }),
             'lifting_requirement_weight': forms.NumberInput(attrs={
                 'class': 'form-control',
             }),
             'exposure_to_temperature': forms.CheckboxInput(attrs={
-                'class': 'form-control',
+                'class': 'form-check-input',
             }),
             'extensive_pushing_or_pulling': forms.CheckboxInput(attrs={
-                'class': 'form-control',
+                'class': 'form-check-input',
             }),
             'extensive_sitting_or_walking': forms.CheckboxInput(attrs={
-                'class': 'form-control',
+                'class': 'form-check-input',
             }),
             'frequent_stooping_or_bending_over': forms.CheckboxInput(attrs={
-                'class': 'form-control',
+                'class': 'form-check-input',
             }),
             'repetitive_movements': forms.CheckboxInput(attrs={
-                'class': 'form-control',
+                'class': 'form-check-input',
             }),
             'support_of_other_employees': forms.CheckboxInput(attrs={
+                'class': 'form-check-input',
+            }),
+            'support_of_other_employees_number': forms.NumberInput(attrs={
                 'class': 'form-control',
             }),
             'other_qualifications': forms.Textarea(attrs={
@@ -274,10 +298,14 @@ class RoleEmploymentLocationForm(forms.ModelForm):
     class Meta:
         model = EmploymentLocation
         fields = [
-            'address', 'city', 'county', 'state',
-            'postal_code', 'additional_info'
+            'role', 'address', 'city', 'county', 'state',
+            'postal_code', 'additional_info', 'role'
         ]
         widgets = {
+            'role': forms.Select(attrs={
+                'class': 'form-control',
+                'readonly': True
+            }),
             'address': forms.TextInput(attrs={
                 'class': 'form-control',
             }),
@@ -303,10 +331,14 @@ class RoleHousingInformationForm(forms.ModelForm):
     class Meta:
         model = HousingInformation
         fields = [
-            'address', 'city', 'county', 'state',
+            'role','address', 'city', 'county', 'state',
             'postal_code', 'type_of_housing', 'additional_info'
         ]
         widgets = {
+            'role': forms.Select(attrs={
+                'class': 'form-control',
+                'readonly': True
+            }),
             'address': forms.TextInput(attrs={
                 'class': 'form-control',
             }),
@@ -335,12 +367,17 @@ class RoleMealProvision(forms.ModelForm):
     class Meta:
         model = MealProvision
         fields = [
-            'will_provide_meals', 'meal_charge_amount',
-            'additional_info'
+            'role', 'will_provide_meals',
+            'meal_charge_amount',
+            'additional_info',
         ]
         widgets = {
-            'will_provide_meals': forms.CheckboxInput(attrs={
+            'role': forms.Select(attrs={
                 'class': 'form-control',
+                'readonly': True
+            }),
+            'will_provide_meals': forms.CheckboxInput(attrs={
+                'class': 'form-check-input',
             }),
             'meal_charge_amount': forms.NumberInput(attrs={
                 'class': 'form-control',
