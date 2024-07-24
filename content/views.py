@@ -281,6 +281,18 @@ class ContentAPI():
                             'description': aggregate_text_area(item['text_area']) if item.get('text_area') else None
                         }
                         agg_result.append(text_area_data)
+                    if component_type == 'common.audio':
+                        audio_data = {
+                            'type': 'audio',
+                            'title': item.get('audio_title', None),
+                            'url': item.get('audio_link', None),
+                            'description': agg_rich_text(item['audio_description'][0]['children'])
+                            if item.get('audio_description') else None,
+                            'mediaData': {
+                                'url': item.get('audio_link', None),
+                            }
+                        }
+                        agg_result.append(audio_data)
                 except Exception as e:
                     print(f'Could not aggregate {component_type} component.', e)
                     return None
