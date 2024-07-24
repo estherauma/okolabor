@@ -128,7 +128,7 @@ class ContentAPI():
                 print(f'Could not aggregate media data: {media_data}', e)
                 return None
 
-        def aggregate_lists(list_data, layout):
+        def aggregate_clickable_lists(list_data, layout):
             try:
                 items = []
                 if not list_data:
@@ -160,6 +160,24 @@ class ContentAPI():
                 return items
             except Exception as e:
                 print('Could not aggregate list data', e)
+                return None
+
+        def aggregate_non_clickable_lists(list_data):
+            try:
+                items = []
+                if not list_data:
+                    return items
+
+                for item in list_data:
+                    items.append({
+                        # check description # use agg text area
+                        'description': agg_rich_text(item['description'][0]['children']) if item.get('description') else None,
+                        # check strapi, also media_url...
+                        'icon': aggregate_media_data(item['icon'][0]) if item.get('icon') else None,
+                    })
+                return items
+            except Exception as e:
+                print('Could not aggregate non-clickable list data', e)
                 return None
 
         def agg_rich_text(data):
@@ -258,7 +276,14 @@ class ContentAPI():
                         list_data = {
                             'type': 'clickable_list',
                             'layout': layout,
-                            'list': aggregate_lists(item['repeatable_zone'], layout)
+                            'list': aggregate_clickable_lists(item['repeatable_zone'], layout)
+                        }
+                        agg_result.append(list_data)
+                    if component_type == 'common.non-clickable-list':
+                        list_data = {
+                            'type': 'non_clickable_list',
+                            'heading': item.get('heading', None),
+                            'list': aggregate_non_clickable_lists(item['repeatable_zone'])
                         }
                         agg_result.append(list_data)
                     if component_type == 'okolabor.illustration':
@@ -286,6 +311,7 @@ class ContentAPI():
                             'type': 'audio',
                             'title': item.get('audio_title', None),
                             'url': item.get('audio_link', None),
+                            # check description  # use agg text area
                             'description': agg_rich_text(item['audio_description'][0]['children'])
                             if item.get('audio_description') else None,
                             'mediaData': {
