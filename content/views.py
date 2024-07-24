@@ -183,6 +183,14 @@ class ContentAPI():
                         }
                         result.append(image_data)
 
+                    if component_type == 'okolabor.additional-text':
+                        result = aggregate_key_value_text(item['repeatable_zone'])
+                        additional_text = {
+                            'type': 'additional_text',
+                            'additional_text': result
+                        }
+                        result.append(additional_text)
+
                 except Exception as e:
                     print(f'Could not aggregate {component_type} component', e)
                     return None
