@@ -358,6 +358,20 @@ class ContentAPI():
                             }
                         }
                         agg_result.append(audio_data)
+                    if component_type == 'common.video-area':
+                        video_data = {
+                            'type': 'video',
+                            'title': item.get('video_title', None),
+                            'url': item.get('video_link', None),
+                            'mediaData': {
+                                'url': item.get('video_link', None),
+                            },
+                            # TODO: change when data is available
+                            'thumbnail': {
+                                'url': item.get('video_thumbnail', None),
+                            },
+                        }
+                        agg_result.append(video_data)
                     if component_type == 'common.highlighted-link':
                         highlighted_link_data = {
                             'type': 'highlighted_link',
