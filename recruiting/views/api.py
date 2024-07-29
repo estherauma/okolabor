@@ -1,7 +1,7 @@
 
 from drf_yasg.utils import swagger_auto_schema
 from recruiting.models import Employer, Role, WorkRequests
-from recruiting.serializer import EmployerSerializer
+from recruiting.serializer import EmployerSerializer, RoleSerializer, WorkRequestSerializer
 from rest_framework import status
 from rest_framework.generics import (
     ListCreateAPIView, RetrieveUpdateDestroyAPIView
@@ -33,19 +33,21 @@ class EmployerAPIListView(ListCreateAPIView):
 
 class WorkRequestsAPIListView(ListCreateAPIView):
     queryset = WorkRequests.objects.all()
-
+    serializer_class = WorkRequestSerializer
+    permission_classes = (IsAuthenticated,)
 
     @swagger_auto_schema(
         operation_summary='Retrieve all work requests',
         tags=['Work-Requests']
     )
     def get(self, request, *args, **kwargs):
-        pass
+        serializer = self.get_serializer(self.get_queryset(), many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class ContractClauseDetailsView(RetrieveUpdateDestroyAPIView):
+class WorkRequestRoleDetailView(RetrieveUpdateDestroyAPIView):
     permission_classes = ([IsAuthenticated, ])
-    # serializer_class = contractClauseSerializer
+    serializer_class = RoleSerializer
 
     def get_item(self, id):
         try:
@@ -54,9 +56,6 @@ class ContractClauseDetailsView(RetrieveUpdateDestroyAPIView):
             raise ValidationError('Role does not exist')
 
     def retrieve(self, request, id):
-        contract_clause = self.get_item(id)
-        serializer = self.serializer_class(contract_clause)
-        return Response({
-            'status': 'Ok',
-            'data': serializer.data
-        }, status=status.HTTP_200_OK)
+        role = self.get_item(id)
+        serializer = self.serializer_class(role)
+        return Response(serializer.data, status=status.HTTP_200_OK)
