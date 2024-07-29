@@ -36,7 +36,7 @@ class WorkRequests(AuditableModel):
         max_length=255, null=False, blank=False,
         choices=STATUS_CHOICES, default='DRAFT'
     )
-    
+
     def __str__(self) -> str:
         return f'{self.name}'
 
@@ -100,9 +100,10 @@ class Wages(AuditableModel):
             ('Monthly', 'Monthly')
         ]
     )
-    
+
     frequency_of_pay = models.CharField(max_length=50)
     details = models.CharField(max_length=100, null=True)
+
 
 class Deduction(AuditableModel):
     role = models.ForeignKey(
@@ -136,14 +137,17 @@ class Qualification(AuditableModel):
     certification_license_requirements = models.BooleanField()
     drug_screen = models.BooleanField()
     lifting_requirements = models.BooleanField(max_length=50)
-    lifting_requirement_weight = models.IntegerField(blank=True, null=True)
+    lifting_requirement_weight = models.IntegerField(
+        blank=True, null=True
+    )
     exposure_to_temperature = models.BooleanField()
     extensive_pushing_or_pulling = models.BooleanField()
     extensive_sitting_or_walking = models.BooleanField()
     frequent_stooping_or_bending_over = models.BooleanField()
     repetitive_movements = models.BooleanField()
     support_of_other_employees = models.BooleanField()
-    support_of_other_employees_number = models.IntegerField(null=True, blank=True)
+    support_of_other_employees_number = models.IntegerField(
+        null=True, blank=True)
     other_qualifications = models.TextField(blank=True, null=True)
 
 

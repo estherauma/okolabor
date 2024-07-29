@@ -1,7 +1,10 @@
 
 from drf_yasg.utils import swagger_auto_schema
 from recruiting.models import Employer, Role, WorkRequests
-from recruiting.serializer import EmployerSerializer, RoleSerializer, WorkRequestSerializer
+from recruiting.serializer import (
+    EmployerSerializer, RoleSerializer,
+    WRRoleSerializer, WorkRequestSerializer
+)
 from rest_framework import status
 from rest_framework.generics import (
     ListCreateAPIView, RetrieveUpdateDestroyAPIView
@@ -31,6 +34,7 @@ class EmployerAPIListView(ListCreateAPIView):
     def post(self, requuest):
         pass
 
+
 class WorkRequestsAPIListView(ListCreateAPIView):
     queryset = WorkRequests.objects.all()
     serializer_class = WorkRequestSerializer
@@ -46,16 +50,39 @@ class WorkRequestsAPIListView(ListCreateAPIView):
 
 
 class WorkRequestRoleDetailView(RetrieveUpdateDestroyAPIView):
-    permission_classes = ([IsAuthenticated, ])
+    permission_classes = [IsAuthenticated]
     serializer_class = RoleSerializer
+    lookup_field = 'pk'
+    queryset = Role.objects.all()
 
-    def get_item(self, id):
-        try:
-            return Role.objects.get(id=id)
-        except Role.DoesNotExist:
-            raise ValidationError('Role does not exist')
+    def get_object(self):
+        obj = super().get_object()
+        return obj
 
-    def retrieve(self, request, id):
-        role = self.get_item(id)
-        serializer = self.serializer_class(role)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    @swagger_auto_schema(
+        operation_summary='Retrieve a specific work request role',
+        tags=['Work-Requests/roles']
+    )
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_summary='Update a specific work request role',
+        tags=['Work-Requests/roles']
+    )
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_summary='Partially update a specific work request role',
+        tags=['Work-Requests']
+    )
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_summary='Delete a specific work request role',
+        tags=['Work-Requests']
+    )
+    def delete(self, request, *args, **kwargs):
+        pass

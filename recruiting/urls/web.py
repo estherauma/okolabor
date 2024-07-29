@@ -2,7 +2,9 @@ from django.urls import path
 
 from recruiting.views.web import (
     EmployerCreateView, EmployerDetailView,
-    EmployerListView, RoleDeductionsCreateView, RoleEmpLocationCreateView, RoleHoursCreateView, RoleHousingCreateView, RoleMealsCreateView, RoleQualificationsCreateView, RoleWagesCreateView, WorkRequestCreateView,
+    EmployerListView, RoleDeductionsCreateView, RoleEmpLocationCreateView,
+    RoleHoursCreateView, RoleHousingCreateView, RoleMealsCreateView,
+    RoleQualificationsCreateView, RoleWagesCreateView, WorkRequestCreateView,
     WorkRequestDetailView, WorkRequestRoleCreateView, WorkRequestsListView
 )
 
@@ -29,7 +31,7 @@ urlpatterns = [
     path('work-requests/<pk>/roles/create/',
          WorkRequestRoleCreateView.as_view(),
          name='workrequest_role_create'),
-    # Role relationships     
+    # Role relationships
     path('work-requests/role/<pk>/hours/create/',
          RoleHoursCreateView.as_view(),
          name='workrequest_hours_create'),

@@ -162,7 +162,7 @@ class RoleWagesForm(forms.ModelForm):
     class Meta:
         model = Wages
         fields = [
-            'role', 'wage', 'wage_type', 'piece_rate_offerings', 
+            'role', 'wage', 'wage_type', 'piece_rate_offerings',
             'piece_rate_offerings_type', 'frequency_of_pay',
             'details'
         ]
@@ -187,7 +187,6 @@ class RoleWagesForm(forms.ModelForm):
             'frequency_of_pay': forms.TextInput(attrs={
                 'class': 'form-control',
             }),
-        
             'details': forms.TextInput(attrs={
                 'class': 'form-control',
             }),
@@ -197,7 +196,7 @@ class RoleWagesForm(forms.ModelForm):
 class RoleDeductionForm(forms.ModelForm):
     class Meta:
         model = Deduction
-        fields = ['role','description', 'deduction_amount']
+        fields = ['role', 'description', 'deduction_amount']
 
         widgets = {
             'role': forms.Select(attrs={
@@ -331,7 +330,7 @@ class RoleHousingInformationForm(forms.ModelForm):
     class Meta:
         model = HousingInformation
         fields = [
-            'role','address', 'city', 'county', 'state',
+            'role', 'address', 'city', 'county', 'state',
             'postal_code', 'type_of_housing', 'additional_info'
         ]
         widgets = {
