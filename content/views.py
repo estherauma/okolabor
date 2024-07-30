@@ -171,9 +171,9 @@ class ContentAPI():
                 for item in list_data:
                     items.append({
                         # TODO: check description # use agg text area
-                        'description': agg_rich_text(item['description'][0]['children']) if item.get('description') else None,
+                        'description': aggregate_text_area(item['description']) if item.get('description') else None,
                         # TODO: check strapi, also media_url...
-                        'icon': aggregate_media_data(item['icon'][0]) if item.get('icon') else None,
+                        'icon': f'{self.media_url}{item["icon"][0]["url"]}' if item.get('icon') else None,
                     })
                 return items
             except Exception as e:
@@ -295,7 +295,7 @@ class ContentAPI():
                     slider_content.append({
                         'title': item.get('title', None),
                         # TODO: check image url, media url
-                        'image': aggregate_media_data(item['image']) if item.get('image') else None,
+                        'imageUrl': f'{self.media_url}{item["image"]["url"]}' if item.get('image') else None,
                         'description': aggregate_text_area(item['description']) if item.get('description') else None,
                     })
                 return slider_content
@@ -320,7 +320,7 @@ class ContentAPI():
                         agg_result.append(list_data)
                     if component_type == 'common.non-clickable-list':
                         list_data = {
-                            'type': 'non_clickable_list',
+                            'type': 'non-clickable-list',
                             'heading': item.get('heading', None),
                             'list': aggregate_non_clickable_lists(item['repeatable_zone'])
                         }
@@ -378,7 +378,7 @@ class ContentAPI():
                             # TODO: test icon when data is available
                             'icon': aggregate_media_data(item['icon'][0]) if item.get('icon') else None,
                             # TODO: check description  # use agg text area
-                            'description': agg_rich_text(item['link_description'][0]['children']) if item.get('link_description') else None,
+                            'description': aggregate_text_area(item['link_description']) if item.get('link_description') else None,
                             'link': item.get('highlighted_link', None),
                         }
                         agg_result.append(highlighted_link_data)
