@@ -171,9 +171,9 @@ class ContentAPI():
                 for item in list_data:
                     items.append({
                         # TODO: check description # use agg text area
-                        'description': agg_rich_text(item['description'][0]['children']) if item.get('description') else None,
+                        'description': aggregate_text_area(item['description']) if item.get('description') else None,
                         # TODO: check strapi, also media_url...
-                        'icon': aggregate_media_data(item['icon'][0]) if item.get('icon') else None,
+                        'icon': f'{self.media_url}{item["icon"][0]["url"]}' if item.get('icon') else None,
                     })
                 return items
             except Exception as e:
@@ -295,7 +295,7 @@ class ContentAPI():
                     slider_content.append({
                         'title': item.get('title', None),
                         # TODO: check image url, media url
-                        'image': aggregate_media_data(item['image']) if item.get('image') else None,
+                        'imageUrl': f'{self.media_url}{item["image"]["url"]}' if item.get('image') else None,
                         'description': aggregate_text_area(item['description']) if item.get('description') else None,
                     })
                 return slider_content
@@ -303,12 +303,37 @@ class ContentAPI():
                 print('Could not aggregate images slider content', e)
                 return None
 
-        def aggregate_components(data):
+        def aggregate_case_study(case_study_data, sub_chapter_id=None):
+            result_case_study = {
+                'page_id': case_study_data.get('page_id', None),
+                'page_title': case_study_data.get('page_title', None),
+                'preview_title': case_study_data.get('preview_title', None),
+                'last_updated': case_study_data.get('last_published_at', None),
+                'analytics_event_name': case_study_data.get('analytics_event_name', None),
+                'sub_chapter': sub_chapter_id,
+                'type':  'case_study',
+                'page_content': [],
+                # TODO: add aggregation when data below is returned
+                'description': [],
+                # 'image': '',
+                # 'page_icon': '',
+                # 'pageTitleAudio': '',
+            }
+            if len(case_study_data['dynamic_zone']):
+                components = case_study_data['dynamic_zone']
+                comp_agg = aggregate_components(components)
+                if not result_case_study['description']:
+                    for i in comp_agg:
+                        if i['type'] == 'text_area':
+                            result_case_study['description'] = i['description']
+                result_case_study['page_content'].extend(comp_agg)
+            return result_case_study
+
+        def aggregate_components(data, raw_page_data=None):
             agg_result = []
             for item in data:
                 component_type = item['__component']
                 try:
-
                     if component_type == 'okolabor.clickable-list' or\
                             component_type == 'common.clickable-list':
                         layout = item.get('layout', 'flow')
@@ -320,7 +345,7 @@ class ContentAPI():
                         agg_result.append(list_data)
                     if component_type == 'common.non-clickable-list':
                         list_data = {
-                            'type': 'non_clickable_list',
+                            'type': 'non-clickable-list',
                             'heading': item.get('heading', None),
                             'list': aggregate_non_clickable_lists(item['repeatable_zone'])
                         }
@@ -378,16 +403,15 @@ class ContentAPI():
                             # TODO: test icon when data is available
                             'icon': aggregate_media_data(item['icon'][0]) if item.get('icon') else None,
                             # TODO: check description  # use agg text area
-                            'description': agg_rich_text(item['link_description'][0]['children']) if item.get('link_description') else None,
+                            'description': aggregate_text_area(item['link_description']) if item.get('link_description') else None,
                             'link': item.get('highlighted_link', None),
                         }
                         agg_result.append(highlighted_link_data)
                     if component_type == 'common.case-study':
-                        case_study_data = {
-                            'type': 'case_study',
-                            'document': item.get('link', None),
-                        }
-                        agg_result.append(case_study_data)
+                        raw_case_study = next((el for el in lang_content['data'] if el['page_id'] == item.get('link')), None) if\
+                            item.get('link') else None
+                        agg_res = aggregate_case_study(raw_case_study, raw_page_data.get('page_id')) if raw_case_study else None
+                        agg_result.append(agg_res)
                     if component_type == 'common.warning-box':
                         # TODO: check title & icon when data is available
                         warning_box_data = {
@@ -461,7 +485,7 @@ class ContentAPI():
 
             if item['custom_type'] == 'sub_chapter_list' or\
                     item['custom_type'] == 'create_content_area':
-                aggregation_response = aggregate_components(item['dynamic_zone'])
+                aggregation_response = aggregate_components(item['dynamic_zone'], item)
                 page_data = {
                     'page_id': item.get('page_id', None),
                     'page_title': item.get('page_title', None),
@@ -469,8 +493,15 @@ class ContentAPI():
                     'last_updated': item.get('last_published_at', None),
                     'analytics_event_name': item.get('analytics_event_name', None),
                     'page_content': aggregation_response
+                    # TODO: add aggregation when data below is returned
+                    # 'page_icon': '',
+                    # 'pageTitleAudio': '',
                 }
                 aggregated_content[item['page_id']] = page_data
+
+            if item['custom_type'] == 'case_study':
+                cs_agg_resp = aggregate_case_study(item)
+                aggregated_content[item['page_id']] = cs_agg_resp
 
         return aggregated_content
 
