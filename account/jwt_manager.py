@@ -46,7 +46,7 @@ class JwtManager():
         ) as error:
             message, status_code = EXCEPTION_MAPPER.get(
                 type(error), (SERVER_ERROR_MESSAGE, 500))
-            AppLogger.error('%s: %s', message, status_code)
+            # AppLogger.error('%s: %s', message, status_code)
             raise exceptions.AuthenticationFailed(
                 detail={'message': message}, code=status_code) from error
         except Exception as e:
