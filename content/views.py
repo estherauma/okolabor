@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 import requests
-
+import re
 
 from content.models import AggregatedContent
 from content.serializers import AggregatedContentSerializer
@@ -62,14 +62,13 @@ class ContentAPI():
                         question_options = generate_select_options(
                             item['Options'], item['OptionTranslations'])
                     question_data.append({
-                        'key': item.get('Key'),
-                        'label': item.get('Label'),
-                        'display_question': item.get('DisplayQuestion'),
-                        'category': item.get('Category'),
-                        'help_text': item.get('HelpText'),
-                        'required': item.get('Required'),
-                        'placeholder': item.get('Placeholder'),
-                        'question_type': item.get('QuestionType'),
+                        'key': item['Key'],
+                        'label': item['Label'],
+                        'category': item['Category'],
+                        'help_text': item['HelpText'],
+                        'required': item['Required'],
+                        'placeholder': item['Placeholder'],
+                        'question_type': item['QuestionType'],
                         'options': question_options
                     })
 
