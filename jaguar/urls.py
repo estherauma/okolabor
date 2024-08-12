@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from jaguar.views import IndexView, schema_view
+from jaguar.views import IndexView, UploadFileView, schema_view
 
 
 urlpatterns = [
@@ -28,4 +28,5 @@ urlpatterns = [
     path('api/content/', include('content.urls')),
     path('', include('recruiting.urls.web')),
     path('api/recruiting/', include('recruiting.urls.api')),
+    path('api/v1/file-upload/', UploadFileView.as_view(), name='file-upload'),
 ]
