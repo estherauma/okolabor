@@ -2,7 +2,9 @@ import os
 import re
 from pathlib import Path
 from google.cloud import vision
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "jaguar-420513-e6e93068b07e.json"
+from decouple import config
+
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = config('CREDS_FILE_PATH')
 def detect_text_in_image(image_path):
     # Instantiate a client
     client = vision.ImageAnnotatorClient()
