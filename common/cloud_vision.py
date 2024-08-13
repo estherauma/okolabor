@@ -22,6 +22,7 @@ def detect_text_in_image(image_path):
     print('Detected text:')
     for text in texts:
         print(f'\n"{text.description}"')
+    return texts
 
 # Replace 'path_to_your_image' with the actual file path to your image
 
