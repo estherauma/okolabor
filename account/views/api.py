@@ -1,5 +1,5 @@
 from account.serializers import (
-    RegistrationSerializer, UpdateUserPreferencesSerializer,
+    RegistrationSerializer, UpdateUserPreferencesSerializer, UserDocumentSerializer,
     UserPreferenceSerializer, UserSerilizer, LoginSerializer,
     UserWorkexperienceSerializer
 )
@@ -186,3 +186,18 @@ class UserWorkExperienceView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserDocumentsView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Retrieve user documents",
+        tags=["User Documents"]
+    )
+    def get(self, request, user_id):
+        user = get_object_or_404(User, pk=user_id)
+        documents = user.documents.all()
+        serilizer = UserDocumentSerializer(documents, many=True)
+        return Response(
+            serilizer.data,
+            status=status.HTTP_200_OK
+        )

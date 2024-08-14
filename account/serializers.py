@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from account.models import User, UserPreference, UserWorkExperience
+from account.models import User, UserDocuments, UserPreference, UserWorkExperience
 import re
 
 
@@ -74,3 +74,9 @@ class UserWorkexperienceSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserWorkExperience
         fields = ['company','location', 'start_date', 'end_date', 'work_type', 'work_title', 'supervisor_name', 'supervisor_tel', 'supervisor_email']
+
+
+class UserDocumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserDocuments
+        exclude = ['cloud_vision_response']
