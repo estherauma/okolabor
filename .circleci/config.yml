@@ -12,6 +12,10 @@ jobs:
     steps:
       - checkout # check out the code into the working directory
       - run:
+          name: setup services credentials fle
+          command: echo "$GOOGLE_SERVICES_CREDENTIALS_FILE" > jaguar-services-credentials.json
+
+      - run:
           name: install dependencies
           command: pip install -r requirements.txt
 
