@@ -1,5 +1,8 @@
 from django.urls import path, re_path
-from account.views.api import RegisterView, LoginView, UserDocumentsView, UserPreferencesUpdateView, UserWorkExperienceView
+from account.views.api import (
+    RegisterView, LoginView, UserDocumentDetailsView, UserDocumentsView,
+    UserPreferencesUpdateView, UserWorkExperienceView
+)
 
 app_name = 'account'
 
@@ -16,6 +19,10 @@ urlpatterns = [
     ),
     re_path(r'(?P<user_id>[-\w]+)/documents/$',
         UserDocumentsView.as_view(),
-        name='api-work-documents'
+        name='api-documents'
+    ),
+    re_path(r'(?P<document_id>[-\w]+)/document/$',
+        UserDocumentDetailsView.as_view(),
+        name='api-single-document'
     ),
 ]

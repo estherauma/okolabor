@@ -1,9 +1,9 @@
 from account.serializers import (
-    RegistrationSerializer, UpdateUserPreferencesSerializer, UserDocumentSerializer,
-    UserPreferenceSerializer, UserSerilizer, LoginSerializer,
-    UserWorkexperienceSerializer
+    RegistrationSerializer, UpdateUserPreferencesSerializer,
+    UserDocumentSerializer,UserPreferenceSerializer, UserSerilizer,
+    LoginSerializer, UserWorkexperienceSerializer
 )
-from account.models import User, UserPreference, UserWorkExperience
+from account.models import User, UserDocuments, UserPreference, UserWorkExperience
 from account.jwt_manager import JwtManager
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
@@ -201,3 +201,17 @@ class UserDocumentsView(APIView):
             serilizer.data,
             status=status.HTTP_200_OK
         )
+
+
+class UserDocumentDetailsView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Retrieve specific document details",
+        tags=["User Documents"]
+    )
+    def get(self, request, document_id):
+        document = get_object_or_404(UserDocuments, pk=document_id)
+        serilizer = UserDocumentSerializer(document)
+        return Response(
+            serilizer.data,
+            status=status.HTTP_200_OK
+        )    
