@@ -86,7 +86,8 @@ class UserPreference(AuditableModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     key = models.CharField(max_length=256, null=False, blank=False)
     value = models.CharField(max_length=256, null=False, blank=False)
-    kind = models.CharField(max_length=256, null=False, default='preference', blank=False)
+    kind = models.CharField(
+        max_length=256, null=False, default='preference', blank=False)
 
     def __str__(self):
         return f'{self.user.curp} - {self.key}'
@@ -96,7 +97,8 @@ class UserPreference(AuditableModel):
 
 
 class UserWorkExperience(AuditableModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='work_experiences')
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='work_experiences')
     company = models.CharField(max_length=256, null=False, blank=False)
     location = models.CharField(max_length=256, null=False, blank=False)
     start_date = models.DateField(null=False, blank=False)
@@ -115,10 +117,11 @@ class UserWorkExperience(AuditableModel):
 
 
 class UserWorkExperienceDocuments(AuditableModel):
-    work_experience = models.ForeignKey(UserWorkExperience, on_delete=models.CASCADE, related_name='documents')
+    work_experience = models.ForeignKey(
+        UserWorkExperience,
+        on_delete=models.CASCADE, related_name='documents')
     document = models.FileField(upload_to='documents/')
-    kind = models.CharField(max_length=256, null=False, blank=False) # e.g Visa, Certification or Gallery
-    
+    kind = models.CharField(max_length=256, null=False, blank=False)
 
     def __str__(self):
         return f'{self.user.curp} - {self.document_type}'
@@ -133,5 +136,6 @@ class UserDocuments(AuditableModel):
     kind = models.CharField(max_length=256, null=True, blank=True)
     description = models.TextField()
     cloud_vision_response = models.TextField(null=True, blank=True)
+    cloud_vision_match = models.BooleanField(default=False)
     file_type = models.CharField(max_length=256, null=True, blank=True)
-    
+
