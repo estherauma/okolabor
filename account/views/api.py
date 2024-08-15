@@ -1,5 +1,5 @@
 from account.serializers import RegistrationSerializer, UpdateUserPreferencesSerializer, UserPreferenceSerializer, UserSerilizer, LoginSerializer, UserWorkexperienceSerializer
-from account.models import User, UserPreference, UserWorkExperience
+from account.models import User, UserDocuments, UserPreference, UserWorkExperience
 from account.jwt_manager import JwtManager
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
@@ -155,3 +155,16 @@ class UserWorkExperienceView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ResetAccountProfile(APIView):
+    @swagger_auto_schema(
+        operation_summary="Reset user profile data",
+        tags=["Account Management"]
+    )
+    def post(self, request, user_id):
+        user = get_object_or_404(User, pk=user_id)
+        UserPreference.objects.filter(user=user).delete()
+        UserDocuments.objects.filter(user=user).delete()
+        UserWorkExperience.objects.filter(user=user).delete()
+        return Response({'message': 'Profile reset successfully'}, status=status.HTTP_200_OK)
