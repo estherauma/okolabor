@@ -125,3 +125,13 @@ class UserWorkExperienceDocuments(AuditableModel):
 
     class Meta:
         db_table = 'account_user_work_experience_documents'
+
+class UserDocuments(AuditableModel):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='documents')
+    path = models.CharField(max_length=256, null=True, blank=True)
+    kind = models.CharField(max_length=256, null=True, blank=True)
+    description = models.TextField()
+    cloud_vision_response = models.TextField(null=True, blank=True)
+    file_type = models.CharField(max_length=256, null=True, blank=True)
+    
