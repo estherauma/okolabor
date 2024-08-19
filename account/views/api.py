@@ -1,8 +1,4 @@
-from account.serializers import (
-    RegistrationSerializer, UpdateUserPreferencesSerializer,
-    UserDocumentSerializer,UserPreferenceSerializer, UserSerilizer,
-    LoginSerializer, UserWorkexperienceSerializer
-)
+from account.serializers import RegistrationSerializer, UpdateUserPreferencesSerializer, UserPreferenceSerializer, UserSerilizer, LoginSerializer, UserWorkexperienceSerializer
 from account.models import User, UserDocuments, UserPreference, UserWorkExperience
 from account.jwt_manager import JwtManager
 from django.shortcuts import get_object_or_404
@@ -188,30 +184,14 @@ class UserWorkExperienceView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserDocumentsView(APIView):
+class ResetAccountProfile(APIView):
     @swagger_auto_schema(
-        operation_summary="Retrieve user documents",
-        tags=["User Documents"]
+        operation_summary="Reset user profile data",
+        tags=["Account Management"]
     )
-    def get(self, request, user_id):
+    def post(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
-        documents = user.documents.all()
-        serilizer = UserDocumentSerializer(documents, many=True)
-        return Response(
-            serilizer.data,
-            status=status.HTTP_200_OK
-        )
-
-
-class UserDocumentDetailsView(APIView):
-    @swagger_auto_schema(
-        operation_summary="Retrieve specific document details",
-        tags=["User Documents"]
-    )
-    def get(self, request, document_id):
-        document = get_object_or_404(UserDocuments, pk=document_id)
-        serilizer = UserDocumentSerializer(document)
-        return Response(
-            serilizer.data,
-            status=status.HTTP_200_OK
-        )    
+        UserPreference.objects.filter(user=user).delete()
+        UserDocuments.objects.filter(user=user).delete()
+        UserWorkExperience.objects.filter(user=user).delete()
+        return Response({'message': 'Profile reset successfully'}, status=status.HTTP_200_OK)

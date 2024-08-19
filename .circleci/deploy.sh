@@ -44,6 +44,7 @@ install_depedencies_and_collect_static() {
   echo "Collecting static files"
   source /var/www/jaguar-web-api/venv/bin/activate
   pip install -r requirements.txt
+  python manage.py migrate
   # python manage.py collectstatic --noinput
 }
 
