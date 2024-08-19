@@ -1,5 +1,11 @@
-from account.serializers import RegistrationSerializer, UpdateUserPreferencesSerializer, UserPreferenceSerializer, UserSerilizer, LoginSerializer, UserWorkexperienceSerializer
-from account.models import User, UserDocuments, UserPreference, UserWorkExperience
+from account.serializers import (
+    RegistrationSerializer, UpdateUserPreferencesSerializer,
+    UserPreferenceSerializer, UserSerilizer, LoginSerializer,
+    UserWorkexperienceSerializer
+)
+from account.models import (
+    User, UserDocuments, UserPreference, UserWorkExperience
+)
 from account.jwt_manager import JwtManager
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
@@ -194,4 +200,25 @@ class ResetAccountProfile(APIView):
         UserPreference.objects.filter(user=user).delete()
         UserDocuments.objects.filter(user=user).delete()
         UserWorkExperience.objects.filter(user=user).delete()
-        return Response({'message': 'Profile reset successfully'}, status=status.HTTP_200_OK)
+        return Response(
+            {'message': 'Profile reset successfully'},
+            status=status.HTTP_200_OK
+        )
+
+
+class GetOTP(APIView):
+    @swagger_auto_schema(
+        operation_summary="Generate OTP for account verification",
+        tags=["Account Management"]
+    )
+    def post(self, request):
+        pass
+
+
+class VerifyOTP(APIView):
+    @swagger_auto_schema(
+        operation_summary="Verify OTP",
+        tags=["Account Management"]
+    )
+    def post(self, request):
+        pass
