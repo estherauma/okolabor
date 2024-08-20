@@ -63,13 +63,14 @@ class ContentAPI():
                         question_options = generate_select_options(
                             item['Options'], item['OptionTranslations'])
                     question_data.append({
-                        'key': item['Key'],
-                        'label': item['Label'],
-                        'category': item['Category'],
-                        'help_text': item['HelpText'],
-                        'required': item['Required'],
-                        'placeholder': item['Placeholder'],
-                        'question_type': item['QuestionType'],
+                        'key': item.get('Key'),
+                        'label': item.get('Label'),
+                        'category': item.get('Category'),
+                        'help_text': item.get('HelpText'),
+                        'required': item.get('Required'),
+                        'placeholder': item.get('Placeholder'),
+                        'question_type': item.get('QuestionType'),
+                        'display_question': item.get('DisplayQuestion'),
                         'options': question_options
                     })
 

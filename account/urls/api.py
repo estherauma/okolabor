@@ -1,7 +1,8 @@
 from django.urls import path, re_path
 from account.views.api import (
-    RegisterView, LoginView, UserDocumentDetailsView, UserDocumentsView,
-    UserPreferencesUpdateView, UserWorkExperienceView
+    RegisterView, LoginView, 
+ResetAccountProfile, UserDocumentDetailsView, UserDocumentsView,
+UserPreferencesUpdateView, UserWorkExperienceView
 )
 
 app_name = 'account'

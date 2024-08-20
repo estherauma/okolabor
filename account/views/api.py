@@ -215,3 +215,14 @@ class UserDocumentDetailsView(APIView):
             serilizer.data,
             status=status.HTTP_200_OK
         )    
+class ResetAccountProfile(APIView):
+    @swagger_auto_schema(
+        operation_summary="Reset user profile data",
+        tags=["Account Management"]
+    )
+    def post(self, request, user_id):
+        user = get_object_or_404(User, pk=user_id)
+        UserPreference.objects.filter(user=user).delete()
+        UserDocuments.objects.filter(user=user).delete()
+        UserWorkExperience.objects.filter(user=user).delete()
+        return Response({'message': 'Profile reset successfully'}, status=status.HTTP_200_OK)
