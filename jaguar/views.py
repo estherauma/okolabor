@@ -88,7 +88,7 @@ class UploadFileView(APIView):
                     file_serializer.validated_data['file_content'].chunks()
                 ):
                     destination.write(chunk)
-            UserDocuments.objects.create(
+            document = UserDocuments.objects.create(
                 user=request.user,
                 path=file_path,
                 kind=request.data.get('entity_type'),
@@ -96,6 +96,7 @@ class UploadFileView(APIView):
                 file_type=file_extension
             )
             return Response({
+                'document_id': document.id,
                 'file_location': file_path,
                 'file_type': file_extension
             }, status.HTTP_201_CREATED)

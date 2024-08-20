@@ -1,4 +1,8 @@
-from account.serializers import RegistrationSerializer, UpdateUserPreferencesSerializer, UserPreferenceSerializer, UserSerilizer, LoginSerializer, UserWorkexperienceSerializer
+from account.serializers import (
+    RegistrationSerializer, UpdateUserPreferencesSerializer,
+    UserDocumentSerializer,UserPreferenceSerializer, UserSerilizer,
+    LoginSerializer, UserWorkexperienceSerializer
+)
 from account.models import User, UserDocuments, UserPreference, UserWorkExperience
 from account.jwt_manager import JwtManager
 from django.shortcuts import get_object_or_404
@@ -27,7 +31,8 @@ class RegisterView(APIView):
             user.save()
             # user the Userserializer to return the user data
             user_serializer = UserSerilizer(user)
-            return Response(user_serializer.data, status=status.HTTP_201_CREATED)
+            return Response(
+                user_serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -46,10 +51,19 @@ class LoginView(APIView):
                 try:
                     user = User.objects.get(curp=email_or_curp)
                 except User.DoesNotExist:
-                    return Response({'message': 'User with given information does not exist'}, status=status.HTTP_404_NOT_FOUND)
+                    return Response(
+                        {
+                            'message': (
+                                'User with given information '
+                                'does not exist')
+                        },
+                        status=status.HTTP_404_NOT_FOUND)
 
             if not user.is_verified or not user.is_active:
-                return Response({'message': 'Account not verified'}, status=status.HTTP_403_FORBIDDEN)
+                return Response({
+                    'message': 'Account not verified'},
+                    status=status.HTTP_403_FORBIDDEN
+                )
             if user.check_password(serializer.validated_data['password']):
                 identity_manager = JwtManager()
                 payload = {
@@ -58,7 +72,11 @@ class LoginView(APIView):
                     'firstName': user.first_name,
                     'lastName': user.last_name,
                     'isAdmin': user.is_admin,
-                    'roles': list(user.groups.values_list('name', flat=True)) if user.groups.exists() else [],
+                    'roles': (
+                        list(user.groups.values_list('name', flat=True))
+                        if user.groups.exists()
+                        else []
+                    )
                 }
                 token = identity_manager.encode(payload)
                 return Response({
@@ -66,7 +84,9 @@ class LoginView(APIView):
                     'data': payload
                 }, status=status.HTTP_200_OK)
             else:
-                return Response({'message': 'Invalid credentials'}, status=status.HTTP_403_FORBIDDEN)
+                return Response(
+                    {'message': 'Invalid credentials'},
+                    status=status.HTTP_403_FORBIDDEN)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -103,7 +123,10 @@ class UserPreferencesUpdateView(APIView):
                 value = pref_data['value']
                 UserPreference.objects.update_or_create(
                     user=user, key=key,
-                    defaults={'value': value, 'kind': pref_data.get('kind', 'preference')}
+                    defaults={
+                        'value': value,
+                        'kind': pref_data.get('kind', 'preference')
+                    }
                 )
             preferences = self.return_preferences(user)
             return Response(preferences, status=status.HTTP_200_OK)
@@ -129,15 +152,22 @@ class UserWorkExperienceView(APIView):
         user = get_object_or_404(User, pk=user_id)
         serializer = UserWorkexperienceSerializer(data=request.data)
         if serializer.is_valid():
-            # check if there's no entry with the same company name and start date
+            # check if there's no entry with the same co name and startdate
             if UserWorkExperience.objects.filter(
                 user=user,
                 company=serializer.validated_data['company'],
                 start_date=serializer.validated_data['start_date']
             ).exists():
-                return Response({'message': 'Work experience with same company name and start date already exists'},
-                                status=status.HTTP_400_BAD_REQUEST)
-            UserWorkExperience.objects.create(user=user, **serializer.validated_data)
+                return Response(
+                    {
+                        'message': (
+                                'User with given information '
+                                'does not exist'
+                            )
+                    },
+                    status=status.HTTP_400_BAD_REQUEST)
+            UserWorkExperience.objects.create(
+                user=user, **serializer.validated_data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
 
@@ -150,13 +180,41 @@ class UserWorkExperienceView(APIView):
     def patch(self, request, user_id, experience_id):
         user = get_object_or_404(User, pk=user_id)
         experience = get_object_or_404(UserWorkExperience, pk=experience_id)
-        serializer = UserWorkexperienceSerializer(experience, data=request.data, partial=True)
+        serializer = UserWorkexperienceSerializer(
+            experience, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class UserDocumentsView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Retrieve user documents",
+        tags=["User Documents"]
+    )
+    def get(self, request, user_id):
+        user = get_object_or_404(User, pk=user_id)
+        documents = user.documents.all()
+        serilizer = UserDocumentSerializer(documents, many=True)
+        return Response(
+            serilizer.data,
+            status=status.HTTP_200_OK
+        )
+
+
+class UserDocumentDetailsView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Retrieve specific document details",
+        tags=["User Documents"]
+    )
+    def get(self, request, document_id):
+        document = get_object_or_404(UserDocuments, pk=document_id)
+        serilizer = UserDocumentSerializer(document)
+        return Response(
+            serilizer.data,
+            status=status.HTTP_200_OK
+        )    
 class ResetAccountProfile(APIView):
     @swagger_auto_schema(
         operation_summary="Reset user profile data",
