@@ -38,7 +38,5 @@ urlpatterns = [
         name='api-single-document'
     ),
     path('otp-generate/', GetOTP.as_view(), name='otp-generate'),
-    # re_path(
-    #     r'(?P<user_id>[-\w]+)/otp-verify/$',
-    #     VerifyOTP.as_view(), name='otp-verify'),  
+    path('otp-verify/', VerifyOTP.as_view(), name='otp-verify') 
 ]

@@ -82,7 +82,7 @@ class UserDocumentSerializer(serializers.ModelSerializer):
         exclude = ['cloud_vision_response']
 
 
-class OTPVerificationSerializer(serializers.Serializer):
+class OTPGenerateSerializer(serializers.Serializer):
     phone_number = serializers.CharField(max_length=15, required=True)
     user_id = serializers.CharField(max_length=36)
 
@@ -100,4 +100,38 @@ class OTPVerificationSerializer(serializers.Serializer):
         phone_number = self.validated_data['phone_number']
         otp_service = OTPVerification()
         response = otp_service.send_otp(phone_number)
-        return otp_service.send_otp(phone_number)
+        return response
+
+
+class OTPVerifySerializer(serializers.Serializer):
+    otp_code = serializers.CharField(max_length=15, required=True)
+    phone_number = serializers.CharField(max_length=15, required=True)
+    user_id = serializers.CharField(max_length=36)
+
+    def validate_phone_number(self, value):
+        if not value.startswith('+'):
+            raise serializers.ValidationError(
+                "Phone number must start with a '+' sign and include the country code.")
+        if not value[1:].isdigit():
+            raise serializers.ValidationError(
+                "Phone number must contain only digits after the country code."
+            )
+        return value
+
+    def validate_otp_code(self, value):
+        if not value.isdigit():
+            raise serializers.ValidationError(
+                'OTP must be a number'
+            )
+        
+        if len(value) < 6:
+            raise serializers.ValidationError(
+                'OTP must be 6 characters long'
+            )
+
+    def verify_otp(self):
+        phone_number = self.validated_data['phone_number']
+        otp_code = self.validated_data['otp_code']
+        otp_service = OTPVerification()
+        response = otp_service.check_otp(otp_code, phone_number)
+        return response

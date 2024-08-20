@@ -1,5 +1,5 @@
 from account.serializers import (
-    OTPVerificationSerializer, RegistrationSerializer,
+    OTPGenerateSerializer, OTPVerifySerializer, RegistrationSerializer,
     UpdateUserPreferencesSerializer, UserDocumentSerializer,
     UserPreferenceSerializer, UserSerilizer, LoginSerializer,
     UserWorkexperienceSerializer
@@ -243,10 +243,7 @@ class GetOTP(APIView):
         tags=["Account Management"]
     )
     def post(self, request, *args, **kwargs):
-        print(request.data)
-        data = request.data.copy()
-        data['user_id'] = kwargs.get('user_id')
-        serializer = OTPVerificationSerializer(data=request.data)
+        serializer = OTPGenerateSerializer(data=request.data)
         
         if serializer.is_valid():
             resp = serializer.start_otp_process()
@@ -259,6 +256,7 @@ class VerifyOTP(APIView):
         operation_summary="Verify OTP",
         tags=["Account Management"]
     )
-    def post(self, request):
-        pass
-        return Response({'message': 'Profile reset successfully'}, status=status.HTTP_200_OK)
+    def post(self, request, *args, **kwargs):
+        serializer = OTPVerifySerializer(data=request.data)
+        if serializer.is_valid():
+            resp = serializer.verify_otp()
