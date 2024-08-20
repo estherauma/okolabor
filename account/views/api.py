@@ -6,6 +6,7 @@ from account.serializers import (
 from account.models import (
     User, UserDocuments, UserPreference, UserWorkExperience
 )
+from account.models import User, UserDocuments, UserPreference, UserWorkExperience
 from account.jwt_manager import JwtManager
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
@@ -190,6 +191,33 @@ class UserWorkExperienceView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class UserDocumentsView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Retrieve user documents",
+        tags=["User Documents"]
+    )
+    def get(self, request, user_id):
+        user = get_object_or_404(User, pk=user_id)
+        documents = user.documents.all()
+        serilizer = UserDocumentSerializer(documents, many=True)
+        return Response(
+            serilizer.data,
+            status=status.HTTP_200_OK
+        )
+
+
+class UserDocumentDetailsView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Retrieve specific document details",
+        tags=["User Documents"]
+    )
+    def get(self, request, document_id):
+        document = get_object_or_404(UserDocuments, pk=document_id)
+        serilizer = UserDocumentSerializer(document)
+        return Response(
+            serilizer.data,
+            status=status.HTTP_200_OK
+        )    
 class ResetAccountProfile(APIView):
     @swagger_auto_schema(
         operation_summary="Reset user profile data",
@@ -230,3 +258,4 @@ class VerifyOTP(APIView):
     )
     def post(self, request):
         pass
+        return Response({'message': 'Profile reset successfully'}, status=status.HTTP_200_OK)
