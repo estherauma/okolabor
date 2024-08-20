@@ -6,18 +6,17 @@ class OTPVerification:
         self.account_sid = config('TWILIO_ACCOUNT_SID')
         self.auth_token = config('TWILIO_AUTH_TOKEN')
         self.verify_sid = config('TWILIO_VERIFY_SID')
-        self.verified_number = config('TWILIO_VERIFIED_PHONE_NUMBER')
         self.client = Client(self.account_sid, self.auth_token)
 
-    def send_otp(self):
+    def send_otp(self, phone_number):
         verification = self.client.verify.v2.services(self.verify_sid) \
             .verifications \
-            .create(to=self.verified_number, channel="sms")
-        print("OTP sent to:", self.verified_number)
+            .create(to=phone_number, channel="sms")
+        print("OTP sent to:", phone_number)
         return verification.status
 
-    def check_otp(self, otp_code):
+    def check_otp(self, otp_code, phone_number):
         verification_check = self.client.verify.v2.services(self.verify_sid) \
             .verification_checks \
-            .create(to=self.verified_number, code=otp_code)
+            .create(to=phone_number, code=otp_code)
         return verification_check.status

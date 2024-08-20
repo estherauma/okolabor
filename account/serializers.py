@@ -90,12 +90,14 @@ class OTPVerificationSerializer(serializers.Serializer):
         if not value.startswith('+'):
             raise serializers.ValidationError(
                 "Phone number must start with a '+' sign and include the country code.")
-        if not value.isdigit()[1:]:
+        if not value[1:].isdigit():
             raise serializers.ValidationError(
-                "Phone number must contain only digits after the country code.")
+                "Phone number must contain only digits after the country code."
+            )
         return value
 
-    def send_otp(self):
+    def start_otp_process(self):
         phone_number = self.validated_data['phone_number']
         otp_service = OTPVerification()
+        response = otp_service.send_otp(phone_number)
         return otp_service.send_otp(phone_number)

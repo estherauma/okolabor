@@ -1,12 +1,15 @@
 from account.serializers import (
-    OTPVerificationSerializer, RegistrationSerializer, UpdateUserPreferencesSerializer,
+    OTPVerificationSerializer, RegistrationSerializer,
+    UpdateUserPreferencesSerializer, UserDocumentSerializer,
     UserPreferenceSerializer, UserSerilizer, LoginSerializer,
     UserWorkexperienceSerializer
 )
 from account.models import (
     User, UserDocuments, UserPreference, UserWorkExperience
 )
-from account.models import User, UserDocuments, UserPreference, UserWorkExperience
+from account.models import (
+    User, UserDocuments, UserPreference, UserWorkExperience
+)
 from account.jwt_manager import JwtManager
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
@@ -246,7 +249,7 @@ class GetOTP(APIView):
         serializer = OTPVerificationSerializer(data=request.data)
         
         if serializer.is_valid():
-            resp = serializer.send_otp()
+            resp = serializer.start_otp_process()
             return Response({"status": resp}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
