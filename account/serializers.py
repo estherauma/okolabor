@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from account.models import User, UserDocuments, UserPreference, UserWorkExperience
 import re
-
+from common.twilio import OTPVerification
 
 class RegistrationSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -80,3 +80,22 @@ class UserDocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserDocuments
         exclude = ['cloud_vision_response']
+
+
+class OTPVerificationSerializer(serializers.Serializer):
+    phone_number = serializers.CharField(max_length=15, required=True)
+    user_id = serializers.CharField(max_length=36)
+
+    def validate_phone_number(self, value):
+        if not value.startswith('+'):
+            raise serializers.ValidationError(
+                "Phone number must start with a '+' sign and include the country code.")
+        if not value.isdigit()[1:]:
+            raise serializers.ValidationError(
+                "Phone number must contain only digits after the country code.")
+        return value
+
+    def send_otp(self):
+        phone_number = self.validated_data['phone_number']
+        otp_service = OTPVerification()
+        return otp_service.send_otp(phone_number)

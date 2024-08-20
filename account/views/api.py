@@ -1,5 +1,5 @@
 from account.serializers import (
-    RegistrationSerializer, UpdateUserPreferencesSerializer,
+    OTPVerificationSerializer, RegistrationSerializer, UpdateUserPreferencesSerializer,
     UserPreferenceSerializer, UserSerilizer, LoginSerializer,
     UserWorkexperienceSerializer
 )
@@ -211,8 +211,16 @@ class GetOTP(APIView):
         operation_summary="Generate OTP for account verification",
         tags=["Account Management"]
     )
-    def post(self, request):
-        pass
+    def post(self, request, *args, **kwargs):
+        print(request.data)
+        data = request.data.copy()
+        data['user_id'] = kwargs.get('user_id')
+        serializer = OTPVerificationSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            resp = serializer.send_otp()
+            return Response({"status": resp}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class VerifyOTP(APIView):

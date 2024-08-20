@@ -21,7 +21,7 @@ urlpatterns = [
     re_path(
         r'(?P<user_id>[-\w]+)/otp-generate/$',
         GetOTP.as_view(), name='otp-generate'),
-    re_path(
-        r'(?P<user_id>[-\w]+)/otp-generate/$',
-        VerifyOTP.as_view(), name='otp-verify'),    
+    # re_path(
+    #     r'(?P<user_id>[-\w]+)/otp-verify/$',
+    #     VerifyOTP.as_view(), name='otp-verify'),    
 ]
