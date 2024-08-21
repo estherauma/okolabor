@@ -239,8 +239,8 @@ class ResetAccountProfile(APIView):
 
 class GetOTP(APIView):
     @swagger_auto_schema(
-        operation_summary="Generate OTP for account verification",
-        tags=["Account Management"]
+        operation_summary="otp-generate",
+        tags=["OTP"]
     )
     def post(self, request, *args, **kwargs):
         serializer = OTPGenerateSerializer(data=request.data)
@@ -253,10 +253,13 @@ class GetOTP(APIView):
 
 class VerifyOTP(APIView):
     @swagger_auto_schema(
-        operation_summary="Verify OTP",
-        tags=["Account Management"]
+        operation_summary="otp-verify",
+        tags=["OTP"]
     )
     def post(self, request, *args, **kwargs):
         serializer = OTPVerifySerializer(data=request.data)
         if serializer.is_valid():
             resp = serializer.verify_otp()
+            return Response({"status": resp}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

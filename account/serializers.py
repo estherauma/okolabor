@@ -128,8 +128,10 @@ class OTPVerifySerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 'OTP must be 6 characters long'
             )
+        return value
 
     def verify_otp(self):
+        print(self.validated_data)
         phone_number = self.validated_data['phone_number']
         otp_code = self.validated_data['otp_code']
         otp_service = OTPVerification()
