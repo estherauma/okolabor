@@ -1,9 +1,15 @@
 from account.serializers import (
-    RegistrationSerializer, UpdateUserPreferencesSerializer,
-    UserDocumentSerializer,UserPreferenceSerializer, UserSerilizer,
-    LoginSerializer, UserWorkexperienceSerializer
+    OTPGenerateSerializer, OTPVerifySerializer, RegistrationSerializer,
+    UpdateUserPreferencesSerializer, UserDocumentSerializer,
+    UserPreferenceSerializer, UserSerilizer, LoginSerializer,
+    UserWorkexperienceSerializer
 )
-from account.models import User, UserDocuments, UserPreference, UserWorkExperience
+from account.models import (
+    User, UserDocuments, UserPreference, UserWorkExperience
+)
+from account.models import (
+    User, UserDocuments, UserPreference, UserWorkExperience
+)
 from account.jwt_manager import JwtManager
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
@@ -225,4 +231,35 @@ class ResetAccountProfile(APIView):
         UserPreference.objects.filter(user=user).delete()
         UserDocuments.objects.filter(user=user).delete()
         UserWorkExperience.objects.filter(user=user).delete()
-        return Response({'message': 'Profile reset successfully'}, status=status.HTTP_200_OK)
+        return Response(
+            {'message': 'Profile reset successfully'},
+            status=status.HTTP_200_OK
+        )
+
+
+class GetOTP(APIView):
+    @swagger_auto_schema(
+        operation_summary="otp-generate",
+        tags=["OTP"]
+    )
+    def post(self, request, *args, **kwargs):
+        serializer = OTPGenerateSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            resp = serializer.start_otp_process()
+            return Response({"status": resp}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class VerifyOTP(APIView):
+    @swagger_auto_schema(
+        operation_summary="otp-verify",
+        tags=["OTP"]
+    )
+    def post(self, request, *args, **kwargs):
+        serializer = OTPVerifySerializer(data=request.data)
+        if serializer.is_valid():
+            resp = serializer.verify_otp()
+            return Response({"status": resp}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
