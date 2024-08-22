@@ -30,7 +30,7 @@ urlpatterns = [
     path('api/content/', include('content.urls')),
     path('', include('recruiting.urls.web')),
     path('api/recruiting/', include('recruiting.urls.api')),
-    path('api/v1/file-upload/', UploadFileView.as_view(), name='file-upload'),
+    path('api/file-upload/', UploadFileView.as_view(), name='file-upload'),
 ]
 
 if settings.DEBUG:
