@@ -248,11 +248,20 @@ class GetOTP(APIView):
         if serializer.is_valid():
             resp = serializer.start_otp_process()
             if resp == 'pending':
-                user = User.objects.get(id=serializer.validated_data['user_id'])
+                user = User.objects.get(
+                    id=serializer.validated_data['user_id'])
                 user.telephone = serializer.validated_data['phone_number']
                 user.save()
-            return Response({"status": resp}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"status": resp}, status=status.HTTP_200_OK)
+            else:
+                return Response({
+                    "status": 'error',
+                    "error": resp.get('error')
+                    }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
+           
 
 
 class VerifyOTP(APIView):
@@ -265,9 +274,16 @@ class VerifyOTP(APIView):
         if serializer.is_valid():
             resp = serializer.verify_otp()
             if resp == 'approved':
-                user = User.objects.get(id=serializer.validated_data['user_id'])
+                user = User.objects.get(
+                    id=serializer.validated_data['user_id'])
                 user.telephone_verified = True
                 user.save()
-            return Response({"status": resp}, status=status.HTTP_200_OK)
+                return Response({"status": resp}, status=status.HTTP_200_OK)
+            else:
+                return Response({
+                    "status": 'error',
+                    "error": resp.get('error')
+                    }, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)

@@ -46,6 +46,8 @@ class UploadFileView(APIView):
         'passport': 'uploads/passports',
         'profile_picture': 'uploads/profiles',
         'english_video': 'uploads/english_videos',
+        'us_driver_license': 'uploads/driver_licenses',
+        'mexico_driver_license': 'uploads/driver_licenses',
     }
 
     @swagger_auto_schema(

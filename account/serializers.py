@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from account.models import User, UserDocuments, UserPreference, UserWorkExperience
+from account.models import (
+    User, UserDocuments, UserPreference, UserWorkExperience)
 import re
 from common.twilio import OTPVerification
 
@@ -11,24 +12,30 @@ class RegistrationSerializer(serializers.Serializer):
 
     def validate_password(self, value):
         if len(value) < 8:
-            raise serializers.ValidationError('Password must be at least 8 characters long')
+            raise serializers.ValidationError(
+                'Password must be at least 8 characters long')
         if value != self.initial_data.get('password_repeat'):
             raise serializers.ValidationError('Passwords do not match')
         if not any(char.isdigit() for char in value):
-            raise serializers.ValidationError('Password must contain at least one number')
+            raise serializers.ValidationError(
+                'Password must contain at least one number')
         if not any(char.isupper() for char in value):
-            raise serializers.ValidationError('Password must contain at least one uppercase letter')
+            raise serializers.ValidationError(
+                'Password must contain at least one uppercase letter')
         return value
 
     def validate_curp(self, value):
         if len(value) > 18:
-            raise serializers.ValidationError('CURP cannot be more than 18 characters long')
+            raise serializers.ValidationError(
+                'CURP cannot be more than 18 characters long')
         if len(value) < 18:
-            raise serializers.ValidationError('CURP cannot be less than 18 characters long')
+            raise serializers.ValidationError(
+                'CURP cannot be less than 18 characters long')
         if not re.match(r'^[A-Za-z]{4}\d{6}[A-Za-z]{6}\d{2}$', value):
             raise serializers.ValidationError('Invalid CURP format')
         if User.objects.filter(curp=value).exists():
-            raise serializers.ValidationError('User with given CURP already exists')
+            raise serializers.ValidationError(
+                'User with given CURP already exists')
         return value
 
     def validate_email(self, value):
@@ -48,8 +55,12 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(required=True)
 
     def validate_identifier(self, value):
-        if not User.objects.filter(email=value).exists() and not User.objects.filter(curp=value).exists():
-            raise serializers.ValidationError('User with given information does not exist')
+        if (
+            not User.objects.filter(email=value).exists() 
+            and not User.objects.filter(curp=value).exists()
+        ):
+            raise serializers.ValidationError(
+                'User with given information does not exist')
         return value
 
 class UserPreferenceSerializer(serializers.ModelSerializer):
@@ -89,18 +100,23 @@ class OTPGenerateSerializer(serializers.Serializer):
     def validate_phone_number(self, value):
         if not value.startswith('+'):
             raise serializers.ValidationError(
-                "Phone number must start with a '+' sign and include the country code.")
+                "Phone number must start with a '+' sign \
+                    and include the country code.")
         if not value[1:].isdigit():
             raise serializers.ValidationError(
-                "Phone number must contain only digits after the country code."
+                "Phone number must contain only \
+                    digits after the country code."
             )
         return value
 
     def start_otp_process(self):
-        phone_number = self.validated_data['phone_number']
-        otp_service = OTPVerification()
-        response = otp_service.send_otp(phone_number)
-        return response
+        try:
+            phone_number = self.validated_data['phone_number']
+            otp_service = OTPVerification()
+            response = otp_service.send_otp(phone_number)
+            return response
+        except Exception as e:
+            return {"error": f"An unexpected error occurred: {str(e)}"}
 
 
 class OTPVerifySerializer(serializers.Serializer):
@@ -111,10 +127,13 @@ class OTPVerifySerializer(serializers.Serializer):
     def validate_phone_number(self, value):
         if not value.startswith('+'):
             raise serializers.ValidationError(
-                "Phone number must start with a '+' sign and include the country code.")
+                "Phone number must start with a '+'"
+                "sign and include the country code."
+            )
         if not value[1:].isdigit():
             raise serializers.ValidationError(
-                "Phone number must contain only digits after the country code."
+                "Phone number must contain only "
+                "digits after the country code."
             )
         return value
 
@@ -124,16 +143,18 @@ class OTPVerifySerializer(serializers.Serializer):
                 'OTP must be a number'
             )
         
-        if len(value) < 6:
+        if len(value) < 4:
             raise serializers.ValidationError(
-                'OTP must be 6 characters long'
+                'OTP must be 4 characters long'
             )
         return value
 
     def verify_otp(self):
-        print(self.validated_data)
-        phone_number = self.validated_data['phone_number']
-        otp_code = self.validated_data['otp_code']
-        otp_service = OTPVerification()
-        response = otp_service.check_otp(otp_code, phone_number)
-        return response
+        try:
+            phone_number = self.validated_data['phone_number']
+            otp_code = self.validated_data['otp_code']
+            otp_service = OTPVerification()
+            response = otp_service.check_otp(otp_code, phone_number)
+            return response
+        except Exception as e:
+            return {"error": f"An unexpected error occurred: {str(e)}"}
