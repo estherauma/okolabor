@@ -44,17 +44,27 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
     is_active = models.BooleanField(_('active'), default=True)
     is_verified = models.BooleanField(_('verified'), default=False)
     is_staff = models.BooleanField(default=False)
-    reset_password_token = models.CharField(null=True, blank=True, max_length=125)
+    reset_password_token = models.CharField(null=True,
+                                            blank=True, max_length=125)
     profile_image = models.URLField(null=True, blank=True)
     access_code = models.CharField(_('access_code'), null=True, blank=True, max_length=30)
-    position = models.CharField(_('position'), null=True, blank=True, max_length=30)
-    telephone = models.CharField(_('telephone'), null=True, blank=True, max_length=30)
-    mobile = models.CharField(_('mobile'), null=True, blank=True, max_length=30)
-    address_line_1 = models.CharField(_('address_line_1'), null=True, blank=True, max_length=30)
-    address_line_2 = models.CharField(_('address_line_2'), null=True, blank=True, max_length=30)
-    address_line_3 = models.CharField(_('address_line_3'), null=True, blank=True, max_length=30)
+    position = models.CharField(_('position'), null=True,
+                                blank=True, max_length=30)
+    telephone = models.CharField(_('telephone'),
+                                 null=True, blank=True, max_length=30)
+    telephone_verified = models.BooleanField(_('telephone_verified'),
+                                             default=False)
+    mobile = models.CharField(_('mobile'), null=True, blank=True,
+                              max_length=30)
+    address_line_1 = models.CharField(_('address_line_1'),
+                                      null=True, blank=True, max_length=30)
+    address_line_2 = models.CharField(_('address_line_2'),
+                                      null=True, blank=True, max_length=30)
+    address_line_3 = models.CharField(_('address_line_3'),
+                                      null=True, blank=True, max_length=30)
     city = models.CharField(_('city'), null=True, blank=True, max_length=30)
-    passport_number = models.CharField(_('passport_number'), null=True, blank=True, max_length=30)
+    passport_number = models.CharField(_('passport_number'),
+                                       null=True, blank=True, max_length=30)
     gender = models.CharField(max_length=15,  blank=True, null=True)
     dob = models.DateField(null=True, blank=True)
 
@@ -138,4 +148,3 @@ class UserDocuments(AuditableModel):
     cloud_vision_response = models.TextField(null=True, blank=True)
     cloud_vision_match = models.BooleanField(default=False)
     file_type = models.CharField(max_length=256, null=True, blank=True)
-
