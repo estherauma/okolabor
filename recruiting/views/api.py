@@ -41,7 +41,7 @@ class WorkRequestsAPIListView(ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
 
     @swagger_auto_schema(
-        operation_summary='Retrieve all work requests',
+        operation_summary='Retrieve all Job Offers',
         tags=['Work-Requests']
     )
     def get(self, request, *args, **kwargs):
