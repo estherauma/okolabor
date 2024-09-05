@@ -92,6 +92,7 @@ class LoginEvent(BaseModel):
     def __str__(self) -> str:
         return f'{self.user.email}@{self.ip_address} logged in at {self.date_logged_in}'
 
+
 class UserPreference(AuditableModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     key = models.CharField(max_length=256, null=False, blank=False)
@@ -111,6 +112,7 @@ class UserWorkExperience(AuditableModel):
         User, on_delete=models.CASCADE, related_name='work_experiences')
     company = models.CharField(max_length=256, null=False, blank=False)
     location = models.CharField(max_length=256, null=False, blank=False)
+    state = models.CharField(max_length=256, null=True, blank=True)
     start_date = models.DateField(null=False, blank=False)
     end_date = models.DateField(null=True, blank=True)
     work_type = models.CharField(max_length=256, null=True, blank=True)
@@ -138,6 +140,7 @@ class UserWorkExperienceDocuments(AuditableModel):
 
     class Meta:
         db_table = 'account_user_work_experience_documents'
+
 
 class UserDocuments(AuditableModel):
     user = models.ForeignKey(
