@@ -48,6 +48,9 @@ class UploadFileView(APIView):
         'english_video': 'uploads/english_videos',
         'us_driver_license': 'uploads/driver_licenses',
         'mexico_driver_license': 'uploads/driver_licenses',
+        'certificate': 'uploads/certificates',
+        'visa': 'uploads/visa',
+        'photo': 'uploads/photos',
     }
 
     @swagger_auto_schema(

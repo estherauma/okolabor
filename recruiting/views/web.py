@@ -99,7 +99,6 @@ class WorkRequestRoleCreateView(CreateView):
     def get_initial(self):
         initial = super().get_initial()
         initial['work_request'] = self.kwargs.get('pk')
-
         return initial
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
