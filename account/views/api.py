@@ -227,7 +227,6 @@ class UserDocumentDetailsView(APIView):
         tags=["User Documents"]
     )
     def delete(self, request, document_id):
-        print(document_id)
         document = get_object_or_404(UserDocuments, pk=document_id)
         document.delete()
         return Response(
