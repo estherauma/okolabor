@@ -20,6 +20,7 @@ class WRRoleSerializer(serializers.ModelSerializer):
 
 class WorkRequestSerializer(serializers.ModelSerializer):
     roles = WRRoleSerializer(many=True, read_only=True)
+    employer = EmployerSerializer(read_only=True)
 
     class Meta:
         model = WorkRequests
