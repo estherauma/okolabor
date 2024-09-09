@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from account.models import (
-    User, UserDocuments, UserPreference, UserWorkExperience)
+    User, UserCropExperience, UserDocuments, UserPreference, UserWorkExperience)
 import re
 from common.twilio import OTPVerification
 
@@ -158,3 +158,9 @@ class OTPVerifySerializer(serializers.Serializer):
             return response
         except Exception as e:
             return {"error": f"An unexpected error occurred: {str(e)}"}
+
+class UserCropExperienceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserCropExperience
+        fields = ['crop', 'kind', 'duration', 'duration_type']
+        read_only_fields = ['id', 'user_id']

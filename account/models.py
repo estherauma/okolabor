@@ -151,3 +151,15 @@ class UserDocuments(AuditableModel):
     cloud_vision_response = models.TextField(null=True, blank=True)
     cloud_vision_match = models.BooleanField(default=False)
     file_type = models.CharField(max_length=256, null=True, blank=True)
+
+
+class UserCropExperience(AuditableModel):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='crop_experiences')
+    crop = models.CharField(max_length=256, null=False, blank=False)
+    kind = models.CharField(max_length=256, null=False, blank=False)
+    duration = models.IntegerField(null=False, blank=False)
+    duration_type = models.CharField(max_length=256, null=False, blank=False)
+
+    def __str__(self):
+        return f'{self.user.curp} - {self.crop} - {self.kind}'  
