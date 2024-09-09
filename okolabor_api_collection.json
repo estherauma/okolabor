@@ -2,7 +2,7 @@
     "clientName": "Thunder Client",
     "collectionName": "Okolabor",
     "collectionId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
-    "dateExported": "2024-08-14T12:09:34.708Z",
+    "dateExported": "2024-09-05T11:42:40.454Z",
     "version": "1.2",
     "folders": [
         {
@@ -53,6 +53,13 @@
             "containerId": "",
             "created": "2024-08-12T09:58:19.460Z",
             "sortNum": 90000
+        },
+        {
+            "_id": "e303d699-3e60-42e7-8662-6c95b7a217a6",
+            "name": "otp",
+            "containerId": "",
+            "created": "2024-08-21T12:32:46.373Z",
+            "sortNum": 100000
         }
     ],
     "requests": [
@@ -101,12 +108,12 @@
             "_id": "9f9e9306-abba-4740-8824-83d8d6defa1b",
             "colId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
             "containerId": "1c2a2fd3-c008-4ded-b8f3-0cfc90e32e61",
-            "name": "create-update-preferences Copy",
-            "url": "{{api-url}}/api/v1/file-upload/",
+            "name": "upload_documents",
+            "url": "{{api-url}}/api/file-upload/",
             "method": "POST",
             "sortNum": 10000,
             "created": "2024-08-12T09:58:35.037Z",
-            "modified": "2024-08-14T08:23:52.650Z",
+            "modified": "2024-09-05T11:02:46.059Z",
             "headers": [],
             "body": {
                 "type": "formdata",
@@ -114,19 +121,36 @@
                 "form": [
                     {
                         "name": "entityType",
-                        "value": "passport"
+                        "value": "photo"
                     }
                 ],
                 "files": [
                     {
                         "name": "fileContent",
-                        "value": "/Users/thesammie/Downloads/mexican_sample.webp"
+                        "value": "/Users/thesammie/Pictures/Screenshots/Screenshot 2024-09-04 at 10.25.24.png"
                     }
                 ]
             },
             "auth": {
                 "type": "bearer",
                 "bearer": "{{api-token}}"
+            }
+        },
+        {
+            "_id": "a54b7ddf-ed4a-4f89-844e-b4b5d3490d48",
+            "colId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
+            "containerId": "e303d699-3e60-42e7-8662-6c95b7a217a6",
+            "name": "request-otp",
+            "url": "{{api-url}}/api/account/otp-generate/",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2024-08-19T11:42:28.695Z",
+            "modified": "2024-08-30T08:06:53.056Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"phoneNumber\": \"+256774466600\",\n  \"userId\": \"{{account-id}}\"\n}",
+                "form": []
             }
         },
         {
@@ -176,6 +200,23 @@
                     "isPath": false
                 }
             ]
+        },
+        {
+            "_id": "07fefd3e-f82b-41a8-97fd-0f61278b5fad",
+            "colId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
+            "containerId": "e303d699-3e60-42e7-8662-6c95b7a217a6",
+            "name": "verify-otp",
+            "url": "{{api-url}}/api/account/otp-verify/",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2024-08-20T10:57:43.354Z",
+            "modified": "2024-08-30T08:08:30.978Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"otpCode\": \"3275\",\n  \"phoneNumber\": \"+256774466600\",\n  \"userId\": \"{{account-id}}\"\n}",
+                "form": []
+            }
         },
         {
             "_id": "431337fe-3743-44c6-bcf7-ec08ce2f6d78",
@@ -233,11 +274,11 @@
             "colId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
             "containerId": "b667ccff-3880-4dc6-9c7f-f8dae3cf040f",
             "name": "create-update-preferences",
-            "url": "{{api-url}}/api/account/-O-K-_sxdlgSYo9b2i7I/preferences/",
+            "url": "{{api-url}}/api/account/{{account-id}}/preferences/",
             "method": "POST",
             "sortNum": 60000,
             "created": "2024-06-24T20:26:25.955Z",
-            "modified": "2024-07-03T13:48:33.451Z",
+            "modified": "2024-08-15T12:41:49.970Z",
             "headers": [],
             "body": {
                 "type": "json",
@@ -250,11 +291,23 @@
             "colId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
             "containerId": "b667ccff-3880-4dc6-9c7f-f8dae3cf040f",
             "name": "get-preferences",
-            "url": "{{api-url}}/api/account/-O-K-_sxdlgSYo9b2i7I/preferences",
+            "url": "{{api-url}}/api/account/{{account-id}}/preferences",
             "method": "GET",
             "sortNum": 70000,
             "created": "2024-06-24T20:40:05.383Z",
-            "modified": "2024-07-03T14:03:41.588Z",
+            "modified": "2024-08-15T12:42:00.788Z",
+            "headers": []
+        },
+        {
+            "_id": "f88e248d-79b4-4960-bdbe-4a094cefb012",
+            "colId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
+            "containerId": "b667ccff-3880-4dc6-9c7f-f8dae3cf040f",
+            "name": "reset-account-preferences",
+            "url": "{{api-url}}/api/account/{{account-id}}/reset-profile/",
+            "method": "POST",
+            "sortNum": 70000,
+            "created": "2024-08-15T12:36:08.032Z",
+            "modified": "2024-08-15T12:41:37.360Z",
             "headers": []
         },
         {
@@ -279,11 +332,11 @@
             "colId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
             "containerId": "b667ccff-3880-4dc6-9c7f-f8dae3cf040f",
             "name": "get-work-experience",
-            "url": "{{api-url}}/api/account/-O23lx6CEj4GAVtJ4AxR/work-experience/",
+            "url": "{{api-url}}/api/account/{{account-id}}/work-experience/",
             "method": "GET",
             "sortNum": 90000,
             "created": "2024-07-03T16:28:22.020Z",
-            "modified": "2024-07-18T08:00:10.941Z",
+            "modified": "2024-08-15T12:42:22.069Z",
             "headers": []
         },
         {
@@ -291,24 +344,50 @@
             "colId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
             "containerId": "b667ccff-3880-4dc6-9c7f-f8dae3cf040f",
             "name": "get-user-documents",
-            "url": "{{api-url}}/api/account/-O44zso12QCsAzT-HbLq/documents",
+            "url": "{{api-url}}/api/account/{{account-id}}/documents",
             "method": "GET",
             "sortNum": 90000,
             "created": "2024-07-03T16:39:55.828Z",
-            "modified": "2024-08-14T12:09:17.814Z",
+            "modified": "2024-08-15T12:43:11.280Z",
             "headers": []
         },
         {
-            "_id": "b66aaf7e-1ddc-4fcc-9f84-76a9a0717aa2",
+            "_id": "f63663fb-78c5-47c9-90d7-8b2178e532e4",
             "colId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
             "containerId": "b667ccff-3880-4dc6-9c7f-f8dae3cf040f",
-            "name": "get-work-experience Copy",
-            "url": "{{api-url}}/api/account/-O23lx6CEj4GAVtJ4AxR/work-experience/",
+            "name": "get-single-document",
+            "url": "{{api-url}}/api/account/-O4ijpntdcTQkFaOp1D7/document",
             "method": "GET",
-            "sortNum": 90000,
-            "created": "2024-08-14T11:04:31.677Z",
-            "modified": "2024-08-14T11:04:31.677Z",
+            "sortNum": 92500,
+            "created": "2024-08-14T12:03:35.441Z",
+            "modified": "2024-08-20T07:46:13.743Z",
             "headers": []
+        },
+        {
+            "_id": "c54e9bc3-0934-42c2-a5af-233eba4fd4b1",
+            "colId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
+            "containerId": "b667ccff-3880-4dc6-9c7f-f8dae3cf040f",
+            "name": "delete_document",
+            "url": "{{api-url}}/api/account/-O4ijpntdcTQkFaOp1D7/document/",
+            "method": "DELETE",
+            "sortNum": 95000,
+            "created": "2024-09-05T11:34:56.983Z",
+            "modified": "2024-09-05T11:42:10.849Z",
+            "headers": [],
+            "body": {
+                "type": "formdata",
+                "raw": "",
+                "form": [
+                    {
+                        "name": "entityType",
+                        "value": "photo"
+                    }
+                ]
+            },
+            "auth": {
+                "type": "bearer",
+                "bearer": "{{api-token}}"
+            }
         },
         {
             "_id": "0a200b40-763e-449d-9142-2555c2198bfa",
@@ -328,18 +407,6 @@
             ]
         },
         {
-            "_id": "f63663fb-78c5-47c9-90d7-8b2178e532e4",
-            "colId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
-            "containerId": "b667ccff-3880-4dc6-9c7f-f8dae3cf040f",
-            "name": "get-single-document",
-            "url": "{{api-url}}/api/account/-O4AKUMytWMZc422unSU/document",
-            "method": "GET",
-            "sortNum": 100000,
-            "created": "2024-08-14T12:03:35.441Z",
-            "modified": "2024-08-14T12:04:57.973Z",
-            "headers": []
-        },
-        {
             "_id": "d25d4cb6-c53e-4542-81b3-169e5190891a",
             "colId": "5be06c56-af34-4350-af5b-ffae5fa20b1b",
             "containerId": "67adc9fe-88ea-439d-82a2-6c91ff7dc8d3",
@@ -357,5 +424,5 @@
             ]
         }
     ],
-    "ref": "4QkAmUgsSHnUWXk66zHpT0mL2hiYZSxGF-4H-N75awY28eXB6lNnnKTlJWmBXkr5ImJckBwJBeh7xv5yNeJaxA"
+    "ref": "4QkAmUgsSHnUWXk66zHpT-riAKUD-GNLCL2R7gRZLZ1vXt-JD1T1K5X2MFT5lZtxSKfVnZau1SyxhIVn2eRS8w"
 }

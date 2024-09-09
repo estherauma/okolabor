@@ -220,7 +220,20 @@ class UserDocumentDetailsView(APIView):
         return Response(
             serilizer.data,
             status=status.HTTP_200_OK
-        )    
+        )
+
+    @swagger_auto_schema(
+        operation_summary="Delete specific document",
+        tags=["User Documents"]
+    )
+    def delete(self, request, document_id):
+        document = get_object_or_404(UserDocuments, pk=document_id)
+        document.delete()
+        return Response(
+            {"message": "Document deleted successfully."},
+            status=status.HTTP_204_NO_CONTENT
+        )
+
 class ResetAccountProfile(APIView):
     @swagger_auto_schema(
         operation_summary="Reset user profile data",
@@ -261,8 +274,7 @@ class GetOTP(APIView):
         else:
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
-           
-
+       
 
 class VerifyOTP(APIView):
     @swagger_auto_schema(
