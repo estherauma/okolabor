@@ -83,7 +83,7 @@ class WorkRequestRoleForm(forms.ModelForm):
     class Meta:
         model = Role
         fields = [
-            'title', 'usdol_case_number',
+            'title', 'usdol_case_number', 'work_type',
             'number_of_required_workers', 'work_request', 'description'
         ]
 
@@ -94,12 +94,18 @@ class WorkRequestRoleForm(forms.ModelForm):
             'usdol_case_number': forms.TextInput(attrs={
                 'class': 'form-control',
             }),
+            'work_type': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
             'number_of_required_workers': forms.NumberInput(attrs={
                 'class': 'form-control',
             }),
             'work_request': forms.Select(attrs={
                 'class': 'form-control',
                 'readonly': True
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
             }),
         }
 
