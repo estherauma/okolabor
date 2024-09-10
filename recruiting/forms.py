@@ -84,7 +84,7 @@ class WorkRequestRoleForm(forms.ModelForm):
         model = Role
         fields = [
             'title', 'usdol_case_number',
-            'number_of_required_workers', 'work_request'
+            'number_of_required_workers', 'work_request', 'description'
         ]
 
         widgets = {
