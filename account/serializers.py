@@ -1,8 +1,11 @@
 from rest_framework import serializers
 from account.models import (
-    User, UserCropExperience, UserDocuments, UserPreference, UserWorkExperience)
+    User, UserCropExperience, UserDocuments, UserPreference,
+    UserReportedProblem, UserWorkExperience
+)
 import re
 from common.twilio import OTPVerification
+
 
 class RegistrationSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -56,17 +59,19 @@ class LoginSerializer(serializers.Serializer):
 
     def validate_identifier(self, value):
         if (
-            not User.objects.filter(email=value).exists() 
+            not User.objects.filter(email=value).exists()
             and not User.objects.filter(curp=value).exists()
         ):
             raise serializers.ValidationError(
                 'User with given information does not exist')
         return value
 
+
 class UserPreferenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserPreference
         fields = ['key', 'value', 'kind']
+
 
 class UpdateUserPreferencesSerializer(serializers.Serializer):
     preferences = UserPreferenceSerializer(many=True)
@@ -82,9 +87,13 @@ class UserWorkexperienceSerializer(serializers.ModelSerializer):
     supervisor_name = serializers.CharField(required=True)
     supervisor_tel = serializers.CharField(required=True)
     supervisor_email = serializers.EmailField(required=True)
+
     class Meta:
         model = UserWorkExperience
-        fields = ['company','location', 'start_date', 'end_date', 'work_type', 'work_title', 'supervisor_name', 'supervisor_tel', 'supervisor_email']
+        fields = [
+                'company', 'location', 'start_date',
+                'end_date', 'work_type', 'work_title',
+                'supervisor_name', 'supervisor_tel', 'supervisor_email']
 
 
 class UserDocumentSerializer(serializers.ModelSerializer):
@@ -142,7 +151,7 @@ class OTPVerifySerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 'OTP must be a number'
             )
-        
+
         if len(value) < 4:
             raise serializers.ValidationError(
                 'OTP must be 4 characters long'
@@ -159,8 +168,16 @@ class OTPVerifySerializer(serializers.Serializer):
         except Exception as e:
             return {"error": f"An unexpected error occurred: {str(e)}"}
 
+
 class UserCropExperienceSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserCropExperience
         fields = ['crop', 'kind', 'duration', 'duration_type']
+        read_only_fields = ['id', 'user_id']
+
+
+class ReportAProblemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserReportedProblem
+        fields = ['topic', 'description']
         read_only_fields = ['id', 'user_id']
