@@ -5,8 +5,6 @@ from rest_framework.response import Response
 from rest_framework import status
 import requests
 import re
-
-
 from content.models import AggregatedContent
 from content.serializers import AggregatedContentSerializer
 from drf_yasg.utils import swagger_auto_schema
@@ -451,6 +449,37 @@ class ContentAPI():
                     return None
             return agg_result
 
+        def aggregate_crop_types(data):
+            aggregated_data = []
+            for item in data:
+                if item['__component'] == 'okolabor.crop-type':
+                    crop_type_data = {
+                      "name": item.get('name', None),
+                      "label": item.get('label', None),
+                      "enabled": item.get('enabled', None),
+                      "description": item.get('description', None),                      
+                    }
+                    aggregated_data.append(crop_type_data)
+            return aggregated_data
+
+        def aggregate_farm_activity_types(data):
+            aggregated_data = []
+            for item in data:
+                if item['__component'] == 'okolabor.activity-type':
+                    activity_type_data = {
+                        "name": item.get('name', None),
+                        "label": item.get('label', None),
+                        "enabled": item.get('enabled', None),
+                        "category": (
+                            item.get('category', '').split(',') 
+                            if item.get('category', None) 
+                            else []
+                        ),
+                        "description": item.get('description', None),                      
+                    }
+                    aggregated_data.append(activity_type_data)
+            return aggregated_data
+
         for item in lang_content['data']:
             if item['custom_type'] == 'form_questions':
                 aggregation_response = aggregate_form_questions(item)
@@ -504,7 +533,27 @@ class ContentAPI():
             if item['custom_type'] == 'case_study':
                 cs_agg_resp = aggregate_case_study(item)
                 aggregated_content[item['page_id']] = cs_agg_resp
-
+            
+            if item['custom_type'] == 'crop_type':
+                aggregation_response = aggregate_crop_types(item.get('dynamic_zone'))
+                page_data = {
+                    'page_id': item.get('page_id', None),
+                    'page_title': item.get('page_title', None),
+                    'last_updated': item.get('last_published_at', None),
+                    'data': aggregation_response
+                }
+                aggregated_content[item['page_id']] = page_data
+            
+            if item['custom_type'] == 'activity_type':
+                aggregation_response = aggregate_farm_activity_types(item.get('dynamic_zone'))
+                page_data = {
+                    'page_id': item.get('page_id', None),
+                    'page_title': item.get('page_title', None),
+                    'last_updated': item.get('last_published_at', None),
+                    'data': aggregation_response
+                }
+                aggregated_content[item['page_id']] = page_data
+        
         return aggregated_content
 
 
