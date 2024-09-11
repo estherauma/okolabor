@@ -12,7 +12,15 @@ class EmployerSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class EmploymentLocationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmploymentLocation
+        fields = '__all__'
+
+
 class WRRoleSerializer(serializers.ModelSerializer):
+    employment_location = EmploymentLocationSerializer()
+
     class Meta:
         model = Role
         fields = '__all__'
@@ -47,12 +55,6 @@ class DeductionSerializer(serializers.ModelSerializer):
 class QualificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Qualification
-        fields = '__all__'
-
-
-class EmploymentLocationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = EmploymentLocation
         fields = '__all__'
 
 
