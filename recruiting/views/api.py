@@ -61,14 +61,14 @@ class WorkRequestRoleDetailView(RetrieveUpdateDestroyAPIView):
 
     @swagger_auto_schema(
         operation_summary='Retrieve a specific work request role',
-        tags=['Work-Requests/roles']
+        tags=['Work-Requests']
     )
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
 
     @swagger_auto_schema(
         operation_summary='Update a specific work request role',
-        tags=['Work-Requests/roles']
+        tags=['Work-Requests']
     )
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)

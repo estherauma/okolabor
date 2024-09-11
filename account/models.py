@@ -47,7 +47,8 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
     reset_password_token = models.CharField(null=True,
                                             blank=True, max_length=125)
     profile_image = models.URLField(null=True, blank=True)
-    access_code = models.CharField(_('access_code'), null=True, blank=True, max_length=30)
+    access_code = models.CharField(_('access_code'), null=True,
+                                   blank=True, max_length=30)
     position = models.CharField(_('position'), null=True,
                                 blank=True, max_length=30)
     telephone = models.CharField(_('telephone'),
@@ -90,7 +91,7 @@ class LoginEvent(BaseModel):
         db_table = 'login_events'
 
     def __str__(self) -> str:
-        return f'{self.user.email}@{self.ip_address} logged in at {self.date_logged_in}'
+        return f('{self.user.email}@{self.ip_address} logged in at {self.date_logged_in}')
 
 
 class UserPreference(AuditableModel):
@@ -162,4 +163,20 @@ class UserCropExperience(AuditableModel):
     duration_type = models.CharField(max_length=256, null=False, blank=False)
 
     def __str__(self):
-        return f'{self.user.curp} - {self.crop} - {self.kind}'  
+        return f'{self.user.curp} - {self.crop} - {self.kind}'
+
+
+class UserReportedProblem(AuditableModel):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='reported_problems')
+    topic = models.CharField(max_length=256, null=False, blank=False)
+    description = models.TextField(null=False, blank=False)
+    solution = models.TextField(null=True, blank=True)
+    status = models.CharField(max_length=256, default='pending')
+    resolved_by = models.ForeignKey(
+            User, on_delete=models.CASCADE, related_name='resolved_problems',
+            null=True, blank=True)
+    resolved_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.user.curp} - {self.problem} - {self.status}'

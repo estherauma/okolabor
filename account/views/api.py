@@ -1,11 +1,13 @@
 from account.serializers import (
     OTPGenerateSerializer, OTPVerifySerializer, RegistrationSerializer,
-    UpdateUserPreferencesSerializer, UserCropExperienceSerializer, UserDocumentSerializer,
+    ReportAProblemSerializer, UpdateUserPreferencesSerializer,
+    UserCropExperienceSerializer, UserDocumentSerializer,
     UserPreferenceSerializer, UserSerilizer, LoginSerializer,
     UserWorkexperienceSerializer
 )
 from account.models import (
-    User, UserCropExperience, UserDocuments, UserPreference, UserWorkExperience
+    User, UserCropExperience, UserDocuments, UserPreference,
+    UserReportedProblem, UserWorkExperience
 )
 from account.models import (
     User, UserDocuments, UserPreference, UserWorkExperience
@@ -234,6 +236,7 @@ class UserDocumentDetailsView(APIView):
             status=status.HTTP_204_NO_CONTENT
         )
 
+
 class ResetAccountProfile(APIView):
     @swagger_auto_schema(
         operation_summary="Reset user profile data",
@@ -257,7 +260,7 @@ class GetOTP(APIView):
     )
     def post(self, request, *args, **kwargs):
         serializer = OTPGenerateSerializer(data=request.data)
-        
+
         if serializer.is_valid():
             resp = serializer.start_otp_process()
             if resp == 'pending':
@@ -274,7 +277,7 @@ class GetOTP(APIView):
         else:
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
-       
+
 
 class VerifyOTP(APIView):
     @swagger_auto_schema(
@@ -325,7 +328,7 @@ class UserCropExperienceView(APIView):
                 user=user,
                 crop=serializer.validated_data['crop'],
                 duration=serializer.validated_data['duration'],
-                duration_type=serializer.validated_data['duration_type']                
+                duration_type=serializer.validated_data['duration_type']
             ).exists():
                 return Response(
                     {
@@ -352,5 +355,20 @@ class UserCropExperienceView(APIView):
             experience, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserReportProblem(APIView):
+    @swagger_auto_schema(
+        operation_summary="Report a problem",
+        tags=["Report Problem"]
+    )
+    def post(self, request, user_id):
+        user = get_object_or_404(User, pk=user_id)
+        serializer = ReportAProblemSerializer(data=request.data)
+        if serializer.is_valid():
+            UserReportedProblem.objects.create(
+                user=user, **serializer.validated_data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
