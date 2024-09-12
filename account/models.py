@@ -180,3 +180,15 @@ class UserReportedProblem(AuditableModel):
 
     def __str__(self):
         return f'{self.user.curp} - {self.problem} - {self.status}'
+
+
+class UserNotification(AuditableModel):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='notifications')
+    title = models.CharField(max_length=256, null=False, blank=False)
+    message = models.TextField(null=False, blank=False)
+    status = models.CharField(max_length=256, default='unread')
+    read_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.user.curp} - {self.title} - {self.status}'
