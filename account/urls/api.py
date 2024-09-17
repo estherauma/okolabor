@@ -2,7 +2,7 @@ from django.urls import path, re_path
 from account.models import UserCropExperience
 from account.views.api import (
     RegisterView, LoginView, ResetAccountProfile, UserCropExperienceView,
-    UserDocumentDetailsView,
+    UserDocumentDetailsView, UserNotificationView,
     UserPreferencesUpdateView, UserReportProblem, UserWorkExperienceView,
     GetOTP, VerifyOTP,
     RegisterView, LoginView, ResetAccountProfile, UserDocumentDetailsView,
@@ -53,6 +53,11 @@ urlpatterns = [
     re_path(
         r'(?P<user_id>[-\w]+)/report-problem/$',
         UserReportProblem.as_view(),
+        name='api-report-problem'
+    ),
+    re_path(
+        r'(?P<user_id>[-\w]+)/notifications/$',
+        UserNotificationView.as_view(),
         name='api-report-problem'
     ),
 ]

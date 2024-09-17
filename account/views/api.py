@@ -1,12 +1,12 @@
 from account.serializers import (
     OTPGenerateSerializer, OTPVerifySerializer, RegistrationSerializer,
     ReportAProblemSerializer, UpdateUserPreferencesSerializer,
-    UserCropExperienceSerializer, UserDocumentSerializer,
+    UserCropExperienceSerializer, UserDocumentSerializer, UserNotificationSerializer,
     UserPreferenceSerializer, UserSerilizer, LoginSerializer,
     UserWorkexperienceSerializer
 )
 from account.models import (
-    User, UserCropExperience, UserDocuments, UserPreference,
+    User, UserCropExperience, UserDocuments, UserNotification, UserPreference,
     UserReportedProblem, UserWorkExperience
 )
 from account.models import (
@@ -370,5 +370,49 @@ class UserReportProblem(APIView):
         if serializer.is_valid():
             UserReportedProblem.objects.create(
                 user=user, **serializer.validated_data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserNotificationView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Retrieve user notifications",
+        tags=["User Notifications"]
+    )
+    def get(self, request, user_id):
+        user = get_object_or_404(User, pk=user_id)
+        notifications = user.notifications.all()
+        serializer = UserNotificationSerializer(notifications, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(
+        operation_summary="Create user notifications",
+        tags=["User Notifications"]
+    )
+    def post(self, request, user_id):
+        user = get_object_or_404(User, pk=user_id)
+        serializer = UserNotificationSerializer(data=request.data)
+        if serializer.is_valid():
+            UserNotification.objects.create(
+                user=user, **serializer.validated_data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @swagger_auto_schema(
+        operation_summary="Update user notifications",
+        tags=["User Notifications"]
+    )
+    def patch(self, request, user_id):
+        if not request.data.get('notification_id'):
+            return Response(
+                {'message': 'Notification id is required'},
+                status=status.HTTP_400_BAD_REQUEST)
+        notification_id = request.data.get('notification_id')
+        user_id = get_object_or_404(User, pk=user_id)
+        notification = get_object_or_404(UserNotification, pk=notification_id)
+        serializer = UserNotificationSerializer(
+            notification, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
