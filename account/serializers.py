@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from account.models import (
-    User, UserCropExperience, UserDocuments, UserPreference,
+    User, UserCropExperience, UserDocuments, UserNotification, UserPreference,
     UserReportedProblem, UserWorkExperience
 )
 import re
@@ -92,7 +92,7 @@ class UserWorkexperienceSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserWorkExperience
         fields = [
-            'id','company', 'location', 'start_date',
+            'id', 'state', 'visa_type','company', 'start_date',
             'end_date', 'work_type', 'work_title',
             'supervisor_name', 'supervisor_tel', 'supervisor_email'
         ]
@@ -183,3 +183,10 @@ class ReportAProblemSerializer(serializers.ModelSerializer):
         model = UserReportedProblem
         fields = ['topic', 'description']
         read_only_fields = ['id', 'user_id']
+
+
+class UserNotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserNotification
+        fields = ['id', 'title', 'message','status', 'category']
+        read_only_fields = [ 'id', 'user_id', 'read_at']
