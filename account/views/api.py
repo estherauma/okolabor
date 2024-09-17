@@ -144,9 +144,10 @@ class UserPreferencesUpdateView(APIView):
 class UserWorkExperienceView(APIView):
     @swagger_auto_schema(
         operation_summary="Retrieve worker experience",
-        tags=["User Experience"]
+        tags=["User Work Experience"]
     )
     def get(self, request, user_id):
+        print(user_id)
         user = get_object_or_404(User, pk=user_id)
         experiences = UserWorkExperience.objects.filter(user=user)
         serializer = UserWorkexperienceSerializer(experiences, many=True)
@@ -154,7 +155,7 @@ class UserWorkExperienceView(APIView):
 
     @swagger_auto_schema(
         operation_summary="Create worker experiences",
-        tags=["User Experience"]
+        tags=["User Work Experience"]
     )
     def post(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
@@ -169,8 +170,8 @@ class UserWorkExperienceView(APIView):
                 return Response(
                     {
                         'message': (
-                                'User with given information '
-                                'does not exist'
+                                'User experience with given information '
+                                'already exists'
                             )
                     },
                     status=status.HTTP_400_BAD_REQUEST)
@@ -181,12 +182,25 @@ class UserWorkExperienceView(APIView):
 
             return Response(serializer.errors, status=400)
 
+    
+
+
+class UserWorkExperienceDetailsView(APIView):
+
     @swagger_auto_schema(
-        operation_summary="Update user experience",
-        tags=["User Experience"]
+        operation_summary="Retrieve specific work experience",
+        tags=["User Work Experience"]
+    )
+    def get(self, request, user_id, experience_id):
+        experience = get_object_or_404(UserWorkExperience, pk=experience_id)
+        serializer = UserWorkexperienceSerializer(experience)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(
+        operation_summary="Update work experience",
+        tags=["User Work Experience"]
     )
     def patch(self, request, user_id, experience_id):
-        user = get_object_or_404(User, pk=user_id)
         experience = get_object_or_404(UserWorkExperience, pk=experience_id)
         serializer = UserWorkexperienceSerializer(
             experience, data=request.data, partial=True)
@@ -195,6 +209,17 @@ class UserWorkExperienceView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @swagger_auto_schema(
+        operation_summary="Delete specific work experience",
+        tags=["User Work Experience"]
+    )
+    def delete(self, request, user_id,  experience_id):
+        experience = get_object_or_404(UserWorkExperience, pk=experience_id)
+        experience.delete()
+        return Response(
+            {"message": "Experience deleted successfully."},
+            status=status.HTTP_204_NO_CONTENT
+        )
 
 class UserDocumentsView(APIView):
     @swagger_auto_schema(
@@ -321,9 +346,13 @@ class UserCropExperienceView(APIView):
     )
     def post(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
+        experience = get_object_or_404(
+            UserWorkExperience, pk=request.data.get('work_experience_id'))
+
         serializer = UserCropExperienceSerializer(data=request.data)
+
         if serializer.is_valid():
-            # check if there's no entry with the same c name and startdate
+            # Check if a similar crop experience exists
             if UserCropExperience.objects.filter(
                 user=user,
                 crop=serializer.validated_data['crop'],
@@ -332,17 +361,30 @@ class UserCropExperienceView(APIView):
             ).exists():
                 return Response(
                     {
-                        'message': (
-                                'Crop experience with given information '
-                                'already exist'
-                            )
-                    },
-                    status=status.HTTP_400_BAD_REQUEST)
-            UserCropExperience.objects.create(
-                user=user, **serializer.validated_data)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response(serializer.errors, status=400)
+                        'message': 'Crop experience already exists'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            serializer.validated_data.pop('work_experience')
+
+            # Create the new UserCropExperience object
+            new_experience = UserCropExperience.objects.create(
+                work_experience=experience,
+                user=user,
+                crop=serializer.validated_data['crop'],
+                kind=serializer.validated_data['kind'],
+                duration=serializer.validated_data['duration'],
+                duration_type=serializer.validated_data['duration_type']
+            )
+
+            # Serialize the newly created object
+            created_serializer = UserCropExperienceSerializer(new_experience)
+
+            # Return the serialized created object in the response
+            return Response(
+                created_serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
     @swagger_auto_schema(
         operation_summary="Update user crop experience",

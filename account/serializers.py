@@ -78,8 +78,9 @@ class UpdateUserPreferencesSerializer(serializers.Serializer):
 
 
 class UserWorkexperienceSerializer(serializers.ModelSerializer):
+    state = serializers.CharField(required=True)
+    visa_type = serializers.CharField(required=True)
     company = serializers.CharField(required=True)
-    location = serializers.CharField(required=True)
     start_date = serializers.DateField(required=True)
     end_date = serializers.DateField(required=False)
     work_type = serializers.CharField(required=True)
@@ -91,9 +92,10 @@ class UserWorkexperienceSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserWorkExperience
         fields = [
-                'company', 'location', 'start_date',
-                'end_date', 'work_type', 'work_title',
-                'supervisor_name', 'supervisor_tel', 'supervisor_email']
+            'id', 'state', 'visa_type','company', 'start_date',
+            'end_date', 'work_type', 'work_title',
+            'supervisor_name', 'supervisor_tel', 'supervisor_email'
+        ]
 
 
 class UserDocumentSerializer(serializers.ModelSerializer):
@@ -170,10 +172,18 @@ class OTPVerifySerializer(serializers.Serializer):
 
 
 class UserCropExperienceSerializer(serializers.ModelSerializer):
+    # Nest the related work experience
+    work_experience = UserWorkexperienceSerializer(read_only=True)  # For GET requests
+    work_experience_id = serializers.PrimaryKeyRelatedField(
+        queryset=UserWorkExperience.objects.all(), write_only=True, source='work_experience'
+    )  # For POST requests
+
     class Meta:
         model = UserCropExperience
-        fields = ['crop', 'kind', 'duration', 'duration_type']
-        read_only_fields = ['id', 'user_id']
+        fields = [
+            'crop', 'kind', 'duration', 'duration_type',
+            'work_experience', 'work_experience_id'
+        ]
 
 
 class ReportAProblemSerializer(serializers.ModelSerializer):
