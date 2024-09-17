@@ -292,7 +292,10 @@ class VerifyOTP(APIView):
                 user = User.objects.get(
                     id=serializer.validated_data['user_id'])
                 user.telephone_verified = True
+                user.is_verified = True
+                user.is_active = True
                 user.save()
+                # create notification
                 return Response({"status": resp}, status=status.HTTP_200_OK)
             else:
                 return Response({
