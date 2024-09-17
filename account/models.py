@@ -186,6 +186,8 @@ class UserNotification(AuditableModel):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='notifications')
     title = models.CharField(max_length=256, null=False, blank=False)
+    category = models.CharField(
+        max_length=256, null=False, blank=False, default='general')
     message = models.TextField(null=False, blank=False)
     status = models.CharField(max_length=256, default='unread')
     read_at = models.DateTimeField(null=True, blank=True)

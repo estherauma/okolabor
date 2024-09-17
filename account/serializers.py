@@ -186,5 +186,5 @@ class ReportAProblemSerializer(serializers.ModelSerializer):
 class UserNotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserNotification
-        fields = ['id', 'title', 'message','status']
+        fields = ['id', 'title', 'message','status', 'category']
         read_only_fields = [ 'id', 'user_id', 'read_at']
