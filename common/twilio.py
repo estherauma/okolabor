@@ -11,7 +11,7 @@ class OTPVerification:
     def send_otp(self, phone_number):
         verification = self.client.verify.v2.services(self.verify_sid) \
             .verifications \
-            .create(to=phone_number, channel="sms")
+            .create(to=phone_number, channel="sms", locale="es")
         return verification.status
 
     def check_otp(self, otp_code, phone_number):
