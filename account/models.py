@@ -111,12 +111,12 @@ class UserPreference(AuditableModel):
 class UserWorkExperience(AuditableModel):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='work_experiences')
+    country = models.CharField(max_length=256, null=True, blank=True)
     state = models.CharField(max_length=256, null=True, blank=True)
     visa_type = models.CharField(max_length=256, null=True, blank=True)
     company = models.CharField(max_length=256, null=False, blank=False)
     start_date = models.DateField(null=False, blank=False)
     end_date = models.DateField(null=True, blank=True)
-    work_type = models.CharField(max_length=256, null=True, blank=True)
     work_title = models.CharField(max_length=256, null=True, blank=True)
     supervisor_name = models.CharField(max_length=256, null=True, blank=True)
     supervisor_tel = models.CharField(max_length=256, null=True, blank=True)
