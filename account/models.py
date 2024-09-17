@@ -157,6 +157,9 @@ class UserDocuments(AuditableModel):
 class UserCropExperience(AuditableModel):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='crop_experiences')
+    work_experience = models.ForeignKey(
+        UserWorkExperience, on_delete=models.CASCADE,
+        related_name='crop_experiences', null=True, blank=True)
     crop = models.CharField(max_length=256, null=False, blank=False)
     kind = models.CharField(max_length=256, null=False, blank=False)
     duration = models.IntegerField(null=False, blank=False)
