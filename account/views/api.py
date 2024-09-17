@@ -144,9 +144,10 @@ class UserPreferencesUpdateView(APIView):
 class UserWorkExperienceView(APIView):
     @swagger_auto_schema(
         operation_summary="Retrieve worker experience",
-        tags=["User Experience"]
+        tags=["User Work Experience"]
     )
     def get(self, request, user_id):
+        print(user_id)
         user = get_object_or_404(User, pk=user_id)
         experiences = UserWorkExperience.objects.filter(user=user)
         serializer = UserWorkexperienceSerializer(experiences, many=True)
@@ -154,7 +155,7 @@ class UserWorkExperienceView(APIView):
 
     @swagger_auto_schema(
         operation_summary="Create worker experiences",
-        tags=["User Experience"]
+        tags=["User Work Experience"]
     )
     def post(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
@@ -169,8 +170,8 @@ class UserWorkExperienceView(APIView):
                 return Response(
                     {
                         'message': (
-                                'User with given information '
-                                'does not exist'
+                                'User experience with given information '
+                                'already exists'
                             )
                     },
                     status=status.HTTP_400_BAD_REQUEST)
@@ -181,12 +182,25 @@ class UserWorkExperienceView(APIView):
 
             return Response(serializer.errors, status=400)
 
+    
+
+
+class UserWorkExperienceDetailsView(APIView):
+
     @swagger_auto_schema(
-        operation_summary="Update user experience",
-        tags=["User Experience"]
+        operation_summary="Retrieve specific work experience",
+        tags=["User Work Experience"]
     )
-    def patch(self, request, user_id, experience_id):
-        user = get_object_or_404(User, pk=user_id)
+    def get(self, request, experience_id):
+        experience = get_object_or_404(UserWorkExperience, pk=experience_id)
+        serializer = UserWorkexperienceSerializer(experience)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(
+        operation_summary="Update work experience",
+        tags=["User Work Experience"]
+    )
+    def patch(self, request, experience_id):
         experience = get_object_or_404(UserWorkExperience, pk=experience_id)
         serializer = UserWorkexperienceSerializer(
             experience, data=request.data, partial=True)
@@ -195,6 +209,17 @@ class UserWorkExperienceView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @swagger_auto_schema(
+        operation_summary="Delete specific work experience",
+        tags=["User Work Experience"]
+    )
+    def delete(self, request, experience_id):
+        experience = get_object_or_404(UserWorkExperience, pk=experience_id)
+        experience.delete()
+        return Response(
+            {"message": "Experience deleted successfully."},
+            status=status.HTTP_204_NO_CONTENT
+        )
 
 class UserDocumentsView(APIView):
     @swagger_auto_schema(

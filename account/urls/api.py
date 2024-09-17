@@ -3,7 +3,7 @@ from account.models import UserCropExperience
 from account.views.api import (
     RegisterView, LoginView, ResetAccountProfile, UserCropExperienceView,
     UserDocumentDetailsView,
-    UserPreferencesUpdateView, UserReportProblem, UserWorkExperienceView,
+    UserPreferencesUpdateView, UserReportProblem, UserWorkExperienceDetailsView, UserWorkExperienceView,
     GetOTP, VerifyOTP,
     RegisterView, LoginView, ResetAccountProfile, UserDocumentDetailsView,
     UserDocumentsView, UserPreferencesUpdateView, UserWorkExperienceView
@@ -17,9 +17,9 @@ urlpatterns = [
     re_path(
         r'(?P<user_id>[-\w]+)/preferences/$',
         UserPreferencesUpdateView.as_view(), name='update-user-preferences'),
-    re_path(
-        r'(?P<user_id>[-\w]+)/work-experience/$',
-        UserWorkExperienceView.as_view(), name='api-work-experience'),
+    # re_path(
+    #     r'(?P<user_id>[-\w]+)/work-experience/$',
+    #     UserWorkExperienceView.as_view(), name='api-work-experience'),
     re_path(
         r'(?P<user_id>[-\w]+)/reset-profile/$',
         ResetAccountProfile.as_view(), name='reset-profile'),
@@ -29,9 +29,14 @@ urlpatterns = [
         name='update-user-preferences'
     ),
     re_path(
-            r'(?P<user_id>[-\w]+)/work-experience/$',
-            UserWorkExperienceView.as_view(),
-            name='api-work-experience'
+        r'(?P<user_id>[-\w]+)/work-experience/$',
+        UserWorkExperienceView.as_view(),
+        name='api-work-experience'
+    ),
+    re_path(
+        r'(?P<experience_id>[-\w]+)/single-work-experience/$',
+        UserWorkExperienceDetailsView.as_view(),
+        name='api-single-experience'
     ),
     re_path(
         r'(?P<user_id>[-\w]+)/documents/$',

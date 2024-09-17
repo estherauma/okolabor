@@ -91,7 +91,7 @@ class UserWorkexperienceSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserWorkExperience
         fields = [
-                'company', 'location', 'start_date',
+                'id','company', 'location', 'start_date',
                 'end_date', 'work_type', 'work_title',
                 'supervisor_name', 'supervisor_tel', 'supervisor_email']
 
