@@ -78,8 +78,9 @@ class UpdateUserPreferencesSerializer(serializers.Serializer):
 
 
 class UserWorkexperienceSerializer(serializers.ModelSerializer):
+    state = serializers.CharField(required=True)
+    visa_type = serializers.CharField(required=True)
     company = serializers.CharField(required=True)
-    location = serializers.CharField(required=True)
     start_date = serializers.DateField(required=True)
     end_date = serializers.DateField(required=False)
     work_type = serializers.CharField(required=True)
@@ -91,9 +92,10 @@ class UserWorkexperienceSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserWorkExperience
         fields = [
-                'id','company', 'location', 'start_date',
-                'end_date', 'work_type', 'work_title',
-                'supervisor_name', 'supervisor_tel', 'supervisor_email']
+            'id','company', 'location', 'start_date',
+            'end_date', 'work_type', 'work_title',
+            'supervisor_name', 'supervisor_tel', 'supervisor_email'
+        ]
 
 
 class UserDocumentSerializer(serializers.ModelSerializer):
