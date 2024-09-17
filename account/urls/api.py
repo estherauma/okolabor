@@ -34,7 +34,7 @@ urlpatterns = [
         name='api-work-experience'
     ),
     re_path(
-        r'(?P<experience_id>[-\w]+)/single-work-experience/$',
+        r'(?P<user_id>[-\w]+)/work-experience/(?P<experience_id>[-\w]+)/$',
         UserWorkExperienceDetailsView.as_view(),
         name='api-single-experience'
     ),

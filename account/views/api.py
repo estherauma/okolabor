@@ -191,7 +191,7 @@ class UserWorkExperienceDetailsView(APIView):
         operation_summary="Retrieve specific work experience",
         tags=["User Work Experience"]
     )
-    def get(self, request, experience_id):
+    def get(self, request, user_id, experience_id):
         experience = get_object_or_404(UserWorkExperience, pk=experience_id)
         serializer = UserWorkexperienceSerializer(experience)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -200,7 +200,7 @@ class UserWorkExperienceDetailsView(APIView):
         operation_summary="Update work experience",
         tags=["User Work Experience"]
     )
-    def patch(self, request, experience_id):
+    def patch(self, request, user_id, experience_id):
         experience = get_object_or_404(UserWorkExperience, pk=experience_id)
         serializer = UserWorkexperienceSerializer(
             experience, data=request.data, partial=True)
@@ -213,7 +213,7 @@ class UserWorkExperienceDetailsView(APIView):
         operation_summary="Delete specific work experience",
         tags=["User Work Experience"]
     )
-    def delete(self, request, experience_id):
+    def delete(self, request, user_id,  experience_id):
         experience = get_object_or_404(UserWorkExperience, pk=experience_id)
         experience.delete()
         return Response(
