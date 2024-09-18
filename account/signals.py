@@ -1,5 +1,5 @@
 from django.db.models.signals import post_save
-from account.models import User, UserDocuments
+from account.models import User, UserDocuments, UserNotification
 from django.dispatch import receiver
 from common.cloud_vision import detect_text_in_image
 from common.logger import AppLogger
@@ -19,6 +19,17 @@ def upload_document(sender, instance, created, **kwargs):
             details_match = check_details_match(
                 user_details, instance.cloud_vision_response)
             instance.cloud_vision_match = details_match
+            if details_match:
+                message = 'Your passport has been verified!'
+            else:
+                message = (
+                    'Your passport could not be verified.' 
+                    'Please ensure your details match '
+                    'what is on your passport.'
+                )
+            UserNotification.objects.create(
+                user=instance.user,
+                title='Passport Verification', message=message)
             instance.save()
 
 def extract_current_details(user_id):
