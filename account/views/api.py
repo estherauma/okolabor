@@ -123,6 +123,9 @@ class UserPreferencesUpdateView(APIView):
     )
     def post(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
+        for item in request.data['preferences']:
+            if item['value'] == None or item['value'] == '':
+                request.data['preferences'].remove(item)
         serializer = UpdateUserPreferencesSerializer(data=request.data)
 
         if serializer.is_valid():
