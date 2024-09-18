@@ -320,7 +320,12 @@ class VerifyOTP(APIView):
                 user.is_verified = True
                 user.is_active = True
                 user.save()
-                # create notification
+                # TODO: Figure out how to send localized notifications
+                UserNotification.objects.create(
+                    user=user,
+                    title='Account Verification',
+                    message='Your account has been verified successfully',
+                )
                 return Response({"status": resp}, status=status.HTTP_200_OK)
             else:
                 return Response({
