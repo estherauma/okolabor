@@ -123,10 +123,22 @@ class UserPreferencesUpdateView(APIView):
     )
     def post(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
+        
+        # Create a new list to hold the valid preferences
+        valid_preferences = []
+        
+        # Loop through the preferences and filter out the ones with empty or None values
         for item in request.data['preferences']:
-            if item['value'] == None or item['value'] == '':
-                request.data['preferences'].remove(item)
-        serializer = UpdateUserPreferencesSerializer(data=request.data)
+            if item['value'] is not None and item['value'] != '':
+                valid_preferences.append(item)
+        
+        # Replace the preferences in request.data with the valid ones
+        data = {
+            'preferences': valid_preferences
+        }
+
+        # Pass the filtered data to the serializer
+        serializer = UpdateUserPreferencesSerializer(data=data)
 
         if serializer.is_valid():
             for pref_data in serializer.validated_data['preferences']:
@@ -141,7 +153,9 @@ class UserPreferencesUpdateView(APIView):
                 )
             preferences = self.return_preferences(user)
             return Response(preferences, status=status.HTTP_200_OK)
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class UserWorkExperienceView(APIView):
