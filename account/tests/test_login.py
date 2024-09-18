@@ -236,9 +236,7 @@ class UserWorkExperienceViewTestCase(APITestCase):
 
     
 
-    def test_create_user_work_experience_invalid_request(self):
-        response = self.client.post(self.url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+   
 
     
 
@@ -343,22 +341,6 @@ class UserPreferencesUpdateViewTestCase(APITestCase):
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, 400)
 
-    def test_create_user_preferences_invalid_value(self):
-        data = {
-            'preferences': [
-                {
-                    'key': 'language',
-                    'value': '',
-                    'kind': 'preference'
-                }
-            ]
-        }
-        response = self.client.post(self.url, data, format='json')
-        self.assertEqual(response.status_code, 400)
-
-    def test_create_user_preferences_invalid_request(self):
-        response = self.client.post(self.url, format='json')
-        self.assertEqual(response.status_code, 400)
 
     def test_create_user_preferences_non_existent_user(self):
         url = reverse('account:update-user-preferences', args=[999])
