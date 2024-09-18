@@ -159,6 +159,8 @@ class UserWorkExperienceView(APIView):
     )
     def post(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
+        if len(request.data.get('end_date')) == 0:
+            request.data.pop('end_date')
         serializer = UserWorkexperienceSerializer(data=request.data)
         if serializer.is_valid():
             # check if there's no entry with the same co name and startdate
