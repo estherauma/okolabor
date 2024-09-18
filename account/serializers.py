@@ -78,16 +78,16 @@ class UpdateUserPreferencesSerializer(serializers.Serializer):
 
 
 class UserWorkexperienceSerializer(serializers.ModelSerializer):
-    country = serializers.CharField(required=False)
-    state = serializers.CharField(required=False)
-    visa_type = serializers.CharField(required=False)
+    country = serializers.CharField(required=False, allow_blank=True)
+    state = serializers.CharField(required=False, allow_blank=True)
+    visa_type = serializers.CharField(required=False, allow_blank=True)
     company = serializers.CharField(required=True)
     start_date = serializers.DateField(required=True)
     end_date = serializers.DateField(required=False)
     work_title = serializers.CharField(required=True)
-    supervisor_name = serializers.CharField(required=False)
-    supervisor_tel = serializers.CharField(required=False)
-    supervisor_email = serializers.EmailField(required=False)
+    supervisor_name = serializers.CharField(required=False, allow_blank=True)
+    supervisor_tel = serializers.CharField(required=False, allow_blank=True)
+    supervisor_email = serializers.EmailField(required=False, allow_blank=True)
 
     class Meta:
         model = UserWorkExperience
