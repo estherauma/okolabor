@@ -78,9 +78,9 @@ class UpdateUserPreferencesSerializer(serializers.Serializer):
 
 
 class UserWorkexperienceSerializer(serializers.ModelSerializer):
-    country = serializers.CharField(required=True)
+    country = serializers.CharField(required=False)
     state = serializers.CharField(required=False)
-    visa_type = serializers.CharField(required=True)
+    visa_type = serializers.CharField(required=False)
     company = serializers.CharField(required=True)
     start_date = serializers.DateField(required=True)
     end_date = serializers.DateField(required=False)
