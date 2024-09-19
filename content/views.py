@@ -460,6 +460,8 @@ class ContentAPI():
                       "description": item.get('description', None),                      
                     }
                     aggregated_data.append(crop_type_data)
+            # Sort the aggregated data by 'label' alphabetically
+            aggregated_data = sorted(aggregated_data, key=lambda x: x['label'] or '')
             return aggregated_data
 
         def aggregate_farm_activity_types(data):
@@ -478,6 +480,8 @@ class ContentAPI():
                         "description": item.get('description', None),                      
                     }
                     aggregated_data.append(activity_type_data)
+            # Sort the aggregated data by 'label' alphabetically
+            aggregated_data = sorted(aggregated_data, key=lambda x: x['label'] or '')
             return aggregated_data
 
         for item in lang_content['data']:
