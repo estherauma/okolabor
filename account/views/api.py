@@ -158,9 +158,7 @@ class UserPreferencesUpdateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def update_user_model(self, user, data):
-        print(user)
         user_obj = User.objects.get(pk=user.id)
-        print(data['key'])
         if data['key'] == 'firstName':
             user_obj.first_name = data['value']
             user_obj.save()
@@ -185,7 +183,6 @@ class UserWorkExperienceView(APIView):
         tags=["User Work Experience"]
     )
     def get(self, request, user_id):
-        print(user_id)
         user = get_object_or_404(User, pk=user_id)
         experiences = UserWorkExperience.objects.filter(user=user)
         serializer = UserWorkexperienceSerializer(experiences, many=True)
