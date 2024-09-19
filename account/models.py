@@ -121,6 +121,8 @@ class UserWorkExperience(AuditableModel):
     supervisor_name = models.CharField(max_length=256, null=True, blank=True)
     supervisor_tel = models.CharField(max_length=256, null=True, blank=True)
     supervisor_email = models.EmailField(null=True, blank=True)
+    work_under_h2a_in_usa = models.CharField(
+        blank=True, null=True, max_length=256, default='No')
 
     def __str__(self):
         return f'{self.user.curp} - {self.company}'
