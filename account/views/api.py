@@ -151,10 +151,31 @@ class UserPreferencesUpdateView(APIView):
                         'kind': pref_data.get('kind', 'preference')
                     }
                 )
+                self.update_user_model(user, pref_data)
             preferences = self.return_preferences(user)
             return Response(preferences, status=status.HTTP_200_OK)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def update_user_model(self, user, data):
+        print(user)
+        user_obj = User.objects.get(pk=user.id)
+        print(data['key'])
+        if data['key'] == 'firstName':
+            user_obj.first_name = data['value']
+            user_obj.save()
+        
+        if data['key'] == 'lastName':
+            user_obj.last_name = data['value']
+            user_obj.save()
+            
+        if data['key'] == 'gender':
+            user_obj.gender = data['value']
+            user_obj.save()
+            
+        if data['key'] == 'dob':
+            user_obj.dob = data['value']
+            user_obj.save()
 
 
 
