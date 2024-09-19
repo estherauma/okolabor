@@ -194,9 +194,10 @@ class UserWorkExperienceView(APIView):
                             )
                     },
                     status=status.HTTP_400_BAD_REQUEST)
-            UserWorkExperience.objects.create(
+            experience = UserWorkExperience.objects.create(
                 user=user, **serializer.validated_data)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            created_experience = UserWorkexperienceSerializer(experience)
+            return Response(created_experience.data, status=status.HTTP_200_OK)
         else:
 
             return Response(serializer.errors, status=400)

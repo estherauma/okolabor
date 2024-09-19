@@ -88,13 +88,15 @@ class UserWorkexperienceSerializer(serializers.ModelSerializer):
     supervisor_name = serializers.CharField(required=False, allow_blank=True)
     supervisor_tel = serializers.CharField(required=False, allow_blank=True)
     supervisor_email = serializers.EmailField(required=False, allow_blank=True)
+    work_under_h2a_in_usa = serializers.CharField(allow_blank=True, required=False)
+    
 
     class Meta:
         model = UserWorkExperience
         fields = [
             'id', 'country', 'state', 'visa_type','company', 'start_date',
             'end_date', 'work_title',
-            'supervisor_name', 'supervisor_tel', 'supervisor_email'
+            'supervisor_name', 'supervisor_tel', 'supervisor_email','work_under_h2a_in_usa'
         ]
 
 
