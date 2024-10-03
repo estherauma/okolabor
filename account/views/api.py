@@ -358,6 +358,14 @@ class VerifyOTP(APIView):
                 user.is_verified = True
                 user.is_active = True
                 user.save()
+                # update user preferences with the phone number
+                phone_number = request.data.get('phone_number')
+                if phone_number:
+                    # Create the phone number preference
+                    UserPreference.objects.update_or_create(
+                        user=user, key='phone',
+                        defaults={'value': phone_number, 'kind': 'preference'}
+                    )
                 # TODO: Figure out how to send localized notifications
                 UserNotification.objects.create(
                     user=user,
