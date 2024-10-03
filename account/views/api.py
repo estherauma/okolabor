@@ -361,7 +361,7 @@ class VerifyOTP(APIView):
                 # update user preferences with the phone number
                 phone_number = request.data.get('phone_number')
                 if phone_number:
-                    # Update or create the phone number preference
+                    # Create the phone number preference
                     UserPreference.objects.update_or_create(
                         user=user, key='phone',
                         defaults={'value': phone_number, 'kind': 'preference'}
