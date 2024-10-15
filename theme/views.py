@@ -1,9 +1,7 @@
 from django.shortcuts import render,redirect
 from .forms import RegistrationForm, LoginForm, ResetPasswordForm
 from django.contrib import messages
-from django.shortcuts import render,redirect
 from .forms import ResetPasswordForm
-from django.shortcuts import render,redirect
 from .forms import LoginForm
 
 # Create your views here.
