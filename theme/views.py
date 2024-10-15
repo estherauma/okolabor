@@ -13,6 +13,7 @@ def index(request):
 
 def logout_view(request):
     logout(request)
+    messages.success(request, 'You have been successfully logged out')
     return redirect('/')
 
 def about(request):
