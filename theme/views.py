@@ -6,7 +6,7 @@ from .forms import ResetPasswordForm
 from django.shortcuts import render,redirect
 from .forms import LoginForm
 from django.contrib.auth import logout
-
+from django.contrib import messages
 # Create your views here.
 def index(request):
     return render(request, 'ltr/index.html')
