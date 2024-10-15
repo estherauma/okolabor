@@ -5,7 +5,6 @@ from .forms import ResetPasswordForm
 from .forms import LoginForm
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
-from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 
@@ -227,17 +226,24 @@ def login(request):
         if form.is_valid():
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
+            
+            try:
+                user = User.objects.get(email=email)
+            except User.DoesNotExist:
+                
+                form.add_error('email', "User with this email does not exist.")
+                return render(request, 'ltr/login.html', {'form': form})
+            
             user = authenticate(request, email=email, password=password)
             if user is not None:
-                print(f"User authenticated: {user.email}")
                 auth_login(request, user)
-                return redirect(reverse('index'))
+                return redirect('index') 
             else:
-                print("Authentication failed")
-                form.add_error(None, "Invalid email or password")
+                
+                form.add_error('password', "Incorrect password.")
         else:
-            print("Form is not valid")
-            print(form.errors)
+            
+            return render(request, 'ltr/login.html', {'form': form})
     else:
         print("GET request received")
         form = LoginForm()
