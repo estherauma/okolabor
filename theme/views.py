@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
-@login_required
+@login_required(login_url='/')
 def index(request):
     return render(request, 'ltr/index.html')
 
@@ -219,10 +219,15 @@ def lockscreen(request):
 
 User = get_user_model() 
 def login(request):
+    
+    if request.user.is_authenticated:
+        return redirect('index')
+    
     if request.method == 'POST':
         print("POST request received")
         print(f"POST data: {request.POST}")
         form = LoginForm(request.POST)
+        
         if form.is_valid():
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
@@ -235,9 +240,11 @@ def login(request):
                 return render(request, 'ltr/login.html', {'form': form})
             
             user = authenticate(request, email=email, password=password)
+            
             if user is not None:
                 auth_login(request, user)
-                return redirect('index') 
+                next_url = request.GET.get('next', 'index')
+                return redirect(next_url)
             else:
                 
                 form.add_error('password', "Incorrect password.")
