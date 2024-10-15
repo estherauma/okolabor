@@ -1,12 +1,16 @@
 from django.shortcuts import render,redirect
 from .forms import RegistrationForm, LoginForm, ResetPasswordForm
 from django.contrib import messages
-from django.shortcuts import render,redirect
 from .forms import ResetPasswordForm
-from django.shortcuts import render,redirect
 from .forms import LoginForm
+from django.contrib.auth import authenticate
+from django.contrib.auth import login as auth_login
+from django.urls import reverse
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
+@login_required
 def index(request):
     return render(request, 'ltr/index.html')
 
@@ -214,23 +218,31 @@ def loaders(request):
 def lockscreen(request):
     return render(request, 'ltr/lockscreen.html')
 
+User = get_user_model() 
 def login(request):
     if request.method == 'POST':
+        print("POST request received")
+        print(f"POST data: {request.POST}")
         form = LoginForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
-            print(f"Email: {email}")
-            print(f"Password: {password}")
-            return redirect('index')
+            user = authenticate(request, email=email, password=password)
+            if user is not None:
+                print(f"User authenticated: {user.email}")
+                auth_login(request, user)
+                return redirect(reverse('index'))
+            else:
+                print("Authentication failed")
+                form.add_error(None, "Invalid email or password")
         else:
             print("Form is not valid")
-            print(form.errors) 
-    else: 
+            print(form.errors)
+    else:
+        print("GET request received")
         form = LoginForm()
+
     return render(request, 'ltr/login.html', {'form': form})
-
-
 
 def maps(request):
     return render(request, 'ltr/maps.html')

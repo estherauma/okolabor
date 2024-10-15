@@ -241,3 +241,12 @@ MESSAGE_TAGS = {
 # media
 MEDIA_URL = '/uploads/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
+
+#Athentication backends
+AUTHENTICATION_BACKENDS = [
+    'account.backends.EmailBackend', 
+    'django.contrib.auth.backends.ModelBackend', 
+    'account.backends.JWTAuthentication',
+]
+
+LOGIN_URL = '/login/'
