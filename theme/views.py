@@ -224,8 +224,7 @@ def login(request):
         return redirect('index')
     
     if request.method == 'POST':
-        print("POST request received")
-        print(f"POST data: {request.POST}")
+
         form = LoginForm(request.POST)
         
         if form.is_valid():
