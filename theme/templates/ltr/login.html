@@ -24,8 +24,17 @@
         <div class="container-login100">
             <div class="wrap-login100 p-0">
                 <div class="card-body">
-                    {% comment %} {% if form.errors %}
+                    {% if form.errors %}
                         <div class="alert alert-danger">
+                            
+                            {% if form.non_field_errors %}
+                                <ul>
+                                    {% for error in form.non_field_errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                                                    
                             {% for field in form %}
                                 {% if field.errors %}
                                     <ul>
@@ -36,7 +45,8 @@
                                 {% endif %}
                             {% endfor %}
                         </div>
-                    {% endif %} {% endcomment %}
+                    {% endif %}
+
                     <form class="login100-form validate-form" method="POST">
                         {% csrf_token %}
                         
