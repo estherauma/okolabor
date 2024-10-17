@@ -5,10 +5,18 @@ from django.shortcuts import render,redirect
 from .forms import ResetPasswordForm
 from django.shortcuts import render,redirect
 from .forms import LoginForm
-
+from django.contrib.auth import logout
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 def index(request):
     return render(request, 'ltr/index.html')
+
+@login_required
+def logout_view(request):
+    logout(request)
+    messages.success(request, 'You have been successfully logged out')
+    return redirect('/')
 
 def about(request):
     return render(request, 'ltr/about.html')
