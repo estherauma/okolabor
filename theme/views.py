@@ -1,17 +1,22 @@
 from django.shortcuts import render,redirect
 from .forms import RegistrationForm, LoginForm, ResetPasswordForm
 from django.contrib import messages
-from .forms import ResetPasswordForm
-from .forms import LoginForm
-from django.contrib.auth import authenticate
-from django.contrib.auth import login as auth_login
-from django.contrib.auth import get_user_model
+from .forms import ResetPasswordForm,LoginForm
+from django.contrib.auth import authenticate,login as auth_login,get_user_model
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
+from django.contrib import messages
 
 # Create your views here.
 @login_required(login_url='/')
 def index(request):
     return render(request, 'ltr/index.html')
+
+@login_required
+def logout_view(request):
+    logout(request)
+    messages.success(request, 'You have been successfully logged out')
+    return redirect('/')
 
 def about(request):
     return render(request, 'ltr/about.html')
