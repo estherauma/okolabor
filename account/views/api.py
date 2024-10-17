@@ -369,8 +369,8 @@ class VerifyOTP(APIView):
                 # TODO: Figure out how to send localized notifications
                 UserNotification.objects.create(
                     user=user,
-                    title='Account Verification',
-                    message='Your account has been verified successfully',
+                    title='Verificación de cuenta',
+                    message='Su cuenta ha sido verificada exitosamente',
                 )
                 return Response({"status": resp}, status=status.HTTP_200_OK)
             else:
