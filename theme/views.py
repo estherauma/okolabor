@@ -1,14 +1,14 @@
 from django.shortcuts import render,redirect
 from .forms import RegistrationForm, LoginForm, ResetPasswordForm
 from django.contrib import messages
-from django.shortcuts import render,redirect
-from .forms import ResetPasswordForm
-from django.shortcuts import render,redirect
-from .forms import LoginForm
+from .forms import ResetPasswordForm,LoginForm
+from django.contrib.auth import authenticate,login as auth_login,get_user_model
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+
 # Create your views here.
+@login_required(login_url='/')
 def index(request):
     return render(request, 'ltr/index.html')
 
@@ -222,23 +222,44 @@ def loaders(request):
 def lockscreen(request):
     return render(request, 'ltr/lockscreen.html')
 
+User = get_user_model() 
 def login(request):
+    
+    if request.user.is_authenticated:
+        return redirect('index')
+    
     if request.method == 'POST':
+
         form = LoginForm(request.POST)
+        
         if form.is_valid():
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
-            print(f"Email: {email}")
-            print(f"Password: {password}")
-            return redirect('index')
+            
+            try:
+                user = User.objects.get(email=email)
+            except User.DoesNotExist:
+                
+                form.add_error('email', "User with this email does not exist.")
+                return render(request, 'ltr/login.html', {'form': form})
+            
+            user = authenticate(request, email=email, password=password)
+            
+            if user is not None:
+                auth_login(request, user)
+                next_url = request.GET.get('next', 'index')
+                return redirect(next_url)
+            else:
+                
+                form.add_error('password', "Incorrect password.")
         else:
-            print("Form is not valid")
-            print(form.errors) 
-    else: 
+            
+            return render(request, 'ltr/login.html', {'form': form})
+    else:
+        print("GET request received")
         form = LoginForm()
+
     return render(request, 'ltr/login.html', {'form': form})
-
-
 
 def maps(request):
     return render(request, 'ltr/maps.html')

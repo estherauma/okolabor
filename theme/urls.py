@@ -18,8 +18,9 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("", views.login, name='index'),
-    
+
+    path("", views.login, name='login'),
+   
     path('logout/', views.logout_view, name='logout'),
 
     path("about", views.about, name='about'),
@@ -155,8 +156,6 @@ urlpatterns = [
     path("loaders", views.loaders, name='loaders'),
 
     path("lockscreen", views.lockscreen, name='lockscreen'),
-
-    path("login", views.login, name='login'),
 
     path("maps", views.maps, name='maps'),
 

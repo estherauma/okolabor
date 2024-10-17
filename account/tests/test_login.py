@@ -9,6 +9,7 @@ from django.test.testcases import TestCase
 from rest_framework.test import APITestCase
 from account.models import User, UserWorkExperience
 from account.models import UserPreference
+from django.contrib.auth import get_user_model
 class LoginAPITestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -112,28 +113,33 @@ class LoginTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
         
+        self.user = get_user_model().objects.create_user(
+            email='samsonkapeyi@fiftyeight.io',
+            password='adminwert1A'
+        )
+        
     def test_login_template(self):
-        response = self.client.get('/login')
+        response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'ltr/login.html')
 
     def test_login_success(self):
-        response = self.client.post('/login', {
-            'email': 'test@example.com',
-            'password': 'testPassword1'}
+        response = self.client.post('/', {
+            'email': 'samsonkapeyi@fiftyeight.io',
+            'password': 'adminwert1A'}
         )
         self.assertEquals(response.status_code, 302)
         self.assertRedirects(response, '/index')
         
     
     def test_login_invalid_password(self):
-        response = self.client.post('/login', {
+        response = self.client.post('/', {
             'email': 'test@example.com',
             'password': 'testPassword'})
-        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response.status_code, 200)
 
     def test_login_invalid_email(self):
-        response = self.client.post('/login', {
+        response = self.client.post('/', {
             'email': 'test',
             'password': 'testPassword1'})
         self.assertEquals(response.status_code, 200)
