@@ -489,9 +489,21 @@ class UserJobExperienceDetailsView(APIView):
                 created_serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @swagger_auto_schema()
-    def path(self, request, user_id, experience_id):
-        pass
+    @swagger_auto_schema(
+        operation_summary='Update a user job experience detail',
+        tags=["Job Experience"]
+    )
+    def patch(self, request, user_id):
+        user = get_object_or_404(User, pk=user_id)
+        job_experience_details = get_object_or_404(
+            UserJobExperienceDetails, 
+            pk=request.data.get('job_experience_details_id')
+        )
+        serilizer = UserJobExperienceDetailsSerializer(
+            job_experience_details, data=request.data, partial=True)
+        if serilizer.is_valid():
+            serilizer.save()
+            return Response(serilizer.data, status=status.HTTP_200_OK)
 
 
 class UserReportProblem(APIView):
