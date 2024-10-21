@@ -1,6 +1,6 @@
 import random
 from account.serializers import (
-    AccountRecoverSerializer, OTPGenerateSerializer, OTPVerifySerializer, RegistrationSerializer,
+    AccountRecoverSerializer, AccountResetPasswordSerializer, OTPGenerateSerializer, OTPVerifySerializer, RegistrationSerializer,
     ReportAProblemSerializer, UpdateUserPreferencesSerializer,
     UserCropExperienceSerializer, UserDocumentSerializer, UserNotificationSerializer,
     UserPreferenceSerializer, UserSerilizer, LoginSerializer,
@@ -22,6 +22,7 @@ from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 
 from common.email import EmailHelper
+from django.shortcuts import get_object_or_404
 
 
 class RegisterView(APIView):
@@ -526,7 +527,7 @@ class UserAccountRecovery(APIView):
             user = User.objects.get(email=email)
             if user:
                 reset_code = random.randrange(11111, 99999,)
-                user.reset_password_token = reset_code
+                user.reset_code = reset_code
                 user.save()
 
                 email_helper = EmailHelper()
@@ -545,5 +546,41 @@ class UserAccountRecovery(APIView):
                     },
                     status.HTTP_200_OK
                 )
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserAccountRecoveryReset(APIView):
+    @swagger_auto_schema(
+        operation_summary="Password recovery - Reset password",
+        tags=["Account Management"]
+    )
+    def post(self, request):
+        serializer = AccountResetPasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            reset_token = serializer.validated_data['reset_token']
+            password = serializer.validated_data['password']
+            user = get_object_or_404(User, reset_code=reset_token)
+            if user:
+                user.set_password(password)
+                user.save()
+                
+                # Send email
+                email_helper = EmailHelper()
+                email_helper.send_email(
+                    to_emails=[user.email],
+                    subject='La contraseña de tu cuenta ha cambiado.',
+                    body={
+                        'correo_electrónico': user.email,
+                        'message': 'La contraseña de su cuenta ha cambiado. Si no inició esta solicitud, comuníquese con el soporte',
+                    }
+                )
+                return Response(
+                    {
+                        'message': 'Password reset successfully.'
+                    },
+                    status.HTTP_200_OK
+                )
+      
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
