@@ -1,7 +1,7 @@
 from django.urls import path, re_path
 from account.models import UserCropExperience
 from account.views.api import (
-    RegisterView, LoginView, ResetAccountProfile, UserCropExperienceView,
+    RegisterView, LoginView, ResetAccountProfile, UserAccountRecovery, UserCropExperienceView,
     UserDocumentDetailsView, UserNotificationView,
     UserPreferencesUpdateView, UserReportProblem, UserWorkExperienceDetailsView, UserWorkExperienceView,
     GetOTP, VerifyOTP,
@@ -64,4 +64,5 @@ urlpatterns = [
         UserNotificationView.as_view(),
         name='api-report-problem'
     ),
+    path('recovery-request-reset/', UserAccountRecovery.as_view(), name='password-request-reset'),
 ]

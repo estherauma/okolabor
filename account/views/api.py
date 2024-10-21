@@ -1,5 +1,6 @@
+import random
 from account.serializers import (
-    OTPGenerateSerializer, OTPVerifySerializer, RegistrationSerializer,
+    AccountRecoverSerializer, OTPGenerateSerializer, OTPVerifySerializer, RegistrationSerializer,
     ReportAProblemSerializer, UpdateUserPreferencesSerializer,
     UserCropExperienceSerializer, UserDocumentSerializer, UserNotificationSerializer,
     UserPreferenceSerializer, UserSerilizer, LoginSerializer,
@@ -19,6 +20,8 @@ from rest_framework.views import APIView
 from rest_framework import status
 
 from drf_yasg.utils import swagger_auto_schema
+
+from common.email import EmailHelper
 
 
 class RegisterView(APIView):
@@ -176,7 +179,6 @@ class UserPreferencesUpdateView(APIView):
             user_obj.save()
 
 
-
 class UserWorkExperienceView(APIView):
     @swagger_auto_schema(
         operation_summary="Retrieve worker experience",
@@ -221,8 +223,6 @@ class UserWorkExperienceView(APIView):
             return Response(serializer.errors, status=400)
 
     
-
-
 class UserWorkExperienceDetailsView(APIView):
 
     @swagger_auto_schema(
@@ -511,4 +511,39 @@ class UserNotificationView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserAccountRecovery(APIView):
+    @swagger_auto_schema(
+        operation_summary="Password recovery - Request token",
+        tags=["Account Management"]
+    )
+    def post(self, request):
+        serializer = AccountRecoverSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            user = User.objects.get(email=email)
+            if user:
+                reset_code = random.randrange(11111, 99999,)
+                user.reset_password_token = reset_code
+                user.save()
+
+                email_helper = EmailHelper()
+                email_helper.send_email(
+                    to_emails=[user.email],
+                    subject='Restablece tu contraseña de okolabor',
+                    body={
+                        'correo_electrónico': user.email,
+                        'token_rest_contraseña': reset_code,
+                    }
+                )
+
+                return Response(
+                    {
+                        'message': 'Please check your email for the password reset code.'
+                    },
+                    status.HTTP_200_OK
+                )
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
