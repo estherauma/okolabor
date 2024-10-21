@@ -563,6 +563,7 @@ class UserAccountRecoveryReset(APIView):
             user = get_object_or_404(User, reset_code=reset_token)
             if user:
                 user.set_password(password)
+                user.reset_code = None
                 user.save()
                 
                 # Send email
