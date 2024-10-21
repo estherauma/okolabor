@@ -173,21 +173,6 @@ class OTPVerifySerializer(serializers.Serializer):
             return {"error": f"An unexpected error occurred: {str(e)}"}
 
 
-class UserJobExperienceSerializer(serializers.ModelSerializer):
-    # Nest the related work experience
-    work_experience = UserWorkexperienceSerializer(read_only=True)  # For GET requests
-    work_experience_id = serializers.PrimaryKeyRelatedField(
-        queryset=UserWorkExperience.objects.all(), write_only=True, source='work_experience'
-    )  # For POST requests
-
-    class Meta:
-        model = UserJobExperience
-        fields = [
-            'id', 'job_type', 'type_details',
-            'work_experience', 'work_experience_id'
-        ]
-
-
 class UserJobExperienceDetailsSerializer(serializers.ModelSerializer):
     # job_experience = UserJobExperienceSerializer(read_only=True)
     job_experience_id = serializers.PrimaryKeyRelatedField(
@@ -197,6 +182,28 @@ class UserJobExperienceDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserJobExperienceDetails
         fields = [ 'id','kind', 'value', 'is_attachment','job_experience_id']
+
+
+class UserJobExperienceSerializer(serializers.ModelSerializer):
+    # Nest the related work experience
+    work_experience = UserWorkexperienceSerializer(read_only=True)  # For GET requests
+    work_experience_id = serializers.PrimaryKeyRelatedField(
+        queryset=UserWorkExperience.objects.all(), write_only=True, source='work_experience'
+    )  # For POST requests
+    
+    # Include job_experience_details in the serializer as a nested field
+    job_experience_details = UserJobExperienceDetailsSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = UserJobExperience
+        fields = [
+            'id', 'job_type', 'type_details',
+            'work_experience', 'work_experience_id',
+            'job_experience_details'
+        ]
+
+
+
 
 
 class ReportAProblemSerializer(serializers.ModelSerializer):
