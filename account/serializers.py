@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from account.models import (
-    User, UserCropExperience, UserDocuments, UserNotification, UserPreference,
+    User, UserJobExperience, UserDocuments, UserJobExperienceDetails, UserNotification, UserPreference,
     UserReportedProblem, UserWorkExperience
 )
 import re
@@ -173,7 +173,7 @@ class OTPVerifySerializer(serializers.Serializer):
             return {"error": f"An unexpected error occurred: {str(e)}"}
 
 
-class UserCropExperienceSerializer(serializers.ModelSerializer):
+class UserJobExperienceSerializer(serializers.ModelSerializer):
     # Nest the related work experience
     work_experience = UserWorkexperienceSerializer(read_only=True)  # For GET requests
     work_experience_id = serializers.PrimaryKeyRelatedField(
@@ -181,11 +181,22 @@ class UserCropExperienceSerializer(serializers.ModelSerializer):
     )  # For POST requests
 
     class Meta:
-        model = UserCropExperience
+        model = UserJobExperience
         fields = [
-            'crop', 'kind', 'duration', 'duration_type',
+            'id', 'job_type', 'type_details',
             'work_experience', 'work_experience_id'
         ]
+
+
+class UserJobExperienceDetailsSerializer(serializers.ModelSerializer):
+    # job_experience = UserJobExperienceSerializer(read_only=True)
+    job_experience_id = serializers.PrimaryKeyRelatedField(
+        queryset=UserJobExperience.objects.all(), write_only=True, 
+        source='job_experience'
+    )
+    class Meta:
+        model = UserJobExperienceDetails
+        fields = [ 'id','kind', 'value', 'is_attachment','job_experience_id']
 
 
 class ReportAProblemSerializer(serializers.ModelSerializer):
