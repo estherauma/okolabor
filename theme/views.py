@@ -297,13 +297,13 @@ def profile(request):
         'first_name': user.first_name if user.first_name else None,
         'last_name': user.last_name if user.last_name else None,
         'middle_name': user.middle_name if user.middle_name else None,
+        'email': user.email if user.email else None,
         'dob': user.dob if user.dob else None,
         'gender': user.gender if user.gender else None,
         'telephone': user.telephone if user.telephone else None,
         'address_line_1': user.address_line_1 if user.address_line_1 else None,
         'address_line_2': user.address_line_2 if user.address_line_2 else None,
         'city': user.city if user.city else None,
-        
     }
     return render(request, 'ltr/profile.html', context)
 
