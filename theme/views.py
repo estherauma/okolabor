@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate,login as auth_login,get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib import messages
-
+from account.models import UserWorkExperience
 # Create your views here.
 @login_required(login_url='/')
 def index(request):
@@ -394,7 +394,16 @@ def worker_request_form(request):
 
 
 def work_experience(request):
-    return render(request, 'workers/work-experience.html')
+    
+    work_experiences = UserWorkExperience.objects.filter(user=request.user)
+    
+    has_experience = work_experiences.exists()
+    
+    context = {
+        'work_experiences': work_experiences if has_experience else None
+    }
+    
+    return render(request, 'workers/work-experience.html',context)
 
 def edit_experience(request):
     return render(request, 'workers/edit-work-experience.html')
