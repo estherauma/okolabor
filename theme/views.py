@@ -400,6 +400,7 @@ def work_experience(request):
 def edit_experience(request):
     return render(request, 'workers/edit-work-experience.html')
 
+@login_required
 def user_documents(request):
     documents = UserDocuments.objects.filter(user=request.user)
     
