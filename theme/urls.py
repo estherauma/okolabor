@@ -235,7 +235,6 @@ urlpatterns = [
 
     path("worker-request-form", views.worker_request_form, name='worker-request-form'),
     
-
     #users
     path("users", views.users, name='users'),
     path('user_documents', views.user_documents, name= 'user_documents')

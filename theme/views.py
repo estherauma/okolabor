@@ -404,6 +404,6 @@ def user_documents(request):
     documents = UserDocuments.objects.filter(user=request.user)
     
     context = {
-        'documents': documents if documents.exists() else None
+        'documents': documents 
     }
     return render(request,'ltr/userdocuments.html',context)
