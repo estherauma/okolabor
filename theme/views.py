@@ -399,6 +399,7 @@ def work_experience(request):
 def edit_experience(request):
     return render(request, 'workers/edit-work-experience.html')
 
+@
 def work_preferences(request):
     
     work_preferences = UserPreference.objects.filter(user=request.user)
