@@ -108,6 +108,7 @@
 													<ul class="nav">
 														<li class=""><a href="#tab-51" class="active show" data-bs-toggle="tab">Profile</a></li>
 														<li><a href="#tab-61" data-bs-toggle="tab" class="">Friends</a></li>
+														<li><a href="#tab-62" data-bs-toggle="tab" class="">Work Preferences</a></li>
 														<li><a href="#tab-71" data-bs-toggle="tab" class="">Gallery</a></li>
 														<li><a href="#tab-81" data-bs-toggle="tab" class="">Followers</a></li>
 													</ul>
@@ -310,6 +311,27 @@
 											</li>
 										</ul>
 									</div>
+
+									<div class="tab-pane" id="tab-62">
+										<ul class="widget-users row mb-5">
+											{% if work_preferences %}
+												{% for preference in work_preferences %}
+													<li class="col-lg-4 col-md-6 col-sm-12 col-12">
+														<div class="card border p-0">
+															<div class="card-body text-center">
+																<strong>Key:</strong> {{ preference.key }}<br>
+																<strong>Value:</strong> {{ preference.value }}<br>
+																<strong>Type:</strong> {{ preference.kind }}
+															</div>
+														</div>
+													</li>
+												{% endfor %}
+											{% else %}
+												<p>No work preferences found for the user.</p>
+											{% endif %}
+										</ul>
+									</div>
+									
 									<div class="tab-pane" id="tab-71">
 										<div class="row  mb-5 img-gallery" id="lightgallery">
 											<div class="col-lg-3 col-md-6" data-responsive="{% static ''%}assets/images/media/8.jpg" data-src="{% static ''%}assets/images/media/8.jpg">

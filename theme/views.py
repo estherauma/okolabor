@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate,login as auth_login,get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib import messages
+from account.models import UserPreference
 
 # Create your views here.
 @login_required(login_url='/')
@@ -399,4 +400,10 @@ def edit_experience(request):
     return render(request, 'workers/edit-work-experience.html')
 
 def work_preferences(request):
-    return render(request,'ltr/workpreferences.html')
+    
+    work_preferences = UserPreference.objects.filter(user=request.user)
+    
+    context = {
+        'work_preferences': work_preferences
+    }
+    return render(request,'ltr/workpreferences.html',context)
