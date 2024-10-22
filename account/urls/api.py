@@ -1,7 +1,7 @@
 from django.urls import path, re_path
-from account.models import UserCropExperience
+from account.models import UserJobExperience
 from account.views.api import (
-    RegisterView, LoginView, ResetAccountProfile, UserCropExperienceView,
+    RegisterView, LoginView, ResetAccountProfile, UserJobExperienceDetailsView, UserJobExperienceView,
     UserDocumentDetailsView, UserNotificationView,
     UserPreferencesUpdateView, UserReportProblem, UserWorkExperienceDetailsView, UserWorkExperienceView,
     GetOTP, VerifyOTP,
@@ -50,9 +50,14 @@ urlpatterns = [
     path('otp-generate/', GetOTP.as_view(), name='otp-generate'),
     path('otp-verify/', VerifyOTP.as_view(), name='otp-verify'),
     re_path(
-        r'(?P<user_id>[-\w]+)/crop-experience/$',
-        UserCropExperienceView.as_view(),
-        name='api-crop-experience'
+        r'(?P<user_id>[-\w]+)/job-experience/$',
+        UserJobExperienceView.as_view(),
+        name='api-job-experience'
+    ),
+    re_path(
+        r'(?P<user_id>[-\w]+)/job-experience-details/$',
+        UserJobExperienceDetailsView.as_view(),
+        name='api-job-experience-details'
     ),
     re_path(
         r'(?P<user_id>[-\w]+)/report-problem/$',

@@ -1,12 +1,13 @@
 from account.serializers import (
     OTPGenerateSerializer, OTPVerifySerializer, RegistrationSerializer,
-    ReportAProblemSerializer, UpdateUserPreferencesSerializer,
-    UserCropExperienceSerializer, UserDocumentSerializer, UserNotificationSerializer,
+    ReportAProblemSerializer, UpdateUserPreferencesSerializer, UserJobExperienceDetailsSerializer,
+    UserJobExperienceSerializer, UserDocumentSerializer,
+    UserNotificationSerializer,
     UserPreferenceSerializer, UserSerilizer, LoginSerializer,
     UserWorkexperienceSerializer
 )
 from account.models import (
-    User, UserCropExperience, UserDocuments, UserNotification, UserPreference,
+    User, UserJobExperience, UserDocuments, UserJobExperienceDetails, UserNotification, UserPreference,
     UserReportedProblem, UserWorkExperience
 )
 from account.models import (
@@ -383,55 +384,52 @@ class VerifyOTP(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserCropExperienceView(APIView):
+class UserJobExperienceView(APIView):
     @swagger_auto_schema(
-        operation_summary="Retrieve user crop experience",
-        tags=["Crop Experience"]
+        operation_summary="Retrieve user job experience",
+        tags=["Job Experience"]
     )
     def get(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
-        experiences = UserCropExperience.objects.filter(user=user)
-        serializer = UserCropExperienceSerializer(experiences, many=True)
+        experiences = UserJobExperience.objects.filter(user=user)
+        serializer = UserJobExperienceSerializer(experiences, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
-        operation_summary="Create user crop experience",
-        tags=["Crop Experience"]
+        operation_summary="Create user job experience",
+        tags=["Job Experience"]
     )
     def post(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
         experience = get_object_or_404(
             UserWorkExperience, pk=request.data.get('work_experience_id'))
 
-        serializer = UserCropExperienceSerializer(data=request.data)
+        serializer = UserJobExperienceSerializer(data=request.data)
 
         if serializer.is_valid():
             # Check if a similar crop experience exists
-            if UserCropExperience.objects.filter(
+            if UserJobExperience.objects.filter(
                 user=user,
-                crop=serializer.validated_data['crop'],
-                duration=serializer.validated_data['duration'],
-                duration_type=serializer.validated_data['duration_type']
+                job_type=serializer.validated_data['job_type'],
+                type_details=serializer.validated_data['type_details'],
             ).exists():
                 return Response(
                     {
-                        'message': 'Crop experience already exists'},
+                        'message': 'Job experience already exists'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
             serializer.validated_data.pop('work_experience')
 
-            # Create the new UserCropExperience object
-            new_experience = UserCropExperience.objects.create(
+            # Create the new UserJobExperience object
+            new_experience = UserJobExperience.objects.create(
                 work_experience=experience,
                 user=user,
-                crop=serializer.validated_data['crop'],
-                kind=serializer.validated_data['kind'],
-                duration=serializer.validated_data['duration'],
-                duration_type=serializer.validated_data['duration_type']
+                job_type=serializer.validated_data['job_type'],
+                type_details=serializer.validated_data['type_details'],
             )
 
             # Serialize the newly created object
-            created_serializer = UserCropExperienceSerializer(new_experience)
+            created_serializer = UserJobExperienceSerializer(new_experience)
 
             # Return the serialized created object in the response
             return Response(
@@ -441,18 +439,98 @@ class UserCropExperienceView(APIView):
 
 
     @swagger_auto_schema(
-        operation_summary="Update user crop experience",
-        tags=["Crop Experience"]
+        operation_summary="Update user job experience",
+        tags=["Job Experience"]
     )
     def patch(self, request, user_id, experience_id):
         user = get_object_or_404(User, pk=user_id)
         experience = get_object_or_404(UserWorkExperience, pk=experience_id)
-        serializer = UserCropExperienceSerializer(
+        serializer = UserJobExperienceSerializer(
             experience, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserJobExperienceDetailsView(APIView):
+    @swagger_auto_schema(
+        operation_summary="Add details to a job experience",
+        tags=["Job Experience"]
+    )
+    def post(self, request, user_id):
+        user = get_object_or_404(User, pk=user_id)
+        job_experience = get_object_or_404(
+            UserJobExperience, pk=request.data.get('job_experience_id'))
+        
+        valid_data = []
+        print(request.data)
+        
+        # Use parentheses with get method and provide a default empty list if 'details' is missing
+        for item in request.data.get('details', []):
+            if item['value'] is not None and item['value'] != '':
+                valid_data.append(item)
+                
+        data = {
+            'valid': valid_data,
+            'created': []
+        }
+        
+        # Iterate over valid data and create or update the details
+        for entry in valid_data:
+            exp, created = UserJobExperienceDetails.objects.update_or_create(
+                job_experience=job_experience,
+                created_by=user.id,
+                updated_by=user.id,
+                **entry
+            )
+            # Append serialized data of the created/updated experience detail
+            data['created'].append(UserJobExperienceDetailsSerializer(exp).data)
+        
+        return Response(data, status=status.HTTP_200_OK)
+            
+        # serializer = UserJobExperienceDetailsSerializer(data=request.data)
+        # if serializer.is_valid():
+        #     # check if item exists
+        #     if UserJobExperienceDetails.objects.filter(
+        #         job_experience=job_experience,
+        #         kind=serializer.validated_data['kind'],
+        #         value=serializer.validated_data['value']
+        #     ).exists():
+        #         return Response({
+        #                 'message': (
+        #                     'User job experience with given information '
+        #                     'already exists'
+        #                 )
+        #             },
+        #             status=status.HTTP_400_BAD_REQUEST
+        #         )
+        #     new_details = UserJobExperienceDetails.objects.create(
+        #         job_experience=job_experience,
+        #         created_by = user.id,
+        #         updated_by = user.id, 
+        #         **serializer.data
+        #     )
+        #     created_serializer = UserJobExperienceDetailsSerializer(new_details)
+        #     return Response(
+        #         created_serializer.data, status=status.HTTP_201_CREATED)
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @swagger_auto_schema(
+        operation_summary='Update a user job experience detail',
+        tags=["Job Experience"]
+    )
+    def patch(self, request, user_id):
+        user = get_object_or_404(User, pk=user_id)
+        job_experience_details = get_object_or_404(
+            UserJobExperienceDetails, 
+            pk=request.data.get('job_experience_details_id')
+        )
+        serilizer = UserJobExperienceDetailsSerializer(
+            job_experience_details, data=request.data, partial=True)
+        if serilizer.is_valid():
+            serilizer.save()
+            return Response(serilizer.data, status=status.HTTP_200_OK)
 
 
 class UserReportProblem(APIView):
