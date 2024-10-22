@@ -291,6 +291,7 @@ def panels(request):
 def pricing(request):
     return render(request, 'ltr/pricing.html')
 
+@login_required
 def profile(request):
     user = request.user
     context = {
