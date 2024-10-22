@@ -175,204 +175,14 @@
 										</div>
 									</div>
 								</div>
-									<div class="tab-pane" id="tab-61">
-										<ul class="widget-users row  mb-5">
-											<li class="col-lg-4  col-md-6 col-sm-12 col-12">
-												<div class="card border p-0">
-													<a href="profile">
-														<div class="card-body text-center">
-															{% if work_experiences %}
+								<div class="tab-pane" id="tab-61">
+									<ul class="widget-users row mb-5">
+										{% if work_experiences %}
+											{% for experience in work_experiences %}
+												<li class="col-lg-4 col-md-6 col-sm-12 col-12">
+													<div class="card border p-0">
+															<div class="card-body text-center">
 																<ul>
-																	{% for experience in work_experiences %}
-																		<li>
-																			<strong>Company:</strong> {{ experience.company }}<br>
-																			<strong>Country:</strong> {{ experience.country }}<br>
-																			<strong>Work Title:</strong> {{ experience.work_title }}<br>
-																			<strong>Start Date:</strong> {{ experience.start_date }}<br>
-																			<strong>End Date:</strong> {{ experience.end_date }}<br>
-																			<strong>Supervisor's Name:</strong> {{ experience.supervisor_name }}<br>
-																			<strong>Supervisor's Email:</strong>{{ experience.supervisor_email }}
-																		</li>
-																	{% endfor %}
-																</ul>
-															{% else %}
-																<p>No work experiences available.</p>
-															{% endif %}
-														</div>
-													</a>
-													<div class="card-footer text-center">
-														<div class="row user-social-detail">
-															<a href="#" class="social-profile me-4 rounded text-center">
-																<i class="fa fa-google"></i>
-															</a>
-															<a href="#" class="social-profile me-4 rounded text-center">
-																<i class="fa fa-facebook"></i>
-														     </a>
-															 <a href="#" class="social-profile  rounded text-center">
-																<i class="fa fa-twitter"></i>
-															</a>
-														</div>
-													</div>
-												</div>
-											</li>
-											<li class="col-lg-4 col-md-6 col-sm-12 col-12">
-												<div class="card border p-0">
-													<a href="profile">
-														<div class="card-body text-center">
-															{% if work_experiences %}
-																<ul>
-																	{% for experience in work_experiences %}
-																		<li>
-																			<strong>Company:</strong> {{ experience.company }}<br>
-																			<strong>Country:</strong> {{ experience.country }}<br>
-																			<strong>Work Title:</strong> {{ experience.work_title }}<br>
-																			<strong>Start Date:</strong> {{ experience.start_date }}<br>
-																			<strong>End Date:</strong> {{ experience.end_date }}<br>
-																			<strong>Supervisor's Name:</strong> {{ experience.supervisor_name }}<br>
-																			<strong>Supervisor's Email:</strong>{{ experience.supervisor_email }}
-																		</li>
-																	{% endfor %}
-																</ul>
-															{% else %}
-																<p>No work experiences available.</p>
-															{% endif %}
-														</div>
-													</a>
-													<div class="card-footer text-center">
-														<div class="row user-social-detail">
-															<a href="#" class="social-profile me-4 rounded text-center">
-																<i class="fa fa-google"></i>
-															</a>
-															<a href="#" class="social-profile me-4 rounded text-center">
-																<i class="fa fa-facebook"></i>
-														     </a>
-															 <a href="#" class="social-profile  rounded text-center">
-																<i class="fa fa-twitter"></i>
-															</a>
-														</div>
-													</div>
-												</div>
-											</li>
-											<li class="col-lg-4 col-md-6 col-sm-12 col-12">
-												<div class="card border p-0">
-													<a href="profile">
-														<div class="card-body text-center">
-															{% if work_experiences %}
-																<ul>
-																	{% for experience in work_experiences %}
-																		<li>
-																			<strong>Company:</strong> {{ experience.company }}<br>
-																			<strong>Country:</strong> {{ experience.country }}<br>
-																			<strong>Work Title:</strong> {{ experience.work_title }}<br>
-																			<strong>Start Date:</strong> {{ experience.start_date }}<br>
-																			<strong>End Date:</strong> {{ experience.end_date }}<br>
-																			<strong>Supervisor's Name:</strong> {{ experience.supervisor_name }}<br>
-																			<strong>Supervisor's Email:</strong>{{ experience.supervisor_email }}
-																		</li>
-																	{% endfor %}
-																</ul>
-															{% else %}
-																<p>No work experiences available.</p>
-															{% endif %}
-														</div>
-													</a>
-													<div class="card-footer text-center">
-														<div class="row user-social-detail">
-															<a href="#" class="social-profile me-4 rounded text-center">
-																<i class="fa fa-google"></i>
-															</a>
-															<a href="#" class="social-profile me-4 rounded text-center">
-																<i class="fa fa-facebook"></i>
-														     </a>
-															 <a href="#" class="social-profile  rounded text-center">
-																<i class="fa fa-twitter"></i>
-															</a>
-														</div>
-													</div>
-												</div>
-											</li>
-											<li class="col-lg-4 col-md-6 col-sm-12 col-12">
-												<div class="card border p-0 mb-lg-0">
-													<a href="profile">
-														<div class="card-body text-center">
-															{% if work_experiences %}
-																<ul>
-																	{% for experience in work_experiences %}
-																		<li>
-																			<strong>Company:</strong> {{ experience.company }}<br>
-																			<strong>Country:</strong> {{ experience.country }}<br>
-																			<strong>Work Title:</strong> {{ experience.work_title }}<br>
-																			<strong>Start Date:</strong> {{ experience.start_date }}<br>
-																			<strong>End Date:</strong> {{ experience.end_date }}<br>
-																			<strong>Supervisor's Name:</strong> {{ experience.supervisor_name }}<br>
-																			<strong>Supervisor's Email:</strong>{{ experience.supervisor_email }}
-																		</li>
-																	{% endfor %}
-																</ul>
-															{% else %}
-																<p>No work experiences available.</p>
-															{% endif %}
-														</div>
-													</a>
-													<div class="card-footer text-center">
-														<div class="row user-social-detail">
-															<a href="#" class="social-profile me-4 rounded text-center">
-																<i class="fa fa-google"></i>
-															</a>
-															<a href="#" class="social-profile me-4 rounded text-center">
-																<i class="fa fa-facebook"></i>
-														     </a>
-															 <a href="#" class="social-profile  rounded text-center">
-																<i class="fa fa-twitter"></i>
-															</a>
-														</div>
-													</div>
-												</div>
-											</li>
-											<li class="col-lg-4 col-md-6 col-sm-12 col-12">
-												<div class="card border p-0 mb-lg-0">
-													<a href="profile">
-														<div class="card-body text-center">
-															{% if work_experiences %}
-																<ul>
-																	{% for experience in work_experiences %}
-																		<li>
-																			<strong>Company:</strong> {{ experience.company }}<br>
-																			<strong>Country:</strong> {{ experience.country }}<br>
-																			<strong>Work Title:</strong> {{ experience.work_title }}<br>
-																			<strong>Start Date:</strong> {{ experience.start_date }}<br>
-																			<strong>End Date:</strong> {{ experience.end_date }}<br>
-																			<strong>Supervisor's Name:</strong> {{ experience.supervisor_name }}<br>
-																			<strong>Supervisor's Email:</strong>{{ experience.supervisor_email }}
-																		</li>
-																	{% endfor %}
-																</ul>
-															{% else %}
-																<p>No work experiences available.</p>
-															{% endif %}
-														</div>
-													</a>
-													<div class="card-footer text-center">
-														<div class="row user-social-detail">
-															<a href="#" class="social-profile me-4 rounded text-center">
-																<i class="fa fa-google"></i>
-															</a>
-															<a href="#" class="social-profile me-4 rounded text-center">
-																<i class="fa fa-facebook"></i>
-														     </a>
-															 <a href="#" class="social-profile  rounded text-center">
-																<i class="fa fa-twitter"></i>
-															</a>
-														</div>
-													</div>
-												</div>
-											</li>
-											<li class="col-lg-4 col-md-6 col-sm-12 col-12">
-												<div class="card border p-0 mb-0">
-													<div class="card-body text-center">
-														{% if work_experiences %}
-															<ul>
-																{% for experience in work_experiences %}
 																	<li>
 																		<strong>Company:</strong> {{ experience.company }}<br>
 																		<strong>Country:</strong> {{ experience.country }}<br>
@@ -380,31 +190,20 @@
 																		<strong>Start Date:</strong> {{ experience.start_date }}<br>
 																		<strong>End Date:</strong> {{ experience.end_date }}<br>
 																		<strong>Supervisor's Name:</strong> {{ experience.supervisor_name }}<br>
-																		<strong>Supervisor's Email:</strong>{{ experience.supervisor_email }}
+																		<strong>Supervisor's Email:</strong> {{ experience.supervisor_email }}
 																	</li>
-																{% endfor %}
-															</ul>
-														{% else %}
-															<p>No work experiences available.</p>
-														{% endif %}
+																</ul>
+															</div>
+													
 													</div>
-													<div class="card-footer text-center">
-														<div class="row user-social-detail">
-															<a href="#" class="social-profile me-4 rounded text-center">
-																<i class="fa fa-google"></i>
-															</a>
-															<a href="#" class="social-profile me-4 rounded text-center">
-																<i class="fa fa-facebook"></i>
-														     </a>
-															 <a href="#" class="social-profile  rounded text-center">
-																<i class="fa fa-twitter"></i>
-															</a>
-														</div>
-													</div>
-												</div>
-											</li>
-										</ul>
-									</div>
+												</li>
+											{% endfor %}
+										{% else %}
+											<p>No work experiences available.</p>
+										{% endif %}
+									</ul>
+								</div>
+								
 									<div class="tab-pane" id="tab-71">
 										<div class="row  mb-5 img-gallery" id="lightgallery">
 											<div class="col-lg-3 col-md-6" data-responsive="{% static ''%}assets/images/media/8.jpg" data-src="{% static ''%}assets/images/media/8.jpg">

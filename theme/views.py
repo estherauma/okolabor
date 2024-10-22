@@ -392,15 +392,13 @@ def add_worker(request):
 def worker_request_form(request):
     return render(request, 'workers/worker-request-form.html')
 
-
+@login_required
 def work_experience(request):
     
     work_experiences = UserWorkExperience.objects.filter(user=request.user)
     
-    has_experience = work_experiences.exists()
-    
     context = {
-        'work_experiences': work_experiences if has_experience else None
+        'work_experiences': work_experiences
     }
     
     return render(request, 'workers/work-experience.html',context)
