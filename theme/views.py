@@ -392,9 +392,11 @@ def add_worker(request):
 def worker_request_form(request):
     return render(request, 'workers/worker-request-form.html')
 
-
 def work_experience(request):
     return render(request, 'workers/work-experience.html')
 
 def edit_experience(request):
     return render(request, 'workers/edit-work-experience.html')
+
+def work_preferences(request):
+    return render(request,'ltr/workpreferences.html')
