@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate,login as auth_login,get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib import messages
+from account.models import UserDocuments
 
 # Create your views here.
 @login_required(login_url='/')
@@ -398,3 +399,11 @@ def work_experience(request):
 
 def edit_experience(request):
     return render(request, 'workers/edit-work-experience.html')
+
+def user_documents(request):
+    documents = UserDocuments.objects.filter(user=request.user)
+    
+    context = {
+        'documents': documents if documents.exists() else None
+    }
+    return render(request,'ltr/userdocuments.html',context)
