@@ -415,4 +415,8 @@ def edit_experience(request):
     return render(request, 'workers/edit-work-experience.html')
 
 def notifications(request):
-    return render(request,'ltr/notifications.html')
+    user_notifications = UserNotification.objects.filter(user=request.user).order_by('-created_at')
+    context = {
+        'user_notifications': user_notifications
+    }
+    return render(request,'ltr/notifications.html',context)

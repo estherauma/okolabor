@@ -108,6 +108,7 @@
 													<ul class="nav">
 														<li class=""><a href="#tab-51" class="active show" data-bs-toggle="tab">Profile</a></li>
 														<li><a href="#tab-61" data-bs-toggle="tab" class="">Friends</a></li>
+														<li><a href="#tab-63" data-bs-toggle="tab" class="">Notifications</a></li>
 														<li><a href="#tab-71" data-bs-toggle="tab" class="">Gallery</a></li>
 														<li><a href="#tab-81" data-bs-toggle="tab" class="">Followers</a></li>
 													</ul>
@@ -321,6 +322,36 @@
 											</li>
 										</ul>
 									</div>
+
+									<div class="tab-pane" id="tab-63">
+										<ul class="widget-users row mb-5">
+											{% if user_notifications %}
+												{% for notification in user_notifications %}
+													<li class="col-lg-4 col-md-6 col-sm-12 col-12">
+														<div class="card border p-0">
+															<div class="card-body text-center">
+																<h4 class="fs-16 mb-0 mt-3 text-dark fw-semibold">
+																	<strong>{{ notification.title }}</strong>
+																</h4>
+																<span class="text-muted">
+																	<strong>Message:</strong> {{ notification.message }}
+																</span><br>
+																<span class="text-muted">
+																	<strong>Category:</strong> {{ notification.category }}
+																</span><br>
+																<span class="text-muted">
+																	<strong>Received:</strong> {{ notification.created_at|date:"F d, Y H:i" }}
+																</span>
+															</div>
+														</div>
+													</li>
+												{% endfor %}
+											{% else %}
+												<p>No notifications found for the user.</p>
+											{% endif %}
+										</ul>
+									</div>
+									
 									<div class="tab-pane" id="tab-71">
 										<div class="row  mb-5 img-gallery" id="lightgallery">
 											<div class="col-lg-3 col-md-6" data-responsive="{% static ''%}assets/images/media/8.jpg" data-src="{% static ''%}assets/images/media/8.jpg">
