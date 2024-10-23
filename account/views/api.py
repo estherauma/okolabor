@@ -412,6 +412,7 @@ class UserJobExperienceView(APIView):
                 user=user,
                 job_type=serializer.validated_data['job_type'],
                 type_details=serializer.validated_data['type_details'],
+                work_experience=experience
             ).exists():
                 return Response(
                     {
