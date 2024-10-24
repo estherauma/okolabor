@@ -163,7 +163,7 @@ class UserJobExperience(AuditableModel):
         UserWorkExperience, on_delete=models.CASCADE,
         related_name='crop_experiences', null=True, blank=True)
     job_type = models.CharField(max_length=256, null=False, blank=False)
-    type_details = models.CharField(max_length=256, null=False, blank=False)
+    type_details = models.CharField(max_length=256, null=True, blank=True)
     # duration = models.IntegerField(null=False, blank=False)
     # duration_type = models.CharField(max_length=256, null=False, blank=False)
     
