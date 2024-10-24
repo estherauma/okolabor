@@ -19,17 +19,19 @@ def upload_document(sender, instance, created, **kwargs):
             details_match = check_details_match(
                 user_details, instance.cloud_vision_response)
             instance.cloud_vision_match = details_match
+            # ToDo: Update notifications
             if details_match:
-                message = 'Your passport has been verified!'
+                # Your passsword has been verified
+                message = '¡Su pasaporte ha sido verificado!'
             else:
                 message = (
-                    'Your passport could not be verified.' 
-                    'Please ensure your details match '
-                    'what is on your passport.'
+                    'No se ha podido verificar su pasaporte.' 
+                    'Asegúrese de que sus datos coincidan'
+                    'lo que esta en su pasaporte.'
                 )
             UserNotification.objects.create(
                 user=instance.user,
-                title='Passport Verification', message=message)
+                title='Verificación de pasaporte', message=message)
             instance.save()
 
 def extract_current_details(user_id):
