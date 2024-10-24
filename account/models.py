@@ -68,6 +68,7 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
                                        null=True, blank=True, max_length=30)
     gender = models.CharField(max_length=15,  blank=True, null=True)
     dob = models.DateField(null=True, blank=True)
+    reset_code = models.CharField(max_length=256, null=True, blank=True)
 
     USERNAME_FIELD = 'curp'
 
