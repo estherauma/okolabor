@@ -201,6 +201,9 @@ class UserJobExperienceSerializer(serializers.ModelSerializer):
             'work_experience', 'work_experience_id',
             'job_experience_details'
         ]
+        extra_kwargs = {
+            'type_details': {'required': False}
+        }
 
 
 
