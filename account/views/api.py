@@ -1,13 +1,19 @@
+import random
 from account.serializers import (
-    OTPGenerateSerializer, OTPVerifySerializer, RegistrationSerializer,
-    ReportAProblemSerializer, UpdateUserPreferencesSerializer, UserJobExperienceDetailsSerializer,
+    AccountRecoverSerializer, AccountResetPasswordSerializer,
+    OTPGenerateSerializer,
+    OTPVerifySerializer, RegistrationSerializer,
+    UserDocumentSerializer, UserNotificationSerializer,
+    ReportAProblemSerializer, UpdateUserPreferencesSerializer,
+    UserJobExperienceDetailsSerializer,
     UserJobExperienceSerializer, UserDocumentSerializer,
     UserNotificationSerializer,
     UserPreferenceSerializer, UserSerilizer, LoginSerializer,
     UserWorkexperienceSerializer
 )
 from account.models import (
-    User, UserJobExperience, UserDocuments, UserJobExperienceDetails, UserNotification, UserPreference,
+    User, UserJobExperience, UserDocuments, UserJobExperienceDetails,
+    UserNotification, UserPreference,
     UserReportedProblem, UserWorkExperience
 )
 from account.models import (
@@ -20,6 +26,9 @@ from rest_framework.views import APIView
 from rest_framework import status
 
 from drf_yasg.utils import swagger_auto_schema
+
+from common.email import EmailHelper
+from django.shortcuts import get_object_or_404
 
 
 class RegisterView(APIView):
@@ -177,7 +186,6 @@ class UserPreferencesUpdateView(APIView):
             user_obj.save()
 
 
-
 class UserWorkExperienceView(APIView):
     @swagger_auto_schema(
         operation_summary="Retrieve worker experience",
@@ -222,8 +230,6 @@ class UserWorkExperienceView(APIView):
             return Response(serializer.errors, status=400)
 
     
-
-
 class UserWorkExperienceDetailsView(APIView):
 
     @swagger_auto_schema(
@@ -412,6 +418,7 @@ class UserJobExperienceView(APIView):
                 user=user,
                 job_type=serializer.validated_data['job_type'],
                 type_details=serializer.validated_data['type_details'],
+                work_experience=experience
             ).exists():
                 return Response(
                     {
@@ -589,4 +596,76 @@ class UserNotificationView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserAccountRecovery(APIView):
+    @swagger_auto_schema(
+        operation_summary="Password recovery - Request token",
+        tags=["Account Management"]
+    )
+    def post(self, request):
+        serializer = AccountRecoverSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            user = User.objects.get(email=email)
+            if user:
+                reset_code = random.randrange(11111, 99999,)
+                user.reset_code = reset_code
+                user.save()
+
+                email_helper = EmailHelper()
+                email_helper.send_email(
+                    to_emails=[user.email],
+                    subject='Restablece tu contraseña de okolabor',
+                    body={
+                        'correo_electrónico': user.email,
+                        'token_rest_contraseña': reset_code,
+                    }
+                )
+
+                return Response(
+                    {
+                        'message': 'Please check your email for the password reset code.'
+                    },
+                    status.HTTP_200_OK
+                )
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserAccountRecoveryReset(APIView):
+    @swagger_auto_schema(
+        operation_summary="Password recovery - Reset password",
+        tags=["Account Management"]
+    )
+    def post(self, request):
+        serializer = AccountResetPasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            reset_token = serializer.validated_data['reset_token']
+            password = serializer.validated_data['password']
+            user = get_object_or_404(User, reset_code=reset_token)
+            if user:
+                user.set_password(password)
+                user.reset_code = None
+                user.save()
+                
+                # Send email
+                email_helper = EmailHelper()
+                email_helper.send_email(
+                    to_emails=[user.email],
+                    subject='La contraseña de tu cuenta ha cambiado.',
+                    body={
+                        'correo_electrónico': user.email,
+                        'message': 'La contraseña de su cuenta ha cambiado. Si no inició esta solicitud, comuníquese con el soporte',
+                    }
+                )
+                return Response(
+                    {
+                        'message': 'Password reset successfully.'
+                    },
+                    status.HTTP_200_OK
+                )
+      
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

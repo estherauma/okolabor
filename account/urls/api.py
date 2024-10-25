@@ -1,11 +1,13 @@
 from django.urls import path, re_path
 from account.models import UserJobExperience
 from account.views.api import (
-    RegisterView, LoginView, ResetAccountProfile, UserJobExperienceDetailsView, UserJobExperienceView,
+    RegisterView, LoginView, ResetAccountProfile,
+    UserAccountRecovery, UserAccountRecoveryReset,
+    UserJobExperienceDetailsView, UserJobExperienceView,
     UserDocumentDetailsView, UserNotificationView,
-    UserPreferencesUpdateView, UserReportProblem, UserWorkExperienceDetailsView, UserWorkExperienceView,
+    UserPreferencesUpdateView, UserReportProblem, 
+    UserWorkExperienceDetailsView, UserWorkExperienceView,
     GetOTP, VerifyOTP,
-    RegisterView, LoginView, ResetAccountProfile, UserDocumentDetailsView,
     UserDocumentsView, UserPreferencesUpdateView, UserWorkExperienceView
 )
 
@@ -69,4 +71,6 @@ urlpatterns = [
         UserNotificationView.as_view(),
         name='api-report-problem'
     ),
+    path('recovery-request-reset/', UserAccountRecovery.as_view(), name='password-request-reset'),
+    path('recovery-reset-password/', UserAccountRecoveryReset.as_view(), name='password-reset'),
 ]
