@@ -68,6 +68,7 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
                                        null=True, blank=True, max_length=30)
     gender = models.CharField(max_length=15,  blank=True, null=True)
     dob = models.DateField(null=True, blank=True)
+    reset_code = models.CharField(max_length=256, null=True, blank=True)
 
     USERNAME_FIELD = 'curp'
 
@@ -156,19 +157,42 @@ class UserDocuments(AuditableModel):
     file_type = models.CharField(max_length=256, null=True, blank=True)
 
 
-class UserCropExperience(AuditableModel):
+class UserJobExperience(AuditableModel):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='crop_experiences')
     work_experience = models.ForeignKey(
         UserWorkExperience, on_delete=models.CASCADE,
         related_name='crop_experiences', null=True, blank=True)
-    crop = models.CharField(max_length=256, null=False, blank=False)
-    kind = models.CharField(max_length=256, null=False, blank=False)
-    duration = models.IntegerField(null=False, blank=False)
-    duration_type = models.CharField(max_length=256, null=False, blank=False)
+    job_type = models.CharField(max_length=256, null=False, blank=False)
+    type_details = models.CharField(max_length=256, null=True, blank=True)
+    # duration = models.IntegerField(null=False, blank=False)
+    # duration_type = models.CharField(max_length=256, null=False, blank=False)
+    
 
     def __str__(self):
         return f'{self.user.curp} - {self.crop} - {self.kind}'
+
+class UserJobExperienceDetails(AuditableModel):
+    KIND_CHOICES = (
+        ('responsibilities', 'Responsibilities'),
+        ('explanation', 'Explanation'),
+        ('license', 'License'),
+        ('evidence', 'Evidence'),
+    )
+    job_experience = models.ForeignKey(
+        UserJobExperience, on_delete=models.CASCADE,
+        related_name='job_experience_details')
+    # kind is responsiblities, explanation, license, evidence
+    kind = models.CharField(max_length=256, null=False, blank=False)
+    value = models.CharField(max_length=256, null=False, blank=False)
+    is_attachment = models.BooleanField(default=False)
+    
+
+    def __str__(self):
+        return f'{self.user.curp} - {self.crop} - {self.variety}'
+
+    class Meta:
+        db_table = 'account_user_crop_experience_details'
 
 
 class UserReportedProblem(AuditableModel):

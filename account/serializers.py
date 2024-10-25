@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from account.models import (
-    User, UserCropExperience, UserDocuments, UserNotification, UserPreference,
+    User, UserJobExperience, UserDocuments, UserJobExperienceDetails, UserNotification, UserPreference,
     UserReportedProblem, UserWorkExperience
 )
 import re
@@ -173,19 +173,37 @@ class OTPVerifySerializer(serializers.Serializer):
             return {"error": f"An unexpected error occurred: {str(e)}"}
 
 
-class UserCropExperienceSerializer(serializers.ModelSerializer):
+class UserJobExperienceDetailsSerializer(serializers.ModelSerializer):
+    # job_experience = UserJobExperienceSerializer(read_only=True)
+    job_experience_id = serializers.PrimaryKeyRelatedField(
+        queryset=UserJobExperience.objects.all(), write_only=True, 
+        source='job_experience'
+    )
+    class Meta:
+        model = UserJobExperienceDetails
+        fields = [ 'id','kind', 'value', 'is_attachment','job_experience_id']
+
+
+class UserJobExperienceSerializer(serializers.ModelSerializer):
     # Nest the related work experience
     work_experience = UserWorkexperienceSerializer(read_only=True)  # For GET requests
     work_experience_id = serializers.PrimaryKeyRelatedField(
         queryset=UserWorkExperience.objects.all(), write_only=True, source='work_experience'
     )  # For POST requests
+    
+    # Include job_experience_details in the serializer as a nested field
+    job_experience_details = UserJobExperienceDetailsSerializer(many=True, read_only=True)
 
     class Meta:
-        model = UserCropExperience
+        model = UserJobExperience
         fields = [
-            'crop', 'kind', 'duration', 'duration_type',
-            'work_experience', 'work_experience_id'
+            'id', 'job_type', 'type_details',
+            'work_experience', 'work_experience_id',
+            'job_experience_details'
         ]
+
+
+
 
 
 class ReportAProblemSerializer(serializers.ModelSerializer):
@@ -200,3 +218,32 @@ class UserNotificationSerializer(serializers.ModelSerializer):
         model = UserNotification
         fields = ['id', 'title', 'message','status', 'category']
         read_only_fields = [ 'id', 'user_id', 'read_at']
+
+
+class AccountRecoverSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+
+    def validate_email(self, value):
+        if not User.objects.filter(email=value).exists():
+            raise serializers.ValidationError('User with given email does not exist')
+        return value
+
+
+class AccountResetPasswordSerializer(serializers.Serializer):
+    reset_token = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
+    password_repeat = serializers.CharField(required=True)
+
+    def validate_password(self, value):
+        if len(value) < 8:
+            raise serializers.ValidationError(
+                'Password must be at least 8 characters long')
+        if value != self.initial_data.get('password_repeat'):
+            raise serializers.ValidationError('Passwords do not match')
+        if not any(char.isdigit() for char in value):
+            raise serializers.ValidationError(
+                'Password must contain at least one number')
+        if not any(char.isupper() for char in value):
+            raise serializers.ValidationError(
+                'Password must contain at least one uppercase letter')
+        return value
