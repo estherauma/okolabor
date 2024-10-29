@@ -3,6 +3,8 @@ from .forms import RegistrationForm, LoginForm, ResetPasswordForm
 from django.contrib import messages
 from .forms import ResetPasswordForm
 from .forms import LoginForm
+from django.contrib.auth.views import PasswordResetView
+from django.urls import reverse_lazy
 
 # Create your views here.
 def index(request):
@@ -367,3 +369,8 @@ def work_experience(request):
 
 def edit_experience(request):
     return render(request, 'workers/edit-work-experience.html')
+
+class CustomPasswordResetView(PasswordResetView):
+    template_name = 'ltr/password_reset_form.html'  # Form template
+    email_template_name = 'ltr/password_reset_email.html'  # Your HTML email template
+    success_url = reverse_lazy('password_reset_done')  # Redirect after form submission
