@@ -23,11 +23,15 @@ urlpatterns = [
     path("", views.login, name='login'),
    
     path('logout/', views.logout_view, name='logout'),
-
+    
     path("about", views.about, name='about'),
+    
     path('password-reset/', views.custom_password_reset_view, name='password-reset'),
+    
     path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='ltr/password_reset_done.html'), name='password_reset_done'),
+    
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='ltr/password_reset_confirm.html'), name='password_reset_confirm'),
+    
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='ltr/password_reset_complete.html'), name='password_reset_complete'),
 
     path("accordion", views.accordion, name='accordion'),
