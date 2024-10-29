@@ -51,6 +51,8 @@ class UploadFileView(APIView):
         'certificate': 'uploads/certificates',
         'visa': 'uploads/visa',
         'photo': 'uploads/photos',
+        'job_experience_license': 'uploads/job_experiences/licenses',
+        'job_experience_media': 'uploads/job_experiences/media'
     }
 
     @swagger_auto_schema(

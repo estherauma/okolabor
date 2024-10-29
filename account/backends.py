@@ -2,7 +2,7 @@ from rest_framework import authentication, exceptions
 
 from account.models import User
 from account.jwt_manager import JwtManager
-
+from django.contrib.auth.backends import BaseBackend
 
 class JWTAuthentication(authentication.BaseAuthentication):
     '''JWT Authentication backend for the api endpoints'''
@@ -28,3 +28,23 @@ class JWTAuthentication(authentication.BaseAuthentication):
         except User.DoesNotExist:
             raise exceptions.NotAuthenticated('User not authenticated', 401)
         return user, token
+    
+    
+class EmailBackend(BaseBackend):
+    '''Custom Email Authentication Backend for form login'''
+
+    def authenticate(self, request, email=None, password=None, **kwargs):
+        try:
+            user = User.objects.get(email=email, is_active=True)
+        except User.DoesNotExist:
+            return None
+
+        if user.check_password(password):
+            return user
+        return None
+
+    def get_user(self, user_id):
+        try:
+            return User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return None

@@ -1,14 +1,25 @@
 from django.shortcuts import render,redirect
 from .forms import RegistrationForm, LoginForm, ResetPasswordForm
 from django.contrib import messages
-from .forms import ResetPasswordForm
-from .forms import LoginForm
-from django.contrib.auth.views import PasswordResetView
+from .forms import ResetPasswordForm,LoginForm
+from django.contrib.auth import authenticate,login as auth_login,get_user_model
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
+from django.contrib import messages
 from django.urls import reverse_lazy
+from django.contrib.auth.views import PasswordResetView
+from django.contrib.auth.forms import PasswordResetForm
 
 # Create your views here.
+@login_required(login_url='/')
 def index(request):
     return render(request, 'ltr/index.html')
+
+@login_required
+def logout_view(request):
+    logout(request)
+    messages.success(request, 'You have been successfully logged out')
+    return redirect('/')
 
 def about(request):
     return render(request, 'ltr/about.html')
@@ -214,23 +225,44 @@ def loaders(request):
 def lockscreen(request):
     return render(request, 'ltr/lockscreen.html')
 
+User = get_user_model() 
 def login(request):
+    
+    if request.user.is_authenticated:
+        return redirect('index')
+    
     if request.method == 'POST':
+
         form = LoginForm(request.POST)
+        
         if form.is_valid():
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
-            print(f"Email: {email}")
-            print(f"Password: {password}")
-            return redirect('index')
+            
+            try:
+                user = User.objects.get(email=email)
+            except User.DoesNotExist:
+                
+                form.add_error('email', "User with this email does not exist.")
+                return render(request, 'ltr/login.html', {'form': form})
+            
+            user = authenticate(request, email=email, password=password)
+            
+            if user is not None:
+                auth_login(request, user)
+                next_url = request.GET.get('next', 'index')
+                return redirect(next_url)
+            else:
+                
+                form.add_error('password', "Incorrect password.")
         else:
-            print("Form is not valid")
-            print(form.errors) 
-    else: 
+            
+            return render(request, 'ltr/login.html', {'form': form})
+    else:
+        print("GET request received")
         form = LoginForm()
+
     return render(request, 'ltr/login.html', {'form': form})
-
-
 
 def maps(request):
     return render(request, 'ltr/maps.html')
@@ -262,8 +294,22 @@ def panels(request):
 def pricing(request):
     return render(request, 'ltr/pricing.html')
 
+@login_required
 def profile(request):
-    return render(request, 'ltr/profile.html')
+    user = request.user
+    context = {
+        'first_name': user.first_name if user.first_name else None,
+        'last_name': user.last_name if user.last_name else None,
+        'middle_name': user.middle_name if user.middle_name else None,
+        'email': user.email if user.email else None,
+        'dob': user.dob if user.dob else None,
+        'gender': user.gender if user.gender else None,
+        'telephone': user.telephone if user.telephone else None,
+        'address_line_1': user.address_line_1 if user.address_line_1 else None,
+        'address_line_2': user.address_line_2 if user.address_line_2 else None,
+        'city': user.city if user.city else None,
+    }
+    return render(request, 'ltr/profile.html', context)
 
 def progress(request):
     return render(request, 'ltr/progress.html')
@@ -370,7 +416,16 @@ def work_experience(request):
 def edit_experience(request):
     return render(request, 'workers/edit-work-experience.html')
 
-class CustomPasswordResetView(PasswordResetView):
-    template_name = 'ltr/password_reset_form.html'  # Form template
-    email_template_name = 'ltr/password_reset_email.html'  # Your HTML email template
-    success_url = reverse_lazy('password_reset_done')  # Redirect after form submission
+def custom_password_reset_view(request):
+    if request.method == 'POST':
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            form.save(
+                request=request,
+                email_template_name='ltr/password_reset_email.html',
+            )
+            return redirect(reverse_lazy('password_reset_done'))
+    else:
+        form = PasswordResetForm()
+    
+    return render(request, 'ltr/password_reset_form.html', {'form': form})
