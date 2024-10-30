@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib import messages
 from account.models import UserWorkExperience
+
 # Create your views here.
 @login_required(login_url='/')
 def index(request):
@@ -294,6 +295,7 @@ def pricing(request):
 @login_required
 def profile(request):
     user = request.user
+    work_experiences = UserWorkExperience.objects.filter(user=user)
     context = {
         'first_name': user.first_name if user.first_name else None,
         'last_name': user.last_name if user.last_name else None,
@@ -305,6 +307,7 @@ def profile(request):
         'address_line_1': user.address_line_1 if user.address_line_1 else None,
         'address_line_2': user.address_line_2 if user.address_line_2 else None,
         'city': user.city if user.city else None,
+        'work_experiences': work_experiences
     }
     return render(request, 'ltr/profile.html', context)
 
@@ -408,14 +411,7 @@ def worker_request_form(request):
 
 @login_required
 def work_experience(request):
-    
-    work_experiences = UserWorkExperience.objects.filter(user=request.user)
-    
-    context = {
-        'work_experiences': work_experiences
-    }
-    
-    return render(request, 'workers/work-experience.html',context)
+    return render(request, 'workers/work-experience.html')
 
 def edit_experience(request):
     return render(request, 'workers/edit-work-experience.html')

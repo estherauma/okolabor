@@ -179,31 +179,31 @@
 									<ul class="widget-users row mb-5">
 										{% if work_experiences %}
 											{% for experience in work_experiences %}
-												<li class="col-lg-4 col-md-6 col-sm-12 col-12">
-													<div class="card border p-0">
-															<div class="card-body text-center">
-																<ul>
-																	<li>
-																		<strong>Company Name:</strong> {{ experience.company }}<br>
-																		<strong>Job Title:</strong> {{ experience.work_title }}<br>
-																		<strong>Start Date:</strong> {{ experience.start_date }}<br>
-																		<strong>End Date:</strong> {{ experience.end_date }}<br>
-																		<strong>Location:</strong> {{ experience.country }}<br>
-																		<strong>Type of Visa:</strong> {{ experience.visa_type }}<br>
-																		<strong>Supervisor Name:</strong> {{ experience.supervisor_name }}<br>
-																		<strong>Supervisor Phone:</strong> {{ experience.supervisor_tel }}<br>
-																		<strong>Supervisor Email:</strong> {{ experience.supervisor_email }}
-																	</li>
-																</ul>
-															</div>
-													
+												<div class="col-md-4 mb-3">
+													<div class="card">
+														<div class="card-body">
+															<h5 class="card-title">{{ experience.work_title }}</h5>
+															<p class="card-text">
+																<strong>Company Name:</strong> {{ experience.company }}<br>
+																<strong>Supervisor Name:</strong> {{ experience.supervisor_name }}<br>
+																<strong>Supervisor Telephone:</strong> {{ experience.supervisor_tel }}<br>
+																<strong>Supervisor Email:</strong> {{ experience.supervisor_email }}<br>
+																<strong>State:</strong> {{ experience.state }}<br>
+																<strong>Country:</strong> {{ experience.country }}<br>
+																<strong>Visa Type:</strong> {{ experience.visa_type }}<br>
+																<strong>Work Under H2A in USA:</strong> {{ experience.work_under_h2a_in_usa }}<br>
+																<strong>Start Date:</strong> {{ experience.start_date }}<br>
+																<strong>End Date:</strong> {{ experience.end_date }}<br>
+															</p>
+														</div>
 													</div>
-												</li>
+												</div>
 											{% endfor %}
 										{% else %}
-											<p>No work experiences available.</p>
+											<p class="col-12">No work experience found for your account.</p>
 										{% endif %}
 									</ul>
+									
 								</div>
 								
 									<div class="tab-pane" id="tab-71">
