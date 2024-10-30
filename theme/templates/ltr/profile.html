@@ -329,7 +329,7 @@
 												{% for preference in work_preferences %}
 													<li class="col-lg-4 col-md-6 col-sm-12 col-12">
 														<div class="card border p-0">
-															<div class="card-body text-center">
+															<div class="card-body" style="text-align: left;"> 
 																<strong>Key:</strong> {{ preference.key }}<br>
 																<strong>Value:</strong> {{ preference.value }}<br>
 																<strong>Type:</strong> {{ preference.kind }}
@@ -338,9 +338,11 @@
 													</li>
 												{% endfor %}
 											{% else %}
-												<p>No work preferences found for the user.</p>
+											<p>No work preferences found for {{ request.user.email }}.</p>
+
 											{% endif %}
 										</ul>
+										
 									</div>
 									
 									<div class="tab-pane" id="tab-71">
