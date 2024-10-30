@@ -52,7 +52,8 @@ class UploadFileView(APIView):
         'visa': 'uploads/visa',
         'photo': 'uploads/photos',
         'job_experience_license': 'uploads/job_experiences/licenses',
-        'job_experience_media': 'uploads/job_experiences/media'
+        'job_experience_media': 'uploads/job_experiences/media',
+        'explanation_video': 'uploads/explanation_videos',
     }
 
     @swagger_auto_schema(
