@@ -9,7 +9,6 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import PasswordResetForm
 
-
 # Create your views here.
 @login_required(login_url='/')
 def index(request):
@@ -18,7 +17,8 @@ def index(request):
 @login_required
 def logout_view(request):
     logout(request)
-    messages.success(request, 'You have been successfully logged out')
+    messages.success(request, 'You have been successfully logged out', extra_tags='bg-success')
+
     return redirect('/')
 
 def about(request):
@@ -250,6 +250,7 @@ def login(request):
             
             if user is not None:
                 auth_login(request, user)
+                messages.success(request, 'You have successfully logged in')
                 next_url = request.GET.get('next', 'index')
                 return redirect(next_url)
             else:

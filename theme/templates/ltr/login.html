@@ -4,6 +4,7 @@
 {% block customstyles %}
 <!-- SINGLE-PAGE CSS -->
 <link href="{% static 'assets/plugins/single-page/css/main.css' %}" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="{% static 'assets/resetpassword/login.css' %}">
 {% endblock customstyles %}
 
 {% block class %}
@@ -12,8 +13,20 @@
 {% endblock class %}
 
 {% block body %}
-<!-- PAGE -->
 <div class="page">
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li class="alert {{ message.tags }}">
+                    {{ message }}
+                    <span class="close" onclick="this.parentElement.style.display='none';">&times;</span>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+<!-- PAGE -->
+
     <div class="">
         <!-- CONTAINER OPEN -->
         <div class="col col-login mx-auto">
@@ -22,6 +35,7 @@
             </div>
         </div>
         <div class="container-login100">
+            
             <div class="wrap-login100 p-0">
                 <div class="card-body">
                     {% if form.errors %}
