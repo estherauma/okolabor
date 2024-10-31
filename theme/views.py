@@ -295,6 +295,7 @@ def pricing(request):
 @login_required
 def profile(request):
     user = request.user
+    user_notifications = UserNotification.objects.filter(user=request.user).order_by('-created_at')
     context = {
         'first_name': user.first_name if user.first_name else None,
         'last_name': user.last_name if user.last_name else None,
@@ -306,6 +307,7 @@ def profile(request):
         'address_line_1': user.address_line_1 if user.address_line_1 else None,
         'address_line_2': user.address_line_2 if user.address_line_2 else None,
         'city': user.city if user.city else None,
+        'user_notifications': user_notifications
     }
     return render(request, 'ltr/profile.html', context)
 
@@ -414,10 +416,6 @@ def work_experience(request):
 def edit_experience(request):
     return render(request, 'workers/edit-work-experience.html')
 
-@login_required
+
 def notifications(request):
-    user_notifications = UserNotification.objects.filter(user=request.user).order_by('-created_at')
-    context = {
-        'user_notifications': user_notifications
-    }
-    return render(request,'ltr/notifications.html',context)
+    return render(request,'ltr/notifications.html')

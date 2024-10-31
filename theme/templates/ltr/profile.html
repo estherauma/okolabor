@@ -329,7 +329,7 @@
 												{% for notification in user_notifications %}
 													<li class="col-lg-4 col-md-6 col-sm-12 col-12">
 														<div class="card border p-0">
-															<div class="card-body text-center">
+															<div class="card-body" style="text-align: left;">
 																<h4 class="fs-16 mb-0 mt-3 text-dark fw-semibold">
 																	<strong>{{ notification.title }}</strong>
 																</h4>
@@ -350,7 +350,7 @@
 													</li>
 												{% endfor %}
 											{% else %}
-												<p>No notifications found for the user.</p>
+												<p>No notifications found for {{request.user.email}}.</p>
 											{% endif %}
 										</ul>
 									</div>
