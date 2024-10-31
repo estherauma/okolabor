@@ -295,6 +295,7 @@ def pricing(request):
 @login_required
 def profile(request):
     user = request.user
+    documents = UserDocuments.objects.filter(user=request.user)
     context = {
         'first_name': user.first_name if user.first_name else None,
         'last_name': user.last_name if user.last_name else None,
@@ -306,6 +307,7 @@ def profile(request):
         'address_line_1': user.address_line_1 if user.address_line_1 else None,
         'address_line_2': user.address_line_2 if user.address_line_2 else None,
         'city': user.city if user.city else None,
+        'documents': documents
     }
     return render(request, 'ltr/profile.html', context)
 
@@ -416,9 +418,4 @@ def edit_experience(request):
 
 @login_required
 def user_documents(request):
-    documents = UserDocuments.objects.filter(user=request.user)
-    
-    context = {
-        'documents': documents 
-    }
-    return render(request,'ltr/userdocuments.html',context)
+    return render(request,'ltr/userdocuments.html')
