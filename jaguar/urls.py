@@ -24,7 +24,8 @@ from django.views.static import serve
 
 urlpatterns = [
     path('api/', IndexView.as_view(), name='api-home'),
-    path('api/docs/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('api/docs/', schema_view.with_ui(
+        'redoc', cache_timeout=0), name='schema-redoc'),
     path('admin/', admin.site.urls),
     path('', include('theme.urls')),
     path('api/account/', include('account.urls.api')),
