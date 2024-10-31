@@ -7,8 +7,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib import messages
 from django.urls import reverse_lazy
-from django.contrib.auth.views import PasswordResetView
 from django.contrib.auth.forms import PasswordResetForm
+
 
 # Create your views here.
 @login_required(login_url='/')
