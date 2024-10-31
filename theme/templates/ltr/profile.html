@@ -325,12 +325,15 @@
 										<div class="row mb-5 img-gallery">
 											{% if documents %}
 												{% for document in documents %}
-													<div class="col-lg-3 col-md-6 mb-4">
+													<div class="col-lg-12 col-md-6 mb-4">
 														<div class="card border p-3">
 															<div class="card-body">
-																<strong>Description:</strong> {{ document.description }}<br>
-																<strong>Kind:</strong> {{ document.kind }}<br>
-																<strong>File Type:</strong> {{ document.file_type }}<br>
+																<strong>Description:</strong> {{ document.description|default:"None" }}<br>
+																<strong>File path:</strong> {{ document.path|default:"None" }}<br>
+																<strong>Cloud vision response:</strong> {{ document.cloud_vision_response|default:"None" }}<br>
+																<strong>Cloud vision match:</strong> {{ document.cloud_vision_match|default:"None" }}<br>
+																<strong>Kind:</strong> {{ document.kind|default:"None" }}<br>
+																<strong>File Type:</strong> {{ document.file_type|default:"None" }}<br>
 															</div>
 														</div>
 													</div>
