@@ -15,15 +15,16 @@ Including another URLconf
 """
 from django.conf import settings
 from django.conf.urls.static import static
-from django.contrib import admin
 from django.urls import path, include
 from jaguar.views import IndexView, UploadFileView, schema_view
+from django.contrib import admin
+from django.conf.urls import url
+from django.views.static import serve
 
 
 urlpatterns = [
     path('api/', IndexView.as_view(), name='api-home'),
-    path('api/docs/', schema_view.with_ui(
-        'redoc', cache_timeout=0), name='schema-redoc'),
+    path('api/docs/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('admin/', admin.site.urls),
     path('', include('theme.urls')),
     path('api/account/', include('account.urls.api')),
@@ -31,6 +32,8 @@ urlpatterns = [
     path('', include('recruiting.urls.web')),
     path('api/recruiting/', include('recruiting.urls.api')),
     path('api/file-upload/', UploadFileView.as_view(), name='file-upload'),
+
+    url(r'^uploads/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]
 
 if settings.DEBUG:
