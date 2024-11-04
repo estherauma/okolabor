@@ -423,7 +423,9 @@ def custom_password_reset_view(request):
         if form.is_valid():
             form.save(
                 request=request,
-                email_template_name='ltr/password_reset_email.html',
+                use_https=request.is_secure(),
+                html_email_template_name='ltr/password_reset_email.html',
+                
             )
             return redirect(reverse_lazy('password_reset_done'))
     else:
