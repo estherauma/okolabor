@@ -307,7 +307,7 @@ def profile(request):
         'address_line_1': user.address_line_1 if user.address_line_1 else None,
         'address_line_2': user.address_line_2 if user.address_line_2 else None,
         'city': user.city if user.city else None,
-        'work_preferences': work_preferences
+        'work_preferences': work_preferences,
     }
     return render(request, 'ltr/profile.html', context)
 

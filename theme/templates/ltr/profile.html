@@ -327,12 +327,11 @@
 										<ul class="widget-users row mb-5">
 											{% if work_preferences %}
 												{% for preference in work_preferences %}
-													<li class="col-lg-4 col-md-6 col-sm-12 col-12">
+													<li class="col-lg-12 col-md-6 col-sm-12 col-12">
 														<div class="card border p-0">
 															<div class="card-body" style="text-align: left;"> 
-																<strong>Key:</strong> {{ preference.key }}<br>
-																<strong>Value:</strong> {{ preference.value }}<br>
-																<strong>Type:</strong> {{ preference.kind }}
+																{{ preference.key }}<br>
+																{{ preference.value }}<br>
 															</div>
 														</div>
 													</li>
