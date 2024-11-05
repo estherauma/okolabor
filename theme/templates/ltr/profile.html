@@ -1,5 +1,6 @@
 {% extends 'components/base.html' %}
 {% load static%}
+{% load custom_filters %}
 
 		{% block styles %}
 		{% endblock styles %}
@@ -328,21 +329,41 @@
 													<div class="col-lg-12 col-md-6 mb-4">
 														<div class="card border p-3">
 															<div class="card-body">
-																<strong>Description:</strong> {{ document.description|default:"None" }}<br>
-																<strong>File path:</strong> {{ document.path|default:"None" }}<br>
-																<strong>Cloud vision response:</strong> {{ document.cloud_vision_response|default:"None" }}<br>
-																<strong>Cloud vision match:</strong> {{ document.cloud_vision_match|default:"None" }}<br>
-																<strong>Kind:</strong> {{ document.kind|default:"None" }}<br>
-																<strong>File Type:</strong> {{ document.file_type|default:"None" }}<br>
+																{% if document.file_type == ".png" or document.file_type == ".jpg" or document.file_type == ".jpeg" or document.file_type == ".gif" %}
+																	<img src="{{ MEDIA_URL }}{{ document.path }}" alt="Document Image" class="img-fluid mb-3">
+																{% elif document.file_type == ".mp4" %}
+																	<video controls class="img-fluid mb-3">
+																		<source src="{{ MEDIA_URL }}{{ document.path }}" type="video/mp4">
+																		Your browser does not support the video tag.
+																	</video>
+																{% elif document.file_type == ".avi" %}
+																	<video controls class="img-fluid mb-3">
+																		<source src="{{ MEDIA_URL }}{{ document.path }}" type="video/x-msvideo">
+																		Your browser does not support the video tag.
+																	</video>
+																{% elif document.file_type == ".mov" %}
+																	<video controls class="img-fluid mb-3">
+																		<source src="{{ MEDIA_URL }}{{ document.path }}" type="video/quicktime">
+																		Your browser does not support the video tag.
+																	</video>
+																{% elif document.file_type == ".wmv" %}
+																	<video controls class="img-fluid mb-3">
+																		<source src="{{ MEDIA_URL }}{{ document.path }}" type="video/x-ms-wmv">
+																		Your browser does not support the video tag.
+																	</video>
+																{% else %}
+																	<p>No preview available for this document.</p>
+																{% endif %}
 															</div>
 														</div>
 													</div>
 												{% endfor %}
 											{% else %}
 												<div class="col-12">
-													<p>No documents available for {{request.user.email }}.</p>
+													<p>No documents available for {{ request.user.email }}.</p>
 												</div>
 											{% endif %}
+
 										</div>
 									</div>
 									
