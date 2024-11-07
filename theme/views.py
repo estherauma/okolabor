@@ -6,6 +6,8 @@ from django.contrib.auth import authenticate,login as auth_login,get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib import messages
+from django.urls import reverse_lazy
+from django.contrib.auth.forms import PasswordResetForm
 
 # Create your views here.
 @login_required(login_url='/')
@@ -15,7 +17,8 @@ def index(request):
 @login_required
 def logout_view(request):
     logout(request)
-    messages.success(request, 'You have been successfully logged out')
+    messages.success(request, 'You have been successfully logged out', extra_tags='bg-success')
+
     return redirect('/')
 
 def about(request):
@@ -247,6 +250,7 @@ def login(request):
             
             if user is not None:
                 auth_login(request, user)
+                messages.success(request, 'You have successfully logged in')
                 next_url = request.GET.get('next', 'index')
                 return redirect(next_url)
             else:
@@ -412,3 +416,19 @@ def work_experience(request):
 
 def edit_experience(request):
     return render(request, 'workers/edit-work-experience.html')
+
+def custom_password_reset_view(request):
+    if request.method == 'POST':
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            form.save(
+                request=request,
+                use_https=request.is_secure(),
+                html_email_template_name='ltr/password_reset_email.html',
+                
+            )
+            return redirect(reverse_lazy('password_reset_done'))
+    else:
+        form = PasswordResetForm()
+    
+    return render(request, 'ltr/password_reset_form.html', {'form': form})
