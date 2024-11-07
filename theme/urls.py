@@ -246,4 +246,5 @@ urlpatterns = [
 
     #users
     path("users", views.users, name='users'),
+    path('notifications',views.notifications, name='notifications')
 ]
