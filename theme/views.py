@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import PasswordResetForm
 from account.models import UserPreference
+import requests
 
 # Create your views here.
 @login_required(login_url='/')
@@ -313,6 +314,21 @@ def profile(request):
         'city': user.city if user.city else None,
         'work_preferences': work_preferences,
     }
+    
+    try:
+        api_url = request.build_absolute_uri('aggregated/')
+ 
+        response = requests.get(api_url)
+        
+        if response.status_code == 200:
+            aggregated_content = response.json().get('data', [])
+            context['aggregated_content'] = aggregated_content
+        else:
+            context['aggregated_content'] = None
+    except requests.exceptions.RequestException as e:
+        context['aggregated_content'] = None
+        print(f"Error fetching aggregated content: {e}")
+
     return render(request, 'ltr/profile.html', context)
 
 
