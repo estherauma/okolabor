@@ -10,6 +10,8 @@ from django.urls import reverse_lazy
 from django.contrib.auth.forms import PasswordResetForm
 from account.models import UserPreference
 import requests
+from content.models import AggregatedContent
+from content.serializers import AggregatedContentSerializer
 
 # Create your views here.
 @login_required(login_url='/')
@@ -301,6 +303,19 @@ def pricing(request):
 def profile(request):
     user = request.user
     work_preferences = UserPreference.objects.filter(user=request.user)
+    latest = AggregatedContent.objects.latest('created_at')
+    serializer = AggregatedContentSerializer(latest, many=False)
+    aggregated_data = serializer.data
+    
+    content = aggregated_data.get('content')
+    english_content = content.get('en')
+    
+    work_preferenece_step_one = english_content.get('workPreferenceStepOne')
+    work_preference_step_one_questions = work_preferenece_step_one.get('form_questions')
+    work_preferenece_step_two = english_content.get('workPreferenceStepTwo')
+    work_preference_step_two_questions = work_preferenece_step_two.get('form_questions')
+    
+    print(work_preference_step_one_questions)
     context = {
         'first_name': user.first_name if user.first_name else None,
         'last_name': user.last_name if user.last_name else None,
@@ -313,21 +328,9 @@ def profile(request):
         'address_line_2': user.address_line_2 if user.address_line_2 else None,
         'city': user.city if user.city else None,
         'work_preferences': work_preferences,
-    }
-    
-    try:
-        api_url = request.build_absolute_uri('aggregated/')
- 
-        response = requests.get(api_url)
-        
-        if response.status_code == 200:
-            aggregated_content = response.json().get('data', [])
-            context['aggregated_content'] = aggregated_content
-        else:
-            context['aggregated_content'] = None
-    except requests.exceptions.RequestException as e:
-        context['aggregated_content'] = None
-        print(f"Error fetching aggregated content: {e}")
+        'work_preference_step_one_questions': work_preference_step_one_questions,
+        'work_preference_step_two_questions': work_preference_step_two_questions,
+    } 
 
     return render(request, 'ltr/profile.html', context)
 
