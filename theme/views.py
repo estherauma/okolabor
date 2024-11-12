@@ -8,10 +8,12 @@ from django.contrib.auth import logout
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import PasswordResetForm
-from account.models import UserPreference
+from account.models import UserPreference,UserNotificatio
 import requests
 from content.models import AggregatedContent
 from content.serializers import AggregatedContentSerializer
+
+
 
 # Create your views here.
 @login_required(login_url='/')
@@ -314,8 +316,9 @@ def profile(request):
     work_preference_step_one_questions = work_preferenece_step_one.get('form_questions')
     work_preferenece_step_two = english_content.get('workPreferenceStepTwo')
     work_preference_step_two_questions = work_preferenece_step_two.get('form_questions')
-    
-    print(work_preference_step_one_questions)
+   
+    user_notifications = UserNotification.objects.filter(user=request.user).order_by('-created_at')
+
     context = {
         'first_name': user.first_name if user.first_name else None,
         'last_name': user.last_name if user.last_name else None,
@@ -330,7 +333,9 @@ def profile(request):
         'work_preferences': work_preferences,
         'work_preference_step_one_questions': work_preference_step_one_questions,
         'work_preference_step_two_questions': work_preference_step_two_questions,
+        'user_notifications': user_notifications,
     } 
+
 
     return render(request, 'ltr/profile.html', context)
 
@@ -439,10 +444,15 @@ def work_experience(request):
 def edit_experience(request):
     return render(request, 'workers/edit-work-experience.html')
 
+
 @login_required
 def work_preferences(request):
     
     return render(request,'ltr/workpreferences.html')
+
+
+def notifications(request):
+    return render(request,'ltr/notifications.html')
 
 def custom_password_reset_view(request):
     if request.method == 'POST':
