@@ -6,8 +6,7 @@ from account.serializers import (
     UserDocumentSerializer, UserNotificationSerializer,
     ReportAProblemSerializer, UpdateUserPreferencesSerializer,
     UserJobExperienceDetailsSerializer,
-    UserJobExperienceSerializer, UserDocumentSerializer,
-    UserNotificationSerializer,
+    UserJobExperienceSerializer,
     UserPreferenceSerializer, UserSerilizer, LoginSerializer,
     UserWorkexperienceSerializer
 )
@@ -15,9 +14,6 @@ from account.models import (
     User, UserJobExperience, UserDocuments, UserJobExperienceDetails,
     UserNotification, UserPreference,
     UserReportedProblem, UserWorkExperience
-)
-from account.models import (
-    User, UserDocuments, UserPreference, UserWorkExperience
 )
 from account.jwt_manager import JwtManager
 from django.shortcuts import get_object_or_404
@@ -28,7 +24,7 @@ from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 
 from common.email import EmailHelper
-from django.shortcuts import get_object_or_404
+from account.signals import check_passport_match_signal
 
 
 class RegisterView(APIView):
@@ -133,15 +129,15 @@ class UserPreferencesUpdateView(APIView):
     )
     def post(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
-        
+
         # Create a new list to hold the valid preferences
         valid_preferences = []
-        
+
         # Loop through the preferences and filter out the ones with empty or None values
         for item in request.data['preferences']:
             if item['value'] is not None and item['value'] != '':
                 valid_preferences.append(item)
-        
+
         # Replace the preferences in request.data with the valid ones
         data = {
             'preferences': valid_preferences
@@ -164,23 +160,23 @@ class UserPreferencesUpdateView(APIView):
                 self.update_user_model(user, pref_data)
             preferences = self.return_preferences(user)
             return Response(preferences, status=status.HTTP_200_OK)
-        
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
     def update_user_model(self, user, data):
         user_obj = User.objects.get(pk=user.id)
         if data['key'] == 'firstName':
             user_obj.first_name = data['value']
             user_obj.save()
-        
+
         if data['key'] == 'lastName':
             user_obj.last_name = data['value']
             user_obj.save()
-            
+
         if data['key'] == 'gender':
             user_obj.gender = data['value']
             user_obj.save()
-            
+
         if data['key'] == 'dob':
             user_obj.dob = data['value']
             user_obj.save()
@@ -229,7 +225,7 @@ class UserWorkExperienceView(APIView):
 
             return Response(serializer.errors, status=400)
 
-    
+
 class UserWorkExperienceDetailsView(APIView):
 
     @swagger_auto_schema(
@@ -266,6 +262,7 @@ class UserWorkExperienceDetailsView(APIView):
             status=status.HTTP_204_NO_CONTENT
         )
 
+
 class UserDocumentsView(APIView):
     @swagger_auto_schema(
         operation_summary="Retrieve user documents",
@@ -289,6 +286,9 @@ class UserDocumentDetailsView(APIView):
     def get(self, request, document_id):
         document = get_object_or_404(UserDocuments, pk=document_id)
         serilizer = UserDocumentSerializer(document)
+        if document.kind == 'passport' and document.cloud_vision_match is False:
+            print('aaaassskkkkk....fghtttt.....')
+            check_passport_match_signal.send(sender=UserDocumentDetailsView, instance=document)
         return Response(
             serilizer.data,
             status=status.HTTP_200_OK
@@ -444,13 +444,12 @@ class UserJobExperienceView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
     @swagger_auto_schema(
         operation_summary="Update user job experience",
         tags=["Job Experience"]
     )
     def patch(self, request, user_id, experience_id):
-        user = get_object_or_404(User, pk=user_id)
+        # user = get_object_or_404(User, pk=user_id)
         experience = get_object_or_404(UserWorkExperience, pk=experience_id)
         serializer = UserJobExperienceSerializer(
             experience, data=request.data, partial=True)
@@ -469,20 +468,20 @@ class UserJobExperienceDetailsView(APIView):
         user = get_object_or_404(User, pk=user_id)
         job_experience = get_object_or_404(
             UserJobExperience, pk=request.data.get('job_experience_id'))
-        
+
         valid_data = []
         print(request.data)
-        
+
         # Use parentheses with get method and provide a default empty list if 'details' is missing
         for item in request.data.get('details', []):
             if item['value'] is not None and item['value'] != '':
                 valid_data.append(item)
-                
+
         data = {
             'valid': valid_data,
             'created': []
         }
-        
+
         # Iterate over valid data and create or update the details
         for entry in valid_data:
             exp, created = UserJobExperienceDetails.objects.update_or_create(
@@ -493,9 +492,9 @@ class UserJobExperienceDetailsView(APIView):
             )
             # Append serialized data of the created/updated experience detail
             data['created'].append(UserJobExperienceDetailsSerializer(exp).data)
-        
+
         return Response(data, status=status.HTTP_200_OK)
-            
+
         # serializer = UserJobExperienceDetailsSerializer(data=request.data)
         # if serializer.is_valid():
         #     # check if item exists
@@ -515,7 +514,7 @@ class UserJobExperienceDetailsView(APIView):
         #     new_details = UserJobExperienceDetails.objects.create(
         #         job_experience=job_experience,
         #         created_by = user.id,
-        #         updated_by = user.id, 
+        #         updated_by = user.id,
         #         **serializer.data
         #     )
         #     created_serializer = UserJobExperienceDetailsSerializer(new_details)
@@ -528,9 +527,9 @@ class UserJobExperienceDetailsView(APIView):
         tags=["Job Experience"]
     )
     def patch(self, request, user_id):
-        user = get_object_or_404(User, pk=user_id)
+        # user = get_object_or_404(User, pk=user_id)
         job_experience_details = get_object_or_404(
-            UserJobExperienceDetails, 
+            UserJobExperienceDetails,
             pk=request.data.get('job_experience_details_id')
         )
         serilizer = UserJobExperienceDetailsSerializer(
@@ -630,7 +629,7 @@ class UserAccountRecovery(APIView):
                     },
                     status.HTTP_200_OK
                 )
-        
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -649,7 +648,7 @@ class UserAccountRecoveryReset(APIView):
                 user.set_password(password)
                 user.reset_code = None
                 user.save()
-                
+
                 # Send email
                 email_helper = EmailHelper()
                 email_helper.send_email(
@@ -666,6 +665,5 @@ class UserAccountRecoveryReset(APIView):
                     },
                     status.HTTP_200_OK
                 )
-      
-        
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

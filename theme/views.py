@@ -6,6 +6,9 @@ from django.contrib.auth import authenticate,login as auth_login,get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib import messages
+from django.urls import reverse_lazy
+from django.contrib.auth.forms import PasswordResetForm
+from account.models import UserNotification
 from account.models import UserDocuments
 
 # Create your views here.
@@ -16,7 +19,8 @@ def index(request):
 @login_required
 def logout_view(request):
     logout(request)
-    messages.success(request, 'You have been successfully logged out')
+    messages.success(request, 'You have been successfully logged out', extra_tags='bg-success')
+
     return redirect('/')
 
 def about(request):
@@ -248,6 +252,7 @@ def login(request):
             
             if user is not None:
                 auth_login(request, user)
+                messages.success(request, 'You have successfully logged in')
                 next_url = request.GET.get('next', 'index')
                 return redirect(next_url)
             else:
@@ -295,6 +300,7 @@ def pricing(request):
 @login_required
 def profile(request):
     user = request.user
+    user_notifications = UserNotification.objects.filter(user=request.user).order_by('-created_at')
     documents = UserDocuments.objects.filter(user=request.user)
     context = {
         'first_name': user.first_name if user.first_name else None,
@@ -307,6 +313,7 @@ def profile(request):
         'address_line_1': user.address_line_1 if user.address_line_1 else None,
         'address_line_2': user.address_line_2 if user.address_line_2 else None,
         'city': user.city if user.city else None,
+        'user_notifications': user_notifications,
         'documents': documents,
     }
     return render(request, 'ltr/profile.html', context)
@@ -419,3 +426,23 @@ def edit_experience(request):
 @login_required
 def user_documents(request):
     return render(request,'ltr/userdocuments.html')
+
+
+def notifications(request):
+    return render(request,'ltr/notifications.html')
+
+def custom_password_reset_view(request):
+    if request.method == 'POST':
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            form.save(
+                request=request,
+                use_https=request.is_secure(),
+                html_email_template_name='ltr/password_reset_email.html',
+                
+            )
+            return redirect(reverse_lazy('password_reset_done'))
+    else:
+        form = PasswordResetForm()
+    
+    return render(request, 'ltr/password_reset_form.html', {'form': form})
