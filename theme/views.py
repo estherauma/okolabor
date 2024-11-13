@@ -316,6 +316,7 @@ def profile(request):
     work_preference_step_one_questions = work_preferenece_step_one.get('form_questions')
     work_preferenece_step_two = english_content.get('workPreferenceStepTwo')
     work_preference_step_two_questions = work_preferenece_step_two.get('form_questions')
+    preference_questions = work_preference_step_one_questions + work_preference_step_two_questions
    
     user_notifications = UserNotification.objects.filter(user=request.user).order_by('-created_at')
 
@@ -331,9 +332,9 @@ def profile(request):
         'address_line_2': user.address_line_2 if user.address_line_2 else None,
         'city': user.city if user.city else None,
         'work_preferences': work_preferences,
-        'work_preference_step_one_questions': work_preference_step_one_questions,
-        'work_preference_step_two_questions': work_preference_step_two_questions,
+        'preference_questions': preference_questions,
         'user_notifications': user_notifications,
+        
     } 
 
 
