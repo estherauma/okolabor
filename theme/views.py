@@ -8,7 +8,12 @@ from django.contrib.auth import logout
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import PasswordResetForm
-from account.models import UserNotification
+from account.models import UserPreference,UserNotification
+import requests
+from content.models import AggregatedContent
+from content.serializers import AggregatedContentSerializer
+
+
 
 # Create your views here.
 @login_required(login_url='/')
@@ -299,7 +304,22 @@ def pricing(request):
 @login_required
 def profile(request):
     user = request.user
+    work_preferences = UserPreference.objects.filter(user=request.user)
+    latest = AggregatedContent.objects.latest('created_at')
+    serializer = AggregatedContentSerializer(latest, many=False)
+    aggregated_data = serializer.data
+    
+    content = aggregated_data.get('content')
+    english_content = content.get('en')
+    
+    work_preferenece_step_one = english_content.get('workPreferenceStepOne')
+    work_preference_step_one_questions = work_preferenece_step_one.get('form_questions')
+    work_preferenece_step_two = english_content.get('workPreferenceStepTwo')
+    work_preference_step_two_questions = work_preferenece_step_two.get('form_questions')
+    preference_questions = work_preference_step_one_questions + work_preference_step_two_questions
+   
     user_notifications = UserNotification.objects.filter(user=request.user).order_by('-created_at')
+
     context = {
         'first_name': user.first_name if user.first_name else None,
         'last_name': user.last_name if user.last_name else None,
@@ -311,9 +331,15 @@ def profile(request):
         'address_line_1': user.address_line_1 if user.address_line_1 else None,
         'address_line_2': user.address_line_2 if user.address_line_2 else None,
         'city': user.city if user.city else None,
+        'work_preferences': work_preferences,
+        'preference_questions': preference_questions,
         'user_notifications': user_notifications,
-    }
+        
+    } 
+
+
     return render(request, 'ltr/profile.html', context)
+
 
 def progress(request):
     return render(request, 'ltr/progress.html')
@@ -413,12 +439,17 @@ def add_worker(request):
 def worker_request_form(request):
     return render(request, 'workers/worker-request-form.html')
 
-
 def work_experience(request):
     return render(request, 'workers/work-experience.html')
 
 def edit_experience(request):
     return render(request, 'workers/edit-work-experience.html')
+
+
+@login_required
+def work_preferences(request):
+    
+    return render(request,'ltr/workpreferences.html')
 
 
 def notifications(request):
