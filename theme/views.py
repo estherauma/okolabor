@@ -266,7 +266,6 @@ def login(request):
             
             return render(request, 'ltr/login.html', {'form': form})
     else:
-        print("GET request received")
         form = LoginForm()
 
     return render(request, 'ltr/login.html', {'form': form})

@@ -14,7 +14,6 @@ class EmailHelper:
                 # Convert the body dictionary to a string representation if it's a dict
                 if isinstance(body, dict):
                     body = "\n".join([f"{key}: {value}" for key, value in body.items()])
-                print(f"Email sent to without template {to_emails}")
                 return send_mail(subject, body, from_email, to_emails)
 
             # Render the email template
