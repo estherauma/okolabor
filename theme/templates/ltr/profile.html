@@ -1,5 +1,6 @@
 {% extends 'components/base.html' %}
 {% load static%}
+{% load experience_filters %}
 
 		{% block styles %}
 		{% endblock styles %}
@@ -178,53 +179,20 @@
 								</div>
 								<div class="tab-pane" id="tab-61">
 									<ul class="widget-users row mb-5">
-										{% if work_experiences %}
-											{% for experience in work_experiences %}
-												<div class="col-md-12 mb-3">
-													<div class="card">
-														<div class="card-body">
-															<h5 class="card-title">JOB</h5>
-															<p class="card-text">
-																<strong>Company Name:</strong> {{ experience.company }}<br>
-																<strong>Title:</strong> {{ experience.work_title }}<br>
-																<strong>Start Date:</strong> {{ experience.start_date }}<br>
-																<strong>End Date:</strong> {{ experience.end_date }}<br>
-																<strong>Location:</strong> {{ experience.country }}<br>
-																<strong>Visa Type:</strong> {{ experience.visa_type }}<br>
-																<strong>Supervisor Name:</strong> {{ experience.supervisor_name }}<br>
-																<strong>Supervisor Telephone:</strong> {{ experience.supervisor_tel }}<br>
-																<strong>Supervisor Email:</strong> {{ experience.supervisor_email }}<br>
-															</p>
-
-															{% if experience.crop_experiences.all %}
-																<h6><strong>JOB EXPERIENCES:</strong></h6>
-																{% for job in experience.crop_experiences.all %}
-																	<div class="mb-2">
-																		<strong>Job Type:</strong> {{ job.job_type }}<br>
-																		<strong>Type Details:</strong> {{ job.type_details }}<br><br>
-																		{% if job.job_experience_details.all %}
-																			<h6><strong>RESPONSIBILITIES:</strong></h6>
-																			<ul>
-																				{% for detail in job.job_experience_details.all %}
-																					<li>{{ detail.value }}</li>
-																				{% endfor %}
-																			</ul>
-																		{% else %}
-																			<p>No job experience details available.</p>
-																		{% endif %}
-																	</div>
-																{% endfor %}
-															{% else %}
-																<p>No job experiences available.</p>
-															{% endif %}
-														</div>
+										
+										{% for question in experience_questions %}
+											<div class="col-md-12 mb-3">
+												<div class="card">
+													<div class="card-body">
+														<p class="card-text">
+															{{ experience_questions|get_experience:question.key }}<br>
+															{{question.value}}
+														</p>
 													</div>
 												</div>
-											{% endfor %}
-										{% else %}
-											<p class="col-12">No work experience found for {{ request.user.email }}.</p>
-										{% endif %}
-
+											</div>
+										{% endfor %}
+										
 									</ul>
 									
 								</div>

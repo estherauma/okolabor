@@ -11,6 +11,8 @@ from django.contrib.auth.forms import PasswordResetForm
 from account.models import UserNotification
 from account.models import UserWorkExperience,UserJobExperience,UserJobExperienceDetails
 from django.db.models import Prefetch
+from content.models import AggregatedContent
+from content.serializers import AggregatedContentSerializer
 
 # Create your views here.
 @login_required(login_url='/')
@@ -302,17 +304,21 @@ def pricing(request):
 def profile(request):
     user = request.user
     user_notifications = UserNotification.objects.filter(user=request.user).order_by('-created_at')
-    work_experiences = UserWorkExperience.objects.filter(user=user).prefetch_related(
-        Prefetch(
-            'crop_experiences',
-            queryset=UserJobExperience.objects.prefetch_related(
-                Prefetch(
-                    'job_experience_details',
-                    queryset=UserJobExperienceDetails.objects.filter(is_attachment=False)
-                )
-            )
-        )
-    )
+    work_experience = UserWorkExperience.objects.filter(user=request.user)
+    latest = AggregatedContent.objects.latest('created_at')
+    serializer = AggregatedContentSerializer(latest, many=False)
+    aggregated_data = serializer.data
+    
+    content = aggregated_data.get('content')
+    english_content = content.get('en')
+    content = aggregated_data.get('content')
+    english_content = content.get('en')
+    work_experience_step_two = english_content.get('workExperienceStepTwo')
+    work_experience_step_two_questions = work_experience_step_two.get('form_questions')
+    work_experience_step_three = english_content.get('workExperienceStepThree')
+    work_experience_step_three_questions = work_experience_step_three.get('form_questions')
+    experience_questions = work_experience_step_two_questions + work_experience_step_three_questions
+    
     
     context = {
         'first_name': user.first_name if user.first_name else None,
@@ -326,7 +332,8 @@ def profile(request):
         'address_line_2': user.address_line_2 if user.address_line_2 else None,
         'city': user.city if user.city else None,
         'user_notifications': user_notifications,
-        'work_experiences': work_experiences,
+        'experience_questions': experience_questions,
+        'work_experience': work_experience,
         
     }
     return render(request, 'ltr/profile.html', context)
