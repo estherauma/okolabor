@@ -63,23 +63,18 @@
                     <form class="login100-form validate-form" method="POST">
                         {% csrf_token %}
                         
-                        <!-- <span class="login100-form-title">
-                            Okolabor - Login
-                        </span> -->
                         <div class="login100-form-title logo-padding">
                             <img src="{% static 'assets/images/login/logo.svg' %}" alt="Okolabor Logo" />
                         </div>
                         <div class="input100 login-fields">
                             <input type="email" name="{{ form.email.name }}" id="{{ form.email.id_for_label }}"
-                             placeholder="Username" class="login-input">
-                             
+                             placeholder="Username" class="login-input">                             
                         </div>
                         <br>
                         
                         <div class="input100 login-fields">                           
                             <input type="password" name="{{ form.password.name }}" id="{{ form.password.id_for_label }}"
-                             placeholder="Password" class="login-input">
-                             
+                             placeholder="Password" class="login-input">                            
                         </div>
                         <div class="text-center pt-3">
                             <a href="{% url 'password-reset' %}" class="ms-1 white-link float-end">Forgotten password</a>
