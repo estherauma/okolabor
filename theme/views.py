@@ -9,10 +9,10 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import PasswordResetForm
 from account.models import UserNotification
-from account.models import UserWorkExperience,UserJobExperience,UserJobExperienceDetails
-from django.db.models import Prefetch
+from account.models import UserWorkExperience,UserJobExperience,UserJobExperienceDetails,UserPreference,UserNotification
 from content.models import AggregatedContent
 from content.serializers import AggregatedContentSerializer
+import requests
 
 # Create your views here.
 @login_required(login_url='/')
@@ -304,22 +304,27 @@ def pricing(request):
 def profile(request):
     user = request.user
     user_notifications = UserNotification.objects.filter(user=request.user).order_by('-created_at')
+    work_preferences = UserPreference.objects.filter(user=request.user)
     work_experience = UserWorkExperience.objects.filter(user=request.user)
+    
     latest = AggregatedContent.objects.latest('created_at')
     serializer = AggregatedContentSerializer(latest, many=False)
     aggregated_data = serializer.data
+    content = aggregated_data.get('content')
+    english_content = content.get('en')
     
-    content = aggregated_data.get('content')
-    english_content = content.get('en')
-    content = aggregated_data.get('content')
-    english_content = content.get('en')
+    work_preferenece_step_one = english_content.get('workPreferenceStepOne')
+    work_preference_step_one_questions = work_preferenece_step_one.get('form_questions')
+    work_preferenece_step_two = english_content.get('workPreferenceStepTwo')
+    work_preference_step_two_questions = work_preferenece_step_two.get('form_questions')
+    preference_questions = work_preference_step_one_questions + work_preference_step_two_questions
+     
     work_experience_step_two = english_content.get('workExperienceStepTwo')
     work_experience_step_two_questions = work_experience_step_two.get('form_questions')
     work_experience_step_three = english_content.get('workExperienceStepThree')
     work_experience_step_three_questions = work_experience_step_three.get('form_questions')
     experience_questions = work_experience_step_two_questions + work_experience_step_three_questions
-    
-    
+
     context = {
         'first_name': user.first_name if user.first_name else None,
         'last_name': user.last_name if user.last_name else None,
@@ -331,11 +336,14 @@ def profile(request):
         'address_line_1': user.address_line_1 if user.address_line_1 else None,
         'address_line_2': user.address_line_2 if user.address_line_2 else None,
         'city': user.city if user.city else None,
+        'work_preferences': work_preferences,
+        'preference_questions': preference_questions,
         'user_notifications': user_notifications,
         'experience_questions': experience_questions,
         'work_experience': work_experience,
         
     }
+
     return render(request, 'ltr/profile.html', context)
 
 def progress(request):
@@ -420,6 +428,7 @@ def wysiwyag(request):
 
 def employer_list(request):
     return render(request, 'employer-list/employer-list.html')
+  
 def workers(request):
     return render(request, 'workers/workers.html')
 
@@ -433,6 +442,7 @@ def users(request):
 
 def add_worker(request):
     return render(request, 'workers/add-workers.html')
+  
 def worker_request_form(request):
     return render(request, 'workers/worker-request-form.html')
 
@@ -442,6 +452,12 @@ def work_experience(request):
 
 def edit_experience(request):
     return render(request, 'workers/edit-work-experience.html')
+
+
+@login_required
+def work_preferences(request):
+    
+    return render(request,'ltr/workpreferences.html')
 
 
 def notifications(request):
