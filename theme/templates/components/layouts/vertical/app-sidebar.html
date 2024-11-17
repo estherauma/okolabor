@@ -1,45 +1,45 @@
 {% load static%}
 <!--APP-SIDEBAR-->
 <div class="app-sidebar__overlay" data-bs-toggle="sidebar"></div>
-<aside class="app-sidebar">
+<aside class="app-sidebar sidebar-logo-parent">
 	<div class="side-header">
 		<h3>CSI VISA PROCESSING</h3>
 	</div>
 	<ul class="side-menu">
-		<li>
+		<!-- <li>
 			<h3>Main</h3>
-		</li>
-		<li class="slide">
+		</li> -->
+		<li>
 			<a class="side-menu__item" data-bs-toggle="slide" href="/index"><i
 					class="side-menu__icon fe fe-home"></i><span class="side-menu__label">Home</span></a>
 		</li>
-		<li>
+		<!-- <li>
 			<h3>Workers</h3>
-		</li>
+		</li> -->
 		<li>
 			<a class="side-menu__item" href="/workers"><i class="side-menu__icon fe fe-grid"></i><span
 					class="side-menu__label">All Workers</span></a>
 		</li>
 
-		<li>
+		<!-- <li>
 			<h3>Employers</h3>
-		</li>
+		</li> -->
 		<li>
 			<a class="side-menu__item" href="{% url 'recruiting_web:employer_list' %}"><i class="side-menu__icon fe fe-grid"></i><span
 					class="side-menu__label">All Employers</span></a>
 		</li>
 
 
-		<li>
+		<!-- <li>
 			<h3>Job Offers</h3>
-		</li>
+		</li> -->
 		<li>
 			<a class="side-menu__item" href="{% url 'recruiting_web:workrequest_list' %}"><i class="side-menu__icon mdi mdi-tune"></i><span
 					class="side-menu__label">Job Offers</span></a>
 		</li>
-		<li>
+		<!-- <li>
 			<h3>Admin</h3>
-		</li>
+		</li> -->
 		<li>
 			<a class="side-menu__item" href="/users"><i class="side-menu__icon icon icon-people"></i><span
 					class="side-menu__label">Manage users</span></a>
@@ -65,5 +65,6 @@
 					class="side-menu__label">Logout</span></a>
 		</li>
 	</ul>
+	<img class="sidebar-logo" src="{% static 'assets/images/svgs/sidebar.svg' %}" alt="Okolabor Sidebar Logo" />
 </aside>
 <!--/APP-SIDEBAR-->
