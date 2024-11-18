@@ -1,3 +1,4 @@
+{% load user_role_tags %}
 {% load static%}
 <!--APP-SIDEBAR-->
 <div class="app-sidebar__overlay" data-bs-toggle="sidebar"></div>
@@ -6,37 +7,58 @@
 		<h3>CSI VISA PROCESSING</h3>
 	</div>
 	<ul class="side-menu">
-		<li>
-			<h3>Main</h3>
-		</li>
-		<li class="slide">
+
+		{% if request.user|has_group:"worker" %}
+		
+
+		{% elif request.user|has_group:"recruiter" %}
+	
+		<li class="slide" style="padding-top: 50px;">
 			<a class="side-menu__item" data-bs-toggle="slide" href="/index"><i
 					class="side-menu__icon fe fe-home"></i><span class="side-menu__label">Home</span></a>
 		</li>
+	
 		<li>
-			<h3>Workers</h3>
-		</li>
-		<li>
-			<a class="side-menu__item" href="/workers"><i class="side-menu__icon fe fe-grid"></i><span
-					class="side-menu__label">All Workers</span></a>
+			<a class="side-menu__item" href="/workers"><i class="side-menu__icon fe fe-users"></i><span
+					class="side-menu__label">Workers</span></a>
 		</li>
 
 		<li>
-			<h3>Employers</h3>
+			<a class="side-menu__item" href="{% url 'recruiting_web:employer_list' %}"><i class="side-menu__icon fa fa-building"></i><span
+					class="side-menu__label">Employers</span></a>
 		</li>
+
 		<li>
-			<a class="side-menu__item" href="{% url 'recruiting_web:employer_list' %}"><i class="side-menu__icon fe fe-grid"></i><span
-					class="side-menu__label">All Employers</span></a>
+			<a class="side-menu__item" href="{% url 'recruiting_web:workrequest_list' %}"><i class="side-menu__icon mdi mdi-tune"></i><span
+					class="side-menu__label">Work Requests</span></a>
 		</li>
+		<hr>
+
+		<li>
+			<a class="side-menu__item" href="#"><i class="side-menu__icon icon icon-briefcase"></i><span
+					class="side-menu__label">To Do</span></a>
+		</li>
+
+		<li>
+			<a class="side-menu__item" href="#"><i class="side-menu__icon icon icon-envelope"></i><span
+					class="side-menu__label">Messages</span></a>
+		</li>
+
+		{% elif request.user|has_group:"employer" %}
+
+		{% elif request.user|has_group:"admin" %}
+
+		
+		
+
+		
+		
 
 
 		<li>
 			<h3>Job Offers</h3>
 		</li>
-		<li>
-			<a class="side-menu__item" href="{% url 'recruiting_web:workrequest_list' %}"><i class="side-menu__icon mdi mdi-tune"></i><span
-					class="side-menu__label">Job Offers</span></a>
-		</li>
+		
 		<li>
 			<h3>Admin</h3>
 		</li>
@@ -64,6 +86,7 @@
 			<a class="side-menu__item" href="{% url 'logout' %}"><i class="side-menu__icon icon icon-logout"></i><span
 					class="side-menu__label">Logout</span></a>
 		</li>
+		{% endif %}
 	</ul>
 </aside>
 <!--/APP-SIDEBAR-->
