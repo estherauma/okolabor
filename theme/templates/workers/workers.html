@@ -42,8 +42,17 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% for worker in workers %}
                             <tr>
-                                <td>Dorah</td>
+                                <td>
+                                    {% if worker.firstname and worker.lastname %}
+                                    <a href="worker-details"> {{ worker.firstname }} {{ worker.lastname }} </a>
+                                   
+                                    {% else %}
+                                    
+                                    <a href="worker-details"> {{ worker.email }} </a>
+                                    {% endif %}
+                                </td>
                                 <td>Chloe</td>
                                 <td>30%</td>
                                 <td>Harvesting, Fruit picking</td>
@@ -55,92 +64,10 @@
                                         <button class="btn btn-success mb-2">Details</button>
                                     </a>
                                 </td>
-                                
+
                             </tr>
-                            <tr>
-                                <td>Blessed</td>
-                                <td>Chloe</td>
-                                <td>10%</td>
-                                <td>Harvesting, Fruit picking</td>
-                                <td>Intermediate</td>
-                                <td>Any</td>
-                                <td>Pending</td>
-                                <td>
-                                    <a href="worker-details">
-                                        <button class="btn btn-success mb-2">Details</button>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Bless</td>
-                                <td>Chloe</td>
-                                <td>70%</td>
-                                <td>Harvesting, Fruit picking</td>
-                                <td>Intermediate</td>
-                                <td>Any</td>
-                                <td>Pending</td>
-                                <td>
-                                    <a href="worker-details">
-                                        <button class="btn btn-success mb-2">Details</button>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Betty</td>
-                                <td>Chloe</td>
-                                <td>90%</td>
-                                <td>Harvesting, Fruit picking</td>
-                                <td>Intermediate</td>
-                                <td>Any</td>
-                                <td>Pending</td>
-                                <td>
-                                    <a href="worker-details">
-                                        <button class="btn btn-success mb-2">Details</button>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Vella</td>
-                                <td>Chloe</td>
-                                <td>70%</td>
-                                <td>Harvesting, Fruit picking</td>
-                                <td>Intermediate</td>
-                                <td>Any</td>
-                                <td>Pending</td>
-                                <td>
-                                    <a href="worker-details">
-                                        <button class="btn btn-success mb-2">Details</button>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Deo</td>
-                                <td>Chloe</td>
-                                <td>10%</td>
-                                <td>Harvesting, Fruit picking</td>
-                                <td>Intermediate</td>
-                                <td>Any</td>
-                                <td>Pending</td>
-                                <td>
-                                    <a href="worker-details">
-                                        <button class="btn btn-success mb-2">Details</button>
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Olive</td>
-                                <td>Chloe</td>
-                                <td>60%</td>
-                                <td>Harvesting, Fruit picking</td>
-                                <td>Intermediate</td>
-                                <td>Any</td>
-                                <td>Pending</td>
-                                <td>
-                                    <a href="worker-details">
-                                        <button class="btn btn-success mb-2">Details</button>
-                                    </a>
-                                </td>
-                            </tr>
+                            {% endfor %}
+
 
                         </tbody>
                     </table>

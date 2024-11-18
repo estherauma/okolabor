@@ -422,8 +422,10 @@ def wysiwyag(request):
 
 def employer_list(request):
     return render(request, 'employer-list/employer-list.html')
+
 def workers(request):
-    return render(request, 'workers/workers.html')
+    workers = User.objects.filter(is_staff=False)
+    return render(request, 'workers/workers.html', {'workers': workers})
 
 def worker_details(request):
     return render(request, 'worker-details/worker-details.html')
