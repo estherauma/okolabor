@@ -16,254 +16,72 @@
 {% block body %}
 <div class="page-header">
 	<div>
-		<h1 class="page-title">Good morning,Pall</h1>
-
+		<h1 class="page-title">
+			Welcome, 
+			{% if request.user.first_name and request.user.last_name %}
+				{{ request.user.first_name }} {{ request.user.last_name }}
+			{% else %}
+				{{ request.user.email }}
+			{% endif %}
+		</h1>
 	</div>
 
 </div>
 
 <div class="row">
-	<div class="col-xl-6 col-md-12">
+	<div class="col-md-12">
 		<div class="card">
 			<div class="card-body">
-				<div class="col d-flex justify-content-between align-items-center">
-					<div>
-						<i class="side-menu__icon icon icon-user" style="color: #2A7A62;"></i>
-						<span class="side-menu__label" style="color: #2A7A62;">Workers</span>
-					</div>
-					<button class="btn btn-primary">See All</button>
-				</div>
-				<br><br>
+                <div class="table-responsive">
+                    <table class="table table-bordered text-nowrap border-bottom" id="basic-datatable">
+                        <thead>
+                            <tr>
+                                <th class="wd-15p border-bottom-0">Job Offer</th>
+                                <th class="wd-15p border-bottom-0">Deadline</th>
+                                <th class="wd-20p border-bottom-0">Start Date</th>
+                                <th class="wd-15p border-bottom-0">Status</th>
+                                <th class="wd-10p border-bottom-0">Workers</th>
+                                <th class="wd-25p border-bottom-0">Companyy</th>
+                                <th class="wd-25p border-bottom-0">Closing</th>
+                                <th>Worker's Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for worker in workers %}
+                            <tr>
+                                <td>
+                                    {% if worker.firstname and worker.lastname %}
+                                    <a href="worker-details"> {{ worker.firstname }} {{ worker.lastname }} </a>
+                                   
+                                    {% else %}
+                                    
+                                    <a href="worker-details"> {{ worker.email }} </a>
+                                    {% endif %}
+                                </td>
+                                <td>Chloe</td>
+                                <td>30%</td>
+                                <td>Harvesting, Fruit picking</td>
+                                <td>Intermediate</td>
+                                <td>Any</td>
+                                <td>Pending</td>
+                                <td>
+                                    <a href="worker-details">
+                                        <button class="btn btn-success mb-2">Details</button>
+                                    </a>
+                                </td>
 
-				<div class="row">
-					<div class="col-md-4">
-
-						<div class="text-center">
-
-							<h2 class="mb-2 mt-0">5</h2>
-							<div id="circle" class="mt-3 mb-3 chart-dropshadow-secondary"></div>
-
-							<p class="mb-0"><span class="dot-label bg-secondary me-2"></span>Open Requests</p>
-							<br>
-							<button class="btn btn-primary">View All</button>
-						</div>
-
-					</div>
-
-					<div class="col-md-4">
-
-						<div class="widget text-center">
-
-							<h2 class="mb-2 mt-0">84</h2>
-							<div id="circle-1" class="mt-3 mb-3 chart-dropshadow-success"></div>
-							<p class="mb-0"><span class="dot-label bg-success me-2"></span>Pending responses</p>
-							<br>
-							<button class="btn btn-primary">View All</button>
-						</div>
-
-					</div>
-					<div class="col-md-4">
-						<div class="widget text-center">
-							<h2 class="mb-2 mt-0">1</h2>
-							<div id="circle-2" class="mt-3 mb-3 chart-dropshadow-warning"></div>
-							<p class="mb-0"><span class="dot-label bg-warning me-2"></span>New Requests</p>
-							<br>
-							<button class="btn btn-primary">View All</button>
-						</div>
-
-					</div>
-
-				</div>
-				<br><br>
-				<hr>
-				<h5 style="color: #2A7A62;">Signup process</h5>
-				<div class="row">
-					<div class="col-md-7">
-						<table class="table row table-borderless">
-							<tbody class="col-lg-12 col-xl-6 p-0">
-								<tr>
-									<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Signedup :</strong> 812
-									</td>
-								</tr>
-								<tr>
-									<td style="color: #7DBF96;"><strong style="color: #7DBF96;">Completed profiles
-											:</strong> 588</td>
-								</tr>
-
-							</tbody>
-							<tbody class="col-lg-12 col-xl-6 p-0">
-
-							</tbody>
-						</table>
-					</div>
-					<div class="col-md-5">
-						<img src="{% static 'assets/images/graph.png'%}" alt="image" class="img-fluid">
-					</div>
-				</div>
-				<hr>
-				<h5 style="color: #2A7A62;">Onboarding pipeline</h5>
-				<div class="card-body">
-
-					<div class="table-responsive">
-						<table class="table border text-nowrap text-md-nowrap table-striped mg-b-0">
-							<thead>
-								<tr>
-
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-
-									<td><img src="{% static 'assets/images/green.png'%}" alt="image" class="img-fluid">
-									</td>
-									<td style="color: #7DBF96;">Who I am</td>
-									<td style="color: #7DBF96;">95%</td>
-								</tr>
-								<tr>
-
-									<td><img src="{% static 'assets/images/red.png'%}" alt="image" class="img-fluid">
-									</td>
-									<td style="color: #F53131;">What I want</td>
-									<td style="color: #F53131;">21%</td>
-								</tr>
-								<tr>
-
-									<td><img src="{% static 'assets/images/yellow.png'%}" alt="image" class="img-fluid">
-									</td>
-									<td style="color: #F5BE31;">Work experience</td>
-									<td style="color: #F5BE31;">75%</td>
-								</tr>
+                            </tr>
+                            {% endfor %}
 
 
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
 		</div>
 
 	</div>
-	<!-- COL END -->
-	<div class="col-xl-6 col-md-12">
-		<div class="card">
-			<div class="card-header">
-				<div class="col d-flex justify-content-between align-items-center">
-					<div>
-						<i class="side-menu__icon icon icon-user" style="color: #2A7A62;"></i>
-						<span class="side-menu__label" style="color: #2A7A62;">Feed</span>
-					</div>
-					<button class="btn btn-primary">See All</button>
-				</div>
-			</div>
-			<div class="card-body">
-				<div class="table-responsive">
-					<table class="table border text-nowrap text-md-nowrap table-striped mg-b-0">
-						<thead>
-							<tr>
-
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-
-								<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Utah Fruit Farm </strong>
-									has sent a Job offer</td>
-								<td>
-									<a href="#" style="color: #2A7A62;">See more</a>
-								</td>
-							</tr>
-							<tr>
-
-								<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Spokane Fruits </strong>has
-									marked a Work Order as complete</td>
-								<td>
-									<a href="#" style="color: #2A7A62;">See more</a>
-								</td>
-							</tr>
-
-							<tr>
-
-								<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Spokane Fruits</strong> has
-									marked a Work Ordera s complete</td>
-								<td>
-									<a href="#" style="color: #2A7A62;">See more</a>
-								</td>
-							</tr>
-							<tr>
-
-								<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Spokane Fruits</strong> has
-									marked a Work Ordera s complete</td>
-								<td>
-									<a href="#" style="color: #2A7A62;">See more</a>
-								</td>
-							</tr>
-
-						</tbody>
-					</table>
-					<br>
-					<div class="row">
-						<div class="col">
-							<div class="col d-flex justify-content-between align-items-center">
-								<div>
-									<i class="side-menu__icon icon icon-user" style="color: #2A7A62;"></i>
-									<span class="side-menu__label" style="color: #2A7A62;">Latest Work</span>
-								</div>
-								<button class="btn btn-primary">See All</button>
-							</div>
-						</div>
-
-					</div>
-					<br>
-
-
-					<table class="table border text-nowrap text-md-nowrap table-striped mg-b-0">
-						<thead>
-							<tr>
-
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-
-								<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Utah Fruit Farm </strong>
-									has sent a Job offer</td>
-								<td style="color: #2A7A62;">
-									Jan24,2024
-								</td>
-							</tr>
-							<tr>
-
-								<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Spokane Fruits </strong>has
-									marked a Work Order as complete</td>
-								<td style="color: #2A7A62;">
-									Jan24,2024
-								</td>
-							</tr>
-
-							<tr>
-
-								<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Spokane Fruits</strong> has
-									marked a Work Ordera s complete</td>
-								<td style="color: #2A7A62;">
-									Jan24,2024
-								</td>
-							</tr>
-							<tr>
-
-								<td style="color: #2A7A62;"><strong style="color: #2A7A62;">Spokane Fruits</strong> has
-									marked a Work Ordera s complete</td>
-								<td style="color: #2A7A62;">
-									Jan24,2024
-								</td>
-							</tr>
-
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div><!-- COL END -->
 
 </div>
 <!-- ROW-1 CLOSED -->

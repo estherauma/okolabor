@@ -13,7 +13,7 @@
 
 <div class="page-header">
     <div>
-        <h1 class="page-title">Job offers</h1>
+        <h1 class="page-title">Active Job Offer (Progress)</h1>
     </div>
     <div class="ms-auto pageheader-btn">
         <a href="{% url 'recruiting_web:workrequest_create' %}" class="btn btn-primary btn-icon text-white me-2">
@@ -34,19 +34,21 @@
 
                         <thead>
                             <tr>
-                                <th class="wd-15p border-bottom-0">Job offer</th>
+                                <th class="wd-15p border-bottom-0">Job Offer</th>
                                 <th class="wd-15p border-bottom-0">Start Date</th>
                                 <th class="wd-20p border-bottom-0">Roles</th>
                                 <th class="wd-15p border-bottom-0">Workers Required</th>
                                 <th class="wd-10p border-bottom-0">Company</th>
                                 <th class="wd-25p border-bottom-0">Status</th>
-                                <th>Action</th>
+                              
                             </tr>
                         </thead>
                         <tbody>
                             {% for item in work_requests %}
                                 <tr>
-                                    <td>{{ item.name }}</td>
+                                    <td>
+                                        <a href="/work-requests/{{item.id}}">  {{ item.name }}</a>
+                                    </td>
                                     <td>{{ item.start_date }}</td>
                                     <td>
                                         {% for role in item.roles.all %}
@@ -54,13 +56,10 @@
                                         {% endfor %}
                                     </td>
                                     <td>{{ item.workers_required }}</td>
-                                    <td>{{ item.employer }}</td>
+                                  
+                                    <td> <a href="/employers/{{item.employer.id}}"> {{item.employer}}</a></td>
                                     <td>{{ item.status }}</td>
-                                    <td>
-                                        <a href="/work-requests/{{item.id}}" class="btn btn-primary"> <i
-                                                class="fe fe-eye"></i>
-                                            View</a>
-                                    </td>
+                                   
                                 </tr>
                             {% endfor %}
                         </tbody>
