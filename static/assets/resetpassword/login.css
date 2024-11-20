@@ -70,19 +70,6 @@
     padding-bottom: 50px;
 }
 
-.container-display{
-  display: inline-table;
-}
-
-.form-styling{
-  margin-left: 10%; 
-  width: 25%;
-  border-radius: 10px;
-  padding: 0px;
-  display: grid;
-  justify-content: center;
-}
-
 .background {
     background-image: url('/static/assets/images/login/image.png');
     background-size: cover; /* Ensures the image covers the entire container */
@@ -90,13 +77,29 @@
     background-repeat: no-repeat; /* Prevents tiling */
     width: 100%; /* Set the desired width */
     height: 100vh; /* Full viewport height */
+    background-attachment: fixed;
 }
 
 body{
     overflow: hidden;
 }
 
-@media (max-width: 768px) {
+.container-display{
+    display: inline-table;
+  }
+  
+  .form-styling{
+    margin-left: 10%; /* Center horizontally */
+    width: 100%; /* Full width for smaller screens */
+    max-width: 375px; /* Limit max size on larger screens */
+    border-radius: 10px;
+    padding: 5px; /* Add some breathing space */
+    box-sizing: border-box;
+    display: grid;
+    justify-content: center; /* Center items in the grid */
+  }
+
+@media (max-width: 1024px) {
     .container-display {
         display: block; /* Center align */
     }
@@ -104,7 +107,7 @@ body{
     .form-styling{
         margin:0 auto; 
         width: 90%;
-        display:'block';
-        justify-content:unset;
+        display:block;
+        justify-content:center;
       }
 }
