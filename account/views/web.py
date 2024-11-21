@@ -10,6 +10,8 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormView
 
+from account.forms.account_update import UpdateAccountDetailsForm
+
 
 class UserListView(LoginRequiredMixin, View):
     def get(self, request):
@@ -32,14 +34,35 @@ class UserActivitLogView(LoginRequiredMixin, View):
 class UserAccountView(LoginRequiredMixin, View):
     
     def get(self, request):
-        user = User.objects.get(pk=request.user.id)
-        context = {'user': user}
-        return render(request, 'recruiter/user_account.html', context)  
+        user = request.user
+        form = UpdateAccountDetailsForm(initial={
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email,
+        })
+        context = {
+            'form': form,
+            'user': user,
+        }
+        return render(request, 'recruiter/user_account.html', context)
+    
+    def post(self, request):
+        form = UpdateAccountDetailsForm(request.POST)
+        if form.is_valid():
+            user = request.user
+            user.first_name = form.cleaned_data['first_name']
+            user.last_name = form.cleaned_data['last_name']
+            user.email = form.cleaned_data['email']
+            user.save()
+            messages.success(request, 'Your account details have been successfully updated!')
+            return redirect('recruiter_account')
+        else:
+            return render(request, 'recruiter/user_account.html', {'form': form})
 
 class UpdatePasswordView(LoginRequiredMixin, FormView):
     template_name = 'recruiter/change_password.html'
     form_class = PasswordChangeForm
-    success_url = reverse_lazy('recruiter_account')  # Replace 'profile' with your desired URL name
+    success_url = reverse_lazy('recruiter_account')
     
     def get_form(self):
         form = super().get_form()
