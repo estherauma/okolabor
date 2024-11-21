@@ -423,7 +423,8 @@ def employer_list(request):
     return render(request, 'employer-list/employer-list.html')
 
 def workers(request):
-    workers = User.objects.filter(is_staff=False)
+    #workers = User.objects.filter(is_staff=False)
+    workers = User.objects.filter(groups__name='worker')
     return render(request, 'workers/workers.html', {'workers': workers})
 
 def worker_details(request):
