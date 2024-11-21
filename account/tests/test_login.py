@@ -129,7 +129,7 @@ class LoginTestCase(TestCase):
             'password': 'adminwert1A'}
         )
         self.assertEquals(response.status_code, 302)
-        self.assertRedirects(response, '/index')
+        self.assertRedirects(response, '/index/')
         
     
     def test_login_invalid_password(self):
