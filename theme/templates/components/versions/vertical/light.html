@@ -13,11 +13,33 @@
 		content="admin, dashboard, admin template, crm, codeigniter, codeigniter admin panel, codeigniter admin template, codeigniter dasdhboard, codeigniter dasdhboard template, codeigniter ui template, codeigniter framework, codeigniter admin dashboard, admin theme, Bootstrap Admin Themes, bootstrap">
 
 	{% include 'components/layouts/vertical/styles.html' %}
-	{% block styles %}{% endblock styles %}
 
+	<style>
+		.body-background {
+			background-color: #FAFAE6 !important;
+		}
+
+		.parent {
+			background-image: url('/static/assets/images/pngs/desktop.png');
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+			width: 100%;
+			height: 100vh; /* Adjust based on parent size */
+			position: relative; /* Ensures proper positioning for children */
+			background-attachment: scroll; /* Optional, avoid fixed attachment */
+			background-color: rgba(0, 0, 0, 0.035); /* Add transparency */
+		}
+
+		.content {
+			position: relative; /* Ensure content layers correctly */
+			z-index: 1; /* Keeps the content on top */
+		}
+
+	</style>
 </head>
 
-<body class="app sidebar-mini">
+<body class="app sidebar-mini body-background">
 
 	<!-- GLOBAL-LOADER -->
 	<div id="global-loader">
@@ -26,8 +48,8 @@
 	<!-- /GLOBAL-LOADER -->
 
 	<!-- PAGE -->
-	<div class="page">
-		<div class="page-main">
+	<div class="page parent">
+		<div class="page-main content">
 
 			{% include 'components/layouts/vertical/app-sidebar.html' %}
 

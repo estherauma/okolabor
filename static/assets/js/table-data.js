@@ -1,12 +1,12 @@
 $(function(e) {
 	
 	//______Basic Data Table
-	$('#basic-datatable').DataTable({
-		language: {
-			searchPlaceholder: 'Search...',
-			sSearch: '',
-		}
-	});
+	// $('#basic-datatable').DataTable({
+	// 	language: {
+	// 		searchPlaceholder: 'Search...',
+	// 		sSearch: '',
+	// 	}
+	// });
 	
 
 	//______Basic Data Table
