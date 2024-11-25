@@ -179,24 +179,48 @@
 									</div>
 								</div>
 								<div class="tab-pane" id="tab-61">
-									<ul class="widget-users row mb-5">
-										
-										{% for question in experience_questions %}
-											<div class="col-md-12 mb-3">
-												<div class="card">
-													<div class="card-body">
-														<p class="card-text">
-															{{ experience_questions|experience_filter:question.key }}<br>
-															{{question.value}}
-														</p>
-													</div>
+									<div class="row">
+										{% for experience in work_experiences %}
+										<div class="col-md-6 mb-4">
+											<div class="card">
+												<div class="card-body">
+													<h5 class="card-title">{{ experience.company }}</h5>
+													<h6 class="card-subtitle mb-2 text-muted">{{ experience.work_title }}</h6>
+													<p class="card-text">
+														<strong>Start Date:</strong> {{ experience.start_date }}<br>
+														<strong>End Date:</strong> {{ experience.end_date }}<br>
+														<strong>Location:</strong> {{ experience.country }}, {{ experience.state }}<br>
+														<strong>Visa Type:</strong> {{ experience.visa_type }}<br>
+													</p>
+													{% if experience.crop_experiences.all %}
+													<h6>Job Experiences:</h6>
+													<ul>
+														{% for job in experience.crop_experiences.all %}
+														<li>
+															<strong>Job Type:</strong> {{ job.job_type }}<br>
+															<strong>Details:</strong> {{ job.type_details }}<br>
+															{% if job.job_experience_details.all %}
+															<h6>Responsibilities:</h6>
+															<ul>
+																{% for detail in job.job_experience_details.all %}
+																<li>{{ detail.some_field }}</li>
+																{% endfor %}
+															</ul>
+															{% endif %}
+														</li>
+														{% endfor %}
+													</ul>
+													{% else %}
+													<p>No job experiences available.</p>
+													{% endif %}
 												</div>
 											</div>
+										</div>
 										{% endfor %}
-										
-									</ul>
-									
+									</div>
 								</div>
+								
+								
 
 									<div class="tab-pane" id="tab-62">
 										<ul class="widget-users row mb-5">

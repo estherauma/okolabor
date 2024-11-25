@@ -6,7 +6,5 @@ register = template.Library()
 def experience_filter(questions, question_key):
     for question in questions:
         if question.get('key') == question_key:
-            return question.get('label')
+            return question.get('label') 
     return ''
-
-

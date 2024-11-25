@@ -13,6 +13,7 @@ from account.models import UserWorkExperience,UserJobExperience,UserJobExperienc
 from content.models import AggregatedContent
 from content.serializers import AggregatedContentSerializer
 import requests
+from django.db.models import Prefetch
 
 # Create your views here.
 @login_required(login_url='/')
@@ -318,13 +319,37 @@ def profile(request):
     work_preferenece_step_two = english_content.get('workPreferenceStepTwo')
     work_preference_step_two_questions = work_preferenece_step_two.get('form_questions')
     preference_questions = work_preference_step_one_questions + work_preference_step_two_questions
-     
-    work_experience_step_two = english_content.get('workExperienceStepTwo')
-    work_experience_step_two_questions = work_experience_step_two.get('form_questions')
-    work_experience_step_three = english_content.get('workExperienceStepThree')
-    work_experience_step_three_questions = work_experience_step_three.get('form_questions')
-    experience_questions = work_experience_step_two_questions + work_experience_step_three_questions
+    
+    work_experiences = UserWorkExperience.objects.filter(user=user).prefetch_related(
+        Prefetch(
+            'crop_experiences',
+            queryset=UserJobExperience.objects.prefetch_related(
+                Prefetch(
+                    'job_experience_details',
+                    queryset=UserJobExperienceDetails.objects.filter(is_attachment=False)
+                )
+            )
+        )
+    )
+    
+    
+    formatted_work_experience = []
+    for experience in work_experience:
+        formatted_work_experience.append({
+            'company': experience.company,
+            'work_title': experience.work_title,
+            'start_date': experience.start_date,
+            'end_date': experience.end_date,
+            'country': experience.country,
+            'state': experience.state,
+            'visa_type': experience.visa_type,
+            'supervisor_name': experience.supervisor_name,
+            'supervisor_tel': experience.supervisor_tel,
+            'supervisor_email': experience.supervisor_email,
+        })
+        
 
+    
     context = {
         'first_name': user.first_name if user.first_name else None,
         'last_name': user.last_name if user.last_name else None,
@@ -339,8 +364,8 @@ def profile(request):
         'work_preferences': work_preferences,
         'preference_questions': preference_questions,
         'user_notifications': user_notifications,
-        'experience_questions': experience_questions,
-        'work_experience': work_experience,
+        'work_experience': formatted_work_experience ,
+        'work_experiences': work_experiences,
         
     }
 
