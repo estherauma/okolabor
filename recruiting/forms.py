@@ -391,3 +391,19 @@ class RoleMealProvision(forms.ModelForm):
                 'class': 'form-control',
             }),
         }
+
+
+class TodoFilterForm(forms.Form):
+    jobOrder = forms.ModelChoiceField(
+        queryset=WorkRequests.objects.exclude(
+            status='completed'
+        ),
+        widget=forms.Select(attrs={'class': 'form-control d-inline w-auto'})
+    )
+    date = forms.DateField(
+        widget=forms.DateInput(attrs={'class': 'form-control d-inline w-auto', 'type': 'date'})
+    )
+    status = forms.ChoiceField(
+        choices=[('pending', 'Pending'), ('in_progress', 'In Progress'), ('completed', 'Completed')],  # Replace with actual choices
+        widget=forms.Select(attrs={'class': 'form-control d-inline w-auto'})
+    )
