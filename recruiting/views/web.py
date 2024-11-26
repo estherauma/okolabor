@@ -8,14 +8,14 @@ from django.views import View
 
 from account.models import User
 from recruiting.forms import (
-    EmployerForm, RoleDeductionForm, RoleEmploymentLocationForm,
+    EmployerForm, OkoMessageFilterForm, RoleDeductionForm, RoleEmploymentLocationForm,
     RoleHoursForm, RoleHousingInformationForm, RoleMealProvision,
     RoleQualificationForm,
     RoleWagesForm, TodoFilterForm, WorkRequestForm, WorkRequestRoleForm
 )
 from recruiting.models import (
     Deduction, Employer, EmploymentLocation, Hours, HousingInformation,
-    MealProvision, Qualification, Role, Wages, WorkRequests
+    MealProvision, OkoMessage, Qualification, Role, Wages, WorkRequests
 )
 from django.views.generic import CreateView
 
@@ -224,3 +224,13 @@ class RecruiterTodoView(LoginRequiredMixin, View):
         )
         context = {'todos': todos, 'user': user, 'form': form}
         return render(request, 'recruiting/todo.html', context)
+
+
+class OkoMessageListView(View):
+    def get(self, request):
+        form = OkoMessageFilterForm()
+        messages = OkoMessage.objects.filter(
+            created_by=request.user
+        )
+        context = {'messages': messages, 'form': form }
+        return render(request, 'recruiting/messages/list.html', context)
