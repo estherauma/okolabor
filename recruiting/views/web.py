@@ -6,11 +6,12 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views import View
 
+from account.models import User
 from recruiting.forms import (
     EmployerForm, RoleDeductionForm, RoleEmploymentLocationForm,
     RoleHoursForm, RoleHousingInformationForm, RoleMealProvision,
     RoleQualificationForm,
-    RoleWagesForm, WorkRequestForm, WorkRequestRoleForm
+    RoleWagesForm, TodoFilterForm, WorkRequestForm, WorkRequestRoleForm
 )
 from recruiting.models import (
     Deduction, Employer, EmploymentLocation, Hours, HousingInformation,
@@ -209,3 +210,17 @@ class RoleMealsCreateView(RoleDataBaseView):
         messages.success(self.request,
                          'Successfully added role meals information')
         return super().form_valid(form)
+
+
+class RecruiterTodoView(LoginRequiredMixin, View):
+    def get(self, request):
+        # initialize filter form
+        form = TodoFilterForm()
+        
+        
+        user = User.objects.get(pk=request.user.id)
+        todos = WorkRequests.objects.exclude(
+            status='completed'
+        )
+        context = {'todos': todos, 'user': user, 'form': form}
+        return render(request, 'recruiting/todo.html', context)
