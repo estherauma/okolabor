@@ -188,7 +188,7 @@
 }
 
 .app-sidebar__toggle {
-  color: #495584;
+  color: #0B4337;
   z-index: 1;
   margin-top: 5px;
   -webkit-transition: padding-left 0.3s ease;
@@ -377,10 +377,10 @@
   top: 0;
   bottom: 0;
   left: 0;
-  color: #8a98ac;
+  color: white !important;
   width: 270px;
   z-index: 99;
-  background: #fff !important;
+  background: #7DBF96 !important;
   -webkit-box-shadow: 0 8px 24px rgba(229, 228, 230, 0.4);
   box-shadow: 0 8px 24px rgba(229, 228, 230, 0.4);
   -webkit-transition: left 0.2s ease, width 0.2s ease;
@@ -478,7 +478,8 @@
 }
 
 .side-menu {
-  margin-bottom: 0;
+  margin-bottom: 0px;
+  margin-top:40px;
   padding: 0 15px 0 0px;
 }
 
@@ -495,7 +496,7 @@
   font-weight: 400;
   -webkit-transition: border-left-color 0.3s ease, background-color 0.3s ease;
   transition: border-left-color 0.3s ease, background-color 0.3s ease;
-  color: #495584;
+  color: #0B4337;
   border-radius: 0 60px 60px 0;
   margin: 2px 0px;
 }
@@ -503,8 +504,8 @@
 .side-menu__item.active {
   text-decoration: none;
   color: #ffffff;
-  background: -webkit-gradient(linear, left top, right bottom, from(#9e88f5), to(#6259ca));
-  background: linear-gradient(to bottom right, #9e88f5 0%, #6259ca 100%);
+  background: -webkit-gradient(linear, left top, right bottom, from(#7DBF96), to(#0B4337));
+  background: linear-gradient(to bottom right, #7DBF96 0%, #0B4337 100%);
   border-radius: 0 60px 60px 0;
   -webkit-box-shadow: 0 7px 12px 0 rgba(95, 118, 232, 0.21);
           box-shadow: 0 7px 12px 0 rgba(95, 118, 232, 0.21);
@@ -514,7 +515,7 @@
   text-decoration: none;
   color: #ffffff;
   background: -webkit-gradient(linear, left top, right bottom, from(#9e88f5), to(#6259ca)) !important;
-  background: linear-gradient(to bottom right, #9e88f5 0%, #6259ca 100%) !important;
+  background: linear-gradient(to bottom right, #7DBF96 0%, #0B4337 100%) !important;
   border-radius: 0 60px 60px 0;
   -webkit-box-shadow: 0 7px 12px 0 rgba(95, 118, 232, 0.21);
           box-shadow: 0 7px 12px 0 rgba(95, 118, 232, 0.21);
@@ -522,13 +523,13 @@
 
 .side-menu__item:hover, .side-menu__item:focus {
   text-decoration: none;
-  color: #6259ca;
+  color: #0B4337 !important;
   background: #f9fbfd !important;
   border-radius: 0 60px 60px 0;
 }
 
 .side-menu__item:hover .side-menu__icon, .side-menu__item:hover .side-menu__label, .side-menu__item:focus .side-menu__icon, .side-menu__item:focus .side-menu__label {
-  color: #6259ca !important;
+  color: #0B4337 !important;
 }
 
 @media (min-width: 768px) {
@@ -572,7 +573,7 @@
 }
 
 .side-menu .side-menu__icon {
-  color: #495584;
+  color: #0B4337;
   font-size: 18px;
   text-align: center;
   vertical-align: middle;
@@ -989,12 +990,13 @@
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  border-bottom: 1px solid #eaedf1;
-  border-right: 1px solid #eaedf1;
+  /* border-bottom: 1px solid #eaedf1;
+  border-right: 1px solid #eaedf1; */
   padding: 19px 17px;
   -webkit-transition: left 0.2s ease, width 0.2s ease;
   transition: left 0.2s ease, width 0.2s ease;
   height: 75px;
+  background-color: #7DBF96;
 }
 
 .sidebar-mini.sidenav-toggled .app-sidebar__toggle {
@@ -1081,7 +1083,7 @@
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  color: #495584;
+  color: #0B4337;
 }
 
 .sub-side-menu__item .sub-side-menu__label {
@@ -1139,7 +1141,7 @@
   position: relative;
   list-style: none;
   padding: 8px 0 8px 24px !important;
-  color: #495584;
+  color: #0B4337;
   font-size: 13.5px;
 }
 
@@ -1152,7 +1154,7 @@
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  color: #495584;
+  color: #0B4337;
   font-size: 13.5px;
 }
 
@@ -1204,7 +1206,7 @@
   list-style: none;
   padding: 8px 0 8px 40px !important;
   font-size: 13.4px;
-  color: #495584;
+  color: #0B4337;
 }
 
 @media (max-width: 767px) {
@@ -1244,5 +1246,12 @@
 
 .side-menu__item.active .side-badge {
   background: rgba(0, 0, 0, 0.2) !important;
+}
+
+.sidebar-logo {
+  position: absolute;
+  bottom: 1%; /* Align to the bottom */
+  left: 20%; /* Center horizontally relative to the parent */
+  transform: translateX(-20%); /* Adjust for the offset of the image's width */
 }
 /*# sourceMappingURL=sidemenu.css.map */

@@ -24,7 +24,6 @@ def index(request):
 def logout_view(request):
     logout(request)
     messages.success(request, 'You have been successfully logged out', extra_tags='bg-success')
-
     return redirect('/')
 
 def about(request):
@@ -266,7 +265,6 @@ def login(request):
             
             return render(request, 'ltr/login.html', {'form': form})
     else:
-        print("GET request received")
         form = LoginForm()
 
     return render(request, 'ltr/login.html', {'form': form})
@@ -433,9 +431,11 @@ def wysiwyag(request):
 
 def employer_list(request):
     return render(request, 'employer-list/employer-list.html')
-  
+
 def workers(request):
-    return render(request, 'workers/workers.html')
+    #workers = User.objects.filter(is_staff=False)
+    workers = User.objects.filter(groups__name='worker')
+    return render(request, 'workers/workers.html', {'workers': workers})
 
 def worker_details(request):
     return render(request, 'worker-details/worker-details.html')

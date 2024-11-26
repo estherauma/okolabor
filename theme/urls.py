@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+
+from recruiting.views.web import WorkRequestsListView
 from . import views
 from django.contrib.auth import views as auth_views
 
@@ -156,7 +158,9 @@ urlpatterns = [
 
     path("icons10", views.icons10, name='icons10'),
 
-    path("index", views.index, name='index'),
+    path('index/',
+         WorkRequestsListView.as_view(),
+         name='index'),
 
     path("invoice", views.invoice, name='invoice'),
 
