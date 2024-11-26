@@ -306,8 +306,7 @@ def profile(request):
     user = request.user
     user_notifications = UserNotification.objects.filter(user=request.user).order_by('-created_at')
     work_preferences = UserPreference.objects.filter(user=request.user)
-    work_experience = UserWorkExperience.objects.filter(user=request.user)
-    
+   
     latest = AggregatedContent.objects.latest('created_at')
     serializer = AggregatedContentSerializer(latest, many=False)
     aggregated_data = serializer.data
@@ -332,24 +331,6 @@ def profile(request):
         )
     )
     
-    
-    formatted_work_experience = []
-    for experience in work_experience:
-        formatted_work_experience.append({
-            'company': experience.company,
-            'work_title': experience.work_title,
-            'start_date': experience.start_date,
-            'end_date': experience.end_date,
-            'country': experience.country,
-            'state': experience.state,
-            'visa_type': experience.visa_type,
-            'supervisor_name': experience.supervisor_name,
-            'supervisor_tel': experience.supervisor_tel,
-            'supervisor_email': experience.supervisor_email,
-        })
-        
-
-    
     context = {
         'first_name': user.first_name if user.first_name else None,
         'last_name': user.last_name if user.last_name else None,
@@ -364,7 +345,6 @@ def profile(request):
         'work_preferences': work_preferences,
         'preference_questions': preference_questions,
         'user_notifications': user_notifications,
-        'work_experience': formatted_work_experience ,
         'work_experiences': work_experiences,
         
     }
