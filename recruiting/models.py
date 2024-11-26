@@ -200,7 +200,13 @@ class MealProvision(AuditableModel):
 
 
 class OkoMessage(AuditableModel):
-    recipient_type = models.CharField(max_length=50)
+    recipient_type = models.CharField(
+        max_length=50,
+        choices=[
+            ('Work Order', 'Work Order'),
+            ('Email', 'Email')
+        ]
+    )
     job_order = models.ForeignKey(
         WorkRequests, on_delete=models.CASCADE,
         related_name='messages'
@@ -215,7 +221,7 @@ class OkoMessage(AuditableModel):
         ]
     )
     subject = models.CharField(max_length=255)
-    message = models.TextField()
+    body = models.TextField()
     auto_reply  = models.BooleanField(default=False)
 
     def __str__(self):
