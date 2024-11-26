@@ -404,6 +404,16 @@ class TodoFilterForm(forms.Form):
         widget=forms.DateInput(attrs={'class': 'form-control d-inline w-auto', 'type': 'date'})
     )
     status = forms.ChoiceField(
-        choices=[('pending', 'Pending'), ('in_progress', 'In Progress'), ('completed', 'Completed')],  # Replace with actual choices
+        choices=[('pending', 'Pending'), ('in_progress', 'In Progress'), ('completed', 'Completed')],
         widget=forms.Select(attrs={'class': 'form-control d-inline w-auto'})
+    )
+    
+
+class OkoMessageFilterForm(forms.Form):
+    status = forms.ChoiceField(
+        choices=[('inbox', 'In Box'), ('sent', 'Sent')],
+        widget=forms.Select(attrs={'class': 'form-control d-inline w-auto'})
+    )
+    date = forms.DateField(
+        widget=forms.DateInput(attrs={'class': 'form-control d-inline w-auto', 'type': 'date'})
     )

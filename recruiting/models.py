@@ -197,3 +197,40 @@ class MealProvision(AuditableModel):
         blank=True, null=True
     )
     additional_info = models.TextField(blank=True, null=True)
+
+
+class OkoMessage(AuditableModel):
+    recipient_type = models.CharField(max_length=50)
+    job_order = models.ForeignKey(
+        WorkRequests, on_delete=models.CASCADE,
+        related_name='messages'
+    )
+    include_recipients = models.CharField(
+        max_length=255,
+        choices=[
+            ('All', 'All'),
+            ('Confirmed', 'Confirmed'),
+            ('Pending', 'Pending'),
+            ('Shortlist', 'Shortlist'),
+        ]
+    )
+    subject = models.CharField(max_length=255)
+    message = models.TextField()
+    auto_reply  = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.message}'
+
+
+class OkoMessageRecipients(AuditableModel):
+    message = models.ForeignKey(
+        OkoMessage, on_delete=models.CASCADE,
+        related_name='recipients'
+    )
+    recipient = models.ForeignKey(
+        'account.User', on_delete=models.CASCADE,
+        related_name='oko_messages'
+    )
+
+    def __str__(self):
+        return f'{self.recipient}'
