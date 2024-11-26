@@ -1,6 +1,6 @@
 {% extends 'components/base.html' %}
-{% load custom_filters %}
-{% load static %}
+{% load static%}
+{% load preference_filters %}
 
 		{% block styles %}
 		{% endblock styles %}
@@ -111,6 +111,9 @@
 														<li><a href="#tab-61" data-bs-toggle="tab" class="">Friends</a></li>
 														<li><a href="#tab-63" data-bs-toggle="tab" class="">Notifications</a></li>
 														<li><a href="#tab-71" data-bs-toggle="tab" class="">Documents</a></li>
+														<li><a href="#tab-62" data-bs-toggle="tab" class="">Work Preferences</a></li>
+														<li><a href="#tab-63" data-bs-toggle="tab" class="">Notifications</a></li>
+														<li><a href="#tab-71" data-bs-toggle="tab" class="">Gallery</a></li>
 														<li><a href="#tab-81" data-bs-toggle="tab" class="">Followers</a></li>
 													</ul>
 												</div>
@@ -324,6 +327,24 @@
 										</ul>
 									</div>
 
+									<div class="tab-pane" id="tab-62">
+										<ul class="widget-users row mb-5">
+												{% for preference in work_preferences %}
+												{% if preference.key != 'workPreferenceStepTwo' and preference.key != 'workPreferences' and preference.key != 'workPreferenceStepOne'%}
+													<li class="col-lg-12 col-md-6 col-sm-12 col-12">
+														<div class="card border p-0">
+															<div class="card-body" style="text-align: left;"> 
+																{{preference_questions|preference_filter:preference.key  }}<br>
+																{{ preference.value }}<br>
+															</div>
+														</div>
+													</li>
+												{% endif %}
+												{% endfor %}
+
+										</ul>
+
+									</div>
 									<div class="tab-pane" id="tab-63">
 										<ul class="widget-users row mb-5">
 											{% if user_notifications %}
@@ -384,7 +405,6 @@
 											{% else %}
 												<p>No notifications found for {{ request.user.email }}.</p>
 											{% endif %}
-
 										</ul>
 										
 									</div>

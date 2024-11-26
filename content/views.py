@@ -313,11 +313,11 @@ class ContentAPI():
                 'sub_chapter': sub_chapter_id,
                 'type':  'case_study',
                 'page_content': [],
-                # TODO: add aggregation when data below is returned
                 'description': [],
-                # 'image': '',
-                # 'page_icon': '',
-                # 'pageTitleAudio': '',
+                'cover_image': aggregate_media_data(case_study_data.get('cover_image')) if case_study_data.get('cover_image') else None,
+                'page_icon': aggregate_media_data(case_study_data.get('page_icon')) if case_study_data.get('page_icon') else None,
+                'page_title_audio': aggregate_media_data(case_study_data.get('title_audio'))
+                if case_study_data.get('title_audio') else None,
             }
             if len(case_study_data['dynamic_zone']):
                 components = case_study_data['dynamic_zone']
@@ -457,7 +457,7 @@ class ContentAPI():
                       "name": item.get('name', None),
                       "label": item.get('label', None),
                       "enabled": item.get('enabled', None),
-                      "description": item.get('description', None),                      
+                      "description": item.get('description', None),
                     }
                     aggregated_data.append(crop_type_data)
             # Sort the aggregated data by 'label' alphabetically
@@ -473,11 +473,11 @@ class ContentAPI():
                         "label": item.get('label', None),
                         "enabled": item.get('enabled', None),
                         "category": (
-                            item.get('category', '').split(',') 
-                            if item.get('category', None) 
+                            item.get('category', '').split(',')
+                            if item.get('category', None)
                             else []
                         ),
-                        "description": item.get('description', None),                      
+                        "description": item.get('description', None),
                     }
                     aggregated_data.append(activity_type_data)
             # Sort the aggregated data by 'label' alphabetically
@@ -527,17 +527,16 @@ class ContentAPI():
                     'preview_title': item.get('preview_title', None),
                     'last_updated': item.get('last_published_at', None),
                     'analytics_event_name': item.get('analytics_event_name', None),
-                    'page_content': aggregation_response
-                    # TODO: add aggregation when data below is returned
-                    # 'page_icon': '',
-                    # 'pageTitleAudio': '',
+                    'page_content': aggregation_response,
+                    'page_icon': aggregate_media_data(item.get('page_icon')) if item.get('page_icon') else None,
+                    'page_title_audio': aggregate_media_data(item.get('title_audio')) if item.get('title_audio') else None,
                 }
                 aggregated_content[item['page_id']] = page_data
 
             if item['custom_type'] == 'case_study':
                 cs_agg_resp = aggregate_case_study(item)
                 aggregated_content[item['page_id']] = cs_agg_resp
-            
+
             if item['custom_type'] == 'crop_type':
                 aggregation_response = aggregate_crop_types(item.get('dynamic_zone'))
                 page_data = {
@@ -547,7 +546,7 @@ class ContentAPI():
                     'data': aggregation_response
                 }
                 aggregated_content[item['page_id']] = page_data
-            
+
             if item['custom_type'] == 'activity_type':
                 aggregation_response = aggregate_farm_activity_types(item.get('dynamic_zone'))
                 page_data = {
@@ -557,7 +556,7 @@ class ContentAPI():
                     'data': aggregation_response
                 }
                 aggregated_content[item['page_id']] = page_data
-        
+
         return aggregated_content
 
 

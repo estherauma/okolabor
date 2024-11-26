@@ -30,3 +30,10 @@ To lint a specific file, run
 
 
 ## Credits
+
+## Test credentails
+1. Set up `TEST_ACCOUNT_PASSWORD` inside `.env` file
+1. Run `python manage.py create_test_credentials` to create groups and roles for you
+1. The groups are `worker`, `recruiter`, `employer`, `admin`
+1. The usernames will be `testworker@okolabor.com`, `testrecruiter@okolabor.com`, `testemployer@okolabor.com`, and `testadmin@okolabor.com`
+1. The password will be, e.g for the worker `testworker_TEST_ACCOUNT_PASSWORD`. Remember to replace `TEST_ACCOUNT_PASSWORD` with the value you set in the `.env` file

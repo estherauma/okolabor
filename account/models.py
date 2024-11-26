@@ -223,3 +223,13 @@ class UserNotification(AuditableModel):
 
     def __str__(self):
         return f'{self.user.curp} - {self.title} - {self.status}'
+
+
+class UserActivityLog(AuditableModel):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='audit_logs')
+    action = models.CharField(max_length=256, null=False, blank=False)
+    details = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.user.curp} - {self.action} - {self.created_at}'

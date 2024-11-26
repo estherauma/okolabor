@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+
+from recruiting.views.web import WorkRequestsListView
 from . import views
 from django.contrib.auth import views as auth_views
 
@@ -155,7 +157,9 @@ urlpatterns = [
 
     path("icons10", views.icons10, name='icons10'),
 
-    path("index", views.index, name='index'),
+    path('index/',
+         WorkRequestsListView.as_view(),
+         name='index'),
 
     path("invoice", views.invoice, name='invoice'),
 
@@ -241,11 +245,11 @@ urlpatterns = [
     path("add-workers", views.add_worker, name='add-workers'),
     path("work-experience", views.work_experience, name='work-experience'),
     path("edit-work-experience", views.edit_experience, name='edit-work-experience'),
-
     path("worker-request-form", views.worker_request_form, name='worker-request-form'),
-    
+  
     #users
     path("users", views.users, name='users'),
     path('notifications',views.notifications, name='notifications'),
     path('user_documents', views.user_documents, name= 'user_documents')
+    path('workpreferences',views.work_preferences, name='workpreferences'),
 ]

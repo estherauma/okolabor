@@ -287,7 +287,7 @@ class UserDocumentDetailsView(APIView):
         document = get_object_or_404(UserDocuments, pk=document_id)
         serilizer = UserDocumentSerializer(document)
         if document.kind == 'passport' and document.cloud_vision_match is False:
-            print('aaaassskkkkk....fghtttt.....')
+
             check_passport_match_signal.send(sender=UserDocumentDetailsView, instance=document)
         return Response(
             serilizer.data,
@@ -471,7 +471,7 @@ class UserJobExperienceDetailsView(APIView):
 
         valid_data = []
         print(request.data)
-
+        valid_data = []
         # Use parentheses with get method and provide a default empty list if 'details' is missing
         for item in request.data.get('details', []):
             if item['value'] is not None and item['value'] != '':

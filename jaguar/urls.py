@@ -23,6 +23,7 @@ from django.views.static import serve
 
 
 urlpatterns = [
+    # API URLS
     path('api/', IndexView.as_view(), name='api-home'),
     path('api/docs/', schema_view.with_ui(
         'redoc', cache_timeout=0), name='schema-redoc'),
@@ -35,6 +36,10 @@ urlpatterns = [
     path('api/file-upload/', UploadFileView.as_view(), name='file-upload'),
 
     url(r'^uploads/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+
+    # WEB URLS
+    path('account/', include('account.urls.web')),
+
 ]
 
 if settings.DEBUG:
