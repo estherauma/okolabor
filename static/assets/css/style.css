@@ -39901,6 +39901,19 @@ textarea.form-control {
     font-weight: 500;
 }
 
+.dark-green-button {
+    border-radius: 16px;
+    background-color: #2A7A62;
+    color: #FAFAE6;
+    padding: 5px;
+    font-weight: 500;
+}
+
+.dark-green-button:hover {
+    background-color: #1F5A47; /* Darker shade for hover effect */
+    color:#FAFAE6;
+}
+
 .link-color {
     color: #2A7A62;
 }
@@ -39961,4 +39974,93 @@ textarea.form-control {
     justify-content: center;
     font-weight: bold;
     color: black; /* Text color on filled area */
+}
+
+/*search bar styling*/
+.search-bar {
+    background-color: #98d2ac; /* Matches the green background from the image */
+    padding: 10px;
+    width:100%;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.search-input {
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    height: 40px;
+}
+
+.search-input-group {
+    width:50%;
+    margin: auto;
+}
+
+@media (max-width: 500px) {
+    .search-input-group {
+        width: 80%;
+    }
+}
+
+.search-input:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.search-btn {
+    border: 0px;
+    color: #2A7A62;
+    background: white;
+    padding: 0px;
+    height: 38px;
+    margin-top: 0.9px;
+}
+/* search bar styling end */
+
+.table-checkbox {
+    accent-color: #2A7A62;
+}
+
+/* paginated component style */
+.pagination .page-link {
+    background-color: #FAFAE6;
+    color: #9A9898;
+    border: none;
+    margin: 0 3px;
+  }
+
+  .pagination .page-item.active .page-link {
+    background-color: #7DBF96;
+    color: #FAFAE6;
+  }
+
+  .pagination .page-link:hover {
+    background-color: #E2E2D6;
+    color: #6C6B6B;
+  }
+
+  /* setting button style */
+  .setting-btn {
+    background-color: transparent; /* Button background color */
+    color: #FAFAE6; /* Text color */
+    border: none; /* Remove border */
+    border-radius: 16px; /* Rounded corners */
+    padding: 5px 10px; /* Padding for better button size */
+    font-size: 24px; /* Increased font size */
+    font-weight: 500; /* Optional: Add some weight to the text */
+    cursor: pointer; /* Pointer cursor on hover */
+    display: inline-flex; /* Ensure icon and text are aligned */
+    align-items: center; /* Center align icon */
+    justify-content: center; /* Center align icon */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+}
+
+.setting-btn:hover {
+    background-color: transparent; /* Darker shade on hover */
+    transform: scale(1.05); /* Slight zoom effect on hover */
+}
+
+.setting-btn i {
+    margin-right: 8px; /* Space between icon and text */
 }
