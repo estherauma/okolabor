@@ -25,17 +25,34 @@ class Command(BaseCommand):
 
     def create_users(self):
         users = [
-            {'email': 'testworker@okolabor.com', 'curp': 'HEGJ820506HBCRRN50'},
-            {'email': 'testrecruiter@okolabor.com', 'curp': 'HEGJ820506HBCRRN51'},
-            {'email': 'testemployer@okolabor.com', 'curp': 'HEGJ820506HBCRRN52'},
-            {'email': 'testadmin@okolabor.com', 'curp': 'HEGJ820506HBCRRN53'}
+            {
+                'email': 'testworker@okolabor.com',
+                'curp': 'HEGJ820506HBCRRN50',
+                'telephone': '+999752466600'
+            },
+            {
+                'email': 'testrecruiter@okolabor.com',
+                'curp': 'HEGJ820506HBCRRN51',
+                'telephone': '+999752466601'
+            },
+            {
+                'email': 'testemployer@okolabor.com',
+                'curp': 'HEGJ820506HBCRRN52',
+                'telephone': '+999752466602'
+            },
+            {
+                'email': 'testadmin@okolabor.com',
+                'curp': 'HEGJ820506HBCRRN53',
+                'telephone': '+999752466603'
+            }
         ]
         
         for user_data in users:
             # Use get_or_create to avoid duplications
             user, created = User.objects.get_or_create(
                 email=user_data['email'],
-                curp=user_data['curp']
+                curp=user_data['curp'],
+                telephone=user_data['telephone']
             )
             if created:
                 self.stdout.write(f'User "{user_data["email"]}" created.')
