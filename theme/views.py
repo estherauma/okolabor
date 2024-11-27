@@ -9,7 +9,6 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import PasswordResetForm
 from account.models import UserNotification,UserPreference,UserNotification,UserDocuments
-from account.models import 
 import requests
 from content.models import AggregatedContent
 from content.serializers import AggregatedContentSerializer

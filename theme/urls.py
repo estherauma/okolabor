@@ -250,6 +250,6 @@ urlpatterns = [
     #users
     path("users", views.users, name='users'),
     path('notifications',views.notifications, name='notifications'),
-    path('user_documents', views.user_documents, name= 'user_documents')
+    path('user_documents', views.user_documents, name= 'user_documents'),
     path('workpreferences',views.work_preferences, name='workpreferences'),
 ]
