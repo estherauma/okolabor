@@ -8,8 +8,7 @@ from django.contrib.auth import logout
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import PasswordResetForm
-from account.models import UserNotification
-from account.models import UserWorkExperience,UserJobExperience,UserJobExperienceDetails,UserNotification,UserPreference,UserNotification,UserDocuments
+from account.models import UserWorkExperience,UserJobExperience,UserJobExperienceDetails,UserNotification,UserPreference,UserNotification,UserDocuments,UserNotification
 from content.models import AggregatedContent
 from content.serializers import AggregatedContentSerializer
 import requests
