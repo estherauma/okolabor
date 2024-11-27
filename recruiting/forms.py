@@ -2,7 +2,7 @@
 # create modelform for Employer model
 from django import forms
 from recruiting.models import (
-    Deduction, Employer, Hours, Qualification,
+    Deduction, Employer, Hours, OkoMessage, Qualification,
     EmploymentLocation, HousingInformation, MealProvision,
     Role, Wages, WorkRequests
 )
@@ -407,3 +407,47 @@ class TodoFilterForm(forms.Form):
         choices=[('pending', 'Pending'), ('in_progress', 'In Progress'), ('completed', 'Completed')],
         widget=forms.Select(attrs={'class': 'form-control d-inline w-auto'})
     )
+    
+
+class OkoMessageFilterForm(forms.Form):
+    status = forms.ChoiceField(
+        choices=[('inbox', 'InBox'), ('sent', 'Sent')],
+        widget=forms.Select(attrs={'class': 'form-control d-inline w-auto'})
+    )
+    date = forms.DateField(
+        widget=forms.DateInput(attrs={
+            'class': 'form-control d-inline w-auto', 'type': 'date'})
+    )
+
+
+class OkoMessageCreateForm(forms.ModelForm):
+    class Meta:
+        model = OkoMessage
+        fields = [
+            'recipient_type',
+            'job_order',
+            'include_recipients',
+            'subject',
+            'body',
+            'auto_reply'
+        ]
+        widgets = {
+            'recipient_type': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'include_recipients': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'subject': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'body': forms.Textarea(attrs={
+                'class': 'form-control',
+            }),
+            'auto_reply': forms.CheckboxInput(attrs={
+                'class': 'form-check-input',
+            }),
+            'job_order': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+        }

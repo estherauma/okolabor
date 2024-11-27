@@ -1,0 +1,78 @@
+{% extends 'components/base.html' %}
+
+{% block title %} My Messages {% endblock title %}
+
+{% block body %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">My Messages</h1>
+    </div>
+    <div class="ms-auto pageheader-btn">
+        <a href="{% url 'recruiting_web:recruiter_create_message' %}" class="btn btn-primary btn-icon text-white me-2">
+            <span>
+                <i class="fe fe-plus"></i>
+            </span> New Message
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-row align-items-center">
+                        {% for field in form %}
+                        <div class="col-auto">
+                            <div class="form-group">
+                                {{ field }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary mt-3">Filter</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Subject</th>
+                                <th>Message</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                            <tr>
+                                <td>{{ item.created_at }}</td>
+                                <td>{{ item.subject }}</td>
+                                <td>{{ item.body }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-secondary" title="Reply">&#8635;</button>
+                                    <button class="btn btn-sm btn-outline-secondary" title="Archive">&#128451;</button>
+                                    <button class="btn btn-sm btn-outline-danger" title="Delete">&#128465;</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
