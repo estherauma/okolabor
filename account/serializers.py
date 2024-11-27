@@ -120,6 +120,11 @@ class OTPGenerateSerializer(serializers.Serializer):
                 "Phone number must contain only \
                     digits after the country code."
             )
+        # make sure the phone number is unique
+        if User.objects.filter(telephone=value).exists():
+            raise serializers.ValidationError(
+                "Phone number already exists"
+            )
         return value
 
     def start_otp_process(self):
