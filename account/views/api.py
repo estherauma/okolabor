@@ -470,8 +470,6 @@ class UserJobExperienceDetailsView(APIView):
             UserJobExperience, pk=request.data.get('job_experience_id'))
 
         valid_data = []
-        print(request.data)
-        valid_data = []
         # Use parentheses with get method and provide a default empty list if 'details' is missing
         for item in request.data.get('details', []):
             if item['value'] is not None and item['value'] != '':
