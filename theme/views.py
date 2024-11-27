@@ -8,12 +8,11 @@ from django.contrib.auth import logout
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import PasswordResetForm
-from account.models import UserPreference,UserNotification
-import requests
+from account.models import UserWorkExperience,UserJobExperience,UserJobExperienceDetails,UserNotification,UserPreference,UserNotification,UserDocuments,UserNotification
 from content.models import AggregatedContent
 from content.serializers import AggregatedContentSerializer
-
-
+import requests
+from django.db.models import Prefetch
 
 # Create your views here.
 @login_required(login_url='/')
@@ -302,11 +301,14 @@ def pricing(request):
 @login_required
 def profile(request):
     user = request.user
+    user_notifications = UserNotification.objects.filter(user=request.user).order_by('-created_at')
+    documents = UserDocuments.objects.filter(user=request.user)
+
     work_preferences = UserPreference.objects.filter(user=request.user)
+   
     latest = AggregatedContent.objects.latest('created_at')
     serializer = AggregatedContentSerializer(latest, many=False)
     aggregated_data = serializer.data
-    
     content = aggregated_data.get('content')
     english_content = content.get('en')
     
@@ -315,9 +317,19 @@ def profile(request):
     work_preferenece_step_two = english_content.get('workPreferenceStepTwo')
     work_preference_step_two_questions = work_preferenece_step_two.get('form_questions')
     preference_questions = work_preference_step_one_questions + work_preference_step_two_questions
-   
-    user_notifications = UserNotification.objects.filter(user=request.user).order_by('-created_at')
-
+    
+    work_experiences = UserWorkExperience.objects.filter(user=user).prefetch_related(
+        Prefetch(
+            'crop_experiences',
+            queryset=UserJobExperience.objects.prefetch_related(
+                Prefetch(
+                    'job_experience_details',
+                    queryset=UserJobExperienceDetails.objects.filter(is_attachment=False)
+                )
+            )
+        )
+    )
+    
     context = {
         'first_name': user.first_name if user.first_name else None,
         'last_name': user.last_name if user.last_name else None,
@@ -329,15 +341,16 @@ def profile(request):
         'address_line_1': user.address_line_1 if user.address_line_1 else None,
         'address_line_2': user.address_line_2 if user.address_line_2 else None,
         'city': user.city if user.city else None,
+        'user_notifications': user_notifications,
+        'documents': documents,
         'work_preferences': work_preferences,
         'preference_questions': preference_questions,
         'user_notifications': user_notifications,
+        'work_experiences': work_experiences,
         
-    } 
-
+    }
 
     return render(request, 'ltr/profile.html', context)
-
 
 def progress(request):
     return render(request, 'ltr/progress.html')
@@ -423,7 +436,7 @@ def employer_list(request):
     return render(request, 'employer-list/employer-list.html')
 
 def workers(request):
-    #workers = User.objects.filter(is_staff=False)
+    
     workers = User.objects.filter(groups__name='worker')
     return render(request, 'workers/workers.html', {'workers': workers})
 
@@ -437,15 +450,20 @@ def users(request):
 
 def add_worker(request):
     return render(request, 'workers/add-workers.html')
+  
 def worker_request_form(request):
     return render(request, 'workers/worker-request-form.html')
 
+@login_required
 def work_experience(request):
     return render(request, 'workers/work-experience.html')
 
 def edit_experience(request):
     return render(request, 'workers/edit-work-experience.html')
 
+@login_required
+def user_documents(request):
+    return render(request,'ltr/userdocuments.html')
 
 @login_required
 def work_preferences(request):

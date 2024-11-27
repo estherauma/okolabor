@@ -6,15 +6,16 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views import View
 
+from account.models import User
 from recruiting.forms import (
-    EmployerForm, RoleDeductionForm, RoleEmploymentLocationForm,
+    EmployerForm, OkoMessageCreateForm, OkoMessageFilterForm, RoleDeductionForm, RoleEmploymentLocationForm,
     RoleHoursForm, RoleHousingInformationForm, RoleMealProvision,
     RoleQualificationForm,
-    RoleWagesForm, WorkRequestForm, WorkRequestRoleForm
+    RoleWagesForm, TodoFilterForm, WorkRequestForm, WorkRequestRoleForm
 )
 from recruiting.models import (
     Deduction, Employer, EmploymentLocation, Hours, HousingInformation,
-    MealProvision, Qualification, Role, Wages, WorkRequests
+    MealProvision, OkoMessage, Qualification, Role, Wages, WorkRequests
 )
 from django.views.generic import CreateView
 
@@ -209,3 +210,46 @@ class RoleMealsCreateView(RoleDataBaseView):
         messages.success(self.request,
                          'Successfully added role meals information')
         return super().form_valid(form)
+
+
+class RecruiterTodoView(LoginRequiredMixin, View):
+    def get(self, request):
+        # initialize filter form
+        form = TodoFilterForm()
+        
+        
+        user = User.objects.get(pk=request.user.id)
+        todos = WorkRequests.objects.exclude(
+            status='completed'
+        )
+        context = {'todos': todos, 'user': user, 'form': form}
+        return render(request, 'recruiting/todo.html', context)
+
+
+class OkoMessageListView(View):
+    def get(self, request):
+        form = OkoMessageFilterForm()
+        items = OkoMessage.objects.all()
+        context = {'items': items, 'form': form }
+        return render(request, 'recruiting/messages/list.html', context)
+
+
+class OkoMessageCreateView(CreateView):
+    model = OkoMessage
+    form_class = OkoMessageCreateForm
+    template_name = 'recruiting/messages/create.html'
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Message created successfully')
+        return super(OkoMessageCreateView, self).form_valid(form)
+
+    def form_invalid(self, form: BaseModelForm) -> HttpResponse:
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(self.request, f'{field}: {error}')
+        return super().form_invalid(form)
+
+    def get_success_url(self):
+        return reverse(
+            'recruiting_web:recruiter_messages'
+        )

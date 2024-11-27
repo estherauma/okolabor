@@ -287,6 +287,7 @@ class UserDocumentDetailsView(APIView):
         document = get_object_or_404(UserDocuments, pk=document_id)
         serilizer = UserDocumentSerializer(document)
         if document.kind == 'passport' and document.cloud_vision_match is False:
+
             check_passport_match_signal.send(sender=UserDocumentDetailsView, instance=document)
         return Response(
             serilizer.data,
@@ -467,6 +468,7 @@ class UserJobExperienceDetailsView(APIView):
         user = get_object_or_404(User, pk=user_id)
         job_experience = get_object_or_404(
             UserJobExperience, pk=request.data.get('job_experience_id'))
+
         valid_data = []
         # Use parentheses with get method and provide a default empty list if 'details' is missing
         for item in request.data.get('details', []):
@@ -490,6 +492,7 @@ class UserJobExperienceDetailsView(APIView):
             data['created'].append(UserJobExperienceDetailsSerializer(exp).data)
 
         return Response(data, status=status.HTTP_200_OK)
+
 
     @swagger_auto_schema(
         operation_summary='Update a user job experience detail',

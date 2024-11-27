@@ -1,0 +1,76 @@
+{% extends 'components/base.html' %}
+
+
+{% block title %} To Do {% endblock title %}
+
+
+{% block body %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">To Do</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <!-- Bootstrap Card -->
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-row align-items-center">
+                        {% for field in form %}
+                        <div class="col-auto">
+                            <div class="form-group">
+                                {{ field }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">In Progress</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-outline table-vcenter text-nowrap card-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Summary</th>
+                                <th></th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for task in todos %}
+                            <tr>
+                                <td>{{ task.created_at }}</td>
+                                <td>{{ task.name }} for {{task.employer.name}}</td>
+                                <td>{{ task.assigned_to }}</td>
+                                <td><a href="">See more</td>
+                                <td>
+                                    <a href="#" class="btn btn-primary">Complete</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
