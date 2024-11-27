@@ -36,9 +36,10 @@ urlpatterns = [
     path('api/file-upload/', UploadFileView.as_view(), name='file-upload'),
 
     url(r'^uploads/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
-    
+
     # WEB URLS
     path('account/', include('account.urls.web')),
+
 ]
 
 if settings.DEBUG:

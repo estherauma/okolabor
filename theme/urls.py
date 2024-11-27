@@ -21,7 +21,6 @@ from . import views
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-
     path("", views.login, name='login'),
    
     path('logout/', views.logout_view, name='logout'),
@@ -170,6 +169,8 @@ urlpatterns = [
 
     path("lockscreen", views.lockscreen, name='lockscreen'),
 
+    path("login", views.login, name='login'),
+
     path("maps", views.maps, name='maps'),
 
     path("maps1", views.maps1, name='maps1'),
@@ -245,9 +246,10 @@ urlpatterns = [
     path("work-experience", views.work_experience, name='work-experience'),
     path("edit-work-experience", views.edit_experience, name='edit-work-experience'),
     path("worker-request-form", views.worker_request_form, name='worker-request-form'),
-    path('workpreferences',views.work_preferences, name='workpreferences'),
-
+  
     #users
     path("users", views.users, name='users'),
-    path('notifications',views.notifications, name='notifications')
+    path('notifications',views.notifications, name='notifications'),
+    path('user_documents', views.user_documents, name= 'user_documents'),
+    path('workpreferences',views.work_preferences, name='workpreferences'),
 ]

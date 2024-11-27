@@ -8,8 +8,7 @@ from django.contrib.auth import logout
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import PasswordResetForm
-from account.models import UserNotification
-from account.models import UserWorkExperience,UserJobExperience,UserJobExperienceDetails,UserPreference,UserNotification
+from account.models import UserWorkExperience,UserJobExperience,UserJobExperienceDetails,UserNotification,UserPreference,UserNotification,UserDocuments,UserNotification
 from content.models import AggregatedContent
 from content.serializers import AggregatedContentSerializer
 import requests
@@ -303,6 +302,8 @@ def pricing(request):
 def profile(request):
     user = request.user
     user_notifications = UserNotification.objects.filter(user=request.user).order_by('-created_at')
+    documents = UserDocuments.objects.filter(user=request.user)
+
     work_preferences = UserPreference.objects.filter(user=request.user)
    
     latest = AggregatedContent.objects.latest('created_at')
@@ -340,6 +341,8 @@ def profile(request):
         'address_line_1': user.address_line_1 if user.address_line_1 else None,
         'address_line_2': user.address_line_2 if user.address_line_2 else None,
         'city': user.city if user.city else None,
+        'user_notifications': user_notifications,
+        'documents': documents,
         'work_preferences': work_preferences,
         'preference_questions': preference_questions,
         'user_notifications': user_notifications,
@@ -433,7 +436,7 @@ def employer_list(request):
     return render(request, 'employer-list/employer-list.html')
 
 def workers(request):
-    #workers = User.objects.filter(is_staff=False)
+    
     workers = User.objects.filter(groups__name='worker')
     return render(request, 'workers/workers.html', {'workers': workers})
 
@@ -458,6 +461,9 @@ def work_experience(request):
 def edit_experience(request):
     return render(request, 'workers/edit-work-experience.html')
 
+@login_required
+def user_documents(request):
+    return render(request,'ltr/userdocuments.html')
 
 @login_required
 def work_preferences(request):

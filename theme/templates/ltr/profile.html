@@ -109,9 +109,9 @@
 													<ul class="nav">
 														<li class=""><a href="#tab-51" class="active show" data-bs-toggle="tab">Profile</a></li>
 														<li><a href="#tab-61" data-bs-toggle="tab" class="">Work Experiences</a></li>
-														<li><a href="#tab-62" data-bs-toggle="tab" class="">Work Preferences</a></li>
 														<li><a href="#tab-63" data-bs-toggle="tab" class="">Notifications</a></li>
-														<li><a href="#tab-71" data-bs-toggle="tab" class="">Gallery</a></li>
+														<li><a href="#tab-71" data-bs-toggle="tab" class="">Documents</a></li>
+														<li><a href="#tab-62" data-bs-toggle="tab" class="">Work Preferences</a></li>
 														<li><a href="#tab-81" data-bs-toggle="tab" class="">Followers</a></li>
 													</ul>
 												</div>
@@ -254,7 +254,6 @@
 										</ul>
 
 									</div>
-
 									<div class="tab-pane" id="tab-63">
 										<ul class="widget-users row mb-5">
 											{% if user_notifications %}
@@ -315,53 +314,85 @@
 											{% else %}
 												<p>No notifications found for {{ request.user.email }}.</p>
 											{% endif %}
-
-
 										</ul>
 										
 									</div>
 									
 								
 									<div class="tab-pane" id="tab-71">
-										<div class="row  mb-5 img-gallery" id="lightgallery">
-											<div class="col-lg-3 col-md-6" data-responsive="{% static ''%}assets/images/media/8.jpg" data-src="{% static ''%}assets/images/media/8.jpg">
-											<a href="#"><img class="img-fluid mb-2 br-7" src="{% static ''%}assets/images/media/8.jpg " alt="banner image"></a>
+										<div class="row mb-5 img-gallery">
+											{% if documents %}
+												{% for document in documents %}
+													<div class="col-lg-4 col-md-6 mb-4">
+														<div class="card border p-3">
+															<div class="card-body d-flex flex-column justify-content-center align-items-center">
+																{% if document.file_type == ".png" or document.file_type == ".jpg" or document.file_type == ".jpeg" or document.file_type == ".gif" %}
+																	<img src="{{ MEDIA_URL }}{{ document.path }}" alt="Document Image" class="img-fluid mb-3" style="height: 200px; object-fit: cover; cursor: pointer;" onclick="expandImage('{{ MEDIA_URL }}{{ document.path }}')">
+																{% elif document.file_type == ".mp4" %}
+																	<video controls class="img-fluid mb-3" style="height: 200px; object-fit: cover;">
+																		<source src="{{ MEDIA_URL }}{{ document.path }}" type="video/mp4">
+																		Your browser does not support the video tag.
+																	</video>
+																{% elif document.file_type == ".avi" %}
+																	<video controls class="img-fluid mb-3" style="height: 200px; object-fit: cover;">
+																		<source src="{{ MEDIA_URL }}{{ document.path }}" type="video/x-msvideo">
+																		Your browser does not support the video tag.
+																	</video>
+																{% elif document.file_type == ".mov" %}
+																	<video controls class="img-fluid mb-3" style="height: 200px; object-fit: cover;">
+																		<source src="{{ MEDIA_URL }}{{ document.path }}" type="video/quicktime">
+																		Your browser does not support the video tag.
+																	</video>
+																{% elif document.file_type == ".wmv" %}
+																	<video controls class="img-fluid mb-3" style="height: 200px; object-fit: cover;">
+																		<source src="{{ MEDIA_URL }}{{ document.path }}" type="video/x-ms-wmv">
+																		Your browser does not support the video tag.
+																	</video>
+																{% else %}
+																	<p>No preview available for this document.</p>
+																{% endif %}
+															</div>
+														</div>
+													</div>
+												{% endfor %}
+											{% else %}
+												<div class="col-12">
+													<p>No documents available for {{ request.user.email }}.</p>
+												</div>
+											{% endif %}
+
+											<div id="imageModal" class="modal" style="">
+												<button onclick="closeModal()" class="close-button"style="">
+													Close
+												</button>
+												<img id="expandedImage" class="modal-content" style="">
 											</div>
-											<div class="col-lg-3 col-md-6" data-responsive="{% static ''%}assets/images/media/10.jpg" data-src="{% static ''%}assets/images/media/10.jpg">
-												<a href="#"><img class="img-fluid mb-2 br-7" src="{% static ''%}assets/images/media/10.jpg" alt="banner image "></a>
-											</div>
-											<div class="col-lg-3 col-md-6" data-responsive="{% static ''%}assets/images/media/11.jpg" data-src="{% static ''%}assets/images/media/11.jpg">
-												<a href="#"><img class="img-fluid  mb-2 br-7" src="{% static ''%}assets/images/media/11.jpg" alt="banner image "></a>
-											</div>
-											<div class="col-lg-3 col-md-6" data-responsive="{% static ''%}assets/images/media/12.jpg" data-src="{% static ''%}assets/images/media/12.jpg">
-												<a href="#"><img class="img-fluid  mb-2 br-7" src="{% static ''%}assets/images/media/12.jpg" alt="banner image "></a>
-											</div>
-											<div class="col-lg-3 col-md-6" data-responsive="{% static ''%}assets/images/media/13.jpg" data-src="{% static ''%}assets/images/media/13.jpg">
-												<a href="#"><img class="img-fluid  mb-2 br-7" src="{% static ''%}assets/images/media/13.jpg " alt="banner image"></a>
-											</div>
-											<div class="col-lg-3 col-md-6" data-responsive="{% static ''%}assets/images/media/14.jpg" data-src="{% static ''%}assets/images/media/14.jpg">
-												<a href="#"><img class="img-fluid  mb-2 br-7" src="{% static ''%}assets/images/media/14.jpg " alt="banner image"></a>
-											</div>
-											<div class="col-lg-3 col-md-6" data-responsive="{% static ''%}assets/images/media/15.jpg" data-src="{% static ''%}assets/images/media/15.jpg">
-												<a href="#"><img class="img-fluid mb-2 br-7" src="{% static ''%}assets/images/media/15.jpg " alt="banner image"></a>
-											</div>
-											<div class="col-lg-3 col-md-6" data-responsive="{% static ''%}assets/images/media/16.jpg" data-src="{% static ''%}assets/images/media/16.jpg">
-												<a href="#"><img class="img-fluid mb-0 br-7" src="{% static ''%}assets/images/media/16.jpg " alt="banner image"></a>
-											</div>
-											<div class="col-lg-3 col-md-6" data-responsive="{% static ''%}assets/images/media/17.jpg" data-src="{% static ''%}assets/images/media/17.jpg">
-												<a href="#"><img class="img-fluid mb-0 br-7" src="{% static ''%}assets/images/media/17.jpg " alt="banner image"></a>
-											</div>
-											<div class="col-lg-3 col-md-6" data-responsive="{% static ''%}assets/images/media/18.jpg" data-src="{% static ''%}assets/images/media/18.jpg">
-												<a href="#"><img class="img-fluid mb-0 br-7" src="{% static ''%}assets/images/media/18.jpg " alt="banner image"></a>
-											</div>
-											<div class="col-lg-3 col-md-6" data-responsive="{% static ''%}assets/images/media/19.jpg" data-src="{% static ''%}assets/images/media/19.jpg">
-												<a href="#"><img class="img-fluid mb-0 br-7" src="{% static ''%}assets/images/media/19.jpg " alt="banner image"></a>
-											</div>
-											<div class="col-lg-3 col-md-6" data-responsive="{% static ''%}assets/images/media/20.jpg" data-src="{% static ''%}assets/images/media/20.jpg">
-												<a href="#"><img class="img-fluid br-7" src="{% static ''%}assets/images/media/20.jpg " alt="banner image"></a>
-											</div>
+											
+											<script>
+												
+												function expandImage(src) {
+													var modal = document.getElementById("imageModal");
+													var img = document.getElementById("expandedImage");
+													img.src = src;
+													modal.style.display = "flex";
+												}
+											
+												function closeModal() {
+													var modal = document.getElementById("imageModal");
+													modal.style.display = "none";
+												}
+										
+												window.onclick = function(event) {
+													var modal = document.getElementById("imageModal");
+													if (event.target === modal) {
+														closeModal();
+													}
+												}
+											</script>
+											
 										</div>
 									</div>
+									
 									<div class="tab-pane" id="tab-71">
 										<div class="row  mb-5">
 											<div class=" col-lg-6 col-md-12">
