@@ -1,7 +1,7 @@
 {% extends 'components/base.html' %}
 {% load static%}
+{% load experience_filters %}
 {% load preference_filters %}
-
 		{% block styles %}
 		{% endblock styles %}
 
@@ -108,7 +108,7 @@
 												<div class="tabs-menu1">
 													<ul class="nav">
 														<li class=""><a href="#tab-51" class="active show" data-bs-toggle="tab">Profile</a></li>
-														<li><a href="#tab-61" data-bs-toggle="tab" class="">Friends</a></li>
+														<li><a href="#tab-61" data-bs-toggle="tab" class="">Work Experiences</a></li>
 														<li><a href="#tab-62" data-bs-toggle="tab" class="">Work Preferences</a></li>
 														<li><a href="#tab-63" data-bs-toggle="tab" class="">Notifications</a></li>
 														<li><a href="#tab-71" data-bs-toggle="tab" class="">Gallery</a></li>
@@ -178,153 +178,65 @@
 										</div>
 									</div>
 								</div>
-									<div class="tab-pane" id="tab-61">
-										<ul class="widget-users row  mb-5">
-											<li class="col-lg-4  col-md-6 col-sm-12 col-12">
-												<div class="card border p-0">
-													<a href="profile">
-														<div class="card-body text-center">
-															<span class="avatar avatar-xxl brround cover-image" data-bs-image-src="{% static ''%}assets/images/users/15.jpg"></span>
-															<h4 class="fs-16 mb-0 mt-3 text-dark fw-semibold">James Thomas</h4>
-															<span class="text-muted">Web designer</span>
-														</div>
-													</a>
-													<div class="card-footer text-center">
-														<div class="row user-social-detail">
-															<a href="#" class="social-profile me-4 rounded text-center">
-																<i class="fa fa-google"></i>
-															</a>
-															<a href="#" class="social-profile me-4 rounded text-center">
-																<i class="fa fa-facebook"></i>
-														     </a>
-															 <a href="#" class="social-profile  rounded text-center">
-																<i class="fa fa-twitter"></i>
-															</a>
-														</div>
-													</div>
-												</div>
-											</li>
-											<li class="col-lg-4 col-md-6 col-sm-12 col-12">
-												<div class="card border p-0">
-													<a href="profile">
-														<div class="card-body text-center">
-															<span class="avatar avatar-xxl brround cover-image" data-bs-image-src="{% static ''%}assets/images/users/9.jpg"></span>
-															<h4 class="fs-16 mb-0 mt-3 text-dark fw-semibold">George Clooney</h4>
-															<span class="text-muted">Web designer</span>
-														</div>
-													</a>
-													<div class="card-footer text-center">
-														<div class="row user-social-detail">
-															<a href="#" class="social-profile me-4 rounded text-center">
-																<i class="fa fa-google"></i>
-															</a>
-															<a href="#" class="social-profile me-4 rounded text-center">
-																<i class="fa fa-facebook"></i>
-														     </a>
-															 <a href="#" class="social-profile  rounded text-center">
-																<i class="fa fa-twitter"></i>
-															</a>
-														</div>
-													</div>
-												</div>
-											</li>
-											<li class="col-lg-4 col-md-6 col-sm-12 col-12">
-												<div class="card border p-0">
-													<a href="profile">
-														<div class="card-body text-center">
-															<span class="avatar avatar-xxl brround cover-image" data-bs-image-src="{% static ''%}assets/images/users/20.jpg"></span>
-															<h4 class="fs-16 mb-0 mt-3 text-dark fw-semibold">Robert Downey Jr.</h4>
-															<span class="text-muted">Web designer</span>
-														</div>
-													</a>
-													<div class="card-footer text-center">
-														<div class="row user-social-detail">
-															<a href="#" class="social-profile me-4 rounded text-center">
-																<i class="fa fa-google"></i>
-															</a>
-															<a href="#" class="social-profile me-4 rounded text-center">
-																<i class="fa fa-facebook"></i>
-														     </a>
-															 <a href="#" class="social-profile  rounded text-center">
-																<i class="fa fa-twitter"></i>
-															</a>
-														</div>
-													</div>
-												</div>
-											</li>
-											<li class="col-lg-4 col-md-6 col-sm-12 col-12">
-												<div class="card border p-0 mb-lg-0">
-													<a href="profile">
-														<div class="card-body text-center">
-															<span class="avatar avatar-xxl brround cover-image" data-bs-image-src="{% static ''%}assets/images/users/12.jpg"></span>
-															<h4 class="fs-16 mb-0 mt-3 text-dark fw-semibold">Emma Watson</h4>
-															<span class="text-muted">Web designer</span>
-														</div>
-													</a>
-													<div class="card-footer text-center">
-														<div class="row user-social-detail">
-															<a href="#" class="social-profile me-4 rounded text-center">
-																<i class="fa fa-google"></i>
-															</a>
-															<a href="#" class="social-profile me-4 rounded text-center">
-																<i class="fa fa-facebook"></i>
-														     </a>
-															 <a href="#" class="social-profile  rounded text-center">
-																<i class="fa fa-twitter"></i>
-															</a>
-														</div>
-													</div>
-												</div>
-											</li>
-											<li class="col-lg-4 col-md-6 col-sm-12 col-12">
-												<div class="card border p-0 mb-lg-0">
-													<a href="profile">
-														<div class="card-body text-center">
-															<span class="avatar avatar-xxl brround cover-image" data-bs-image-src="{% static ''%}assets/images/users/4.jpg"></span>
-															<h4 class="fs-16 mb-0 mt-3 text-dark fw-semibold">Mila Kunis</h4>
-															<span class="text-muted">Web designer</span>
-														</div>
-													</a>
-													<div class="card-footer text-center">
-														<div class="row user-social-detail">
-															<a href="#" class="social-profile me-4 rounded text-center">
-																<i class="fa fa-google"></i>
-															</a>
-															<a href="#" class="social-profile me-4 rounded text-center">
-																<i class="fa fa-facebook"></i>
-														     </a>
-															 <a href="#" class="social-profile  rounded text-center">
-																<i class="fa fa-twitter"></i>
-															</a>
-														</div>
-													</div>
-												</div>
-											</li>
-											<li class="col-lg-4 col-md-6 col-sm-12 col-12">
-												<div class="card border p-0 mb-0">
-													<div class="card-body text-center">
-														<span class="avatar avatar-xxl brround cover-image" data-bs-image-src="{% static ''%}assets/images/users/6.jpg"></span>
-														<a href="profile"><h4 class="fs-16 mb-0 mt-3 text-dark fw-semibold">Ryan Gossling</h4></a>
-														<span class="text-muted">Web designer</span>
-													</div>
-													<div class="card-footer text-center">
-														<div class="row user-social-detail">
-															<a href="#" class="social-profile me-4 rounded text-center">
-																<i class="fa fa-google"></i>
-															</a>
-															<a href="#" class="social-profile me-4 rounded text-center">
-																<i class="fa fa-facebook"></i>
-														     </a>
-															 <a href="#" class="social-profile  rounded text-center">
-																<i class="fa fa-twitter"></i>
-															</a>
-														</div>
-													</div>
-												</div>
-											</li>
-										</ul>
-									</div>
+								<div class="tab-pane" id="tab-61">
+									<div class="row">
+										{% if work_experiences %}
+											{% for experience in work_experiences %}
+											<div class="col-md-4 mb-3">
+												<div class="col-md-12 mb-3">
+													<div class="card">
+														<div class="card-body">
+															<p class="card-text">
+																<strong>Company Name:</strong> {{ experience.company }}<br>
+																<strong>Title:</strong> {{ experience.work_title }}<br>
+																<strong>Start Date:</strong> {{ experience.start_date }}<br>
+																<strong>End Date:</strong> {{ experience.end_date }}<br>
+																<strong>Location:</strong> {{ experience.country }}<br>
+																<strong>Visa Type:</strong> {{ experience.visa_type }}<br>
+																<strong>Supervisor Name:</strong> {{ experience.supervisor_name }}<br>
+																<strong>Supervisor Telephone:</strong> {{ experience.supervisor_tel }}<br>
+																<strong>Supervisor Email:</strong> {{ experience.supervisor_email }}<br>
+																<strong>State:</strong> {{ experience.state }}<br>
+																<strong>Country:</strong> {{ experience.country }}<br>
+																<strong>Visa Type:</strong> {{ experience.visa_type }}<br>
+																<strong>Work Under H2A in USA:</strong> {{ experience.work_under_h2a_in_usa }}<br>
+																<strong>Start Date:</strong> {{ experience.start_date }}<br>
+																<strong>End Date:</strong> {{ experience.end_date }}<br>
+															</p>
 
+															{% if experience.crop_experiences.all %}
+																<h6><strong>JOB EXPERIENCES:</strong></h6>
+																{% for job in experience.crop_experiences.all %}
+																<div class="mb-2">
+																	<strong>Job Type:</strong> {{ job.job_type }}<br>
+																	<strong>Type Details:</strong> {{ job.type_details }}<br><br>
+																	{% if job.job_experience_details.all %}
+																	<h6><strong>RESPONSIBILITIES:</strong></h6>
+																	<ul>
+																		{% for detail in job.job_experience_details.all %}
+																		<li>{{ detail.value }}</li>
+																		{% endfor %}
+																	</ul>
+																	{% else %}
+																	<p>No job experience details available.</p>
+																	{% endif %}
+																</div>
+																{% endfor %}
+															{% else %}
+																<p>No job experiences available.</p>
+															{% endif %}
+														</div>
+													</div>
+												</div>
+											</div>
+											{% endfor %}
+										{% else %}
+											<p class="col-12">No work experience found for {{ request.user.email }}.</p>
+										{% endif %}
+
+									</div>
+								</div>
+								
 									<div class="tab-pane" id="tab-62">
 										<ul class="widget-users row mb-5">
 												{% for preference in work_preferences %}
@@ -339,7 +251,6 @@
 													</li>
 												{% endif %}
 												{% endfor %}
-
 										</ul>
 
 									</div>
@@ -410,6 +321,7 @@
 										
 									</div>
 									
+								
 									<div class="tab-pane" id="tab-71">
 										<div class="row  mb-5 img-gallery" id="lightgallery">
 											<div class="col-lg-3 col-md-6" data-responsive="{% static ''%}assets/images/media/8.jpg" data-src="{% static ''%}assets/images/media/8.jpg">
