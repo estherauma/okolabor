@@ -20,7 +20,8 @@ class LoginAPITestCase(TestCase):
             curp='HEGJ820506HBCRRN09',
             email='test@example.com',
             password='testPassword1',
-            is_verified=True
+            is_verified=True,
+            telephone='+999752466601'
         )
 
     def test_login_valid_credentials(self):
@@ -84,6 +85,7 @@ class LoginAPITestCase(TestCase):
             curp='HEGJ820506HBCRRN10',
             email='unverified@example.com',
             password='testpassword',
+            telephone='+999752466602',
             is_verified=False
         )
 
