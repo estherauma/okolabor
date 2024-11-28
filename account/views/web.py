@@ -9,8 +9,9 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormView
-from account.forms.account_update import UpdateAccountDetailsForm
+# from account.forms.account_update import UpdateAccountDetailsForm
 
+from account.forms import UserLogsFilterForm
 
 
 class UserListView(LoginRequiredMixin, View):
@@ -25,9 +26,11 @@ class UserListView(LoginRequiredMixin, View):
 
 class UserActivitLogView(LoginRequiredMixin, View):
     def get(self, request):
+        
+        form = UserLogsFilterForm()
         user = User.objects.get(pk=request.user.id)
         logs = user.audit_logs.all()
-        context = {'logs': logs, 'user': user}
+        context = {'logs': logs, 'user': user, 'form': form}
         return render(request, 'activity_log.html', context)
 
 
