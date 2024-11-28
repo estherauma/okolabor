@@ -9,8 +9,8 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormView
-# from account.forms.account_update import UpdateAccountDetailsForm
-from account.forms import UserLogsFilterForm
+from account.forms.account_update import UpdateAccountDetailsForm
+from account.forms.filter_logs import UserLogsFilterForm
 
 class UserListView(LoginRequiredMixin, View):
     def get(self, request):
