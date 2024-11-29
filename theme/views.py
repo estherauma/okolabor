@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from .forms import RegistrationForm, LoginForm, ResetPasswordForm
+from .forms import RegistrationForm, LoginForm, ResetPasswordForm,FilterWorkExperienceForm
 from django.contrib import messages
 from .forms import ResetPasswordForm,LoginForm
 from django.contrib.auth import authenticate,login as auth_login,get_user_model
@@ -436,9 +436,10 @@ def employer_list(request):
     return render(request, 'employer-list/employer-list.html')
 
 def workers(request):
+    form = FilterWorkExperienceForm()
     
     workers = User.objects.filter(groups__name='worker')
-    return render(request, 'workers/workers.html', {'workers': workers})
+    return render(request, 'workers/workers.html', {'workers': workers, 'form': form})
 
 def worker_details(request):
     return render(request, 'worker-details/worker-details.html')
