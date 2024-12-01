@@ -7,17 +7,44 @@
     font-style: normal; /* Adjust style as necessary */
 }
 
-.title{
+.title {
     font-family: 'Gabarito', sans-serif;
-	font-size: 30px;
-	font-weight: 700;
-	line-height: 36px;
-	text-align: left;
-	text-underline-position: from-font;
-	text-decoration-skip-ink: none;
+    font-size: 30px; /* Base font size */
+    font-weight: 700;
+    line-height: 36px; /* Base line height */
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
     display: flex;
     align-items: center;
-    color:#0B4337;
+    color: #0B4337;
+}
+
+/* For tablets and smaller devices */
+@media (max-width: 1024px) {
+    .title {
+        font-size: 26px; /* Slightly smaller font size */
+        line-height: 32px; /* Adjust line height */
+        text-align: left; /* Center-align text for better readability */
+    }
+}
+
+/* For mobile devices */
+@media (max-width: 768px) {
+    .title {
+        font-size: 22px; /* Even smaller font size */
+        line-height: 28px;
+        text-align: left; /* Center-align for small screens */
+    }
+}
+
+/* For very small devices (e.g., phones in portrait mode) */
+@media (max-width: 480px) {
+    .title {
+        font-size: 18px; /* Compact font size */
+        line-height: 24px;
+        text-align: left; /* Always center text on very small screens */
+    }
 }
 
 .header {
@@ -55,12 +82,10 @@
     justify-content: center; */
     padding: 0;
     margin: 0;
-    font-size: 20px; /* Ensures the icon is visible */
+ 
 }
 
-#searchToggle i {
-    font-size: 1.5rem; /* Adjust size for better visibility */
-}
+
 
 #alertIcon {
     background: transparent;
@@ -70,15 +95,11 @@
     /* align-items: center;
     justify-content: center; */
     padding: 0;
+    margin-left: 25px;
     /* margin: 0; */
-    margin-left: 31px;
-    font-size: 20px; /* Ensures the icon is visible */
-
+    /* margin-left: 31px; */
 }
 
-#alertIcon i {
-    font-size: 1.5rem; /* Adjust size for better visibility */
-}
 
 .d-none {
     display: none;
@@ -95,6 +116,11 @@
     box-shadow: none;
 }
 
+.bell-icon-margins {
+    margin-left: 25px; 
+    margin-right:-5px
+}
+
 /* Make it visible only on mobile view (max-width: 768px) */
 @media screen and (max-width: 768px) {
     .app-sidebar__toggle {
@@ -105,4 +131,31 @@
 .user-icon{
     color:#2A7A62;
     font-size:30px;
+    font-weight: 600;
+}
+
+
+/* For tablets and smaller devices */
+@media (max-width: 1024px) {
+    .user-icon {
+        font-size: 26px; /* Slightly smaller font size */
+    }
+}
+
+/* For mobile devices */
+@media (max-width: 768px) {
+    .user-icon {
+        font-size: 22px; /* Adjusted for compact devices */
+    }
+}
+
+/* For very small devices (e.g., phones in portrait mode) */
+@media (max-width: 480px) {
+    .user-icon{
+        font-size: 18px; /* Compact font size for small screens */
+    }
+
+    .bell-icon-margins {
+        margin-left: 15px;
+    }
 }

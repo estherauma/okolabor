@@ -10,7 +10,7 @@
         <div class="d-flex align-items-center justify-content-between">
 			<a aria-label="Hide Sidebar" class="app-sidebar__toggle" data-bs-toggle="sidebar" href="#"></a>			
             <h2 class="title m-0">
-                Good morning, Pall
+                Good morning, {{ request.user.email }}
             </h2>
             <a class="header-brand1 d-flex d-md-none" href="index">
                 <img src="{% static ''%}assets/images/brand/logo.png" class="header-brand-img desktop-logo" alt="logo">
@@ -19,14 +19,14 @@
             <div class="d-flex align-items-center">
 				<div class="search-container">
 					<button id="searchToggle" class="btn">
-						<i class="fa fa-search search-color" aria-hidden="true"></i>
+						<i class="fa fa-search user-icon" aria-hidden="true"></i>
 					</button>
 					<input id="searchBox" class="form-control d-none" placeholder="Search for anything..." type="search">
 			</div>
             <!-- <div class="d-flex align-items-center"> -->
-            <div style="margin-left: 25px; margin-right:-5px">
+            <div class="bell-icon-margins">
                 <button id="alertIcon" class="btn">
-                    <i class="fa fa-bell-o search-color" aria-hidden="true" style="font-weight: 600;"></i>
+                    <i class="fa fa-bell-o user-icon" aria-hidden="true"></i>
                 </button>
             </div>
             <!-- </div> -->
