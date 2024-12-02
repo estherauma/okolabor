@@ -10370,6 +10370,10 @@ body.fixed-header .page {
     margin-bottom: 0.2rem;
 }
 
+.green-color {
+    color : #2A7A62;
+}
+
 .page-title-icon {
     color: #9aa0ac;
     font-size: 1.25rem;
@@ -39973,9 +39977,45 @@ textarea.form-control {
     text-align: center;
 }
 
+.dropdown-container {
+    display: flex; /* Use Flexbox for horizontal alignment */
+    flex-wrap: wrap; /* Allow wrapping for smaller screens */
+    gap: 10px; /* Add a gap between dropdowns */
+    justify-content: flex-start; /* Align items to the left */
+    padding: 10px; /* Add padding around the container */
+    box-sizing: border-box; /* Include padding in width calculations */
+    width: 100%; /* Ensure the container spans the full width */
+}
+
+/* Individual dropdown buttons */
 .dropdown-btn {
     background-color: white; 
     color: #9A9898;
+    flex: 1; /* Allow the button to grow and shrink equally */
+    max-width: 150px; /* Set a maximum width for each button */
+    width:150px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* Responsive styling for larger screens */
+@media (min-width: 768px) {
+    .dropdown-btn {
+        flex: 0 0 auto; /* Prevent buttons from resizing disproportionately */
+        max-width: 200px; /* Allow slightly larger buttons on bigger screens */
+        font-size: 14px; /* Increase font size for readability */
+    }
+}
+
+/* Responsive styling for smaller screens */
+@media (max-width: 767px) {
+    .dropdown-btn {
+        flex: 1 1 calc(50% - 10px); /* Allow buttons to take up half-width with gap */
+        font-size: 12px; /* Slightly smaller font size */
+    }
 }
 
 .progress {
