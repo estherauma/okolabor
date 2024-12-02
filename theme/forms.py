@@ -183,9 +183,11 @@ class FilterWorkExperienceForm(forms.Form):
         ],
         required=False,
         widget=forms.Select(attrs={
-            'class': 'form-control d-inline w-auto',
-            'placeholder': 'Crop Type'
-        }))
+            'class': 'form-control custom-dropdown',
+        }),
+        label="Crop Type"
+        )
+        
     experience_type = forms.ChoiceField(
     choices=[
         ('Planting', 'Planting'),
@@ -196,13 +198,10 @@ class FilterWorkExperienceForm(forms.Form):
         ('Other', 'Other'),
     ], 
     widget=forms.Select(attrs={
-        'class': 'form-control d-inline w-auto',
-        'placeholder': 'Experience Type'
-    })
-)
-
-    
-    
+         'class': 'form-control custom-dropdown',
+    }),
+    label="Experience Type"
+    )
     minimum_experience = forms.ChoiceField(
         choices=[
             ('0', 'No Experience'),
@@ -213,7 +212,8 @@ class FilterWorkExperienceForm(forms.Form):
         ],
         required=False,
         widget=forms.Select(attrs={
-            'class': 'form-control d-inline w-auto'
-        })
+             'class': 'form-control custom-dropdown',
+        }),
+        label="Minimum Experience"
     )
     
