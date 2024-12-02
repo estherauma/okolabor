@@ -74,7 +74,7 @@ class AdvancedFilterForm(forms.Form):
         ('3_years', '3 years'),
     ],
     widget=forms.Select(attrs={'class': 'form-control'}),
-    label='TOTAL YEARS OF EXPERIENCE'
+    label='Total years of experience'
     )
 
     
@@ -84,7 +84,7 @@ class AdvancedFilterForm(forms.Form):
         ('no', 'No'),
     ],
     widget=forms.Select(attrs={'class': 'form-control'}),
-    label='DOCUMENTED EXPERIENCE'
+    label='Documented experience'
     )
 
     english_proficiency = forms.ChoiceField(
@@ -95,7 +95,7 @@ class AdvancedFilterForm(forms.Form):
         ('basic', 'Basic'),
     ],
     widget=forms.Select(attrs={'class': 'form-control'}),
-    label='ENGLISH PROFICIENCY'
+    label='English proficiency'
     )
 
     availability = forms.DateField(
@@ -104,7 +104,7 @@ class AdvancedFilterForm(forms.Form):
             'placeholder': 'Select availability',
             'type': 'date'  
         }),
-        label='AVAILABILITY'
+        label='Availability'
     )
     from_worker_order = forms.ChoiceField(
         choices=[
@@ -118,7 +118,7 @@ class AdvancedFilterForm(forms.Form):
             'class': 'form-control',
             'placeholder': 'From worker order'
         }),
-        label='FROM WORKER ORDER'
+        label='From worker order'
     )
     location_preference = forms.ChoiceField(
     choices=[
@@ -136,7 +136,7 @@ class AdvancedFilterForm(forms.Form):
         'class': 'form-control',
         'placeholder': 'Location preference'
     }),
-    label='LOCATION PREFERENCE'
+    label='Location preference'
     )
 
     requested_employer = forms.ChoiceField(
@@ -150,7 +150,7 @@ class AdvancedFilterForm(forms.Form):
         'class': 'form-control',
         'placeholder': 'Requested employer'
     }),
-    label='REQUESTED EMPLOYER'
+    label='Requested employer'
     )
 
     driver_license = forms.ChoiceField(
@@ -170,7 +170,7 @@ class AdvancedFilterForm(forms.Form):
         'class': 'form-control',
         'placeholder': 'Driver license'
     }),
-    label='DRIVERs LICENSE'
+    label='Driver license'
     )
 
     lifting = forms.ChoiceField(
@@ -183,7 +183,7 @@ class AdvancedFilterForm(forms.Form):
         'class': 'form-control',
         'placeholder': 'Able to lift 27kgs'
     }),
-    label='ABLE TO LIFT 27KGS?'
+    label='Able to lift 27kgs?'
     )
 
     time_on_feet = forms.ChoiceField(
@@ -196,7 +196,7 @@ class AdvancedFilterForm(forms.Form):
         'class': 'form-control',
         'placeholder': 'Will spend time on feet'
     }),
-    label='WILL SPEND TIME ON FEET?'
+    label='Will spend time on feet?'
     )
 
     weather = forms.ChoiceField(
@@ -209,7 +209,7 @@ class AdvancedFilterForm(forms.Form):
         'class': 'form-control',
         'placeholder': 'Will work in hot & cold?'
     }),
-    label='WILL WORK IN HOT & COLD?'
+    label='Will work in hot & cold?'
     )
 
     offer_status = forms.ChoiceField(
@@ -221,6 +221,6 @@ class AdvancedFilterForm(forms.Form):
         'class': 'form-control',
         'placeholder': 'Offer status'
     }),
-    label='OFFER STATUS'
+    label='Offer status'
     )
     
