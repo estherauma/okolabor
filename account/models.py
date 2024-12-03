@@ -51,8 +51,8 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
                                    blank=True, max_length=30)
     position = models.CharField(_('position'), null=True,
                                 blank=True, max_length=30)
-    telephone = models.CharField(_('telephone'),
-                                 null=True, blank=True, max_length=30)
+    telephone = models.CharField(_('telephone'), unique=True,
+                                 null=False, blank=False, max_length=30)
     telephone_verified = models.BooleanField(_('telephone_verified'),
                                              default=False)
     mobile = models.CharField(_('mobile'), null=True, blank=True,
@@ -170,7 +170,7 @@ class UserJobExperience(AuditableModel):
     
 
     def __str__(self):
-        return f'{self.user.curp} - {self.crop} - {self.kind}'
+        return f'{self.user.curp} - {self.job_type}'
 
 class UserJobExperienceDetails(AuditableModel):
     KIND_CHOICES = (
@@ -189,7 +189,7 @@ class UserJobExperienceDetails(AuditableModel):
     
 
     def __str__(self):
-        return f'{self.user.curp} - {self.crop} - {self.variety}'
+        return f'{self.user.curp}'
 
     class Meta:
         db_table = 'account_user_crop_experience_details'
@@ -208,7 +208,7 @@ class UserReportedProblem(AuditableModel):
     resolved_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return f'{self.user.curp} - {self.problem} - {self.status}'
+        return f'{self.user.curp} - {self.topic} - {self.status}'
 
 
 class UserNotification(AuditableModel):
