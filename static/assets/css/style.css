@@ -9088,12 +9088,11 @@ ul.labels-info li a i {
 
 .input-group {
     position: relative;
-    display: -ms-flexbox;
     display: flex;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
     -ms-flex-align: stretch;
-    align-items: stretch;
+    align-items: center;
     width: 100%;
 }
 
@@ -40077,6 +40076,8 @@ textarea.form-control {
     border-radius: 15px;
     display: flex;
     justify-content: center;
+    border: 1px solid #98d2ac; /* Default border for all sides */
+    border-left: 1px solid #ffffff; /* Overwrite the right border to white */
 }
 
 .search-input {
@@ -40102,12 +40103,13 @@ textarea.form-control {
 }
 
 .search-btn {
-    border: 0px;
+    border: 1px solid #98d2ac; /* Default border for all sides */
+    border-right: 1px solid #ffffff; /* Overwrite the right border to white */
+    box-sizing: border-box; /* Ensure padding and borders are included in the element's dimensions */
     color: #2A7A62;
     background: white;
     padding: 0px;
-    height: 38px;
-    margin-top: 0.9px;
+    height: 40px;
 }
 /* search bar styling end */
 

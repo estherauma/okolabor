@@ -1,34 +1,110 @@
 {% extends 'components/base.html' %}
 {% block body %}
 
-<div class="page-header">
-    <div>
-        <h1 class="page-title">User Logs</h1>
+
+
+<div class="page-header" style="display: flex; align-items: start; text-align: start; flex-direction: column; gap: 20px;">
+    <h1 class="page-title">User Logs</h1>
+    <div class="search-bar">
+        <div class="container">
+          <form method="get">
+            <div class="input-group search-input-group">
+              <button class="btn search-btn" type="submit">
+                <i class="fa fa-search"></i>
+              </button>
+              <input
+                type="text"
+                class="form-control search-input"
+                name="query"
+                placeholder="Search 'User Logs'"
+                aria-label="Search"
+              />
+            </div>
+          </form>
+        </div>
     </div>
 </div>
+
+<div class="parent-btn-grp">
+    <div class="dropdown-container">
+      <div class="dropdown">
+        <button
+          class="btn dropdown-toggle dropdown-btn"
+          type="button"
+          id="dropdownMenuButton"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+         Users
+        </button>
+  
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <li><a class="dropdown-item" href="#">Option 1</a></li>
+          <li><a class="dropdown-item" href="#">Option 2</a></li>
+          <li><a class="dropdown-item" href="#">Option 3</a></li>
+        </ul>
+      </div>
+  
+      <div class="dropdown">
+        <button
+          class="btn dropdown-toggle dropdown-btn"
+          type="button"
+          id="dropdownMenuButton"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          Days
+        </button>
+  
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <li><a class="dropdown-item" href="#">Option 1</a></li>
+          <li><a class="dropdown-item" href="#">Option 2</a></li>
+          <li><a class="dropdown-item" href="#">Option 3</a></li>
+        </ul>
+      </div>
+  
+      <div class="dropdown">
+        <button
+          class="btn dropdown-toggle dropdown-btn"
+          type="button"
+          id="dropdownMenuButton"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          Action Type
+        </button>
+  
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <li><a class="dropdown-item" href="#">Option 1</a></li>
+          <li><a class="dropdown-item" href="#">Option 2</a></li>
+          <li><a class="dropdown-item" href="#">Option 3</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
 <div class="row">
     <div class="col-md-12">
         <div class="card">
-            <div class="card-body">
-                
+            <div class="card-body">              
                 <div class="table-responsive">
-                    <table class="table border text-nowrap text-md-nowrap table-striped mg-b-0">
+                    <table
+                        id="basic-datatable"
+                        class="table table-bordered text-nowrap border-bottom"
+                    >
                         <thead>
+                            <h3 class="card-title green-color fw-bold">Latest</h3>
                             <tr>
-                                <th>Timestamp</th>
-                                <th>Action</th>
-                                <th>Details</th>
+                                <th class="theading-color" style="text-align: start;">Timestamp</th>
+                                <th class="theading-color"  style="text-align: start;">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for log in logs %}
-                            <tr>
-                                <td>{{log.created_at}}</td>
-                                <td>{{log.action}}</td>
-                                <td> Jan 24, 2024 </td>
+                            <tr style="text-align: start" class="green-color">
+                                <td>Jan 24, 2024 - 10:30am</td>
+                                <td>User 1</td>
+                                <td>
                             </tr>
-                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
