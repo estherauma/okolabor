@@ -48,3 +48,18 @@ class GetOTPTests(APITestCase):
         self.assertEqual(response.data, {"status": "pending"})
         self.user.refresh_from_db()
         self.assertEqual(self.user.telephone, phone_number)
+        
+    @patch('account.serializers.OTPVerification.send_otp')   
+    def test_generate_otp_failure(self, mock_send_otp):
+        mock_send_otp.return_value = {"error": "Invalid phone number format"}
+        phone_number = "256123456789" 
+        data = {
+            "user_id": str(self.user.id),
+            "phone_number": phone_number
+        }
+
+        response = self.client.post(self.url, data)
+        print(response.data)
+        self.assertEqual(response.status_code, 400)
+
+        
