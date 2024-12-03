@@ -33,5 +33,19 @@ class GetOTPTests(APITestCase):
         response = self.client.post(self.url, data)
         print(response.data)
         self.assertEqual(response.status_code, 400)
-
         
+    @patch('account.serializers.OTPVerification.send_otp')
+    def test_generate_otp_success(self, mock_send_otp):
+        mock_send_otp.return_value = 'pending'
+        phone_number = "+256123456780" 
+        data = {
+            "user_id": str(self.user.id),
+            "phone_number": phone_number
+        }
+
+        response = self.client.post(self.url, data)
+        print(response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {"status": "pending"})
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.telephone, phone_number)
