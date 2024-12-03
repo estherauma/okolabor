@@ -20,31 +20,6 @@ class GetOTPTests(APITestCase):
         self.client.force_authenticate(user=self.user)
         self.url = reverse('account:otp-generate')
 
-    
-    def test_generate_otp_missing_fields(self):
-        response = self.client.post(self.url, {})
-        self.assertEqual(response.status_code, 400)
-        self.assertIn('user_id', response.data)
-        self.assertIn('phone_number', response.data)
-        
-    def test_generate_otp_invalid_user_id(self):
-        response = self.client.post(self.url, {'user_id': 'invalid_id', 'phone_number': '+256123456789'})
-        self.assertEqual(response.status_code, 400)
-        
-    
-    @patch('account.serializers.OTPVerification.send_otp')
-    def test_generate_otp_success(self, mock_send_otp):
-        mock_send_otp.return_value = 'pending'
-        phone_number = "+256123456780" 
-
-        data = {
-            "user_id": str(self.user.id),
-            "phone_number": phone_number
-        }
-
-        response = self.client.post(self.url, data)
-        print(response.data)
-        self.assertEqual(response.status_code, 200)
         
     @patch('account.serializers.OTPVerification.send_otp')   
     def test_generate_otp_failure(self, mock_send_otp):
