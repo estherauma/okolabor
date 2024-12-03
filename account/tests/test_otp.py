@@ -2,6 +2,7 @@ from rest_framework.test import APITestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from unittest.mock import patch
 
 User = get_user_model()
 
@@ -27,6 +28,23 @@ class GetOTPTests(APITestCase):
         self.assertIn('phone_number', response.data)
         
     def test_generate_otp_invalid_user_id(self):
-        response = self.client.post(self.url, {'user_id': 'invalid_id', 'phone_number': '+256123456781'})
+        response = self.client.post(self.url, {'user_id': 'invalid_id', 'phone_number': '+256123456789'})
         self.assertEqual(response.status_code, 400)
-       
+        
+    
+    @patch('account.serializers.OTPVerification.send_otp')
+    def test_generate_otp_success(self, mock_send_otp):
+        mock_send_otp.return_value = 'pending'
+        phone_number = "+256123456780" 
+
+        data = {
+            "user_id": str(self.user.id),
+            "phone_number": phone_number
+        }
+
+        response = self.client.post(self.url, data)
+        print(response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {"status": "pending"})
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.telephone, phone_number)
