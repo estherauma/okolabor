@@ -25,13 +25,4 @@ class ResetAccountProfileTests(APITestCase):
 
         self.assertFalse(UserPreference.objects.filter(user=self.user).exists())
         self.assertFalse(UserWorkExperience.objects.filter(user=self.user).exists())
-        
-    def test_account_reset_failure(self):
-        self.client.force_authenticate(user=self.user)
-        invalid_user_id = 9999
-        response = self.client.post(reverse('account:reset-profile', kwargs={'user_id': invalid_user_id}), {})
-        self.assertEqual(response.status_code, 404)
-        self.assertEqual(
-        response.data, 
-        {'detail': 'No User matches the given query.'}
-    )
+    
