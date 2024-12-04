@@ -56,3 +56,20 @@ class GetOTPTests(APITestCase):
         self.assertEqual(response.data, {"status": "pending"})
         self.user.refresh_from_db()
         self.assertEqual(self.user.telephone, phone_number)
+        
+    def test_generate_otp_invalid_input(self):
+        data = {
+            "phone_number": "256123456789"
+        }
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("user_id", response.data)
+        
+    def test_generate_otp_nonexistent_user(self):
+        data = {
+            "user_id": "99999999",  
+            "phone_number": "+256123456786"
+        }
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("error", response.data)
