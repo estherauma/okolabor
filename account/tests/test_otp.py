@@ -92,4 +92,31 @@ class GetOTPTests(APITestCase):
         
         self.user.refresh_from_db()
         self.assertEqual(self.user.telephone, "+256123456784")
-
+        
+class VerifyOTPTests(APITestCase):
+    def setUp(self):
+            self.user = User.objects.create_user(
+            curp='CURR123456HRDACV55',
+            email='test@example.com',
+            password='Testing321123',
+            first_name='Test',
+            last_name='User',
+            telephone='+256123456781'
+        )
+            self.user_id = str(self.user.id)
+            self.client.force_authenticate(user=self.user)
+            self.url = reverse('account:otp-verify')
+            
+    @patch('account.serializers.OTPVerifySerializer.verify_otp')
+    def test_otp_verification_success(self, mock_verify_otp):
+        mock_verify_otp.return_value = 'approved'
+        data = {
+            "user_id": str(self.user.id),
+            "phone_number": "+256123456780",
+            "otp_code": "3456"
+        }
+        
+        response = self.client.post(self.url, data)
+        print(response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["status"], "approved")
