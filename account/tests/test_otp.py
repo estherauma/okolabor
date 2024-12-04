@@ -117,6 +117,19 @@ class VerifyOTPTests(APITestCase):
         }
         
         response = self.client.post(self.url, data)
-        print(response.data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["status"], "approved")
+        
+    @patch('account.serializers.OTPVerifySerializer.verify_otp')
+    def test_otp_verification_error(self, mock_verify_otp):
+        mock_verify_otp.return_value = {"error": "Invalid OTP"}
+        data = {
+            "user_id": str(self.user.id),
+            "phone_number": "+256123456789",
+            "otp_code": "1234"
+        }
+        
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data["status"], "error")
+        self.assertEqual(response.data["error"], "Invalid OTP")
