@@ -38,7 +38,8 @@ class GetOTPTests(APITestCase):
     @patch.dict(os.environ, {
         "TWILIO_ACCOUNT_SID": "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", 
         "TWILIO_AUTH_TOKEN": "fake_auth_token",                     
-        "TWILIO_PHONE_NUMBER": "+1234567890"                        
+        "TWILIO_PHONE_NUMBER": "+1234567890" ,
+        "TWILIO_VERIFY_SID": "VAXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"                       
     })  
     @patch('account.serializers.OTPVerification.send_otp')
     def test_generate_otp_success(self, mock_send_otp):
