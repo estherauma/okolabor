@@ -133,3 +133,15 @@ class VerifyOTPTests(APITestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data["status"], "error")
         self.assertEqual(response.data["error"], "Invalid OTP")
+        
+    def test_otp_verification_validation_error(self):
+        data = {
+            "user_id": "",
+            "phone_number": "+256123456789",
+            "otp_code": "1234"
+        }
+        
+        response = self.client.post(self.url, data)
+        
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("user_id", response.data)
