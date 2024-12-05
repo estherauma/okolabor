@@ -10,9 +10,9 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormView
 from account.forms.account_update import UpdateAccountDetailsForm
-
-
-
+from account.forms.filter_logs import UserLogsFilterForm
+from django.utils import timezone
+import datetime
 class UserListView(LoginRequiredMixin, View):
     def get(self, request):
         users = User.objects.filter(groups__name='recruiter')
@@ -25,12 +25,25 @@ class UserListView(LoginRequiredMixin, View):
 
 class UserActivitLogView(LoginRequiredMixin, View):
     def get(self, request):
+        form = UserLogsFilterForm(request.GET)
         user = User.objects.get(pk=request.user.id)
         logs = user.audit_logs.all()
-        context = {'logs': logs, 'user': user}
+
+        if form.is_valid():
+            filter_type = form.cleaned_data.get('date_filter_type')
+            
+            if filter_type == 'today':
+                logs = logs.filter(created_at__date=timezone.now().date()) 
+            elif filter_type == 'last_7_days':
+                start_date = timezone.now().date() - timezone.timedelta(days=7)
+                logs = logs.filter(created_at__date__gte=start_date) 
+            elif filter_type == 'this_month':
+                start_date = timezone.now().date().replace(day=1)
+                logs = logs.filter(created_at__date__gte=start_date) 
+
+        context = {'logs': logs, 'user': user, 'form': form}
         return render(request, 'activity_log.html', context)
-
-
+    
 class UserAccountView(LoginRequiredMixin, View):
     
     def get(self, request):
