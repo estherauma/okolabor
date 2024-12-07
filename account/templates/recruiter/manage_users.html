@@ -8,7 +8,7 @@
 </div>
 
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-md-8">
     <div class="card">
       <div class="card-body">
         <div class="d-flex justify-content-between">
@@ -18,26 +18,28 @@
           </button>
         </div>
         <div class="table-responsive">
-          <table class="table table-bordered text-nowrap border-bottom">
+          <table class="table text-nowrap border-bottom">
             <thead>
               <tr>
-                <th class="theading-color" style="text-align: start">User</th>
-                <th class="theading-color" style="text-align: start">Email</th>
-                <th class="theading-color" style="text-align: start">Last Accessed</th>
-                <th class="theading-color" style="text-align: start">Actions</th>
+                <th class="theading-color text-start">User</th>
+                <th class="theading-color text-start">Email</th>
+                <th class="theading-color text-start">Last Accessed</th>
+                <th class="theading-color text-start">Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr style="text-align: start" class="green-color">
-                <td>Pall Kvaran</td>
-                <td>pkvaran@gmail.com</td>
+              {% for user in users %}
+              <tr class="green-color text-start">
+                <td>{{user.first_name}} {{user.last_name}}</td>
+                <td>{{user.email}}</td>
                 <td>Jan 24, 2024</td>
                 <td>
-                  <i class="side-menu__icon icon icon-pencil me-2" style="cursor: pointer;" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#editUserModal"></i>
-                  <i class="side-menu__icon fa fa-trash-o" style="cursor: pointer;" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#confirmationModal"></i>
+                  <i class="side-menu__icon icon icon-pencil me-2 cursor-pointer" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#editUserModal"></i>
+                  <i class="side-menu__icon fa fa-trash-o cursor-pointer" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#confirmationModal"></i>
                 </td>
               </tr>
             </tbody>
+            {% endfor %}
           </table>
         </div>
       </div>
@@ -47,25 +49,27 @@
       <div class="card-body">
         <h3 class="card-title green-color fw-bold mb-1">Pending Users</h3>
         <div class="table-responsive">
-          <table class="table table-bordered text-nowrap border-bottom">
+          <table class="table text-nowrap border-bottom">
             <thead>
               <tr>
-                <th class="theading-color" style="text-align: start">User</th>
-                <th class="theading-color" style="text-align: start">Email</th>
-                <th class="theading-color" style="text-align: start">Last Accessed</th>
-                <th class="theading-color" style="text-align: start">Actions</th>
+                <th class="theading-color text-start">User</th>
+                <th class="theading-color text-start">Email</th>
+                <th class="theading-color text-start">Last Accessed</th>
+                <th class="theading-color text-start">Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr style="text-align: start" class="green-color">
-                <td>Pall Kvaran</td>
-                <td>pkvaran@gmail.com</td>
+              {% for user in pending_users %}
+              <tr class="green-color text-start">
+                <td>{{user.first_name}} {{user.last_name}}</td>
+                <td>{{user.email}}</td>
                 <td>Jan 24, 2024</td>
                 <td>
-                  <i class="side-menu__icon icon icon-pencil me-2" style="cursor: pointer;" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#editUserModal"></i>
-                  <i class="side-menu__icon fa fa-trash-o" style="cursor: pointer;" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#confirmationModal"></i>
+                  <i class="side-menu__icon icon icon-pencil me-2 cursor-pointer" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#editUserModal"></i>
+                  <i class="side-menu__icon fa fa-trash-o cursor-pointer" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#confirmationModal"></i>
                 </td>
               </tr>
+              {% endfor %}
             </tbody>
           </table>
         </div>
@@ -76,9 +80,7 @@
 </div>
 
 <!-- Add User Modal -->
-{% comment %} {% include 'recruiter/add_user_modal.html' %} {% endcomment %}
 {% include 'components/modals/add_user_modal.html' %}
 {% include 'components/modals/edit_user_modal.html' %}
 {% include 'components/modals/confirmation_modal.html' %}
-{% comment %} {% block customstyles %}{% endblock customstyles %} {% endcomment %}
 {% endblock body %}

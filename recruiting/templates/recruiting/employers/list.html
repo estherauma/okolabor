@@ -42,8 +42,8 @@
 </div>
 
 <div class="parent-btn-grp">
-  <div style="display: flex; justify-content: space-between">
-    <button class="setting-btn" style="color: #9a9898">
+  <div class="employers-list-flex">
+    <button class="setting-btn">
       <i class="fa fa-cog" aria-hidden="true"></i>
     </button>
     <div class="dropdown">
@@ -81,8 +81,8 @@
       <div class="card-body">
         <div class="table-responsive">
           <table
-            id="basic-datatable"
-            class="table table-bordered text-nowrap border-bottom"
+            id="employers-list-datatable"
+            class="table text-nowrap border-bottom"
           >
             <thead>
               <tr>
@@ -95,35 +95,23 @@
                 <th class="theading-color">Assigned To</th>
               </tr>
             </thead>
-            <!-- <tbody>
-                            {% for employer in employers %}
-                            <tr>
-                                <td><input type="checkbox"/></td>
-                                <td>{{ employer.name }}</td>
-                                <td>{{ employer.email}}</td>
-                                <td>{{ employer.address}}</td>
-                                <td>{{ employer.country }}</td>
-                                <td>{{ employer.phone }}</td>
-                                <td>
-                                    <a href="/employers/{{employer.id}}" class="btn btn-primary"> <i
-                                            class="fe fe-eye"></i>
-                                        View</a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody> -->
             <tbody>
-              <tr style="text-align: center">
+              {% for employer in employers %}
+              <tr class="text-center">
                 <td><input type="checkbox" class="table-checkbox" /></td>
-                <td>Sample</td>
-                <td>sample@sample.com</td>
-                <td>Sample, Sample</td>
-                <td>Sample</td>
-                <td>+0000Sample</td>
+                <td>{{ employer.name }}</td>
+                <td>{{ employer.email}}</td>
+                <td>{{ employer.address}}</td>
+                <td>{{ employer.country }}</td>
+                <td>{{ employer.phone }}</td>
                 <td>
-                  <a href="/sample" class="link-color"> Sample</a>
+                    <a href="/employers/{{employer.id}}" class="btn btn-primary"> <i
+                            class="fe fe-eye"></i>
+                        View
+                    </a>
                 </td>
               </tr>
+              {% endfor %}
             </tbody>
           </table>
 
