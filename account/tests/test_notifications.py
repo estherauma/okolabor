@@ -20,7 +20,7 @@ class UserNotificationViewTests(APITestCase):
         self.notification = UserNotification.objects.create(
             user=self.user, title="Test Notification", message="This is a test."
         )
-        self.url = reverse('account:api-report-problem', kwargs={'user_id': self.user.id})
+        self.url = reverse('account:api-notifications', kwargs={'user_id': self.user.id})
         
     def test_retrieve_user_notifications(self):
         response = self.client.get(self.url)
@@ -30,7 +30,7 @@ class UserNotificationViewTests(APITestCase):
         self.assertEqual(response.data[0]['message'], "This is a test.")
         
     def test_retrieve_user_notifications_user_not_found(self):
-        response = self.client.get(reverse('account:api-report-problem', kwargs={'user_id': 99999}))
+        response = self.client.get(reverse('account:api-notifications', kwargs={'user_id': 99999}))
         print(response.data)
         self.assertEqual(response.status_code, 404)
         self.assertIn('detail', response.data)
@@ -64,7 +64,7 @@ class UserNotificationViewTests(APITestCase):
         }
         
         response = self.client.patch(
-            reverse('account:api-report-problem', kwargs={'user_id': self.user.id}), 
+            reverse('account:api-notifications', kwargs={'user_id': self.user.id}), 
             updated_data, format='json'
         )
 
@@ -84,7 +84,7 @@ class UserNotificationViewTests(APITestCase):
         }
 
         response = self.client.patch(
-            reverse('account:api-report-problem', kwargs={'user_id': self.user.id}),
+            reverse('account:api-notifications', kwargs={'user_id': self.user.id}),
             invalid_data, format='json'
         )
         self.assertEqual(response.status_code, 400)
@@ -99,7 +99,7 @@ class UserNotificationViewTests(APITestCase):
         }
 
         response = self.client.patch(
-            reverse('account:api-report-problem', kwargs={'user_id': self.user.id}),
+            reverse('account:api-notifications', kwargs={'user_id': self.user.id}),
             invalid_data, format='json'
         )
         self.assertEqual(response.status_code, 404)
@@ -114,7 +114,7 @@ class UserNotificationViewTests(APITestCase):
         }
 
         response = self.client.patch(
-            reverse('account:api-report-problem', kwargs={'user_id': 99999}),  
+            reverse('account:api-notifications', kwargs={'user_id': 99999}),  
             updated_data, format='json'
         )
 
