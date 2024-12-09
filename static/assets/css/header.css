@@ -1,0 +1,161 @@
+@font-face {
+    font-family: 'Gabarito';
+    src: url('fonts/Gabarito.woff2') format('woff2'),
+         url('fonts/Gabarito.woff') format('woff'),
+         url('fonts/Gabarito.ttf') format('truetype');
+    font-weight: 400; /* Adjust weight as necessary */
+    font-style: normal; /* Adjust style as necessary */
+}
+
+.title {
+    font-family: 'Gabarito', sans-serif;
+    font-size: 30px; /* Base font size */
+    font-weight: 700;
+    line-height: 36px; /* Base line height */
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    display: flex;
+    align-items: center;
+    color: #0B4337;
+}
+
+/* For tablets and smaller devices */
+@media (max-width: 1024px) {
+    .title {
+        font-size: 26px; /* Slightly smaller font size */
+        line-height: 32px; /* Adjust line height */
+        text-align: left; /* Center-align text for better readability */
+    }
+}
+
+/* For mobile devices */
+@media (max-width: 768px) {
+    .title {
+        font-size: 22px; /* Even smaller font size */
+        line-height: 28px;
+        text-align: left; /* Center-align for small screens */
+    }
+}
+
+/* For very small devices (e.g., phones in portrait mode) */
+@media (max-width: 480px) {
+    .title {
+        font-size: 18px; /* Compact font size */
+        line-height: 24px;
+        text-align: left; /* Always center text on very small screens */
+    }
+}
+
+.header {
+    background: #f1f1de;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+#searchBox {
+    transition: width 0.3s ease-in-out;
+    width: 0;
+    opacity: 0;
+    visibility: hidden;
+}
+
+#searchBox.expanded {
+    width: 250px;
+    height:35px;
+    opacity: 1;
+    visibility: visible;
+    margin-left: 8px;
+}
+
+#searchToggle {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: contents;
+    /* align-items: center;
+    justify-content: center; */
+    padding: 0;
+    margin: 0;
+ 
+}
+
+
+
+#alertIcon {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: contents;
+    /* align-items: center;
+    justify-content: center; */
+    padding: 0;
+    margin-left: 25px;
+    /* margin: 0; */
+    /* margin-left: 31px; */
+}
+
+
+.d-none {
+    display: none;
+}
+
+.search-color {
+    color: #2A7A62 !important;
+}
+
+.app-sidebar__toggle {
+    display: none;
+    background-color: #FAFAE6;
+    border:0px !important;
+    box-shadow: none;
+}
+
+.bell-icon-margins {
+    margin-left: 25px; 
+    margin-right:-5px
+}
+
+/* Make it visible only on mobile view (max-width: 768px) */
+@media screen and (max-width: 768px) {
+    .app-sidebar__toggle {
+        display: block;
+    }
+}
+
+.user-icon{
+    color:#2A7A62;
+    font-size:30px;
+    font-weight: 600;
+}
+
+
+/* For tablets and smaller devices */
+@media (max-width: 1024px) {
+    .user-icon {
+        font-size: 26px; /* Slightly smaller font size */
+    }
+}
+
+/* For mobile devices */
+@media (max-width: 768px) {
+    .user-icon {
+        font-size: 22px; /* Adjusted for compact devices */
+    }
+}
+
+/* For very small devices (e.g., phones in portrait mode) */
+@media (max-width: 480px) {
+    .user-icon{
+        font-size: 18px; /* Compact font size for small screens */
+    }
+
+    .bell-icon-margins {
+        margin-left: 15px;
+    }
+}
