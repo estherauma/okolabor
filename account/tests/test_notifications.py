@@ -28,3 +28,15 @@ class UserNotificationViewTests(APITestCase):
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['title'], "Test Notification")
         self.assertEqual(response.data[0]['message'], "This is a test.")
+        
+    def test_create_user_notification(self):
+        notification_data = {
+            "title": "New Test Notification",
+            "message": "This is a new test notification"
+        }
+        response = self.client.post(self.url, notification_data, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['title'], "New Test Notification")
+        self.assertEqual(response.data['message'], "This is a new test notification")
+        self.assertEqual(UserNotification.objects.count(), 2)
+
