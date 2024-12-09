@@ -29,6 +29,13 @@ class UserNotificationViewTests(APITestCase):
         self.assertEqual(response.data[0]['title'], "Test Notification")
         self.assertEqual(response.data[0]['message'], "This is a test.")
         
+    def test_retrieve_user_notifications_user_not_found(self):
+        response = self.client.get(reverse('account:api-report-problem', kwargs={'user_id': 99999}))
+        print(response.data)
+        self.assertEqual(response.status_code, 404)
+        self.assertIn('detail', response.data)
+        self.assertEqual(response.data['detail'], 'No User matches the given query.')
+
     def test_create_user_notification(self):
         notification_data = {
             "title": "New Test Notification",
@@ -40,6 +47,15 @@ class UserNotificationViewTests(APITestCase):
         self.assertEqual(response.data['message'], "This is a new test notification")
         self.assertEqual(UserNotification.objects.count(), 2)
         
+    def test_create_user_notification_missing_fields(self):
+        notification_data = {}
+        response = self.client.post(self.url, notification_data, format='json')
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('title', response.data)
+        self.assertIn('message', response.data)
+        self.assertEqual(UserNotification.objects.count(), 1)  
+    
     def test_update_user_notification(self):
         updated_data = {
             "notification_id": self.notification.id, 
@@ -74,7 +90,7 @@ class UserNotificationViewTests(APITestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data['message'], "Notification id is required")
         
-    def test_update_user_notification_invalid_data(self):
+    def test_update_user_notification_invalid_notification_id(self):
         
         invalid_data = {
             "notification_id": 99999, 
@@ -86,7 +102,6 @@ class UserNotificationViewTests(APITestCase):
             reverse('account:api-report-problem', kwargs={'user_id': self.user.id}),
             invalid_data, format='json'
         )
-        print(response.data)  
         self.assertEqual(response.status_code, 404)
         self.assertIn('detail', response.data)
         self.assertEqual(response.data['detail'], 'No UserNotification matches the given query.')
