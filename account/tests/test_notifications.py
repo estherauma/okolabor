@@ -39,4 +39,24 @@ class UserNotificationViewTests(APITestCase):
         self.assertEqual(response.data['title'], "New Test Notification")
         self.assertEqual(response.data['message'], "This is a new test notification")
         self.assertEqual(UserNotification.objects.count(), 2)
+        
+    def test_update_user_notification(self):
+        updated_data = {
+            "notification_id": self.notification.id, 
+            "title": "Updated Test Notification",
+            "message": "This notification has been updated"
+        }
+        
+        response = self.client.patch(
+            reverse('account:api-report-problem', kwargs={'user_id': self.user.id}), 
+            updated_data, format='json'
+        )
 
+        self.assertEqual(response.status_code, 200)
+        
+        self.assertEqual(response.data['title'], "Updated Test Notification")
+        self.assertEqual(response.data['message'], "This notification has been updated")
+        
+        self.notification.refresh_from_db()  
+        self.assertEqual(self.notification.title, "Updated Test Notification")
+        self.assertEqual(self.notification.message, "This notification has been updated")
