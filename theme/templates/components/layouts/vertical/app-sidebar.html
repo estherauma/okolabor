@@ -14,7 +14,7 @@
 		{% elif request.user|has_group:"recruiter" %}
 	
 		<li class="slide" style="padding-top: 50px;">
-			<a class="side-menu__item" data-bs-toggle="slide" href="/index"><i
+			<a class="side-menu__item {% if request.path == '/index/' %}active{% endif %}" data-bs-toggle="slide" href="/index"><i
 					class="side-menu__icon fe fe-home"></i><span class="side-menu__label">Home</span></a>
 		</li>
 	

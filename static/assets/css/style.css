@@ -5026,6 +5026,13 @@ input[type="button"].btn-block {
     margin-bottom: 1.5rem;
 }
 
+.card-sub-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+}
+
+
 .reg {
     text-align: center;
     font-size: 50px;
@@ -9088,12 +9095,11 @@ ul.labels-info li a i {
 
 .input-group {
     position: relative;
-    display: -ms-flexbox;
     display: flex;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
     -ms-flex-align: stretch;
-    align-items: stretch;
+    align-items: center;
     width: 100%;
 }
 
@@ -10362,11 +10368,16 @@ body.fixed-header .page {
 }
 
 .page-title {
+    color:#2A7A62;
     margin: 0;
     font-size: 20px;
     font-weight: 600;
     position: relative;
     margin-bottom: 0.2rem;
+}
+
+.green-color {
+    color : #2A7A62;
 }
 
 .page-title-icon {
@@ -14958,6 +14969,7 @@ a.icon:hover {
 @media (max-width: 400px) {
     .page-header {
         display: block !important;
+        margin-top:75px;
     }
 
     .hor-content .container .page-header .breadcrumb {
@@ -39887,4 +39899,382 @@ textarea.form-control {
     max-width: 100% !important;
 }
 
+.center-form{
+    margin:auto;
+}
+
+.extra-margintop {
+    margin-top: 85px; /* Default margin for larger screens */
+}
+
+/* Adjust margin for smaller screens */
+@media (max-width: 1100px) {
+    .extra-margintop {
+        margin-top: 150px; /* Increase margin to avoid overlap */
+    }
+}
+
+@media (max-width: 790px) {
+    .extra-margintop {
+        margin-top: 170px; /* Increase margin to avoid overlap */
+    }
+}
+
+@media (max-width: 480px) {
+    .extra-margintop {
+        margin-top: 200px; /* Further increase margin for very small screens */
+    }
+}
+
+
+
 /*# sourceMappingURL=style.css.map */
+
+/*List.html (recruiter homepage styling)*/
+
+.yellow-button {
+    border-radius: 16px;
+    background-color: #F5BE31;
+    color: #0B4337;
+    padding: 5px;
+    font-weight: 500;
+}
+
+.dark-green-button {
+    border-radius: 16px;
+    background-color: #2A7A62;
+    color: #FAFAE6;
+    padding: 7px;
+    font-weight: 500;
+}
+
+.dark-green-button:hover {
+    background-color: #1F5A47; /* Darker shade for hover effect */
+    color:#FAFAE6;
+}
+
+.light-green-button {
+    border-radius: 16px;
+    background-color: #7DBF96;
+    color: #FAFAE6;
+    padding: 7px;
+    font-weight: 500;
+}
+
+.light-green-button:hover {
+    background-color: #6BAF85; /* Slightly darker shade of green */
+    color: #FFFFFF; /* Change text color to white for better contrast */
+}
+
+.grey-button {
+    background-color: #9A9898;
+    color: #FFFFFF;
+}
+
+.grey-button:hover {
+    background-color: #7e7c7c; /* Slightly darker shade for hover effect */
+    cursor: pointer; /* Optional: Changes the cursor to a pointer on hover */
+    color: #FFFFFF;
+}
+
+.link-color {
+    color: #2A7A62;
+}
+
+.link-color:hover {
+    color: #2A7A62;
+    text-decoration: underline;
+}
+
+.link-color-red {
+    color: #F95406;
+}
+
+.link-color-red:hover {
+    color: #F95406;
+    text-decoration: underline;
+}
+
+.yellow-button:hover {
+    background-color: #FFC107; /* Slightly lighter shade for hover effect */
+    color: #ffffff; /* White text on hover */
+}
+
+.parent-btn-grp {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.theading-color {
+    color: #9A9898 !important;
+    text-align: center;
+}
+
+.tbody {
+    text-align: center;
+}
+
+.dropdown-container {
+    display: flex; /* Use Flexbox for horizontal alignment */
+    flex-wrap: wrap; /* Allow wrapping for smaller screens */
+    gap: 10px; /* Add a gap between dropdowns */
+    justify-content: flex-start; /* Align items to the left */
+    padding: 10px; /* Add padding around the container */
+    box-sizing: border-box; /* Include padding in width calculations */
+    width: 100%; /* Ensure the container spans the full width */
+}
+
+/* Individual dropdown buttons */
+.dropdown-btn {
+    background-color: white; 
+    color: #9A9898;
+    flex: 1; /* Allow the button to grow and shrink equally */
+    max-width: 150px; /* Set a maximum width for each button */
+    width:150px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* Responsive styling for larger screens */
+@media (min-width: 768px) {
+    .dropdown-btn {
+        flex: 0 0 auto; /* Prevent buttons from resizing disproportionately */
+        max-width: 200px; /* Allow slightly larger buttons on bigger screens */
+        font-size: 14px; /* Increase font size for readability */
+    }
+}
+
+/* Responsive styling for smaller screens */
+@media (max-width: 767px) {
+    .dropdown-btn {
+        flex: 1 1 calc(50% - 10px); /* Allow buttons to take up half-width with gap */
+        font-size: 12px; /* Slightly smaller font size */
+    }
+}
+
+.progress {
+    background-color: #D9D9D9; /* Unfilled color */
+    height: 30px; /* Adjust height */
+    border-radius: 11px; /* Rounded corners */
+    position: relative;
+    min-width: 125px;
+}
+
+.progress-bar {
+    background-color: #7DBF96; /* Fill color */
+    height: 100%; /* Ensure full height */
+    line-height: 30px; /* Center text vertically */
+}
+
+.progress-text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: black; /* Text color on filled area */
+}
+
+/*search bar styling*/
+.search-bar {
+    background-color: #98d2ac; /* Matches the green background from the image */
+    padding: 10px;
+    width:100%;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    border: 1px solid #98d2ac; /* Default border for all sides */
+    border-left: 1px solid #ffffff; /* Overwrite the right border to white */
+}
+
+.search-input {
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    height: 40px;
+}
+
+.search-input-group {
+    width:50%;
+    margin: auto;
+}
+
+@media (max-width: 500px) {
+    .search-input-group {
+        width: 80%;
+    }
+}
+
+.search-input:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.search-btn {
+    border: 1px solid #98d2ac; /* Default border for all sides */
+    border-right: 1px solid #ffffff; /* Overwrite the right border to white */
+    box-sizing: border-box; /* Ensure padding and borders are included in the element's dimensions */
+    color: #2A7A62;
+    background: white;
+    padding: 0px;
+    height: 40px;
+}
+/* search bar styling end */
+
+.table-checkbox {
+    accent-color: #2A7A62;
+}
+
+/* paginated component style */
+.pagination .page-link {
+    background-color: #FAFAE6;
+    color: #9A9898;
+    border: none;
+    margin: 0 3px;
+  }
+
+  .pagination .page-item.active .page-link {
+    background-color: #7DBF96;
+    color: #FAFAE6;
+  }
+
+  .pagination .page-link:hover {
+    background-color: #E2E2D6;
+    color: #6C6B6B;
+  }
+
+  /* setting button style */
+  .setting-btn {
+    background-color: transparent; /* Button background color */
+    color: #9a9898; /* Text color */
+    border: none; /* Remove border */
+    border-radius: 16px; /* Rounded corners */
+    padding: 5px 10px; /* Padding for better button size */
+    font-size: 24px; /* Increased font size */
+    font-weight: 500; /* Optional: Add some weight to the text */
+    cursor: pointer; /* Pointer cursor on hover */
+    display: inline-flex; /* Ensure icon and text are aligned */
+    align-items: center; /* Center align icon */
+    justify-content: center; /* Center align icon */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+}
+
+.setting-btn:hover {
+    background-color: transparent; /* Darker shade on hover */
+    transform: scale(1.05); /* Slight zoom effect on hover */
+    color: #9a9898;
+}
+
+.setting-btn i {
+    margin-right: 8px; /* Space between icon and text */
+}
+
+.modal-backdrop.fade.show{
+    display:none !important;
+}
+
+/* Table Styles */
+.table-bordered {
+    border: none;
+    border-collapse: collapse; /* Ensures horizontal borders appear cleanly */
+}
+
+.table-bordered th, 
+.table-bordered td {
+    border-top: 1px dashed #80b0a1; /* Horizontal border for rows */
+    border-bottom: 1px dashed #80b0a1;
+}
+
+.table-bordered th:first-child, 
+.table-bordered td:first-child, 
+.table-bordered th:last-child, 
+.table-bordered td:last-child {
+    border-left: none; /* Remove left border */
+    border-right: none; /* Remove right border */
+}
+
+/* */
+.custom-page-header {
+   display: flex;
+   align-items: start; 
+   text-align: start; 
+   flex-direction: column;
+   gap: 20px;
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}
+
+/* user account page */
+.user-account-page {
+    height: 90vh; 
+    overflow-y: scroll; 
+    overflow-x: hidden;
+}
+
+.account-user-role {
+    margin-left: 3%; 
+    margin-right: 3%;
+}
+
+.account-user-text {
+    margin-left: 15px; 
+    width: max-content
+}
+/*            */
+
+/* employers list page */
+.employers-list-flex {
+    display: flex; 
+    justify-content: space-between
+}
+
+/* todo page */
+.todo-checkbox-text-gap {
+   margin-left: 5px; 
+   color: black;
+}
+
+/* footer */
+.transparent-background {
+    background-color: transparent;
+}
+
+/* add user modal */
+.modal-bg {
+    background-color: #fdfde2; 
+    border-radius: 8px
+}
+
+.modal-title-custom {
+    font-size: 1.25rem; 
+    color: #000
+}
+
+.modal-subtitle-custom {
+    color: #555; 
+    font-size: 0.9rem
+}
+
+.modal-labels-custom {
+    font-size: 0.85rem; 
+    color: #9a9898
+}
+
+.modal-buttons-custom {
+    border-radius: 24px; 
+    padding: 0.5rem 1.5rem
+}
+
+.white-color {
+    color: white;
+}
