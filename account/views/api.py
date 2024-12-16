@@ -448,9 +448,9 @@ class UserJobExperienceView(APIView):
         operation_summary="Update user job experience",
         tags=["Job Experience"]
     )
-    def patch(self, request, user_id, experience_id):
-        # user = get_object_or_404(User, pk=user_id)
-        experience = get_object_or_404(UserWorkExperience, pk=experience_id)
+    def patch(self, request, user_id):
+        experience_id = request.data.get('experience_id')
+        experience = get_object_or_404(UserJobExperience, pk=experience_id)
         serializer = UserJobExperienceSerializer(
             experience, data=request.data, partial=True)
         if serializer.is_valid():
