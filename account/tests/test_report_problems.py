@@ -38,3 +38,16 @@ class TestReportAProblem(APITestCase):
         self.assertIn("topic", response.data)  
         self.assertIn("description", response.data) 
         self.assertEqual(UserReportedProblem.objects.count(), 0)
+        
+    def test_report_problem_user_not_found(self):
+        invalid_user_id = 9999  
+        url = reverse("account:api-report-problem", args=[invalid_user_id])
+
+        data = {
+            "topic": "App Issue",
+            "description": "I am facing an issue with the app",
+        }
+        response = self.client.post(url, data)
+        
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(UserReportedProblem.objects.count(), 0)
