@@ -499,7 +499,6 @@ class UserJobExperienceDetailsView(APIView):
         tags=["Job Experience"]
     )
     def patch(self, request, user_id):
-        # user = get_object_or_404(User, pk=user_id)
         job_experience_details = get_object_or_404(
             UserJobExperienceDetails,
             pk=request.data.get('job_experience_details_id')
