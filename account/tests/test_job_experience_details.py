@@ -84,5 +84,16 @@ class UserJobExperienceDetailsViewTest(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data['created']), 0) 
+        
+    def test_post_job_experience_details_invalid_job_experience_id(self):
+        
+        data = {
+            "job_experience_id": 9999,  
+            "details": [{"kind": "skill", "value": "JavaScript"}]
+        }
+
+        response = self.client.post(self.url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
