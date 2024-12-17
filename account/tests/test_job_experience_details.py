@@ -46,3 +46,19 @@ class UserJobExperienceDetailsViewTest(APITestCase):
         self.assertEqual(len(response.data['created']), 2)
         self.assertEqual(response.data['created'][0]['value'], "Django development")
         self.assertEqual(response.data['created'][1]['value'], "Driver's License")
+        
+    def test_post_job_experience_details_with_invalid_data(self):
+        data = {
+            "job_experience_id": self.job_experience.id,
+            "details": [
+                {"kind": "responsibilities", "value": "Django development"},
+                {"kind": "license", "value": None},  
+                {"kind": "certification", "value": ""}
+            ]
+        }
+
+        response = self.client.post(self.url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['created']), 1)  
+        self.assertEqual(response.data['created'][0]['value'], "Django development")
