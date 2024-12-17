@@ -42,3 +42,8 @@ class UserJobExperienceViewTest(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, [])
+        
+    def test_update_job_experience_invalid_experience(self):
+        data = {"experience_id": 999, "job_type": "Updated"}
+        response = self.client.patch(self.url, data)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
