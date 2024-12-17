@@ -35,3 +35,10 @@ class UserWorkExperienceDetailsViewTest(APITestCase):
 
         serializer = UserWorkexperienceSerializer(self.experience)
         self.assertEqual(response.data, serializer.data)
+        
+    def test_get_work_experience_details_not_found(self):
+        
+        url = reverse('account:api-single-experience', 
+                      kwargs={'user_id': self.user.id, 'experience_id': 999})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
