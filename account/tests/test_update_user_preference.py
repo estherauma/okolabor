@@ -36,3 +36,21 @@ class UserPreferencesUpdateViewTestCase(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data[0]['value'], "dark")
         self.assertEqual(response.data[1]['value'], "Spanish")
+        
+    def test_update_existing_preferences(self):
+        data = {
+            "preferences": [
+                {"key": "theme", "value": "dark", "kind": "ui"}, 
+                {"key": "language", "value": "Spanish", "kind": "setting"},
+            ]
+        }
+
+        response = self.client.post(self.url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.pref1.refresh_from_db()
+        self.pref2.refresh_from_db()
+
+        self.assertEqual(self.pref1.value, "dark")
+        self.assertEqual(self.pref2.value, "Spanish")
