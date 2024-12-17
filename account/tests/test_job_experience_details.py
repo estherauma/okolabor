@@ -141,5 +141,15 @@ class UserJobExperienceDetailsViewTest(APITestCase):
         response = self.client.patch(self.url, patch_data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
+    def test_patch_job_experience_details_missing_id(self):
+        
+        patch_data = {
+            "value": "Missing ID Update"
+        }
+
+        response = self.client.patch(self.url, patch_data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
