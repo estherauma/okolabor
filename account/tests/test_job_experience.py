@@ -47,3 +47,17 @@ class UserJobExperienceViewTest(APITestCase):
         data = {"experience_id": 999, "job_type": "Updated"}
         response = self.client.patch(self.url, data)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
+    def test_post_user_job_experience_duplicate(self):
+      
+        data = {
+            "work_experience_id": self.work_experience.id,
+            "job_type": "Full Time",
+            "type_details": "Remote"
+        }
+
+        response = self.client.post(self.url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("Job experience already exists", response.data['message'])
+
