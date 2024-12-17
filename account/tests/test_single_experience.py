@@ -42,3 +42,16 @@ class UserWorkExperienceDetailsViewTest(APITestCase):
                       kwargs={'user_id': self.user.id, 'experience_id': 999})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
+    def test_patch_work_experience_success(self):
+        
+        updated_data = {
+            "company": "XYZ Corp",
+            "work_title": "Senior Developer"
+        }
+        response = self.client.patch(self.url, updated_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.experience.refresh_from_db()
+        self.assertEqual(self.experience.company, "XYZ Corp")
+        self.assertEqual(self.experience.work_title, "Senior Developer")
