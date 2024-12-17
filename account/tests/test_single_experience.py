@@ -71,3 +71,11 @@ class UserWorkExperienceDetailsViewTest(APITestCase):
         updated_data = {"company_name": "XYZ Corp"}
         response = self.client.patch(url, updated_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
+    def test_delete_work_experience_success(self):
+       
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        with self.assertRaises(UserWorkExperience.DoesNotExist):
+            UserWorkExperience.objects.get(pk=self.experience.id)
