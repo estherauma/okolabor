@@ -165,5 +165,18 @@ class UserJobExperienceDetailsViewTest(APITestCase):
         self.job_experience_detail.refresh_from_db()
         self.assertEqual(self.job_experience_detail.kind, "Updated Kind")
         self.assertEqual(self.job_experience_detail.value, "Python")  
+        
+    def test_patch_job_experience_details_no_data(self):
+        
+        patch_data = {
+            "job_experience_details_id": self.job_experience_detail.id
+        }
+
+        response = self.client.patch(self.url, patch_data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.job_experience_detail.refresh_from_db()
+        self.assertEqual(self.job_experience_detail.value, "Python") 
+
 
 
