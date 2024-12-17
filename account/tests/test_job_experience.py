@@ -43,8 +43,23 @@ class UserJobExperienceViewTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, [])
         
+    def test_patch_user_job_experience_success(self):
+        data = {
+            "experience_id": self.existing_experience.id,
+            "job_type": "Part Time"
+        }
+
+        response = self.client.patch(self.url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['job_type'], "Part Time")
+
+        
     def test_update_job_experience_invalid_experience(self):
-        data = {"experience_id": 999, "job_type": "Updated"}
+        data = {
+            "experience_id": 999,
+            "job_type": "Updated"
+            }
         response = self.client.patch(self.url, data)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         
@@ -78,3 +93,14 @@ class UserJobExperienceViewTest(APITestCase):
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertIn("No UserWorkExperience matches the given query", str(response.data))
+        
+    def test_post_user_job_experience_missing_data(self):
+        data = {
+            "work_experience_id": self.work_experience.id,
+            "type_details": "On-site"
+        }
+
+        response = self.client.post(self.url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("job_type", response.data)
