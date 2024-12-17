@@ -73,4 +73,16 @@ class UserJobExperienceDetailsViewTest(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data['created']), 0) 
+        
+    def test_post_job_experience_details_with_empty_details(self):
+        data = {
+            "job_experience_id": self.job_experience.id,
+            "details": []
+        }
+
+        response = self.client.post(self.url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['created']), 0) 
+
 
