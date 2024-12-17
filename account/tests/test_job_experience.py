@@ -60,4 +60,13 @@ class UserJobExperienceViewTest(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("Job experience already exists", response.data['message'])
+        
+    def test_post_user_job_experience_invalid_data(self):
+        data = {
+            "work_experience_id": "", 
+            "job_type": "Contract"
+        }
 
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertIn("No UserWorkExperience matches the given query", str(response.data))
