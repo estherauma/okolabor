@@ -79,3 +79,10 @@ class UserWorkExperienceDetailsViewTest(APITestCase):
 
         with self.assertRaises(UserWorkExperience.DoesNotExist):
             UserWorkExperience.objects.get(pk=self.experience.id)
+            
+    def test_delete_work_experience_not_found(self):
+        
+        url = reverse('account:api-single-experience', 
+                      kwargs={'user_id': self.user.id, 'experience_id': 999})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
