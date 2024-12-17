@@ -55,3 +55,11 @@ class UserWorkExperienceDetailsViewTest(APITestCase):
         self.experience.refresh_from_db()
         self.assertEqual(self.experience.company, "XYZ Corp")
         self.assertEqual(self.experience.work_title, "Senior Developer")
+        
+    def test_patch_work_experience_invalid_data(self):
+        
+        invalid_data = {
+            "start_date": "invalid-date-format"  
+        }
+        response = self.client.patch(self.url, invalid_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
