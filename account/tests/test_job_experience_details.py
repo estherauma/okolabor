@@ -95,5 +95,17 @@ class UserJobExperienceDetailsViewTest(APITestCase):
         response = self.client.post(self.url, data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
+    def test_post_job_experience_details_user_not_found(self):
+        
+        url = reverse('account:api-job-experience-details', kwargs={'user_id': 9999})
+        data = {
+            "job_experience_id": self.job_experience.id,
+            "details": [{"kind": "skill", "value": "React"}]
+        }
+
+        response = self.client.post(url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
