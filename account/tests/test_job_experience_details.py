@@ -117,5 +117,18 @@ class UserJobExperienceDetailsViewTest(APITestCase):
         response = self.client.post(self.url, data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
+    def test_patch_job_experience_details_success(self):
+        
+        patch_data = {
+            "job_experience_details_id": self.job_experience_detail.id,
+            "value": "Updated Value"
+        }
+
+        response = self.client.patch(self.url, patch_data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.job_experience_detail.refresh_from_db()
+        self.assertEqual(self.job_experience_detail.value, "Updated Value")
 
 
