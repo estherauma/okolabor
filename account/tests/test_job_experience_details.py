@@ -1,0 +1,48 @@
+from rest_framework.test import APITestCase, APIClient
+from rest_framework import status
+from django.urls import reverse
+from account.models import User, UserJobExperience, UserJobExperienceDetails
+
+class UserJobExperienceDetailsViewTest(APITestCase):
+    
+    def setUp(self):
+        self.user = User.objects.create_user(
+            curp="CURP123456ABCDEF76",
+            email="testuser@example.com",
+            password="testpass123",
+            telephone="1234567890"
+        )
+        
+        self.job_experience = UserJobExperience.objects.create(
+            user=self.user,
+            job_type="Full Time",
+            type_details="Remote"
+        )
+        
+        self.job_experience_detail = UserJobExperienceDetails.objects.create(
+            job_experience=self.job_experience,
+            created_by=self.user.id,
+            updated_by=self.user.id,
+            kind="Skill",
+            value="Python"
+        )
+        
+        self.client = APIClient()
+        self.url = reverse('account:api-job-experience-details', kwargs={'user_id': self.user.id})
+        
+    def test_post_job_experience_details_success(self):
+       
+        data = {
+            "job_experience_id": self.job_experience.id,
+            "details": [
+                {"kind": "responsibilities", "value": "Django development"},
+                {"kind": "license", "value": "Driver's License"}
+            ]
+        }
+
+        response = self.client.post(self.url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['created']), 2)
+        self.assertEqual(response.data['created'][0]['value'], "Django development")
+        self.assertEqual(response.data['created'][1]['value'], "Driver's License")
