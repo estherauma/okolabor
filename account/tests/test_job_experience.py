@@ -36,3 +36,9 @@ class UserJobExperienceViewTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['job_type'], 'Full Time')
+        
+    def test_get_job_experiences_no_experiences(self):
+        UserJobExperience.objects.all().delete()
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, [])
