@@ -74,3 +74,20 @@ class UserPreferencesUpdateViewTestCase(APITestCase):
         self.assertTrue(
             preferences.filter(key="notifications", value="enabled", kind="setting").exists()
         )
+        
+    def test_partial_update_preferences(self):
+        data = {
+            "preferences": [
+                {"key": "theme", "value": "dark", "kind": "ui"}  
+            ]
+        }
+        response = self.client.post(self.url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.pref1.refresh_from_db()
+        self.assertEqual(self.pref1.value, "dark")
+
+        self.pref2.refresh_from_db()
+        self.assertEqual(self.pref2.value, "English")
+
