@@ -10,8 +10,10 @@ class UserDocumentsViewTestCase(APITestCase):
     def setUp(self):
         User = get_user_model()
         self.user = User.objects.create_user(
+            curp = "TEST123456BVCXSD12",
             email='test@fiftyeight.io',
-            password="password123"
+            password="password123",
+            telephone="1234567890"
         )
 
         self.url = reverse('account:api-documents', kwargs={"user_id": self.user.id})
@@ -68,3 +70,17 @@ class UserDocumentsViewTestCase(APITestCase):
         self.assertEqual(documents[2]['description'], "Certificate 3 description")
         self.assertEqual(documents[2]['cloud_vision_match'], False)
         self.assertEqual(documents[2]['file_type'], None)
+        
+    def test_get_documents_for_user_with_no_documents(self):
+        User = get_user_model()
+        user_without_documents = User.objects.create_user(
+            email='empty@fiftyeight.io',
+            password="password123"
+        )
+
+        url = reverse('account:api-documents', kwargs={"user_id": user_without_documents.id})
+        response = self.client.get(url, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, [])  
+
