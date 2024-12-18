@@ -126,6 +126,34 @@ class UserPreferencesUpdateViewTestCase(APITestCase):
         response = self.client.post(invalid_url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
+    def test_update_user_model_fields(self):
+        data = {
+            "preferences": [
+                {"key": "firstName", "value": "UpdatedName", "kind": "profile"},
+                {"key": "gender", "value": "Male", "kind": "profile"}
+            ]
+        }
+        response = self.client.post(self.url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.first_name, "UpdatedName")
+        self.assertEqual(self.user.gender, "Male")
+        
+    def test_get_all_preferences(self):
+        response = self.client.get(self.url, format="json")
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        preferences = response.data
+        self.assertEqual(len(preferences), 2)
+        self.assertEqual(preferences[0]['key'], 'theme')
+        self.assertEqual(preferences[1]['key'], 'language')
+
+
+
 
 
 
