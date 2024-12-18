@@ -116,6 +116,17 @@ class UserPreferencesUpdateViewTestCase(APITestCase):
         self.assertEqual(preferences.count(), 1)  
         self.assertEqual(preferences.first().value, "light")
 
+    def test_invalid_user_id(self):
+        invalid_url = reverse('account:update-user-preferences', kwargs={"user_id": 999})
+        data = {
+            "preferences": [
+                {"key": "theme", "value": "dark", "kind": "ui"}
+            ]
+        }
+        response = self.client.post(invalid_url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
 
 
 
