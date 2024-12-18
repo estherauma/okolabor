@@ -90,5 +90,19 @@ class UserDocumentsViewTestCase(APITestCase):
         response = self.client.get(url, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
+    def test_get_large_number_of_documents(self):
+        for i in range(100):
+            UserDocuments.objects.create(
+                user=self.user,
+                path=f"/mock/path/{i}.jpeg",
+                kind="certificate",
+                description=f"Certificate {i} description",
+                cloud_vision_match=bool(i % 2),
+                file_type="jpeg"
+            )
 
+        response = self.client.get(self.url, format="json")
 
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 103) 
