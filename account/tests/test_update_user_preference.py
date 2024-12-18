@@ -100,6 +100,22 @@ class UserPreferencesUpdateViewTestCase(APITestCase):
             self.client.post(self.url, data, format="json")
 
         self.assertIn("string indices must be integers", str(context.exception))
+        
+    def test_resolve_duplicate_keys_by_overwriting(self):
+        data = {
+            "preferences": [
+                {"key": "theme", "value": "dark", "kind": "ui"},
+                {"key": "theme", "value": "light", "kind": "ui"}
+            ]
+        }
+        response = self.client.post(self.url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        preferences = UserPreference.objects.filter(user=self.user, key="theme")
+        self.assertEqual(preferences.count(), 1)  
+        self.assertEqual(preferences.first().value, "light")
+
 
 
 
