@@ -54,3 +54,23 @@ class UserPreferencesUpdateViewTestCase(APITestCase):
 
         self.assertEqual(self.pref1.value, "dark")
         self.assertEqual(self.pref2.value, "Spanish")
+        
+    def test_ignore_empty_or_none_values(self):
+        
+        data = {
+            "preferences": [
+                {"key": "theme", "value": None, "kind": "ui"},  
+                {"key": "language", "value": "", "kind": "setting"}, 
+                {"key": "notifications", "value": "enabled", "kind": "setting"} 
+            ]
+        }
+        response = self.client.post(self.url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        preferences = UserPreference.objects.filter(user=self.user)
+        self.assertEqual(preferences.count(), 3) 
+
+        self.assertTrue(
+            preferences.filter(key="notifications", value="enabled", kind="setting").exists()
+        )
