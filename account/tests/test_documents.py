@@ -83,4 +83,12 @@ class UserDocumentsViewTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, [])  
+        
+    def test_get_documents_for_nonexistent_user(self):
+        
+        url = reverse('account:api-documents', kwargs={"user_id": 999999})
+        response = self.client.get(url, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
 
