@@ -90,4 +90,16 @@ class UserPreferencesUpdateViewTestCase(APITestCase):
 
         self.pref2.refresh_from_db()
         self.assertEqual(self.pref2.value, "English")
+        
+    def test_invalid_payload(self):
+        data = {
+            "preferences": "invalid data type"  
+        }
+
+        with self.assertRaises(TypeError) as context:
+            self.client.post(self.url, data, format="json")
+
+        self.assertIn("string indices must be integers", str(context.exception))
+
+
 
