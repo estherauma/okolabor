@@ -14,9 +14,7 @@ class UserPreferencesUpdateViewTestCase(APITestCase):
             email='test@fiftyeight.io',
             password="password123"
         )
-        
         self.url = reverse('account:update-user-preferences', kwargs={"user_id": self.user.id})
-        
         self.pref1 = UserPreference.objects.create(
             user=self.user, key="theme", value="light", kind="ui"
         )
@@ -32,7 +30,6 @@ class UserPreferencesUpdateViewTestCase(APITestCase):
             ]
         }
         response = self.client.post(self.url, data, format="json")
-
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data[0]['value'], "dark")
         self.assertEqual(response.data[1]['value'], "Spanish")
@@ -44,19 +41,14 @@ class UserPreferencesUpdateViewTestCase(APITestCase):
                 {"key": "language", "value": "Spanish", "kind": "setting"},
             ]
         }
-
         response = self.client.post(self.url, data, format="json")
-
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
         self.pref1.refresh_from_db()
         self.pref2.refresh_from_db()
-
         self.assertEqual(self.pref1.value, "dark")
         self.assertEqual(self.pref2.value, "Spanish")
         
     def test_ignore_empty_or_none_values(self):
-        
         data = {
             "preferences": [
                 {"key": "theme", "value": None, "kind": "ui"},  
@@ -65,9 +57,7 @@ class UserPreferencesUpdateViewTestCase(APITestCase):
             ]
         }
         response = self.client.post(self.url, data, format="json")
-
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
         preferences = UserPreference.objects.filter(user=self.user)
         self.assertEqual(preferences.count(), 3) 
 
@@ -82,12 +72,9 @@ class UserPreferencesUpdateViewTestCase(APITestCase):
             ]
         }
         response = self.client.post(self.url, data, format="json")
-
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
         self.pref1.refresh_from_db()
         self.assertEqual(self.pref1.value, "dark")
-
         self.pref2.refresh_from_db()
         self.assertEqual(self.pref2.value, "English")
         
@@ -95,10 +82,8 @@ class UserPreferencesUpdateViewTestCase(APITestCase):
         data = {
             "preferences": "invalid data type"  
         }
-
         with self.assertRaises(TypeError) as context:
             self.client.post(self.url, data, format="json")
-
         self.assertIn("string indices must be integers", str(context.exception))
         
     def test_resolve_duplicate_keys_by_overwriting(self):
@@ -109,9 +94,7 @@ class UserPreferencesUpdateViewTestCase(APITestCase):
             ]
         }
         response = self.client.post(self.url, data, format="json")
-
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
         preferences = UserPreference.objects.filter(user=self.user, key="theme")
         self.assertEqual(preferences.count(), 1)  
         self.assertEqual(preferences.first().value, "light")
@@ -124,7 +107,6 @@ class UserPreferencesUpdateViewTestCase(APITestCase):
             ]
         }
         response = self.client.post(invalid_url, data, format="json")
-
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         
     def test_update_user_model_fields(self):
@@ -135,26 +117,15 @@ class UserPreferencesUpdateViewTestCase(APITestCase):
             ]
         }
         response = self.client.post(self.url, data, format="json")
-
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
         self.user.refresh_from_db()
         self.assertEqual(self.user.first_name, "UpdatedName")
         self.assertEqual(self.user.gender, "Male")
         
     def test_get_all_preferences(self):
         response = self.client.get(self.url, format="json")
-        
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
         preferences = response.data
         self.assertEqual(len(preferences), 2)
         self.assertEqual(preferences[0]['key'], 'theme')
         self.assertEqual(preferences[1]['key'], 'language')
-
-
-
-
-
-
-
