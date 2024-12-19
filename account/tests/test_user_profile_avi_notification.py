@@ -50,4 +50,19 @@ class UserProfileAviNotificationTestCase(TestCase):
 
         notification = UserNotification.objects.filter(user=self.user).first()
         self.assertEqual(notification.title, 'Actualización de foto de perfil')
+        
+    def test_notification_is_created_multiple_times_for_same_user(self):
+        UserNotification.objects.create(
+            user=self.user,
+            title='Actualización de foto de perfil',
+            message='Vaya a su cuenta y configure su foto de perfil.'
+        )
 
+        initial_notification_count = UserNotification.objects.filter(user=self.user).count()
+
+        response = self.client.post(self.url, {'user_id': self.user.id})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        notifications = UserNotification.objects.filter(user=self.user)
+        self.assertEqual(notifications.count(), initial_notification_count + 1)  
