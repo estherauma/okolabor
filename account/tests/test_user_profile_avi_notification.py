@@ -29,3 +29,9 @@ class UserProfileAviNotificationTestCase(TestCase):
         self.assertIsNotNone(notification)
         self.assertEqual(notification.title, 'Actualización de foto de perfil')
         self.assertEqual(notification.message, 'Vaya a su cuenta y configure su foto de perfil.')
+        
+    def test_user_not_found(self):
+        invalid_user_id = 99999  
+        response = self.client.post(self.url, {'user_id': invalid_user_id})
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
