@@ -29,22 +29,18 @@ class UserWorkExperienceDetailsViewTest(APITestCase):
         )
         
     def test_get_work_experience_details_success(self):
-        
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
         serializer = UserWorkexperienceSerializer(self.experience)
         self.assertEqual(response.data, serializer.data)
         
     def test_get_work_experience_details_not_found(self):
-        
         url = reverse('account:api-single-experience', 
                       kwargs={'user_id': self.user.id, 'experience_id': 999})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         
     def test_patch_work_experience_success(self):
-        
         updated_data = {
             "company": "XYZ Corp",
             "work_title": "Senior Developer"
@@ -57,7 +53,6 @@ class UserWorkExperienceDetailsViewTest(APITestCase):
         self.assertEqual(self.experience.work_title, "Senior Developer")
         
     def test_patch_work_experience_invalid_data(self):
-        
         invalid_data = {
             "start_date": "invalid-date-format"  
         }
@@ -65,7 +60,6 @@ class UserWorkExperienceDetailsViewTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         
     def test_patch_work_experience_not_found(self):
-        
         url = reverse('account:api-single-experience', 
                       kwargs={'user_id': self.user.id, 'experience_id': 999})
         updated_data = {"company_name": "XYZ Corp"}
@@ -73,7 +67,6 @@ class UserWorkExperienceDetailsViewTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         
     def test_delete_work_experience_success(self):
-       
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
@@ -81,7 +74,6 @@ class UserWorkExperienceDetailsViewTest(APITestCase):
             UserWorkExperience.objects.get(pk=self.experience.id)
             
     def test_delete_work_experience_not_found(self):
-        
         url = reverse('account:api-single-experience', 
                       kwargs={'user_id': self.user.id, 'experience_id': 999})
         response = self.client.delete(url)
