@@ -65,4 +65,20 @@ class UserProfileAviNotificationTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         notifications = UserNotification.objects.filter(user=self.user)
-        self.assertEqual(notifications.count(), initial_notification_count + 1)  
+        self.assertEqual(notifications.count(), initial_notification_count + 1)
+        
+    def test_create_and_verify_notifications(self):
+        response1 = self.client.post(self.url, {'user_id': self.user.id})
+        self.assertEqual(response1.status_code, status.HTTP_200_OK)
+
+        response2 = self.client.post(self.url, {'user_id': self.user.id})
+        self.assertEqual(response2.status_code, status.HTTP_200_OK)
+
+        notifications = UserNotification.objects.filter(user=self.user)
+        self.assertEqual(notifications.count(), 2)
+
+        self.assertEqual(notifications[0].title, 'Actualización de foto de perfil')
+        self.assertEqual(notifications[0].message, 'Vaya a su cuenta y configure su foto de perfil.')
+        self.assertEqual(notifications[1].title, 'Actualización de foto de perfil')
+        self.assertEqual(notifications[1].message, 'Vaya a su cuenta y configure su foto de perfil.')
+        
