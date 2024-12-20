@@ -647,7 +647,7 @@ class UserProfileAviNotification(APIView):
     )
     def post(self, request):
         user = get_object_or_404(User, pk=request.data.get('user_id'))
-        message = 'Vaya a su cuenta y configure su foto de perfil.'
+        message = 'Vaya a su perfil y agregar su foto de perfil'
         UserNotification.objects.create(
             user=user,
             title='Actualización de foto de perfil',
