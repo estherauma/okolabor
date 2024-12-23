@@ -39968,6 +39968,44 @@ textarea.form-control {
     font-weight: 500;
 }
 
+.light-green-background {
+    background-color: #7DBF96 !important;
+}
+
+.grey-green-button {
+    min-width: 75px;
+    border-radius: 16px;
+    background-color: #D9D9D9;
+    color: #0B4337;
+    padding: 7px;
+    padding-right: 15px;
+    padding-left: 15px;
+    font-weight: 500;
+}
+
+.grey-green-button:hover {
+    background-color: #A9A9A9; /* Darker grey background */
+    color: #0B4337; /* Keep the text green */
+}
+
+.offwhite-button {
+    min-width: 75px;
+    border-radius: 16px;
+    background-color: #FAFAE6;
+    color: black;
+    border-color: #2A7A62;
+    padding: 7px;
+    padding-right: 15px;
+    padding-left: 15px;
+    font-weight: 500;
+}
+
+.offwhite-button:hover {
+    background-color: #E0E0C5; /* A darker shade of #FAFAE6 */
+    border-color: #205E4C; /* A darker shade of #2A7A62 */
+    color: black;
+}
+
 .light-green-button:hover {
     background-color: #6BAF85; /* Slightly darker shade of green */
     color: #FFFFFF; /* Change text color to white for better contrast */
@@ -39983,6 +40021,10 @@ textarea.form-control {
     background-color: #7e7c7c; /* Slightly darker shade for hover effect */
     cursor: pointer; /* Optional: Changes the cursor to a pointer on hover */
     color: #FFFFFF;
+}
+
+.dark-green-color {
+    color: #2A7A62;
 }
 
 .link-color {
@@ -40301,3 +40343,22 @@ textarea.form-control {
     color: white;
 }
 
+.d-contents {
+    display: contents;
+}
+
+@media (max-width: 768px) {
+    .flex-column-mobile {
+        flex-direction: column !important;
+    }
+
+    .flex-column-mobile > div + div {
+        margin-top: 1rem; /* Space between columns */
+    }
+}
+
+.text-icon {
+    width: 40px; 
+    height: 40px; 
+    font-size: 15px;
+}
