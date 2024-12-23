@@ -448,9 +448,9 @@ class UserJobExperienceView(APIView):
         operation_summary="Update user job experience",
         tags=["Job Experience"]
     )
-    def patch(self, request, user_id, experience_id):
-        # user = get_object_or_404(User, pk=user_id)
-        experience = get_object_or_404(UserWorkExperience, pk=experience_id)
+    def patch(self, request, user_id):
+        experience_id = request.data.get('experience_id')
+        experience = get_object_or_404(UserJobExperience, pk=experience_id)
         serializer = UserJobExperienceSerializer(
             experience, data=request.data, partial=True)
         if serializer.is_valid():
@@ -499,7 +499,6 @@ class UserJobExperienceDetailsView(APIView):
         tags=["Job Experience"]
     )
     def patch(self, request, user_id):
-        # user = get_object_or_404(User, pk=user_id)
         job_experience_details = get_object_or_404(
             UserJobExperienceDetails,
             pk=request.data.get('job_experience_details_id')
@@ -639,3 +638,22 @@ class UserAccountRecoveryReset(APIView):
                 )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserProfileAviNotification(APIView):
+    @swagger_auto_schema(
+        operation_summary="Update user profile picture notification",
+        tags=["User Notifications"]
+    )
+    def post(self, request):
+        user = get_object_or_404(User, pk=request.data.get('user_id'))
+        message = 'Vaya a su cuenta y configure su foto de perfil.'
+        UserNotification.objects.create(
+            user=user,
+            title='Actualización de foto de perfil',
+            message=message
+        )
+        return Response(
+            {'message': 'Notification created'},
+            status=status.HTTP_200_OK
+        )

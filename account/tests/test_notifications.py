@@ -1,0 +1,123 @@
+from rest_framework.test import APITestCase
+from django.contrib.auth.models import User
+from django.urls import reverse
+from rest_framework.test import APIClient
+from account.models import UserNotification
+from django.contrib.auth import get_user_model
+
+
+User = get_user_model()
+class UserNotificationViewTests(APITestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = User.objects.create(
+            email="test@example.com",
+            curp="CURP12345678",
+            first_name="Test",
+            last_name="User",
+            telephone="1234567890",
+        )
+        self.notification = UserNotification.objects.create(
+            user=self.user, title="Test Notification", message="This is a test."
+        )
+        self.url = reverse('account:api-notifications', kwargs={'user_id': self.user.id})
+        
+    def test_retrieve_user_notifications(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['title'], "Test Notification")
+        self.assertEqual(response.data[0]['message'], "This is a test.")
+        
+    def test_retrieve_user_notifications_user_not_found(self):
+        response = self.client.get(reverse('account:api-notifications', kwargs={'user_id': 99999}))
+        print(response.data)
+        self.assertEqual(response.status_code, 404)
+        self.assertIn('detail', response.data)
+        self.assertEqual(response.data['detail'], 'No User matches the given query.')
+
+    def test_create_user_notification(self):
+        notification_data = {
+            "title": "New Test Notification",
+            "message": "This is a new test notification"
+        }
+        response = self.client.post(self.url, notification_data, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['title'], "New Test Notification")
+        self.assertEqual(response.data['message'], "This is a new test notification")
+        self.assertEqual(UserNotification.objects.count(), 2)
+        
+    def test_create_user_notification_missing_fields(self):
+        notification_data = {}
+        response = self.client.post(self.url, notification_data, format='json')
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('title', response.data)
+        self.assertIn('message', response.data)
+        self.assertEqual(UserNotification.objects.count(), 1)  
+    
+    def test_update_user_notification(self):
+        updated_data = {
+            "notification_id": self.notification.id, 
+            "title": "Updated Test Notification",
+            "message": "This notification has been updated"
+        }
+        
+        response = self.client.patch(
+            reverse('account:api-notifications', kwargs={'user_id': self.user.id}), 
+            updated_data, format='json'
+        )
+
+        self.assertEqual(response.status_code, 200)
+        
+        self.assertEqual(response.data['title'], "Updated Test Notification")
+        self.assertEqual(response.data['message'], "This notification has been updated")
+        
+        self.notification.refresh_from_db()  
+        self.assertEqual(self.notification.title, "Updated Test Notification")
+        self.assertEqual(self.notification.message, "This notification has been updated")
+
+    def test_update_user_notification_missing_id(self):
+        invalid_data = {
+            "title": "Updated Test Notification",
+            "message": "This notification has been updated"
+        }
+
+        response = self.client.patch(
+            reverse('account:api-notifications', kwargs={'user_id': self.user.id}),
+            invalid_data, format='json'
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['message'], "Notification id is required")
+        
+    def test_update_user_notification_invalid_notification_id(self):
+        
+        invalid_data = {
+            "notification_id": 99999, 
+            "title": "Updated Test Notification",
+            "message": "This notification has been updated"
+        }
+
+        response = self.client.patch(
+            reverse('account:api-notifications', kwargs={'user_id': self.user.id}),
+            invalid_data, format='json'
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertIn('detail', response.data)
+        self.assertEqual(response.data['detail'], 'No UserNotification matches the given query.')
+        
+    def test_update_user_notification_user_not_found(self):
+        updated_data = {
+            "notification_id": self.notification.id,
+            "title": "Updated Test Notification",
+            "message": "This notification has been updated"
+        }
+
+        response = self.client.patch(
+            reverse('account:api-notifications', kwargs={'user_id': 99999}),  
+            updated_data, format='json'
+        )
+
+        self.assertEqual(response.status_code, 404)
+        self.assertIn('detail', response.data)
+        self.assertEqual(response.data['detail'], 'No User matches the given query.')

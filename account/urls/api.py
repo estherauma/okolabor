@@ -5,7 +5,7 @@ from account.views.api import (
     UserAccountRecovery, UserAccountRecoveryReset,
     UserJobExperienceDetailsView, UserJobExperienceView,
     UserDocumentDetailsView, UserNotificationView,
-    UserPreferencesUpdateView, UserReportProblem, 
+    UserPreferencesUpdateView, UserProfileAviNotification, UserReportProblem, 
     UserWorkExperienceDetailsView, UserWorkExperienceView,
     GetOTP, VerifyOTP,
     UserDocumentsView, UserPreferencesUpdateView, UserWorkExperienceView
@@ -69,8 +69,9 @@ urlpatterns = [
     re_path(
         r'(?P<user_id>[-\w]+)/notifications/$',
         UserNotificationView.as_view(),
-        name='api-report-problem'
+        name='api-notifications'
     ),
     path('recovery-request-reset/', UserAccountRecovery.as_view(), name='password-request-reset'),
     path('recovery-reset-password/', UserAccountRecoveryReset.as_view(), name='password-reset'),
+    path('notifications/profile-photo', UserProfileAviNotification.as_view(), name='api-notifications-create'),
 ]
