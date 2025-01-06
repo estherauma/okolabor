@@ -1,0 +1,91 @@
+.workers-top-gap {
+    margin-top: 1.5rem;
+    margin-bottom: 0 !important;
+}
+
+.show-text {
+    display: contents;
+}
+
+.d-contents {
+    display: contents;
+}
+
+.search-bar-workers {
+    background-color: #98d2ac; /* Matches the green background from the image */
+    padding: 10px;
+    width:100%;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    border: 1px solid #98d2ac; /* Default border for all sides */
+    border-left: 1px solid #ffffff; /* Overwrite the right border to white */
+}
+
+.green-color-workers {
+    color : #2A7A62;
+}
+
+.green-color-workers:hover {
+    color: #1E5B48; /* A darker shade of green for hover effect */
+}
+
+.medium-font {
+    font-size: large;
+}
+
+.no-margin-bottom {
+    margin-bottom: 0 !important;
+}
+
+.text {
+    max-width: 25px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.show-text {
+    font-size: small; /* Default for larger screens */
+  }
+  
+  @media (max-width: 768px) {
+    .show-text {
+      font-size: x-small; /* Smaller devices (tablets) */
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .show-text {
+      font-size: xx-small; /* Extra small devices (phones) */
+    }
+  }
+  
+
+@media (min-width: 576px) { /* Small screens */
+    .text {
+        max-width: 50px;
+    }
+}
+
+@media (min-width: 768px) { /* Medium screens */
+    .text {
+        max-width: 75px;
+    }
+}
+
+@media (min-width: 992px) { /* Large screens */
+    .text {
+        max-width: 100px;
+    }
+}
+
+@media (min-width: 1200px) { /* Extra large screens */
+    .text {
+        max-width: 150px;
+    }
+}
+
+.min-content-width {
+    width: min-content;
+}

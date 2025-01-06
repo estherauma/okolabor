@@ -10,43 +10,58 @@
     
 </div>
 
+<div class="d-flex align-items-center">
+    <i class="mdi mdi-arrow-left green-color fs-5"></i>
+    <span class="green-color">Back</span>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-5 flex-column-mobile">
+    <div>
+        <span class="d-flex justify-content-center align-items-center">
+            <p class="mt-3 me-3 d-flex justify-content-center align-items-center rounded-circle light-green-background text-white text-icon">
+               AB
+            </p>
+            <h4 class="dark-green-color d-contents fw-bold">Carlos Gracia</h4>          
+            <span class="gray-color ms-3">(Profile 76% complete |  <a href="#" class="link-color">Edit Profile</a>)</span>
+        </span>
+    </div>
+    <div>
+        <button class="btn dark-green-button">
+            Add to Shortlist
+        </button>
+        <button class="btn dark-green-button ms-3">
+            Send Offer
+        </button>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-xl-6 col-md-12">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Contact</h5>
-                
-                <table class="table row table-borderless">
-                    <tbody class="col-lg-12 col-xl-6 p-0">
-                        <tr>
-                            <td><strong>ADDRESS:</strong> Calle Libertad 123,Colonia Centro,34000 Driango DGO, Mexico</td>
-                        </tr>
-                        <tr>
-                            <td><strong>EMAIL:</strong> Cgacia@gmail.com</td>
-                        </tr>
-                        
-                    </tbody>
-                    <tbody class="col-lg-12 col-xl-6 p-0">
-                        <tr>
-                            <td><strong>PHONE NUMBER:</strong> +526181234567</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Gender:</strong> Male</td>
-                        </tr>
-                        
-                    </tbody>
-                </table>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title green-color d-contents">Contact</h5>
+                    <button class="btn grey-green-button">Send Message</button>
+                </div>
+                <div>
+                    <p class="gray-color">ADDRESS</p>
+                    Calle Libertad 123,Colonia Centro,34000 Driango DGO, Mexico
+                    <p class="gray-color mt-4">EMAIL</p>
+                    Cgacia@gmail.com
+                    <p class="gray-color mt-4">PHONE NUMBER</p>
+                    +52 618 123 4567
+                    <p class="gray-color mt-4">GENDER</p>
+                    Male
+                </div>
             </div>
         </div>
 
         <div class="card">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-9">
-                        <h5 class="card-title">Work experience</h5>
-                    </div>
-                    <div class="col-3" style="display: flex; justify-content: flex-end;">
-                        <button class="btn btn-primary" style="width: 100%; font-weight: bolder;">+Add Work Experience</button>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title green-color d-contents">Work Experience</h5>
+                        <button class="btn grey-green-button">+ Add Work Experience</button>
                     </div>
                 </div>
                 <br>
@@ -57,7 +72,9 @@
                     <div class="col-10">
                         
                         <div class="row">
+                            <h5 class="green-color">Utah Fruit Company</h5>
                             <div class="col-6" style="display: flex; align-items: center;">
+                                <br/>
                                 <i class="side-menu__icon icon-location-pin" style="margin-right: 5px;"></i>
                                 <span class="side-menu__label">Utah, United States</span>
                             </div>
@@ -66,32 +83,8 @@
                                 <span class="side-menu__label">Feb 23-Present</span>
                             </div>
                         </div>
-                        <br>
-                        <i class="side-menu__icon icon-basket" style="margin-right: 5px;"></i>
-                                <span class="side-menu__label">Harvesting, fruit picking, vehicle operations,other details of role etc</span>
-                        
-                    </div>
-                </div>
-                <br>
-                <div class="row">
-                    <div class="col-2">
-                        <img src="{% static 'assets/images/farm.png' %}" alt="flag" style="width: 60%;">
-                    </div>
-                    <div class="col-10">
-                        
-                        <div class="row">
-                            <div class="col-6" style="display: flex; align-items: center;">
-                                <i class="side-menu__icon icon-location-pin" style="margin-right: 5px;"></i>
-                                <span class="side-menu__label">Utah, United States</span>
-                            </div>
-                            <div class="col-6" style="display: flex; align-items: center;">
-                                <i class="side-menu__icon icon-calendar" style="margin-right: 5px;"></i>
-                                <span class="side-menu__label">Feb 23-Present</span>
-                            </div>
-                        </div>
-                        <br>
-                        <i class="side-menu__icon icon-basket" style="margin-right: 5px;"></i>
-                                <span class="side-menu__label">Harvesting, fruit picking, vehicle operations,other details of role etc</span>
+                        {% comment %} <i class="side-menu__icon icon-basket" style="margin-right: 5px;"></i> {% endcomment %}
+                                <span class="side-menu__label">🚜 Harvesting, fruit picking, vehicle operations,other details of role etc</span>
                         
                     </div>
                 </div>
@@ -103,6 +96,7 @@
                     <div class="col-10">
                         
                         <div class="row">
+                            <h5 class="green-color">Utah Fruit Company</h5>
                             <div class="col-6" style="display: flex; align-items: center;">
                                 <i class="side-menu__icon icon-location-pin" style="margin-right: 5px;"></i>
                                 <span class="side-menu__label">Utah, United States</span>
@@ -112,9 +106,32 @@
                                 <span class="side-menu__label">Feb 23-Present</span>
                             </div>
                         </div>
-                        <br>
-                        <i class="side-menu__icon icon-basket" style="margin-right: 5px;"></i>
-                                <span class="side-menu__label">Harvesting, fruit picking, vehicle operations,other details of role etc</span>
+                        {% comment %} <i class="side-menu__icon icon-basket" style="margin-right: 5px;"></i> {% endcomment %}
+                                <span class="side-menu__label">🚜 Harvesting, fruit picking, vehicle operations,other details of role etc</span>
+                        
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-2">
+                        <img src="{% static 'assets/images/farm.png' %}" alt="flag" style="width: 60%;">
+                    </div>
+                    <div class="col-10">
+                        
+                        <div class="row">
+                            <h5 class="green-color">Utah Fruit Company</h5>
+                            <div class="col-6" style="display: flex; align-items: center;">
+                                <i class="side-menu__icon icon-location-pin" style="margin-right: 5px;"></i>
+                                <span class="side-menu__label">Utah, United States</span>
+                            </div>
+                            <div class="col-6" style="display: flex; align-items: center;">
+                                <i class="side-menu__icon icon-calendar" style="margin-right: 5px;"></i>
+                                <span class="side-menu__label">Feb 25-Present</span>
+                            </div>
+                        </div>
+                       
+                        {% comment %} <i class="side-menu__icon icon-basket" style="margin-right: 5px;"></i> {% endcomment %}
+                                <span class="side-menu__label">🚜 Harvesting, fruit picking, vehicle operations,other details of role etc</span>
                         
                     </div>
                 </div>
@@ -125,55 +142,25 @@
     <div class="col-xl-6 col-md-12">
         <div class="card">
             <div class="card-header">
-                <div class="card-title">Worker status</div>
-                <p style="margin-left: 500px;">
-                    <i class="side-menu__icon icon-check" style="margin-right: 5px;"></i>
-                    Available
-                </p>
-                
-            </div>
-            <div class="card-body">
-                <div class="row row-sm">
-                    <div class="col-lg-12">
-                        <div class="card custom-card">
-                            <div class="card-body">
-                                <div>
-                                    <h3 class="card-title mb-1">Job Orders</h3>
-                                    
-                                </div>
-                                <div class="table-responsive">
-                                    <table class="table  border text-nowrap text-md-nowrap mg-b-0">
-                                        <thead>
-                                            <tr>
-                                               
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr >
-                                                <td>Jan 14th,2024</td>
-                                                <td>12345678</td>
-                                                <td>Utah Fruit Farms</td>
-                                                <td>Pending</td>
-                                                <td>x</td>
-                                            </tr>
-                                            
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <div class="card-title green-color">Worker status</div>
+                    <div class="d-contents">
+                        <span class="green-color">
+                            &#x1F7E2;
+                            Available
+                        </span>                       
                     </div>
-                </div> 
+                </div>
             </div>
         </div>
         <div class="card">
             <div class="card-header">
-                <div class="card-title">Work Information</div>
+                <div class="card-title green-color">Work Information</div>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-6" style="position: relative;">
-                        <p>ENGLISH PROFICIENCY</p>
+                        <p class="gray-color">ENGLISH PROFICIENCY</p>
                         <p style="font-weight: bolder;">Advanced</p>
                         <div style="position: relative; display: inline-block;">
                             <img src="{% static 'assets/images/profile.png' %}" alt="flag" style="width: 150px;">
@@ -182,7 +169,7 @@
                     </div>
         
                     <div class="col-6" style="position: relative;">
-                        <p>PASSPORT</p>
+                        <p class="gray-color">PASSPORT</p>
                         <p>Yes</p>
                         <div style="position: relative; display: inline-block;">
                             <img src="{% static 'assets/images/passport1.png' %}" alt="flag" style="width: 150px;">
@@ -192,53 +179,43 @@
                 </div>
                 <br>
                 <div class="row location" style="margin-top: 10px;">
-                    <p>WORKING LOCATIONS</p>
+                    <p class="gray-color">WORKING LOCATIONS</p>
                     <div class="col-4" style="padding-right: 5px;">
-                        <button class="btn btn-primary" style="width: 100%;">Utah</button>
+                        <button class="btn offwhite-button" style="width: 100%;">Utah</button>
                     </div>
                     <div class="col-4" style="padding-left: 2.5px; padding-right: 2.5px;">
-                        <button class="btn btn-primary" style="width: 100%;">Another location</button>
+                        <button class="btn offwhite-button" style="width: 100%;">Another location</button>
                     </div>
                     <div class="col-4" style="padding-left: 5px;">
-                        <button class="btn btn-primary" style="width: 100%;">Arizona</button>
+                        <button class="btn offwhite-button" style="width: 100%;">Arizona</button>
                     </div>
                 </div>
                 
                 <br>
-                <p>PREFERRED EMPLOYERS</p>
+                <p class="gray-color">PREFERRED EMPLOYERS</p>
                 <div class="row" style="margin-top: 10px;">
                     <div class="col-6" style="padding-right: 5px;">
-                        <button class="btn btn-primary" style="width: 100%;">Utah Farms</button>
+                        <button class="btn offwhite-button" style="width: 100%;">Utah Farms</button>
                     </div>
                     <div class="col-6" style="padding-left: 5px;">
-                        <button class="btn btn-primary" style="width: 100%;">Bob's Fruit Farm</button>
+                        <button class="btn offwhite-button" style="width: 100%;">Bob's Fruit Farm</button>
                     </div>
                 </div>
                 <br>
-                <table class="table row table-borderless">
-                    <tbody class="col-lg-12 col-xl-6 p-0">
-                        <tr>
-                            <td><strong>Medical/physical conditions:</strong> None</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Any injury or condition aggravated by by physical activity:</strong> None</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Willing to spend time on feet:</strong> Yes</td>
-                        </tr>
-                    </tbody>
-                    <tbody class="col-lg-12 col-xl-6 p-0">
-                        <tr>
-                            <td><strong>Able to lift 27kg :</strong> Yes</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Willing to work in hot and cold:</strong> Yes</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Phone :</strong> +125 254 3562 </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div>
+                    <p class="gray-color">Medical/physical conditions</p>
+                    None
+                    <p class="gray-color mt-4">Any injury or condition aggravated by by physical activity</p>
+                    None
+                    <p class="gray-color mt-4">PHONE NUMBER</p>
+                    +52 618 123 4567
+                    <p class="gray-color mt-4">Willing to spend time on feet</p>
+                    Yes
+                    <p class="gray-color mt-4">Able to lift 27kg</p>
+                    Yes
+                    <p class="gray-color mt-4">Willing to work in hot and cold</p>
+                    Yes
+                </div>
             </div>
         </div>
                 
