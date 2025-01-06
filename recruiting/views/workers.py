@@ -1,9 +1,25 @@
 from django.urls import reverse
+from django.views import View
 from account.models import User
 from recruiting.forms import WorkerCreateForm
 from django.views.generic import CreateView
 from django.contrib import messages
 from django.contrib.auth.models import Group
+from django.shortcuts import render
+from theme.forms import AdvancedFilterForm, FilterWorkExperienceForm
+
+
+class WorkerListView(View):
+    def get(self, request):
+        form = FilterWorkExperienceForm()
+        filter_form = AdvancedFilterForm()  
+        workers = User.objects.filter(groups__name='worker').order_by('-created_at')
+        context = {
+            'workers': workers,
+            'form': form,
+            'filter_form': filter_form
+        }
+        return render(request, 'recruiting/workers/list.html', context)
 
 
 class WorkerCreateView(CreateView):

@@ -7,7 +7,7 @@ from recruiting.views.web import (
     RoleQualificationsCreateView, RoleWagesCreateView, WorkRequestCreateView,
     WorkRequestDetailView, WorkRequestRoleCreateView, WorkRequestsListView
 )
-from recruiting.views.worker_create import WorkerCreateView
+from recruiting.views.workers import WorkerCreateView, WorkerListView
 
 app_name = 'recruiting_web'
 urlpatterns = [
@@ -68,4 +68,8 @@ urlpatterns = [
          WorkerCreateView.as_view(),
          name='recruiter_create_worker'
          ),
+    # Workers
+    path('workers',
+         WorkerListView.as_view(),
+         name='workers'),
 ]
