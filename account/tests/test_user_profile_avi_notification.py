@@ -16,69 +16,97 @@ class UserProfileAviNotificationTestCase(TestCase):
             email='test@fiftyeight.io',
             telephone="1234567890"
         )
-        self.url = reverse('account:api-notifications-create')
+        self.url = reverse('account:api-notifications', kwargs={'user_id': self.user.id})
     
     def test_create_notification_success(self):
-        data = {'user_id': self.user.id}
-
-        response = self.client.post(self.url, data)
-
+        data = {
+            'user_id': self.user.id,
+            'title': 'Test Notification',
+            'message': 'This is a test notification message.'
+        }
+        response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        notification = UserNotification.objects.filter(user=self.user).first()
-        self.assertIsNotNone(notification)
-        self.assertEqual(notification.title, 'Actualización de foto de perfil')
-        self.assertEqual(notification.message, 'Vaya a su cuenta y configure su foto de perfil.')
+        self.assertEqual(UserNotification.objects.filter(user=self.user).count(), 1)
         
-    def test_user_not_found(self):
-        invalid_user_id = 99999  
-        response = self.client.post(self.url, {'user_id': invalid_user_id})
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+    def test_create_notification_invalid_data(self):
+        data = {
+            'user_id': self.user.id,
+            'message': 'This is a test notification message.'
+        }
         
-    def test_notification_message(self):
-        response = self.client.post(self.url, {'user_id': self.user.id})
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        notification = UserNotification.objects.filter(user=self.user).first()
-        self.assertEqual(notification.message, 'Vaya a su cuenta y configure su foto de perfil.')
+        response = self.client.post(self.url, data, format='json')
         
-    def test_notification_title(self):
-        response = self.client.post(self.url, {'user_id': self.user.id})
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        notification = UserNotification.objects.filter(user=self.user).first()
-        self.assertEqual(notification.title, 'Actualización de foto de perfil')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         
-    def test_notification_is_created_multiple_times_for_same_user(self):
-        UserNotification.objects.create(
+        self.assertIn('title', response.data)
+
+        
+    def test_fetch_notifications(self):
+        notification = UserNotification.objects.create(
             user=self.user,
-            title='Actualización de foto de perfil',
-            message='Vaya a su cuenta y configure su foto de perfil.'
+            title='Profile Picture Update',
+            message='Please update your profile picture.'
         )
 
-        initial_notification_count = UserNotification.objects.filter(user=self.user).count()
-
-        response = self.client.post(self.url, {'user_id': self.user.id})
+        response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        notifications = UserNotification.objects.filter(user=self.user)
-        self.assertEqual(notifications.count(), initial_notification_count + 1)
+        self.assertEqual(len(response.data), 1)  
+        self.assertEqual(response.data[0]['title'], notification.title)  
+        self.assertEqual(response.data[0]['message'], notification.message)  
+        self.assertEqual(response.data[0]['status'], 'unread')  
+        self.assertEqual(response.data[0]['category'], 'general')  
         
-    def test_create_and_verify_notifications(self):
-        response1 = self.client.post(self.url, {'user_id': self.user.id})
-        self.assertEqual(response1.status_code, status.HTTP_200_OK)
-
-        response2 = self.client.post(self.url, {'user_id': self.user.id})
-        self.assertEqual(response2.status_code, status.HTTP_200_OK)
-
-        notifications = UserNotification.objects.filter(user=self.user)
-        self.assertEqual(notifications.count(), 2)
-
-        self.assertEqual(notifications[0].title, 'Actualización de foto de perfil')
-        self.assertEqual(notifications[0].message, 'Vaya a su cuenta y configure su foto de perfil.')
-        self.assertEqual(notifications[1].title, 'Actualización de foto de perfil')
-        self.assertEqual(notifications[1].message, 'Vaya a su cuenta y configure su foto de perfil.')
         
+    def test_mark_notification_as_read(self):
+        notification = UserNotification.objects.create(
+            user=self.user,
+            title='Test Notification',
+            message='This is a test notification message.',
+            status='unread', 
+        )
+
+        data = {
+            'notification_id': notification.id,  
+            'status': 'read',  
+        }
+
+        response = self.client.patch(self.url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        notification.refresh_from_db()
+        self.assertEqual(notification.status, 'read')
+        self.assertEqual(response.data['id'], str(notification.id))
+        self.assertEqual(response.data['status'], 'read')
+        
+    def test_patch_valid_notification_id(self):
+        notification = UserNotification.objects.create(
+            user=self.user,
+            title='Sample Notification',
+            message='Sample notification message.',
+            status='unread' 
+        )
+        
+        data = {
+            'notification_id': notification.id,
+            'status': 'read' 
+        }
+        response = self.client.patch(self.url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        notification.refresh_from_db()
+        self.assertEqual(notification.status, 'read')
+        self.assertEqual(response.data['id'], str(notification.id))
+        self.assertEqual(response.data['status'], 'read')
+        
+    def test_patch_invalid_notification_id(self):
+        data = {
+            'notification_id': 9999,
+            'status': 'read'
+        }
+        
+        response = self.client.patch(self.url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertIn('detail', response.data)
+
+
+
+
