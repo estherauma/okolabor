@@ -35,7 +35,7 @@ class UserWorkExperienceViewTests(APITestCase):
         
         self.url = reverse('account:api-work-experience', kwargs={'user_id': self.user.id})
         
-    def test_get_user_work_experience(self):
+    def test_get_user_work_experience_success(self):
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -43,3 +43,25 @@ class UserWorkExperienceViewTests(APITestCase):
         experiences = UserWorkExperience.objects.filter(user=self.user)
         serializer = UserWorkexperienceSerializer(experiences, many=True)
         self.assertEqual(response.data, serializer.data)
+        
+    def test_post_user_work_experience_success(self):
+        data = {
+            "company": "Company 3",
+            "work_title": "Designer",
+            "start_date": "2023-06-01",
+            "end_date": "2024-06-01"
+        }
+
+        response = self.client.post(self.url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertTrue(
+            UserWorkExperience.objects.filter(
+                user=self.user,
+                company=data["company"],
+                work_title=data["work_title"],
+                start_date=data["start_date"],
+                end_date=data["end_date"]
+            ).exists()
+        )
