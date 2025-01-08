@@ -5,7 +5,7 @@ from recruiting.forms import WorkerCreateForm
 from django.views.generic import CreateView
 from django.contrib import messages
 from django.contrib.auth.models import Group
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from theme.forms import AdvancedFilterForm, FilterWorkExperienceForm
 
 
@@ -54,3 +54,10 @@ class WorkerCreateView(CreateView):
         #     kwargs={'pk': self.object.pk}
         # )
         return reverse('recruiting_web:workers')
+
+
+class WorkerDetailsView(View):
+    def get(self, request, pk):
+        worker = get_object_or_404(User, pk=pk)
+        context = {'worker': worker}
+        return render(request, 'recruiting/workers/detail.html', context)

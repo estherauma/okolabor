@@ -240,7 +240,6 @@ urlpatterns = [
     path("wysiwyag", views.wysiwyag, name='wysiwyag'),
     
     #workers
-    path("worker-details", views.worker_details, name='worker-details'),
     path("add-workers", views.add_worker, name='add-workers'),
     path("work-experience", views.work_experience, name='work-experience'),
     path("edit-work-experience", views.edit_experience, name='edit-work-experience'),

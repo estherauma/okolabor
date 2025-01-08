@@ -253,13 +253,13 @@
                     <tr class="text-center">
                       <td>
                         {% if worker.firstname and worker.lastname %}
-                        <a href="worker-details">
+                        <a href="workers/{{ worker.id }}">
                           {{ worker.firstname }} {{ worker.lastname }}
                         </a>
 
                         {% else %}
 
-                        <a href="worker-details"> {{ worker.email }} </a>
+                        <a href="workers/{{worker.id}}"> {{ worker.email }} </a>
                         {% endif %}
                       </td>
                       <td>Chloe</td>

@@ -435,8 +435,7 @@ def wysiwyag(request):
 def employer_list(request):
     return render(request, 'employer-list/employer-list.html')
 
-def worker_details(request):
-    return render(request, 'worker-details/worker-details.html')
+
 
 
 def users(request):
