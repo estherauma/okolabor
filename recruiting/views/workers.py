@@ -40,7 +40,6 @@ class WorkerCreateView(CreateView):
         messages.success(self.request, 'Worker created successfully.')
         worker.save()
         
-        messages.success(self.request, 'Worker created successfully')
         return super(WorkerCreateView, self).form_valid(form)
 
     def form_invalid(self, form):

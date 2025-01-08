@@ -455,6 +455,17 @@ class OkoMessageCreateForm(forms.ModelForm):
 
 
 class WorkerCreateForm(forms.ModelForm):
+    
+    gender_choices = [
+        ('M', 'Male'),
+        ('F', 'Female'),
+        
+    ]
+    
+    gender = forms.ChoiceField(
+    choices=gender_choices , 
+    widget=forms.Select(attrs={'class': 'form-control'})
+)
     class Meta: 
         model = User
         fields = ['email', 'curp', 'first_name', 'last_name', 'dob', 'gender', 'telephone', 'address_line_1', 'address_line_2', 'city']
@@ -469,5 +480,5 @@ class WorkerCreateForm(forms.ModelForm):
             'telephone': forms.TextInput(attrs={'class': 'form-control'}),
             'address_line_1': forms.TextInput(attrs={'class': 'form-control'}),
             'address_line_2': forms.TextInput(attrs={'class': 'form-control'}),
-            'city': forms.TextInput(attrs={'class': 'form-control'})
+            'city': forms.TextInput(attrs={'class': 'form-control'})   
         }
