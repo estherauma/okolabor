@@ -42,6 +42,11 @@ class UserAccountRecoveryTests(TestCase):
             }
         )
         
+    def test_post_invalid_email(self):
+        response = self.client.post(self.url, self.invalid_payload)  
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('email', response.data)
+        
     
 
    
