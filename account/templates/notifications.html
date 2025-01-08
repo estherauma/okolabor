@@ -1,4 +1,19 @@
 {% extends 'components/base.html' %}
 {% block body %}
 
+<h1>My Notifications</h1>
+    <ul>
+        {% for notification in notifications %}
+            <li class="{% if notification.status == 'unread' %}unread{% endif %}">
+                <h3>{{ notification.title }}</h3>
+                <p>{{ notification.message }}</p>
+                <small>Category: {{ notification.category }}</small><br>
+                <small>Status: {{ notification.status }}</small><br>
+                <small>Read at: {{ notification.read_at|default:"Not read yet" }}</small>
+            </li>
+        {% empty %}
+            <p>You have no notifications.</p>
+        {% endfor %}
+    </ul>
+    
 {% endblock%}
