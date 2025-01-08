@@ -52,4 +52,36 @@ class UserAccountRecoveryTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('email', response.data)
 
-   
+    def test_post_email_not_found(self):
+        response = self.client.post(self.url, self.invalid_payload)  
+        print(response.data) 
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('email', response.data)
+        
+    @patch('random.randrange', return_value='12345')
+    def test_post_passwords_do_not_match(self, mock_random):
+        self.client.post(self.url, self.valid_payload)
+        
+        reset_url = reverse('account:password-request-reset')
+        mismatched_password_payload = {
+            'reset_code': '12345',  
+            'new_password': 'newpassword123',
+            'confirm_password': 'password123'
+        }
+        response = self.client.post(reset_url, mismatched_password_payload)
+        
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+       
+    @patch('random.randrange', return_value='12345')
+    def test_post_invalid_token(self, mock_random):
+        self.client.post(self.url, self.valid_payload)
+
+        reset_url = reverse('account:password-request-reset')
+        invalid_token_payload = {
+            'reset_code': 'wrongtoken', 
+            'new_password': 'newpassword123',
+            'confirm_password': 'newpassword123'
+        }
+        response = self.client.post(reset_url, invalid_token_payload)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
