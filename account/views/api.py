@@ -25,6 +25,7 @@ from drf_yasg.utils import swagger_auto_schema
 
 from common.email import EmailHelper
 from account.signals import check_passport_match_signal
+from django.contrib.auth.models import Group
 
 
 class RegisterView(APIView):
@@ -43,6 +44,14 @@ class RegisterView(APIView):
             )
             user.set_password(serializer.validated_data['password'])
             user.save()
+            # add user the worker's group
+            try:
+                worker_group = Group.objects.get(name='worker')
+                user.groups.add(worker_group)
+            except Group.DoesNotExist:
+                worker_group = Group.objects.create(name='worker')
+                user.groups.add(worker_group)
+                
             # user the Userserializer to return the user data
             user_serializer = UserSerilizer(user)
             return Response(
