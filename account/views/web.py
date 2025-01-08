@@ -100,3 +100,10 @@ class UpdatePasswordView(LoginRequiredMixin, FormView):
         """Handle form errors."""
         messages.error(self.request, 'Please correct the errors below.')
         return super().form_invalid(form)
+
+
+class AccountNotificationsView(LoginRequiredMixin, View):
+    template_name = 'notifications.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
