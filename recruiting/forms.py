@@ -1,6 +1,7 @@
 
 # create modelform for Employer model
 from django import forms
+from account.models import User
 from recruiting.models import (
     Deduction, Employer, Hours, OkoMessage, Qualification,
     EmploymentLocation, HousingInformation, MealProvision,
@@ -450,4 +451,34 @@ class OkoMessageCreateForm(forms.ModelForm):
             'job_order': forms.Select(attrs={
                 'class': 'form-control',
             }),
+        }
+
+
+class WorkerCreateForm(forms.ModelForm):
+    
+    gender_choices = [
+        ('M', 'Male'),
+        ('F', 'Female'),
+        
+    ]
+    
+    gender = forms.ChoiceField(
+    choices=gender_choices , 
+    widget=forms.Select(attrs={'class': 'form-control'})
+)
+    class Meta: 
+        model = User
+        fields = ['email', 'curp', 'first_name', 'last_name', 'dob', 'gender', 'telephone', 'address_line_1', 'address_line_2', 'city']
+        
+        widgets = {
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'curp': forms.TextInput(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'dob': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'gender': forms.Select(attrs={'class': 'form-control'}),
+            'telephone': forms.TextInput(attrs={'class': 'form-control'}),
+            'address_line_1': forms.TextInput(attrs={'class': 'form-control'}),
+            'address_line_2': forms.TextInput(attrs={'class': 'form-control'}),
+            'city': forms.TextInput(attrs={'class': 'form-control'})   
         }

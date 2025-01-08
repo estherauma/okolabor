@@ -435,12 +435,6 @@ def wysiwyag(request):
 def employer_list(request):
     return render(request, 'employer-list/employer-list.html')
 
-def workers(request):
-    form = FilterWorkExperienceForm()
-    filter_form = AdvancedFilterForm()    
-    workers = User.objects.filter(groups__name='worker')
-    return render(request, 'workers/workers.html', {'workers': workers, 'form': form, 'filter_form': filter_form})
-
 def worker_details(request):
     return render(request, 'worker-details/worker-details.html')
 

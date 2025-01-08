@@ -7,6 +7,7 @@ from recruiting.views.web import (
     RoleQualificationsCreateView, RoleWagesCreateView, WorkRequestCreateView,
     WorkRequestDetailView, WorkRequestRoleCreateView, WorkRequestsListView
 )
+from recruiting.views.workers import WorkerCreateView, WorkerListView
 
 app_name = 'recruiting_web'
 urlpatterns = [
@@ -62,5 +63,13 @@ urlpatterns = [
     path('recruiter/create-message/',
          OkoMessageCreateView.as_view(),
          name='recruiter_create_message'
-         )
+         ),
+    path('recruiter/create-worker',
+         WorkerCreateView.as_view(),
+         name='recruiter_create_worker'
+         ),
+    # Workers
+    path('workers',
+         WorkerListView.as_view(),
+         name='workers'),
 ]
