@@ -45,7 +45,9 @@ class RegisterView(APIView):
             user.set_password(serializer.validated_data['password'])
             user.save()
             # add user the worker's group
-            try:
+
+ worker_group, _ = Group.objects.get_or_create(name='worker')
+ user.groups.add(worker_group)
                 worker_group = Group.objects.get(name='worker')
                 user.groups.add(worker_group)
             except Group.DoesNotExist:
