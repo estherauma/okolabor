@@ -1,28 +1,30 @@
 {% extends 'components/base.html' %}
 {% block body %}
 <h1>Notifications</h1>
-<div class="container-dropdown">
+<hr>
+<div class='container-dropdown'>
     <a href="#" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">Worker Requests</a>
     <a href="#" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">Filter by Date</a>
     <a href="#" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">New</a>
 </div>
-<hr>
+<br>
 <div class='notification-container'>
+    {% if notifications %}
     <table class="table table-striped">
         <thead>
             <tr>
             </tr>
-          </thead>
-          <tbody>
+        </thead>
+        <tbody>
             {% for notification in notifications %}
+            
             <tr>
               <td>{{ notification.created_at }}</td>
               <td>{{ notification.title }}</td>
               <td><a href="#" onclick="toggleMessage('message{{ forloop.counter }}'); return false;">See More</a></td>
               <td>
-                <a href="#"><i class="side-menu__icon fa fa-trash-o"></i><span
-                        ></span></a>
-                </td>
+                <a href="#"><i class="side-menu__icon fa fa-trash-o"></i><span></span></a>
+              </td>
             </tr>         
             <tr id="message{{ forloop.counter }}" style="display: none;">
               <td colspan="3">
@@ -32,25 +34,27 @@
                   <small>Status: {{ notification.status }}</small><br>
                   <small>Read at: {{ notification.read_at|default:"Not read yet" }}</small><br>
                   <small>Created at: {{ notification.created_at }}</small><br>
-                  <button class='close-notification'onclick="toggleMessage('message{{ forloop.counter }}'); return false;" >
+                  <button class='close-notification' onclick="toggleMessage('message{{ forloop.counter }}'); return false;" >
                     Close
                   </button>
                 </div>
               </td>
             </tr>
             {% endfor %}
-          </tbody>
-        </table>
-        
+        </tbody>
+    </table>
+    {% else %}
+    <p>No notifications available.</p>
+    {% endif %}
 </div>
-    <script>
-      function toggleMessage(rowId) {
-        const messageRow = document.getElementById(rowId);
-        if (messageRow.style.display === "none") {
-          messageRow.style.display = "table-row";
-        } else {
-          messageRow.style.display = "none";
-        }
-      }
-    </script>
-{% endblock%}
+<script>
+  function toggleMessage(rowId) {
+    const messageRow = document.getElementById(rowId);
+    if (messageRow.style.display === "none") {
+      messageRow.style.display = "table-row";
+    } else {
+      messageRow.style.display = "none";
+    }
+  }
+</script>
+{% endblock %}
