@@ -486,11 +486,18 @@ class WorkerCreateForm(forms.ModelForm):
         
 
 class WorkExperienceCreateForm(forms.ModelForm):
+    company = forms.ModelChoiceField(
+        queryset=Employer.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        empty_label="Select Employer",
+    )
     class Meta:
         model = UserWorkExperience
         fields = ['user', 'company','work_title', 'start_date', 'end_date', 'country', 'supervisor_name', 'supervisor_tel', 'supervisor_email', 'visa_type']
     
         widgets = {
+            'user': forms.Select(attrs={
+                'class': 'form-control', 'readonly': True}),
             'company': forms.TextInput(attrs={'class': 'form-control'}),
             'work_title': forms.TextInput(attrs={'class': 'form-control'}),
             'start_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),

@@ -53,11 +53,10 @@ class WorkerCreateView(CreateView):
         return super().form_invalid(form)
     
     def get_success_url(self):
-        # return reverse(
-        #     'recruiting_web:worker-detail',
-        #     kwargs={'pk': self.object.pk}
-        # )
-        return reverse('recruiting_web:workers')
+        return reverse(
+            'recruiting_web:worker_detail',
+            kwargs={'pk': self.object.pk}
+        )
 
 
 class WorkerDetailsView(View):
@@ -77,7 +76,7 @@ class CreateWorkExperienceView(BaseCreateView):
 
     def get_success_url(self):
         return reverse(
-            'recruting_web:worker_detail',
+            'recruiting_web:worker_detail',
             kwargs={'pk': self.object.user.pk}
         ) 
     

@@ -4,6 +4,12 @@ from django.http import HttpResponse
 from django.contrib import messages
 
 class BaseCreateView(CreateView):
+    
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['user'] = self.kwargs.get('pk')
+        return initial
+    
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
         for field, errors in form.errors.items():
             for error in errors:
