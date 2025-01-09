@@ -1,19 +1,56 @@
 {% extends 'components/base.html' %}
 {% block body %}
 
-<h1>My Notifications</h1>
-    <ul>
-        {% for notification in notifications %}
-            <li class="{% if notification.status == 'unread' %}unread{% endif %}">
-                <h3>{{ notification.title }}</h3>
-                <p>{{ notification.message }}</p>
-                <small>Category: {{ notification.category }}</small><br>
-                <small>Status: {{ notification.status }}</small><br>
-                <small>Read at: {{ notification.read_at|default:"Not read yet" }}</small>
-            </li>
-        {% empty %}
-            <p>You have no notifications.</p>
-        {% endfor %}
-    </ul>
-    
+<h1>Notifications</h1>
+<hr>
+<div class='notification-container'>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+              <th>Created At</th>
+              <th>Notification Title</th>
+              <th>See more</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for notification in notifications %}
+            <tr>
+              <td>{{ notification.created_at }}</td>
+              <td>{{ notification.title }}</td>
+              <td><a href="#" onclick="toggleMessage('message{{ forloop.counter }}'); return false;">See More</a></td>
+              <td>
+                <a href="#"><i class="side-menu__icon fa fa-trash-o"></i><span
+                        ></span></a>
+                </td>
+            </tr>         
+            <tr id="message{{ forloop.counter }}" style="display: none;">
+              <td colspan="3">
+                <div style="position: relative;">
+                  <p>{{ notification.message }}</p>
+                  <small>Category: {{ notification.category }}</small><br>
+                  <small>Status: {{ notification.status }}</small><br>
+                  <small>Read at: {{ notification.read_at|default:"Not read yet" }}</small><br>
+                  <small>Created at: {{ notification.created_at }}</small><br>
+                  <button class='close-notification'onclick="toggleMessage('message{{ forloop.counter }}'); return false;" >
+                    Close
+                  </button>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        
+</div>
+    <script>
+      function toggleMessage(rowId) {
+        const messageRow = document.getElementById(rowId);
+        if (messageRow.style.display === "none") {
+          messageRow.style.display = "table-row";
+        } else {
+          messageRow.style.display = "none";
+        }
+      }
+    </script>
 {% endblock%}
