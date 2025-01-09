@@ -8,6 +8,7 @@ from recruiting.models import (
     Role, Wages, WorkRequests
 )
 
+from account.models import (UserWorkExperience)
 
 class EmployerForm(forms.ModelForm):
     class Meta:
@@ -481,4 +482,22 @@ class WorkerCreateForm(forms.ModelForm):
             'address_line_1': forms.TextInput(attrs={'class': 'form-control'}),
             'address_line_2': forms.TextInput(attrs={'class': 'form-control'}),
             'city': forms.TextInput(attrs={'class': 'form-control'})   
+        }
+        
+
+class WorkExperienceCreateForm(forms.ModelForm):
+    class Meta:
+        model = UserWorkExperience
+        fields = ['user', 'company','work_title', 'start_date', 'end_date', 'country', 'supervisor_name', 'supervisor_tel', 'supervisor_email', 'visa_type']
+    
+        widgets = {
+            'company': forms.TextInput(attrs={'class': 'form-control'}),
+            'work_title': forms.TextInput(attrs={'class': 'form-control'}),
+            'start_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'end_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'country': forms.TextInput(attrs={'class': 'form-control'}),
+            'supervisor_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'supervisor_tel': forms.TextInput(attrs={'class': 'form-control'}),
+            'supervisor_email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'visa_type': forms.TextInput(attrs={'class': 'form-control'}),
         }

@@ -1,12 +1,16 @@
 from django.urls import reverse
 from django.views import View
 from account.models import User
-from recruiting.forms import WorkerCreateForm
+from recruiting.forms import WorkExperienceCreateForm, WorkerCreateForm
 from django.views.generic import CreateView
 from django.contrib import messages
 from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404, render
 from theme.forms import AdvancedFilterForm, FilterWorkExperienceForm
+
+from account.models import UserWorkExperience
+
+from common.views import BaseCreateView
 
 
 class WorkerListView(View):
@@ -61,3 +65,19 @@ class WorkerDetailsView(View):
         worker = get_object_or_404(User, pk=pk)
         context = {'worker': worker}
         return render(request, 'recruiting/workers/detail.html', context)
+
+
+class CreateWorkExperienceView(BaseCreateView):
+    model = UserWorkExperience
+    form_class = WorkExperienceCreateForm
+    template_name = 'recruiting/workers/work_experience_create.html'
+    
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse(
+            'recruting_web:worker_detail',
+            kwargs={'pk': self.object.user.pk}
+        ) 
+    
