@@ -54,7 +54,6 @@ class UserAccountRecoveryTests(TestCase):
 
     def test_post_email_not_found(self):
         response = self.client.post(self.url, self.invalid_payload)  
-        print(response.data) 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('email', response.data)
         
