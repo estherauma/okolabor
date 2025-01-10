@@ -52,7 +52,7 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
     position = models.CharField(_('position'), null=True,
                                 blank=True, max_length=30)
     telephone = models.CharField(_('telephone'), unique=True,
-                                 null=False, blank=False, max_length=30)
+                                 null=True, blank=True, max_length=30)
     telephone_verified = models.BooleanField(_('telephone_verified'),
                                              default=False)
     mobile = models.CharField(_('mobile'), null=True, blank=True,
