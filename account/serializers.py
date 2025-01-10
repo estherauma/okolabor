@@ -109,17 +109,19 @@ class UserDocumentSerializer(serializers.ModelSerializer):
 class OTPGenerateSerializer(serializers.Serializer):
     phone_number = serializers.CharField(max_length=15, required=True)
     user_id = serializers.CharField(max_length=36)
+    regenerate = serializers.BooleanField(required=False, default=False)
 
     def validate_phone_number(self, value):
+        
         if not value.startswith('+'):
             raise serializers.ValidationError(
-                "Phone number must start with a '+' sign \
-                    and include the country code.")
+                "Phone number must start with a '+' sign and include the country code.")
         if not value[1:].isdigit():
             raise serializers.ValidationError(
-                "Phone number must contain only \
-                    digits after the country code."
+                "Phone number must contain only digits after the country code."
             )
+        if self.initial_data.get('regenerate'):
+            return value
         # make sure the phone number is unique
         if User.objects.filter(telephone=value).exists():
             raise serializers.ValidationError(
