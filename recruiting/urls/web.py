@@ -5,7 +5,7 @@ from recruiting.views.web import (
     EmployerListView, OkoMessageCreateView, OkoMessageListView, RecruiterTodoView, RoleDeductionsCreateView, RoleEmpLocationCreateView,
     RoleHoursCreateView, RoleHousingCreateView, RoleMealsCreateView,
     RoleQualificationsCreateView, RoleWagesCreateView, WorkRequestCreateView,
-    WorkRequestDetailView, WorkRequestRoleCreateView, WorkRequestsListView
+    WorkRequestDetailView, WorkRequestRoleCreateView, WorkRequestsListView,OkoMessageDetailsView
 )
 from recruiting.views.workers import WorkerCreateView, WorkerDetailsView, WorkerListView
 
@@ -80,4 +80,8 @@ urlpatterns = [
     path('workers/<pk>/workexperience/create/',
          CreateWorkExperienceView.as_view(),
          name='worker_experience_create'),
+    path('recruiter/messages/details/', 
+     OkoMessageDetailsView.as_view(), 
+     name='message-details'),
+    
 ]

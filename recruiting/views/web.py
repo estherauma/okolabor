@@ -253,3 +253,7 @@ class OkoMessageCreateView(CreateView):
         return reverse(
             'recruiting_web:recruiter_messages'
         )
+        
+class OkoMessageDetailsView(View):
+    def get(self, request):
+        return render(request, 'recruiting/messages/details.html')
