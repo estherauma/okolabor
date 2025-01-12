@@ -1,3 +1,21 @@
-{% extends 'components/base.html'%}
+{% extends 'components/base.html' %}
+
+{% block title %} Message Details {% endblock title %}
+
 {% block body %}
+
+
+<div class="message-card" style="">
+    <div class="card-header" style="font-size: 1.25rem; font-weight: bold; background-color: #f8f9fa; padding: 10px;">
+        {{ message.subject }}
+    </div>
+    <br>
+    <div>
+        <p><strong>Body:</strong> {{ message.body }}</p>
+        <p><strong>Sent at:</strong> {{ message.created_at}}</p>
+        <a href="#" class="btn gray-color fs-5 reply-icon" title="Reply">&#8617;</a>
+
+        <a href="{% url 'recruiting_web:recruiter_messages' %}" class="btn btn-primary">Back</a>
+    </div>
+</div>
 {% endblock %}
