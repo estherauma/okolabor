@@ -24,6 +24,17 @@
         <form method="POST">
           {% csrf_token %}
           <div class="mb-3">
+            <label for="curp" class="form-label modal-labels-custom">CURP</label>
+            <input
+              type="text"
+              class="form-control"
+              id="curp"
+              name="curp"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
             <label
               for="firstName"
               class="form-label modal-labels-custom"

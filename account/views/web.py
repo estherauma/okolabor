@@ -12,6 +12,15 @@ from django.views.generic.edit import FormView
 from account.forms.account_update import UpdateAccountDetailsForm
 from account.forms.filter_logs import UserLogsFilterForm
 from django.utils import timezone
+from django.conf import settings
+from django.urls import reverse
+from django.contrib.auth.models import Group
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.contrib.sites.shortcuts import get_current_site
 import datetime
 class UserListView(LoginRequiredMixin, View):
     def get(self, request):
@@ -21,8 +30,57 @@ class UserListView(LoginRequiredMixin, View):
             groups__name='recruiter')
         context = {'users': users, 'pending_users': pending}
         return render(request, 'recruiter/manage_users.html', context)
+    
+    def post(self, request):
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        curp = request.POST.get('curp') 
 
+        if not all([first_name, last_name, email, curp]):
+            messages.error(request, "All fields are required.")
+            return redirect('manage_users')
 
+        user = User.objects.create(
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            curp=curp,
+            is_active=True  
+        )
+
+        recruiter_group, _ = Group.objects.get_or_create(name='recruiter')
+        user.groups.add(recruiter_group)
+
+        token = PasswordResetTokenGenerator().make_token(user)
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        
+        current_site = get_current_site(request)
+        site_url = f"{request.scheme}://{current_site.domain}"
+        invite_link = f"{site_url}{reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})}"
+
+        email_subject = "You're Invited!"
+        email_body = render_to_string(
+            'invite_email.html', 
+            {'first_name': first_name, 'invite_link': invite_link}
+        )
+
+        email = EmailMessage(
+            subject=email_subject,
+            body=email_body,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[email],
+        )
+        email.content_subtype = 'html' 
+        email_sent = email.send()
+
+        if email_sent:
+            messages.success(request, "Invitation sent successfully!")
+        else:
+            messages.error(request, "Failed to send email.")
+        
+        return redirect('manage_users')
+  
 class UserActivitLogView(LoginRequiredMixin, View):
     def get(self, request):
         form = UserLogsFilterForm(request.GET)
