@@ -45,6 +45,7 @@
       }
 
       .content {
+        min-height: 100%;
         position: relative; /* Ensure content layers correctly */
         z-index: 1; /* Keeps the content on top */
       }
@@ -100,11 +101,12 @@
           </div>
         </div>
         <!-- main-content closed -->
+        {% include 'components/footer.html' %}
       </div>
 
       {% include 'components/sidebar-right.html' %} {% block modal %} 
       {% endblock %} 
-      {% include 'components/footer.html' %}
+      
     </div>
     <!-- End Page -->
 
