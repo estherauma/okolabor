@@ -12,6 +12,8 @@ from django.views.generic.edit import FormView
 from account.forms.account_update import UpdateAccountDetailsForm
 from account.forms.filter_logs import UserLogsFilterForm
 from django.utils import timezone
+from django.utils.timezone import now
+from account.models import UserNotification
 import datetime
 class UserListView(LoginRequiredMixin, View):
     def get(self, request):
@@ -100,3 +102,13 @@ class UpdatePasswordView(LoginRequiredMixin, FormView):
         """Handle form errors."""
         messages.error(self.request, 'Please correct the errors below.')
         return super().form_invalid(form)
+
+
+class AccountNotificationsView(LoginRequiredMixin, View):
+    template_name = 'notifications.html'
+
+    def get(self, request):
+        notifications = UserNotification.objects.filter(user=request.user).order_by('-created_at')
+        notifications.filter(status='unread').update(status='read', read_at=now())
+        context = {'notifications': notifications}
+        return render(request, self.template_name,context)

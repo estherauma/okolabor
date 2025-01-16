@@ -11,6 +11,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="description" content="Okolabor" />
     <meta name="author" content="FiftyEight" />
+    <link rel='stylesheet' href="{% static 'assets/css/notifications.css'%}" />
     <link rel='stylesheet' href="{% static 'assets/css/details.css'%}" />
     <meta
       name="keywords"
@@ -46,6 +47,7 @@
       }
 
       .content {
+        min-height: 100%;
         position: relative; /* Ensure content layers correctly */
         z-index: 1; /* Keeps the content on top */
       }
@@ -101,11 +103,12 @@
           </div>
         </div>
         <!-- main-content closed -->
+        {% include 'components/footer.html' %}
       </div>
 
       {% include 'components/sidebar-right.html' %} {% block modal %} 
       {% endblock %} 
-      {% include 'components/footer.html' %}
+      
     </div>
     <!-- End Page -->
 
