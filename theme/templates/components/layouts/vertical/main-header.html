@@ -24,11 +24,13 @@
 					<input id="searchBox" class="form-control d-none" placeholder="Search for anything..." type="search">
 			</div>
             <!-- <div class="d-flex align-items-center"> -->
-            <div class="bell-icon-margins">
-                <button id="alertIcon" class="btn">
-                    <i class="fa fa-bell-o user-icon" aria-hidden="true"></i>
-                </button>
-            </div>
+                <div class="bell-icon-margins">
+                    <a href="{% url 'notifications'%}" id="alertIconLink">
+                        <button id="alertIcon" class="btn">
+                            <i class="fa fa-bell-o user-icon" aria-hidden="true"></i>
+                        </button>
+                    </a>
+                </div>
             <!-- </div> -->
 				
                 <!-- Profile Section -->
