@@ -50,24 +50,14 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table text-nowrap border-bottom">
-                        {% comment %} <thead>
-                            <tr>
-                                <th></th>
-                                <th>Subject</th>
-                                <th>Message</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead> {% endcomment %}
                         <tbody>
                             {% for item in items %}
                             <tr>
                                 <td class="green-color align-middle">{{ item.created_at }}</td>
-                                <td class="green-color align-middle">{{ item.subject }}</td>
-                                <td class="green-color align-middle">{{ item.body }}</td>
-                                <td>
-                                  <button class="btn gray-color fs-5" title="Reply">&#11148;</button>
-                                  <button class="btn gray-color fs-5" title="Archive">&#128451;</button>
-                                  <button class="btn gray-color fs-5" title="Delete">&#128465;</button>
+                                <td class="green-color align-middle">
+                                    <a class="text-decoration-underline text-primary fw-bold" title="Details" href="{% url 'recruiting_web:message-details' item.id %}">
+                                        {{ item.subject }}
+                                    </a>
                                 </td>
                             </tr>
                             {% endfor %}

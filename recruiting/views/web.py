@@ -253,3 +253,9 @@ class OkoMessageCreateView(CreateView):
         return reverse(
             'recruiting_web:recruiter_messages'
         )
+    
+class OkoMessageDetailsView(View):
+    def get(self, request,id):
+        message = get_object_or_404(OkoMessage, pk=id)
+        context = {'message': message}
+        return render(request, 'recruiting/messages/details.html',context)
