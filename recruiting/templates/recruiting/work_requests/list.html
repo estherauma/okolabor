@@ -39,7 +39,7 @@
         </ul>
     </div>
     <a href="{% url 'recruiting_web:workrequest_create' %}" class="btn yellow-button">
-        See All Worker Requests
+       Add new job order
     </a>
 </div>
 
@@ -69,7 +69,7 @@
                             </tr>
                         </thead>
                          <tbody>
-                           
+                           {% for item in work_requests %}
                                 <tr>
                                     <td class="tbody">
                                         <a href="/work-requests/{{item.id}}" class="link-color"> {{ item.name }}</a>
@@ -85,9 +85,8 @@
                                     <td class="tbody"> Workers</td>
                                     <td class="tbody"> <a href="/employers/{{item.employer.id}}"> {{item.employer}}</a></td>
                                     <td class="tbody"> {{ item.status }}</td>
-                                   
                                 </tr>
-        
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
