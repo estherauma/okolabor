@@ -88,7 +88,11 @@ class WorkRequestCreateView(CreateView):
 class WorkRequestDetailView(View):
     def get(self, request, pk):
         work_request = get_object_or_404(WorkRequests, pk=pk)
-        context = {'workrequest': work_request}
+        roles = Role.objects.filter(work_request=work_request)
+        context = {
+            'workrequest': work_request,
+            'roles': roles, 
+        }
         return render(request, 'recruiting/work_requests/detail.html', context)
 
 
