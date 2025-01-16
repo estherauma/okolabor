@@ -11,6 +11,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="description" content="Okolabor" />
     <meta name="author" content="FiftyEight" />
+    <link rel='stylesheet' href="{% static 'assets/css/notifications.css'%}" />
     <meta
       name="keywords"
       content="admin, dashboard, admin template, crm, codeigniter, codeigniter admin panel, codeigniter admin template, codeigniter dasdhboard, codeigniter dasdhboard template, codeigniter ui template, codeigniter framework, codeigniter admin dashboard, admin theme, Bootstrap Admin Themes, bootstrap"
@@ -45,6 +46,7 @@
       }
 
       .content {
+        min-height: 100%;
         position: relative; /* Ensure content layers correctly */
         z-index: 1; /* Keeps the content on top */
       }
@@ -100,11 +102,12 @@
           </div>
         </div>
         <!-- main-content closed -->
+        {% include 'components/footer.html' %}
       </div>
 
       {% include 'components/sidebar-right.html' %} {% block modal %} 
       {% endblock %} 
-      {% include 'components/footer.html' %}
+      
     </div>
     <!-- End Page -->
 
