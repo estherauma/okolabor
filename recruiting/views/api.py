@@ -63,7 +63,7 @@ class WorkRequestRoleDetailView(RetrieveUpdateDestroyAPIView):
         operation_summary='Retrieve a specific work request role',
         tags=['Work-Requests']
     )
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs): 
         return self.retrieve(request, *args, **kwargs)
 
     @swagger_auto_schema(
@@ -86,3 +86,18 @@ class WorkRequestRoleDetailView(RetrieveUpdateDestroyAPIView):
     )
     def delete(self, request, *args, **kwargs):
         pass
+
+
+class RoleAPIListView(ListCreateAPIView):
+    queryset = Role.objects.all()
+    serializer_class = RoleSerializer
+    permission_classes = (IsAuthenticated,)
+
+    @swagger_auto_schema(
+        operation_summary='Retrieve all roles',
+        tags=['Roles']
+    )
+    def get(self, request, *args, **kwargs):
+        serializer = self.get_serializer(self.get_queryset(), many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+

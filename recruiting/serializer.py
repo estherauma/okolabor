@@ -33,6 +33,13 @@ class WorkRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkRequests
         fields = '__all__'
+        
+class RoleWorkRequestSerializer(serializers.ModelSerializer):
+    employer = EmployerSerializer(read_only=True)
+
+    class Meta:
+        model = WorkRequests
+        fields = '__all__'
 
 
 class HoursSerializer(serializers.ModelSerializer):
@@ -79,6 +86,7 @@ class RoleSerializer(serializers.ModelSerializer):
     employment_location = EmploymentLocationSerializer(read_only=True)
     housing_information = HousingInformationSerializer(read_only=True)
     meal_provision = MealProvisionSerializer(read_only=True)
+    work_request = RoleWorkRequestSerializer(read_only=True)
 
     class Meta:
         model = Role
