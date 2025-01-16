@@ -24,6 +24,17 @@
         <form method="POST">
           {% csrf_token %}
           <div class="mb-3">
+            <label for="curp" class="form-label modal-labels-custom">CURP</label>
+            <input
+              type="text"
+              class="form-control"
+              id="curp"
+              name="curp"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
             <label
               for="firstName"
               class="form-label modal-labels-custom"
@@ -73,9 +84,7 @@
             >
             <select class="form-select" id="role" name="role" required>
               <option value="" disabled selected>Select Role</option>
-              <option value="admin">Admin</option>
-              <option value="editor">Editor</option>
-              <option value="viewer">Viewer</option>
+              <option value="admin">Recruiter</option>
             </select>
           </div>
           <div class="d-flex justify-content-center gap-2 mt-4">
