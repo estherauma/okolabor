@@ -26,22 +26,22 @@
                         <thead>
                             <tr>
                                 <th>Job Title</th>
-                                <th>Workers Required</th>
-                                <th>Months of experience</th>
+                                <th>Number of Workers Required</th>
                             </tr>
                         </thead>
                         <tbody>
+                            {% for role in roles %}
                             <tr>
-                                <td>Apple pickers</td>
-                                <td>32</td>
-                                <td>3</td>
+                                <td>{{ role.title }}</td>
+                                <td>{{ role.number_of_required_workers }}</td>
                             </tr>
+                            {% empty %}
                             <tr>
-                                <td>Combined Harvester Driver</td>
-                                <td>24</td>
-                                <td>3</td>
+                                <td colspan="2">No roles available for this work request.</td>
                             </tr>
+                            {% endfor %}
                         </tbody>
+                        
                     </table>
                 </div>
             </div>
