@@ -6,9 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invite email</title>
 </head>
-<body>
+<body style="background-color: #7DBF96; color: #fff;">
 
-    <img src="https://drive.google.com/file/d/13UKm_LP4QVg9OTcqwUAFXn2Ud4K30nR6/view" alt="Okolabor" style="max-width: 200px;">
+    <div style="display: flex; width: 100%; justify-content: center;">
+        <img class="sidebar-logo" 
+        src="{{site_url}}{% static 'assets/images/login/logo.svg' %}" 
+        alt="Okolabor" />
+    </div>
+   
 
     <p>Hello {{ first_name }},</p>
 
@@ -19,6 +24,9 @@
     <p><a href="{{ invite_link }}">Update your password</a></p>
 
     <p>Best regards,<br>Your Team</p>
+
+    
+
 
 </body>
 </html>
