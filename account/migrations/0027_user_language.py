@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='user',
             name='language',
-            field=models.CharField(choices=[('en', 'English'), ('es_MX', 'Español (Mexico)')], default='en', max_length=10),
+            field=models.CharField(choices=[('en', 'English'), ('es-mx', 'Español (Mexico)')], default='en', max_length=10),
         ),
     ]

@@ -269,3 +269,7 @@ if config('SENTRY_DSN', default=None):
             "continuous_profiling_auto_start": True,
         },
     )
+
+# i18n
+
+LOCALE_PATHS = [BASE_DIR / 'locale']
