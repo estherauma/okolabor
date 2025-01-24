@@ -1,9 +1,9 @@
-from django.db import models
-from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
-from common.models import AuditableModel
+from django.contrib.auth.models import PermissionsMixin
+from django.db import models
 from django.utils.translation import gettext_lazy as _
-from common.models import BaseModel
+
+from common.models import AuditableModel, BaseModel
 
 
 class UserManager(BaseUserManager):
@@ -35,6 +35,10 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
+class LanguageChoices(models.TextChoices):
+    EN = 'en', 'English'
+    ES_MX = 'es_MX', 'Español (Mexico)'
+
 class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
     email = models.EmailField(_('email address'), unique=True)
     curp = models.CharField(_('curp'), max_length=18, unique=True)
@@ -47,6 +51,8 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
     reset_password_token = models.CharField(null=True,
                                             blank=True, max_length=125)
     profile_image = models.URLField(null=True, blank=True)
+    language = models.CharField(max_length=10, default=LanguageChoices.EN,
+                                choices=LanguageChoices.choices)
     access_code = models.CharField(_('access_code'), null=True,
                                    blank=True, max_length=30)
     position = models.CharField(_('position'), null=True,
@@ -167,7 +173,7 @@ class UserJobExperience(AuditableModel):
     type_details = models.CharField(max_length=256, null=True, blank=True)
     # duration = models.IntegerField(null=False, blank=False)
     # duration_type = models.CharField(max_length=256, null=False, blank=False)
-    
+
 
     def __str__(self):
         return f'{self.user.curp} - {self.job_type}'
@@ -186,7 +192,7 @@ class UserJobExperienceDetails(AuditableModel):
     kind = models.CharField(max_length=256, null=False, blank=False)
     value = models.CharField(max_length=256, null=False, blank=False)
     is_attachment = models.BooleanField(default=False)
-    
+
 
     def __str__(self):
         return f'{self.user.curp}'
