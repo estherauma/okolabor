@@ -1,50 +1,48 @@
 {% extends 'components/base.html' %}
 {% block body %}
-<h1>Notifications</h1>
-<hr>
-<div class='container-dropdown'>
-    <a href="#" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">Worker Requests</a>
-    <a href="#" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">Filter by Date</a>
-    <a href="#" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">New</a>
+<h1>{% translate "Notifications" %}</h1>
+<hr/>
+<div class="container-dropdown">
+<a class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" href="#">{% translate "Worker Requests" %}</a>
+<a class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" href="#">{% translate "Filter by Date" %}</a>
+<a class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" href="#">{% translate "New" %}</a>
 </div>
-<br>
-<div class='notification-container'>
+<br/>
+<div class="notification-container">
     {% if notifications %}
     <table class="table table-striped">
-        <thead>
-            <tr>
-            </tr>
-        </thead>
-        <tbody>
+<thead>
+<tr>
+</tr>
+</thead>
+<tbody>
             {% for notification in notifications %}
             
             <tr>
-              <td>{{ notification.created_at }}</td>
-              <td>{{ notification.title }}</td>
-              <td><a href="#" onclick="toggleMessage('message{{ forloop.counter }}'); return false;">See More</a></td>
-              <td>
-                <a href="#"><i class="side-menu__icon fa fa-trash-o"></i><span></span></a>
-              </td>
-            </tr>         
-            <tr id="message{{ forloop.counter }}" style="display: none;">
-              <td colspan="3">
-                <div style="position: relative;">
-                  <p>{{ notification.message }}</p>
-                  <small>Category: {{ notification.category }}</small><br>
-                  <small>Status: {{ notification.status }}</small><br>
-                  <small>Read at: {{ notification.read_at|default:"Not read yet" }}</small><br>
-                  <small>Created at: {{ notification.created_at }}</small><br>
-                  <button class='close-notification' onclick="toggleMessage('message{{ forloop.counter }}'); return false;" >
-                    Close
-                  </button>
-                </div>
-              </td>
-            </tr>
+<td>{{ notification.created_at }}</td>
+<td>{{ notification.title }}</td>
+<td><a href="#" onclick="toggleMessage('message{{ forloop.counter }}'); return false;">{% translate "See More" %}</a></td>
+<td>
+<a href="#"><i class="side-menu__icon fa fa-trash-o"></i><span></span></a>
+</td>
+</tr>
+<tr id="message{{ forloop.counter }}" style="display: none;">
+<td colspan="3">
+<div style="position: relative;">
+<p>{{ notification.message }}</p>
+<small>Category: {{ notification.category }}</small><br/>
+<small>Status: {{ notification.status }}</small><br/>
+<small>Read at: {{ notification.read_at|default:"Not read yet" }}</small><br/>
+<small>Created at: {{ notification.created_at }}</small><br/>
+<button class="close-notification" onclick="toggleMessage('message{{ forloop.counter }}'); return false;">{% translate "Close" %}</button>
+</div>
+</td>
+</tr>
             {% endfor %}
         </tbody>
-    </table>
+</table>
     {% else %}
-    <p>No notifications available.</p>
+    <p>{% translate "No notifications available." %}</p>
     {% endif %}
 </div>
 <script>

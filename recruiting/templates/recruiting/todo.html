@@ -2,100 +2,66 @@
 To Do 
 {% endblock title%} {% block body %}
 <div class="page-header">
-  <div>
-    <h1 class="page-title">To Do</h1>
-  </div>
+<div>
+<h1 class="page-title">{% translate "To Do" %}</h1>
 </div>
-
+</div>
 <div class="parent-btn-grp">
-  <div class="dropdown-container">
-    <div class="dropdown">
-      <button
-        class="btn dropdown-toggle dropdown-btn"
-        type="button"
-        id="dropdownMenuButton"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-      >
-        Worker Requests
-      </button>
-
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <li><a class="dropdown-item" href="#">Option 1</a></li>
-        <li><a class="dropdown-item" href="#">Option 2</a></li>
-        <li><a class="dropdown-item" href="#">Option 3</a></li>
-      </ul>
-    </div>
-
-    <div class="dropdown">
-      <button
-        class="btn dropdown-toggle dropdown-btn"
-        type="button"
-        id="dropdownMenuButton"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-      >
-        Filter By Date
-      </button>
-
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <li><a class="dropdown-item" href="#">Option 1</a></li>
-        <li><a class="dropdown-item" href="#">Option 2</a></li>
-        <li><a class="dropdown-item" href="#">Option 3</a></li>
-      </ul>
-    </div>
-
-    <div class="dropdown">
-      <button
-        class="btn dropdown-toggle dropdown-btn"
-        type="button"
-        id="dropdownMenuButton"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-      >
-        New
-      </button>
-
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <li><a class="dropdown-item" href="#">Option 1</a></li>
-        <li><a class="dropdown-item" href="#">Option 2</a></li>
-        <li><a class="dropdown-item" href="#">Option 3</a></li>
-      </ul>
-    </div>
-  </div>
+<div class="dropdown-container">
+<div class="dropdown">
+<button aria-expanded="false" class="btn dropdown-toggle dropdown-btn" data-bs-toggle="dropdown" id="dropdownMenuButton" type="button">{% translate "Worker Requests" %}</button>
+<ul aria-labelledby="dropdownMenuButton" class="dropdown-menu">
+<li><a class="dropdown-item" href="#">{% translate "Option 1" %}</a></li>
+<li><a class="dropdown-item" href="#">{% translate "Option 2" %}</a></li>
+<li><a class="dropdown-item" href="#">{% translate "Option 3" %}</a></li>
+</ul>
 </div>
-
+<div class="dropdown">
+<button aria-expanded="false" class="btn dropdown-toggle dropdown-btn" data-bs-toggle="dropdown" id="dropdownMenuButton" type="button">{% translate "Filter By Date" %}</button>
+<ul aria-labelledby="dropdownMenuButton" class="dropdown-menu">
+<li><a class="dropdown-item" href="#">{% translate "Option 1" %}</a></li>
+<li><a class="dropdown-item" href="#">{% translate "Option 2" %}</a></li>
+<li><a class="dropdown-item" href="#">{% translate "Option 3" %}</a></li>
+</ul>
+</div>
+<div class="dropdown">
+<button aria-expanded="false" class="btn dropdown-toggle dropdown-btn" data-bs-toggle="dropdown" id="dropdownMenuButton" type="button">{% translate "New" %}</button>
+<ul aria-labelledby="dropdownMenuButton" class="dropdown-menu">
+<li><a class="dropdown-item" href="#">{% translate "Option 1" %}</a></li>
+<li><a class="dropdown-item" href="#">{% translate "Option 2" %}</a></li>
+<li><a class="dropdown-item" href="#">{% translate "Option 3" %}</a></li>
+</ul>
+</div>
+</div>
+</div>
 <div class="row">
-  <div class="col-md-12">
-    <div class="card">
-      <div class="card-body">
-        <div class="table-responsive">
-          <table
-            id="basic-datatable"
-            class="table text-nowrap border-bottom"
-          >
-            <thead>
-                <h3 class="card-title green-color fw-bold">In Progress</h3>
-            </thead>
-            <tbody>
+<div class="col-md-12">
+<div class="card">
+<div class="card-body">
+<div class="table-responsive">
+<table class="table text-nowrap border-bottom" id="basic-datatable">
+<thead>
+<h3 class="card-title green-color fw-bold">{% translate "In Progress" %}</h3>
+</thead>
+<tbody>
               {% for task in todos %}
               <tr class="green-color text-start">
-                <td>{{ task.created_at }}</td>
-                <td>{{ task.name }} for {{task.employer.name}}</td>
-                 <td>{{ task.assigned_to }}</td>
-                <td>
-                  <a href="/sample" class="link-color"> See More</a>
-                </td>
-                <td class="d-flex justify-content-center">
-                    <input type="checkbox" class="table-checkbox" /> <span class="todo-checkbox-text-gap">Complete</span></td>
-              </tr>
+<td>{{ task.created_at }}</td>
+<td>{{ task.name }} for {{task.employer.name}}</td>
+<td>{{ task.assigned_to }}</td>
+<td>
+<a class="link-color" href="/sample">{% translate "See More" %}</a>
+</td>
+<td class="d-flex justify-content-center">
+<input class="table-checkbox" type="checkbox"/> <span class="todo-checkbox-text-gap">{% translate "Complete" %}</span></td>
+</tr>
               {% endfor %}
             </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
+</table>
+</div>
+</div>
+</div>
+</div>
 
   {% endblock %}
 </div>

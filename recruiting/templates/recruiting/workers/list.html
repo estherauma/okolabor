@@ -1,257 +1,175 @@
 {% extends 'components/base.html' %} {% load static %} {% block styles %}
 <!-- SELECT2 CSS -->
-<link
-  href="{% static ''%}assets/plugins/select2/select2.min.css"
-  rel="stylesheet"
-/>
-
+<link href="{% static ''%}assets/plugins/select2/select2.min.css" rel="stylesheet"/>
 <!-- DATA TABLE CSS -->
-<link
-  href="{% static ''%}assets/plugins/datatable/css/dataTables.bootstrap5.css"
-  rel="stylesheet"
-/>
-<link
-  href="{% static ''%}assets/plugins/datatable/css/buttons.bootstrap5.min.css"
-  rel="stylesheet"
-/>
-<link
-  href="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.css"
-  rel="stylesheet"
-/>
-
-<link href="{% static ''%}assets/css/workers.css" rel="stylesheet" />
+<link href="{% static ''%}assets/plugins/datatable/css/dataTables.bootstrap5.css" rel="stylesheet"/>
+<link href="{% static ''%}assets/plugins/datatable/css/buttons.bootstrap5.min.css" rel="stylesheet"/>
+<link href="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.css" rel="stylesheet"/>
+<link href="{% static ''%}assets/css/workers.css" rel="stylesheet"/>
 {% endblock styles %} {% block body %}
 
 <div class="container-fluid" style="position: relative; height: auto">
-  <div class="row">
-    <div class="page-header custom-page-header d-flex flex-column">
-      <h1 class="page-title">Workers</h1>
-      <div class="search-bar-workers">
-        <div class="container">
-          <form method="get">
-            <div class="input-group search-input-group">
-              <button class="btn search-btn" type="submit">
-                <i class="fa fa-search"></i>
-              </button>
-              <input
-                type="text"
-                class="form-control search-input"
-                name="query"
-                placeholder="Search 'Workers'"
-                aria-label="Search"
-              />
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+<div class="row">
+<div class="page-header custom-page-header d-flex flex-column">
+<h1 class="page-title">{% translate "Workers" %}</h1>
+<div class="search-bar-workers">
+<div class="container">
+<form method="get">
+<div class="input-group search-input-group">
+<button class="btn search-btn" type="submit">
+<i class="fa fa-search"></i>
+</button>
+<input aria-label="Search" class="form-control search-input" name="query" placeholder="Search 'Workers'" type="text"/>
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
 
   {% comment %}
   <div class="row">
-    <div class="col-md-12">
+<div class="col-md-12">
       {% endcomment %}
       <div class="d-flex justify-content-between">
-        <button class="btn green-color-workers">
-          <i class="fa fa-filter" aria-hidden="true"></i> Advanced Filter
-        </button>
-        <button
-          class="btn green-color-workers collapsed toggle-sign"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#collapseCard"
-          aria-expanded="false"
-          aria-controls="collapsewithbutton"
-        >
-          <span class="sign medium-font">+</span>
-        </button>
-      </div>
+<button class="btn green-color-workers">
+<i aria-hidden="true" class="fa fa-filter"></i>{% translate "Advanced Filter" %}</button>
+<button aria-controls="collapsewithbutton" aria-expanded="false" class="btn green-color-workers collapsed toggle-sign" data-bs-target="#collapseCard" data-bs-toggle="collapse" type="button">
+<span class="sign medium-font">+</span>
+</button>
+</div>
 
       {% comment %}
       <div class="card offwhite-color">
         {% endcomment %}
 
         <div class="collapse" id="collapseCard">
-          <div class="card offwhite-color card-body">
-            <span class="d-flex align-items-center">
-              <h3 class="card-title green-color d-contents">
-                Select primary job experience
-              </h3>
-              <button
-                class="btn btn-link green-color-workers"
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                title="Fill in the fields to add job experience"
-              >
-                <i class="fa fa-question-circle-o" aria-hidden="true"></i>
-                What's this?
-              </button>
-            </span>
-            <form method="post">
+<div class="card offwhite-color card-body">
+<span class="d-flex align-items-center">
+<h3 class="card-title green-color d-contents">{% translate "Select primary job experience" %}</h3>
+<button class="btn btn-link green-color-workers" data-bs-placement="top" data-bs-toggle="tooltip" title="Fill in the fields to add job experience">
+<i aria-hidden="true" class="fa fa-question-circle-o"></i>{% translate "What's this?" %}</button>
+</span>
+<form method="post">
               {% csrf_token %}
               <div class="row align-items-center">
                 {% for field in form %}
                 <div class="col">
-                  <div class="form-group">
-                    <label
-                      for="{{ field.id_for_label }}"
-                      class="form-label gray-color text"
-                      >{{ field.label }}
+<div class="form-group">
+<label class="form-label gray-color text" for="{{ field.id_for_label }}">{{ field.label }}
                     </label>
                     {{ field }}
                   </div>
-                </div>
+</div>
                 {% endfor %}
                 <div class="col-auto">
-                  <button class="btn" type="button">
-                    <span class="sign medium-font">x</span>
-                  </button>
-                </div>
-              </div>
-            </form>
-            <span class="d-flex align-items-center mt-3 mb-3">
-              <h3 class="card-title green-color">Other experience</h3>
-            </span>
-            <form method="post">
+<button class="btn" type="button">
+<span class="sign medium-font">{% translate "x" %}</span>
+</button>
+</div>
+</div>
+</form>
+<span class="d-flex align-items-center mt-3 mb-3">
+<h3 class="card-title green-color">{% translate "Other experience" %}</h3>
+</span>
+<form method="post">
               {% csrf_token %}
               <div class="row align-items-center">
                 {% for field in form %}
                 <div class="col">
-                  <div class="form-group">
-                    <label
-                      for="{{ field.id_for_label }}"
-                      class="form-label gray-color text"
-                      >{{ field.label }}
+<div class="form-group">
+<label class="form-label gray-color text" for="{{ field.id_for_label }}">{{ field.label }}
                     </label>
                     {{ field }}
                   </div>
-                </div>
+</div>
                 {% endfor %}
                 <div class="col-auto">
-                  <button class="btn" type="button">
-                    <span class="sign medium-font">x</span>
-                  </button>
-                </div>
-              </div>
-            </form>
-            <a
-              href="{% url 'recruiting_web:workrequest_create' %}"
-              class="btn light-green-button min-content-width"
-            >
-              <span>
-                <i class="fe fe-plus"></i>
-              </span>
-              Add another experience
-            </a>
-
-            <div class="form-row align-items-center">
-              <span class="mt-5 ms-2 mb-3">
-                <h3 class="card-title green-color d-contents">
-                  Further Filters
-                </h3>
-              </span>
-            </div>
-            <form method="post">
+<button class="btn" type="button">
+<span class="sign medium-font">{% translate "x" %}</span>
+</button>
+</div>
+</div>
+</form>
+<a class="btn light-green-button min-content-width" href="{% url 'recruiting_web:workrequest_create' %}">
+<span>
+<i class="fe fe-plus"></i>
+</span>{% translate "Add another experience" %}</a>
+<div class="form-row align-items-center">
+<span class="mt-5 ms-2 mb-3">
+<h3 class="card-title green-color d-contents">{% translate "Further Filters" %}</h3>
+</span>
+</div>
+<form method="post">
               {% csrf_token %}
               <div class="row align-items-center">
                 {% for field in form %}
                 <div class="col-md-4 col-sm-6 col-xs-6">
-                  <div class="form-group">
-                    <label
-                      for="{{ field.id_for_label }}"
-                      class="form-label gray-color"
-                      >{{ field.label }}
+<div class="form-group">
+<label class="form-label gray-color" for="{{ field.id_for_label }}">{{ field.label }}
                     </label>
                     {{ field }}
                   </div>
-                </div>
+</div>
                 {% endfor %}
               </div>
-            </form>
-          </div>
-        </div>
-
-        <div class="row row-sm">
-          <div class="col-lg-12">
-            <div class="row mb-2">
-              <div class="col-md-1 col-sm-1 col-xs-12">
-                <button class="setting-btn">
-                  <i class="fa fa-cog" aria-hidden="true"></i>
-                </button>
-              </div>
-
-              <div class="col-md-11 col-sm-11 col-xs-12">
-                <div class="d-flex align-items-center justify-content-end">
-                  <p class="theading-color show-text show-text">SHOW RESULTS</p>
-                  <div class="dropdown ms-3">
-                    <button
-                      class="btn dropdown-toggle dropdown-btn"
-                      type="button"
-                      id="dropdownMenuButton"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      Select Rows
-                    </button>
-
-                    <ul
-                      class="dropdown-menu"
-                      aria-labelledby="dropdownMenuButton"
-                    >
-                      <li><a class="dropdown-item" href="#">5 per page</a></li>
-                      <li><a class="dropdown-item" href="#">10 per page</a></li>
-                      <li><a class="dropdown-item" href="#">15 per page</a></li>
-                      <li><a class="dropdown-item" href="#">20 per page</a></li>
-                    </ul>
-                  </div>
-
-                  <a
-                    href="#"
-                    class="btn dark-green-button ms-3"
-                  >
-                    <span>
-                      <i class="fe fe-plus"></i>
-                    </span>
-                    Add to
-                  </a>
-                  <a
-                    href="{% url 'recruiting_web:recruiter_create_worker' %}"
-                    class="btn dark-green-button ms-3"
-                  >
-                    <span>
-                      <i class="fe fe-plus"></i>
-                    </span>
-                    Add worker
-                  </a>
-                </div>
-              </div>
+</form>
+</div>
+</div>
+<div class="row row-sm">
+<div class="col-lg-12">
+<div class="row mb-2">
+<div class="col-md-1 col-sm-1 col-xs-12">
+<button class="setting-btn">
+<i aria-hidden="true" class="fa fa-cog"></i>
+</button>
+</div>
+<div class="col-md-11 col-sm-11 col-xs-12">
+<div class="d-flex align-items-center justify-content-end">
+<p class="theading-color show-text show-text">{% translate "SHOW RESULTS" %}</p>
+<div class="dropdown ms-3">
+<button aria-expanded="false" class="btn dropdown-toggle dropdown-btn" data-bs-toggle="dropdown" id="dropdownMenuButton" type="button">{% translate "Select Rows" %}</button>
+<ul aria-labelledby="dropdownMenuButton" class="dropdown-menu">
+<li><a class="dropdown-item" href="#">{% translate "5 per page" %}</a></li>
+<li><a class="dropdown-item" href="#">{% translate "10 per page" %}</a></li>
+<li><a class="dropdown-item" href="#">{% translate "15 per page" %}</a></li>
+<li><a class="dropdown-item" href="#">{% translate "20 per page" %}</a></li>
+</ul>
+</div>
+<a class="btn dark-green-button ms-3" href="#">
+<span>
+<i class="fe fe-plus"></i>
+</span>{% translate "Add to" %}</a>
+<a class="btn dark-green-button ms-3" href="{% url 'recruiting_web:recruiter_create_worker' %}">
+<span>
+<i class="fe fe-plus"></i>
+</span>{% translate "Add worker" %}</a>
+</div>
+</div>
 
               {% comment %}
             </div>
             {% endcomment %}
           </div>
-          <div class="card">
-            <div class="card-body">
-              <div class="table-responsive">
-                <table
-                  class="table text-nowrap border-bottom"
-                  id="basic-datatable"
-                >
-                  <thead>
-                    <tr>
-                      <th class="theading-color">Name</th>
-                      <th class="theading-color">Town</th>
-                      <th class="theading-color">Profile Completion</th>
-                      <th class="theading-color">Experience</th>
-                      <th class="theading-color">English proficiency</th>
-                      <th class="theading-color">Location preference</th>
-                      <th class="theading-color">Offer status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+<div class="card">
+<div class="card-body">
+<div class="table-responsive">
+<table class="table text-nowrap border-bottom" id="basic-datatable">
+<thead>
+<tr>
+<th class="theading-color">{% translate "Name" %}</th>
+<th class="theading-color">{% translate "Town" %}</th>
+<th class="theading-color">{% translate "Profile Completion" %}</th>
+<th class="theading-color">{% translate "Experience" %}</th>
+<th class="theading-color">{% translate "English proficiency" %}</th>
+<th class="theading-color">{% translate "Location preference" %}</th>
+<th class="theading-color">{% translate "Offer status" %}</th>
+</tr>
+</thead>
+<tbody>
                     {% for worker in workers %}
                     <tr class="text-center">
-                      <td>
+<td>
                         {% if worker.firstname and worker.lastname %}
                         <a href="workers/{{ worker.id }}">
                           {{ worker.firstname }} {{ worker.lastname }}
@@ -262,35 +180,32 @@
                         <a href="workers/{{worker.id}}"> {{ worker.email }} </a>
                         {% endif %}
                       </td>
-                      <td>Chloe</td>
-                      <td>30%</td>
-                      <td>Harvesting, Fruit picking</td>
-                      <td>Intermediate</td>
-                      <td>Any</td>
-                      <td>Pending</td>
-                    </tr>
+<td>{% translate "Chloe" %}</td>
+<td>30%</td>
+<td>{% translate "Harvesting, Fruit picking" %}</td>
+<td>{% translate "Intermediate" %}</td>
+<td>{% translate "Any" %}</td>
+<td>{% translate "Pending" %}</td>
+</tr>
                     {% endfor %}
                   </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <button
-        class="btn btn-success mb-2"
-        style="
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<button class="btn btn-success mb-2" style="
           margin-left: 1500px;
           font-weight: bolder;
           border-radius: 50%;
           width: 50px;
           height: 50px;
           padding: 0;
-        "
-      >
+        ">
         +
       </button>
-    </div>
+</div>
 
     {% endblock body %} {% block scripts %}
 
@@ -307,23 +222,22 @@
         toggleButton.querySelector(".sign").textContent = "+"; // Show '+' when collapsed
       });
     </script>
-    <!-- INTERNAL SELECT2 JS -->
-    <script src="{% static ''%}assets/plugins/select2/select2.full.min.js"></script>
-
-    <!-- DATA TABLE JS-->
-    <script src="{% static ''%}assets/plugins/datatable/js/jquery.dataTables.min.js"></script>
-    <script src="{% static ''%}assets/plugins/datatable/js/dataTables.bootstrap5.js"></script>
-    <script src="{% static ''%}assets/plugins/datatable/js/dataTables.buttons.min.js"></script>
-    <script src="{% static ''%}assets/plugins/datatable/js/buttons.bootstrap5.min.js"></script>
-    <script src="{% static ''%}assets/plugins/datatable/js/jszip.min.js"></script>
-    <script src="{% static ''%}assets/plugins/datatable/pdfmake/pdfmake.min.js"></script>
-    <script src="{% static ''%}assets/plugins/datatable/pdfmake/vfs_fonts.js"></script>
-    <script src="{% static ''%}assets/plugins/datatable/js/buttons.html5.min.js"></script>
-    <script src="{% static ''%}assets/plugins/datatable/js/buttons.print.min.js"></script>
-    <script src="{% static ''%}assets/plugins/datatable/js/buttons.colVis.min.js"></script>
-    <script src="{% static ''%}assets/plugins/datatable/dataTables.responsive.min.js"></script>
-    <script src="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.min.js"></script>
-    <script src="{% static ''%}assets/js/table-data.js"></script>
+<!-- INTERNAL SELECT2 JS -->
+<script src="{% static ''%}assets/plugins/select2/select2.full.min.js"></script>
+<!-- DATA TABLE JS-->
+<script src="{% static ''%}assets/plugins/datatable/js/jquery.dataTables.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/dataTables.bootstrap5.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/dataTables.buttons.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.bootstrap5.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/jszip.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/pdfmake/pdfmake.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/pdfmake/vfs_fonts.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.html5.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.print.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.colVis.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/dataTables.responsive.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.min.js"></script>
+<script src="{% static ''%}assets/js/table-data.js"></script>
     {% endblock scripts %}
   </div>
 </div>
