@@ -14,13 +14,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf import settings
-from django.conf.urls.static import static
-from django.urls import path, include
-from jaguar.views import IndexView, UploadFileView, schema_view
-from django.contrib import admin
 from django.conf.urls import url
+from django.conf.urls.static import static
+from django.contrib import admin
+from django.urls import include, path
 from django.views.static import serve
 
+from jaguar.views import IndexView, UploadFileView, schema_view
 
 urlpatterns = [
     # API URLS
@@ -40,6 +40,7 @@ urlpatterns = [
     # WEB URLS
     path('account/', include('account.urls.web')),
 
+    path("i18n/", include("django.conf.urls.i18n")),
 ]
 
 if settings.DEBUG:
