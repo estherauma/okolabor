@@ -1,78 +1,117 @@
 {% extends 'components/base.html' %}
 {% block body %}
-
 <div class="page-header">
-<div>
-<h1 class="page-title">{% translate "Manage Users" %}</h1>
-</div>
+ <div>
+  <h1 class="page-title">
+   {% translate "Manage Users" %}
+  </h1>
+ </div>
 </div>
 <div class="row">
-<div class="col-md-8">
-<div class="card">
-<div class="card-body">
-<div class="d-flex justify-content-between">
-<h3 class="card-title green-color fw-bold mb-1">{% translate "Existing Users" %}</h3>
-<button class="btn btn yellow-button btn-icon ms-auto p-1" data-bs-backdrop="false" data-bs-target="#inviteUserModal" data-bs-toggle="modal">{% translate "+ New User" %}</button>
-</div>
-<div class="table-responsive">
-<table class="table text-nowrap border-bottom">
-<thead>
-<tr>
-<th class="theading-color text-start">{% translate "User" %}</th>
-<th class="theading-color text-start">{% translate "Email" %}</th>
-<th class="theading-color text-start">{% translate "Last Accessed" %}</th>
-<th class="theading-color text-start">{% translate "Actions" %}</th>
-</tr>
-</thead>
-<tbody>
-              {% for user in users %}
-              <tr class="green-color text-start">
-<td>{{user.first_name}} {{user.last_name}}</td>
-<td>{{user.email}}</td>
-<td>{% translate "Jan 24, 2024" %}</td>
-<td>
-<i class="side-menu__icon icon icon-pencil me-2 cursor-pointer" data-bs-backdrop="false" data-bs-target="#editUserModal" data-bs-toggle="modal"></i>
-<i class="side-menu__icon fa fa-trash-o cursor-pointer" data-bs-backdrop="false" data-bs-target="#confirmationModal" data-bs-toggle="modal"></i>
-</td>
-</tr>
-</tbody>
-            {% endfor %}
-          </table>
-</div>
-</div>
-</div>
-<div class="card">
-<div class="card-body">
-<h3 class="card-title green-color fw-bold mb-1">{% translate "Pending Users" %}</h3>
-<div class="table-responsive">
-<table class="table text-nowrap border-bottom">
-<thead>
-<tr>
-<th class="theading-color text-start">{% translate "User" %}</th>
-<th class="theading-color text-start">{% translate "Email" %}</th>
-<th class="theading-color text-start">{% translate "Last Accessed" %}</th>
-<th class="theading-color text-start">{% translate "Actions" %}</th>
-</tr>
-</thead>
-<tbody>
-              {% for user in pending_users %}
-              <tr class="green-color text-start">
-<td>{{user.first_name}} {{user.last_name}}</td>
-<td>{{user.email}}</td>
-<td>{% translate "Jan 24, 2024" %}</td>
-<td>
-<i class="side-menu__icon icon icon-pencil me-2 cursor-pointer" data-bs-backdrop="false" data-bs-target="#editUserModal" data-bs-toggle="modal"></i>
-<i class="side-menu__icon fa fa-trash-o cursor-pointer" data-bs-backdrop="false" data-bs-target="#confirmationModal" data-bs-toggle="modal"></i>
-</td>
-</tr>
-              {% endfor %}
-            </tbody>
-</table>
-</div>
-</div>
-</div>
-</div>
-<!-- COL END -->
+ <div class="col-md-8">
+  <div class="card">
+   <div class="card-body">
+    <div class="d-flex justify-content-between">
+     <h3 class="card-title green-color fw-bold mb-1">
+      {% translate "Existing Users" %}
+     </h3>
+     <button class="btn btn yellow-button btn-icon ms-auto p-1" data-bs-backdrop="false" data-bs-target="#inviteUserModal" data-bs-toggle="modal">
+      {% translate "+ New User" %}
+     </button>
+    </div>
+    <div class="table-responsive">
+     <table class="table text-nowrap border-bottom">
+      <thead>
+       <tr>
+        <th class="theading-color text-start">
+         {% translate "User" %}
+        </th>
+        <th class="theading-color text-start">
+         {% translate "Email" %}
+        </th>
+        <th class="theading-color text-start">
+         {% translate "Last Accessed" %}
+        </th>
+        <th class="theading-color text-start">
+         {% translate "Actions" %}
+        </th>
+       </tr>
+      </thead>
+      <tbody>
+       {% for user in users %}
+       <tr class="green-color text-start">
+        <td>
+         {{user.first_name}} {{user.last_name}}
+        </td>
+        <td>
+         {{user.email}}
+        </td>
+        <td>
+         {% translate "Jan 24, 2024" %}
+        </td>
+        <td>
+         <i class="side-menu__icon icon icon-pencil me-2 cursor-pointer" data-bs-backdrop="false" data-bs-target="#editUserModal" data-bs-toggle="modal">
+         </i>
+         <i class="side-menu__icon fa fa-trash-o cursor-pointer" data-bs-backdrop="false" data-bs-target="#confirmationModal" data-bs-toggle="modal">
+         </i>
+        </td>
+       </tr>
+      </tbody>
+      {% endfor %}
+     </table>
+    </div>
+   </div>
+  </div>
+  <div class="card">
+   <div class="card-body">
+    <h3 class="card-title green-color fw-bold mb-1">
+     {% translate "Pending Users" %}
+    </h3>
+    <div class="table-responsive">
+     <table class="table text-nowrap border-bottom">
+      <thead>
+       <tr>
+        <th class="theading-color text-start">
+         {% translate "User" %}
+        </th>
+        <th class="theading-color text-start">
+         {% translate "Email" %}
+        </th>
+        <th class="theading-color text-start">
+         {% translate "Last Accessed" %}
+        </th>
+        <th class="theading-color text-start">
+         {% translate "Actions" %}
+        </th>
+       </tr>
+      </thead>
+      <tbody>
+       {% for user in pending_users %}
+       <tr class="green-color text-start">
+        <td>
+         {{user.first_name}} {{user.last_name}}
+        </td>
+        <td>
+         {{user.email}}
+        </td>
+        <td>
+         {% translate "Jan 24, 2024" %}
+        </td>
+        <td>
+         <i class="side-menu__icon icon icon-pencil me-2 cursor-pointer" data-bs-backdrop="false" data-bs-target="#editUserModal" data-bs-toggle="modal">
+         </i>
+         <i class="side-menu__icon fa fa-trash-o cursor-pointer" data-bs-backdrop="false" data-bs-target="#confirmationModal" data-bs-toggle="modal">
+         </i>
+        </td>
+       </tr>
+       {% endfor %}
+      </tbody>
+     </table>
+    </div>
+   </div>
+  </div>
+ </div>
+ <!-- COL END -->
 </div>
 <!-- Add User Modal -->
 {% include 'components/modals/add_user_modal.html' %}
