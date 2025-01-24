@@ -1,5 +1,3 @@
-import datetime
-
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
@@ -16,6 +14,7 @@ from django.utils import timezone
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.utils.timezone import now
+from django.utils.translation import gettext as _
 from django.views import View
 from django.views.generic.edit import FormView
 
@@ -40,7 +39,7 @@ class UserListView(LoginRequiredMixin, View):
         curp = request.POST.get('curp')
 
         if not all([first_name, last_name, email, curp]):
-            messages.error(request, "All fields are required.")
+            messages.error(request, _("All fields are required."))
             return redirect('manage_users')
 
         user = User.objects.create(
@@ -77,9 +76,9 @@ class UserListView(LoginRequiredMixin, View):
         email_sent = email.send()
 
         if email_sent:
-            messages.success(request, "Invitation sent successfully!")
+            messages.success(request, _("Invitation sent successfully!"))
         else:
-            messages.error(request, "Failed to send email.")
+            messages.error(request, _("Failed to send email."))
 
         return redirect('manage_users')
 
@@ -130,7 +129,7 @@ class UserAccountView(LoginRequiredMixin, View):
             user.email = form.cleaned_data['email']
             user.language = form.cleaned_data['language']
             user.save()
-            messages.success(request, 'Your account details have been successfully updated!')
+            messages.success(request, _('Your account details have been successfully updated!'))
             response = redirect('recruiter_account')
             if hasattr(user, 'language'):
                 response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user.language)
@@ -161,12 +160,12 @@ class UpdatePasswordView(LoginRequiredMixin, FormView):
         """Handle successful form submission."""
         form.save()
         update_session_auth_hash(self.request, form.user)  # Prevent logout after password change
-        messages.success(self.request, 'Your password has been successfully updated!')
+        messages.success(self.request, _('Your password has been successfully updated!'))
         return redirect(self.success_url)
 
     def form_invalid(self, form):
         """Handle form errors."""
-        messages.error(self.request, 'Please correct the errors below.')
+        messages.error(self.request, _('Please correct the errors below.'))
         return super().form_invalid(form)
 
 

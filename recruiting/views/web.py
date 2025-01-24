@@ -2,22 +2,41 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import BaseModelForm
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
+from django.utils.translation import gettext as _
 from django.views import View
+from django.views.generic import CreateView
 
 from account.models import User
 from recruiting.forms import (
-    EmployerForm, OkoMessageCreateForm, OkoMessageFilterForm, RoleDeductionForm, RoleEmploymentLocationForm,
-    RoleHoursForm, RoleHousingInformationForm, RoleMealProvision,
+    EmployerForm,
+    OkoMessageCreateForm,
+    OkoMessageFilterForm,
+    RoleDeductionForm,
+    RoleEmploymentLocationForm,
+    RoleHoursForm,
+    RoleHousingInformationForm,
+    RoleMealProvision,
     RoleQualificationForm,
-    RoleWagesForm, TodoFilterForm, WorkRequestForm, WorkRequestRoleForm
+    RoleWagesForm,
+    TodoFilterForm,
+    WorkRequestForm,
+    WorkRequestRoleForm,
 )
 from recruiting.models import (
-    Deduction, Employer, EmploymentLocation, Hours, HousingInformation,
-    MealProvision, OkoMessage, Qualification, Role, Wages, WorkRequests
+    Deduction,
+    Employer,
+    EmploymentLocation,
+    Hours,
+    HousingInformation,
+    MealProvision,
+    OkoMessage,
+    Qualification,
+    Role,
+    Wages,
+    WorkRequests,
 )
-from django.views.generic import CreateView
 
 
 class EmployerListView(View):
@@ -33,7 +52,7 @@ class EmployerCreateView(CreateView):
     template_name = 'recruiting/employers/create.html'
 
     def form_valid(self, form):
-        messages.success(self.request, 'Employer created successfully')
+        messages.success(self.request, _('Employer created successfully'))
         return super(EmployerCreateView, self).form_valid(form)
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
@@ -69,7 +88,7 @@ class WorkRequestCreateView(CreateView):
     template_name = 'recruiting/work_requests/create.html'
 
     def form_valid(self, form):
-        messages.success(self.request, 'Job Order created successfully')
+        messages.success(self.request, _('Job Order created successfully'))
         return super(WorkRequestCreateView, self).form_valid(form)
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
@@ -91,7 +110,7 @@ class WorkRequestDetailView(View):
         roles = Role.objects.filter(work_request=work_request)
         context = {
             'workrequest': work_request,
-            'roles': roles, 
+            'roles': roles,
         }
         return render(request, 'recruiting/work_requests/detail.html', context)
 
@@ -107,7 +126,7 @@ class WorkRequestRoleCreateView(CreateView):
         return initial
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
-        messages.success(self.request, 'Role created successfully')
+        messages.success(self.request, _('Role created successfully'))
         return super().form_valid(form)
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
@@ -152,7 +171,7 @@ class RoleHoursCreateView(RoleDataBaseView):
     template_name = 'recruiting/work_requests/create_hours.html'
 
     def form_valid(self, form):
-        messages.success(self.request, 'Role hours successfully added')
+        messages.success(self.request, _('Role hours successfully added'))
         return super().form_valid(form)
 
 
@@ -162,7 +181,7 @@ class RoleWagesCreateView(RoleDataBaseView):
     template_name = 'recruiting/work_requests/create_wages.html'
 
     def form_valid(self, form):
-        messages.success(self.request, 'Roles wages successfully added')
+        messages.success(self.request, _('Roles wages successfully added'))
         return super().form_valid(form)
 
 
@@ -172,7 +191,7 @@ class RoleDeductionsCreateView(RoleDataBaseView):
     template_name = 'recruiting/work_requests/create_deductions.html'
 
     def form_valid(self, form):
-        messages.success(self.request, 'Roles deductions successfully added')
+        messages.success(self.request, _('Roles deductions successfully added'))
         return super().form_valid(form)
 
 
@@ -188,7 +207,7 @@ class RoleEmpLocationCreateView(RoleDataBaseView):
     template_name = 'recruiting/work_requests/create_employment_location.html'
 
     def form_valid(self, form):
-        messages.success(self.request, 'Successfully added role location')
+        messages.success(self.request, _('Successfully added role location'))
         return super().form_valid(form)
 
 
@@ -200,7 +219,7 @@ class RoleHousingCreateView(RoleDataBaseView):
     def form_valid(self, form):
         messages.success(
             self.request,
-            'Successfully added role housing information'
+            _('Successfully added role housing information')
         )
         return super().form_valid(form)
 
@@ -212,7 +231,7 @@ class RoleMealsCreateView(RoleDataBaseView):
 
     def form_valid(self, form):
         messages.success(self.request,
-                         'Successfully added role meals information')
+                         _('Successfully added role meals information'))
         return super().form_valid(form)
 
 
@@ -220,8 +239,8 @@ class RecruiterTodoView(LoginRequiredMixin, View):
     def get(self, request):
         # initialize filter form
         form = TodoFilterForm()
-        
-        
+
+
         user = User.objects.get(pk=request.user.id)
         todos = WorkRequests.objects.exclude(
             status='completed'
@@ -244,7 +263,7 @@ class OkoMessageCreateView(CreateView):
     template_name = 'recruiting/messages/create.html'
 
     def form_valid(self, form):
-        messages.success(self.request, 'Message created successfully')
+        messages.success(self.request, _('Message created successfully'))
         return super(OkoMessageCreateView, self).form_valid(form)
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
@@ -257,7 +276,7 @@ class OkoMessageCreateView(CreateView):
         return reverse(
             'recruiting_web:recruiter_messages'
         )
-    
+
 class OkoMessageDetailsView(View):
     def get(self, request,id):
         message = get_object_or_404(OkoMessage, pk=id)

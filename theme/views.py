@@ -1,4 +1,3 @@
-import requests
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, logout
@@ -9,6 +8,7 @@ from django.db.models import Prefetch
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.utils.translation import activate
+from django.utils.translation import gettext as _
 
 from account.models import (
     UserDocuments,
@@ -22,8 +22,6 @@ from content.models import AggregatedContent
 from content.serializers import AggregatedContentSerializer
 
 from .forms import (
-    AdvancedFilterForm,
-    FilterWorkExperienceForm,
     LoginForm,
     RegistrationForm,
     ResetPasswordForm,
@@ -38,7 +36,7 @@ def index(request):
 @login_required
 def logout_view(request):
     logout(request)
-    messages.success(request, 'You have been successfully logged out', extra_tags='bg-success')
+    messages.success(request, _('You have been successfully logged out'), extra_tags='bg-success')
     return redirect('/')
 
 def about(request):
@@ -270,7 +268,7 @@ def login(request):
 
             if user is not None:
                 auth_login(request, user)
-                messages.success(request, 'You have successfully logged in')
+                messages.success(request, _('You have successfully logged in'))
                 next_url = request.GET.get('next', 'index')
 
                 response = redirect(next_url)
