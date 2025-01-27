@@ -132,7 +132,7 @@ class UserAccountView(LoginRequiredMixin, View):
             messages.success(request, _('Your account details have been successfully updated!'))
             response = redirect('recruiter_account')
             if hasattr(user, 'language'):
-                response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user.language)
+                response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user.language.lower())
             return response
 
             return response

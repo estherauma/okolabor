@@ -273,8 +273,8 @@ def login(request):
 
                 response = redirect(next_url)
                 if hasattr(user, 'language'):
-                    activate(user.language)
-                    response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user.language)
+                    activate(user.language.lower())
+                    response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user.language.lower())
                 return response
             else:
                 form.add_error('password', "Incorrect password.")

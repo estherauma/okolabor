@@ -38,7 +38,7 @@ class UserManager(BaseUserManager):
 
 class LanguageChoices(models.TextChoices):
     EN = 'en', 'English'
-    ES_MX = 'es-mx', 'Español (Mexico)'
+    ES_MX = 'es-MX', 'Español (Mexico)'
 
 class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
     email = models.EmailField(_('email address'), unique=True)
