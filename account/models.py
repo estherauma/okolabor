@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
@@ -41,37 +40,37 @@ class LanguageChoices(models.TextChoices):
     ES_MX = 'es-MX', 'Español (Mexico)'
 
 class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
-    email = models.EmailField(_('email address'), unique=True)
-    curp = models.CharField(_('curp'), max_length=18, unique=True)
-    first_name = models.CharField(_('first name'), max_length=30, blank=True)
-    last_name = models.CharField(_('last name'), max_length=30, blank=True)
-    middle_name = models.CharField(_('middle name'), max_length=30, blank=True)
-    is_active = models.BooleanField(_('active'), default=True)
-    is_verified = models.BooleanField(_('verified'), default=False)
+    email = models.EmailField('email address', unique=True)
+    curp = models.CharField('curp', max_length=18, unique=True)
+    first_name = models.CharField('first name', max_length=30, blank=True)
+    last_name = models.CharField('last name', max_length=30, blank=True)
+    middle_name = models.CharField('middle name', max_length=30, blank=True)
+    is_active = models.BooleanField('active', default=True)
+    is_verified = models.BooleanField('verified', default=False)
     is_staff = models.BooleanField(default=False)
     reset_password_token = models.CharField(null=True,
                                             blank=True, max_length=125)
     profile_image = models.URLField(null=True, blank=True)
     language = models.CharField(max_length=10, default=LanguageChoices.ES_MX,
                                 choices=LanguageChoices.choices)
-    access_code = models.CharField(_('access_code'), null=True,
+    access_code = models.CharField('access_code', null=True,
                                    blank=True, max_length=30)
-    position = models.CharField(_('position'), null=True,
+    position = models.CharField('position', null=True,
                                 blank=True, max_length=30)
-    telephone = models.CharField(_('telephone'), unique=False,
+    telephone = models.CharField('telephone', unique=False,
                                  null=True, blank=True, max_length=30)
-    telephone_verified = models.BooleanField(_('telephone_verified'),
+    telephone_verified = models.BooleanField('telephone_verified',
                                              default=False)
-    mobile = models.CharField(_('mobile'), null=True, blank=True,
+    mobile = models.CharField('mobile', null=True, blank=True,
                               max_length=30)
-    address_line_1 = models.CharField(_('address_line_1'),
+    address_line_1 = models.CharField('address_line_1',
                                       null=True, blank=True, max_length=30)
-    address_line_2 = models.CharField(_('address_line_2'),
+    address_line_2 = models.CharField('address_line_2',
                                       null=True, blank=True, max_length=30)
-    address_line_3 = models.CharField(_('address_line_3'),
+    address_line_3 = models.CharField('address_line_3',
                                       null=True, blank=True, max_length=30)
-    city = models.CharField(_('city'), null=True, blank=True, max_length=30)
-    passport_number = models.CharField(_('passport_number'),
+    city = models.CharField('city', null=True, blank=True, max_length=30)
+    passport_number = models.CharField('passport_number',
                                        null=True, blank=True, max_length=30)
     gender = models.CharField(max_length=15,  blank=True, null=True)
     dob = models.DateField(null=True, blank=True)
