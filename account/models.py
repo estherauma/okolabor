@@ -52,7 +52,7 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
     reset_password_token = models.CharField(null=True,
                                             blank=True, max_length=125)
     profile_image = models.URLField(null=True, blank=True)
-    language = models.CharField(max_length=10, default=LanguageChoices.EN,
+    language = models.CharField(max_length=10, default=LanguageChoices.ES_MX,
                                 choices=LanguageChoices.choices)
     access_code = models.CharField(_('access_code'), null=True,
                                    blank=True, max_length=30)
