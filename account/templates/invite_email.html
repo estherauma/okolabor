@@ -1,11 +1,20 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Invite email</title>
 </head>
-<body>
+<body style="background-color: #7DBF96; color: #fff;">
+
+    <div style="display: flex; width: 100%; justify-content: center;">
+        <img class="sidebar-logo" 
+        src="{{site_url}}{% static 'assets/images/login/logo.svg' %}" 
+        alt="Okolabor" />
+    </div>
+   
+
     <p>Hello {{ first_name }},</p>
 
     <p>You have been invited to join our platform as a recruiter.</p>
@@ -15,6 +24,9 @@
     <p><a href="{{ invite_link }}">Update your password</a></p>
 
     <p>Best regards,<br>Your Team</p>
+
+    
+
 
 </body>
 </html>
