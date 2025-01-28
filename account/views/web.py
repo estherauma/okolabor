@@ -1,29 +1,28 @@
-from django.shortcuts import render
-from django.views import View
-from account.models import User
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth import update_session_auth_hash
-from django.contrib import messages
-from django.shortcuts import redirect
-from django.urls import reverse_lazy
+from django.contrib.auth.models import Group
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import EmailMessage
+from django.shortcuts import redirect, render
+from django.template.loader import render_to_string
+from django.urls import reverse, reverse_lazy
+from django.utils import timezone
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+from django.utils.timezone import now
+from django.utils.translation import gettext as _
+from django.views import View
 from django.views.generic.edit import FormView
+
 from account.forms.account_update import UpdateAccountDetailsForm
 from account.forms.filter_logs import UserLogsFilterForm
-from django.utils import timezone
-from django.utils.timezone import now
-from account.models import UserNotification
-from django.conf import settings
-from django.urls import reverse
-from django.contrib.auth.models import Group
-from django.core.mail import EmailMessage
-from django.template.loader import render_to_string
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import force_bytes
-from django.contrib.sites.shortcuts import get_current_site
-import datetime
+from account.models import User, UserNotification
+
+
 class UserListView(LoginRequiredMixin, View):
     def get(self, request):
         users = User.objects.filter(groups__name='recruiter')
@@ -32,15 +31,15 @@ class UserListView(LoginRequiredMixin, View):
             groups__name='recruiter')
         context = {'users': users, 'pending_users': pending}
         return render(request, 'recruiter/manage_users.html', context)
-    
+
     def post(self, request):
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
-        curp = request.POST.get('curp') 
+        curp = request.POST.get('curp')
 
         if not all([first_name, last_name, email, curp]):
-            messages.error(request, "All fields are required.")
+            messages.error(request, _("All fields are required."))
             return redirect('manage_users')
 
         user = User.objects.create(
@@ -48,7 +47,7 @@ class UserListView(LoginRequiredMixin, View):
             last_name=last_name,
             email=email,
             curp=curp,
-            is_active=True  
+            is_active=True
         )
 
         recruiter_group, _ = Group.objects.get_or_create(name='recruiter')
@@ -56,7 +55,7 @@ class UserListView(LoginRequiredMixin, View):
 
         token = PasswordResetTokenGenerator().make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
-        
+
         current_site = get_current_site(request)
         site_url = f"{request.scheme}://{current_site.domain}"
         invite_link = f"{site_url}{reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})}"
@@ -77,16 +76,16 @@ class UserListView(LoginRequiredMixin, View):
             from_email=settings.DEFAULT_FROM_EMAIL,
             to=[email],
         )
-        email.content_subtype = 'html' 
+        email.content_subtype = 'html'
         email_sent = email.send()
 
         if email_sent:
-            messages.success(request, "Invitation sent successfully!")
+            messages.success(request, _("Invitation sent successfully!"))
         else:
-            messages.error(request, "Failed to send email.")
-        
+            messages.error(request, _("Failed to send email."))
+
         return redirect('manage_users')
-  
+
 class UserActivitLogView(LoginRequiredMixin, View):
     def get(self, request):
         form = UserLogsFilterForm(request.GET)
@@ -95,34 +94,36 @@ class UserActivitLogView(LoginRequiredMixin, View):
 
         if form.is_valid():
             filter_type = form.cleaned_data.get('date_filter_type')
-            
+
             if filter_type == 'today':
-                logs = logs.filter(created_at__date=timezone.now().date()) 
+                logs = logs.filter(created_at__date=timezone.now().date())
             elif filter_type == 'last_7_days':
                 start_date = timezone.now().date() - timezone.timedelta(days=7)
-                logs = logs.filter(created_at__date__gte=start_date) 
+                logs = logs.filter(created_at__date__gte=start_date)
             elif filter_type == 'this_month':
                 start_date = timezone.now().date().replace(day=1)
-                logs = logs.filter(created_at__date__gte=start_date) 
+                logs = logs.filter(created_at__date__gte=start_date)
 
         context = {'logs': logs, 'user': user, 'form': form}
         return render(request, 'activity_log.html', context)
-    
+
 class UserAccountView(LoginRequiredMixin, View):
-    
+
     def get(self, request):
         user = request.user
         form = UpdateAccountDetailsForm(initial={
             'first_name': user.first_name,
             'last_name': user.last_name,
             'email': user.email,
+            "language": user.language,
         })
+
         context = {
             'form': form,
             'user': user,
         }
         return render(request, 'recruiter/user_account.html', context)
-    
+
     def post(self, request):
         form = UpdateAccountDetailsForm(request.POST)
         if form.is_valid():
@@ -130,9 +131,15 @@ class UserAccountView(LoginRequiredMixin, View):
             user.first_name = form.cleaned_data['first_name']
             user.last_name = form.cleaned_data['last_name']
             user.email = form.cleaned_data['email']
+            user.language = form.cleaned_data['language']
             user.save()
-            messages.success(request, 'Your account details have been successfully updated!')
-            return redirect('recruiter_account')
+            messages.success(request, _('Your account details have been successfully updated!'))
+            response = redirect('recruiter_account')
+            if hasattr(user, 'language'):
+                response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user.language.lower())
+            return response
+
+            return response
         else:
             return render(request, 'recruiter/user_account.html', {'form': form})
 
@@ -140,7 +147,7 @@ class UpdatePasswordView(LoginRequiredMixin, FormView):
     template_name = 'recruiter/change_password.html'
     form_class = PasswordChangeForm
     success_url = reverse_lazy('recruiter_account')
-    
+
     def get_form(self):
         form = super().get_form()
         for field in form.fields.values():
@@ -157,12 +164,12 @@ class UpdatePasswordView(LoginRequiredMixin, FormView):
         """Handle successful form submission."""
         form.save()
         update_session_auth_hash(self.request, form.user)  # Prevent logout after password change
-        messages.success(self.request, 'Your password has been successfully updated!')
+        messages.success(self.request, _('Your password has been successfully updated!'))
         return redirect(self.success_url)
 
     def form_invalid(self, form):
         """Handle form errors."""
-        messages.error(self.request, 'Please correct the errors below.')
+        messages.error(self.request, _('Please correct the errors below.'))
         return super().form_invalid(form)
 
 

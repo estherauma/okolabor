@@ -1,18 +1,32 @@
-from django.shortcuts import render,redirect
-from .forms import RegistrationForm, LoginForm, ResetPasswordForm,FilterWorkExperienceForm,AdvancedFilterForm
+from django.conf import settings
 from django.contrib import messages
-from .forms import ResetPasswordForm,LoginForm
-from django.contrib.auth import authenticate,login as auth_login,get_user_model
+from django.contrib.auth import authenticate, get_user_model, logout
+from django.contrib.auth import login as auth_login
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout
-from django.contrib import messages
-from django.urls import reverse_lazy
 from django.contrib.auth.forms import PasswordResetForm
-from account.models import UserWorkExperience,UserJobExperience,UserJobExperienceDetails,UserNotification,UserPreference,UserNotification,UserDocuments,UserNotification
+from django.db.models import Prefetch
+from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
+from django.utils.translation import activate
+from django.utils.translation import gettext as _
+
+from account.models import (
+    UserDocuments,
+    UserJobExperience,
+    UserJobExperienceDetails,
+    UserNotification,
+    UserPreference,
+    UserWorkExperience,
+)
 from content.models import AggregatedContent
 from content.serializers import AggregatedContentSerializer
-import requests
-from django.db.models import Prefetch
+
+from .forms import (
+    LoginForm,
+    RegistrationForm,
+    ResetPasswordForm,
+)
+
 
 # Create your views here.
 @login_required(login_url='/')
@@ -22,7 +36,7 @@ def index(request):
 @login_required
 def logout_view(request):
     logout(request)
-    messages.success(request, 'You have been successfully logged out', extra_tags='bg-success')
+    messages.success(request, _('You have been successfully logged out'), extra_tags='bg-success')
     return redirect('/')
 
 def about(request):
@@ -229,39 +243,43 @@ def loaders(request):
 def lockscreen(request):
     return render(request, 'ltr/lockscreen.html')
 
-User = get_user_model() 
+User = get_user_model()
 def login(request):
-    
+
     if request.user.is_authenticated:
         return redirect('index')
-    
+
     if request.method == 'POST':
 
         form = LoginForm(request.POST)
-        
+
         if form.is_valid():
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
-            
+
             try:
                 user = User.objects.get(email=email)
             except User.DoesNotExist:
-                
+
                 form.add_error('email', "User with this email does not exist.")
                 return render(request, 'ltr/login.html', {'form': form})
-            
+
             user = authenticate(request, email=email, password=password)
-            
+
             if user is not None:
                 auth_login(request, user)
-                messages.success(request, 'You have successfully logged in')
+                messages.success(request, _('You have successfully logged in'))
                 next_url = request.GET.get('next', 'index')
-                return redirect(next_url)
+
+                response = redirect(next_url)
+                if hasattr(user, 'language'):
+                    activate(user.language.lower())
+                    response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user.language.lower())
+                return response
             else:
-                
                 form.add_error('password', "Incorrect password.")
         else:
-            
+
             return render(request, 'ltr/login.html', {'form': form})
     else:
         form = LoginForm()
@@ -305,19 +323,19 @@ def profile(request):
     documents = UserDocuments.objects.filter(user=request.user)
 
     work_preferences = UserPreference.objects.filter(user=request.user)
-   
+
     latest = AggregatedContent.objects.latest('created_at')
     serializer = AggregatedContentSerializer(latest, many=False)
     aggregated_data = serializer.data
     content = aggregated_data.get('content')
     english_content = content.get('en')
-    
+
     work_preferenece_step_one = english_content.get('workPreferenceStepOne')
     work_preference_step_one_questions = work_preferenece_step_one.get('form_questions')
     work_preferenece_step_two = english_content.get('workPreferenceStepTwo')
     work_preference_step_two_questions = work_preferenece_step_two.get('form_questions')
     preference_questions = work_preference_step_one_questions + work_preference_step_two_questions
-    
+
     work_experiences = UserWorkExperience.objects.filter(user=user).prefetch_related(
         Prefetch(
             'crop_experiences',
@@ -329,7 +347,7 @@ def profile(request):
             )
         )
     )
-    
+
     context = {
         'first_name': user.first_name if user.first_name else None,
         'last_name': user.last_name if user.last_name else None,
@@ -347,7 +365,7 @@ def profile(request):
         'preference_questions': preference_questions,
         'user_notifications': user_notifications,
         'work_experiences': work_experiences,
-        
+
     }
 
     return render(request, 'ltr/profile.html', context)
@@ -444,7 +462,7 @@ def users(request):
 
 def add_worker(request):
     return render(request, 'workers/add-workers.html')
-  
+
 def worker_request_form(request):
     return render(request, 'workers/worker-request-form.html')
 
@@ -461,7 +479,7 @@ def user_documents(request):
 
 @login_required
 def work_preferences(request):
-    
+
     return render(request,'ltr/workpreferences.html')
 
 
@@ -476,10 +494,10 @@ def custom_password_reset_view(request):
                 request=request,
                 use_https=request.is_secure(),
                 html_email_template_name='ltr/password_reset_email.html',
-                
+
             )
             return redirect(reverse_lazy('password_reset_done'))
     else:
         form = PasswordResetForm()
-    
+
     return render(request, 'ltr/password_reset_form.html', {'form': form})
