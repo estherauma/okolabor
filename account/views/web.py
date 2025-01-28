@@ -62,8 +62,12 @@ class UserListView(LoginRequiredMixin, View):
 
         email_subject = "You're Invited!"
         email_body = render_to_string(
-            'invite_email.html',
-            {'first_name': first_name, 'invite_link': invite_link}
+            'invite_email.html', 
+            {
+                'first_name': first_name,
+                'invite_link': invite_link,
+                'site_url': site_url
+            }
         )
 
         email = EmailMessage(
