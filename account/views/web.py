@@ -23,6 +23,8 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.contrib.sites.shortcuts import get_current_site
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
 import datetime
 class UserListView(LoginRequiredMixin, View):
     def get(self, request):
@@ -170,3 +172,21 @@ class AccountNotificationsView(LoginRequiredMixin, View):
         notifications.filter(status='unread').update(status='read', read_at=now())
         context = {'notifications': notifications}
         return render(request, self.template_name,context)
+
+
+
+def update_user(request, curp):
+    user = get_object_or_404(User, curp=curp) 
+
+    if request.method == "POST":
+        form = UpdateAccountDetailsForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "User details updated successfully.")
+            return redirect("manage_users") 
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = UpdateAccountDetailsForm(instance=user) 
+
+    return render(request, "components/modals/edit_user_modal.html", {"form": form, "user": user})
