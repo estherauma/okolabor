@@ -1,9 +1,9 @@
 from django.db.models.signals import post_save
+from django.dispatch import Signal, receiver
+
 from account.models import User, UserDocuments, UserNotification
-from django.dispatch import receiver
 from common.cloud_vision import detect_text_in_image
 from common.logger import AppLogger
-from django.dispatch import Signal
 
 
 @receiver(post_save, sender=UserDocuments)

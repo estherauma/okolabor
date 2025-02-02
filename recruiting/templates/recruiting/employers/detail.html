@@ -1,237 +1,415 @@
 {% extends 'components/base.html' %}
+{% load i18n %}
 {% load static %}
 {% block styles %}
 <!-- SELECT2 CSS -->
-<link href="{% static 'assets/plugins/select2/select2.min.css' %}" rel="stylesheet" />
-
+<link href="{% static 'assets/plugins/select2/select2.min.css' %}" rel="stylesheet"/>
 <!-- DATA TABLE CSS -->
-<link href="{% static 'assets/plugins/datatable/css/dataTables.bootstrap5.css' %}" rel="stylesheet" />
-<link href="{% static 'assets/plugins/datatable/css/buttons.bootstrap5.min.css' %}" rel="stylesheet">
-<link href="{% static 'assets/plugins/datatable/responsive.bootstrap5.css' %}" rel="stylesheet" />
-
+<link href="{% static 'assets/plugins/datatable/css/dataTables.bootstrap5.css' %}" rel="stylesheet"/>
+<link href="{% static 'assets/plugins/datatable/css/buttons.bootstrap5.min.css' %}" rel="stylesheet"/>
+<link href="{% static 'assets/plugins/datatable/responsive.bootstrap5.css' %}" rel="stylesheet"/>
 {% endblock styles %}
 
 {% block body %}
-
 <div class="page-header">
-    <div>
-        <h1 class="page-title">{{employer.name}}</h1>
-    </div>
+ <div>
+  <h1 class="page-title">
+   {{employer.name}}
+  </h1>
+ </div>
 </div>
-
 <!-- <div>
     <button id="button" class="btn btn-secondary" style="margin-right: 10px;">Edit Employer</button>
 </div> -->
-
 <div class="row">
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
-
-                <h5 class="card-title">Employer Details</h5>
-                <ul class="list-group no-margin">
-                   
-                    <li class="list-group-item">
-                        <span><strong>Email: </strong></span> 
-                        <span class="">{{employer.email}}</span>
-                    </li>
-                    <li class="list-group-item">
-                        <span><strong>Phone: </strong></span> 
-                        <span class="">{{employer.phone}}</span>
-                    </li>
-                    <li class="list-group-item">
-                        <span><strong>Website: </strong></span> 
-                        <span class="">{{employer.website}}</span>
-                    </li>
-                    <li class="list-group-item">
-                        <span><strong>Address: </strong></span> 
-                        <span class="">{{employer.address}}</span>
-                    </li>
-                    <li class="list-group-item">
-                        <span><strong>City: </strong></span> 
-                        <span class="">{{employer.city}}</span>
-                    </li>
-                    <li class="list-group-item">
-                        <span><strong>State: </strong></span> 
-                        <span class="">{{employer.state}}</span>
-                    </li>
-                    <li class="list-group-item">
-                        <span><strong>Country: </strong></span> 
-                        <span class="">{{employer.country}}</span>
-                    </li>
-                    <li class="list-group-item">
-                        <span><strong>Zip Code: </strong></span> 
-                        <span class="">{{employer.zipcode}}</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
+ <div class="col-md-4">
+  <div class="card">
+   <div class="card-body">
+    <h5 class="card-title">
+     {% translate "Employer Details" %}
+    </h5>
+    <ul class="list-group no-margin">
+     <li class="list-group-item">
+      <span>
+       <strong>
+        {% translate "Email:" %}
+       </strong>
+      </span>
+      <span class="">
+       {{employer.email}}
+      </span>
+     </li>
+     <li class="list-group-item">
+      <span>
+       <strong>
+        {% translate "Phone:" %}
+       </strong>
+      </span>
+      <span class="">
+       {{employer.phone}}
+      </span>
+     </li>
+     <li class="list-group-item">
+      <span>
+       <strong>
+        {% translate "Website:" %}
+       </strong>
+      </span>
+      <span class="">
+       {{employer.website}}
+      </span>
+     </li>
+     <li class="list-group-item">
+      <span>
+       <strong>
+        {% translate "Address:" %}
+       </strong>
+      </span>
+      <span class="">
+       {{employer.address}}
+      </span>
+     </li>
+     <li class="list-group-item">
+      <span>
+       <strong>
+        {% translate "City:" %}
+       </strong>
+      </span>
+      <span class="">
+       {{employer.city}}
+      </span>
+     </li>
+     <li class="list-group-item">
+      <span>
+       <strong>
+        {% translate "State:" %}
+       </strong>
+      </span>
+      <span class="">
+       {{employer.state}}
+      </span>
+     </li>
+     <li class="list-group-item">
+      <span>
+       <strong>
+        {% translate "Country:" %}
+       </strong>
+      </span>
+      <span class="">
+       {{employer.country}}
+      </span>
+     </li>
+     <li class="list-group-item">
+      <span>
+       <strong>
+        {% translate "Zip Code:" %}
+       </strong>
+      </span>
+      <span class="">
+       {{employer.zipcode}}
+      </span>
+     </li>
+    </ul>
+   </div>
+  </div>
+ </div>
+ <div class="col-md-8">
+  <div class="card">
+   <div class="card-header">
+    <h3 class="card-title">
+     {% translate "New Job Order/h3&gt;" %}
+    </h3>
+   </div>
+   <div class="card-body">
+    <div class="table-responsive deleted-table">
+     <table class="table table-bordered text-nowrap border-bottom" id="delete-datatable">
+      <thead>
+       <tr>
+        <th class="border-bottom-0">
+         {% translate "Name" %}
+        </th>
+        <th class="border-bottom-0">
+         {% translate "Position" %}
+        </th>
+        <th class="border-bottom-0">
+         {% translate "Office" %}
+        </th>
+        <th class="border-bottom-0">
+         {% translate "Age" %}
+        </th>
+        <th class="border-bottom-0">
+         {% translate "Start date" %}
+        </th>
+        <th class="border-bottom-0">
+         {% translate "Salary" %}
+        </th>
+       </tr>
+      </thead>
+      <tbody>
+       <tr>
+        <td>
+         {% translate "Tiger Nixon" %}
+        </td>
+        <td>
+         {% translate "System Architect" %}
+        </td>
+        <td>
+         {% translate "Edinburgh" %}
+        </td>
+        <td>
+         61
+        </td>
+        <td>
+         2011/04/25
+        </td>
+        <td>
+         $320,800
+        </td>
+       </tr>
+       <tr>
+        <td>
+         {% translate "Garrett Winters" %}
+        </td>
+        <td>
+         {% translate "Accountant" %}
+        </td>
+        <td>
+         {% translate "Tokyo" %}
+        </td>
+        <td>
+         63
+        </td>
+        <td>
+         2011/07/25
+        </td>
+        <td>
+         $170,750
+        </td>
+       </tr>
+       <tr>
+        <td>
+         {% translate "Ashton Cox" %}
+        </td>
+        <td>
+         {% translate "Junior Technical Author" %}
+        </td>
+        <td>
+         {% translate "San Francisco" %}
+        </td>
+        <td>
+         66
+        </td>
+        <td>
+         2009/01/12
+        </td>
+        <td>
+         $86,000
+        </td>
+       </tr>
+      </tbody>
+     </table>
+     <div style="display: inline-block;">
+      <button class="btn btn-secondary" id="button" style="margin-right: 10px;">
+       {% translate "Decline" %}
+      </button>
+      <button class="btn btn-success">
+       {% translate "Accept" %}
+      </button>
+     </div>
     </div>
-
-    <div class="col-md-8">
-
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">New Job Order/h3>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive deleted-table">
-
-                    <table id="delete-datatable" class="table table-bordered text-nowrap border-bottom">
-                        <thead>
-                            <tr>
-                                <th class="border-bottom-0">Name</th>
-                                <th class="border-bottom-0">Position</th>
-                                <th class="border-bottom-0">Office</th>
-                                <th class="border-bottom-0">Age</th>
-                                <th class="border-bottom-0">Start date</th>
-                                <th class="border-bottom-0">Salary</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Tiger Nixon</td>
-                                <td>System Architect</td>
-                                <td>Edinburgh</td>
-                                <td>61</td>
-                                <td>2011/04/25</td>
-                                <td>$320,800</td>
-                            </tr>
-                            <tr>
-                                <td>Garrett Winters</td>
-                                <td>Accountant</td>
-                                <td>Tokyo</td>
-                                <td>63</td>
-                                <td>2011/07/25</td>
-                                <td>$170,750</td>
-                            </tr>
-                            <tr>
-                                <td>Ashton Cox</td>
-                                <td>Junior Technical Author</td>
-                                <td>San Francisco</td>
-                                <td>66</td>
-                                <td>2009/01/12</td>
-                                <td>$86,000</td>
-                            </tr>
-                        </tbody>
-
-                    </table>
-                    <div style="display: inline-block;">
-                        <button id="button" class="btn btn-secondary" style="margin-right: 10px;">Decline</button>
-
-                        <button class="btn btn-success">Accept</button>
-                    </div>
-
-
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Active Job Orders</h3>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered text-nowrap border-bottom" id="basic-datatable">
-                        <thead>
-                            <tr>
-                                <th class="wd-15p border-bottom-0">First name</th>
-                                <th class="wd-15p border-bottom-0">Last name</th>
-                                <th class="wd-20p border-bottom-0">Position</th>
-                                <th class="wd-15p border-bottom-0">Start date</th>
-                                <th class="wd-10p border-bottom-0">Salary</th>
-                                <th class="wd-25p border-bottom-0">E-mail</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Bella</td>
-                                <td>Chloe</td>
-                                <td>System Developer</td>
-                                <td>2018/03/12</td>
-                                <td>$654,765</td>
-                                <td>b.Chloe@datatables.net</td>
-                            </tr>
-                            <tr>
-                                <td>Donna</td>
-                                <td>Bond</td>
-                                <td>Account Manager</td>
-                                <td>2012/02/21</td>
-                                <td>$543,654</td>
-                                <td>d.bond@datatables.net</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Job Order History</h3>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered text-nowrap border-bottom" id="another-basic-datatable">
-                        <thead>
-                            <tr>
-                                <th class="wd-15p border-bottom-0">First name</th>
-                                <th class="wd-15p border-bottom-0">Last name</th>
-                                <th class="wd-20p border-bottom-0">Position</th>
-                                <th class="wd-15p border-bottom-0">Start date</th>
-                                <th class="wd-10p border-bottom-0">Salary</th>
-                                <th class="wd-25p border-bottom-0">E-mail</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>John</td>
-                                <td>Doe</td>
-                                <td>Software Engineer</td>
-                                <td>2019/10/12</td>
-                                <td>$123,456</td>
-                                <td>j.doe@datatables.net</td>
-                            </tr>
-                            <tr>
-                                <td>Jane</td>
-                                <td>Smith</td>
-                                <td>Project Manager</td>
-                                <td>2015/05/23</td>
-                                <td>$98,765</td>
-                                <td>j.smith@datatables.net</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+   </div>
+  </div>
+  <div class="card">
+   <div class="card-header">
+    <h3 class="card-title">
+     {% translate "Active Job Orders" %}
+    </h3>
+   </div>
+   <div class="card-body">
+    <div class="table-responsive">
+     <table class="table table-bordered text-nowrap border-bottom" id="basic-datatable">
+      <thead>
+       <tr>
+        <th class="wd-15p border-bottom-0">
+         {% translate "First name" %}
+        </th>
+        <th class="wd-15p border-bottom-0">
+         {% translate "Last name" %}
+        </th>
+        <th class="wd-20p border-bottom-0">
+         {% translate "Position" %}
+        </th>
+        <th class="wd-15p border-bottom-0">
+         {% translate "Start date" %}
+        </th>
+        <th class="wd-10p border-bottom-0">
+         {% translate "Salary" %}
+        </th>
+        <th class="wd-25p border-bottom-0">
+         {% translate "E-mail" %}
+        </th>
+       </tr>
+      </thead>
+      <tbody>
+       <tr>
+        <td>
+         {% translate "Bella" %}
+        </td>
+        <td>
+         {% translate "Chloe" %}
+        </td>
+        <td>
+         {% translate "System Developer" %}
+        </td>
+        <td>
+         2018/03/12
+        </td>
+        <td>
+         $654,765
+        </td>
+        <td>
+         b.Chloe@datatables.net
+        </td>
+       </tr>
+       <tr>
+        <td>
+         {% translate "Donna" %}
+        </td>
+        <td>
+         {% translate "Bond" %}
+        </td>
+        <td>
+         {% translate "Account Manager" %}
+        </td>
+        <td>
+         2012/02/21
+        </td>
+        <td>
+         $543,654
+        </td>
+        <td>
+         d.bond@datatables.net
+        </td>
+       </tr>
+      </tbody>
+     </table>
     </div>
+   </div>
+  </div>
+  <div class="card">
+   <div class="card-header">
+    <h3 class="card-title">
+     {% translate "Job Order History" %}
+    </h3>
+   </div>
+   <div class="card-body">
+    <div class="table-responsive">
+     <table class="table table-bordered text-nowrap border-bottom" id="another-basic-datatable">
+      <thead>
+       <tr>
+        <th class="wd-15p border-bottom-0">
+         {% translate "First name" %}
+        </th>
+        <th class="wd-15p border-bottom-0">
+         {% translate "Last name" %}
+        </th>
+        <th class="wd-20p border-bottom-0">
+         {% translate "Position" %}
+        </th>
+        <th class="wd-15p border-bottom-0">
+         {% translate "Start date" %}
+        </th>
+        <th class="wd-10p border-bottom-0">
+         {% translate "Salary" %}
+        </th>
+        <th class="wd-25p border-bottom-0">
+         {% translate "E-mail" %}
+        </th>
+       </tr>
+      </thead>
+      <tbody>
+       <tr>
+        <td>
+         {% translate "John" %}
+        </td>
+        <td>
+         {% translate "Doe" %}
+        </td>
+        <td>
+         {% translate "Software Engineer" %}
+        </td>
+        <td>
+         2019/10/12
+        </td>
+        <td>
+         $123,456
+        </td>
+        <td>
+         j.doe@datatables.net
+        </td>
+       </tr>
+       <tr>
+        <td>
+         {% translate "Jane" %}
+        </td>
+        <td>
+         {% translate "Smith" %}
+        </td>
+        <td>
+         {% translate "Project Manager" %}
+        </td>
+        <td>
+         2015/05/23
+        </td>
+        <td>
+         $98,765
+        </td>
+        <td>
+         j.smith@datatables.net
+        </td>
+       </tr>
+      </tbody>
+     </table>
+    </div>
+   </div>
+  </div>
+ </div>
 </div>
-
-
 {% endblock body %}
 
 {% block scripts %}
 <!-- INTERNAL SELECT2 JS -->
-<script src="{% static 'assets/plugins/select2/select2.full.min.js' %}"></script>
-
+<script src="{% static 'assets/plugins/select2/select2.full.min.js' %}">
+</script>
 <!-- DATA TABLE JS -->
-<script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap5.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/js/jszip.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/pdfmake/pdfmake.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/pdfmake/vfs_fonts.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/js/buttons.html5.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/js/buttons.print.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/js/buttons.colVis.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js' %}"></script>
-<script src="{% static 'assets/js/table-data.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js' %}">
+</script>
+<script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js' %}">
+</script>
+<script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js' %}">
+</script>
+<script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap5.min.js' %}">
+</script>
+<script src="{% static 'assets/plugins/datatable/js/jszip.min.js' %}">
+</script>
+<script src="{% static 'assets/plugins/datatable/pdfmake/pdfmake.min.js' %}">
+</script>
+<script src="{% static 'assets/plugins/datatable/pdfmake/vfs_fonts.js' %}">
+</script>
+<script src="{% static 'assets/plugins/datatable/js/buttons.html5.min.js' %}">
+</script>
+<script src="{% static 'assets/plugins/datatable/js/buttons.print.min.js' %}">
+</script>
+<script src="{% static 'assets/plugins/datatable/js/buttons.colVis.min.js' %}">
+</script>
+<script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js' %}">
+</script>
+<script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js' %}">
+</script>
+<script src="{% static 'assets/js/table-data.js' %}">
+</script>
 <script>
-    $(document).ready(function () {
+ $(document).ready(function () {
         $('#delete-datatable').DataTable();
         $('#basic-datatable').DataTable();
         $('#another-basic-datatable').DataTable();

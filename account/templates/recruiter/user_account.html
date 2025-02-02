@@ -1,62 +1,78 @@
-{% extends 'components/base.html' %} {% block body %}
-
+{% extends 'components/base.html' %}
+{% load i18n %}
+{% block body %}
 <div class="page-header">
-  <div>
-    <h1 class="page-title">My Account</h1>
-  </div>
+ <div>
+  <h1 class="page-title">
+   {% translate "My Account" %}
+  </h1>
+ </div>
 </div>
-
 <div class="row">
-  <!-- Update account details -->
-  <div class="col-lg-6 col-md-9 col-xs-12">
-    <div class="card">
-      <div class="card-header">
-        <h4 class="card-title green-color">Personal Information</h4>
+ <!-- Update account details -->
+ <div class="col-lg-6 col-md-9 col-xs-12">
+  <div class="card">
+   <div class="card-header">
+    <h4 class="card-title green-color">
+     {% translate "Personal Information" %}
+    </h4>
+   </div>
+   <div class="card-body">
+    <form method="post" novalidate="">
+     {% csrf_token %} {% for field in form %}
+     <div class="mb-3">
+      {{ field.label_tag }} {{ field }} {% if field.errors %}
+      <div class="text-danger">
+       {{ field.errors }}
       </div>
-      <div class="card-body">
-        <form method="post" novalidate>
-          {% csrf_token %} {% for field in form %}
-          <div class="mb-3">
-            {{ field.label_tag }} {{ field }} {% if field.errors %}
-            <div class="text-danger">{{ field.errors }}</div>
-            {% endif %}
-          </div>
-          {% endfor %}
-          <button type="submit" class="btn yellow-button">Save Changes</button>
-        </form>
-      </div>
-    </div>
+      {% endif %}
+     </div>
+     {% endfor %}
+     <button class="btn yellow-button" type="submit">
+      {% translate "Save Changes" %}
+     </button>
+    </form>
+   </div>
   </div>
+ </div>
 </div>
-
 <div class="row">
-  <!-- Update account details -->
-  <div class="col-lg-6 col-md-9 col-xs-12">
-    <div class="card">
-      <div class="card-header">
-        <h4 class="card-title green-color">Account Information</h4>
-      </div>
-      <div>
-        <div
-          class="d-flex justify-content-between align-items-center account-user-role"
-        >
-          <div class="d-flex justify-content-between">
-            <strong class="theading-color">ROLE</strong>
-            <p class="mb-0 green-color account-user-text">Standard User</p>
-          </div>
-          <a href="" class="link-color">Request Role change</a>
-        </div>
-      </div>
-      <div class="card-body">
-        <h4 class="card-sub-title green-color">Account Deletiton</h4>
-        <p class="green-color">
-          A message here. Account deletion is final. There will be no way to
-          restore your account and all data will be lost.
-        </p>
-        <a href="" class="link-color-red">Delete Account</a>
-      </div>
+ <!-- Update account details -->
+ <div class="col-lg-6 col-md-9 col-xs-12">
+  <div class="card">
+   <div class="card-header">
+    <h4 class="card-title green-color">
+     {% translate "Account Information" %}
+    </h4>
+   </div>
+   <div>
+    <div class="d-flex justify-content-between align-items-center account-user-role">
+     <div class="d-flex justify-content-between">
+      <strong class="theading-color">
+       {% translate "ROLE" %}
+      </strong>
+      <p class="mb-0 green-color account-user-text">
+       {% translate "Standard User" %}
+      </p>
+     </div>
+     <a class="link-color" href="">
+      {% translate "Request Role change" %}
+     </a>
     </div>
+   </div>
+   <div class="card-body">
+    <h4 class="card-sub-title green-color">
+     {% translate "Account Deletiton" %}
+    </h4>
+    <p class="green-color">
+     {% translate "A message here. Account deletion is final. There will be no way to
+          restore your account and all data will be lost." %}
+    </p>
+    <a class="link-color-red" href="">
+     {% translate "Delete Account" %}
+    </a>
+   </div>
   </div>
+ </div>
 </div>
-
 {% endblock body %}

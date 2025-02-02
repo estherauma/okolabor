@@ -1,175 +1,211 @@
 {% extends 'components/base.html' %} {% load static %} {% block styles %}
+{% load i18n %}
 <!-- SELECT2 CSS -->
-<link
-  href="{% static ''%}assets/plugins/select2/select2.min.css"
-  rel="stylesheet"
-/>
-<link href="{% static ''%}assets/plugins/common/style.css" rel="stylesheet" />
-
+<link href="{% static ''%}assets/plugins/select2/select2.min.css" rel="stylesheet"/>
+<link href="{% static ''%}assets/plugins/common/style.css" rel="stylesheet"/>
 <!-- DATA TABLE CSS -->
-<link
-  href="{% static ''%}assets/plugins/datatable/css/dataTables.bootstrap5.css"
-  rel="stylesheet"
-/>
-<link
-  href="{% static ''%}assets/plugins/datatable/css/buttons.bootstrap5.min.css"
-  rel="stylesheet"
-/>
-<link
-  href="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.css"
-  rel="stylesheet"
-/>
+<link href="{% static ''%}assets/plugins/datatable/css/dataTables.bootstrap5.css" rel="stylesheet"/>
+<link href="{% static ''%}assets/plugins/datatable/css/buttons.bootstrap5.min.css" rel="stylesheet"/>
+<link href="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.css" rel="stylesheet"/>
 {% endblock styles %} {% block body %}
 <div class="page-header">
-  <div class="search-bar">
-    <div class="container">
-      <form method="get">
-        <div class="input-group search-input-group">
-          <button class="btn search-btn" type="submit">
-            <i class="fa fa-search"></i>
-          </button>
-          <input
-            type="text"
-            class="form-control search-input"
-            name="query"
-            placeholder="Search 'Employers'"
-            aria-label="Search"
-          />
-        </div>
-      </form>
+ <div class="search-bar">
+  <div class="container">
+   <form method="get">
+    <div class="input-group search-input-group">
+     <button class="btn search-btn" type="submit">
+      <i class="fa fa-search">
+      </i>
+     </button>
+     <input aria-label="Search" class="form-control search-input" name="query" placeholder="Search 'Employers'" type="text"/>
     </div>
+   </form>
   </div>
+ </div>
 </div>
-
 <div class="parent-btn-grp">
-  <div class="employers-list-flex">
-    <button class="setting-btn">
-      <i class="fa fa-cog" aria-hidden="true"></i>
-    </button>
-    <div class="dropdown">
-      <button
-        class="btn dropdown-toggle dropdown-btn"
-        type="button"
-        id="dropdownMenuButton"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-      >
-        Assigned
-      </button>
-
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <li><a class="dropdown-item" href="#">Option 1</a></li>
-        <li><a class="dropdown-item" href="#">Option 2</a></li>
-        <li><a class="dropdown-item" href="#">Option 3</a></li>
-      </ul>
-    </div>
+ <div class="employers-list-flex">
+  <button class="setting-btn">
+   <i aria-hidden="true" class="fa fa-cog">
+   </i>
+  </button>
+  <div class="dropdown">
+   <button aria-expanded="false" class="btn dropdown-toggle dropdown-btn" data-bs-toggle="dropdown" id="dropdownMenuButton" type="button">
+    {% translate "Assigned" %}
+   </button>
+   <ul aria-labelledby="dropdownMenuButton" class="dropdown-menu">
+    <li>
+     <a class="dropdown-item" href="#">
+      {% translate "Option 1" %}
+     </a>
+    </li>
+    <li>
+     <a class="dropdown-item" href="#">
+      {% translate "Option 2" %}
+     </a>
+    </li>
+    <li>
+     <a class="dropdown-item" href="#">
+      {% translate "Option 3" %}
+     </a>
+    </li>
+   </ul>
   </div>
-  <a
-    href="{% url 'recruiting_web:workrequest_create' %}"
-    class="btn dark-green-button"
-  >
-    <span>
-      <i class="fe fe-plus"></i>
-    </span>
-    Add New Employer
-  </a>
+ </div>
+ <a class="btn dark-green-button" href="{% url 'recruiting_web:workrequest_create' %}">
+  <span>
+   <i class="fe fe-plus">
+   </i>
+  </span>
+  {% translate "Add New Employer" %}
+ </a>
 </div>
-
 <div class="row">
-  <div class="col-12">
-    <div class="card">
-      <div class="card-body">
-        <div class="table-responsive">
-          <table
-            id="employers-list-datatable"
-            class="table text-nowrap border-bottom"
-          >
-            <thead>
-              <tr>
-                <th></th>
-                <th class="theading-color">Company Name</th>
-                <th class="theading-color">Contact Name</th>
-                <th class="theading-color">Email</th>
-                <th class="theading-color">Location</th>
-                <th class="theading-color">Phone Number</th>
-                <th class="theading-color">Assigned To</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for employer in employers %}
-              <tr class="text-center">
-                <td><input type="checkbox" class="table-checkbox" /></td>
-                <td>{{ employer.name }}</td>
-                <td>{{ employer.email}}</td>
-                <td>{{ employer.address}}</td>
-                <td>{{ employer.country }}</td>
-                <td>{{ employer.phone }}</td>
-                <td>
-                    <a href="/employers/{{employer.id}}" class="btn btn-primary"> <i
-                            class="fe fe-eye"></i>
-                        View
-                    </a>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-
-          <div class="container mt-5">
-            <nav aria-label="Page navigation example">
-              <ul class="pagination justify-content-center">
-                <!-- Previous Arrow -->
-                <li class="page-item disabled">
-                  <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&lsaquo;</span>
-                  </a>
-                </li>
-
-                <!-- First three pages -->
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-
-                <!-- Ellipsis -->
-                <li class="page-item disabled">
-                  <a class="page-link" href="#">...</a>
-                </li>
-
-                <!-- Last page -->
-                <li class="page-item"><a class="page-link" href="#">11</a></li>
-
-                <!-- Next Arrow -->
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&rsaquo;</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
-      </div>
+ <div class="col-12">
+  <div class="card">
+   <div class="card-body">
+    <div class="table-responsive">
+     <table class="table text-nowrap border-bottom" id="employers-list-datatable">
+      <thead>
+       <tr>
+        <th>
+        </th>
+        <th class="theading-color">
+         {% translate "Company Name" %}
+        </th>
+        <th class="theading-color">
+         {% translate "Contact Name" %}
+        </th>
+        <th class="theading-color">
+         {% translate "Email" %}
+        </th>
+        <th class="theading-color">
+         {% translate "Location" %}
+        </th>
+        <th class="theading-color">
+         {% translate "Phone Number" %}
+        </th>
+        <th class="theading-color">
+         {% translate "Assigned To" %}
+        </th>
+       </tr>
+      </thead>
+      <tbody>
+       {% for employer in employers %}
+       <tr class="text-center">
+        <td>
+         <input class="table-checkbox" type="checkbox"/>
+        </td>
+        <td>
+         {{ employer.name }}
+        </td>
+        <td>
+         {{ employer.email}}
+        </td>
+        <td>
+         {{ employer.address}}
+        </td>
+        <td>
+         {{ employer.country }}
+        </td>
+        <td>
+         {{ employer.phone }}
+        </td>
+        <td>
+         <a class="btn btn-primary" href="/employers/{{employer.id}}">
+          <i class="fe fe-eye">
+          </i>
+          {% translate "View" %}
+         </a>
+        </td>
+       </tr>
+       {% endfor %}
+      </tbody>
+     </table>
+     <div class="container mt-5">
+      <nav aria-label="Page navigation example">
+       <ul class="pagination justify-content-center">
+        <!-- Previous Arrow -->
+        <li class="page-item disabled">
+         <a aria-label="Previous" class="page-link" href="#">
+          <span aria-hidden="true">
+           ‹
+          </span>
+         </a>
+        </li>
+        <!-- First three pages -->
+        <li class="page-item">
+         <a class="page-link" href="#">
+          1
+         </a>
+        </li>
+        <li class="page-item">
+         <a class="page-link" href="#">
+          2
+         </a>
+        </li>
+        <li class="page-item">
+         <a class="page-link" href="#">
+          3
+         </a>
+        </li>
+        <!-- Ellipsis -->
+        <li class="page-item disabled">
+         <a class="page-link" href="#">
+          ...
+         </a>
+        </li>
+        <!-- Last page -->
+        <li class="page-item">
+         <a class="page-link" href="#">
+          11
+         </a>
+        </li>
+        <!-- Next Arrow -->
+        <li class="page-item">
+         <a aria-label="Next" class="page-link" href="#">
+          <span aria-hidden="true">
+           ›
+          </span>
+         </a>
+        </li>
+       </ul>
+      </nav>
+     </div>
     </div>
+   </div>
   </div>
-
-  {% endblock body %} {% block scripts %}
-  <!-- INTERNAL SELECT2 JS -->
-  <script src="{% static ''%}assets/plugins/select2/select2.full.min.js"></script>
-
-  <!-- DATA TABLE JS-->
-  <script src="{% static ''%}assets/plugins/datatable/js/jquery.dataTables.min.js"></script>
-  <script src="{% static ''%}assets/plugins/datatable/js/dataTables.bootstrap5.js"></script>
-  <script src="{% static ''%}assets/plugins/datatable/js/dataTables.buttons.min.js"></script>
-  <script src="{% static ''%}assets/plugins/datatable/js/buttons.bootstrap5.min.js"></script>
-  <script src="{% static ''%}assets/plugins/datatable/js/jszip.min.js"></script>
-  <script src="{% static ''%}assets/plugins/datatable/pdfmake/pdfmake.min.js"></script>
-  <script src="{% static ''%}assets/plugins/datatable/pdfmake/vfs_fonts.js"></script>
-  <script src="{% static ''%}assets/plugins/datatable/js/buttons.html5.min.js"></script>
-  <script src="{% static ''%}assets/plugins/datatable/js/buttons.print.min.js"></script>
-  <script src="{% static ''%}assets/plugins/datatable/js/buttons.colVis.min.js"></script>
-  <script src="{% static ''%}assets/plugins/datatable/dataTables.responsive.min.js"></script>
-  <script src="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.min.js"></script>
-  <script src="{% static ''%}assets/js/table-data.js"></script>
-
-  {% endblock scripts %}
+ </div>
+ {% endblock body %} {% block scripts %}
+ <!-- INTERNAL SELECT2 JS -->
+ <script src="{% static ''%}assets/plugins/select2/select2.full.min.js">
+ </script>
+ <!-- DATA TABLE JS-->
+ <script src="{% static ''%}assets/plugins/datatable/js/jquery.dataTables.min.js">
+ </script>
+ <script src="{% static ''%}assets/plugins/datatable/js/dataTables.bootstrap5.js">
+ </script>
+ <script src="{% static ''%}assets/plugins/datatable/js/dataTables.buttons.min.js">
+ </script>
+ <script src="{% static ''%}assets/plugins/datatable/js/buttons.bootstrap5.min.js">
+ </script>
+ <script src="{% static ''%}assets/plugins/datatable/js/jszip.min.js">
+ </script>
+ <script src="{% static ''%}assets/plugins/datatable/pdfmake/pdfmake.min.js">
+ </script>
+ <script src="{% static ''%}assets/plugins/datatable/pdfmake/vfs_fonts.js">
+ </script>
+ <script src="{% static ''%}assets/plugins/datatable/js/buttons.html5.min.js">
+ </script>
+ <script src="{% static ''%}assets/plugins/datatable/js/buttons.print.min.js">
+ </script>
+ <script src="{% static ''%}assets/plugins/datatable/js/buttons.colVis.min.js">
+ </script>
+ <script src="{% static ''%}assets/plugins/datatable/dataTables.responsive.min.js">
+ </script>
+ <script src="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.min.js">
+ </script>
+ <script src="{% static ''%}assets/js/table-data.js">
+ </script>
+ {% endblock scripts %}
 </div>
