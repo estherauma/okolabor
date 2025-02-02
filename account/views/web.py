@@ -206,6 +206,8 @@ def edit_user_view(request, curp):
         form = UpdateAccountDetailsForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
+            
+            messages.success(request, "User details updated successfully!")
 
             redirect_url = reverse("manage_users")
             
