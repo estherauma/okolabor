@@ -195,7 +195,7 @@ class UserJobExperienceDetails(AuditableModel):
 
 
     def __str__(self):
-        return f'{self.user.curp}'
+        return f'{self.job_experience.work_experience.company}'
 
     class Meta:
         db_table = 'account_user_crop_experience_details'
