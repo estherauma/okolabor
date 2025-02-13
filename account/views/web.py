@@ -20,6 +20,22 @@ from django.views.generic.edit import FormView
 
 from account.forms.account_update import UpdateAccountDetailsForm
 from account.forms.filter_logs import UserLogsFilterForm
+from django.utils import timezone
+from django.utils.timezone import now
+from account.models import UserNotification
+from django.conf import settings
+from django.urls import reverse
+from django.contrib.auth.models import Group
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.contrib.sites.shortcuts import get_current_site
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
+from django.http import JsonResponse
+import datetime
 from account.models import User, UserNotification
 
 
@@ -181,3 +197,26 @@ class AccountNotificationsView(LoginRequiredMixin, View):
         notifications.filter(status='unread').update(status='read', read_at=now())
         context = {'notifications': notifications}
         return render(request, self.template_name,context)
+
+
+def edit_user_view(request, curp):
+    user = get_object_or_404(User, curp=curp)
+
+    if request.method == "POST":
+        form = UpdateAccountDetailsForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            
+            messages.success(request, "User details updated successfully!")
+
+            redirect_url = reverse("manage_users")
+            
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return JsonResponse({"success": True, "redirect_url": redirect_url})
+
+            return redirect(redirect_url)
+
+    else:
+        form = UpdateAccountDetailsForm(instance=user)
+
+    return render(request, "components/modals/edit_user_modal.html", {"form": form, "user": user})
