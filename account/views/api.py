@@ -396,14 +396,22 @@ class VerifyOTP(APIView):
 
 class UserJobExperienceView(APIView):
     @swagger_auto_schema(
-        operation_summary="Retrieve user job experience",
+        operation_summary="Retrieve user job experiences",
         tags=["Job Experience"]
     )
     def get(self, request, user_id):
+        work_experience_id = request.query_params.get('work_experience_id')
         user = get_object_or_404(User, pk=user_id)
+        
+        # Filter by user and optionally by work_experience if provided
         experiences = UserJobExperience.objects.filter(user=user)
+        
+        if work_experience_id:
+            experiences = experiences.filter(work_experience_id=work_experience_id)
+        
         serializer = UserJobExperienceSerializer(experiences, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+        
 
     @swagger_auto_schema(
         operation_summary="Create user job experience",

@@ -60,8 +60,87 @@
       </tbody>
       {% endfor %}
      </table>
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <h3 class="card-title green-color fw-bold mb-1">Existing Users</h3>
+          <button class="btn btn yellow-button btn-icon ms-auto p-1" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#inviteUserModal">
+            + New User
+          </button>
+        </div>
+        <div class="table-responsive">
+          <table class="table text-nowrap border-bottom">
+            <thead>
+              <tr>
+                <th class="theading-color text-start">User</th>
+                <th class="theading-color text-start">Email</th>
+                <th class="theading-color text-start">Last Accessed</th>
+                <th class="theading-color text-start">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for user in users %}
+              <tr class="green-color text-start">
+                <td>{{user.first_name}} {{user.last_name}}</td>
+                <td>{{user.email}}</td>
+                <td>Jan 24, 2024</td>
+                <td>
+                  <i class="side-menu__icon icon icon-pencil me-2 cursor-pointer edit-user-btn"
+                  data-bs-toggle="modal"
+                  data-bs-target="#editUserModal"
+                  data-user-id="{{ user.curp }}"  
+                  data-curp="{{ user.curp }}"
+                  data-first-name="{{ user.first_name }}"
+                  data-last-name="{{ user.last_name }}"
+                  data-email="{{ user.email }}"></i>
+
+                  <i class="side-menu__icon fa fa-trash-o cursor-pointer" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#confirmationModal"></i>
+                </td>
+              </tr>
+            </tbody>
+            {% endfor %}
+          </table>
+        </div>
+      </div>
     </div>
-   </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title green-color fw-bold mb-1">Pending Users</h3>
+        <div class="table-responsive">
+          <table class="table text-nowrap border-bottom">
+            <thead>
+              <tr>
+                <th class="theading-color text-start">User</th>
+                <th class="theading-color text-start">Email</th>
+                <th class="theading-color text-start">Last Accessed</th>
+                <th class="theading-color text-start">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for user in pending_users %}
+              <tr class="green-color text-start">
+                <td>{{user.first_name}} {{user.last_name}}</td>
+                <td>{{user.email}}</td>
+                <td>Jan 24, 2024</td>
+                <td>
+                  <i class="side-menu__icon icon icon-pencil me-2 cursor-pointer edit-user-btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editUserModal"
+                    data-curp="{{ user.curp }}"  
+                    data-first-name="{{ user.first_name }}"
+                    data-last-name="{{ user.last_name }}"
+                    data-email="{{ user.email }}"></i>
+                  <i class="side-menu__icon fa fa-trash-o cursor-pointer" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#confirmationModal"></i>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="card">
    <div class="card-body">
@@ -113,9 +192,13 @@
   </div>
  </div>
  <!-- COL END -->
+  <!-- COL END -->
 </div>
+
+
 <!-- Add User Modal -->
 {% include 'components/modals/add_user_modal.html' %}
 {% include 'components/modals/edit_user_modal.html' %}
 {% include 'components/modals/confirmation_modal.html' %}
 {% endblock body %}
+

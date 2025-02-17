@@ -1,17 +1,12 @@
 from django import forms
+from account.models import User
 
-from account.models import LanguageChoices
-
-
-class UpdateAccountDetailsForm(forms.Form):
-    first_name = forms.CharField(max_length=30, required=True)
-    last_name = forms.CharField(max_length=30, required=True)
-    email = forms.EmailField(required=True)
-    language = forms.ChoiceField(choices=LanguageChoices.choices, required=False)
+class UpdateAccountDetailsForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ["curp", "first_name", "last_name", "email"]  
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            field.widget.attrs['class'] = 'form-control'
-
-        self.fields['email'].widget.attrs['readonly'] = True
+        super(UpdateAccountDetailsForm, self).__init__(*args, **kwargs)
+        self.fields["curp"].widget.attrs["readonly"] = True
+        self.fields["email"].widget.attrs["readonly"] = True
