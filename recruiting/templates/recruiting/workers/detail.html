@@ -98,8 +98,7 @@
        {% translate "Work Experience" %}
       </h5>
       <a class="btn grey-green-button" href="{% url 'recruiting_web:worker_experience_create' pk=worker.id %}">
-       {% translate "+ Add Work
-                            Experience" %}
+       {% translate "+ Add Work Experience" %}
       </a>
      </div>
     </div>
@@ -110,9 +109,7 @@
      </div>
      <div class="col-10">
       <div class="row">
-       <h5 class="green-color">
-        {{exp.company}}
-       </h5>
+       <a href="{% url 'recruiting_web:work_experience_details' pk=exp.id %}"><h5 class="green-color">{{exp.company}}</h5></a>
        <div class="col-6" style="display: flex; align-items: center;">
         <br/>
         <i class="side-menu__icon icon-location-pin" style="margin-right: 5px;">
@@ -150,8 +147,7 @@
      </div>
      <div class="d-contents">
       <span class="green-color">
-       {% translate "🟢
-                            Available" %}
+       {% translate "Available" %}
       </span>
      </div>
     </div>

@@ -79,3 +79,10 @@ class CreateWorkExperienceView(BaseCreateView):
             kwargs={'pk': self.object.user.pk}
         )
 
+
+class WorkExperienceDetailsView(View):
+    def get(self, request, pk):
+        work_experience = get_object_or_404(UserWorkExperience, pk=pk)
+        context = {'work_experience': work_experience}
+        return render(request, 
+            'recruiting/workers/work_experience_detail.html', context)

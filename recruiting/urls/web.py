@@ -2,14 +2,20 @@ from django.urls import path
 
 from recruiting.views.web import (
     EmployerCreateView, EmployerDetailView,
-    EmployerListView, OkoMessageCreateView, OkoMessageListView, RecruiterTodoView, RoleDeductionsCreateView, RoleEmpLocationCreateView,
+    EmployerListView, OkoMessageCreateView, OkoMessageListView, 
+    RecruiterTodoView, RoleDeductionsCreateView, RoleEmpLocationCreateView,
     RoleHoursCreateView, RoleHousingCreateView, RoleMealsCreateView,
     RoleQualificationsCreateView, RoleWagesCreateView, WorkRequestCreateView,
-    WorkRequestDetailView, WorkRequestRoleCreateView, WorkRequestsListView,OkoMessageDetailsView
+    WorkRequestDetailView, WorkRequestRoleCreateView, WorkRequestsListView,
+    OkoMessageDetailsView
 )
-from recruiting.views.workers import WorkerCreateView, WorkerDetailsView, WorkerListView
+from recruiting.views.workers import (
+     WorkerCreateView, WorkerDetailsView, WorkerListView
+)
 
-from recruiting.views.workers import (CreateWorkExperienceView)
+from recruiting.views.workers import (
+     CreateWorkExperienceView, WorkExperienceDetailsView
+)
 
 
 app_name = 'recruiting_web'
@@ -81,7 +87,10 @@ urlpatterns = [
     path('workers/<pk>/workexperience/create/',
          CreateWorkExperienceView.as_view(),
          name='worker_experience_create'),
-    path('message-details/<str:id>/', OkoMessageDetailsView.as_view(), name='message-details'),
+    path('message-details/<str:id>/', OkoMessageDetailsView.as_view(),
+         name='message-details'),
+    path('work-experience/<pk>/details', WorkExperienceDetailsView.as_view(),
+         name='work_experience_details'),
 
 
 ]
