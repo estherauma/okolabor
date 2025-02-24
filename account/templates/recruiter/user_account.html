@@ -21,10 +21,10 @@
     <form method="post" novalidate="">
      {% csrf_token %} {% for field in form %}
      <div class="mb-3">
-      {{ field.label_tag }} {{ field }} {% if field.errors %}
-      <div class="text-danger">
-       {{ field.errors }}
-      </div>
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      {% if field.errors %}
+      <div class="text-danger">{{ field.errors }}</div>
       {% endif %}
      </div>
      {% endfor %}
@@ -65,8 +65,7 @@
      {% translate "accountDeletiton" %}
     </h4>
     <p class="green-color">
-     {% translate "A message here. Account deletion is final. There will be no way to
-          restore your account and all data will be lost." %}
+     {% translate "messageHere" %}
     </p>
     <a class="link-color-red" href="">
      {% translate "deleteAccount" %}
