@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-19 13:15+0300\n"
+"POT-Creation-Date: 2025-02-24 15:14+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,11 +31,6 @@ msgid "lastName"
 msgstr "Last Name "
 
 #: account/forms/account_update.py:13
-#: account/templates/recruiter/manage_users.html:31
-#: account/templates/recruiter/manage_users.html:77
-#: account/templates/recruiter/manage_users.html:116
-#: account/templates/recruiter/manage_users.html:158
-#: recruiting/templates/recruiting/employers/list.html:80
 msgid "email"
 msgstr "Email"
 
@@ -187,7 +182,7 @@ msgstr "User"
 #: account/templates/recruiter/manage_users.html:116
 #: account/templates/recruiter/manage_users.html:158
 #: recruiting/templates/recruiting/employers/list.html:80
-msgid "email"
+msgid "manageUsersEmail"
 msgstr "Email"
 
 #: account/templates/recruiter/manage_users.html:34
@@ -203,13 +198,6 @@ msgstr "Last Accessed"
 #: account/templates/recruiter/manage_users.html:164
 msgid "actions"
 msgstr "Actions"
-
-#: account/templates/recruiter/manage_users.html:51
-#: account/templates/recruiter/manage_users.html:87
-#: account/templates/recruiter/manage_users.html:126
-#: account/templates/recruiter/manage_users.html:178
-msgid "Jan 24, 2024"
-msgstr "Jan 24, 2024"
 
 #: account/templates/recruiter/manage_users.html:68
 msgid "newUser"
@@ -254,7 +242,9 @@ msgstr "Account Deletiton"
 
 #: account/templates/recruiter/user_account.html:68
 msgid "messageHere"
-msgstr "A message here.Account deletion is final.There will be no way to restore your account and all data will be lost."
+msgstr ""
+"A message here.Account deletion is final.There will be no way to restore "
+"your account and all data will be lost."
 
 #: account/templates/recruiter/user_account.html:71
 msgid "deleteAccount"
@@ -507,7 +497,6 @@ msgstr ""
 #: recruiting/templates/recruiting/todo.html:21
 #: recruiting/templates/recruiting/todo.html:43
 #: recruiting/templates/recruiting/todo.html:65
-#: recruiting/templates/recruiting/work_requests/list.html:38
 msgid "Option 1"
 msgstr ""
 
@@ -515,7 +504,6 @@ msgstr ""
 #: recruiting/templates/recruiting/todo.html:26
 #: recruiting/templates/recruiting/todo.html:48
 #: recruiting/templates/recruiting/todo.html:70
-#: recruiting/templates/recruiting/work_requests/list.html:43
 msgid "Option 2"
 msgstr ""
 
@@ -523,9 +511,9 @@ msgstr ""
 #: recruiting/templates/recruiting/todo.html:31
 #: recruiting/templates/recruiting/todo.html:53
 #: recruiting/templates/recruiting/todo.html:75
-#: recruiting/templates/recruiting/work_requests/list.html:48
 msgid "Option 3"
 msgstr ""
+
 #: recruiting/templates/recruiting/employers/list.html:60
 msgid "Add New Employer"
 msgstr ""
@@ -936,45 +924,63 @@ msgid "Worker information"
 msgstr ""
 
 #: recruiting/templates/recruiting/work_requests/list.html:19
-msgid "Active Worker Requests (Progress)"
+msgid "activeWorkerRequests(Progress)"
 msgstr ""
 
 #: recruiting/templates/recruiting/work_requests/list.html:33
-msgid "Show all"
+msgid "showAll"
 msgstr ""
+
+#: recruiting/templates/recruiting/work_requests/list.html:38
+#, fuzzy
+#| msgid "option1"
+msgid "listOption1"
+msgstr "Option 1"
+
+#: recruiting/templates/recruiting/work_requests/list.html:43
+#, fuzzy
+#| msgid "option2"
+msgid "listOption2"
+msgstr "Option 2"
+
+#: recruiting/templates/recruiting/work_requests/list.html:48
+#, fuzzy
+#| msgid "option3"
+msgid "listOption3"
+msgstr "Option 3"
 
 #: recruiting/templates/recruiting/work_requests/list.html:54
-msgid "Add new job order"
-msgstr ""
+msgid "addNewJobOrder"
+msgstr "Job Orders"
 
 #: recruiting/templates/recruiting/work_requests/list.html:73
-msgid "Worker Request"
-msgstr ""
+msgid "workerRequest"
+msgstr "Workers"
 
 #: recruiting/templates/recruiting/work_requests/list.html:76
-msgid "Deadline"
+msgid "deadline"
 msgstr ""
 
 #: recruiting/templates/recruiting/work_requests/list.html:79
-msgid "Start Date"
+msgid "startDate"
 msgstr ""
 
 #: recruiting/templates/recruiting/work_requests/list.html:82
-msgid "Status"
+msgid "status"
 msgstr ""
 
 #: recruiting/templates/recruiting/work_requests/list.html:85
 #: recruiting/templates/recruiting/work_requests/list.html:119
-#: recruiting/templates/recruiting/workers/list.html:15
-msgid "Workers"
-msgstr ""
+#: theme/templates/components/layouts/vertical/app-sidebar.html:26
+msgid "workers"
+msgstr "Workers"
 
 #: recruiting/templates/recruiting/work_requests/list.html:88
-msgid "Company"
+msgid "company"
 msgstr ""
 
 #: recruiting/templates/recruiting/work_requests/list.html:91
-msgid "Closing"
+msgid "closing"
 msgstr ""
 
 #: recruiting/templates/recruiting/workers/create.html:10
@@ -1050,13 +1056,6 @@ msgstr ""
 msgid "PASSPORT"
 msgstr ""
 
-#: recruiting/templates/recruiting/workers/detail.html:181
-#: recruiting/templates/recruiting/workers/detail.html:242
-#: recruiting/templates/recruiting/workers/detail.html:246
-#: recruiting/templates/recruiting/workers/detail.html:250
-msgid "Yes"
-msgstr ""
-
 #: recruiting/templates/recruiting/workers/detail.html:191
 msgid "WORKING LOCATIONS"
 msgstr ""
@@ -1108,6 +1107,10 @@ msgstr ""
 
 #: recruiting/templates/recruiting/workers/detail.html:248
 msgid "Willing to work in hot and cold"
+msgstr ""
+
+#: recruiting/templates/recruiting/workers/list.html:15
+msgid "Workers"
 msgstr ""
 
 #: recruiting/templates/recruiting/workers/list.html:41
@@ -1275,10 +1278,6 @@ msgstr "CSI VISA PROCESSING"
 msgid "home"
 msgstr "Home"
 
-#: theme/templates/components/layouts/vertical/app-sidebar.html:26
-msgid "workers"
-msgstr "Workers"
-
 #: theme/templates/components/layouts/vertical/app-sidebar.html:32
 msgid "employers"
 msgstr "Employers"
@@ -1328,6 +1327,9 @@ msgstr ""
 #: theme/views.py:271
 msgid "You have successfully logged in"
 msgstr ""
+
+#~ msgid "Jan 24, 2024"
+#~ msgstr "Jan 24, 2024"
 
 #, fuzzy
 #~| msgid "email"
