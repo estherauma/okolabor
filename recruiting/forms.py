@@ -1,6 +1,7 @@
 
 # create modelform for Employer model
 from django import forms
+from django.utils.translation import gettext_lazy as _ 
 from account.models import User
 from recruiting.models import (
     Deduction, Employer, Hours, OkoMessage, Qualification,
@@ -413,14 +414,18 @@ class TodoFilterForm(forms.Form):
 
 class OkoMessageFilterForm(forms.Form):
     status = forms.ChoiceField(
-        choices=[('inbox', 'InBox'), ('sent', 'Sent')],
+        label=_("status"),
+        choices=[
+            ('inbox', _('inbox')),
+            ('sent', _('sent'))   
+        ],
         widget=forms.Select(attrs={'class': 'form-control d-inline w-auto'})
     )
     date = forms.DateField(
+        label=_("date"), 
         widget=forms.DateInput(attrs={
             'class': 'form-control d-inline w-auto', 'type': 'date'})
     )
-
 
 class OkoMessageCreateForm(forms.ModelForm):
     class Meta:
