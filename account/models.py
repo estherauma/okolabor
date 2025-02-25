@@ -184,11 +184,11 @@ class UserJobExperienceDetails(AuditableModel):
         ('explanation', 'Explanation'),
         ('license', 'License'),
         ('evidence', 'Evidence'),
+        ('visa', 'Visa'),
     )
     job_experience = models.ForeignKey(
         UserJobExperience, on_delete=models.CASCADE,
         related_name='job_experience_details')
-    # kind is responsiblities, explanation, license, evidence
     kind = models.CharField(max_length=256, null=False, blank=False)
     value = models.CharField(max_length=256, null=False, blank=False)
     is_attachment = models.BooleanField(default=False)
