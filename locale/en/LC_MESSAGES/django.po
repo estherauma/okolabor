@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-25 12:10+0300\n"
+"POT-Creation-Date: 2025-02-25 15:20+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -118,7 +118,6 @@ msgid "Notifications"
 msgstr ""
 
 #: account/templates/notifications.html:10
-#: recruiting/templates/recruiting/todo.html:16
 msgid "Worker Requests"
 msgstr ""
 
@@ -127,12 +126,10 @@ msgid "Filter by Date"
 msgstr ""
 
 #: account/templates/notifications.html:16
-#: recruiting/templates/recruiting/todo.html:60
 msgid "New"
 msgstr ""
 
 #: account/templates/notifications.html:38
-#: recruiting/templates/recruiting/todo.html:107
 msgid "See More"
 msgstr ""
 
@@ -492,23 +489,14 @@ msgid "Assigned"
 msgstr ""
 
 #: recruiting/templates/recruiting/employers/list.html:39
-#: recruiting/templates/recruiting/todo.html:21
-#: recruiting/templates/recruiting/todo.html:43
-#: recruiting/templates/recruiting/todo.html:65
 msgid "Option 1"
 msgstr ""
 
 #: recruiting/templates/recruiting/employers/list.html:44
-#: recruiting/templates/recruiting/todo.html:26
-#: recruiting/templates/recruiting/todo.html:48
-#: recruiting/templates/recruiting/todo.html:70
 msgid "Option 2"
 msgstr ""
 
 #: recruiting/templates/recruiting/employers/list.html:49
-#: recruiting/templates/recruiting/todo.html:31
-#: recruiting/templates/recruiting/todo.html:53
-#: recruiting/templates/recruiting/todo.html:75
 msgid "Option 3"
 msgstr ""
 
@@ -584,19 +572,60 @@ msgid "Filter"
 msgstr ""
 
 #: recruiting/templates/recruiting/todo.html:8
-msgid "To Do"
-msgstr ""
+#: theme/templates/components/layouts/vertical/app-sidebar.html:46
+msgid "toDo"
+msgstr "To Do"
+
+#: recruiting/templates/recruiting/todo.html:16
+#, fuzzy
+#| msgid "workerRequest"
+msgid "workerRequests"
+msgstr "Worker Request"
+
+#: recruiting/templates/recruiting/todo.html:21
+#: recruiting/templates/recruiting/todo.html:43
+#: recruiting/templates/recruiting/todo.html:65
+#, fuzzy
+#| msgid "option1"
+msgid "toDoOption1"
+msgstr "Option 1"
+
+#: recruiting/templates/recruiting/todo.html:26
+#: recruiting/templates/recruiting/todo.html:48
+#: recruiting/templates/recruiting/todo.html:70
+#, fuzzy
+#| msgid "option2"
+msgid "toDoOption2"
+msgstr "Option 2"
+
+#: recruiting/templates/recruiting/todo.html:31
+#: recruiting/templates/recruiting/todo.html:53
+#: recruiting/templates/recruiting/todo.html:75
+#, fuzzy
+#| msgid "option3"
+msgid "toDoOption3"
+msgstr "Option 3"
 
 #: recruiting/templates/recruiting/todo.html:38
-msgid "Filter By Date"
+msgid "filterByDate"
 msgstr ""
 
+#: recruiting/templates/recruiting/todo.html:60
+#, fuzzy
+#| msgid "toDo"
+msgid "toDoNew"
+msgstr "To Do"
+
 #: recruiting/templates/recruiting/todo.html:90
-msgid "In Progress"
+msgid "inProgress"
+msgstr ""
+
+#: recruiting/templates/recruiting/todo.html:107
+msgid "seeMore"
 msgstr ""
 
 #: recruiting/templates/recruiting/todo.html:113
-msgid "Complete"
+msgid "complete"
 msgstr ""
 
 #: recruiting/templates/recruiting/work_requests/create.html:10
@@ -1814,11 +1843,21 @@ msgstr "Carrots and turnips"
 msgid "cropType"
 msgstr "Crop type"
 
+#: theme/forms.py:190
+#, fuzzy
+#| msgid "planting"
+msgid "Planting"
+msgstr "Planting"
 
 #: theme/forms.py:190
 msgid "planting"
 msgstr "Planting"
 
+#: theme/forms.py:191
+#, fuzzy
+#| msgid "cultivating"
+msgid "Cultivating"
+msgstr "Cultivating"
 
 #: theme/forms.py:191
 msgid "cultivating"
@@ -1832,15 +1871,31 @@ msgstr ""
 msgid "harvesting"
 msgstr "Harvesting"
 
+#: theme/forms.py:193
+#, fuzzy
+#| msgid "packaging"
+msgid "Packaging"
+msgstr "Packaging"
 
 #: theme/forms.py:193
 msgid "packaging"
 msgstr "Packaging"
 
 #: theme/forms.py:194
+#, fuzzy
+#| msgid "gradingAndSorting"
+msgid "Grading and sorting"
+msgstr "Grading and sorting"
+
+#: theme/forms.py:194
 msgid "gradingAndSorting"
 msgstr "Grading and sorting"
 
+#: theme/forms.py:195
+#, fuzzy
+#| msgid "other"
+msgid "Other"
+msgstr "Other"
 
 #: theme/forms.py:195
 msgid "other"
@@ -1890,10 +1945,6 @@ msgstr "Employers"
 #: theme/templates/components/layouts/vertical/app-sidebar.html:60
 msgid "jobOrders"
 msgstr "Job Orders"
-
-#: theme/templates/components/layouts/vertical/app-sidebar.html:46
-msgid "toDo"
-msgstr "To Do"
 
 #: theme/templates/components/layouts/vertical/app-sidebar.html:51
 msgid "messages"
