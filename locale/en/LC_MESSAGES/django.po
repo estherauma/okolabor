@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-26 10:45+0300\n"
+"POT-Creation-Date: 2025-02-26 12:13+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: account/forms/account_update.py:10 recruiting/forms.py:491
+#: account/forms/account_update.py:10 recruiting/forms.py:504
 msgid "curp"
 msgstr "CURP "
 
-#: account/forms/account_update.py:11 recruiting/forms.py:492
+#: account/forms/account_update.py:11 recruiting/forms.py:505
 msgid "firstName"
 msgstr "First Name "
 
-#: account/forms/account_update.py:12 recruiting/forms.py:493
+#: account/forms/account_update.py:12 recruiting/forms.py:506
 msgid "lastName"
 msgstr "Last Name "
 
-#: account/forms/account_update.py:13 recruiting/forms.py:490
+#: account/forms/account_update.py:13 recruiting/forms.py:503
 msgid "email"
 msgstr "Email"
 
@@ -271,76 +271,116 @@ msgstr ""
 msgid "Please correct the errors below."
 msgstr ""
 
-#: recruiting/forms.py:62
+#: recruiting/forms.py:23
+msgid "createEmployerName"
+msgstr "Name"
+
+#: recruiting/forms.py:24
+msgid "createEmployerEmail"
+msgstr "Email"
+
+#: recruiting/forms.py:25
+msgid "createEmployerTelephone"
+msgstr "Telephone"
+
+#: recruiting/forms.py:26
+msgid "createEmployerWebsite"
+msgstr "Website"
+
+#: recruiting/forms.py:27
+msgid "createEmployerAddress"
+msgstr "Address"
+
+#: recruiting/forms.py:28
+msgid "createEmployerCity"
+msgstr "City"
+
+#: recruiting/forms.py:29
+msgid "createEmployerState"
+msgstr "State"
+
+#: recruiting/forms.py:30
+msgid "createEmployerCountry"
+msgstr "Country"
+
+#: recruiting/forms.py:31
+msgid "createEmployerZipCode"
+msgstr "Zip Code"
+
+#: recruiting/forms.py:32
+msgid "createEmployerDescription"
+msgstr "Description"
+
+#: recruiting/forms.py:75
 msgid "createWorkRequestName"
 msgstr "Name"
 
-#: recruiting/forms.py:63
+#: recruiting/forms.py:76
 msgid "createWorkRequestStartDate"
 msgstr "Start Date"
 
-#: recruiting/forms.py:64
+#: recruiting/forms.py:77
 msgid "createWorkRequestEndDate"
 msgstr "End Date"
 
-#: recruiting/forms.py:65
+#: recruiting/forms.py:78
 msgid "createWorkRequestRequiredWorkers"
 msgstr "Required Workers"
 
-#: recruiting/forms.py:66
+#: recruiting/forms.py:79
 msgid "createWorkRequestEmployer"
 msgstr "Employer"
 
-#: recruiting/forms.py:67
+#: recruiting/forms.py:80
 msgid "createWorkRequestStatus"
 msgstr "Status"
 
-#: recruiting/forms.py:426
+#: recruiting/forms.py:439
 #: recruiting/templates/recruiting/work_requests/list.html:82
 msgid "status"
 msgstr "Status"
 
-#: recruiting/forms.py:428
+#: recruiting/forms.py:441
 msgid "inbox"
 msgstr "Inbox"
 
-#: recruiting/forms.py:429
+#: recruiting/forms.py:442
 msgid "sent"
 msgstr "Sent"
 
-#: recruiting/forms.py:434
+#: recruiting/forms.py:447
 msgid "date"
 msgstr "Date"
 
-#: recruiting/forms.py:475
+#: recruiting/forms.py:488
 msgid "male"
 msgstr "Male"
 
-#: recruiting/forms.py:476
+#: recruiting/forms.py:489
 msgid "female"
 msgstr "Female"
 
-#: recruiting/forms.py:482 recruiting/forms.py:495
+#: recruiting/forms.py:495 recruiting/forms.py:508
 msgid "gender"
 msgstr "Gender"
 
-#: recruiting/forms.py:494
+#: recruiting/forms.py:507
 msgid "dateOfBirth"
 msgstr "Date of Birth"
 
-#: recruiting/forms.py:496
+#: recruiting/forms.py:509
 msgid "telephone"
 msgstr "Telephone"
 
-#: recruiting/forms.py:497
+#: recruiting/forms.py:510
 msgid "addressLine1"
 msgstr "Address Line 1"
 
-#: recruiting/forms.py:498
+#: recruiting/forms.py:511
 msgid "addressLine2"
 msgstr "Address Line 2"
 
-#: recruiting/forms.py:499
+#: recruiting/forms.py:512
 msgid "city"
 msgstr "City"
 
@@ -361,21 +401,12 @@ msgid "createWorkRequestClosed"
 msgstr "Closed"
 
 #: recruiting/templates/recruiting/employers/create.html:10
-msgid "Add Employer"
-msgstr ""
+msgid "createEmployerAddEmployer"
+msgstr "Add Employer"
 
 #: recruiting/templates/recruiting/employers/create.html:33
-#: recruiting/templates/recruiting/work_requests/create_deductions.html:33
-#: recruiting/templates/recruiting/work_requests/create_employment_location.html:33
-#: recruiting/templates/recruiting/work_requests/create_hours.html:33
-#: recruiting/templates/recruiting/work_requests/create_housing_info.html:33
-#: recruiting/templates/recruiting/work_requests/create_meal_provision.html:33
-#: recruiting/templates/recruiting/work_requests/create_qualifications.html:33
-#: recruiting/templates/recruiting/work_requests/create_role.html:33
-#: recruiting/templates/recruiting/work_requests/create_wages.html:33
-#: recruiting/templates/recruiting/workers/work_experience_create.html:33
-msgid "Submit"
-msgstr ""
+msgid "createEmployerSubmit"
+msgstr "Submit"
 
 #: recruiting/templates/recruiting/employers/detail.html:29
 msgid "Employer Details"
@@ -722,6 +753,18 @@ msgstr "Submit"
 
 #: recruiting/templates/recruiting/work_requests/create_deductions.html:10
 msgid "Add Role deductions"
+msgstr ""
+
+#: recruiting/templates/recruiting/work_requests/create_deductions.html:33
+#: recruiting/templates/recruiting/work_requests/create_employment_location.html:33
+#: recruiting/templates/recruiting/work_requests/create_hours.html:33
+#: recruiting/templates/recruiting/work_requests/create_housing_info.html:33
+#: recruiting/templates/recruiting/work_requests/create_meal_provision.html:33
+#: recruiting/templates/recruiting/work_requests/create_qualifications.html:33
+#: recruiting/templates/recruiting/work_requests/create_role.html:33
+#: recruiting/templates/recruiting/work_requests/create_wages.html:33
+#: recruiting/templates/recruiting/workers/work_experience_create.html:33
+msgid "Submit"
 msgstr ""
 
 #: recruiting/templates/recruiting/work_requests/create_employment_location.html:10
