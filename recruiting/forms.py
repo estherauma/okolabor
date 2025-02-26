@@ -18,6 +18,19 @@ class EmployerForm(forms.ModelForm):
                   'address', 'city', 'state', 'country',
                   'zip_code', 'description'
                   ]
+        
+        labels = {
+            'name': _('createEmployerName'),
+            'email': _('createEmployerEmail'),
+            'phone': _('createEmployerTelephone'),
+            'website': _('createEmployerWebsite'),
+            'address': _('createEmployerAddress'),
+            'city': _('createEmployerCity'),
+            'state': _('createEmployerState'),
+            'country': _('createEmployerCountry'),
+            'zip_code': _('createEmployerZipCode'),
+            'description': _('createEmployerDescription'),
+        }
 
         widgets = {
             'name': forms.TextInput(attrs={
