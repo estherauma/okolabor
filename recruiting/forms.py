@@ -463,18 +463,32 @@ class OkoMessageCreateForm(forms.ModelForm):
 class WorkerCreateForm(forms.ModelForm):
     
     gender_choices = [
-        ('M', 'Male'),
-        ('F', 'Female'),
-        
+        ('M', _('male')), 
+        ('F', _('female')), 
     ]
     
     gender = forms.ChoiceField(
-    choices=gender_choices , 
-    widget=forms.Select(attrs={'class': 'form-control'})
-)
+        choices=gender_choices, 
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label=_("gender")
+    )
+    
     class Meta: 
         model = User
         fields = ['email', 'curp', 'first_name', 'last_name', 'dob', 'gender', 'telephone', 'address_line_1', 'address_line_2', 'city']
+        
+        labels = {
+            'email': _("email"),
+            'curp': _("curp"),
+            'first_name': _("firstName"),
+            'last_name': _("lastName"),
+            'dob': _("dateOfBirth"),
+            'gender': _("gender"),
+            'telephone': _("telephone"),
+            'address_line_1': _("addressLine1"),
+            'address_line_2': _("addressLine2"),
+            'city': _("city"),
+        }
         
         widgets = {
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
