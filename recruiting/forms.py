@@ -57,6 +57,15 @@ class WorkRequestForm(forms.ModelForm):
             'name', 'start_date', 'end_date',
             'required_workers', 'employer', 'status'
         ]
+        
+        labels = {
+            'name': _("createWorkRequestName"),
+            'start_date': _("createWorkRequestStartDate"),
+            'end_date': _("createWorkRequestEndDate"),
+            'required_workers': _("createWorkRequestRequiredWorkers"),
+            'employer': _("createWorkRequestEmployer"),
+            'status': _("createWorkRequestStatus"),
+        }
 
         widgets = {
             'name': forms.TextInput(attrs={
