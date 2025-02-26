@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-26 09:53+0300\n"
+"POT-Creation-Date: 2025-02-26 10:45+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: account/forms/account_update.py:10 recruiting/forms.py:482
+#: account/forms/account_update.py:10 recruiting/forms.py:491
 msgid "curp"
 msgstr "CURP "
 
-#: account/forms/account_update.py:11 recruiting/forms.py:483
+#: account/forms/account_update.py:11 recruiting/forms.py:492
 msgid "firstName"
 msgstr "First Name "
 
-#: account/forms/account_update.py:12 recruiting/forms.py:484
+#: account/forms/account_update.py:12 recruiting/forms.py:493
 msgid "lastName"
 msgstr "Last Name "
 
-#: account/forms/account_update.py:13 recruiting/forms.py:481
+#: account/forms/account_update.py:13 recruiting/forms.py:490
 msgid "email"
 msgstr "Email"
 
@@ -271,62 +271,100 @@ msgstr ""
 msgid "Please correct the errors below."
 msgstr ""
 
+#: recruiting/forms.py:62
+msgid "createWorkRequestName"
+msgstr "Name"
 
-#: recruiting/forms.py:417
+#: recruiting/forms.py:63
+msgid "createWorkRequestStartDate"
+msgstr "Start Date"
+
+#: recruiting/forms.py:64
+msgid "createWorkRequestEndDate"
+msgstr "End Date"
+
+#: recruiting/forms.py:65
+msgid "createWorkRequestRequiredWorkers"
+msgstr "Required Workers"
+
+#: recruiting/forms.py:66
+msgid "createWorkRequestEmployer"
+msgstr "Employer"
+
+#: recruiting/forms.py:67
+msgid "createWorkRequestStatus"
+msgstr "Status"
+
+#: recruiting/forms.py:426
 #: recruiting/templates/recruiting/work_requests/list.html:82
 msgid "status"
 msgstr "Status"
 
-#: recruiting/forms.py:419
+#: recruiting/forms.py:428
 msgid "inbox"
 msgstr "Inbox"
 
-#: recruiting/forms.py:420
+#: recruiting/forms.py:429
 msgid "sent"
 msgstr "Sent"
 
-#: recruiting/forms.py:425
+#: recruiting/forms.py:434
 msgid "date"
 msgstr "Date"
 
-#: recruiting/forms.py:466
+#: recruiting/forms.py:475
 msgid "male"
 msgstr "Male"
 
-#: recruiting/forms.py:467
+#: recruiting/forms.py:476
 msgid "female"
 msgstr "Female"
 
-#: recruiting/forms.py:473 recruiting/forms.py:486
+#: recruiting/forms.py:482 recruiting/forms.py:495
 msgid "gender"
 msgstr "Gender"
 
-#: recruiting/forms.py:485
+#: recruiting/forms.py:494
 msgid "dateOfBirth"
 msgstr "Date of Birth"
 
-#: recruiting/forms.py:487
+#: recruiting/forms.py:496
 msgid "telephone"
 msgstr "Telephone"
 
-#: recruiting/forms.py:488
+#: recruiting/forms.py:497
 msgid "addressLine1"
 msgstr "Address Line 1"
 
-#: recruiting/forms.py:489
+#: recruiting/forms.py:498
 msgid "addressLine2"
 msgstr "Address Line 2"
 
-#: recruiting/forms.py:490
+#: recruiting/forms.py:499
 msgid "city"
 msgstr "City"
+
+#: recruiting/models.py:26
+msgid "createWorkRequestDraft"
+msgstr "Draft"
+
+#: recruiting/models.py:27
+msgid "createWorkRequestRequested"
+msgstr "Requested"
+
+#: recruiting/models.py:28
+msgid "createWorkRequestOpen"
+msgstr "Open"
+
+#: recruiting/models.py:29
+msgid "createWorkRequestClosed"
+msgstr "Closed"
 
 #: recruiting/templates/recruiting/employers/create.html:10
 msgid "Add Employer"
 msgstr ""
 
 #: recruiting/templates/recruiting/employers/create.html:33
-#: recruiting/templates/recruiting/work_requests/create.html:33
 #: recruiting/templates/recruiting/work_requests/create_deductions.html:33
 #: recruiting/templates/recruiting/work_requests/create_employment_location.html:33
 #: recruiting/templates/recruiting/work_requests/create_hours.html:33
@@ -675,8 +713,12 @@ msgid "complete"
 msgstr "Complete"
 
 #: recruiting/templates/recruiting/work_requests/create.html:10
-msgid "Add Job Order"
-msgstr ""
+msgid "createWorkRequestAddJobOrder"
+msgstr "Add Job Order"
+
+#: recruiting/templates/recruiting/work_requests/create.html:33
+msgid "createWorkRequestSubmit"
+msgstr "Submit"
 
 #: recruiting/templates/recruiting/work_requests/create_deductions.html:10
 msgid "Add Role deductions"
