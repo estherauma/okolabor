@@ -531,6 +531,7 @@ class WorkExperienceCreateForm(forms.ModelForm):
         queryset=Employer.objects.all(),
         widget=forms.Select(attrs={'class': 'form-control'}),
         empty_label=_("addWorkerExperienceSelectEmployer"),
+        label=_("addWorkerExperienceCompany1"),
     )
     class Meta:
         model = UserWorkExperience
