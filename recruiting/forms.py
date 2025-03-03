@@ -469,6 +469,16 @@ class OkoMessageCreateForm(forms.ModelForm):
             'body',
             'auto_reply'
         ]
+        
+        labels = {
+            'recipient_type': _('createMessageRecipientType'),
+            'job_order': _('createMessageJobOrder'),
+            'include_recipients': _('createMessageIncludeRecipients'),
+            'subject': _('createMessageSubject'),
+            'body': _('createMessageBody'),
+            'auto_reply': _('createMessageAutoReply'),
+        }
+        
         widgets = {
             'recipient_type': forms.Select(attrs={
                 'class': 'form-control',
