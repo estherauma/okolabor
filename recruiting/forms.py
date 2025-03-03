@@ -111,6 +111,15 @@ class WorkRequestRoleForm(forms.ModelForm):
             'title', 'usdol_case_number', 'work_type',
             'number_of_required_workers', 'work_request', 'description'
         ]
+        
+        labels = {
+            'title': _('addRoleTitle'),
+            'usdol_case_number': _('addRoleUsdolCaseNumber'),
+            'work_type': _('addRoleWorkType'),
+            'number_of_required_workers': _('addRoleNumberOfRequiredWorkers'),
+            'work_request': _('addRoleWorkRequest'),
+            'description': _('addRoleDescription'),
+        }  
 
         widgets = {
             'title': forms.TextInput(attrs={

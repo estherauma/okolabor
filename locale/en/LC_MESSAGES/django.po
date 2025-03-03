@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-27 13:22+0300\n"
+"POT-Creation-Date: 2025-03-03 10:11+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: account/forms/account_update.py:10 recruiting/forms.py:504
+#: account/forms/account_update.py:10 recruiting/forms.py:513
 msgid "curp"
 msgstr "CURP "
 
-#: account/forms/account_update.py:11 recruiting/forms.py:505
+#: account/forms/account_update.py:11 recruiting/forms.py:514
 msgid "firstName"
 msgstr "First Name "
 
-#: account/forms/account_update.py:12 recruiting/forms.py:506
+#: account/forms/account_update.py:12 recruiting/forms.py:515
 msgid "lastName"
 msgstr "Last Name "
 
-#: account/forms/account_update.py:13 recruiting/forms.py:503
+#: account/forms/account_update.py:13 recruiting/forms.py:512
 msgid "email"
 msgstr "Email"
 
@@ -335,100 +335,132 @@ msgstr "Employer"
 msgid "createWorkRequestStatus"
 msgstr "Status"
 
-#: recruiting/forms.py:439
+#: recruiting/forms.py:116
+msgid "addRoleTitle"
+msgstr ""
+
+#: recruiting/forms.py:117
+msgid "addRoleUsdolCaseNumber"
+msgstr ""
+
+#: recruiting/forms.py:118
+#, fuzzy
+#| msgid "addWorker"
+msgid "addRoleWorkType"
+msgstr "Add worker"
+
+#: recruiting/forms.py:119
+#, fuzzy
+#| msgid "createWorkRequestRequiredWorkers"
+msgid "addRoleNumberOfRequiredWorkers"
+msgstr "Required Workers"
+
+#: recruiting/forms.py:120
+#, fuzzy
+#| msgid "createWorkRequestName"
+msgid "addRoleWorkRequest"
+msgstr "Name"
+
+#: recruiting/forms.py:121
+#, fuzzy
+#| msgid "createEmployerDescription"
+msgid "addRoleDescription"
+msgstr "Description"
+
+#: recruiting/forms.py:448
 #: recruiting/templates/recruiting/work_requests/list.html:82
 msgid "status"
 msgstr "Status"
 
-#: recruiting/forms.py:441
+#: recruiting/forms.py:450
 msgid "inbox"
 msgstr "Inbox"
 
-#: recruiting/forms.py:442
+#: recruiting/forms.py:451
 msgid "sent"
 msgstr "Sent"
 
-#: recruiting/forms.py:447
+#: recruiting/forms.py:456
 msgid "date"
 msgstr "Date"
 
-#: recruiting/forms.py:488
+#: recruiting/forms.py:497
 msgid "male"
 msgstr "Male"
 
-#: recruiting/forms.py:489
+#: recruiting/forms.py:498
 msgid "female"
 msgstr "Female"
 
-#: recruiting/forms.py:495 recruiting/forms.py:508
+#: recruiting/forms.py:504 recruiting/forms.py:517
 msgid "gender"
 msgstr "Gender"
 
-#: recruiting/forms.py:507
+#: recruiting/forms.py:516
 msgid "dateOfBirth"
 msgstr "Date of Birth"
 
-#: recruiting/forms.py:509
+#: recruiting/forms.py:518
 msgid "telephone"
 msgstr "Telephone"
 
-#: recruiting/forms.py:510
+#: recruiting/forms.py:519
 msgid "addressLine1"
 msgstr "Address Line 1"
 
-#: recruiting/forms.py:511
+#: recruiting/forms.py:520
 msgid "addressLine2"
 msgstr "Address Line 2"
 
-#: recruiting/forms.py:512
+#: recruiting/forms.py:521
 msgid "city"
 msgstr "City"
 
-#: recruiting/forms.py:533
+#: recruiting/forms.py:542
 msgid "addWorkerExperienceSelectEmployer"
 msgstr "Select Employer"
 
-#: recruiting/forms.py:534
+#: recruiting/forms.py:543
 msgid "addWorkerExperienceCompany1"
 msgstr "Company"
 
-#: recruiting/forms.py:541
+#: recruiting/forms.py:550
 msgid "addWorkerExperienceUser"
 msgstr "User"
 
-#: recruiting/forms.py:542
+#: recruiting/forms.py:551
 msgid "addWorkerExperienceCompany"
 msgstr "Company"
 
-#: recruiting/forms.py:543
+#: recruiting/forms.py:552
 msgid "addWorkerExperienceWorkTitle"
 msgstr "Work Title"
 
-#: recruiting/forms.py:544
+#: recruiting/forms.py:553
 msgid "addWorkerExperienceStartDate"
 msgstr "Start Date"
 
-#: recruiting/forms.py:545
+#: recruiting/forms.py:554
 msgid "addWorkerExperienceEndDate"
 msgstr "End Date"
 
-#: recruiting/forms.py:546
+#: recruiting/forms.py:555
 msgid "addWorkerExperienceCountry"
 msgstr "Country"
 
-#: recruiting/forms.py:547
+#: recruiting/forms.py:556
 msgid "addWorkerExperienceSupervisorName"
 msgstr "Supervisor Name"
 
-#: recruiting/forms.py:548
+#: recruiting/forms.py:557
 msgid "addWorkerExperienceSupervisorTelephone"
 msgstr "Supervisor Telephone"
 
-#: recruiting/forms.py:549
+#: recruiting/forms.py:558
 msgid "addWorkerExperienceSupervisorEmail"
 msgstr "Supervisor Email"
 
-#: recruiting/forms.py:550
+#: recruiting/forms.py:559
 msgid "addWorkerExperienceVisaType"
 msgstr "Visa Type"
 
@@ -798,7 +830,6 @@ msgstr ""
 #: recruiting/templates/recruiting/work_requests/create_housing_info.html:33
 #: recruiting/templates/recruiting/work_requests/create_meal_provision.html:33
 #: recruiting/templates/recruiting/work_requests/create_qualifications.html:33
-#: recruiting/templates/recruiting/work_requests/create_role.html:33
 #: recruiting/templates/recruiting/work_requests/create_wages.html:33
 msgid "Submit"
 msgstr ""
@@ -824,7 +855,11 @@ msgid "Add Qualification Requirements"
 msgstr ""
 
 #: recruiting/templates/recruiting/work_requests/create_role.html:10
-msgid "Add Role"
+msgid "addRoleAddRole"
+msgstr ""
+
+#: recruiting/templates/recruiting/work_requests/create_role.html:33
+msgid "addRoleSubmit"
 msgstr ""
 
 #: recruiting/templates/recruiting/work_requests/create_wages.html:10
@@ -1494,7 +1529,7 @@ msgid "Job Order created successfully"
 msgstr ""
 
 #: recruiting/views/web.py:129
-msgid "Role created successfully"
+msgid "addRoleRoleCreatedSuccessfully"
 msgstr ""
 
 #: recruiting/views/web.py:174
