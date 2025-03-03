@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-03 12:12+0300\n"
+"POT-Creation-Date: 2025-03-03 12:51+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: account/forms/account_update.py:10 recruiting/forms.py:518
+#: account/forms/account_update.py:10 recruiting/forms.py:513
 msgid "curp"
 msgstr "CURP "
 
-#: account/forms/account_update.py:11 recruiting/forms.py:519
+#: account/forms/account_update.py:11 recruiting/forms.py:514
 msgid "firstName"
 msgstr "First Name "
 
-#: account/forms/account_update.py:12 recruiting/forms.py:520
+#: account/forms/account_update.py:12 recruiting/forms.py:515
 msgid "lastName"
 msgstr "Last Name "
 
-#: account/forms/account_update.py:13 recruiting/forms.py:517
+#: account/forms/account_update.py:13 recruiting/forms.py:512
 msgid "email"
 msgstr "Email"
 
@@ -359,104 +359,100 @@ msgstr "Work request"
 msgid "addRoleDescription"
 msgstr "Description"
 
-#: recruiting/forms.py:149 recruiting/models.py:49
-msgid "addRoleNoDescriptionProvided"
-msgstr "No description provided"
-
-#: recruiting/forms.py:453
+#: recruiting/forms.py:448
 #: recruiting/templates/recruiting/work_requests/list.html:82
 msgid "status"
 msgstr "Status"
 
-#: recruiting/forms.py:455
+#: recruiting/forms.py:450
 msgid "inbox"
 msgstr "Inbox"
 
-#: recruiting/forms.py:456
+#: recruiting/forms.py:451
 msgid "sent"
 msgstr "Sent"
 
-#: recruiting/forms.py:461
+#: recruiting/forms.py:456
 msgid "date"
 msgstr "Date"
 
-#: recruiting/forms.py:502
+#: recruiting/forms.py:497
 msgid "male"
 msgstr "Male"
 
-#: recruiting/forms.py:503
+#: recruiting/forms.py:498
 msgid "female"
 msgstr "Female"
 
-#: recruiting/forms.py:509 recruiting/forms.py:522
+#: recruiting/forms.py:504 recruiting/forms.py:517
 msgid "gender"
 msgstr "Gender"
 
-#: recruiting/forms.py:521
+#: recruiting/forms.py:516
 msgid "dateOfBirth"
 msgstr "Date of Birth"
 
-#: recruiting/forms.py:523
+#: recruiting/forms.py:518
 msgid "telephone"
 msgstr "Telephone"
 
-#: recruiting/forms.py:524
+#: recruiting/forms.py:519
 msgid "addressLine1"
 msgstr "Address Line 1"
 
-#: recruiting/forms.py:525
+#: recruiting/forms.py:520
 msgid "addressLine2"
 msgstr "Address Line 2"
 
-#: recruiting/forms.py:526
+#: recruiting/forms.py:521
 msgid "city"
 msgstr "City"
 
-#: recruiting/forms.py:547
+#: recruiting/forms.py:542
 msgid "addWorkerExperienceSelectEmployer"
 msgstr "Select Employer"
 
-#: recruiting/forms.py:548
+#: recruiting/forms.py:543
 msgid "addWorkerExperienceCompany1"
 msgstr "Company"
 
-#: recruiting/forms.py:555
+#: recruiting/forms.py:550
 msgid "addWorkerExperienceUser"
 msgstr "User"
 
-#: recruiting/forms.py:556
+#: recruiting/forms.py:551
 msgid "addWorkerExperienceCompany"
 msgstr "Company"
 
-#: recruiting/forms.py:557
+#: recruiting/forms.py:552
 msgid "addWorkerExperienceWorkTitle"
 msgstr "Work Title"
 
-#: recruiting/forms.py:558
+#: recruiting/forms.py:553
 msgid "addWorkerExperienceStartDate"
 msgstr "Start Date"
 
-#: recruiting/forms.py:559
+#: recruiting/forms.py:554
 msgid "addWorkerExperienceEndDate"
 msgstr "End Date"
 
-#: recruiting/forms.py:560
+#: recruiting/forms.py:555
 msgid "addWorkerExperienceCountry"
 msgstr "Country"
 
-#: recruiting/forms.py:561
+#: recruiting/forms.py:556
 msgid "addWorkerExperienceSupervisorName"
 msgstr "Supervisor Name"
 
-#: recruiting/forms.py:562
+#: recruiting/forms.py:557
 msgid "addWorkerExperienceSupervisorTelephone"
 msgstr "Supervisor Telephone"
 
-#: recruiting/forms.py:563
+#: recruiting/forms.py:558
 msgid "addWorkerExperienceSupervisorEmail"
 msgstr "Supervisor Email"
 
-#: recruiting/forms.py:564
+#: recruiting/forms.py:559
 msgid "addWorkerExperienceVisaType"
 msgstr "Visa Type"
 
@@ -476,6 +472,10 @@ msgstr "Open"
 msgid "createWorkRequestClosed"
 msgstr "Closed"
 
+#: recruiting/models.py:49
+msgid "addRoleNoDescriptionProvided"
+msgstr "No description provided"
+
 #: recruiting/templates/recruiting/employers/create.html:10
 msgid "createEmployerAddEmployer"
 msgstr "Add Employer"
@@ -485,188 +485,256 @@ msgid "createEmployerSubmit"
 msgstr "Submit"
 
 #: recruiting/templates/recruiting/employers/detail.html:29
-msgid "Employer Details"
-msgstr ""
+#, fuzzy
+#| msgid "workerDetailsWorkerDetails"
+msgid "employerDetailsEmployerDetails"
+msgstr "Worker Details"
 
 #: recruiting/templates/recruiting/employers/detail.html:35
-msgid "Email:"
-msgstr ""
+#, fuzzy
+#| msgid "workerDetailsEmail"
+msgid "employerDetailsEmail:"
+msgstr "Email"
 
 #: recruiting/templates/recruiting/employers/detail.html:45
-msgid "Phone:"
-msgstr ""
+#, fuzzy
+#| msgid "workerDetailsNone"
+msgid "employerDetailsPhone:"
+msgstr "None"
 
 #: recruiting/templates/recruiting/employers/detail.html:55
-msgid "Website:"
-msgstr ""
+#, fuzzy
+#| msgid "createEmployerWebsite"
+msgid "employerDetailsWebsite:"
+msgstr "Website"
 
 #: recruiting/templates/recruiting/employers/detail.html:65
-msgid "Address:"
-msgstr ""
+#, fuzzy
+#| msgid "workerDetailsAddress"
+msgid "employerDetailsAddress:"
+msgstr "Address"
 
 #: recruiting/templates/recruiting/employers/detail.html:75
-msgid "City:"
-msgstr ""
+#, fuzzy
+#| msgid "workRequestDetailsCity:"
+msgid "employerDetailsCity:"
+msgstr "City:"
 
 #: recruiting/templates/recruiting/employers/detail.html:85
-msgid "State:"
-msgstr ""
+#, fuzzy
+#| msgid "workRequestDetailsState:"
+msgid "employerDetailsState:"
+msgstr "State:"
 
 #: recruiting/templates/recruiting/employers/detail.html:95
-msgid "Country:"
-msgstr ""
+#, fuzzy
+#| msgid "workRequestDetailsCountry:"
+msgid "employerDetailsCountry:"
+msgstr "Country:"
 
 #: recruiting/templates/recruiting/employers/detail.html:105
-msgid "Zip Code:"
-msgstr ""
+#, fuzzy
+#| msgid "createEmployerZipCode"
+msgid "employerDetailsZipCode:"
+msgstr "Zip Code"
 
 #: recruiting/templates/recruiting/employers/detail.html:120
-msgid "New Job Order/h3&gt;"
+msgid "employerDetailsNewJobOrder/h3&gt;"
 msgstr ""
 
 #: recruiting/templates/recruiting/employers/detail.html:129
-msgid "Name"
-msgstr ""
+#, fuzzy
+#| msgid "workerDetailsNone"
+msgid "employerDetailsName"
+msgstr "None"
 
 #: recruiting/templates/recruiting/employers/detail.html:132
 #: recruiting/templates/recruiting/employers/detail.html:240
 #: recruiting/templates/recruiting/employers/detail.html:317
-msgid "Position"
-msgstr ""
+#, fuzzy
+#| msgid "createEmployerDescription"
+msgid "employerDetailsPosition"
+msgstr "Description"
 
 #: recruiting/templates/recruiting/employers/detail.html:135
-msgid "Office"
-msgstr ""
+#, fuzzy
+#| msgid "workerDetailsSendOffer"
+msgid "employerDetailsOffice"
+msgstr "Send Offer"
 
 #: recruiting/templates/recruiting/employers/detail.html:138
-msgid "Age"
-msgstr ""
+#, fuzzy
+#| msgid "workerDetailsAB"
+msgid "employerDetailsAge"
+msgstr "AB"
 
 #: recruiting/templates/recruiting/employers/detail.html:141
 #: recruiting/templates/recruiting/employers/detail.html:243
 #: recruiting/templates/recruiting/employers/detail.html:320
-msgid "Start date"
-msgstr ""
+#, fuzzy
+#| msgid "createEmployerState"
+msgid "employerDetailsStartDate"
+msgstr "State"
 
 #: recruiting/templates/recruiting/employers/detail.html:144
 #: recruiting/templates/recruiting/employers/detail.html:246
 #: recruiting/templates/recruiting/employers/detail.html:323
-msgid "Salary"
-msgstr ""
+#, fuzzy
+#| msgid "workerDetailsEmail"
+msgid "employerDetailsSalary"
+msgstr "Email"
 
 #: recruiting/templates/recruiting/employers/detail.html:151
-msgid "Tiger Nixon"
-msgstr ""
+#, fuzzy
+#| msgid "workerDetailsArizona"
+msgid "employerDetailsTigerNixon"
+msgstr "Arizona"
 
 #: recruiting/templates/recruiting/employers/detail.html:154
-msgid "System Architect"
+msgid "employerDetailsSystemArchitect"
 msgstr ""
 
 #: recruiting/templates/recruiting/employers/detail.html:157
-msgid "Edinburgh"
+msgid "employerDetailsEdinburgh"
 msgstr ""
 
 #: recruiting/templates/recruiting/employers/detail.html:171
-msgid "Garrett Winters"
-msgstr ""
+#, fuzzy
+#| msgid "workerDetailsGender"
+msgid "employerDetailsGarrettWinters"
+msgstr "Gender"
 
 #: recruiting/templates/recruiting/employers/detail.html:174
-msgid "Accountant"
-msgstr ""
+#, fuzzy
+#| msgid "workerDetailsContact"
+msgid "employerDetailsAccountant"
+msgstr "Contact"
 
 #: recruiting/templates/recruiting/employers/detail.html:177
-msgid "Tokyo"
-msgstr ""
+#, fuzzy
+#| msgid "employers"
+msgid "employerDetailsTokyo"
+msgstr "Employers"
 
 #: recruiting/templates/recruiting/employers/detail.html:191
-msgid "Ashton Cox"
-msgstr ""
+#, fuzzy
+#| msgid "employersOption1"
+msgid "employerDetailsAshtonCox"
+msgstr "Option 1"
 
 #: recruiting/templates/recruiting/employers/detail.html:194
-msgid "Junior Technical Author"
+msgid "employerDetailsJuniorTechnicalAuthor"
 msgstr ""
 
 #: recruiting/templates/recruiting/employers/detail.html:197
-msgid "San Francisco"
+msgid "employerDetailsSanFrancisco"
 msgstr ""
 
 #: recruiting/templates/recruiting/employers/detail.html:213
-msgid "Decline"
-msgstr ""
+#, fuzzy
+#| msgid "workerDetailsGender"
+msgid "employerDetailsDecline"
+msgstr "Gender"
 
 #: recruiting/templates/recruiting/employers/detail.html:216
-msgid "Accept"
-msgstr ""
+#, fuzzy
+#| msgid "workerDetailsAdvanced"
+msgid "employerDetailsAccept"
+msgstr "Advanced"
 
 #: recruiting/templates/recruiting/employers/detail.html:225
-msgid "Active Job Orders"
-msgstr ""
+#, fuzzy
+#| msgid "workRequestDetailsJobOrders"
+msgid "employerDetailsActiveJobOrders"
+msgstr "Job Orders"
 
 #: recruiting/templates/recruiting/employers/detail.html:234
 #: recruiting/templates/recruiting/employers/detail.html:311
-msgid "First name"
+msgid "employerDetailsFirstName"
 msgstr ""
 
 #: recruiting/templates/recruiting/employers/detail.html:237
 #: recruiting/templates/recruiting/employers/detail.html:314
-msgid "Last name"
-msgstr ""
+#, fuzzy
+#| msgid "workerDetailsUtah"
+msgid "employerDetailsLastName"
+msgstr "Utah"
 
 #: recruiting/templates/recruiting/employers/detail.html:249
 #: recruiting/templates/recruiting/employers/detail.html:326
-msgid "E-mail"
-msgstr ""
+#, fuzzy
+#| msgid "workerDetailsEmail"
+msgid "employerDetailsE-mail"
+msgstr "Email"
 
 #: recruiting/templates/recruiting/employers/detail.html:256
-msgid "Bella"
-msgstr ""
+#, fuzzy
+#| msgid "workerDetailsBack"
+msgid "employerDetailsBella"
+msgstr "Back"
 
 #: recruiting/templates/recruiting/employers/detail.html:259
-msgid "Chloe"
-msgstr ""
+#, fuzzy
+#| msgid "workerDetailsNone"
+msgid "employerDetailsChloe"
+msgstr "None"
 
 #: recruiting/templates/recruiting/employers/detail.html:262
-msgid "System Developer"
+msgid "employerDetailsSystemDeveloper"
 msgstr ""
 
 #: recruiting/templates/recruiting/employers/detail.html:276
-msgid "Donna"
-msgstr ""
+#, fuzzy
+#| msgid "employersOption1"
+msgid "employerDetailsDonna"
+msgstr "Option 1"
 
 #: recruiting/templates/recruiting/employers/detail.html:279
-msgid "Bond"
-msgstr ""
+#, fuzzy
+#| msgid "employersOption1"
+msgid "employerDetailsBond"
+msgstr "Option 1"
 
 #: recruiting/templates/recruiting/employers/detail.html:282
-msgid "Account Manager"
+msgid "employerDetailsAccountManager"
 msgstr ""
 
 #: recruiting/templates/recruiting/employers/detail.html:302
-msgid "Job Order History"
-msgstr ""
+#, fuzzy
+#| msgid "workRequestDetailsJobOrders"
+msgid "employerDetailsJobOrderHistory"
+msgstr "Job Orders"
 
 #: recruiting/templates/recruiting/employers/detail.html:333
-msgid "John"
-msgstr ""
+#, fuzzy
+#| msgid "employersOption1"
+msgid "employerDetailsJohn"
+msgstr "Option 1"
 
 #: recruiting/templates/recruiting/employers/detail.html:336
-msgid "Doe"
-msgstr ""
+#, fuzzy
+#| msgid "workerDetailsNone"
+msgid "employerDetailsDoe"
+msgstr "None"
 
 #: recruiting/templates/recruiting/employers/detail.html:339
-msgid "Software Engineer"
+msgid "employerDetailsSoftwareEngineer"
 msgstr ""
 
 #: recruiting/templates/recruiting/employers/detail.html:353
-msgid "Jane"
-msgstr ""
+#, fuzzy
+#| msgid "workerDetailsNone"
+msgid "employerDetailsJane"
+msgstr "None"
 
 #: recruiting/templates/recruiting/employers/detail.html:356
-msgid "Smith"
-msgstr ""
+#, fuzzy
+#| msgid "workerDetailsUtah"
+msgid "employerDetailsSmith"
+msgstr "Utah"
 
 #: recruiting/templates/recruiting/employers/detail.html:359
-msgid "Project Manager"
+msgid "employerDetailsProjectManager"
 msgstr ""
 
 #: recruiting/templates/recruiting/employers/list.html:20
