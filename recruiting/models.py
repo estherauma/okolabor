@@ -46,7 +46,7 @@ class Role(AuditableModel):
     title = models.CharField(max_length=255)
     usdol_case_number = models.CharField(max_length=50)
     number_of_required_workers = models.IntegerField()
-    description = models.TextField(default='No description provided')
+    description = models.TextField(default=_('addRoleNoDescriptionProvided'))
     work_type = models.CharField(null=True, blank=True, max_length=50)
     work_request = models.ForeignKey(
         WorkRequests, on_delete=models.DO_NOTHING,
