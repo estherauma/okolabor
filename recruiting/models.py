@@ -1,5 +1,6 @@
 from django.db import models
 from common.models import AuditableModel
+from django.utils.translation import gettext_lazy as _
 
 
 class Employer(AuditableModel):
@@ -22,10 +23,10 @@ class Employer(AuditableModel):
 
 class WorkRequests(AuditableModel):
     STATUS_CHOICES = (
-        ('Draft', 'Draft'),
-        ('Requested', 'Requested'),
-        ('Open', 'Open'),
-        ('Closed', 'Closed'),
+        ('Draft', _('createWorkRequestDraft')),
+        ('Requested', _('createWorkRequestRequested')),
+        ('Open', _('createWorkRequestOpen')),
+        ('Closed', _('createWorkRequestClosed')),
     )
     name = models.CharField(max_length=255, null=False, blank=False)
     start_date = models.DateField(null=False, blank=False)

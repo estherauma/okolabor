@@ -18,6 +18,19 @@ class EmployerForm(forms.ModelForm):
                   'address', 'city', 'state', 'country',
                   'zip_code', 'description'
                   ]
+        
+        labels = {
+            'name': _('createEmployerName'),
+            'email': _('createEmployerEmail'),
+            'phone': _('createEmployerTelephone'),
+            'website': _('createEmployerWebsite'),
+            'address': _('createEmployerAddress'),
+            'city': _('createEmployerCity'),
+            'state': _('createEmployerState'),
+            'country': _('createEmployerCountry'),
+            'zip_code': _('createEmployerZipCode'),
+            'description': _('createEmployerDescription'),
+        }
 
         widgets = {
             'name': forms.TextInput(attrs={
@@ -57,6 +70,15 @@ class WorkRequestForm(forms.ModelForm):
             'name', 'start_date', 'end_date',
             'required_workers', 'employer', 'status'
         ]
+        
+        labels = {
+            'name': _("createWorkRequestName"),
+            'start_date': _("createWorkRequestStartDate"),
+            'end_date': _("createWorkRequestEndDate"),
+            'required_workers': _("createWorkRequestRequiredWorkers"),
+            'employer': _("createWorkRequestEmployer"),
+            'status': _("createWorkRequestStatus"),
+        }
 
         widgets = {
             'name': forms.TextInput(attrs={
@@ -463,18 +485,32 @@ class OkoMessageCreateForm(forms.ModelForm):
 class WorkerCreateForm(forms.ModelForm):
     
     gender_choices = [
-        ('M', 'Male'),
-        ('F', 'Female'),
-        
+        ('M', _('male')), 
+        ('F', _('female')), 
     ]
     
     gender = forms.ChoiceField(
-    choices=gender_choices , 
-    widget=forms.Select(attrs={'class': 'form-control'})
-)
+        choices=gender_choices, 
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label=_("gender")
+    )
+    
     class Meta: 
         model = User
         fields = ['email', 'curp', 'first_name', 'last_name', 'dob', 'gender', 'telephone', 'address_line_1', 'address_line_2', 'city']
+        
+        labels = {
+            'email': _("email"),
+            'curp': _("curp"),
+            'first_name': _("firstName"),
+            'last_name': _("lastName"),
+            'dob': _("dateOfBirth"),
+            'gender': _("gender"),
+            'telephone': _("telephone"),
+            'address_line_1': _("addressLine1"),
+            'address_line_2': _("addressLine2"),
+            'city': _("city"),
+        }
         
         widgets = {
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
