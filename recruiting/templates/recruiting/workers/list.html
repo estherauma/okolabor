@@ -12,7 +12,7 @@
  <div class="row">
   <div class="page-header custom-page-header d-flex flex-column">
    <h1 class="page-title">
-    {% translate "Workers" %}
+    {% translate "listWorkers" %}
    </h1>
    <div class="search-bar-workers">
     <div class="container">
@@ -22,7 +22,7 @@
         <i class="fa fa-search">
         </i>
        </button>
-       <input aria-label="Search" class="form-control search-input" name="query" placeholder="Search 'Workers'" type="text"/>
+       <input aria-label="Search" class="form-control search-input" name="query" placeholder="{% translate 'searchWorkers'%}" type="text"/>
       </div>
      </form>
     </div>
@@ -37,7 +37,7 @@
     <button class="btn green-color-workers">
      <i aria-hidden="true" class="fa fa-filter">
      </i>
-     {% translate "Advanced Filter" %}
+     {% translate "advancedFilter" %}
     </button>
     <button aria-controls="collapsewithbutton" aria-expanded="false" class="btn green-color-workers collapsed toggle-sign" data-bs-target="#collapseCard" data-bs-toggle="collapse" type="button">
      <span class="sign medium-font">
@@ -52,12 +52,12 @@
      <div class="card offwhite-color card-body">
       <span class="d-flex align-items-center">
        <h3 class="card-title green-color d-contents">
-        {% translate "Select primary job experience" %}
+        {% translate "selectPrimaryJobExperience" %}
        </h3>
        <button class="btn btn-link green-color-workers" data-bs-placement="top" data-bs-toggle="tooltip" title="Fill in the fields to add job experience">
         <i aria-hidden="true" class="fa fa-question-circle-o">
         </i>
-        {% translate "What's this?" %}
+        {% translate "what'sThis?" %}
        </button>
       </span>
       <form method="post">
@@ -67,7 +67,7 @@
         <div class="col">
          <div class="form-group">
           <label class="form-label gray-color text" for="{{ field.id_for_label }}">
-           {{ field.label }}
+            {% translate field.label %}
           </label>
           {{ field }}
          </div>
@@ -84,7 +84,7 @@
       </form>
       <span class="d-flex align-items-center mt-3 mb-3">
        <h3 class="card-title green-color">
-        {% translate "Other experience" %}
+        {% translate "otherExperience" %}
        </h3>
       </span>
       <form method="post">
@@ -94,7 +94,7 @@
         <div class="col">
          <div class="form-group">
           <label class="form-label gray-color text" for="{{ field.id_for_label }}">
-           {{ field.label }}
+            {% translate field.label %}
           </label>
           {{ field }}
          </div>
@@ -114,12 +114,12 @@
         <i class="fe fe-plus">
         </i>
        </span>
-       {% translate "Add another experience" %}
+       {% translate "addAnotherExperience" %}
       </a>
       <div class="form-row align-items-center">
        <span class="mt-5 ms-2 mb-3">
         <h3 class="card-title green-color d-contents">
-         {% translate "Further Filters" %}
+         {% translate "furtherFilters" %}
         </h3>
        </span>
       </div>
@@ -130,7 +130,7 @@
         <div class="col-md-4 col-sm-6 col-xs-6">
          <div class="form-group">
           <label class="form-label gray-color" for="{{ field.id_for_label }}">
-           {{ field.label }}
+            {% translate field.label %}
           </label>
           {{ field }}
          </div>
@@ -152,31 +152,31 @@
        <div class="col-md-11 col-sm-11 col-xs-12">
         <div class="d-flex align-items-center justify-content-end">
          <p class="theading-color show-text show-text">
-          {% translate "SHOW RESULTS" %}
+          {% translate "showResults" %}
          </p>
          <div class="dropdown ms-3">
           <button aria-expanded="false" class="btn dropdown-toggle dropdown-btn" data-bs-toggle="dropdown" id="dropdownMenuButton" type="button">
-           {% translate "Select Rows" %}
+           {% translate "selectRows" %}
           </button>
           <ul aria-labelledby="dropdownMenuButton" class="dropdown-menu">
            <li>
             <a class="dropdown-item" href="#">
-             {% translate "5 per page" %}
+             {% translate "5PerPage" %}
             </a>
            </li>
            <li>
             <a class="dropdown-item" href="#">
-             {% translate "10 per page" %}
+             {% translate "10PerPage" %}
             </a>
            </li>
            <li>
             <a class="dropdown-item" href="#">
-             {% translate "15 per page" %}
+             {% translate "15PerPage" %}
             </a>
            </li>
            <li>
             <a class="dropdown-item" href="#">
-             {% translate "20 per page" %}
+             {% translate "20PerPage" %}
             </a>
            </li>
           </ul>
@@ -186,14 +186,14 @@
            <i class="fe fe-plus">
            </i>
           </span>
-          {% translate "Add to" %}
+          {% translate "addTo" %}
          </a>
          <a class="btn dark-green-button ms-3" href="{% url 'recruiting_web:recruiter_create_worker' %}">
           <span>
            <i class="fe fe-plus">
            </i>
           </span>
-          {% translate "Add worker" %}
+          {% translate "addWorker" %}
          </a>
         </div>
        </div>
@@ -208,25 +208,25 @@
          <thead>
           <tr>
            <th class="theading-color">
-            {% translate "Name" %}
+            {% translate "name" %}
            </th>
            <th class="theading-color">
-            {% translate "Town" %}
+            {% translate "town" %}
            </th>
            <th class="theading-color">
-            {% translate "Profile Completion" %}
+            {% translate "profileCompletion" %}
            </th>
            <th class="theading-color">
-            {% translate "Experience" %}
+            {% translate "experience" %}
            </th>
            <th class="theading-color">
-            {% translate "English proficiency" %}
+            {% translate "englishProficiency" %}
            </th>
            <th class="theading-color">
-            {% translate "Location preference" %}
+            {% translate "locationPreference" %}
            </th>
            <th class="theading-color">
-            {% translate "Offer status" %}
+            {% translate "offerStatus" %}
            </th>
           </tr>
          </thead>
@@ -245,22 +245,22 @@
             {% endif %}
            </td>
            <td>
-            {% translate "Chloe" %}
+            {% translate "chloe" %}
            </td>
            <td>
             30%
            </td>
            <td>
-            {% translate "Harvesting, Fruit picking" %}
+            {% translate "harvestingFruitPicking" %}
            </td>
            <td>
-            {% translate "Intermediate" %}
+            {% translate "intermediate" %}
            </td>
            <td>
-            {% translate "Any" %}
+            {% translate "any" %}
            </td>
            <td>
-            {% translate "Pending" %}
+            {% translate "pending" %}
            </td>
           </tr>
           {% endfor %}

@@ -6,7 +6,7 @@
 <div class="page-header">
  <div>
   <h1 class="page-title">
-   {% translate "My Messages" %}
+   {% translate "myMessages" %}
   </h1>
  </div>
 </div>
@@ -15,30 +15,35 @@
   <div class="card offwhite-color">
    <div class="card-body">
     <div class="d-flex justify-content-between">
-     <form method="post">
-      {% csrf_token %}
-      <div class="form-row d-flex align-items-center">
-       {% for field in form %}
-       <div class="col-auto">
-        <div class="form-group">
-         {{ field }}
-        </div>
-       </div>
-       {% endfor %}
-       <div class="col-auto">
-        <button class="form-group btn light light-green-button" type="submit">
-         {% translate "Filter" %}
-        </button>
-       </div>
-      </div>
-     </form>
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                {% for field in form %}
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <small class="text-danger">{{ field.errors.0 }}</small>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+                
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button class="btn btn-primary" type="submit">
+                    {% translate "filter" %}
+                </button>
+            </div>
+        </form>
      <div>
       <a class="btn dark-green-button" href="{% url 'recruiting_web:recruiter_create_message' %}">
        <span>
         <i class="fe fe-plus">
         </i>
        </span>
-       {% translate "New Message" %}
+       {% translate "newMessage" %}
       </a>
      </div>
     </div>

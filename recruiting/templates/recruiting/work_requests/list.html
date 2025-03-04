@@ -14,7 +14,7 @@
 <div class="page-header">
  <div>
   <h1 class="page-title">
-   {% translate "Active Worker Requests (Progress)" %}
+   {% translate "activeWorkerRequests(Progress)" %}
   </h1>
  </div>
  <!-- <div class="ms-auto pageheader-btn">
@@ -28,28 +28,28 @@
 <div class="parent-btn-grp">
  <div class="dropdown">
   <button aria-expanded="false" class="btn dropdown-toggle dropdown-btn" data-bs-toggle="dropdown" id="dropdownMenuButton" type="button">
-   {% translate "Show all" %}
+   {% translate "showAll" %}
   </button>
   <ul aria-labelledby="dropdownMenuButton" class="dropdown-menu">
    <li>
     <a class="dropdown-item" href="#">
-     {% translate "Option 1" %}
+     {% translate "listOption1" %}
     </a>
    </li>
    <li>
     <a class="dropdown-item" href="#">
-     {% translate "Option 2" %}
+     {% translate "listOption2" %}
     </a>
    </li>
    <li>
     <a class="dropdown-item" href="#">
-     {% translate "Option 3" %}
+     {% translate "listOption3" %}
     </a>
    </li>
   </ul>
  </div>
  <a class="btn yellow-button" href="{% url 'recruiting_web:workrequest_create' %}">
-  {% translate "Add new job order" %}
+  {% translate "addNewJobOrder" %}
  </a>
 </div>
 <!-- <div class="ms-auto pageheader-btn">
@@ -68,25 +68,25 @@
       <thead>
        <tr>
         <th class="wd-15p border-bottom-0 theading-color">
-         {% translate "Worker Request" %}
+         {% translate "workerRequest" %}
         </th>
         <th class="wd-15p border-bottom-0 theading-color">
-         {% translate "Deadline" %}
+         {% translate "deadline" %}
         </th>
         <th class="wd-15p border-bottom-0 theading-color">
-         {% translate "Start Date" %}
+         {% translate "startDate" %}
         </th>
         <th class="wd-20p border-bottom-0 theading-color" style="width: 21%;">
-         {% translate "Status" %}
+         {% translate "status" %}
         </th>
         <th class="wd-15p border-bottom-0 theading-color">
-         {% translate "Workers" %}
+         {% translate "workers" %}
         </th>
         <th class="wd-10p border-bottom-0 theading-color">
-         {% translate "Company" %}
+         {% translate "company" %}
         </th>
         <th class="wd-25p border-bottom-0 theading-color">
-         {% translate "Closing" %}
+         {% translate "closing" %}
         </th>
        </tr>
       </thead>
@@ -114,7 +114,7 @@
          </div>
         </td>
         <td class="tbody">
-         {% translate "Workers" %}
+         {% translate "workers" %}
         </td>
         <td class="tbody">
          <a href="/employers/{{item.employer.id}}">

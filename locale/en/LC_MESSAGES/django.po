@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-19 13:15+0300\n"
+"POT-Creation-Date: 2025-02-25 16:55+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,11 +31,6 @@ msgid "lastName"
 msgstr "Last Name "
 
 #: account/forms/account_update.py:13
-#: account/templates/recruiter/manage_users.html:31
-#: account/templates/recruiter/manage_users.html:77
-#: account/templates/recruiter/manage_users.html:116
-#: account/templates/recruiter/manage_users.html:158
-#: recruiting/templates/recruiting/employers/list.html:80
 msgid "email"
 msgstr "Email"
 
@@ -123,7 +118,6 @@ msgid "Notifications"
 msgstr ""
 
 #: account/templates/notifications.html:10
-#: recruiting/templates/recruiting/todo.html:16
 msgid "Worker Requests"
 msgstr ""
 
@@ -132,12 +126,10 @@ msgid "Filter by Date"
 msgstr ""
 
 #: account/templates/notifications.html:16
-#: recruiting/templates/recruiting/todo.html:60
 msgid "New"
 msgstr ""
 
 #: account/templates/notifications.html:38
-#: recruiting/templates/recruiting/todo.html:107
 msgid "See More"
 msgstr ""
 
@@ -187,7 +179,7 @@ msgstr "User"
 #: account/templates/recruiter/manage_users.html:116
 #: account/templates/recruiter/manage_users.html:158
 #: recruiting/templates/recruiting/employers/list.html:80
-msgid "email"
+msgid "manageUsersEmail"
 msgstr "Email"
 
 #: account/templates/recruiter/manage_users.html:34
@@ -203,13 +195,6 @@ msgstr "Last Accessed"
 #: account/templates/recruiter/manage_users.html:164
 msgid "actions"
 msgstr "Actions"
-
-#: account/templates/recruiter/manage_users.html:51
-#: account/templates/recruiter/manage_users.html:87
-#: account/templates/recruiter/manage_users.html:126
-#: account/templates/recruiter/manage_users.html:178
-msgid "Jan 24, 2024"
-msgstr "Jan 24, 2024"
 
 #: account/templates/recruiter/manage_users.html:68
 msgid "newUser"
@@ -254,7 +239,9 @@ msgstr "Account Deletiton"
 
 #: account/templates/recruiter/user_account.html:68
 msgid "messageHere"
-msgstr "A message here.Account deletion is final.There will be no way to restore your account and all data will be lost."
+msgstr ""
+"A message here.Account deletion is final.There will be no way to restore "
+"your account and all data will be lost."
 
 #: account/templates/recruiter/user_account.html:71
 msgid "deleteAccount"
@@ -283,6 +270,24 @@ msgstr ""
 #: account/views/web.py:188
 msgid "Please correct the errors below."
 msgstr ""
+
+
+#: recruiting/forms.py:417
+#: recruiting/templates/recruiting/work_requests/list.html:82
+msgid "status"
+msgstr "Status"
+
+#: recruiting/forms.py:419
+msgid "inbox"
+msgstr "Inbox"
+
+#: recruiting/forms.py:420
+msgid "sent"
+msgstr "Sent"
+
+#: recruiting/forms.py:425
+msgid "date"
+msgstr "Date"
 
 #: recruiting/templates/recruiting/employers/create.html:10
 msgid "Add Employer"
@@ -353,7 +358,6 @@ msgid "New Job Order/h3&gt;"
 msgstr ""
 
 #: recruiting/templates/recruiting/employers/detail.html:129
-#: recruiting/templates/recruiting/workers/list.html:214
 msgid "Name"
 msgstr ""
 
@@ -451,7 +455,6 @@ msgid "Bella"
 msgstr ""
 
 #: recruiting/templates/recruiting/employers/detail.html:259
-#: recruiting/templates/recruiting/workers/list.html:251
 msgid "Chloe"
 msgstr ""
 
@@ -499,67 +502,59 @@ msgstr ""
 msgid "Project Manager"
 msgstr ""
 
+#: recruiting/templates/recruiting/employers/list.html:20
+msgid "searchEmployers"
+msgstr "Search 'Employers'"
+
 #: recruiting/templates/recruiting/employers/list.html:34
-msgid "Assigned"
-msgstr ""
+msgid "assigned"
+msgstr "Assigned"
 
 #: recruiting/templates/recruiting/employers/list.html:39
-#: recruiting/templates/recruiting/todo.html:21
-#: recruiting/templates/recruiting/todo.html:43
-#: recruiting/templates/recruiting/todo.html:65
-#: recruiting/templates/recruiting/work_requests/list.html:38
-msgid "Option 1"
-msgstr ""
+msgid "employersOption1"
+msgstr "Option 1"
 
 #: recruiting/templates/recruiting/employers/list.html:44
-#: recruiting/templates/recruiting/todo.html:26
-#: recruiting/templates/recruiting/todo.html:48
-#: recruiting/templates/recruiting/todo.html:70
-#: recruiting/templates/recruiting/work_requests/list.html:43
-msgid "Option 2"
-msgstr ""
+msgid "employersOption2"
+msgstr "Option 2"
 
 #: recruiting/templates/recruiting/employers/list.html:49
-#: recruiting/templates/recruiting/todo.html:31
-#: recruiting/templates/recruiting/todo.html:53
-#: recruiting/templates/recruiting/todo.html:75
-#: recruiting/templates/recruiting/work_requests/list.html:48
-msgid "Option 3"
-msgstr ""
+msgid "employersOption3"
+msgstr "Option 3"
+
 #: recruiting/templates/recruiting/employers/list.html:60
-msgid "Add New Employer"
-msgstr ""
+msgid "addNewEmployer"
+msgstr "Add New Employer"
 
 #: recruiting/templates/recruiting/employers/list.html:74
-msgid "Company Name"
-msgstr ""
+msgid "companyName"
+msgstr "Company Name"
 
 #: recruiting/templates/recruiting/employers/list.html:77
-msgid "Contact Name"
-msgstr ""
+msgid "contactName"
+msgstr "Contact Name"
 
 #: recruiting/templates/recruiting/employers/list.html:83
-msgid "Location"
-msgstr ""
+msgid "location"
+msgstr "Location"
 
 #: recruiting/templates/recruiting/employers/list.html:86
-msgid "Phone Number"
-msgstr ""
+msgid "phoneNumber"
+msgstr "Phone Number"
 
 #: recruiting/templates/recruiting/employers/list.html:89
-msgid "Assigned To"
-msgstr ""
+msgid "assignedTo"
+msgstr "Assigned To"
 
 #: recruiting/templates/recruiting/employers/list.html:118
-msgid "View"
-msgstr ""
+msgid "view"
+msgstr "View"
 
 #: recruiting/templates/recruiting/messages/create.html:10
 msgid "Create message"
 msgstr ""
 
 #: recruiting/templates/recruiting/messages/create.html:20
-#: recruiting/templates/recruiting/messages/list.html:41
 msgid "New Message"
 msgstr ""
 
@@ -590,28 +585,63 @@ msgid "Back"
 msgstr ""
 
 #: recruiting/templates/recruiting/messages/list.html:9
-msgid "My Messages"
-msgstr ""
+msgid "myMessages"
+msgstr "My Messages"
 
-#: recruiting/templates/recruiting/messages/list.html:30
-msgid "Filter"
-msgstr ""
+#: recruiting/templates/recruiting/messages/list.html:36
+msgid "filter"
+msgstr "Filter"
+
+#: recruiting/templates/recruiting/messages/list.html:46
+msgid "newMessage"
+msgstr "New Message"
 
 #: recruiting/templates/recruiting/todo.html:8
-msgid "To Do"
-msgstr ""
+#: theme/templates/components/layouts/vertical/app-sidebar.html:46
+msgid "toDo"
+msgstr "To Do"
+
+#: recruiting/templates/recruiting/todo.html:16
+msgid "workerRequests"
+msgstr "Worker Requests"
+
+#: recruiting/templates/recruiting/todo.html:21
+#: recruiting/templates/recruiting/todo.html:43
+#: recruiting/templates/recruiting/todo.html:65
+msgid "toDoOption1"
+msgstr "Option 1"
+
+#: recruiting/templates/recruiting/todo.html:26
+#: recruiting/templates/recruiting/todo.html:48
+#: recruiting/templates/recruiting/todo.html:70
+msgid "toDoOption2"
+msgstr "Option 2"
+
+#: recruiting/templates/recruiting/todo.html:31
+#: recruiting/templates/recruiting/todo.html:53
+#: recruiting/templates/recruiting/todo.html:75
+msgid "toDoOption3"
+msgstr "Option 3"
 
 #: recruiting/templates/recruiting/todo.html:38
-msgid "Filter By Date"
-msgstr ""
+msgid "filterByDate"
+msgstr "Filter By Date"
+
+#: recruiting/templates/recruiting/todo.html:60
+msgid "toDoNew"
+msgstr "New"
 
 #: recruiting/templates/recruiting/todo.html:90
-msgid "In Progress"
-msgstr ""
+msgid "inProgress"
+msgstr "In Progress"
+
+#: recruiting/templates/recruiting/todo.html:107
+msgid "seeMore"
+msgstr "See More"
 
 #: recruiting/templates/recruiting/todo.html:113
-msgid "Complete"
-msgstr ""
+msgid "complete"
+msgstr "Complete"
 
 #: recruiting/templates/recruiting/work_requests/create.html:10
 msgid "Add Job Order"
@@ -936,46 +966,54 @@ msgid "Worker information"
 msgstr ""
 
 #: recruiting/templates/recruiting/work_requests/list.html:19
-msgid "Active Worker Requests (Progress)"
-msgstr ""
+msgid "activeWorkerRequests(Progress)"
+msgstr "Active Worker Requests (Progress)"
 
 #: recruiting/templates/recruiting/work_requests/list.html:33
-msgid "Show all"
-msgstr ""
+msgid "showAll"
+msgstr "Show all"
+
+#: recruiting/templates/recruiting/work_requests/list.html:38
+msgid "listOption1"
+msgstr "Option 1"
+
+#: recruiting/templates/recruiting/work_requests/list.html:43
+msgid "listOption2"
+msgstr "Option 2"
+
+#: recruiting/templates/recruiting/work_requests/list.html:48
+msgid "listOption3"
+msgstr "Option 3"
 
 #: recruiting/templates/recruiting/work_requests/list.html:54
-msgid "Add new job order"
-msgstr ""
+msgid "addNewJobOrder"
+msgstr "Add new job order"
 
 #: recruiting/templates/recruiting/work_requests/list.html:73
-msgid "Worker Request"
-msgstr ""
+msgid "workerRequest"
+msgstr "Worker Request"
 
 #: recruiting/templates/recruiting/work_requests/list.html:76
-msgid "Deadline"
-msgstr ""
+msgid "deadline"
+msgstr "Deadline"
 
 #: recruiting/templates/recruiting/work_requests/list.html:79
-msgid "Start Date"
-msgstr ""
-
-#: recruiting/templates/recruiting/work_requests/list.html:82
-msgid "Status"
-msgstr ""
+msgid "startDate"
+msgstr "Start Date"
 
 #: recruiting/templates/recruiting/work_requests/list.html:85
 #: recruiting/templates/recruiting/work_requests/list.html:119
-#: recruiting/templates/recruiting/workers/list.html:15
-msgid "Workers"
-msgstr ""
+#: theme/templates/components/layouts/vertical/app-sidebar.html:26
+msgid "workers"
+msgstr "Workers"
 
 #: recruiting/templates/recruiting/work_requests/list.html:88
-msgid "Company"
-msgstr ""
+msgid "company"
+msgstr "Company"
 
 #: recruiting/templates/recruiting/work_requests/list.html:91
-msgid "Closing"
-msgstr ""
+msgid "closing"
+msgstr "Closing"
 
 #: recruiting/templates/recruiting/workers/create.html:10
 msgid "Add Worker"
@@ -1050,13 +1088,6 @@ msgstr ""
 msgid "PASSPORT"
 msgstr ""
 
-#: recruiting/templates/recruiting/workers/detail.html:181
-#: recruiting/templates/recruiting/workers/detail.html:242
-#: recruiting/templates/recruiting/workers/detail.html:246
-#: recruiting/templates/recruiting/workers/detail.html:250
-msgid "Yes"
-msgstr ""
-
 #: recruiting/templates/recruiting/workers/detail.html:191
 msgid "WORKING LOCATIONS"
 msgstr ""
@@ -1110,106 +1141,122 @@ msgstr ""
 msgid "Willing to work in hot and cold"
 msgstr ""
 
+#: recruiting/templates/recruiting/workers/list.html:15
+msgid "listWorkers"
+msgstr "Workers"
+
+#: recruiting/templates/recruiting/workers/list.html:25
+msgid "searchWorkers"
+msgstr "Search 'Workers'"
+
 #: recruiting/templates/recruiting/workers/list.html:41
-msgid "Advanced Filter"
-msgstr ""
+msgid "advancedFilter"
+msgstr "Advanced Filter"
 
 #: recruiting/templates/recruiting/workers/list.html:57
-msgid "Select primary job experience"
-msgstr ""
+msgid "selectPrimaryJobExperience"
+msgstr "Select primary job experience"
 
 #: recruiting/templates/recruiting/workers/list.html:62
-msgid "What's this?"
-msgstr ""
+msgid "what'sThis?"
+msgstr "What's this?"
 
 #: recruiting/templates/recruiting/workers/list.html:81
 #: recruiting/templates/recruiting/workers/list.html:108
 msgid "x"
-msgstr ""
+msgstr "X"
 
 #: recruiting/templates/recruiting/workers/list.html:89
-msgid "Other experience"
-msgstr ""
+msgid "otherExperience"
+msgstr "Other experience"
 
 #: recruiting/templates/recruiting/workers/list.html:119
-msgid "Add another experience"
-msgstr ""
+msgid "addAnotherExperience"
+msgstr "Add another experience"
 
 #: recruiting/templates/recruiting/workers/list.html:124
-msgid "Further Filters"
-msgstr ""
+msgid "furtherFilters"
+msgstr "Further Filters"
 
 #: recruiting/templates/recruiting/workers/list.html:157
-msgid "SHOW RESULTS"
-msgstr ""
+msgid "showResults"
+msgstr "SHOW RESULTS"
 
 #: recruiting/templates/recruiting/workers/list.html:161
-msgid "Select Rows"
-msgstr ""
+msgid "selectRows"
+msgstr "Select Rows"
 
 #: recruiting/templates/recruiting/workers/list.html:166
-msgid "5 per page"
-msgstr ""
+msgid "5PerPage"
+msgstr "5 per page"
 
 #: recruiting/templates/recruiting/workers/list.html:171
-msgid "10 per page"
-msgstr ""
+msgid "10PerPage"
+msgstr "10 per page"
 
 #: recruiting/templates/recruiting/workers/list.html:176
-msgid "15 per page"
-msgstr ""
+msgid "15PerPage"
+msgstr "15 per page"
 
 #: recruiting/templates/recruiting/workers/list.html:181
-msgid "20 per page"
-msgstr ""
+msgid "20PerPage"
+msgstr "20 per page"
 
 #: recruiting/templates/recruiting/workers/list.html:191
-msgid "Add to"
-msgstr ""
+msgid "addTo"
+msgstr "Add to"
 
 #: recruiting/templates/recruiting/workers/list.html:198
-msgid "Add worker"
-msgstr ""
+msgid "addWorker"
+msgstr "Add worker"
+
+#: recruiting/templates/recruiting/workers/list.html:214
+msgid "name"
+msgstr "Name"
 
 #: recruiting/templates/recruiting/workers/list.html:217
-msgid "Town"
-msgstr ""
+msgid "town"
+msgstr "Town"
 
 #: recruiting/templates/recruiting/workers/list.html:220
-msgid "Profile Completion"
-msgstr ""
+msgid "profileCompletion"
+msgstr "Profile Completion"
 
 #: recruiting/templates/recruiting/workers/list.html:223
-msgid "Experience"
-msgstr ""
+msgid "experience"
+msgstr "Experience"
 
 #: recruiting/templates/recruiting/workers/list.html:226
-msgid "English proficiency"
-msgstr ""
+msgid "englishProficiency"
+msgstr "English proficiency"
 
 #: recruiting/templates/recruiting/workers/list.html:229
-msgid "Location preference"
-msgstr ""
+msgid "locationPreference"
+msgstr "Location preference"
 
 #: recruiting/templates/recruiting/workers/list.html:232
-msgid "Offer status"
-msgstr ""
+msgid "offerStatus"
+msgstr "Offer status"
+
+#: recruiting/templates/recruiting/workers/list.html:251
+msgid "chloe"
+msgstr "Chloe"
 
 #: recruiting/templates/recruiting/workers/list.html:257
-msgid "Harvesting, Fruit picking"
-msgstr ""
+msgid "harvestingFruitPicking"
+msgstr "Harvesting, Fruit picking"
 
 #: recruiting/templates/recruiting/workers/list.html:260
-msgid "Intermediate"
-msgstr ""
+msgid "intermediate"
+msgstr "Intermediate"
 
 #: recruiting/templates/recruiting/workers/list.html:263
-msgid "Any"
-msgstr ""
+msgid "any"
+msgstr "Any"
 
 #: recruiting/templates/recruiting/workers/list.html:266
-msgid "Pending"
-msgstr ""
+msgid "pending"
+msgstr "Pending"
 
 #: recruiting/templates/recruiting/workers/work_experience_create.html:10
 msgid "Add Worker Experience"
@@ -1267,6 +1314,632 @@ msgstr ""
 msgid "Worker created successfully."
 msgstr ""
 
+#: theme/forms.py:48
+msgid "oilPalmFruit"
+msgstr "Oil palm fruit"
+
+#: theme/forms.py:49
+msgid "olives"
+msgstr "Olives"
+
+#: theme/forms.py:50
+msgid "agaveFibres"
+msgstr "Agave fibres"
+
+#: theme/forms.py:51
+msgid "avocados"
+msgstr "Avocados"
+
+#: theme/forms.py:52
+msgid "chilliesAndPeppers"
+msgstr "Chillies and peppers"
+
+#: theme/forms.py:53
+msgid "garlic"
+msgstr "Garlic"
+
+#: theme/forms.py:54
+msgid "apricots"
+msgstr "Apricots"
+
+#: theme/forms.py:55
+msgid "artichokes"
+msgstr "Artichokes"
+
+#: theme/forms.py:56
+msgid "locustBeans(carobs)"
+msgstr "Locust beans (carobs)"
+
+#: theme/forms.py:57
+msgid "cotton"
+msgstr "Cotton"
+
+#: theme/forms.py:58
+msgid "almonds"
+msgstr "Almonds"
+
+#: theme/forms.py:59
+msgid "canarySeed"
+msgstr "Canary seed"
+
+#: theme/forms.py:60
+msgid "lupins"
+msgstr "Lupins"
+
+#: theme/forms.py:62
+msgid "aniseBadianBorianderCuminCarawayFennelAndJuniperBerries"
+msgstr "Anise, badian, coriander, cumin, caraway, fennel and juniper berries"
+
+#: theme/forms.py:63
+msgid "blueberries"
+msgstr "Blueberries"
+
+#: theme/forms.py:64
+msgid "cranberries"
+msgstr "Cranberries"
+
+#: theme/forms.py:65
+msgid "rice"
+msgstr "Rice"
+
+#: theme/forms.py:66
+msgid "hazelnuts"
+msgstr "Hazelnuts"
+
+#: theme/forms.py:67
+msgid "oats"
+msgstr "Oats"
+
+#: theme/forms.py:68
+msgid "sugarCane"
+msgstr "Sugar cane"
+
+#: theme/forms.py:69
+msgid "bananas"
+msgstr "Bananas"
+
+#: theme/forms.py:70
+msgid "sweetPotatoes"
+msgstr "Sweet potatoes"
+
+#: theme/forms.py:71
+msgid "eggplants(aubergines)"
+msgstr "Eggplants (aubergines)"
+
+#: theme/forms.py:72
+msgid "coir"
+msgstr "Cior"
+
+#: theme/forms.py:73
+msgid "coffee"
+msgstr "Coffee"
+
+#: theme/forms.py:74
+msgid "pumpkinsSquashAndGourds"
+msgstr "Pumpkins, squash and gourds"
+
+#: theme/forms.py:75
+msgid "yautia"
+msgstr "Yautia"
+
+#: theme/forms.py:76
+msgid "trueHemp"
+msgstr "True hemp"
+
+#: theme/forms.py:77
+msgid "hempseed"
+msgstr "Hempseed"
+
+#: theme/forms.py:78
+msgid "cinnamon"
+msgstr "Cinnamon"
+
+#: theme/forms.py:79
+msgid "persimmons"
+msgstr "Persimmons"
+
+#: theme/forms.py:80
+msgid "chestnuts"
+msgstr "Chestnuts"
+
+#: theme/forms.py:81
+msgid "cashewNuts"
+msgstr "Cashew nuts"
+
+#: theme/forms.py:82
+msgid "rubber"
+msgstr "Rubber"
+
+#: theme/forms.py:83
+msgid "barley"
+msgstr "Barley"
+
+#: theme/forms.py:84
+msgid "onionsAndShallots"
+msgstr "Onions and shallots"
+
+#: theme/forms.py:85
+msgid "rye"
+msgstr "Rye"
+
+#: theme/forms.py:86
+msgid "cherries"
+msgstr "Cherries"
+
+#: theme/forms.py:87
+msgid "plumsAndSloes"
+msgstr "Plums and sloes"
+
+#: theme/forms.py:88
+msgid "cloves"
+msgstr "Cloves"
+
+#: theme/forms.py:89
+msgid "coconuts"
+msgstr "Coconuts"
+
+#: theme/forms.py:90
+msgid "cauliflowersAndBroccoli"
+msgstr "Cauliflowers and broccoli"
+
+#: theme/forms.py:91
+msgid "rapeOrColzaSeed"
+msgstr "Rape or colza seed"
+
+#: theme/forms.py:92
+msgid "dates"
+msgstr "Dates"
+
+#: theme/forms.py:93
+msgid "fonio"
+msgstr "Fonio"
+
+#: theme/forms.py:94
+msgid "asparagus"
+msgstr "Asparagus"
+
+#: theme/forms.py:95
+msgid "spinach"
+msgstr "Spinach"
+
+#: theme/forms.py:96
+msgid "raspberries"
+msgstr "Raspberries"
+
+#: theme/forms.py:97
+msgid "strawberries"
+msgstr "Strawberries"
+
+#: theme/forms.py:98
+msgid "beans"
+msgstr "Beans"
+
+#: theme/forms.py:99
+msgid "okra"
+msgstr "Okra"
+
+#: theme/forms.py:100
+msgid "soyaBeans"
+msgstr "Soya beans"
+
+#: theme/forms.py:101
+msgid "cocoaBeans"
+msgstr "Cocoa beans"
+
+#: theme/forms.py:102
+msgid "currants"
+msgstr "Currants"
+
+#: theme/forms.py:103
+msgid "sourCherries"
+msgstr "Sour cherries"
+
+#: theme/forms.py:104
+msgid "peas"
+msgstr "Peas"
+
+#: theme/forms.py:105
+msgid "broadBeansAndHorseBeans"
+msgstr "Broad beans and horse beans"
+
+#: theme/forms.py:106
+msgid "hay"
+msgstr "Hay"
+
+#: theme/forms.py:107
+msgid "figs"
+msgstr "Figs"
+
+#: theme/forms.py:108
+msgid "teaLeaves"
+msgstr "Tea leaves"
+
+#: theme/forms.py:109
+msgid "mushroomsAndTruffles"
+msgstr "Mushrooms and truffles"
+
+#: theme/forms.py:110
+msgid "ginger"
+msgstr "Ginger"
+
+#: theme/forms.py:111
+msgid "jojoba"
+msgstr "Jojoba"
+
+#: theme/forms.py:112
+msgid "stringBeans"
+msgstr "String beans"
+
+#: theme/forms.py:113
+msgid "kapok"
+msgstr "Kapok"
+
+#: theme/forms.py:114
+msgid "kenaf"
+msgstr "Kenaf"
+
+#: theme/forms.py:115
+msgid "kiwiFruit"
+msgstr "Kiwi fruit"
+
+#: theme/forms.py:116
+msgid "lettuceAndChicory"
+msgstr "Lettuce and chicory"
+
+#: theme/forms.py:117
+msgid "lentils"
+msgstr "Lentils"
+
+#: theme/forms.py:118
+msgid "lemonsAndLimes"
+msgstr "Lemons and limes"
+
+#: theme/forms.py:119
+msgid "linseed"
+msgstr "Linseed"
+
+#: theme/forms.py:120
+msgid "flax"
+msgstr "Flax"
+
+#: theme/forms.py:121
+msgid "hops"
+msgstr "Hops"
+
+#: theme/forms.py:122
+msgid "wood"
+msgstr "Wood"
+
+#: theme/forms.py:123
+msgid "maize(corn)"
+msgstr "Maize (corn)"
+
+#: theme/forms.py:124
+msgid "mangoesGuavasAndMangosteens"
+msgstr "Mangoes, guavas and mangosteens"
+
+#: theme/forms.py:125
+msgid "groundnuts"
+msgstr "Groundnuts"
+
+#: theme/forms.py:126
+msgid "cashewapple"
+msgstr "Cashewapple"
+
+#: theme/forms.py:127
+msgid "apples"
+msgstr "Apples"
+
+#: theme/forms.py:128
+msgid "peachesAndNectarines"
+msgstr "Peaches and nectarines"
+
+#: theme/forms.py:129
+msgid "cantaloupes"
+msgstr "Cantaloupes"
+
+#: theme/forms.py:130
+msgid "quinces"
+msgstr "Quinces"
+
+#: theme/forms.py:131
+msgid "peppermintSpearmint"
+msgstr "Peppermint, spearmint"
+
+#: theme/forms.py:132
+msgid "millet"
+msgstr "Millet"
+
+#: theme/forms.py:133
+msgid "yams"
+msgstr "Yams"
+
+#: theme/forms.py:134
+msgid "oranges"
+msgstr "Oranges"
+
+#: theme/forms.py:135
+msgid "walnuts"
+msgstr "Walnuts"
+
+#: theme/forms.py:136
+msgid "arecaNuts"
+msgstr "Areca nuts"
+
+#: theme/forms.py:137
+msgid "kariteNuts(sheanuts)"
+msgstr "Karite nuts (sheanuts)"
+
+#: theme/forms.py:138
+msgid "tungNuts"
+msgstr "Tung nuts"
+
+#: theme/forms.py:139
+msgid "brazilNuts"
+msgstr "Brazil nuts"
+
+#: theme/forms.py:140
+msgid "kolaNuts"
+msgstr "Kola nuts"
+
+#: theme/forms.py:141
+msgid "nutmeg"
+msgstr "Nutmeg"
+
+#: theme/forms.py:142
+msgid "potatoes"
+msgstr "Potatoes"
+
+#: theme/forms.py:143
+msgid "papayas"
+msgstr "Papayas"
+
+#: theme/forms.py:144
+msgid "pyrethrum"
+msgstr "Pyrethrum"
+
+#: theme/forms.py:145
+msgid "cucumbersAndGherkins"
+msgstr "Cucumbers and gherkins"
+
+#: theme/forms.py:146
+msgid "pears"
+msgstr "Pears"
+
+#: theme/forms.py:147
+msgid "pepper"
+msgstr "Peper"
+
+#: theme/forms.py:148
+msgid "pineapples"
+msgstr "Pineaples"
+
+#: theme/forms.py:149
+msgid "pistachios"
+msgstr "Pistachios"
+
+#: theme/forms.py:150
+msgid "plantains"
+msgstr "Plantains"
+
+#: theme/forms.py:151
+msgid "pomelosAndGrapefruits"
+msgstr "Pomelos and grapefruits"
+
+#: theme/forms.py:152
+msgid "leeks"
+msgstr "Leeks"
+
+#: theme/forms.py:153
+msgid "quinoa"
+msgstr "Quinoa"
+
+#: theme/forms.py:154
+msgid "chicoryRoots"
+msgstr "Chicory roots"
+
+#: theme/forms.py:155
+msgid "ramie"
+msgstr "Ramie"
+
+#: theme/forms.py:156
+msgid "cabbages"
+msgstr "Cabbages"
+
+#: theme/forms.py:157
+msgid "watermelons"
+msgstr "Watermelons"
+
+#: theme/forms.py:158
+msgid "poppySeed"
+msgstr "Poppy seed"
+
+#: theme/forms.py:159
+msgid "safflowerSeed"
+msgstr "Safflower seed"
+
+#: theme/forms.py:160
+msgid "sunflowerSeed"
+msgstr "Sunflower seed"
+
+#: theme/forms.py:161
+msgid "mustardSeed"
+msgstr "Mustard seed"
+
+#: theme/forms.py:162
+msgid "sesameSeed"
+msgstr "Sesame seed"
+
+#: theme/forms.py:163
+msgid "castorOilSeeds"
+msgstr "Castor oil seeds"
+
+#: theme/forms.py:164
+msgid "tallowtreeSeeds"
+msgstr "Tallowtree seeds"
+
+#: theme/forms.py:165
+msgid "sisal"
+msgstr "Sisal"
+
+#: theme/forms.py:166
+msgid "sorghum"
+msgstr "Sorghum"
+
+#: theme/forms.py:167
+msgid "tobacco"
+msgstr "Tobacco"
+
+#: theme/forms.py:168
+msgid "tangerinesMandarinsClementines"
+msgstr "Tangerines, mandarins, clementines"
+
+#: theme/forms.py:169
+msgid "taro"
+msgstr "Taro"
+
+#: theme/forms.py:170
+msgid "tomatoes"
+msgstr "Tomatoes"
+
+#: theme/forms.py:171
+msgid "wheat"
+msgstr "Wheat"
+
+#: theme/forms.py:172
+msgid "bulgur"
+msgstr "Bulgur"
+
+#: theme/forms.py:173
+msgid "buckwheat"
+msgstr "Buckwheat"
+
+#: theme/forms.py:174
+msgid "triticale"
+msgstr "Triticale"
+
+#: theme/forms.py:175
+msgid "gooseberries"
+msgstr "Gooseberries"
+
+#: theme/forms.py:176
+msgid "grapes"
+msgstr "Grapes"
+
+#: theme/forms.py:177
+msgid "raisins"
+msgstr "Raisins"
+
+#: theme/forms.py:178
+msgid "vanilla"
+msgstr "Vanilla"
+
+#: theme/forms.py:179
+msgid "vetches"
+msgstr "Vetches"
+
+#: theme/forms.py:180
+msgid "cassava"
+msgstr "Cassava"
+
+#: theme/forms.py:181
+msgid "jute"
+msgstr "Jute"
+
+#: theme/forms.py:182
+msgid "carrotsAndTurnips"
+msgstr "Carrots and turnips"
+
+#: theme/forms.py:186
+msgid "cropType"
+msgstr "Crop type"
+
+#: theme/forms.py:190
+#, fuzzy
+#| msgid "planting"
+msgid "Planting"
+msgstr "Planting"
+
+#: theme/forms.py:190
+msgid "planting"
+msgstr "Planting"
+
+#: theme/forms.py:191
+#, fuzzy
+#| msgid "cultivating"
+msgid "Cultivating"
+msgstr "Cultivating"
+
+#: theme/forms.py:191
+msgid "cultivating"
+msgstr "Cultivating"
+
+#: theme/forms.py:192
+msgid "Harvesting"
+msgstr ""
+
+#: theme/forms.py:192
+msgid "harvesting"
+msgstr "Harvesting"
+
+#: theme/forms.py:193
+#, fuzzy
+#| msgid "packaging"
+msgid "Packaging"
+msgstr "Packaging"
+
+#: theme/forms.py:193
+msgid "packaging"
+msgstr "Packaging"
+
+#: theme/forms.py:194
+#, fuzzy
+#| msgid "gradingAndSorting"
+msgid "Grading and sorting"
+msgstr "Grading and sorting"
+
+#: theme/forms.py:194
+msgid "gradingAndSorting"
+msgstr "Grading and sorting"
+
+#: theme/forms.py:195
+#, fuzzy
+#| msgid "other"
+msgid "Other"
+msgstr "Other"
+
+#: theme/forms.py:195
+msgid "other"
+msgstr "Other"
+
+#: theme/forms.py:198
+msgid "experienceType"
+msgstr "Experience type"
+
+#: theme/forms.py:202
+msgid "noExperience"
+msgstr "No experience"
+
+#: theme/forms.py:203
+msgid "1year"
+msgstr "1 year"
+
+#: theme/forms.py:204
+msgid "2years"
+msgstr "2 years"
+
+#: theme/forms.py:205
+msgid "3years"
+msgstr "3 years"
+
+#: theme/forms.py:206
+msgid "5+years"
+msgstr "5+ years"
+
+#: theme/forms.py:210
+msgid "minimumExperience"
+msgstr "Minimum experience"
+
 #: theme/templates/components/layouts/vertical/app-sidebar.html:8
 msgid "csiVisaProcessing"
 msgstr "CSI VISA PROCESSING"
@@ -1274,10 +1947,6 @@ msgstr "CSI VISA PROCESSING"
 #: theme/templates/components/layouts/vertical/app-sidebar.html:20
 msgid "home"
 msgstr "Home"
-
-#: theme/templates/components/layouts/vertical/app-sidebar.html:26
-msgid "workers"
-msgstr "Workers"
 
 #: theme/templates/components/layouts/vertical/app-sidebar.html:32
 msgid "employers"
@@ -1287,10 +1956,6 @@ msgstr "Employers"
 #: theme/templates/components/layouts/vertical/app-sidebar.html:60
 msgid "jobOrders"
 msgstr "Job Orders"
-
-#: theme/templates/components/layouts/vertical/app-sidebar.html:46
-msgid "toDo"
-msgstr "To Do"
 
 #: theme/templates/components/layouts/vertical/app-sidebar.html:51
 msgid "messages"
@@ -1321,6 +1986,10 @@ msgstr "Notifications"
 msgid "logout"
 msgstr "Logout"
 
+#: theme/templates/components/layouts/vertical/main-header.html:13
+msgid "goodMorning"
+msgstr "Good morning"
+
 #: theme/views.py:39
 msgid "You have been successfully logged out"
 msgstr ""
@@ -1328,6 +1997,9 @@ msgstr ""
 #: theme/views.py:271
 msgid "You have successfully logged in"
 msgstr ""
+
+#~ msgid "Jan 24, 2024"
+#~ msgstr "Jan 24, 2024"
 
 #, fuzzy
 #~| msgid "email"
