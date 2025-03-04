@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-26 14:26+0300\n"
+"POT-Creation-Date: 2025-02-27 10:05+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -384,6 +384,54 @@ msgstr "Address Line 2"
 msgid "city"
 msgstr "City"
 
+#: recruiting/forms.py:533
+msgid "addWorkerExperienceSelectEmployer"
+msgstr "Select Employer"
+
+#: recruiting/forms.py:534
+msgid "addWorkerExperienceCompany1"
+msgstr "Company"
+
+#: recruiting/forms.py:541
+msgid "addWorkerExperienceUser"
+msgstr "User"
+
+#: recruiting/forms.py:542
+msgid "addWorkerExperienceCompany"
+msgstr "Company"
+
+#: recruiting/forms.py:543
+msgid "addWorkerExperienceWorkTitle"
+msgstr "Work Title"
+
+#: recruiting/forms.py:544
+msgid "addWorkerExperienceStartDate"
+msgstr "Start Date"
+
+#: recruiting/forms.py:545
+msgid "addWorkerExperienceEndDate"
+msgstr "End Date"
+
+#: recruiting/forms.py:546
+msgid "addWorkerExperienceCountry"
+msgstr "Country"
+
+#: recruiting/forms.py:547
+msgid "addWorkerExperienceSupervisorName"
+msgstr "Supervisor Name"
+
+#: recruiting/forms.py:548
+msgid "addWorkerExperienceSupervisorTelephone"
+msgstr "Supervisor Telephone"
+
+#: recruiting/forms.py:549
+msgid "addWorkerExperienceSupervisorEmail"
+msgstr "Supervisor Email"
+
+#: recruiting/forms.py:550
+msgid "addWorkerExperienceVisaType"
+msgstr "Visa Type"
+
 #: recruiting/models.py:26
 msgid "createWorkRequestDraft"
 msgstr "Draft"
@@ -667,7 +715,6 @@ msgid "Cancel"
 msgstr ""
 
 #: recruiting/templates/recruiting/messages/create.html:43
-#: recruiting/templates/recruiting/workers/detail.html:64
 msgid "Send Message"
 msgstr ""
 
@@ -680,7 +727,6 @@ msgid "Sent at:"
 msgstr ""
 
 #: recruiting/templates/recruiting/messages/details.html:28
-#: recruiting/templates/recruiting/workers/detail.html:17
 msgid "Back"
 msgstr ""
 
@@ -763,7 +809,6 @@ msgstr ""
 #: recruiting/templates/recruiting/work_requests/create_qualifications.html:33
 #: recruiting/templates/recruiting/work_requests/create_role.html:33
 #: recruiting/templates/recruiting/work_requests/create_wages.html:33
-#: recruiting/templates/recruiting/workers/work_experience_create.html:33
 msgid "Submit"
 msgstr ""
 
@@ -1140,126 +1185,155 @@ msgid "submit"
 msgstr "Submit"
 
 #: recruiting/templates/recruiting/workers/detail.html:8
-msgid "Worker Details"
-msgstr ""
+msgid "workerDetailsWorkerDetails"
+msgstr "Worker Details"
+
+#: recruiting/templates/recruiting/workers/detail.html:17
+msgid "workerDetailsBack"
+msgstr "Back"
 
 #: recruiting/templates/recruiting/workers/detail.html:25
-msgid "AB"
-msgstr ""
+msgid "workerDetailsAB"
+msgstr "AB"
 
-#: recruiting/templates/recruiting/workers/detail.html:48
-msgid "Add to Shortlist"
-msgstr ""
+#: recruiting/templates/recruiting/workers/detail.html:37
+#, fuzzy, python-format
+#| msgid "profile76%%Complete"
+msgid "profile76%%Complete"
+msgstr "Profile 76% complete"
 
-#: recruiting/templates/recruiting/workers/detail.html:51
-msgid "Send Offer"
-msgstr ""
+#: recruiting/templates/recruiting/workers/detail.html:39
+msgid "workerDetailsEditProfile"
+msgstr "Edit Profile"
 
-#: recruiting/templates/recruiting/workers/detail.html:61
-msgid "Contact"
-msgstr ""
+#: recruiting/templates/recruiting/workers/detail.html:47
+msgid "workerDetailsAddToShortlist"
+msgstr "Add To Shortlist"
 
-#: recruiting/templates/recruiting/workers/detail.html:69
-msgid "ADDRESS"
-msgstr ""
+#: recruiting/templates/recruiting/workers/detail.html:50
+msgid "workerDetailsSendOffer"
+msgstr "Send Offer"
 
-#: recruiting/templates/recruiting/workers/detail.html:79
-msgid "EMAIL"
-msgstr ""
+#: recruiting/templates/recruiting/workers/detail.html:60
+msgid "workerDetailsContact"
+msgstr "Contact"
 
-#: recruiting/templates/recruiting/workers/detail.html:83
-#: recruiting/templates/recruiting/workers/detail.html:236
-msgid "PHONE NUMBER"
-msgstr ""
+#: recruiting/templates/recruiting/workers/detail.html:63
+msgid "workerDetailsSendMessage"
+msgstr "Send Message"
 
-#: recruiting/templates/recruiting/workers/detail.html:87
-msgid "GENDER"
-msgstr ""
+#: recruiting/templates/recruiting/workers/detail.html:68
+msgid "workerDetailsAddress"
+msgstr "Address"
 
-#: recruiting/templates/recruiting/workers/detail.html:98
-msgid "Work Experience"
-msgstr ""
+#: recruiting/templates/recruiting/workers/detail.html:78
+msgid "workerDetailsEmail"
+msgstr "Email"
 
-#: recruiting/templates/recruiting/workers/detail.html:101
-msgid "+ Add Work Experience"
-msgstr ""
+#: recruiting/templates/recruiting/workers/detail.html:82
+#: recruiting/templates/recruiting/workers/detail.html:234
+msgid "workerDetailsPhoneNumber"
+msgstr "Phone Number"
 
-#: recruiting/templates/recruiting/workers/detail.html:146
-msgid "Worker status"
-msgstr ""
+#: recruiting/templates/recruiting/workers/detail.html:86
+msgid "workerDetailsGender"
+msgstr "Gender"
 
-#: recruiting/templates/recruiting/workers/detail.html:150
-msgid "Available"
-msgstr ""
+#: recruiting/templates/recruiting/workers/detail.html:97
+msgid "workerDetailsWorkExperience"
+msgstr "Work Experience"
 
-#: recruiting/templates/recruiting/workers/detail.html:159
-msgid "Work Information"
-msgstr ""
+#: recruiting/templates/recruiting/workers/detail.html:100
+msgid "workerDetailsAddWorkExperience"
+msgstr "+ Add Work Experience"
 
-#: recruiting/templates/recruiting/workers/detail.html:166
-msgid "ENGLISH PROFICIENCY"
+#: recruiting/templates/recruiting/workers/detail.html:129
+msgid ""
+"workerDetails🚜HarvestingFruit PickingVehicleOperationsOtherDetailsOfRoleEtc"
 msgstr ""
+"🚜Harvesting,Fruit  picking,Vehicle operations,Other details of role etc"
 
-#: recruiting/templates/recruiting/workers/detail.html:169
-msgid "Advanced"
-msgstr ""
+#: recruiting/templates/recruiting/workers/detail.html:144
+msgid "workerDetailsWorkerStatus"
+msgstr "Worker status"
 
-#: recruiting/templates/recruiting/workers/detail.html:178
-msgid "PASSPORT"
-msgstr ""
+#: recruiting/templates/recruiting/workers/detail.html:148
+msgid "workerDetailsAvailable"
+msgstr "Available"
 
-#: recruiting/templates/recruiting/workers/detail.html:191
-msgid "WORKING LOCATIONS"
-msgstr ""
+#: recruiting/templates/recruiting/workers/detail.html:157
+msgid "workerDetailsWorkInformation"
+msgstr "Work Information"
 
-#: recruiting/templates/recruiting/workers/detail.html:195
-msgid "Utah"
-msgstr ""
+#: recruiting/templates/recruiting/workers/detail.html:164
+msgid "workerDetailsEglishProficiency"
+msgstr "Eglish Proficiency"
 
-#: recruiting/templates/recruiting/workers/detail.html:200
-msgid "Another location"
-msgstr ""
+#: recruiting/templates/recruiting/workers/detail.html:167
+msgid "workerDetailsAdvanced"
+msgstr "Advanced"
 
-#: recruiting/templates/recruiting/workers/detail.html:205
-msgid "Arizona"
-msgstr ""
+#: recruiting/templates/recruiting/workers/detail.html:176
+msgid "workerDetailsPassport"
+msgstr "Passport"
 
-#: recruiting/templates/recruiting/workers/detail.html:211
-msgid "PREFERRED EMPLOYERS"
-msgstr ""
+#: recruiting/templates/recruiting/workers/detail.html:179
+#: recruiting/templates/recruiting/workers/detail.html:248
+msgid "workerDetailsYes"
+msgstr "Yes"
 
-#: recruiting/templates/recruiting/workers/detail.html:216
-msgid "Utah Farms"
-msgstr ""
+#: recruiting/templates/recruiting/workers/detail.html:189
+msgid "workerDetailsWorkingLocations"
+msgstr "Working Locations"
 
-#: recruiting/templates/recruiting/workers/detail.html:221
-msgid "Bob's Fruit Farm"
-msgstr ""
+#: recruiting/templates/recruiting/workers/detail.html:193
+msgid "workerDetailsUtah"
+msgstr "Utah"
+
+#: recruiting/templates/recruiting/workers/detail.html:198
+msgid "workerDetailsAnotherLocation"
+msgstr "Another Location"
+
+#: recruiting/templates/recruiting/workers/detail.html:203
+msgid "workerDetailsArizona"
+msgstr "Arizona"
+
+#: recruiting/templates/recruiting/workers/detail.html:209
+msgid "workerDetailsPreferredEmployers"
+msgstr "Preferred Employers"
+
+#: recruiting/templates/recruiting/workers/detail.html:214
+msgid "workerDetailsUtahFarms"
+msgstr "Utah Farms"
+
+#: recruiting/templates/recruiting/workers/detail.html:219
+msgid "workerDetailsBob'sFruitFarm"
+msgstr "Bob's Fruit Farm"
+
+#: recruiting/templates/recruiting/workers/detail.html:226
+msgid "workerDetailsMedical/physicalConditions"
+msgstr "Medical/physical conditions"
 
 #: recruiting/templates/recruiting/workers/detail.html:228
-msgid "Medical/physical conditions"
-msgstr ""
+#: recruiting/templates/recruiting/workers/detail.html:232
+msgid "workerDetailsNone"
+msgstr "None"
 
 #: recruiting/templates/recruiting/workers/detail.html:230
-#: recruiting/templates/recruiting/workers/detail.html:234
-msgid "None"
-msgstr ""
+msgid "workerDetailsAnyInjuryOrConditionAggravatedByPhysicalActivity"
+msgstr "Any injury or condition aggravated by physical activity"
 
-#: recruiting/templates/recruiting/workers/detail.html:232
-msgid "Any injury or condition aggravated by by physical activity"
-msgstr ""
+#: recruiting/templates/recruiting/workers/detail.html:238
+msgid "workerDetailsWillingToSpendTimeOnFeet"
+msgstr "Willing to spend time on feet?"
 
-#: recruiting/templates/recruiting/workers/detail.html:240
-msgid "Willing to spend time on feet"
-msgstr ""
+#: recruiting/templates/recruiting/workers/detail.html:242
+msgid "workerDetailsAbleToLift27kg"
+msgstr "Able to lift 27kg?"
 
-#: recruiting/templates/recruiting/workers/detail.html:244
-msgid "Able to lift 27kg"
-msgstr ""
-
-#: recruiting/templates/recruiting/workers/detail.html:248
-msgid "Willing to work in hot and cold"
-msgstr ""
+#: recruiting/templates/recruiting/workers/detail.html:246
+msgid "workerDetailsWillingToWorkInHotAndCold"
+msgstr "Willing to work in hot and cold?"
 
 #: recruiting/templates/recruiting/workers/list.html:15
 msgid "listWorkers"
@@ -1379,8 +1453,12 @@ msgid "pending"
 msgstr "Pending"
 
 #: recruiting/templates/recruiting/workers/work_experience_create.html:10
-msgid "Add Worker Experience"
-msgstr ""
+msgid "addWorkerExperienceAddWorkerExperience"
+msgstr "Add Worker Experience"
+
+#: recruiting/templates/recruiting/workers/work_experience_create.html:33
+msgid "addWorkerExperienceSubmit"
+msgstr "Submit"
 
 #: recruiting/templates/recruiting/workers/work_experience_detail.html:10
 msgid "workExperienceDetails"

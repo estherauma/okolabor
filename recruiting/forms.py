@@ -530,11 +530,25 @@ class WorkExperienceCreateForm(forms.ModelForm):
     company = forms.ModelChoiceField(
         queryset=Employer.objects.all(),
         widget=forms.Select(attrs={'class': 'form-control'}),
-        empty_label="Select Employer",
+        empty_label=_("addWorkerExperienceSelectEmployer"),
+        label=_("addWorkerExperienceCompany1"),
     )
     class Meta:
         model = UserWorkExperience
         fields = ['user', 'company','work_title', 'start_date', 'end_date', 'country', 'supervisor_name', 'supervisor_tel', 'supervisor_email', 'visa_type']
+        
+        labels = {
+            'user': _("addWorkerExperienceUser"),
+            'company': _("addWorkerExperienceCompany"),
+            'work_title': _("addWorkerExperienceWorkTitle"),
+            'start_date': _("addWorkerExperienceStartDate"),
+            'end_date': _("addWorkerExperienceEndDate"),
+            'country': _("addWorkerExperienceCountry"),
+            'supervisor_name': _("addWorkerExperienceSupervisorName"),
+            'supervisor_tel': _("addWorkerExperienceSupervisorTelephone"),
+            'supervisor_email': _("addWorkerExperienceSupervisorEmail"),
+            'visa_type': _("addWorkerExperienceVisaType"),
+        }
     
         widgets = {
             'user': forms.Select(attrs={

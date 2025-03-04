@@ -5,7 +5,7 @@
 <div class="page-header">
  <div>
   <h1 class="page-title">
-   {% translate "Worker Details" %}
+   {% translate "workerDetailsWorkerDetails" %}
   </h1>
  </div>
 </div>
@@ -14,7 +14,7 @@
   <i class="mdi mdi-arrow-left green-color fs-5">
   </i>
   <span class="green-color">
-   {% translate "Back" %}
+   {% translate "workerDetailsBack" %}
   </span>
  </a>
 </div>
@@ -22,7 +22,7 @@
  <div>
   <span class="d-flex justify-content-center align-items-center">
    <p class="mt-3 me-3 d-flex justify-content-center align-items-center rounded-circle light-green-background text-white text-icon">
-    {% translate "AB" %}
+    {% translate "workerDetailsAB" %}
    </p>
    {% if worker.first_name and worker.last_name %}
    <h4 class="dark-green-color d-contents fw-bold">
@@ -34,10 +34,9 @@
    </h4>
    {% endif %}
    <span class="gray-color ms-3">
-    (Profile 76% complete |
+    ({% translate "profile76%Complete"%} |
     <a class="link-color" href="#">
-     {% translate "Edit
-                    Profile" %}
+     {% translate "workerDetailsEditProfile" %}
     </a>
     )
    </span>
@@ -45,10 +44,10 @@
  </div>
  <div>
   <button class="btn dark-green-button">
-   {% translate "Add to Shortlist" %}
+   {% translate "workerDetailsAddToShortlist" %}
   </button>
   <button class="btn dark-green-button ms-3">
-   {% translate "Send Offer" %}
+   {% translate "workerDetailsSendOffer" %}
   </button>
  </div>
 </div>
@@ -58,15 +57,15 @@
    <div class="card-body">
     <div class="d-flex justify-content-between align-items-center">
      <h5 class="card-title green-color d-contents">
-      {% translate "Contact" %}
+      {% translate "workerDetailsContact" %}
      </h5>
      <button class="btn grey-green-button">
-      {% translate "Send Message" %}
+      {% translate "workerDetailsSendMessage" %}
      </button>
     </div>
     <div>
      <p class="gray-color">
-      {% translate "ADDRESS" %}
+      {% translate "workerDetailsAddress" %}
      </p>
      {{worker.address_line_1}}
      <br/>
@@ -76,15 +75,15 @@
      <br/>
      {{worker.country}}
      <p class="gray-color mt-4">
-      {% translate "EMAIL" %}
+      {% translate "workerDetailsEmail" %}
      </p>
      {{worker.email}}
      <p class="gray-color mt-4">
-      {% translate "PHONE NUMBER" %}
+      {% translate "workerDetailsPhoneNumber" %}
      </p>
      {{worker.telephone}}
      <p class="gray-color mt-4">
-      {% translate "GENDER" %}
+      {% translate "workerDetailsGender" %}
      </p>
      {{worker.gender}}
     </div>
@@ -95,10 +94,10 @@
     <div class="row">
      <div class="d-flex justify-content-between align-items-center">
       <h5 class="card-title green-color d-contents">
-       {% translate "Work Experience" %}
+       {% translate "workerDetailsWorkExperience" %}
       </h5>
       <a class="btn grey-green-button" href="{% url 'recruiting_web:worker_experience_create' pk=worker.id %}">
-       {% translate "+ Add Work Experience" %}
+       {% translate "workerDetailsAddWorkExperience" %}
       </a>
      </div>
     </div>
@@ -127,8 +126,7 @@
        </div>
       </div>
       <span class="side-menu__label">
-       {% translate "🚜 Harvesting, fruit picking, vehicle operations,other details of
-                            role etc" %}
+       {% translate "workerDetails🚜HarvestingFruit PickingVehicleOperationsOtherDetailsOfRoleEtc" %}
       </span>
      </div>
     </div>
@@ -143,11 +141,11 @@
    <div class="card-header">
     <div class="d-flex justify-content-between align-items-center w-100">
      <div class="card-title green-color">
-      {% translate "Worker status" %}
+      {% translate "workerDetailsWorkerStatus" %}
      </div>
      <div class="d-contents">
       <span class="green-color">
-       {% translate "Available" %}
+       {% translate "workerDetailsAvailable" %}
       </span>
      </div>
     </div>
@@ -156,17 +154,17 @@
   <div class="card">
    <div class="card-header">
     <div class="card-title green-color">
-     {% translate "Work Information" %}
+     {% translate "workerDetailsWorkInformation" %}
     </div>
    </div>
    <div class="card-body">
     <div class="row">
      <div class="col-6" style="position: relative;">
       <p class="gray-color">
-       {% translate "ENGLISH PROFICIENCY" %}
+       {% translate "workerDetailsEglishProficiency" %}
       </p>
       <p style="font-weight: bolder;">
-       {% translate "Advanced" %}
+       {% translate "workerDetailsAdvanced" %}
       </p>
       <div style="position: relative; display: inline-block;">
        <img alt="flag" src="{% static 'assets/images/profile.png' %}" style="width: 150px;"/>
@@ -175,10 +173,10 @@
      </div>
      <div class="col-6" style="position: relative;">
       <p class="gray-color">
-       {% translate "PASSPORT" %}
+       {% translate "workerDetailsPassport" %}
       </p>
       <p>
-       {% translate "Yes" %}
+       {% translate "workerDetailsYes" %}
       </p>
       <div style="position: relative; display: inline-block;">
        <img alt="flag" src="{% static 'assets/images/passport1.png' %}" style="width: 150px;"/>
@@ -188,66 +186,66 @@
     <br/>
     <div class="row location" style="margin-top: 10px;">
      <p class="gray-color">
-      {% translate "WORKING LOCATIONS" %}
+      {% translate "workerDetailsWorkingLocations" %}
      </p>
      <div class="col-4" style="padding-right: 5px;">
       <button class="btn offwhite-button" style="width: 100%;">
-       {% translate "Utah" %}
+       {% translate "workerDetailsUtah" %}
       </button>
      </div>
      <div class="col-4" style="padding-left: 2.5px; padding-right: 2.5px;">
       <button class="btn offwhite-button" style="width: 100%;">
-       {% translate "Another location" %}
+       {% translate "workerDetailsAnotherLocation" %}
       </button>
      </div>
      <div class="col-4" style="padding-left: 5px;">
       <button class="btn offwhite-button" style="width: 100%;">
-       {% translate "Arizona" %}
+       {% translate "workerDetailsArizona" %}
       </button>
      </div>
     </div>
     <br/>
     <p class="gray-color">
-     {% translate "PREFERRED EMPLOYERS" %}
+     {% translate "workerDetailsPreferredEmployers" %}
     </p>
     <div class="row" style="margin-top: 10px;">
      <div class="col-6" style="padding-right: 5px;">
       <button class="btn offwhite-button" style="width: 100%;">
-       {% translate "Utah Farms" %}
+       {% translate "workerDetailsUtahFarms" %}
       </button>
      </div>
      <div class="col-6" style="padding-left: 5px;">
       <button class="btn offwhite-button" style="width: 100%;">
-       {% translate "Bob's Fruit Farm" %}
+       {% translate "workerDetailsBob'sFruitFarm" %}
       </button>
      </div>
     </div>
     <br/>
     <div>
      <p class="gray-color">
-      {% translate "Medical/physical conditions" %}
+      {% translate "workerDetailsMedical/physicalConditions" %}
      </p>
-     {% translate "None" %}
+     {% translate "workerDetailsNone" %}
      <p class="gray-color mt-4">
-      {% translate "Any injury or condition aggravated by by physical activity" %}
+      {% translate "workerDetailsAnyInjuryOrConditionAggravatedByPhysicalActivity" %}
      </p>
-     {% translate "None" %}
+     {% translate "workerDetailsNone" %}
      <p class="gray-color mt-4">
-      {% translate "PHONE NUMBER" %}
+      {% translate "workerDetailsPhoneNumber" %}
      </p>
      +52 618 123 4567
      <p class="gray-color mt-4">
-      {% translate "Willing to spend time on feet" %}
+      {% translate "workerDetailsWillingToSpendTimeOnFeet" %}
      </p>
      {% translate "Yes" %}
      <p class="gray-color mt-4">
-      {% translate "Able to lift 27kg" %}
+      {% translate "workerDetailsAbleToLift27kg" %}
      </p>
      {% translate "Yes" %}
      <p class="gray-color mt-4">
-      {% translate "Willing to work in hot and cold" %}
+      {% translate "workerDetailsWillingToWorkInHotAndCold" %}
      </p>
-     {% translate "Yes" %}
+     {% translate "workerDetailsYes" %}
     </div>
    </div>
   </div>
