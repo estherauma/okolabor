@@ -116,7 +116,7 @@ class UploadFileView(APIView):
             return Response({
                 'document_id': document.id,  # Include document_id in the response
                 'task_id': task.id,
-                'file_path': full_path,
+                'file_location': full_path,
                 'file_type': file_extension,  # Include file_type in the response
                 'status_check': f"/api/files/upload-status/{task.id}/"
             }, status=status.HTTP_202_ACCEPTED)
