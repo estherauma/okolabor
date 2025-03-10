@@ -41,7 +41,7 @@ class UploadFileViewTestCase(APITestCase):
             response = self.client.post(self.url, data, format='multipart')
             os.remove(file_path)
 
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
         self.assertIn('document_id', response.data)
         self.assertIn('file_location', response.data)
         self.assertIn('file_type', response.data)
