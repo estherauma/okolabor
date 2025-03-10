@@ -108,7 +108,7 @@ class UploadFileView(APIView):
                 entity_type=entity_type,
                 description=request.data.get('description', ''),
                 file_name=file.name,
-                file_path=full_path,
+                file_location=full_path,
                 file_data=file_data_b64,
                 document_id=document.id  # Pass document_id to the task
             )
