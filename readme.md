@@ -37,3 +37,9 @@ To lint a specific file, run
 1. The groups are `worker`, `recruiter`, `employer`, `admin`
 1. The usernames will be `testworker@okolabor.com`, `testrecruiter@okolabor.com`, `testemployer@okolabor.com`, and `testadmin@okolabor.com`
 1. The password will be, e.g for the worker `testworker_TEST_ACCOUNT_PASSWORD`. Remember to replace `TEST_ACCOUNT_PASSWORD` with the value you set in the `.env` file
+
+
+## File uploads
+1. File uploads are now done asynchronously. 
+1. You need to have redis installed and running. Find documentation for this. 
+1. You'll also have to start celery `celery -A jaguar worker  -l warning -n p80 --pool=threads --concurrency=100`

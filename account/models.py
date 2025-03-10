@@ -185,6 +185,7 @@ class UserJobExperienceDetails(AuditableModel):
         ('license', 'License'),
         ('evidence', 'Evidence'),
         ('visa', 'Visa'),
+        ('explanation_video', 'Explanation Video'),
     )
     job_experience = models.ForeignKey(
         UserJobExperience, on_delete=models.CASCADE,
