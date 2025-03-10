@@ -81,11 +81,23 @@ class UploadFileView(APIView):
             upload_dir = self.upload_paths.get(entity_type)
 
             if not upload_dir:
-                return Response({'error': 'Invalid entity type'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {'error': 'Invalid entity type'}, 
+                    status=status.HTTP_400_BAD_REQUEST)
 
             file = serializer.validated_data['file_content']
             file_name = f"{request.user.id}_{file.name}"
             full_path = os.path.join(upload_dir, file_name)
+
+            # Create document record in the DB before processing (to get document_id)
+            file_extension = os.path.splitext(file_name)[1]
+            document = UserDocuments.objects.create(
+                user=request.user,
+                path=full_path,
+                kind=entity_type,
+                description=request.data.get('description', ''),
+                file_type=file_extension
+            )
 
             # Encode file content to pass to Celery (base64)
             file_data_b64 = base64.b64encode(file.read()).decode()
@@ -98,14 +110,18 @@ class UploadFileView(APIView):
                 file_name=file.name,
                 file_path=full_path,
                 file_data=file_data_b64,
+                document_id=document.id  # Pass document_id to the task
             )
 
             return Response({
+                'document_id': document.id,  # Include document_id in the response
                 'task_id': task.id,
-                'file_path': full_path,
+                'file_location': full_path,
                 'status_check': f"/api/files/upload-status/{task.id}/"
             }, status=status.HTTP_202_ACCEPTED)
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 

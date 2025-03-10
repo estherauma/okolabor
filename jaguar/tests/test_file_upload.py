@@ -42,10 +42,9 @@ class UploadFileViewTestCase(APITestCase):
             os.remove(file_path)
 
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
-        #TODO: Fix this test
-        # self.assertIn('document_id', response.data)
-        # self.assertIn('file_location', response.data)
-        # self.assertIn('file_type', response.data)
+        self.assertIn('document_id', response.data)
+        self.assertIn('file_location', response.data)
+        self.assertIn('file_type', response.data)
         self.assertTrue(os.path.exists(response.data['file_location']))
         
     def test_upload_invalid_entity_type(self):

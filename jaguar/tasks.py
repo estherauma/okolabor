@@ -7,9 +7,10 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 @shared_task(bind=True)
-def process_file_upload(self, user_id, entity_type, description, file_name, file_path, file_data):
+def process_file_upload(self, user_id, entity_type, description, file_name, file_path, file_data, document_id):
     from django.core.files.base import ContentFile
     from django.contrib.auth import get_user_model
+    from account.models import UserDocuments  # Adjust import as needed
 
     User = get_user_model()
 
@@ -20,19 +21,16 @@ def process_file_upload(self, user_id, entity_type, description, file_name, file
     with open(file_path, 'wb+') as f:
         f.write(ContentFile(base64.b64decode(file_data)).read())
 
-    # Create DB record
-    file_extension = os.path.splitext(file_path)[1]
-    user = User.objects.get(id=user_id)
-    document = UserDocuments.objects.create(
-        user=user,
-        path=file_path,
-        kind=entity_type,
-        description=description,
-        file_type=file_extension
-    )
+    # Retrieve the document to update it
+    document = UserDocuments.objects.get(id=document_id)
+    
+    # Update document record after file processing
+    document.path = file_path
+    document.file_type = os.path.splitext(file_path)[1]
+    document.save()
 
     return {
         'document_id': document.id,
         'file_location': file_path,
-        'file_type': file_extension
+        'file_type': document.file_type
     }
