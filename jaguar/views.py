@@ -81,16 +81,16 @@ class UploadFileView(APIView):
             upload_dir = self.upload_paths.get(entity_type)
 
             if not upload_dir:
-                return Response(
-                    {'error': 'Invalid entity type'}, 
-                    status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Invalid entity type'}, status=status.HTTP_400_BAD_REQUEST)
 
             file = serializer.validated_data['file_content']
             file_name = f"{request.user.id}_{file.name}"
             full_path = os.path.join(upload_dir, file_name)
 
+            # Extract file type (file extension)
+            file_extension = os.path.splitext(file.name)[1]
+
             # Create document record in the DB before processing (to get document_id)
-            file_extension = os.path.splitext(file_name)[1]
             document = UserDocuments.objects.create(
                 user=request.user,
                 path=full_path,
@@ -116,13 +116,12 @@ class UploadFileView(APIView):
             return Response({
                 'document_id': document.id,  # Include document_id in the response
                 'task_id': task.id,
-                'file_location': full_path,
+                'file_path': full_path,
+                'file_type': file_extension,  # Include file_type in the response
                 'status_check': f"/api/files/upload-status/{task.id}/"
             }, status=status.HTTP_202_ACCEPTED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 
 
 class UploadStatusView(APIView):
