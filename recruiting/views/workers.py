@@ -40,7 +40,7 @@ class WorkerCreateView(CreateView):
             messages.error(self.request,_("Worker group does not exist. Please create it."))
             return super().form_invalid(form)
 
-        messages.success(self.request, _('Worker created successfully.'))
+        messages.success(self.request, _('workerCreatedSuccessfully.'))
         worker.save()
 
         return super(WorkerCreateView, self).form_valid(form)
