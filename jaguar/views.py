@@ -10,7 +10,11 @@ from drf_yasg.utils import swagger_auto_schema
 
 from account.models import UserDocuments
 from jaguar.serializers import UploadFileSerializer
+import base64
+import os
+from .tasks import process_file_upload
 
+from celery.result import AsyncResult
 
 
 class IndexView(APIView):
@@ -39,6 +43,10 @@ schema_view = get_schema_view(
 )
 
 
+import base64
+import os
+from .tasks import process_file_upload
+
 class UploadFileView(APIView):
     permission_classes = ([IsAuthenticated, ])
     upload_paths = {
@@ -60,55 +68,77 @@ class UploadFileView(APIView):
         operation_description="Upload a file",
         request_body=UploadFileSerializer,
         responses={
-            201: 'File uploaded successfully',
+            202: 'File upload task started',
             400: 'Bad request',
-            403: 'Authenticaiton were not privided'
+            403: 'Authentication not provided'
         },
         tags=["Files"]
     )
     def post(self, request):
-        file_serializer = UploadFileSerializer(data=request.data)
-        if file_serializer.is_valid():
-            # based on entitytype, create upload path if not exists
-            upload_path = self.upload_paths.get(request.data['entity_type'])
-            if upload_path:
-                if not os.path.exists(upload_path):
-                    os.makedirs(upload_path)
-            else:
-                return Response({
-                    'error': 'Invalid entity type'
-                }, status=status.HTTP_400_BAD_REQUEST)
+        serializer = UploadFileSerializer(data=request.data)
+        if serializer.is_valid():
+            entity_type = request.data['entity_type']
+            upload_dir = self.upload_paths.get(entity_type)
 
-            # write the file to the right path
-            user_id = request.user.id
-            file_path = (
-                self.upload_paths[request.data['entity_type']]
-                + '/'
-                + str(user_id)
-                + '_'
-                + file_serializer.validated_data['file_content'].name
-            )
+            if not upload_dir:
+                return Response({'error': 'Invalid entity type'}, status=status.HTTP_400_BAD_REQUEST)
 
-            # get extension from file name
-            file_extension = os.path.splitext(file_path)[1]
-            with open(file_path, 'wb+') as destination:
-                for chunk in (
-                    file_serializer.validated_data['file_content'].chunks()
-                ):
-                    destination.write(chunk)
+            file = serializer.validated_data['file_content']
+            file_name = f"{request.user.id}_{file.name}"
+            full_path = os.path.join(upload_dir, file_name)
+
+            # Extract file type (file extension)
+            file_extension = os.path.splitext(file.name)[1]
+
+            # Create document record in the DB before processing (to get document_id)
             document = UserDocuments.objects.create(
                 user=request.user,
-                path=file_path,
-                kind=request.data.get('entity_type'),
+                path=full_path,
+                kind=entity_type,
                 description=request.data.get('description', ''),
                 file_type=file_extension
             )
+
+            # Encode file content to pass to Celery (base64)
+            file_data_b64 = base64.b64encode(file.read()).decode()
+
+            # Fire-and-forget task
+            task = process_file_upload.delay(
+                user_id=request.user.id,
+                entity_type=entity_type,
+                description=request.data.get('description', ''),
+                file_name=file.name,
+                file_path=full_path,
+                file_data=file_data_b64,
+                document_id=document.id  # Pass document_id to the task
+            )
+
             return Response({
-                'document_id': document.id,
-                'file_location': file_path,
-                'file_type': file_extension
-            }, status.HTTP_201_CREATED)
-        else:
-            return Response(
-                file_serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST)
+                'document_id': document.id,  # Include document_id in the response
+                'task_id': task.id,
+                'file_location': full_path,
+                'file_type': file_extension,  # Include file_type in the response
+                'status_check': f"/api/files/upload-status/{task.id}/"
+            }, status=status.HTTP_202_ACCEPTED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UploadStatusView(APIView):
+    permission_classes = ([IsAuthenticated, ])
+
+    def get(self, request, task_id):
+        result = AsyncResult(task_id)
+        if result.state == 'PENDING':
+            return Response({'status': 'Pending'}, status=200)
+        elif result.state == 'SUCCESS':
+            return Response({
+                'status': 'Completed',
+                'result': result.result
+            }, status=200)
+        elif result.state == 'FAILURE':
+            return Response({
+                'status': 'Failed',
+                'error': str(result.result)
+            }, status=500)
+        return Response({'status': result.state}, status=200)

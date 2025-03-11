@@ -20,7 +20,8 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.static import serve
 
-from jaguar.views import IndexView, UploadFileView, schema_view
+from jaguar.views import (
+    IndexView, UploadFileView, schema_view, UploadStatusView)
 
 urlpatterns = [
     # API URLS
@@ -34,6 +35,7 @@ urlpatterns = [
     path('', include('recruiting.urls.web')),
     path('api/recruiting/', include('recruiting.urls.api')),
     path('api/file-upload/', UploadFileView.as_view(), name='file-upload'),
+    path('api/files/upload-status/<str:task_id>/', UploadStatusView.as_view(), name='file-upload-status'),
 
     url(r'^uploads/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 
