@@ -84,10 +84,10 @@ class Wages(AuditableModel):
     wage_type = models.CharField(
         max_length=50,
         choices=[
-            ('Hourly', 'Hourly'),
-            ('Daily', 'Daily'),
-            ('Weekly', 'Weekly'),
-            ('Monthly', 'Monthly')
+            ('Hourly', _('roleWagesHourly')),
+            ('Daily', _('roleWagesDaily')),
+            ('Weekly', _('roleWagesWeekly')),
+            ('Monthly', _('roleWagesMonthly')),
         ]
     )
     piece_rate_offerings = models.DecimalField(
@@ -97,10 +97,10 @@ class Wages(AuditableModel):
     piece_rate_offerings_type = models.CharField(
         max_length=50,
         choices=[
-            ('Hourly', 'Hourly'),
-            ('Daily', 'Daily'),
-            ('Weekly', 'Weekly'),
-            ('Monthly', 'Monthly')
+            ('Hourly', _('roleWagesHourly')),
+            ('Daily', _('roleWagesDaily')),
+            ('Weekly', _('roleWagesWeekly')),
+            ('Monthly', _('roleWagesMonthly')),
         ]
     )
 

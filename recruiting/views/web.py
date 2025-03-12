@@ -171,7 +171,7 @@ class RoleHoursCreateView(RoleDataBaseView):
     template_name = 'recruiting/work_requests/create_hours.html'
 
     def form_valid(self, form):
-        messages.success(self.request, _('Role hours successfully added'))
+        messages.success(self.request, _('roleAddHoursRoleHoursSuccessfullyAdded'))
         return super().form_valid(form)
 
 
@@ -181,7 +181,7 @@ class RoleWagesCreateView(RoleDataBaseView):
     template_name = 'recruiting/work_requests/create_wages.html'
 
     def form_valid(self, form):
-        messages.success(self.request, _('Roles wages successfully added'))
+        messages.success(self.request, _('roleWagesRolesWagesSuccessfullyAdded'))
         return super().form_valid(form)
 
 
@@ -191,7 +191,7 @@ class RoleDeductionsCreateView(RoleDataBaseView):
     template_name = 'recruiting/work_requests/create_deductions.html'
 
     def form_valid(self, form):
-        messages.success(self.request, _('Roles deductions successfully added'))
+        messages.success(self.request, _('roleDeductionsRolesDeductionsSuccessfullyAdded'))
         return super().form_valid(form)
 
 

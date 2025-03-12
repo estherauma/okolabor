@@ -221,6 +221,16 @@ class RoleWagesForm(forms.ModelForm):
             'piece_rate_offerings_type', 'frequency_of_pay',
             'details'
         ]
+        
+        labels = {
+            'role': _('roleWagesRole'),
+            'wage': _('roleWagesWage'),
+            'wage_type': _('roleWagesWageType'),
+            'piece_rate_offerings': _('roleWagesPieceRateOfferings'),
+            'piece_rate_offerings_type': _('roleWagesPieceRateOfferingsType'),
+            'frequency_of_pay': _('roleWagesFrequencyOfPay'),
+            'details': _('roleWagesDetails'),
+        }
 
         widgets = {
             'role': forms.Select(attrs={
