@@ -252,6 +252,12 @@ class RoleDeductionForm(forms.ModelForm):
     class Meta:
         model = Deduction
         fields = ['role', 'description', 'deduction_amount']
+        
+        labels = {
+            'role': _('roleDeductionsRole'),
+            'description': _('roleDeductionsDescription'),
+            'deduction_amount': _('roleDeductionsDeductionAmount'),
+        }
 
         widgets = {
             'role': forms.Select(attrs={
