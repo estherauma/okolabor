@@ -159,6 +159,21 @@ class RoleHoursForm(forms.ModelForm):
             'friday_hours',
             'saturday_hours',
             'job_description']
+        
+        labels = {
+            'role': _('roleAddHoursRole'),
+            'on_call': _('roleAddHoursOnCall'),
+            'estimate_weekly_hours': _('roleAddHoursEstimatedWeeklyHours'),
+            'sunday_hours': _('roleAddHoursSundayHours'),
+            'monday_hours': _('roleAddHoursMondayHours'),
+            'tuesday_hours': _('roleAddHoursTuesdayHours'),
+            'wednesday_hours': _('roleAddHoursWednesdayHours'),
+            'thursday_hours': _('roleAddHoursThursdayHours'),
+            'friday_hours': _('roleAddHoursFridayHours'),
+            'saturday_hours': _('roleAddHoursSaturdayHours'),
+            'job_description': _('roleAddHoursJobDescription'),
+        }
+        
         widgets = {
             'role': forms.Select(attrs={
                 'class': 'form-control',
