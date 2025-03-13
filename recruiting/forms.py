@@ -391,6 +391,17 @@ class RoleEmploymentLocationForm(forms.ModelForm):
             'role', 'address', 'city', 'county', 'state',
             'postal_code', 'additional_info', 'role'
         ]
+        
+        labels = {
+            'role': _('roleEmploymentLocationRole'),
+            'address': _('roleEmploymentLocationAddress'),
+            'city': _('roleEmploymentLocationCity'),
+            'county': _('roleEmploymentLocationCounty'),
+            'state': _('roleEmploymentLocationState'),
+            'postal_code': _('roleEmploymentLocationPostalCode'),
+            'additional_info': _('roleEmploymentLocationAdditionalInfo'),
+        }
+        
         widgets = {
             'role': forms.Select(attrs={
                 'class': 'form-control',

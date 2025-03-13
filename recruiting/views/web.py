@@ -207,7 +207,7 @@ class RoleEmpLocationCreateView(RoleDataBaseView):
     template_name = 'recruiting/work_requests/create_employment_location.html'
 
     def form_valid(self, form):
-        messages.success(self.request, _('Successfully added role location'))
+        messages.success(self.request, _('roleEmploymentLocationSuccessfullyAddedRoleLocation'))
         return super().form_valid(form)
 
 
