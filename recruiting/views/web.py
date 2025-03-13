@@ -219,7 +219,7 @@ class RoleHousingCreateView(RoleDataBaseView):
     def form_valid(self, form):
         messages.success(
             self.request,
-            _('Successfully added role housing information')
+            _('roleHousingInformationSuccessfullyAddedRoleHousingInformation')
         )
         return super().form_valid(form)
 

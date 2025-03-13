@@ -435,6 +435,18 @@ class RoleHousingInformationForm(forms.ModelForm):
             'role', 'address', 'city', 'county', 'state',
             'postal_code', 'type_of_housing', 'additional_info'
         ]
+        
+        labels = {
+            'role': _('roleHousingInformationRole'),
+            'address': _('roleHousingInformationAddress'),
+            'city': _('roleHousingInformationCity'),
+            'county': _('roleHousingInformationCounty'),
+            'state': _('roleHousingInformationState'),
+            'postal_code': _('roleHousingInformationPostalCode'),
+            'type_of_housing': _('roleHousingInformationTypeOfHousing'),
+            'additional_info': _('roleHousingInformationAdditionalInfo'),
+        }
+        
         widgets = {
             'role': forms.Select(attrs={
                 'class': 'form-control',

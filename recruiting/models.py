@@ -180,9 +180,10 @@ class HousingInformation(AuditableModel):
     postal_code = models.CharField(max_length=10)
     type_of_housing = models.CharField(
         max_length=50,
+        
         choices=[
-            ('Employer provided', 'Employer provided'),
-            ('Rental or Public', 'Rental or Public')
+            ('Employer provided', _('roleHousingInformationEmployerProvided')),
+            ('Rental or Public', _('roleHousingInformationRentalOrPublic')),
             ]
         )
     additional_info = models.TextField(blank=True, null=True)
