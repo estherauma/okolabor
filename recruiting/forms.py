@@ -304,6 +304,26 @@ class RoleQualificationForm(forms.ModelForm):
             'repetitive_movements',
             'support_of_other_employees',
             'other_qualifications']
+        
+        labels = {
+            'role': _('roleQualificationRole'),
+            'minimum_education_requirement': _('roleQualificationMinimumEducationRequirement'),
+            'experience_required': _('roleQualificationExperienceRequired'),
+            'number_of_months_experience_required': _('roleQualificationNumberOfMonthsExperienceRequired'),
+            'training_required': _('roleQualificationTrainingRequired'),
+            'number_of_months_training_required': _('roleQualificationNumberOfMonthsTrainingRequired'),
+            'certification_license_requirements': _('roleQualificationCertification/LicenseRequirements'),
+            'drug_screen': _('roleQualificationDrugScreen'),
+            'lifting_requirements': _('roleQualificationLiftingRequirements'),
+            'lifting_requirement_weight': _('roleQualificationLiftingRequirementWeight'),
+            'exposure_to_temperature': _('roleQualificationExposureToTemperature'),
+            'extensive_pushing_or_pulling': _('roleQualificationExtensivePushingOrPulling'),
+            'extensive_sitting_or_walking': _('roleQualificationExtensiveSittingOrWalking'),
+            'frequent_stooping_or_bending_over': _('roleQualificationFrequentStoopingOrBendingOver'),
+            'repetitive_movements': _('roleQualificationRepetitiveMovements'),
+            'support_of_other_employees': _('roleQualificationSupportOfOtherEmployees'),
+            'other_qualifications': _('roleQualificationOtherQualifications'),
+        }
 
         widgets = {
             'role': forms.Select(attrs={
