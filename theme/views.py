@@ -383,9 +383,11 @@ def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data['username']
+            first_name = form.cleaned_data['username']
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
+            user = User.objects.create_user(first_name=first_name, email=email, password=password)
+            messages.success(request, "Registration successful! Please log in.")
             return redirect('login')
         else:
             messages.error(request, form.errors)
