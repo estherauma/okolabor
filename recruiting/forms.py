@@ -484,6 +484,14 @@ class RoleMealProvision(forms.ModelForm):
             'meal_charge_amount',
             'additional_info',
         ]
+        
+        labels = {
+            'role': _('roleMealProvisionRole'),
+            'will_provide_meals': _('roleMealProvisionWillProvideMeals'),
+            'meal_charge_amount': _('roleMealProvisionMealChargeAmount'),
+            'additional_info': _('roleMealProvisionAdditionalInfo'),
+        }
+        
         widgets = {
             'role': forms.Select(attrs={
                 'class': 'form-control',

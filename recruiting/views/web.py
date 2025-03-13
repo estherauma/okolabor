@@ -231,7 +231,7 @@ class RoleMealsCreateView(RoleDataBaseView):
 
     def form_valid(self, form):
         messages.success(self.request,
-                         _('Successfully added role meals information'))
+                         _('roleMealProvisionSuccessfullyAddedRoleMealsInformation'))
         return super().form_valid(form)
 
 
