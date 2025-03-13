@@ -1,29 +1,61 @@
 from django.contrib import messages
+from django.http import JsonResponse
 from django.contrib.auth.models import Group
+from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.views import View
 from django.views.generic import CreateView
-
+from django.db.models import Q
 from account.models import User, UserWorkExperience
 from common.views import BaseCreateView
 from recruiting.forms import WorkerCreateForm, WorkExperienceCreateForm
 from theme.forms import AdvancedFilterForm, FilterWorkExperienceForm
 
 
+# class WorkerListView(View):
+#     def get(self, request):
+#         form = FilterWorkExperienceForm()
+#         filter_form = AdvancedFilterForm()
+#         workers = User.objects.filter(groups__name='worker').order_by('-created_at')
+#         context = {
+#             'workers': workers,
+#             'form': form,
+#             'filter_form': filter_form
+#         }
+#         return render(request, 'recruiting/workers/list.html', context)
 class WorkerListView(View):
     def get(self, request):
         form = FilterWorkExperienceForm()
         filter_form = AdvancedFilterForm()
-        workers = User.objects.filter(groups__name='worker').order_by('-created_at')
+        search_query = request.GET.get('search')
+        page_number = request.GET.get('page', 1)
+
+        if search_query:
+            workers = User.objects.filter(
+                Q(groups__name='worker') &
+                (Q(first_name__icontains=search_query) | Q(last_name__icontains=search_query))
+            ).order_by('-created_at')
+        else:
+            workers = User.objects.filter(groups__name='worker').order_by('-created_at')
+
+        paginator = Paginator(workers,4)  # Show 10 workers per page
+        page_obj = paginator.get_page(page_number)
+
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            # Return JSON response for AJAX requests
+            workers_data = [{'id': worker.id, 'firstname': worker.first_name, 'lastname': worker.last_name, 'email': worker.email} for worker in page_obj]
+            return JsonResponse({'workers': workers_data, 'num_pages': paginator.num_pages})
+
         context = {
-            'workers': workers,
+            'workers': page_obj,
             'form': form,
-            'filter_form': filter_form
+            'filter_form': filter_form,
+            'search_query': search_query,
+            'paginator': paginator
         }
         return render(request, 'recruiting/workers/list.html', context)
-
 
 class WorkerCreateView(CreateView):
     model = User
