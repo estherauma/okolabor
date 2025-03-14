@@ -1,38 +1,34 @@
-{% load i18n %}
-{% translate "html" %}
+{% load static %} {% load i18n %} {% translate "html" %}
 <html lang="en">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>
-   {% translate "Document" %}
-  </title>
- </head>
- <body style="background-color: #7DBF96; color: #fff;">
-   <div style="display: flex; width: 100%; justify-content: center;">
-        <img class="sidebar-logo" 
-        src="{{site_url}}{% static 'assets/images/login/logo.svg' %}" 
-        alt="Okolabor" />
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>{% translate "Document" %}</title>
+  </head>
+  <body style="background-color: #7dbf96; color: #fff">
+    <div style="display: flex; width: 100%; justify-content: center">
+      <img
+        class="sidebar-logo"
+        src="{{site_url}}{% static 'assets/images/login/logo.svg' %}"
+        alt="Okolabor"
+      />
     </div>
-  <p>
-   Hello {{ first_name }},
-  </p>
-  <p>
-   {% translate "You have been invited to join our platform as a recruiter." %}
-  </p>
-  <p>
-   {% translate "Click the link below to accept your invitation and update your password:" %}
-  </p>
-  <p>
-   <a href="{{ invite_link }}">
-    {% translate "Update your password" %}
-   </a>
-  </p>
-  <p>
-   {% translate "Best regards," %}
-   <br/>
-   {% translate "Your Team" %}
-  </p>
- </body>
+    <p>Hello {{ first_name }},</p>
+    <p>
+      {% translate "You have been invited to join our platform as a recruiter."
+      %}
+    </p>
+    <p>
+      {% translate "Click the link below to accept your invitation and update
+      your password:" %}
+    </p>
+    <p>
+      <a href="{{ invite_link }}"> {% translate "Update your password" %} </a>
+    </p>
+    <p>
+      {% translate "Best regards," %}
+      <br />
+      {% translate "Your Team" %}
+    </p>
+  </body>
 </html>
-

@@ -10,42 +10,8 @@
 <link href="{% static ''%}assets/plugins/datatable/css/buttons.bootstrap5.min.css" rel="stylesheet"/>
 <link href="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.css" rel="stylesheet"/>
 <link href="{% static ''%}assets/css/workers.css" rel="stylesheet"/>
-<style>
-    .pagination {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        list-style: none;
-        margin-top: 20px;
-    }
-    .pagination li {
-        display: inline-block;
-        margin: 0 2px;
-    }
-    .pagination a, .pagination span {
-        background-color: #FAFAE6;
-        padding: 6px 12px;
-        text-decoration: none;
-        color: #9A9898;
-        font-size: 14px;
-    }
-    .pagination .current {
-        background-color: #7DBF96;
-        color: white;
-        border: 1px solid #7DBF96;
-    }
-    .pagination a:hover {
-        background-color: #e9ecef;
-    }
-    .pagination .disabled {
-        color: #6c757d;
-        pointer-events: none;
-        cursor: default;
-    }
-</style>
-{% endblock styles %}
+{% endblock styles %} {% block body %}
 
-{% block body %}
 <div class="container-fluid" style="position: relative; height: auto">
     <div class="row">
         <div class="page-header custom-page-header d-flex flex-column">
@@ -218,7 +184,7 @@
                                             {{ worker.firstname }} {{ worker.lastname }}
                                         </a>
                                         {% else %}
-                                        <a href="workers/{{worker.id}}">
+                                        <a href="{{worker.id}}">
                                             {{ worker.email }}
                                         </a>
                                         {% endif %}
@@ -270,44 +236,7 @@
 {% endblock body %}
 
 {% block scripts %}
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.querySelector('.search-input');
-        const resultsTableBody = document.querySelector('#basic-datatable tbody');
 
-        searchInput.addEventListener('input', function() {
-            const query = searchInput.value;
-
-            fetch(`?search=${query}`, {
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                resultsTableBody.innerHTML = ''; // Clear existing results
-                data.workers.forEach(worker => {
-                    const row = `
-                        <tr class="text-center">
-                            <td>
-                                <a href="workers/${worker.id}">
-                                    ${worker.firstname} ${worker.lastname}
-                                </a>
-                            </td>
-                            <td>Chloe</td>
-                            <td>30%</td>
-                            <td>Harvesting Fruit Picking</td>
-                            <td>Intermediate</td>
-                            <td>Any</td>
-                            <td>Pending</td>
-                        </tr>
-                    `;
-                    resultsTableBody.insertAdjacentHTML('beforeend', row);
-                });
-            });
-        });
-    });
-</script>
 <!-- INTERNAL SELECT2 JS -->
 <script src="{% static ''%}assets/plugins/select2/select2.full.min.js"></script>
 <!-- DATA TABLE JS-->
@@ -324,4 +253,6 @@
 <script src="{% static ''%}assets/plugins/datatable/dataTables.responsive.min.js"></script>
 <script src="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.min.js"></script>
 <script src="{% static ''%}assets/js/table-data.js"></script>
+<script src="{% static ''%}assets/js/worker-search.js"></script>
+
 {% endblock scripts %}

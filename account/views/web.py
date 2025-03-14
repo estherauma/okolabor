@@ -17,6 +17,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from django.views import View
 from django.views.generic.edit import FormView
+from django.http import JsonResponse
 
 from account.forms.account_update import UpdateAccountDetailsForm
 from account.forms.filter_logs import UserLogsFilterForm
@@ -51,17 +52,17 @@ class UserListView(LoginRequiredMixin, View):
     def post(self, request):
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
-        email = request.POST.get('email')
+        user_email = request.POST.get('email')
         curp = request.POST.get('curp')
 
-        if not all([first_name, last_name, email, curp]):
+        if not all([first_name, last_name, user_email, curp]):
             messages.error(request, _("All fields are required."))
             return redirect('manage_users')
 
         user = User.objects.create(
             first_name=first_name,
             last_name=last_name,
-            email=email,
+            email=user_email,
             curp=curp,
             is_active=True
         )
@@ -90,15 +91,19 @@ class UserListView(LoginRequiredMixin, View):
             subject=email_subject,
             body=email_body,
             from_email=settings.DEFAULT_FROM_EMAIL,
-            to=[email],
+            to=[user_email.strip()],
         )
         email.content_subtype = 'html'
         email_sent = email.send()
-
+        print(email_sent,"email_sent")
         if email_sent:
-            messages.success(request, _("Invitation sent successfully!"))
+            return JsonResponse({"success": True, "message": "Invitation sent successfully!"})
+            # print("testing")
+            # messages.success(request, _("Invitation sent successfully!"))
         else:
-            messages.error(request, _("Failed to send email."))
+            return JsonResponse({"success": False, "message": "Failed to send email."})
+            # print("testing111")
+            # messages.error(request, _("Failed to send email."))
 
         return redirect('manage_users')
 

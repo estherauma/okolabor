@@ -14,17 +14,6 @@ from recruiting.forms import WorkerCreateForm, WorkExperienceCreateForm
 from theme.forms import AdvancedFilterForm, FilterWorkExperienceForm
 
 
-# class WorkerListView(View):
-#     def get(self, request):
-#         form = FilterWorkExperienceForm()
-#         filter_form = AdvancedFilterForm()
-#         workers = User.objects.filter(groups__name='worker').order_by('-created_at')
-#         context = {
-#             'workers': workers,
-#             'form': form,
-#             'filter_form': filter_form
-#         }
-#         return render(request, 'recruiting/workers/list.html', context)
 class WorkerListView(View):
     def get(self, request):
         form = FilterWorkExperienceForm()
@@ -35,7 +24,7 @@ class WorkerListView(View):
         if search_query:
             workers = User.objects.filter(
                 Q(groups__name='worker') &
-                (Q(first_name__icontains=search_query) | Q(last_name__icontains=search_query))
+                (Q(first_name__icontains=search_query) | Q(last_name__icontains=search_query)) | Q(email__icontains=search_query)
             ).order_by('-created_at')
         else:
             workers = User.objects.filter(groups__name='worker').order_by('-created_at')

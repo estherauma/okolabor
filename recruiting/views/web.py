@@ -1,4 +1,7 @@
 from django.contrib import messages
+from django.http import JsonResponse
+from django.core.paginator import Paginator
+from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import BaseModelForm
 from django.http import HttpResponse
@@ -39,10 +42,46 @@ from recruiting.models import (
 )
 
 
+# class EmployerListView(View):
+#     def get(self, request):
+#         employers = Employer.objects.all()
+#         context = {'employers': employers}
+#         return render(request, 'recruiting/employers/list.html', context)
+    
 class EmployerListView(View):
     def get(self, request):
-        employers = Employer.objects.all()
-        context = {'employers': employers}
+        query = request.GET.get('query')
+        employers_list = Employer.objects.all()
+
+        if query:
+            employers_list = employers_list.filter(
+                Q(name__icontains=query) |
+                Q(email__icontains=query) |
+                Q(address__icontains=query) |
+                Q(country__icontains=query) |
+                Q(phone__icontains=query)
+            )
+
+        paginator = Paginator(employers_list, 10)  # Show 10 employers per page
+        page_number = request.GET.get('page')
+        employers = paginator.get_page(page_number)
+
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            # If it's an AJAX request, return JSON response
+            employers_data = [{
+                'id': employer.id,
+                'name': employer.name,
+                'email': employer.email,
+                'address': employer.address,
+                'country': employer.country,
+                'phone': employer.phone
+            } for employer in employers]
+            return JsonResponse({
+                'employers': employers_data,
+                'has_more': employers.has_next()
+            })
+
+        context = {'employers': employers, 'query': query}
         return render(request, 'recruiting/employers/list.html', context)
 
 
