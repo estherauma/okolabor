@@ -17,6 +17,7 @@ class WorkerListView(View):
         form = FilterWorkExperienceForm()
         filter_form = AdvancedFilterForm()
         workers = User.objects.filter(groups__name='worker').order_by('-created_at')
+        print(workers,"workers")
         context = {
             'workers': workers,
             'form': form,

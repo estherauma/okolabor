@@ -279,6 +279,8 @@ class OkoMessageCreateView(CreateView):
 
 class OkoMessageDetailsView(View):
     def get(self, request,id):
+        print(request,id,"id")
         message = get_object_or_404(OkoMessage, pk=id)
+        print(message,"message")
         context = {'message': message}
         return render(request, 'recruiting/messages/details.html',context)

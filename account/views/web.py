@@ -18,7 +18,6 @@ from django.utils.translation import gettext as _
 from django.views import View
 from django.views.generic.edit import FormView
 from django.http import JsonResponse
-
 from account.forms.account_update import UpdateAccountDetailsForm
 from account.forms.filter_logs import UserLogsFilterForm
 from django.utils import timezone
@@ -95,16 +94,10 @@ class UserListView(LoginRequiredMixin, View):
         )
         email.content_subtype = 'html'
         email_sent = email.send()
-        print(email_sent,"email_sent")
         if email_sent:
             return JsonResponse({"success": True, "message": "Invitation sent successfully!"})
-            # print("testing")
-            # messages.success(request, _("Invitation sent successfully!"))
         else:
             return JsonResponse({"success": False, "message": "Failed to send email."})
-            # print("testing111")
-            # messages.error(request, _("Failed to send email."))
-
         return redirect('manage_users')
 
 class UserActivitLogView(LoginRequiredMixin, View):
