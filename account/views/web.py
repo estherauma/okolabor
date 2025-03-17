@@ -55,7 +55,7 @@ class UserListView(LoginRequiredMixin, View):
         curp = request.POST.get('curp')
 
         if not all([first_name, last_name, email, curp]):
-            messages.error(request, _("All fields are required."))
+            messages.error(request, _("addUserAllFieldsAreRequired."))
             return redirect('manage_users')
 
         user = User.objects.create(
