@@ -36,7 +36,7 @@ def index(request):
 @login_required
 def logout_view(request):
     logout(request)
-    messages.success(request, _('You have been successfully logged out'), extra_tags='bg-success')
+    messages.success(request, _('youHaveBeenSuccessfullyLoggedOut'), extra_tags='bg-success')
     return redirect('/')
 
 def about(request):
@@ -268,7 +268,7 @@ def login(request):
 
             if user is not None:
                 auth_login(request, user)
-                messages.success(request, _('You have successfully logged in'))
+                messages.success(request, _('youHaveSuccessfullyLoggedIn'))
                 next_url = request.GET.get('next', 'index')
 
                 response = redirect(next_url)

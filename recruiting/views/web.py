@@ -88,7 +88,7 @@ class WorkRequestCreateView(CreateView):
     template_name = 'recruiting/work_requests/create.html'
 
     def form_valid(self, form):
-        messages.success(self.request, _('Job Order created successfully'))
+        messages.success(self.request, _('jobOrderCreatedSuccessfully'))
         return super(WorkRequestCreateView, self).form_valid(form)
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
@@ -263,7 +263,7 @@ class OkoMessageCreateView(CreateView):
     template_name = 'recruiting/messages/create.html'
 
     def form_valid(self, form):
-        messages.success(self.request, _('Message created successfully'))
+        messages.success(self.request, _('messageCreatedSuccessfully'))
         return super(OkoMessageCreateView, self).form_valid(form)
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
