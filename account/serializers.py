@@ -82,7 +82,8 @@ class UserWorkexperienceSerializer(serializers.ModelSerializer):
     state = serializers.CharField(required=False, allow_blank=True)
     visa_type = serializers.CharField(required=False, allow_blank=True)
     company = serializers.CharField(required=True)
-    start_date = serializers.DateField(required=True)    
+    start_date = serializers.DateField(required=True)
+    currently_working = serializers.BooleanField(required=False)    
     end_date = serializers.DateField(required=False, allow_null=True)
     work_title = serializers.CharField(required=True)
     supervisor_name = serializers.CharField(required=False, allow_blank=True)
@@ -95,7 +96,7 @@ class UserWorkexperienceSerializer(serializers.ModelSerializer):
         model = UserWorkExperience
         fields = [
             'id', 'country', 'state', 'visa_type','company', 'start_date',
-            'end_date', 'work_title',
+            'currently_working','end_date', 'work_title',
             'supervisor_name', 'supervisor_tel', 'supervisor_email','work_under_h2a_in_usa'
         ]
 
