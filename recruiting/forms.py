@@ -159,6 +159,21 @@ class RoleHoursForm(forms.ModelForm):
             'friday_hours',
             'saturday_hours',
             'job_description']
+        
+        labels = {
+            'role': _('roleAddHoursRole'),
+            'on_call': _('roleAddHoursOnCall'),
+            'estimate_weekly_hours': _('roleAddHoursEstimatedWeeklyHours'),
+            'sunday_hours': _('roleAddHoursSundayHours'),
+            'monday_hours': _('roleAddHoursMondayHours'),
+            'tuesday_hours': _('roleAddHoursTuesdayHours'),
+            'wednesday_hours': _('roleAddHoursWednesdayHours'),
+            'thursday_hours': _('roleAddHoursThursdayHours'),
+            'friday_hours': _('roleAddHoursFridayHours'),
+            'saturday_hours': _('roleAddHoursSaturdayHours'),
+            'job_description': _('roleAddHoursJobDescription'),
+        }
+        
         widgets = {
             'role': forms.Select(attrs={
                 'class': 'form-control',
@@ -206,6 +221,16 @@ class RoleWagesForm(forms.ModelForm):
             'piece_rate_offerings_type', 'frequency_of_pay',
             'details'
         ]
+        
+        labels = {
+            'role': _('roleWagesRole'),
+            'wage': _('roleWagesWage'),
+            'wage_type': _('roleWagesWageType'),
+            'piece_rate_offerings': _('roleWagesPieceRateOfferings'),
+            'piece_rate_offerings_type': _('roleWagesPieceRateOfferingsType'),
+            'frequency_of_pay': _('roleWagesFrequencyOfPay'),
+            'details': _('roleWagesDetails'),
+        }
 
         widgets = {
             'role': forms.Select(attrs={
@@ -237,6 +262,12 @@ class RoleDeductionForm(forms.ModelForm):
     class Meta:
         model = Deduction
         fields = ['role', 'description', 'deduction_amount']
+        
+        labels = {
+            'role': _('roleDeductionsRole'),
+            'description': _('roleDeductionsDescription'),
+            'deduction_amount': _('roleDeductionsDeductionAmount'),
+        }
 
         widgets = {
             'role': forms.Select(attrs={
