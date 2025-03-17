@@ -2,18 +2,18 @@
 {% load i18n %}
 {% block body %}
 <h1>
- {% translate "Notifications" %}
+ {% translate "notificationsNotifications" %}
 </h1>
 <hr/>
 <div class="container-dropdown">
  <a class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" href="#">
-  {% translate "Worker Requests" %}
+  {% translate "notificationsWorkerRequests" %}
  </a>
  <a class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" href="#">
-  {% translate "Filter by Date" %}
+  {% translate "notificationsFilterByDate" %}
  </a>
  <a class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" href="#">
-  {% translate "New" %}
+  {% translate "notificationsNew" %}
  </a>
 </div>
 <br/>
@@ -54,23 +54,23 @@
        {{ notification.message }}
       </p>
       <small>
-       Category: {{ notification.category }}
+       {% translate "notificationsCategory"%}: {{ notification.category }}
       </small>
       <br/>
       <small>
-       Status: {{ notification.status }}
+        {% translate "notificationsStatus"%}: {{ notification.status }}
       </small>
       <br/>
       <small>
-       Read at: {{ notification.read_at|default:"Not read yet" }}
+        {% translate "notificationsReatAt"%}: {{ notification.read_at|default:"Not read yet" }}
       </small>
       <br/>
       <small>
-       Created at: {{ notification.created_at }}
+        {% translate "notificationsCreatedAt"%}: {{ notification.created_at }}
       </small>
       <br/>
       <button class="close-notification" onclick="toggleMessage('message{{ forloop.counter }}'); return false;">
-       {% translate "Close" %}
+       {% translate "notificationsClose" %}
       </button>
      </div>
     </td>
@@ -80,7 +80,7 @@
  </table>
  {% else %}
  <p>
-  {% translate "No notifications available." %}
+  {% translate "notificationsNoNotificationsAvailable." %}
  </p>
  {% endif %}
 </div>
