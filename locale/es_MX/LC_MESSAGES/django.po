@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-12 18:13+0300\n"
+"POT-Creation-Date: 2025-03-13 14:55+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: account/forms/account_update.py:10 recruiting/forms.py:554
+#: account/forms/account_update.py:10 recruiting/forms.py:605
 msgid "curp"
 msgstr "CURP"
 
-#: account/forms/account_update.py:11 recruiting/forms.py:555
+#: account/forms/account_update.py:11 recruiting/forms.py:606
 msgid "firstName"
 msgstr "Nombre de pila"
 
-#: account/forms/account_update.py:12 recruiting/forms.py:556
+#: account/forms/account_update.py:12 recruiting/forms.py:607
 msgid "lastName"
 msgstr "Apellido"
 
-#: account/forms/account_update.py:13 recruiting/forms.py:553
+#: account/forms/account_update.py:13 recruiting/forms.py:604
 msgid "email"
 msgstr "Correo electrónico"
 
@@ -445,124 +445,268 @@ msgstr "Descripción"
 msgid "roleDeductionsDeductionAmount"
 msgstr "Monto de la deducción"
 
-#: recruiting/forms.py:479
+#: recruiting/forms.py:309
+msgid "roleQualificationRole"
+msgstr "Role"
+
+#: recruiting/forms.py:310
+msgid "roleQualificationMinimumEducationRequirement"
+msgstr "Requisito mínimo de educación"
+
+#: recruiting/forms.py:311
+msgid "roleQualificationExperienceRequired"
+msgstr "Experiencia requerida"
+
+#: recruiting/forms.py:312
+msgid "roleQualificationNumberOfMonthsExperienceRequired"
+msgstr "Número de meses de experiencia requerida"
+
+#: recruiting/forms.py:313
+msgid "roleQualificationTrainingRequired"
+msgstr "Se requiere formación"
+
+#: recruiting/forms.py:314
+msgid "roleQualificationNumberOfMonthsTrainingRequired"
+msgstr "Número de meses de formación necesarios"
+
+#: recruiting/forms.py:315
+msgid "roleQualificationCertification/LicenseRequirements"
+msgstr "Requisitos de certificación/licencia"
+
+#: recruiting/forms.py:316
+msgid "roleQualificationDrugScreen"
+msgstr "Prueba de drogas"
+
+#: recruiting/forms.py:317
+msgid "roleQualificationLiftingRequirements"
+msgstr "Requisitos de elevación"
+
+#: recruiting/forms.py:318
+msgid "roleQualificationLiftingRequirementWeight"
+msgstr "Peso requerido para levantar"
+
+#: recruiting/forms.py:319
+msgid "roleQualificationExposureToTemperature"
+msgstr "Exposición a la temperatura"
+
+#: recruiting/forms.py:320
+msgid "roleQualificationExtensivePushingOrPulling"
+msgstr "Empujones o tirones intensos"
+
+#: recruiting/forms.py:321
+msgid "roleQualificationExtensiveSittingOrWalking"
+msgstr "Estar sentado o caminar mucho tiempo"
+
+#: recruiting/forms.py:322
+msgid "roleQualificationFrequentStoopingOrBendingOver"
+msgstr "Inclinarse o agacharse con frecuencia"
+
+#: recruiting/forms.py:323
+msgid "roleQualificationRepetitiveMovements"
+msgstr "Movimientos repetitivos"
+
+#: recruiting/forms.py:324
+msgid "roleQualificationSupportOfOtherEmployees"
+msgstr "Apoyo de otras empleadas"
+
+#: recruiting/forms.py:325
+msgid "roleQualificationOtherQualifications"
+msgstr "Otras cualificaciones"
+
+#: recruiting/forms.py:396
+msgid "roleEmploymentLocationRole"
+msgstr "Role"
+
+#: recruiting/forms.py:397
+msgid "roleEmploymentLocationAddress"
+msgstr "Dirección"
+
+#: recruiting/forms.py:398
+msgid "roleEmploymentLocationCity"
+msgstr "Ciudad"
+
+#: recruiting/forms.py:399
+msgid "roleEmploymentLocationCounty"
+msgstr "Condado"
+
+#: recruiting/forms.py:400
+msgid "roleEmploymentLocationState"
+msgstr "Estado"
+
+#: recruiting/forms.py:401
+msgid "roleEmploymentLocationPostalCode"
+msgstr "Código Postal"
+
+#: recruiting/forms.py:402
+msgid "roleEmploymentLocationAdditionalInfo"
+msgstr "Información adicional"
+
+#: recruiting/forms.py:440
+msgid "roleHousingInformationRole"
+msgstr "Role"
+
+#: recruiting/forms.py:441
+msgid "roleHousingInformationAddress"
+msgstr "Dirección"
+
+#: recruiting/forms.py:442
+msgid "roleHousingInformationCity"
+msgstr "Ciudad"
+
+#: recruiting/forms.py:443
+msgid "roleHousingInformationCounty"
+msgstr "Condado"
+
+#: recruiting/forms.py:444
+msgid "roleHousingInformationState"
+msgstr "Estado"
+
+#: recruiting/forms.py:445
+msgid "roleHousingInformationPostalCode"
+msgstr "Código Postal"
+
+#: recruiting/forms.py:446
+msgid "roleHousingInformationTypeOfHousing"
+msgstr "Tipo de vivienda"
+
+#: recruiting/forms.py:447
+msgid "roleHousingInformationAdditionalInfo"
+msgstr "Información adicional"
+
+#: recruiting/forms.py:489
+msgid "roleMealProvisionRole"
+msgstr "Role"
+
+#: recruiting/forms.py:490
+msgid "roleMealProvisionWillProvideMeals"
+msgstr "Proporcionará comidas"
+
+#: recruiting/forms.py:491
+msgid "roleMealProvisionMealChargeAmount"
+msgstr "Importe del cargo por comida"
+
+#: recruiting/forms.py:492
+msgid "roleMealProvisionAdditionalInfo"
+msgstr "Información adicional"
+
+#: recruiting/forms.py:530
 #: recruiting/templates/recruiting/work_requests/list.html:82
 msgid "status"
 msgstr "Estado"
 
-#: recruiting/forms.py:481
+#: recruiting/forms.py:532
 msgid "inbox"
 msgstr "Bandeja de entrada"
 
-#: recruiting/forms.py:482
+#: recruiting/forms.py:533
 msgid "sent"
 msgstr "Enviada"
 
-#: recruiting/forms.py:487
+#: recruiting/forms.py:538
 msgid "date"
 msgstr "Fecha"
 
-#: recruiting/forms.py:505
+#: recruiting/forms.py:556
 msgid "createMessageRecipientType"
 msgstr "Tipo de destinatario"
 
-#: recruiting/forms.py:506
+#: recruiting/forms.py:557
 msgid "createMessageJobOrder"
 msgstr "Orden de trabajo"
 
-#: recruiting/forms.py:507
+#: recruiting/forms.py:558
 msgid "createMessageIncludeRecipients"
 msgstr "Incluir destinatarios"
 
-#: recruiting/forms.py:508
+#: recruiting/forms.py:559
 msgid "createMessageSubject"
 msgstr "Sujeto"
 
-#: recruiting/forms.py:509
+#: recruiting/forms.py:560
 msgid "createMessageBody"
 msgstr "Cuerpo"
 
-#: recruiting/forms.py:510
+#: recruiting/forms.py:561
 msgid "createMessageAutoReply"
 msgstr "Respuesta automática"
 
-#: recruiting/forms.py:538
+#: recruiting/forms.py:589
 msgid "male"
 msgstr "Masculina"
 
-#: recruiting/forms.py:539
+#: recruiting/forms.py:590
 msgid "female"
 msgstr "Femenina"
 
-#: recruiting/forms.py:545 recruiting/forms.py:558
+#: recruiting/forms.py:596 recruiting/forms.py:609
 msgid "gender"
 msgstr "Género"
 
-#: recruiting/forms.py:557
+#: recruiting/forms.py:608
 msgid "dateOfBirth"
 msgstr "Fecha de nacimiento"
 
-#: recruiting/forms.py:559
+#: recruiting/forms.py:610
 msgid "telephone"
 msgstr "Teléfono"
 
-#: recruiting/forms.py:560
+#: recruiting/forms.py:611
 msgid "addressLine1"
 msgstr "Dirección Línea 1"
 
-#: recruiting/forms.py:561
+#: recruiting/forms.py:612
 msgid "addressLine2"
 msgstr "Línea de dirección 2"
 
-#: recruiting/forms.py:562
+#: recruiting/forms.py:613
 msgid "city"
 msgstr "Ciudad"
 
-#: recruiting/forms.py:583
+#: recruiting/forms.py:634
 msgid "addWorkerExperienceSelectEmployer"
 msgstr "Seleccionar empleadora"
 
-#: recruiting/forms.py:584
+#: recruiting/forms.py:635
 msgid "addWorkerExperienceCompany1"
 msgstr "Compañía"
 
-#: recruiting/forms.py:591
+#: recruiting/forms.py:642
 msgid "addWorkerExperienceUser"
 msgstr "Usuaria"
 
-#: recruiting/forms.py:592
+#: recruiting/forms.py:643
 msgid "addWorkerExperienceCompany"
 msgstr "Compañía"
 
-#: recruiting/forms.py:593
+#: recruiting/forms.py:644
 msgid "addWorkerExperienceWorkTitle"
 msgstr "Título de trabajo"
 
-#: recruiting/forms.py:594
+#: recruiting/forms.py:645
 msgid "addWorkerExperienceStartDate"
 msgstr "Fecha de inicio"
 
-#: recruiting/forms.py:595
+#: recruiting/forms.py:646
 msgid "addWorkerExperienceEndDate"
 msgstr "Fecha final"
 
-#: recruiting/forms.py:596
+#: recruiting/forms.py:647
 msgid "addWorkerExperienceCountry"
 msgstr "País"
 
-#: recruiting/forms.py:597
+#: recruiting/forms.py:648
 msgid "addWorkerExperienceSupervisorName"
 msgstr "Nombre de la supervisora"
 
-#: recruiting/forms.py:598
+#: recruiting/forms.py:649
 msgid "addWorkerExperienceSupervisorTelephone"
 msgstr "Teléfono del Supervisor"
 
-#: recruiting/forms.py:599
+#: recruiting/forms.py:650
 msgid "addWorkerExperienceSupervisorEmail"
 msgstr "Correo electrónico del supervisor"
 
-#: recruiting/forms.py:600
+#: recruiting/forms.py:651
 msgid "addWorkerExperienceVisaType"
 msgstr "Tipo de visa"
 
@@ -601,6 +745,38 @@ msgstr "Semanalmente"
 #: recruiting/models.py:90 recruiting/models.py:103
 msgid "roleWagesMonthly"
 msgstr "Mensual"
+
+#: recruiting/models.py:129
+msgid "roleQualificationNone"
+msgstr "Ninguno"
+
+#: recruiting/models.py:130
+msgid "roleQualificationHighschool/GED"
+msgstr "Escuela secundaria/GED"
+
+#: recruiting/models.py:131
+msgid "roleQualificationAssociates"
+msgstr "Asociados"
+
+#: recruiting/models.py:132
+msgid "roleQualificationBachelors"
+msgstr "Licenciaturas"
+
+#: recruiting/models.py:133
+msgid "roleQualificationMastersOrHigher"
+msgstr "Maestría o superior"
+
+#: recruiting/models.py:134
+msgid "roleQualificationOtherDegree"
+msgstr "Otro grado"
+
+#: recruiting/models.py:185
+msgid "roleHousingInformationEmployerProvided"
+msgstr "Proporcionado por el empleador"
+
+#: recruiting/models.py:186
+msgid "roleHousingInformationRentalOrPublic"
+msgstr "Alquiler o público"
 
 #: recruiting/templates/recruiting/employers/create.html:10
 msgid "createEmployerAddEmployer"
@@ -990,15 +1166,12 @@ msgid "roleDeductionsSubmit"
 msgstr "Entregar"
 
 #: recruiting/templates/recruiting/work_requests/create_employment_location.html:10
-msgid "Add Employment Location"
-msgstr ""
+msgid "roleEmploymentLocationAddEmploymentLocation"
+msgstr "Agregar ubicación de empleo"
 
 #: recruiting/templates/recruiting/work_requests/create_employment_location.html:33
-#: recruiting/templates/recruiting/work_requests/create_housing_info.html:33
-#: recruiting/templates/recruiting/work_requests/create_meal_provision.html:33
-#: recruiting/templates/recruiting/work_requests/create_qualifications.html:33
-msgid "Submit"
-msgstr ""
+msgid "roleEmploymentLocationSubmit"
+msgstr "Entregar"
 
 #: recruiting/templates/recruiting/work_requests/create_hours.html:10
 msgid "roleAddHoursAddWorkHours"
@@ -1009,16 +1182,28 @@ msgid "roleAddHoursSubmit"
 msgstr "Entregar"
 
 #: recruiting/templates/recruiting/work_requests/create_housing_info.html:10
-msgid "Add Housing Information"
-msgstr ""
+msgid "roleHousingInformationAddHousingInformation"
+msgstr "Añadir información de vivienda"
+
+#: recruiting/templates/recruiting/work_requests/create_housing_info.html:33
+msgid "roleHousingInformationSubmit"
+msgstr "Entregar"
 
 #: recruiting/templates/recruiting/work_requests/create_meal_provision.html:10
-msgid "Add Meal Provision Information"
-msgstr ""
+msgid "roleMealProvisionAddMealProvisionInformation"
+msgstr "Agregar información sobre provisión de comidas"
+
+#: recruiting/templates/recruiting/work_requests/create_meal_provision.html:33
+msgid "roleMealProvisionSubmit"
+msgstr "Entregar"
 
 #: recruiting/templates/recruiting/work_requests/create_qualifications.html:10
-msgid "Add Qualification Requirements"
-msgstr ""
+msgid "roleQualificationAddQualificationRequirements"
+msgstr "Agregar requisitos de calificación"
+
+#: recruiting/templates/recruiting/work_requests/create_qualifications.html:33
+msgid "roleQualificationSubmit"
+msgstr "Entregar"
 
 #: recruiting/templates/recruiting/work_requests/create_role.html:10
 msgid "addRoleAddRole"
@@ -1716,16 +1901,16 @@ msgid "roleDeductionsRolesDeductionsSuccessfullyAdded"
 msgstr "Deducciones de roles agregadas exitosamente"
 
 #: recruiting/views/web.py:210
-msgid "Successfully added role location"
-msgstr ""
+msgid "roleEmploymentLocationSuccessfullyAddedRoleLocation"
+msgstr "Ubicación del rol agregada exitosamente"
 
 #: recruiting/views/web.py:222
-msgid "Successfully added role housing information"
-msgstr ""
+msgid "roleHousingInformationSuccessfullyAddedRoleHousingInformation"
+msgstr "Información de alojamiento del rol agregada exitosamente"
 
 #: recruiting/views/web.py:234
-msgid "Successfully added role meals information"
-msgstr ""
+msgid "roleMealProvisionSuccessfullyAddedRoleMealsInformation"
+msgstr "Información sobre comidas de rol agregada exitosamente"
 
 #: recruiting/views/web.py:266
 msgid "messageCreatedSuccessfully"

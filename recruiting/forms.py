@@ -304,6 +304,26 @@ class RoleQualificationForm(forms.ModelForm):
             'repetitive_movements',
             'support_of_other_employees',
             'other_qualifications']
+        
+        labels = {
+            'role': _('roleQualificationRole'),
+            'minimum_education_requirement': _('roleQualificationMinimumEducationRequirement'),
+            'experience_required': _('roleQualificationExperienceRequired'),
+            'number_of_months_experience_required': _('roleQualificationNumberOfMonthsExperienceRequired'),
+            'training_required': _('roleQualificationTrainingRequired'),
+            'number_of_months_training_required': _('roleQualificationNumberOfMonthsTrainingRequired'),
+            'certification_license_requirements': _('roleQualificationCertification/LicenseRequirements'),
+            'drug_screen': _('roleQualificationDrugScreen'),
+            'lifting_requirements': _('roleQualificationLiftingRequirements'),
+            'lifting_requirement_weight': _('roleQualificationLiftingRequirementWeight'),
+            'exposure_to_temperature': _('roleQualificationExposureToTemperature'),
+            'extensive_pushing_or_pulling': _('roleQualificationExtensivePushingOrPulling'),
+            'extensive_sitting_or_walking': _('roleQualificationExtensiveSittingOrWalking'),
+            'frequent_stooping_or_bending_over': _('roleQualificationFrequentStoopingOrBendingOver'),
+            'repetitive_movements': _('roleQualificationRepetitiveMovements'),
+            'support_of_other_employees': _('roleQualificationSupportOfOtherEmployees'),
+            'other_qualifications': _('roleQualificationOtherQualifications'),
+        }
 
         widgets = {
             'role': forms.Select(attrs={
@@ -371,6 +391,17 @@ class RoleEmploymentLocationForm(forms.ModelForm):
             'role', 'address', 'city', 'county', 'state',
             'postal_code', 'additional_info', 'role'
         ]
+        
+        labels = {
+            'role': _('roleEmploymentLocationRole'),
+            'address': _('roleEmploymentLocationAddress'),
+            'city': _('roleEmploymentLocationCity'),
+            'county': _('roleEmploymentLocationCounty'),
+            'state': _('roleEmploymentLocationState'),
+            'postal_code': _('roleEmploymentLocationPostalCode'),
+            'additional_info': _('roleEmploymentLocationAdditionalInfo'),
+        }
+        
         widgets = {
             'role': forms.Select(attrs={
                 'class': 'form-control',
@@ -404,6 +435,18 @@ class RoleHousingInformationForm(forms.ModelForm):
             'role', 'address', 'city', 'county', 'state',
             'postal_code', 'type_of_housing', 'additional_info'
         ]
+        
+        labels = {
+            'role': _('roleHousingInformationRole'),
+            'address': _('roleHousingInformationAddress'),
+            'city': _('roleHousingInformationCity'),
+            'county': _('roleHousingInformationCounty'),
+            'state': _('roleHousingInformationState'),
+            'postal_code': _('roleHousingInformationPostalCode'),
+            'type_of_housing': _('roleHousingInformationTypeOfHousing'),
+            'additional_info': _('roleHousingInformationAdditionalInfo'),
+        }
+        
         widgets = {
             'role': forms.Select(attrs={
                 'class': 'form-control',
@@ -441,6 +484,14 @@ class RoleMealProvision(forms.ModelForm):
             'meal_charge_amount',
             'additional_info',
         ]
+        
+        labels = {
+            'role': _('roleMealProvisionRole'),
+            'will_provide_meals': _('roleMealProvisionWillProvideMeals'),
+            'meal_charge_amount': _('roleMealProvisionMealChargeAmount'),
+            'additional_info': _('roleMealProvisionAdditionalInfo'),
+        }
+        
         widgets = {
             'role': forms.Select(attrs={
                 'class': 'form-control',
