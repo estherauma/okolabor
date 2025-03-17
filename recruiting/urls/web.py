@@ -78,7 +78,7 @@ urlpatterns = [
          name='recruiter_create_worker'
          ),
     # Workers
-    path('workers',
+    path('workers/',
          WorkerListView.as_view(),
          name='workers'),
     path('workers/<pk>',

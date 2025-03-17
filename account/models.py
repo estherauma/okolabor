@@ -146,7 +146,7 @@ class UserWorkExperienceDocuments(AuditableModel):
     kind = models.CharField(max_length=256, null=False, blank=False)
 
     def __str__(self):
-        return f'{self.user.curp} - {self.document_type}'
+        return f'{self.work_experience.user.curp} - {self.kind}'
 
     class Meta:
         db_table = 'account_user_work_experience_documents'
