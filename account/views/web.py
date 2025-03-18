@@ -77,7 +77,7 @@ class UserListView(LoginRequiredMixin, View):
         site_url = f"{request.scheme}://{current_site.domain}"
         invite_link = f"{site_url}{reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})}"
 
-        email_subject = "You're Invited!"
+        email_subject = _("inviteEmailYou'reInvited!")
         email_body = render_to_string(
             'invite_email.html', 
             {
