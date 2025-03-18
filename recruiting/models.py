@@ -228,7 +228,7 @@ class OkoMessage(AuditableModel):
     auto_reply  = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.message}'
+        return f'{self.body[:50]}'
 
 
 class OkoMessageRecipients(AuditableModel):
