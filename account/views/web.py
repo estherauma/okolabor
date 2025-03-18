@@ -17,7 +17,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from django.views import View
 from django.views.generic.edit import FormView
-
+from django.http import JsonResponse
 from account.forms.account_update import UpdateAccountDetailsForm
 from account.forms.filter_logs import UserLogsFilterForm
 from django.utils import timezone
@@ -51,7 +51,7 @@ class UserListView(LoginRequiredMixin, View):
     def post(self, request):
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
-        email = request.POST.get('email')
+        user_email = request.POST.get('email')
         curp = request.POST.get('curp')
 
         if not all([first_name, last_name, email, curp]):
@@ -61,7 +61,7 @@ class UserListView(LoginRequiredMixin, View):
         user = User.objects.create(
             first_name=first_name,
             last_name=last_name,
-            email=email,
+            email=user_email,
             curp=curp,
             is_active=True
         )
@@ -91,11 +91,10 @@ class UserListView(LoginRequiredMixin, View):
             subject=email_subject,
             body=email_body,
             from_email=settings.DEFAULT_FROM_EMAIL,
-            to=[email],
+            to=[user_email.strip()],
         )
         email.content_subtype = 'html'
         email_sent = email.send()
-
         if email_sent:
             messages.success(request, _("inviteEmailInvitationSentSuccessfully!"))
         else:
@@ -125,14 +124,14 @@ class UserActivitLogView(LoginRequiredMixin, View):
         return render(request, 'activity_log.html', context)
 
 class UserAccountView(LoginRequiredMixin, View):
-
     def get(self, request):
         user = request.user
         form = UpdateAccountDetailsForm(initial={
+            'curp': user.curp,
             'first_name': user.first_name,
             'last_name': user.last_name,
             'email': user.email,
-            "language": user.language,
+            'language': user.language,
         })
 
         context = {
@@ -142,23 +141,17 @@ class UserAccountView(LoginRequiredMixin, View):
         return render(request, 'recruiter/user_account.html', context)
 
     def post(self, request):
-        form = UpdateAccountDetailsForm(request.POST)
+        form = UpdateAccountDetailsForm(request.POST, instance=request.user)
         if form.is_valid():
-            user = request.user
-            user.first_name = form.cleaned_data['first_name']
-            user.last_name = form.cleaned_data['last_name']
-            user.email = form.cleaned_data['email']
-            user.language = form.cleaned_data['language']
-            user.save()
+            user = form.save()
             messages.success(request, _('Your account details have been successfully updated!'))
             response = redirect('recruiter_account')
             if hasattr(user, 'language'):
                 response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user.language.lower())
             return response
-
-            return response
         else:
             return render(request, 'recruiter/user_account.html', {'form': form})
+
 
 class UpdatePasswordView(LoginRequiredMixin, FormView):
     template_name = 'recruiter/change_password.html'

@@ -151,104 +151,101 @@
     </div>
    </div>
   </div>
+  
   <div class="card">
-   <div class="card-header">
-    <div class="card-title green-color">
-     {% translate "workerDetailsWorkInformation" %}
+    <div class="card-header">
+     <div class="card-title green-color">
+      {% translate "workerDetailsWorkInformation" %}
+     </div>
     </div>
-   </div>
-   <div class="card-body">
-    <div class="row">
-     <div class="col-6" style="position: relative;">
-      <p class="gray-color">
-       {% translate "workerDetailsEglishProficiency" %}
-      </p>
-      <p style="font-weight: bolder;">
-       {% translate "workerDetailsAdvanced" %}
-      </p>
-      <div style="position: relative; display: inline-block;">
-       <img alt="flag" src="{% static 'assets/images/profile.png' %}" style="width: 150px;"/>
-       <img alt="flag" src="{% static 'assets/record.png' %}" style="width: 40px; position: absolute; top: 0; left: 40px; margin-top: 40px;"/>
+    <div class="card-body">
+     <div class="row">
+      <div class="col-6" style="position: relative;">
+       <p class="gray-color">
+        {% translate "workerDetailsEglishProficiency" %}
+       </p>
+       <p style="font-weight: bolder;">
+        {{ preferences.English_Proficiency|default:"-" }}
+       </p>
+       <div style="position: relative; display: inline-block;">
+        <img alt="flag" src="{% static 'assets/images/profile.png' %}" style="width: 150px;"/>
+        <img alt="flag" src="{% static 'assets/record.png' %}" style="width: 40px; position: absolute; top: 0; left: 40px; margin-top: 40px;"/>
+       </div>
+      </div>
+      <div class="col-6" style="position: relative;">
+       <p class="gray-color">
+        {% translate "workerDetailsPassport" %}
+       </p>
+       <p>
+        {{ preferences.Passport|default:"No" }}
+       </p>
+       <div style="position: relative; display: inline-block;">
+        <img alt="flag" src="{% static 'assets/images/passport1.png' %}" style="width: 150px;"/>
+       </div>
       </div>
      </div>
-     <div class="col-6" style="position: relative;">
+     <br/>
+     <div class="row location" style="margin-top: 10px;">
       <p class="gray-color">
-       {% translate "workerDetailsPassport" %}
+       {% translate "workerDetailsWorkingLocations" %}
       </p>
-      <p>
-       {% translate "workerDetailsYes" %}
+      
+      <div class="row">
+        {% for workplace in workplaces %}
+            <div class="col-md-3 col-sm-6 mb-3">
+                <button class="btn offwhite-button" style="width: 100%;">
+                    {{ workplace }}
+                </button>
+            </div>
+        {% endfor %}
+       </div>
+     </div>
+     <br/>
+     <p class="gray-color">
+      {% translate "workerDetailsPreferredEmployers" %}
+     </p>
+     <div class="row" style="margin-top: 10px;">
+        <div class="row">
+            {% for prefered_employe in Prefered_Employes %}
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <button class="btn offwhite-button" style="width: 100%;">
+                        {{ prefered_employe }}
+                    </button>
+                </div>
+            {% endfor %}
+           </div>
+     </div>
+     <br/>
+     <div>
+      <p class="gray-color">
+       {% translate "workerDetailsMedical/physicalConditions" %}
       </p>
-      <div style="position: relative; display: inline-block;">
-       <img alt="flag" src="{% static 'assets/images/passport1.png' %}" style="width: 150px;"/>
-      </div>
+      {{ preferences.Medical_Physical_Condition|default:"None" }}
+      <p class="gray-color mt-4">
+       {% translate "workerDetailsAnyInjuryOrConditionAggravatedByPhysicalActivity" %}
+      </p>
+      {{ preferences.Any_injuries|default:"None" }}
+      <p class="gray-color mt-4">
+       {% translate "workerDetailsPhoneNumber" %}
+      </p>
+      {{ preferences.Phone_Number|default:"+52 618 123 4567" }}
+      <p class="gray-color mt-4">
+       {% translate "workerDetailsWillingToSpendTimeOnFeet" %}
+      </p>
+      {{ preferences.Willing_to_work|default:"Yes" }}
+      <p class="gray-color mt-4">
+       {% translate "workerDetailsAbleToLift27kg" %}
+      </p>
+      {{ preferences.Able_to_lift_27kg|default:"Yes" }}
+      <p class="gray-color mt-4">
+       {% translate "workerDetailsWillingToWorkInHotAndCold" %}
+      </p>
+      {{ preferences.Willing_to_work_cold_or_heat|default:"Yes" }}
      </div>
     </div>
-    <br/>
-    <div class="row location" style="margin-top: 10px;">
-     <p class="gray-color">
-      {% translate "workerDetailsWorkingLocations" %}
-     </p>
-     <div class="col-4" style="padding-right: 5px;">
-      <button class="btn offwhite-button" style="width: 100%;">
-       {% translate "workerDetailsUtah" %}
-      </button>
-     </div>
-     <div class="col-4" style="padding-left: 2.5px; padding-right: 2.5px;">
-      <button class="btn offwhite-button" style="width: 100%;">
-       {% translate "workerDetailsAnotherLocation" %}
-      </button>
-     </div>
-     <div class="col-4" style="padding-left: 5px;">
-      <button class="btn offwhite-button" style="width: 100%;">
-       {% translate "workerDetailsArizona" %}
-      </button>
-     </div>
-    </div>
-    <br/>
-    <p class="gray-color">
-     {% translate "workerDetailsPreferredEmployers" %}
-    </p>
-    <div class="row" style="margin-top: 10px;">
-     <div class="col-6" style="padding-right: 5px;">
-      <button class="btn offwhite-button" style="width: 100%;">
-       {% translate "workerDetailsUtahFarms" %}
-      </button>
-     </div>
-     <div class="col-6" style="padding-left: 5px;">
-      <button class="btn offwhite-button" style="width: 100%;">
-       {% translate "workerDetailsBob'sFruitFarm" %}
-      </button>
-     </div>
-    </div>
-    <br/>
-    <div>
-     <p class="gray-color">
-      {% translate "workerDetailsMedical/physicalConditions" %}
-     </p>
-     {% translate "workerDetailsNone" %}
-     <p class="gray-color mt-4">
-      {% translate "workerDetailsAnyInjuryOrConditionAggravatedByPhysicalActivity" %}
-     </p>
-     {% translate "workerDetailsNone" %}
-     <p class="gray-color mt-4">
-      {% translate "workerDetailsPhoneNumber" %}
-     </p>
-     +52 618 123 4567
-     <p class="gray-color mt-4">
-      {% translate "workerDetailsWillingToSpendTimeOnFeet" %}
-     </p>
-     {% translate "Yes" %}
-     <p class="gray-color mt-4">
-      {% translate "workerDetailsAbleToLift27kg" %}
-     </p>
-     {% translate "Yes" %}
-     <p class="gray-color mt-4">
-      {% translate "workerDetailsWillingToWorkInHotAndCold" %}
-     </p>
-     {% translate "workerDetailsYes" %}
-    </div>
-   </div>
-  </div>
+ </div>
+ 
+
  </div>
  <!-- COL END -->
 </div>
