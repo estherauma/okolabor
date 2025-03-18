@@ -15,7 +15,7 @@ app_name = 'account'
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='api-register'),
-    path('login', LoginView.as_view(), name='api-login'),
+    path('login/', LoginView.as_view(), name='api-login'),
     re_path(
         r'(?P<user_id>[-\w]+)/preferences/$',
         UserPreferencesUpdateView.as_view(),

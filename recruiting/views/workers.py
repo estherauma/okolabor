@@ -12,6 +12,7 @@ from account.models import User, UserWorkExperience
 from common.views import BaseCreateView
 from recruiting.forms import WorkerCreateForm, WorkExperienceCreateForm
 from theme.forms import AdvancedFilterForm, FilterWorkExperienceForm
+from account.models import UserPreference
 
 
 class WorkerListView(View):
@@ -82,8 +83,31 @@ class WorkerCreateView(CreateView):
 class WorkerDetailsView(View):
     def get(self, request, pk):
         worker = get_object_or_404(User, pk=pk)
-        context = {'worker': worker}
+        preferences = UserPreference.objects.filter(user=worker)
+
+        # Convert preferences into a dictionary for easy template access
+        preference_data = {pref.key: pref.value for pref in preferences}
+
+        workplaces = []
+        if 'workplaces' in preference_data:
+            workplaces = preference_data['workplaces'].split(',')
+        preference_data['workplaces'] = workplaces
+
+        Prefered_Employes = []
+        if 'Prefered_Employes' in preference_data:
+            Prefered_Employes = preference_data['Prefered_Employes'].split(',')
+        preference_data['Prefered_Employes'] = Prefered_Employes
+
+        print(Prefered_Employes,"Prefered_Employes")
+        context = {
+            'worker': worker,
+            'preferences': preference_data,  # Now we have a dictionary for easy access
+            'Prefered_Employes': Prefered_Employes,
+            'workplaces': workplaces
+        }
         return render(request, 'recruiting/workers/detail.html', context)
+
+    
 
 
 class CreateWorkExperienceView(BaseCreateView):
