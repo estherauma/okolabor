@@ -126,6 +126,7 @@ class UserWorkExperience(AuditableModel):
     visa_type = models.CharField(max_length=256, null=True, blank=True)
     company = models.CharField(max_length=256, null=False, blank=False)
     start_date = models.DateField(null=False, blank=False)
+    currently_working = models.BooleanField(default=False)
     end_date = models.DateField(null=True, blank=True)
     work_title = models.CharField(max_length=256, null=True, blank=True)
     supervisor_name = models.CharField(max_length=256, null=True, blank=True)

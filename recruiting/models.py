@@ -46,7 +46,7 @@ class Role(AuditableModel):
     title = models.CharField(max_length=255)
     usdol_case_number = models.CharField(max_length=50)
     number_of_required_workers = models.IntegerField()
-    description = models.TextField(default='No description provided')
+    description = models.TextField()
     work_type = models.CharField(null=True, blank=True, max_length=50)
     work_request = models.ForeignKey(
         WorkRequests, on_delete=models.DO_NOTHING,
@@ -84,10 +84,10 @@ class Wages(AuditableModel):
     wage_type = models.CharField(
         max_length=50,
         choices=[
-            ('Hourly', 'Hourly'),
-            ('Daily', 'Daily'),
-            ('Weekly', 'Weekly'),
-            ('Monthly', 'Monthly')
+            ('Hourly', _('roleWagesHourly')),
+            ('Daily', _('roleWagesDaily')),
+            ('Weekly', _('roleWagesWeekly')),
+            ('Monthly', _('roleWagesMonthly')),
         ]
     )
     piece_rate_offerings = models.DecimalField(
@@ -97,10 +97,10 @@ class Wages(AuditableModel):
     piece_rate_offerings_type = models.CharField(
         max_length=50,
         choices=[
-            ('Hourly', 'Hourly'),
-            ('Daily', 'Daily'),
-            ('Weekly', 'Weekly'),
-            ('Monthly', 'Monthly')
+            ('Hourly', _('roleWagesHourly')),
+            ('Daily', _('roleWagesDaily')),
+            ('Weekly', _('roleWagesWeekly')),
+            ('Monthly', _('roleWagesMonthly')),
         ]
     )
 
@@ -124,13 +124,14 @@ class Qualification(AuditableModel):
     )
     minimum_education_requirement = models.CharField(
         max_length=50,
+        
         choices=[
-            ('None', 'None'),
-            ('Highschool/GED', 'Highschool/GED'),
-            ('Associates', 'Associates'),
-            ('Bachelors', 'Bachelors'),
-            ('Masters or higher', 'Masters or higher'),
-            ('Other degree', 'Other degree')
+            ('None', _('roleQualificationNone')),
+            ('Highschool/GED', _('roleQualificationHighschool/GED')),
+            ('Associates', _('roleQualificationAssociates')),
+            ('Bachelors', _('roleQualificationBachelors')),
+            ('Masters or higher', _('roleQualificationMastersOrHigher')),
+            ('Other degree', _('roleQualificationOtherDegree')),
         ]
     )
     experience_required = models.CharField(max_length=255)
@@ -179,9 +180,10 @@ class HousingInformation(AuditableModel):
     postal_code = models.CharField(max_length=10)
     type_of_housing = models.CharField(
         max_length=50,
+        
         choices=[
-            ('Employer provided', 'Employer provided'),
-            ('Rental or Public', 'Rental or Public')
+            ('Employer provided', _('roleHousingInformationEmployerProvided')),
+            ('Rental or Public', _('roleHousingInformationRentalOrPublic')),
             ]
         )
     additional_info = models.TextField(blank=True, null=True)

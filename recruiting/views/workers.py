@@ -59,10 +59,10 @@ class WorkerCreateView(CreateView):
             worker_group = Group.objects.get(name='worker')
             worker.groups.add(worker_group)
         except Group.DoesNotExist:
-            messages.error(self.request,_("Worker group does not exist. Please create it."))
+            messages.error(self.request,_("workerGroupDoesNotExist.PleaseCreateIt."))
             return super().form_invalid(form)
 
-        messages.success(self.request, _('Worker created successfully.'))
+        messages.success(self.request, _('workerCreatedSuccessfully.'))
         worker.save()
 
         return super(WorkerCreateView, self).form_valid(form)

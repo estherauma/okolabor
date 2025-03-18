@@ -127,7 +127,7 @@ class WorkRequestCreateView(CreateView):
     template_name = 'recruiting/work_requests/create.html'
 
     def form_valid(self, form):
-        messages.success(self.request, _('Job Order created successfully'))
+        messages.success(self.request, _('jobOrderCreatedSuccessfully'))
         return super(WorkRequestCreateView, self).form_valid(form)
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
@@ -165,7 +165,7 @@ class WorkRequestRoleCreateView(CreateView):
         return initial
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
-        messages.success(self.request, _('Role created successfully'))
+        messages.success(self.request, _('addRoleRoleCreatedSuccessfully'))
         return super().form_valid(form)
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
@@ -210,7 +210,7 @@ class RoleHoursCreateView(RoleDataBaseView):
     template_name = 'recruiting/work_requests/create_hours.html'
 
     def form_valid(self, form):
-        messages.success(self.request, _('Role hours successfully added'))
+        messages.success(self.request, _('roleAddHoursRoleHoursSuccessfullyAdded'))
         return super().form_valid(form)
 
 
@@ -220,7 +220,7 @@ class RoleWagesCreateView(RoleDataBaseView):
     template_name = 'recruiting/work_requests/create_wages.html'
 
     def form_valid(self, form):
-        messages.success(self.request, _('Roles wages successfully added'))
+        messages.success(self.request, _('roleWagesRolesWagesSuccessfullyAdded'))
         return super().form_valid(form)
 
 
@@ -230,7 +230,7 @@ class RoleDeductionsCreateView(RoleDataBaseView):
     template_name = 'recruiting/work_requests/create_deductions.html'
 
     def form_valid(self, form):
-        messages.success(self.request, _('Roles deductions successfully added'))
+        messages.success(self.request, _('roleDeductionsRolesDeductionsSuccessfullyAdded'))
         return super().form_valid(form)
 
 
@@ -246,7 +246,7 @@ class RoleEmpLocationCreateView(RoleDataBaseView):
     template_name = 'recruiting/work_requests/create_employment_location.html'
 
     def form_valid(self, form):
-        messages.success(self.request, _('Successfully added role location'))
+        messages.success(self.request, _('roleEmploymentLocationSuccessfullyAddedRoleLocation'))
         return super().form_valid(form)
 
 
@@ -258,7 +258,7 @@ class RoleHousingCreateView(RoleDataBaseView):
     def form_valid(self, form):
         messages.success(
             self.request,
-            _('Successfully added role housing information')
+            _('roleHousingInformationSuccessfullyAddedRoleHousingInformation')
         )
         return super().form_valid(form)
 
@@ -270,7 +270,7 @@ class RoleMealsCreateView(RoleDataBaseView):
 
     def form_valid(self, form):
         messages.success(self.request,
-                         _('Successfully added role meals information'))
+                         _('roleMealProvisionSuccessfullyAddedRoleMealsInformation'))
         return super().form_valid(form)
 
 
@@ -302,7 +302,7 @@ class OkoMessageCreateView(CreateView):
     template_name = 'recruiting/messages/create.html'
 
     def form_valid(self, form):
-        messages.success(self.request, _('Message created successfully'))
+        messages.success(self.request, _('messageCreatedSuccessfully'))
         return super(OkoMessageCreateView, self).form_valid(form)
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:

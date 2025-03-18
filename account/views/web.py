@@ -122,14 +122,14 @@ class UserActivitLogView(LoginRequiredMixin, View):
         return render(request, 'activity_log.html', context)
 
 class UserAccountView(LoginRequiredMixin, View):
-
     def get(self, request):
         user = request.user
         form = UpdateAccountDetailsForm(initial={
+            'curp': user.curp,
             'first_name': user.first_name,
             'last_name': user.last_name,
             'email': user.email,
-            "language": user.language,
+            'language': user.language,
         })
 
         context = {
@@ -139,23 +139,17 @@ class UserAccountView(LoginRequiredMixin, View):
         return render(request, 'recruiter/user_account.html', context)
 
     def post(self, request):
-        form = UpdateAccountDetailsForm(request.POST)
+        form = UpdateAccountDetailsForm(request.POST, instance=request.user)
         if form.is_valid():
-            user = request.user
-            user.first_name = form.cleaned_data['first_name']
-            user.last_name = form.cleaned_data['last_name']
-            user.email = form.cleaned_data['email']
-            user.language = form.cleaned_data['language']
-            user.save()
+            user = form.save()
             messages.success(request, _('Your account details have been successfully updated!'))
             response = redirect('recruiter_account')
             if hasattr(user, 'language'):
                 response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user.language.lower())
             return response
-
-            return response
         else:
             return render(request, 'recruiter/user_account.html', {'form': form})
+
 
 class UpdatePasswordView(LoginRequiredMixin, FormView):
     template_name = 'recruiter/change_password.html'
