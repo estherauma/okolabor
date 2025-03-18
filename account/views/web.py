@@ -66,8 +66,9 @@ class UserListView(LoginRequiredMixin, View):
             is_active=True
         )
 
-        recruiter_group, _ = Group.objects.get_or_create(name='recruiter')
+        recruiter_group, created = Group.objects.get_or_create(name='recruiter')
         user.groups.add(recruiter_group)
+
 
         token = PasswordResetTokenGenerator().make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
@@ -96,9 +97,9 @@ class UserListView(LoginRequiredMixin, View):
         email_sent = email.send()
 
         if email_sent:
-            messages.success(request, _("Invitation sent successfully!"))
+            messages.success(request, _("inviteEmailInvitationSentSuccessfully!"))
         else:
-            messages.error(request, _("Failed to send email."))
+            messages.error(request, _("inviteEmailFailedToSendEmail."))
 
         return redirect('manage_users')
 
