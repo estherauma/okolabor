@@ -126,22 +126,25 @@ class WorkerDetailsView(View):
         workplaces = preference_data.get('workplaces', '').split(',') if 'workplaces' in preference_data else []
         preferred_employees = preference_data.get('Prefered_Employes', '').split(',') if 'Prefered_Employes' in preference_data else []
 
-        # Fetch user documents categorized by `kind`, handling None values
+        # Fetch user documents categorized by `kind`
         documents = UserDocuments.objects.filter(user=worker)
-        document_dict = {
-            doc.kind.lower(): {
+        document_dict = {}
+        for doc in documents:
+            kind = doc.kind.lower() if doc.kind else "other"
+            if kind not in document_dict:
+                document_dict[kind] = []
+            document_dict[kind].append({
                 "path": doc.path,
                 "file_type": doc.file_type,
                 "description": doc.description
-            }
-            for doc in documents if doc.kind
-        }
+            })
+
         context = {
             'worker': worker,
             'preferences': preference_data,
             'workplaces': workplaces,
             'preferred_employees': preferred_employees,
-            'documents': document_dict  # Pass documents to the template
+            'documents': document_dict  # Pass categorized documents
         }
         return render(request, 'recruiting/workers/detail.html', context)
 

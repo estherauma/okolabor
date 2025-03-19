@@ -248,7 +248,7 @@
     <div class="card-body">
         <div class="row">
             {% for key, value in preferences.items %}
-                <div class="col-" style="position: relative;">
+                <div class="col-md-12 col-sm-6 mb-3" style="position: relative;">
                     <p class="gray-color">
                         {% translate key %}
                     </p>
@@ -257,26 +257,43 @@
                             {{ value|default:"-" }}
                         {% endif %}
                     </p>
-                    
+    
                     {% if key == "English Proficiency" %}
-                        <div style="position: relative; display: inline-block;">
-                            <img alt="flag" src="{% static 'assets/images/profile.png' %}" style="width: 150px;"/>
-                            <img alt="flag" src="{% static 'assets/record.png' %}" style="width: 40px; position: absolute; top: 0; left: 40px; margin-top: 40px;"/>
-                        </div>
+                        {% if documents.english_proficiency %}
+                            <div style="position: relative; display: inline-block;">
+                                <video width="150" controls>
+                                    <source src="{{ documents.english_proficiency.path }}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                                <img alt="record" src="{% static 'assets/record.png' %}" 
+                                     style="width: 40px; position: absolute; top: 0; left: 40px; margin-top: 40px;"/>
+                            </div>
+                        {% else %}
+                            <p>No English Proficiency Video Uploaded</p>
+                        {% endif %}
+    
                     {% elif key == "Passport" %}
-                        <div style="position: relative; display: inline-block;">
-                            <img alt="flag" src="{% static 'assets/images/passport1.png' %}" style="width: 150px;"/>
-                        </div>
+                        {% if documents.passport %}
+                            <div style="position: relative; display: inline-block;">
+                                <a href="{{ documents.passport.path }}" target="_blank">
+                                    <img alt="passport" src="{% static 'assets/images/passport1.png' %}" style="width: 150px;"/>
+                                </a>
+                            </div>
+                        {% else %}
+                            <p>No Passport Uploaded</p>
+                        {% endif %}
+    
                     {% elif key == "workplaces" %}
                         <div class="row">
-                        {% for workplace in workplaces %}
-                        <div class="col-md-3 col-sm-12 mb-3">
-                            <button class="btn offwhite-button" style="width: 100%;">
-                                {{ workplace }}
-                            </button>
+                            {% for workplace in workplaces %}
+                                <div class="col-md-3 col-sm-12 mb-3">
+                                    <button class="btn offwhite-button" style="width: 100%;">
+                                        {{ workplace }}
+                                    </button>
+                                </div>
+                            {% endfor %}
                         </div>
-                        {% endfor %}
-                        </div>
+    
                     {% elif key == "Prefered_Employes" %}
                         <div class="row">
                             {% for preferred_employe in preferred_employees %}
@@ -288,11 +305,11 @@
                             {% endfor %}
                         </div>
                     {% endif %}
-
                 </div>
             {% endfor %}
         </div>
     </div>
+    
     
     
  
