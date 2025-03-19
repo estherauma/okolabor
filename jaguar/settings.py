@@ -38,7 +38,7 @@ STATICFILES_DIRS = [
 SECRET_KEY = 'django-insecure-y8*sg83ybb4yg8o8)a@or_5l05)@jm7%ei1@@4(r(d6z-)ds%*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=True, cast=bool)
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = ['*']
 CORS_ORIGIN_ALLOW_ALL = True
@@ -147,6 +147,7 @@ USE_L10N = True
 USE_TZ = True
 
 HTML_MINIFY = True
+
 
 
 
