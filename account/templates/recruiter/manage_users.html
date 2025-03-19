@@ -1,105 +1,74 @@
 {% extends 'components/base.html' %}
+{% load static %}
 {% load i18n %}
 {% block body %}
 <div class="page-header">
- <div>
-  <h1 class="page-title">
-   {% translate "manageUsers" %}
-  </h1>
- </div>
+  <div>
+    <h1 class="page-title">{% translate "manageUsers" %}</h1>
+  </div>
 </div>
 <div class="row">
- <div class="col-md-8">
-  <div class="card">
-   <div class="card-body">
-    <div class="d-flex justify-content-between">
-     <h3 class="card-title green-color fw-bold mb-1">
-      {% translate "existingUsers" %}
-     </h3>
-     <button class="btn btn yellow-button btn-icon ms-auto p-1" data-bs-backdrop="false" data-bs-target="#inviteUserModal" data-bs-toggle="modal">
-      {% translate "manageUsersNewUser" %}
-     </button>
-    </div>
-    <div class="table-responsive">
-     <table class="table text-nowrap border-bottom">
-      <thead>
-       <tr>
-        <th class="theading-color text-start">
-         {% translate "user" %}
-        </th>
-        <th class="theading-color text-start">
-         {% translate "manageUsersEmail" %}
-        </th>
-        <th class="theading-color text-start">
-         {% translate "lastAccessed" %}
-        </th>
-        <th class="theading-color text-start">
-         {% translate "actions" %}
-        </th>
-       </tr>
-      </thead>
-      <tbody>
-       {% for user in users %}
-       <tr class="green-color text-start">
-        <td>
-         {{user.first_name}} {{user.last_name}}
-        </td>
-        <td>
-         {{user.email}}
-        </td>
-        <td>
-         Jan 24, 2024
-        </td>
-        <td>
-         <i class="side-menu__icon icon icon-pencil me-2 cursor-pointer" data-bs-backdrop="false" data-bs-target="#editUserModal" data-bs-toggle="modal">
-         </i>
-         <i class="side-menu__icon fa fa-trash-o cursor-pointer" data-bs-backdrop="false" data-bs-target="#confirmationModal" data-bs-toggle="modal">
-         </i>
-        </td>
-       </tr>
-      </tbody>
-      {% endfor %}
-     </table>
   <div class="col-md-8">
     <div class="card">
       <div class="card-body">
         <div class="d-flex justify-content-between">
-          <h3 class="card-title green-color fw-bold mb-1">{% translate "existingUsers" %}</h3>
-          <button class="btn btn yellow-button btn-icon ms-auto p-1" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#inviteUserModal"> {% translate "newUser" %}
-           
+          <h3 class="card-title green-color fw-bold mb-1">
+            {% translate "existingUsers" %}
+          </h3>
+          <button
+            class="btn btn yellow-button btn-icon ms-auto p-1"
+            data-bs-toggle="modal"
+            data-bs-backdrop="false"
+            data-bs-target="#inviteUserModal"
+          >
+            {% translate "newUser" %}
           </button>
         </div>
         <div class="table-responsive">
           <table class="table text-nowrap border-bottom">
             <thead>
               <tr>
-                <th class="theading-color text-start">{% translate "user" %}</th>
-                <th class="theading-color text-start">{% translate "manageUsersEmail" %}</th>
-                <th class="theading-color text-start">{% translate "lastAccessed" %}</th>
-                <th class="theading-color text-start">{% translate "actions" %}</th>
+                <th class="theading-color text-start">
+                  {% translate "user" %}
+                </th>
+                <th class="theading-color text-start">
+                  {% translate "manageUsersEmail" %}
+                </th>
+                <th class="theading-color text-start">
+                  {% translate "lastAccessed" %}
+                </th>
+                <th class="theading-color text-start">
+                  {% translate "actions" %}
+                </th>
               </tr>
             </thead>
             <tbody>
               {% for user in users %}
               <tr class="green-color text-start">
-                <td>{{user.first_name}} {{user.last_name}}</td>
-                <td>{{user.email}}</td>
+                <td>{{ user.first_name }} {{ user.last_name }}</td>
+                <td>{{ user.email }}</td>
                 <td>Jan 24, 2024</td>
                 <td>
-                  <i class="side-menu__icon icon icon-pencil me-2 cursor-pointer edit-user-btn"
-                  data-bs-toggle="modal"
-                  data-bs-target="#editUserModal"
-                  data-user-id="{{ user.curp }}"  
-                  data-curp="{{ user.curp }}"
-                  data-first-name="{{ user.first_name }}"
-                  data-last-name="{{ user.last_name }}"
-                  data-email="{{ user.email }}"></i>
-
-                  <i class="side-menu__icon fa fa-trash-o cursor-pointer" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#confirmationModal"></i>
+                  <i
+                    class="side-menu__icon icon icon-pencil me-2 cursor-pointer edit-user-btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editUserModal"
+                    data-user-id="{{ user.curp }}"
+                    data-curp="{{ user.curp }}"
+                    data-first-name="{{ user.first_name }}"
+                    data-last-name="{{ user.last_name }}"
+                    data-email="{{ user.email }}"
+                  ></i>
+                  <i
+                    class="side-menu__icon fa fa-trash-o cursor-pointer"
+                    data-bs-toggle="modal"
+                    data-bs-backdrop="false"
+                    data-bs-target="#confirmationModal"
+                  ></i>
                 </td>
               </tr>
+              {% endfor %}
             </tbody>
-            {% endfor %}
           </table>
         </div>
       </div>
@@ -107,32 +76,49 @@
 
     <div class="card">
       <div class="card-body">
-        <h3 class="card-title green-color fw-bold mb-1">{% translate "pendingUsers" %}</h3>
+        <h3 class="card-title green-color fw-bold mb-1">
+          {% translate "pendingUsers" %}
+        </h3>
         <div class="table-responsive">
           <table class="table text-nowrap border-bottom">
             <thead>
               <tr>
-                <th class="theading-color text-start">{% translate "user" %}</th>
-                <th class="theading-color text-start">{% translate "manageUsersEmail" %}</th>
-                <th class="theading-color text-start">{% translate "lastAccessed" %}</th>
-                <th class="theading-color text-start">{% translate "actions" %}</th>
+                <th class="theading-color text-start">
+                  {% translate "user" %}
+                </th>
+                <th class="theading-color text-start">
+                  {% translate "manageUsersEmail" %}
+                </th>
+                <th class="theading-color text-start">
+                  {% translate "lastAccessed" %}
+                </th>
+                <th class="theading-color text-start">
+                  {% translate "actions" %}
+                </th>
               </tr>
             </thead>
             <tbody>
               {% for user in pending_users %}
               <tr class="green-color text-start">
-                <td>{{user.first_name}} {{user.last_name}}</td>
-                <td>{{user.email}}</td>
+                <td>{{ user.first_name }} {{ user.last_name }}</td>
+                <td>{{ user.email }}</td>
                 <td>Jan 24, 2024</td>
                 <td>
-                  <i class="side-menu__icon icon icon-pencil me-2 cursor-pointer edit-user-btn"
+                  <i
+                    class="side-menu__icon icon icon-pencil me-2 cursor-pointer edit-user-btn"
                     data-bs-toggle="modal"
                     data-bs-target="#editUserModal"
-                    data-curp="{{ user.curp }}"  
+                    data-curp="{{ user.curp }}"
                     data-first-name="{{ user.first_name }}"
                     data-last-name="{{ user.last_name }}"
-                    data-email="{{ user.email }}"></i>
-                  <i class="side-menu__icon fa fa-trash-o cursor-pointer" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#confirmationModal"></i>
+                    data-email="{{ user.email }}"
+                  ></i>
+                  <i
+                    class="side-menu__icon fa fa-trash-o cursor-pointer"
+                    data-bs-toggle="modal"
+                    data-bs-backdrop="false"
+                    data-bs-target="#confirmationModal"
+                  ></i>
                 </td>
               </tr>
               {% endfor %}
@@ -142,63 +128,11 @@
       </div>
     </div>
   </div>
-  <div class="card">
-   <div class="card-body">
-    <h3 class="card-title green-color fw-bold mb-1">
-     {% translate "pendingUsers" %}
-    </h3>
-    <div class="table-responsive">
-     <table class="table text-nowrap border-bottom">
-      <thead>
-       <tr>
-        <th class="theading-color text-start">
-         {% translate "user" %}
-        </th>
-        <th class="theading-color text-start">
-         {% translate "manageUsersEmail" %}
-        </th>
-        <th class="theading-color text-start">
-         {% translate "lastAccessed" %}
-        </th>
-        <th class="theading-color text-start">
-         {% translate "actions" %}
-        </th>
-       </tr>
-      </thead>
-      <tbody>
-       {% for user in pending_users %}
-       <tr class="green-color text-start">
-        <td>
-         {{user.first_name}} {{user.last_name}}
-        </td>
-        <td>
-         {{user.email}}
-        </td>
-        <td>
-         Jan 24, 2024
-        </td>
-        <td>
-         <i class="side-menu__icon icon icon-pencil me-2 cursor-pointer" data-bs-backdrop="false" data-bs-target="#editUserModal" data-bs-toggle="modal">
-         </i>
-         <i class="side-menu__icon fa fa-trash-o cursor-pointer" data-bs-backdrop="false" data-bs-target="#confirmationModal" data-bs-toggle="modal">
-         </i>
-        </td>
-       </tr>
-       {% endfor %}
-      </tbody>
-     </table>
-    </div>
-   </div>
-  </div>
- </div>
- <!-- COL END -->
-  <!-- COL END -->
 </div>
-
 
 <!-- Add User Modal -->
 {% include 'components/modals/add_user_modal.html' %}
 {% include 'components/modals/edit_user_modal.html' %}
 {% include 'components/modals/confirmation_modal.html' %}
-{% endblock body %}
+{% endblock %}
 

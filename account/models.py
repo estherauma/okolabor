@@ -86,6 +86,9 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
 
     def __str__(self):
         return f'{self.email} {self.last_name}'
+    
+    def get_full_name(self):
+        return f"{self.first_name} {self.middle_name} {self.last_name}".strip()
 
 
 class LoginEvent(BaseModel):
@@ -123,6 +126,7 @@ class UserWorkExperience(AuditableModel):
     visa_type = models.CharField(max_length=256, null=True, blank=True)
     company = models.CharField(max_length=256, null=False, blank=False)
     start_date = models.DateField(null=False, blank=False)
+    currently_working = models.BooleanField(default=False)
     end_date = models.DateField(null=True, blank=True)
     work_title = models.CharField(max_length=256, null=True, blank=True)
     supervisor_name = models.CharField(max_length=256, null=True, blank=True)
@@ -146,7 +150,7 @@ class UserWorkExperienceDocuments(AuditableModel):
     kind = models.CharField(max_length=256, null=False, blank=False)
 
     def __str__(self):
-        return f'{self.user.curp} - {self.document_type}'
+        return f'{self.work_experience.user.curp} - {self.kind}'
 
     class Meta:
         db_table = 'account_user_work_experience_documents'
