@@ -158,7 +158,7 @@
       {% translate "workerDetailsWorkInformation" %}
      </div>
     </div>
-    <div class="card-body">
+    <!-- <div class="card-body">
      <div class="row">
       <div class="col-6" style="position: relative;">
        <p class="gray-color">
@@ -242,8 +242,59 @@
       </p>
       {{ preferences.Willing_to_work_cold_or_heat|default:"Yes" }}
      </div>
+    </div> -->
+
+
+    <div class="card-body">
+        <div class="row">
+            {% for key, value in preferences.items %}
+                <div class="col-" style="position: relative;">
+                    <p class="gray-color">
+                        {% translate key %}
+                    </p>
+                    <p>
+                        {% if key != "workplaces" and key != "Prefered_Employes" %}
+                            {{ value|default:"-" }}
+                        {% endif %}
+                    </p>
+                    
+                    {% if key == "English Proficiency" %}
+                        <div style="position: relative; display: inline-block;">
+                            <img alt="flag" src="{% static 'assets/images/profile.png' %}" style="width: 150px;"/>
+                            <img alt="flag" src="{% static 'assets/record.png' %}" style="width: 40px; position: absolute; top: 0; left: 40px; margin-top: 40px;"/>
+                        </div>
+                    {% elif key == "Passport" %}
+                        <div style="position: relative; display: inline-block;">
+                            <img alt="flag" src="{% static 'assets/images/passport1.png' %}" style="width: 150px;"/>
+                        </div>
+                    {% elif key == "workplaces" %}
+                        <div class="row">
+                        {% for workplace in workplaces %}
+                        <div class="col-md-3 col-sm-12 mb-3">
+                            <button class="btn offwhite-button" style="width: 100%;">
+                                {{ workplace }}
+                            </button>
+                        </div>
+                        {% endfor %}
+                        </div>
+                    {% elif key == "Prefered_Employes" %}
+                        <div class="row">
+                            {% for preferred_employe in preferred_employees %}
+                                <div class="col-md-3 col-sm-6 mb-3">
+                                    <button class="btn offwhite-button" style="width: 100%;">
+                                        {{ preferred_employe }}
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                </div>
+            {% endfor %}
+        </div>
     </div>
- </div>
+    
+    
  
 
  </div>

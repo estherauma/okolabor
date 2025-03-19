@@ -12,15 +12,22 @@ from account.models import User, UserWorkExperience
 from common.views import BaseCreateView
 from recruiting.forms import WorkerCreateForm, WorkExperienceCreateForm
 from theme.forms import AdvancedFilterForm, FilterWorkExperienceForm
-from account.models import UserPreference
+from account.models import UserPreference,UserDocuments
+
 
 
 class WorkerListView(View):
     def get(self, request):
         form = FilterWorkExperienceForm()
         filter_form = AdvancedFilterForm()
-        search_query = request.GET.get('search')
+        search_query = request.GET.get('search', '')
         page_number = request.GET.get('page', 1)
+        per_page = request.GET.get('per_page', 4)  # Default to 4 per page if not provided
+
+        try:
+            per_page = int(per_page)  # Convert per_page to an integer
+        except ValueError:
+            per_page = 4  # Fallback to default if conversion fails
 
         if search_query:
             workers = User.objects.filter(
@@ -30,11 +37,10 @@ class WorkerListView(View):
         else:
             workers = User.objects.filter(groups__name='worker').order_by('-created_at')
 
-        paginator = Paginator(workers,4)  # Show 10 workers per page
+        paginator = Paginator(workers, per_page)
         page_obj = paginator.get_page(page_number)
 
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            # Return JSON response for AJAX requests
             workers_data = [{'id': worker.id, 'firstname': worker.first_name, 'lastname': worker.last_name, 'email': worker.email} for worker in page_obj]
             return JsonResponse({'workers': workers_data, 'num_pages': paginator.num_pages})
 
@@ -43,7 +49,8 @@ class WorkerListView(View):
             'form': form,
             'filter_form': filter_form,
             'search_query': search_query,
-            'paginator': paginator
+            'paginator': paginator,
+            'per_page': per_page  # Pass per_page to template for reference
         }
         return render(request, 'recruiting/workers/list.html', context)
 
@@ -80,32 +87,64 @@ class WorkerCreateView(CreateView):
         )
 
 
+# class WorkerDetailsView(View):
+#     def get(self, request, pk):
+#         worker = get_object_or_404(User, pk=pk)
+#         preferences = UserPreference.objects.filter(user=worker)
+
+#         # Convert preferences into a dictionary for easy template access
+#         preference_data = {pref.key: pref.value for pref in preferences}
+
+#         workplaces = []
+#         if 'workplaces' in preference_data:
+#             workplaces = preference_data['workplaces'].split(',')
+#         preference_data['workplaces'] = workplaces
+
+#         Prefered_Employes = []
+#         if 'Prefered_Employes' in preference_data:
+#             Prefered_Employes = preference_data['Prefered_Employes'].split(',')
+#         preference_data['Prefered_Employes'] = Prefered_Employes
+
+#         print(Prefered_Employes,"Prefered_Employes")
+#         context = {
+#             'worker': worker,
+#             'preferences': preference_data,  # Now we have a dictionary for easy access
+#             'Prefered_Employes': Prefered_Employes,
+#             'workplaces': workplaces
+#         }
+#         return render(request, 'recruiting/workers/detail.html', context)
+
 class WorkerDetailsView(View):
     def get(self, request, pk):
         worker = get_object_or_404(User, pk=pk)
         preferences = UserPreference.objects.filter(user=worker)
 
-        # Convert preferences into a dictionary for easy template access
+        # Convert preferences into a dictionary
         preference_data = {pref.key: pref.value for pref in preferences}
 
-        workplaces = []
-        if 'workplaces' in preference_data:
-            workplaces = preference_data['workplaces'].split(',')
-        preference_data['workplaces'] = workplaces
+        # Process specific preferences
+        workplaces = preference_data.get('workplaces', '').split(',') if 'workplaces' in preference_data else []
+        preferred_employees = preference_data.get('Prefered_Employes', '').split(',') if 'Prefered_Employes' in preference_data else []
 
-        Prefered_Employes = []
-        if 'Prefered_Employes' in preference_data:
-            Prefered_Employes = preference_data['Prefered_Employes'].split(',')
-        preference_data['Prefered_Employes'] = Prefered_Employes
-
-        print(Prefered_Employes,"Prefered_Employes")
+        # Fetch user documents categorized by `kind`, handling None values
+        documents = UserDocuments.objects.filter(user=worker)
+        document_dict = {
+            doc.kind.lower(): {
+                "path": doc.path,
+                "file_type": doc.file_type,
+                "description": doc.description
+            }
+            for doc in documents if doc.kind
+        }
         context = {
             'worker': worker,
-            'preferences': preference_data,  # Now we have a dictionary for easy access
-            'Prefered_Employes': Prefered_Employes,
-            'workplaces': workplaces
+            'preferences': preference_data,
+            'workplaces': workplaces,
+            'preferred_employees': preferred_employees,
+            'documents': document_dict  # Pass documents to the template
         }
         return render(request, 'recruiting/workers/detail.html', context)
+
 
     
 
