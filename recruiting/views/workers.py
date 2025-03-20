@@ -8,7 +8,7 @@ from django.utils.translation import gettext as _
 from django.views import View
 from django.views.generic import CreateView
 from django.db.models import Q
-from account.models import User, UserWorkExperience
+from account.models import User, UserWorkExperience, UserJobExperience,UserJobExperienceDetails
 from common.views import BaseCreateView
 from recruiting.forms import WorkerCreateForm, WorkExperienceCreateForm
 from theme.forms import AdvancedFilterForm, FilterWorkExperienceForm
@@ -83,8 +83,8 @@ class WorkerCreateView(CreateView):
 class WorkerDetailsView(View):
     def get(self, request, pk):
         worker = get_object_or_404(User, pk=pk)
+        work_experience = UserWorkExperience.objects.filter(user=worker).first()
         preferences = UserPreference.objects.filter(user=worker)
-
         # Convert preferences into a dictionary for easy template access
         preference_data = {pref.key: pref.value for pref in preferences}
 
@@ -98,12 +98,22 @@ class WorkerDetailsView(View):
             Prefered_Employes = preference_data['Prefered_Employes'].split(',')
         preference_data['Prefered_Employes'] = Prefered_Employes
 
-        print(Prefered_Employes,"Prefered_Employes")
+        if not work_experience:
+            work_experience = None
+            job_experiences = []
+            job_experience_details = []
+        else:
+            # Fetch job experiences linked to this work experience
+            job_experiences = UserJobExperience.objects.filter(work_experience=work_experience)
+            
+            # Fetch job experience details related to the fetched job experiences
+            job_experience_details = UserJobExperienceDetails.objects.filter(job_experience__in=job_experiences)
         context = {
             'worker': worker,
             'preferences': preference_data,  # Now we have a dictionary for easy access
             'Prefered_Employes': Prefered_Employes,
-            'workplaces': workplaces
+            'workplaces': workplaces,
+            'job_experiences': job_experiences
         }
         return render(request, 'recruiting/workers/detail.html', context)
 
@@ -128,7 +138,10 @@ class CreateWorkExperienceView(BaseCreateView):
 class WorkExperienceDetailsView(View):
     def get(self, request, pk):
         work_experience = get_object_or_404(UserWorkExperience, pk=pk)
-        context = {'work_experience': work_experience}
-        print(context,"context")
+        job_experiences = UserJobExperience.objects.filter(work_experience=work_experience)
+        job_experience_details = UserJobExperienceDetails.objects.filter(job_experience__in=job_experiences)
+        context = {'work_experience': work_experience,
+                   'job_experiences': job_experiences,
+            'job_experience_details': job_experience_details}
         return render(request, 
             'recruiting/workers/work_experience_detail.html', context)

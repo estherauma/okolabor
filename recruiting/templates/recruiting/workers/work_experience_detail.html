@@ -10,26 +10,21 @@
     <div class="flex justify-between items-center border-b pb-4 mb-6">
         <h1 class="text-3xl font-bold text-gray-900">{% translate "workExperienceDetailsWorkExperienceDetails" %}</h1>
     </div>
-
-    <!-- workExperienceDetails -->
+    <!-- Work Experience Details -->
     <div class="bg-gray-50 p-6 rounded-lg shadow-inner">
         <!-- User Name -->
         <div class="flex items-center gap-3 mb-6">
             <div class="flex items-center justify-center w-12 h-12 bg-blue-100 text-blue-600 rounded-full text-2xl font-bold">
                 👤 <strong>{{ work_experience.user.get_full_name }}</strong>
-            </div>            
-            
-            <!-- <span class="text-xl font-semibold text-gray-800">{{ work_experience.user.get_full_name }}</span> -->
+            </div>
         </div>
-
         <!-- Work Info Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Country -->
             <div class="flex items-center gap-3 bg-white p-4 shadow-sm rounded-lg">
                 <span class="text-2xl">📍</span>
-                <span class="text-lg font-medium text-gray-700">{{ work_experience.country }}</span>
+                <span class="text-lg font-medium text-gray-700">{{ work_experience.country|default:"No Country" }}</span>
             </div>
-
             <!-- Work Period -->
             <div class="flex items-center gap-3 bg-white p-4 shadow-sm rounded-lg">
                 <span class="text-2xl">📅</span>
@@ -43,34 +38,54 @@
                 </span>
             </div>
         </div>
-
-
-        <!-- Job Details -->
+        <!-- Job Experiences -->
         <div class="border-t mt-6 pt-4">
-            <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "workExperienceDetailsjobDetails" %}</h2>
-            <p class="text-gray-700 text-lg flex items-center gap-2">
-                🚜 <span>{{ work_experience.job_title }}</span>
-            </p>
-        </div>
+            <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "jobDetails" %}</h2>
+            {% for job in job_experiences %}
+                <div class="p-4 border rounded-lg bg-white shadow-sm mb-4">
+                    <p class="text-gray-700 text-lg flex items-center gap-2">
+                        🏢 Company - <span>{{ job.work_experience.company|default:"No Company" }}</span>
+                    </p>
+                    <p class="text-gray-700 text-lg flex items-center gap-2">
+                        🚜 JobType - <span>{{ job.job_type|default:"No Job Type" }}</span>
+                    </p>
+                    <p class="text-gray-700 text-lg flex items-center gap-2">
+                        📋 typeDetails - <span>{{ job.type_details|default:"No Type Details" }}</span>
+                    </p>
+                </div>
+            {% endfor %}
 
-        <!-- supervisorDetails -->
+        </div>
+        <!-- Job Experience Details -->
+        <div class="border-t mt-6 pt-4">
+            <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "Preferences" %}</h2>
+            {% for detail in job_experience_details %}
+                <div class="p-4 border rounded-lg bg-white shadow-sm mb-4">
+                    <p class="text-gray-700 text-lg flex items-center gap-2">
+                        📌 <strong>{{ detail.kind }}</strong>: {{ detail.value|default:"No Value" }}
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+        <!-- Supervisor Details -->
         <div class="border-t mt-6 pt-4">
             <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "workExperienceDetailsSupervisorDetails" %}</h2>
             <div class="space-y-2 text-lg text-gray-700">
-                <p>📛 <strong>{{ work_experience.supervisor_name }}</strong></p>
-                <p>📞 <a href="tel:{{ work_experience.supervisor_tel }}" class="text-blue-600 hover:underline">{{ work_experience.supervisor_tel }}</a></p>
-                <p>📧 <a href="mailto:{{ work_experience.supervisor_email }}" class="text-blue-600 hover:underline">{{ work_experience.supervisor_email }}</a></p>
+                <p>📛 <strong>{{ work_experience.supervisor_name|default:"No Supervisor Name" }}</strong></p>
+                <p>📞 <a href="tel:{{ work_experience.supervisor_tel|default:"#" }}" class="text-blue-600 hover:underline">{{ work_experience.supervisor_tel|default:"No Supervisor Tel" }}</a></p>
+                <p>📧 <a href="mailto:{{ work_experience.supervisor_email|default:"#" }}" class="text-blue-600 hover:underline">{{ work_experience.supervisor_email|default:"No Supervisor Email" }}</a></p>
             </div>
         </div>
-
         <!-- Visa & Work Details -->
         <div class="border-t mt-6 pt-4">
             <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "workExperienceDetailsWorkAuthorization" %}</h2>
             <div class="text-lg text-gray-700 space-y-1">
-                <p>🛂 <strong>{% translate "workExperienceDetailsVisaType:"%}</strong> {{ work_experience.visa_type }}</p>
-                <p>🇺🇸 <strong>{% translate "workExperienceDetailsH2AWork:"%}</strong> {{ work_experience.work_under_h2a_in_usa }}</p>
+                <p>🛂 <strong>visaType:</strong> {{ work_experience.visa_type|default:"No Visa Type" }}</p>
+                <p>🇺🇸 <strong>h2AWork:</strong> {{ work_experience.work_under_h2a_in_usa|default:"No H2A Work Info" }}</p>
+
             </div>
         </div>
     </div>
 </div>
+
 {% endblock %}
