@@ -55,7 +55,7 @@ class UserListView(LoginRequiredMixin, View):
         curp = request.POST.get('curp')
 
         if not all([first_name, last_name, user_email, curp]):
-            messages.error(request, _("All fields are required."))
+            messages.error(request, _("addUserAllFieldsAreRequired."))
             return redirect('manage_users')
 
         user = User.objects.create(
@@ -66,8 +66,9 @@ class UserListView(LoginRequiredMixin, View):
             is_active=True
         )
 
-        recruiter_group, _ = Group.objects.get_or_create(name='recruiter')
+        recruiter_group, created = Group.objects.get_or_create(name='recruiter')
         user.groups.add(recruiter_group)
+
 
         token = PasswordResetTokenGenerator().make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
@@ -76,7 +77,7 @@ class UserListView(LoginRequiredMixin, View):
         site_url = f"{request.scheme}://{current_site.domain}"
         invite_link = f"{site_url}{reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})}"
 
-        email_subject = "You're Invited!"
+        email_subject = _("inviteEmailYou'reInvited!")
         email_body = render_to_string(
             'invite_email.html', 
             {
@@ -95,9 +96,10 @@ class UserListView(LoginRequiredMixin, View):
         email.content_subtype = 'html'
         email_sent = email.send()
         if email_sent:
-            return JsonResponse({"success": True, "message": "Invitation sent successfully!"})
+            messages.success(request, _("inviteEmailInvitationSentSuccessfully!"))
         else:
-            return JsonResponse({"success": False, "message": "Failed to send email."})
+            messages.error(request, _("inviteEmailFailedToSendEmail."))
+
         return redirect('manage_users')
 
 class UserActivitLogView(LoginRequiredMixin, View):
