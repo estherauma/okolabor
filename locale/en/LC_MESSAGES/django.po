@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-18 13:15+0300\n"
+"POT-Creation-Date: 2025-03-19 12:38+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: account/forms/account_update.py:10 recruiting/forms.py:605
+#: account/forms/account_update.py:11 recruiting/forms.py:605
 msgid "curp"
 msgstr "CURP "
 
-#: account/forms/account_update.py:11 recruiting/forms.py:606
+#: account/forms/account_update.py:12 recruiting/forms.py:606
 msgid "firstName"
 msgstr "First Name "
 
-#: account/forms/account_update.py:12 recruiting/forms.py:607
+#: account/forms/account_update.py:13 recruiting/forms.py:607
 msgid "lastName"
 msgstr "Last Name "
 
-#: account/forms/account_update.py:13 recruiting/forms.py:604
+#: account/forms/account_update.py:14 recruiting/forms.py:604
 msgid "email"
 msgstr "Email"
 
@@ -98,7 +98,8 @@ msgstr "You have been invited to join our platform as a recruiter."
 
 #: account/templates/invite_email.html:24
 msgid "inviteEmailClickTheLinkBelowToAcceptYourInvitationAndUpdateYourPassword:"
-msgstr "Click the link below to accept your invitation and update your password:"
+msgstr ""
+"Click the link below to accept your invitation and update your password:"
 
 #: account/templates/invite_email.html:28
 msgid "inviteEmailUpdateYourPassword"
@@ -128,6 +129,11 @@ msgstr "Filter by date"
 msgid "notificationsNew"
 msgstr "New"
 
+#: account/templates/notifications.html:38
+#, fuzzy
+#| msgid "seeMore"
+msgid "See More"
+msgstr "See More"
 
 #: account/templates/notifications.html:57
 msgid "notificationsCategory"
@@ -152,6 +158,27 @@ msgstr "Close"
 #: account/templates/notifications.html:83
 msgid "notificationsNoNotificationsAvailable."
 msgstr "No notifications available."
+
+#: account/templates/recruiter/change_password.html:8
+msgid "changePasswordMyAccount"
+msgstr ""
+
+#: account/templates/recruiter/change_password.html:17
+#, fuzzy
+#| msgid "inviteEmailUpdateYourPassword"
+msgid "updatePassword"
+msgstr "Update your password"
+
+#: account/templates/recruiter/change_password.html:24
+msgid "changePasswordSaveChanges"
+msgstr ""
+
+#: account/templates/recruiter/manage_users.html:7
+#: theme/templates/components/layouts/vertical/app-sidebar.html:69
+#, fuzzy
+#| msgid "manageUsersEmail"
+msgid "manageUsers"
+msgstr "Email"
 
 #: account/templates/recruiter/manage_users.html:16
 msgid "existingUsers"
@@ -235,23 +262,23 @@ msgstr "All fields are required."
 msgid "inviteEmailYou'reInvited!"
 msgstr "You're Invited!"
 
-#: account/views/web.py:100
+#: account/views/web.py:99
 msgid "inviteEmailInvitationSentSuccessfully!"
 msgstr "Invitation email sent successfully"
 
-#: account/views/web.py:102
+#: account/views/web.py:101
 msgid "inviteEmailFailedToSendEmail."
 msgstr "Failed to send email."
 
-#: account/views/web.py:153
+#: account/views/web.py:147
 msgid "Your account details have been successfully updated!"
 msgstr ""
 
-#: account/views/web.py:184
+#: account/views/web.py:177
 msgid "Your password has been successfully updated!"
 msgstr ""
 
-#: account/views/web.py:189
+#: account/views/web.py:182
 msgid "Please correct the errors below."
 msgstr ""
 
@@ -708,10 +735,6 @@ msgstr "Open"
 msgid "createWorkRequestClosed"
 msgstr "Closed"
 
-#: recruiting/models.py:49
-msgid "addRoleNoDescriptionProvided"
-msgstr "No description provided"
-
 #: recruiting/models.py:87 recruiting/models.py:100
 msgid "roleWagesHourly"
 msgstr "Hourly"
@@ -1060,16 +1083,16 @@ msgid "createMessageSendMessage"
 msgstr "Send Message"
 
 #: recruiting/templates/recruiting/messages/details.html:14
-msgid "Body:"
-msgstr ""
+msgid "messageDetailsBody:"
+msgstr "Body"
 
 #: recruiting/templates/recruiting/messages/details.html:20
-msgid "Sent at:"
-msgstr ""
+msgid "messageDetailsSentAt:"
+msgstr "Sent at:"
 
 #: recruiting/templates/recruiting/messages/details.html:28
-msgid "Back"
-msgstr ""
+msgid "messageDetailsBack"
+msgstr "Back"
 
 #: recruiting/templates/recruiting/messages/list.html:9
 msgid "myMessages"
@@ -1623,7 +1646,7 @@ msgid "workerDetailsEmail"
 msgstr "Email"
 
 #: recruiting/templates/recruiting/workers/detail.html:82
-#: recruiting/templates/recruiting/workers/detail.html:234
+#: recruiting/templates/recruiting/workers/detail.html:229
 msgid "workerDetailsPhoneNumber"
 msgstr "Phone Number"
 
@@ -1653,82 +1676,43 @@ msgstr "Worker status"
 msgid "workerDetailsAvailable"
 msgstr "Available"
 
-#: recruiting/templates/recruiting/workers/detail.html:157
+#: recruiting/templates/recruiting/workers/detail.html:158
 msgid "workerDetailsWorkInformation"
 msgstr "Work Information"
 
-#: recruiting/templates/recruiting/workers/detail.html:164
+#: recruiting/templates/recruiting/workers/detail.html:165
 msgid "workerDetailsEglishProficiency"
 msgstr "Eglish Proficiency"
 
-#: recruiting/templates/recruiting/workers/detail.html:167
-msgid "workerDetailsAdvanced"
-msgstr "Advanced"
-
-#: recruiting/templates/recruiting/workers/detail.html:176
+#: recruiting/templates/recruiting/workers/detail.html:177
 msgid "workerDetailsPassport"
 msgstr "Passport"
 
-#: recruiting/templates/recruiting/workers/detail.html:179
-#: recruiting/templates/recruiting/workers/detail.html:248
-msgid "workerDetailsYes"
-msgstr "Yes"
-
-#: recruiting/templates/recruiting/workers/detail.html:189
+#: recruiting/templates/recruiting/workers/detail.html:190
 msgid "workerDetailsWorkingLocations"
 msgstr "Working Locations"
 
-#: recruiting/templates/recruiting/workers/detail.html:193
-msgid "workerDetailsUtah"
-msgstr "Utah"
-
-#: recruiting/templates/recruiting/workers/detail.html:198
-msgid "workerDetailsAnotherLocation"
-msgstr "Another Location"
-
-#: recruiting/templates/recruiting/workers/detail.html:203
-msgid "workerDetailsArizona"
-msgstr "Arizona"
-
-#: recruiting/templates/recruiting/workers/detail.html:209
+#: recruiting/templates/recruiting/workers/detail.html:205
 msgid "workerDetailsPreferredEmployers"
 msgstr "Preferred Employers"
 
-#: recruiting/templates/recruiting/workers/detail.html:214
-msgid "workerDetailsUtahFarms"
-msgstr "Utah Farms"
-
-#: recruiting/templates/recruiting/workers/detail.html:219
-msgid "workerDetailsBob'sFruitFarm"
-msgstr "Bob's Fruit Farm"
-
-#: recruiting/templates/recruiting/workers/detail.html:226
+#: recruiting/templates/recruiting/workers/detail.html:221
 msgid "workerDetailsMedical/physicalConditions"
 msgstr "Medical/physical conditions"
 
-#: recruiting/templates/recruiting/workers/detail.html:228
-#: recruiting/templates/recruiting/workers/detail.html:232
-msgid "workerDetailsNone"
-msgstr "None"
-
-#: recruiting/templates/recruiting/workers/detail.html:230
+#: recruiting/templates/recruiting/workers/detail.html:225
 msgid "workerDetailsAnyInjuryOrConditionAggravatedByPhysicalActivity"
 msgstr "Any injury or condition aggravated by physical activity"
 
-#: recruiting/templates/recruiting/workers/detail.html:238
+#: recruiting/templates/recruiting/workers/detail.html:233
 msgid "workerDetailsWillingToSpendTimeOnFeet"
 msgstr "Willing to spend time on feet?"
 
-#: recruiting/templates/recruiting/workers/detail.html:240
-#: recruiting/templates/recruiting/workers/detail.html:244
-msgid "Yes"
-msgstr ""
-
-#: recruiting/templates/recruiting/workers/detail.html:242
+#: recruiting/templates/recruiting/workers/detail.html:237
 msgid "workerDetailsAbleToLift27kg"
 msgstr "Able to lift 27kg?"
 
-#: recruiting/templates/recruiting/workers/detail.html:246
+#: recruiting/templates/recruiting/workers/detail.html:241
 msgid "workerDetailsWillingToWorkInHotAndCold"
 msgstr "Willing to work in hot and cold?"
 
@@ -1857,71 +1841,85 @@ msgstr "Add Worker Experience"
 msgid "addWorkerExperienceSubmit"
 msgstr "Submit"
 
-#: recruiting/templates/recruiting/workers/work_experience_detail.html:10
-msgid "workExperienceDetails"
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:4
+msgid "workExperienceDetailsWorkExperience"
+msgstr "Work Experience"
+
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:11
+msgid "workExperienceDetailsWorkExperienceDetails"
 msgstr "Work Experience Details"
 
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:41
+msgid "workExperienceDetailsPresent"
+msgstr "Present"
 
-#: recruiting/templates/recruiting/workers/work_experience_detail.html:48
-msgid "jobDetails"
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:50
+msgid "workExperienceDetailsjobDetails"
 msgstr "Job Details"
 
-#: recruiting/templates/recruiting/workers/work_experience_detail.html:56
-msgid "supervisorDetails"
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:58
+msgid "workExperienceDetailsSupervisorDetails"
 msgstr "Supervisor Details"
 
-#: recruiting/templates/recruiting/workers/work_experience_detail.html:66
-msgid "workAuthorization"
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:68
+msgid "workExperienceDetailsWorkAuthorization"
 msgstr "Work Authorization"
+
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:70
+msgid "workExperienceDetailsVisaType:"
+msgstr "Visa Type:"
+
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:71
+msgid "workExperienceDetailsH2AWork:"
+msgstr "H2A Work:"
 
 #: recruiting/views/web.py:94
 msgid "Employer created successfully"
 msgstr ""
 
-
-#: recruiting/views/web.py:91
+#: recruiting/views/web.py:130
 msgid "jobOrderCreatedSuccessfully"
 msgstr "Job order created successfully"
 
-#: recruiting/views/web.py:129
+#: recruiting/views/web.py:168
 msgid "addRoleRoleCreatedSuccessfully"
 msgstr "Role created successfully"
 
-#: recruiting/views/web.py:174
+#: recruiting/views/web.py:213
 msgid "roleAddHoursRoleHoursSuccessfullyAdded"
 msgstr "Role hours successfully added"
 
-#: recruiting/views/web.py:184
+#: recruiting/views/web.py:223
 msgid "roleWagesRolesWagesSuccessfullyAdded"
 msgstr "Role wages successfully added"
 
-#: recruiting/views/web.py:194
+#: recruiting/views/web.py:233
 msgid "roleDeductionsRolesDeductionsSuccessfullyAdded"
 msgstr "Role deductions successfully dded"
 
-#: recruiting/views/web.py:210
+#: recruiting/views/web.py:249
 msgid "roleEmploymentLocationSuccessfullyAddedRoleLocation"
 msgstr "Successfully added role location"
 
-#: recruiting/views/web.py:222
+#: recruiting/views/web.py:261
 msgid "roleHousingInformationSuccessfullyAddedRoleHousingInformation"
 msgstr "Successfully added role housing information"
 
-#: recruiting/views/web.py:234
+#: recruiting/views/web.py:273
 msgid "roleMealProvisionSuccessfullyAddedRoleMealsInformation"
 msgstr "Successfully added role meals information"
 
-#: recruiting/views/web.py:266
+#: recruiting/views/web.py:305
 #, fuzzy
 #| msgid "addRoleRoleCreatedSuccessfully"
 msgid "messageCreatedSuccessfully"
 msgstr "Message created successfully"
 
-#: recruiting/views/workers.py:40
+#: recruiting/views/workers.py:62
 msgid "workerGroupDoesNotExist.PleaseCreateIt."
 msgstr "Worker group does not exist.Please create it."
 
-#: recruiting/views/workers.py:43
+#: recruiting/views/workers.py:65
 msgid "workerCreatedSuccessfully."
 msgstr "Worker created successfully."
 
@@ -2551,6 +2549,18 @@ msgstr "5+ years"
 msgid "minimumExperience"
 msgstr "Minimum experience"
 
+#: theme/templates/components/footer.html:9
+msgid "footerCopyright©"
+msgstr "Copyright ©"
+
+#: theme/templates/components/footer.html:9
+msgid "footerMaintainedBy"
+msgstr "Maintained by"
+
+#: theme/templates/components/footer.html:10
+msgid "footerAllRightsReserved"
+msgstr "All rights reserved"
+
 #: theme/templates/components/layouts/vertical/app-sidebar.html:8
 msgid "csiVisaProcessing"
 msgstr "CSI VISA PROCESSING"
@@ -2600,6 +2610,26 @@ msgstr "Logout"
 #: theme/templates/components/layouts/vertical/main-header.html:13
 msgid "goodMorning"
 msgstr "Good morning"
+
+#: theme/templates/components/layouts/vertical/main-header.html:56
+msgid "mainHeaderMyAccount"
+msgstr "My Account"
+
+#: theme/templates/components/layouts/vertical/main-header.html:57
+msgid "mainHeaderUpdatePassword"
+msgstr "Update Password"
+
+#: theme/templates/components/layouts/vertical/main-header.html:58
+msgid "mainHeaderUserLogs"
+msgstr "User Logs"
+
+#: theme/templates/components/layouts/vertical/main-header.html:59
+msgid "mainHeaderManageUsers"
+msgstr "Manage Users"
+
+#: theme/templates/components/layouts/vertical/main-header.html:60
+msgid "mainHeaderLogOut"
+msgstr "Log out"
 
 #: theme/templates/components/modals/add_user_modal.html:18
 msgid "addUserInviteUser"
@@ -2800,3 +2830,39 @@ msgstr "You have been successfully logged out"
 #: theme/views.py:271
 msgid "youHaveSuccessfullyLoggedIn"
 msgstr "You have successfully logged in"
+
+#~ msgid "addRoleNoDescriptionProvided"
+#~ msgstr "No description provided"
+
+#~ msgid "workerDetailsAdvanced"
+#~ msgstr "Advanced"
+
+#~ msgid "workerDetailsYes"
+#~ msgstr "Yes"
+
+#~ msgid "workerDetailsUtah"
+#~ msgstr "Utah"
+
+#~ msgid "workerDetailsAnotherLocation"
+#~ msgstr "Another Location"
+
+#~ msgid "workerDetailsArizona"
+#~ msgstr "Arizona"
+
+#~ msgid "workerDetailsUtahFarms"
+#~ msgstr "Utah Farms"
+
+#~ msgid "workerDetailsBob'sFruitFarm"
+#~ msgstr "Bob's Fruit Farm"
+
+#~ msgid "workerDetailsNone"
+#~ msgstr "None"
+
+#~ msgid "jobDetails"
+#~ msgstr "Job Details"
+
+#~ msgid "supervisorDetails"
+#~ msgstr "Supervisor Details"
+
+#~ msgid "workAuthorization"
+#~ msgstr "Work Authorization"

@@ -1,14 +1,14 @@
 {% extends 'components/base.html' %}
 {% load i18n %}
 
-{% block title %} Work Experience {% endblock title %}
+{% block title %} {% translate "workExperienceDetailsWorkExperience"%} {% endblock title %}
 
 {% block body %}
 
 <div class="container mx-auto max-w-3xl p-8 bg-white shadow-lg rounded-xl">
     <!-- Page Header -->
     <div class="flex justify-between items-center border-b pb-4 mb-6">
-        <h1 class="text-3xl font-bold text-gray-900">{% translate "workExperienceDetails" %}</h1>
+        <h1 class="text-3xl font-bold text-gray-900">{% translate "workExperienceDetailsWorkExperienceDetails" %}</h1>
     </div>
 
     <!-- workExperienceDetails -->
@@ -38,7 +38,7 @@
                     {% if work_experience.end_date %}
                         {{ work_experience.end_date|date:"F d, Y" }}
                     {% else %}
-                        {% translate "Present" %}
+                        {% translate "workExperienceDetailsPresent" %}
                     {% endif %}
                 </span>
             </div>
@@ -47,7 +47,7 @@
 
         <!-- Job Details -->
         <div class="border-t mt-6 pt-4">
-            <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "jobDetails" %}</h2>
+            <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "workExperienceDetailsjobDetails" %}</h2>
             <p class="text-gray-700 text-lg flex items-center gap-2">
                 🚜 <span>{{ work_experience.job_title }}</span>
             </p>
@@ -55,7 +55,7 @@
 
         <!-- supervisorDetails -->
         <div class="border-t mt-6 pt-4">
-            <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "supervisorDetails" %}</h2>
+            <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "workExperienceDetailsSupervisorDetails" %}</h2>
             <div class="space-y-2 text-lg text-gray-700">
                 <p>📛 <strong>{{ work_experience.supervisor_name }}</strong></p>
                 <p>📞 <a href="tel:{{ work_experience.supervisor_tel }}" class="text-blue-600 hover:underline">{{ work_experience.supervisor_tel }}</a></p>
@@ -65,10 +65,10 @@
 
         <!-- Visa & Work Details -->
         <div class="border-t mt-6 pt-4">
-            <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "workAuthorization" %}</h2>
+            <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "workExperienceDetailsWorkAuthorization" %}</h2>
             <div class="text-lg text-gray-700 space-y-1">
-                <p>🛂 <strong>Visa Type:</strong> {{ work_experience.visa_type }}</p>
-                <p>🇺🇸 <strong>H2A Work:</strong> {{ work_experience.work_under_h2a_in_usa }}</p>
+                <p>🛂 <strong>{% translate "workExperienceDetailsVisaType:"%}</strong> {{ work_experience.visa_type }}</p>
+                <p>🇺🇸 <strong>{% translate "workExperienceDetailsH2AWork:"%}</strong> {{ work_experience.work_under_h2a_in_usa }}</p>
             </div>
         </div>
     </div>

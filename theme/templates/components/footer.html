@@ -1,12 +1,13 @@
 {% load static%}
+{% load i18n %}
 <!-- FOOTER -->
 {% now "Y" as current_year %}
 <footer class="footer transparent-background">
 	<div class="container">
 		<div class="row align-items-center flex-row-reverse">
 			<div class="col-md-12 col-sm-12 text-center">
-				Copyright © {{current_year}} <a href="/">Okolabor</a>. Maintained by <a href="https://fiftyeight.io"
-					target="_blank"> FiftyEight </a> All rights reserved
+				{% translate "footerCopyright©"%} {{current_year}} <a href="/">Okolabor</a>. {% translate "footerMaintainedBy"%} <a href="https://fiftyeight.io"
+					target="_blank"> FiftyEight </a> {% translate "footerAllRightsReserved"%}
 			</div>
 		</div>
 	</div>
