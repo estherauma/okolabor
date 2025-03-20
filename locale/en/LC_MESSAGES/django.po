@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-18 16:28+0530\n"
+"POT-Creation-Date: 2025-03-19 12:38+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: account/forms/account_update.py:10 recruiting/forms.py:605
+#: account/forms/account_update.py:11 recruiting/forms.py:605
 msgid "curp"
 msgstr "CURP "
 
-#: account/forms/account_update.py:11 recruiting/forms.py:606
+#: account/forms/account_update.py:12 recruiting/forms.py:606
 msgid "firstName"
 msgstr "First Name "
 
-#: account/forms/account_update.py:12 recruiting/forms.py:607
+#: account/forms/account_update.py:13 recruiting/forms.py:607
 msgid "lastName"
 msgstr "Last Name "
 
-#: account/forms/account_update.py:13 recruiting/forms.py:604
+#: account/forms/account_update.py:14 recruiting/forms.py:604
 msgid "email"
 msgstr "Email"
 
@@ -84,78 +84,101 @@ msgstr "Timestamp"
 msgid "action"
 msgstr "Action"
 
-#: account/templates/invite_email.html:1
-msgid "html"
-msgstr ""
-
-#: account/templates/invite_email.html:6
-msgid "Document"
-msgstr ""
-
+#: account/templates/invite_email.html:8
+msgid "inviteEmailDocument"
+msgstr "Ivitation email"
 
 #: account/templates/invite_email.html:18
-msgid "youHaveBeenInvitedToJoinOurPlatformAsARecruiter"
-msgstr "You have been invited to join our platform as a recruiter"
+msgid "inviteEmailHello"
+msgstr "Hello"
+
+#: account/templates/invite_email.html:21
+msgid "inviteEmailYouHaveBeenInvitedToJoinOurPlatformAsARecruiter."
+msgstr "You have been invited to join our platform as a recruiter."
 
 #: account/templates/invite_email.html:24
-msgid "clickTheLinkBelowToAcceptYourInvitationAndUpdateYourPassword"
-msgstr "Click the link below to accept your invitation and update your password"
+msgid "inviteEmailClickTheLinkBelowToAcceptYourInvitationAndUpdateYourPassword:"
+msgstr ""
+"Click the link below to accept your invitation and update your password:"
 
-#: account/templates/invite_email.html:26
-msgid "updateYourPassword"
+#: account/templates/invite_email.html:28
+msgid "inviteEmailUpdateYourPassword"
 msgstr "Update your password"
 
-#: account/templates/invite_email.html:29
-msgid "bestRegards"
-msgstr "Best Regards"
+#: account/templates/invite_email.html:32
+msgid "inviteEmailBestRegards,"
+msgstr "Best Regards,"
 
-#: account/templates/invite_email.html:31
-msgid "yourTeam"
-msgstr "Your Team"
+#: account/templates/invite_email.html:34
+msgid "inviteEmailYourTeam"
+msgstr "Your team"
 
-#: env/lib/python3.8/site-packages/django/utils/dates.py:6
-msgid "Tuesday"
+#: account/templates/notifications.html:5
+msgid "notificationsNotifications"
+msgstr "Notifications"
+
+#: account/templates/notifications.html:10
+msgid "notificationsWorkerRequests"
+msgstr "Worker requests"
+
+#: account/templates/notifications.html:13
+msgid "notificationsFilterByDate"
+msgstr "Filter by date"
+
+#: account/templates/notifications.html:16
+msgid "notificationsNew"
+msgstr "New"
+
+#: account/templates/notifications.html:38
+#, fuzzy
+#| msgid "seeMore"
+msgid "See More"
+msgstr "See More"
+
+#: account/templates/notifications.html:57
+msgid "notificationsCategory"
+msgstr "Category"
+
+#: account/templates/notifications.html:61
+msgid "notificationsStatus"
+msgstr "Status"
+
+#: account/templates/notifications.html:65
+msgid "notificationsReatAt"
+msgstr "Read at"
+
+#: account/templates/notifications.html:69
+msgid "notificationsCreatedAt"
+msgstr "Created at"
+
+#: account/templates/notifications.html:73
+msgid "notificationsClose"
+msgstr "Close"
+
+#: account/templates/notifications.html:83
+msgid "notificationsNoNotificationsAvailable."
+msgstr "No notifications available."
+
+#: account/templates/recruiter/change_password.html:8
+msgid "changePasswordMyAccount"
 msgstr ""
 
-#: env/lib/python3.8/site-packages/django/utils/dates.py:6
-msgid "Wednesday"
+#: account/templates/recruiter/change_password.html:17
+#, fuzzy
+#| msgid "inviteEmailUpdateYourPassword"
+msgid "updatePassword"
+msgstr "Update your password"
+
+#: account/templates/recruiter/change_password.html:24
+msgid "changePasswordSaveChanges"
 msgstr ""
 
-#: env/lib/python3.8/site-packages/django/utils/dates.py:6
-msgid "Thursday"
-msgstr ""
-
-#: env/lib/python3.8/site-packages/django/utils/dates.py:6
-msgid "Friday"
-msgstr ""
-
-#: env/lib/python3.8/site-packages/django/utils/dates.py:7
-msgid "Saturday"
-msgstr ""
-
-#: env/lib/python3.8/site-packages/django/utils/dates.py:7
-msgid "Sunday"
-msgstr ""
-
-#: env/lib/python3.8/site-packages/django/utils/dates.py:10
-msgid "Mon"
-msgstr ""
-
-#: env/lib/python3.8/site-packages/django/utils/dates.py:10
-msgid "Tue"
-msgstr ""
-
-#: env/lib/python3.8/site-packages/django/utils/dates.py:10
-msgid "Wed"
-msgstr ""
-
-#: env/lib/python3.8/site-packages/django/utils/dates.py:10
-msgid "Thu"
-msgstr ""
-
-#: env/lib/python3.8/site-packages/django/utils/dates.py:10
-msgid "Fri"
-msgstr ""
+#: account/templates/recruiter/manage_users.html:7
+#: theme/templates/components/layouts/vertical/app-sidebar.html:69
+#, fuzzy
+#| msgid "manageUsersEmail"
+msgid "manageUsers"
+msgstr "Email"
 
 #: account/templates/recruiter/manage_users.html:16
 msgid "existingUsers"
@@ -190,71 +213,72 @@ msgstr "Actions"
 msgid "pendingUsers"
 msgstr "Pending Users"
 
-#: env/lib/python3.8/site-packages/django/utils/dates.py:15
-msgid "July"
-msgstr ""
+#: account/templates/recruiter/user_account.html:7
+msgid "userAccountMyAccount"
+msgstr "My Account"
 
-#: env/lib/python3.8/site-packages/django/utils/dates.py:15
-msgid "August"
-msgstr ""
+#: account/templates/recruiter/user_account.html:17
+msgid "personalInformation"
+msgstr "Personal Information"
 
-#: env/lib/python3.8/site-packages/django/utils/dates.py:15
-#, fuzzy
-#| msgid "phoneNumber"
-msgid "September"
-msgstr "Phone Number"
+#: account/templates/recruiter/user_account.html:32
+msgid "userAccountSaveChanges"
+msgstr "Save Changes"
 
-#: env/lib/python3.8/site-packages/django/utils/dates.py:15
-msgid "October"
-msgstr ""
+#: account/templates/recruiter/user_account.html:45
+msgid "accountInformation"
+msgstr "Account Information"
 
-#: env/lib/python3.8/site-packages/django/utils/dates.py:15
-#, fuzzy
-#| msgid "phoneNumber"
-msgid "November"
-msgstr "Phone Number"
+#: account/templates/recruiter/user_account.html:52
+msgid "role"
+msgstr "Role"
 
-#: env/lib/python3.8/site-packages/django/utils/dates.py:16
-msgid "December"
-msgstr ""
+#: account/templates/recruiter/user_account.html:55
+msgid "standardUser"
+msgstr "Standard User"
 
-#: env/lib/python3.8/site-packages/django/utils/dates.py:19
-#, fuzzy
-#| msgid "any"
-msgid "jan"
-msgstr "Any"
+#: account/templates/recruiter/user_account.html:59
+msgid "requestRoleChange"
+msgstr "Request Role Change"
 
-#: env/lib/python3.8/site-packages/django/utils/dates.py:19
-msgid "feb"
-msgstr ""
+#: account/templates/recruiter/user_account.html:65
+msgid "accountDeletiton"
+msgstr "Account Deletiton"
 
-#: env/lib/python3.8/site-packages/django/utils/dates.py:19
-msgid "mar"
-msgstr ""
+#: account/templates/recruiter/user_account.html:68
+msgid "messageHere"
+msgstr "A message here. Account deletion is permanent. There will be no way to restore your account, and all data will be lost."
 
-#: env/lib/python3.8/site-packages/django/utils/dates.py:19
-msgid "apr"
-msgstr ""
 
-#: env/lib/python3.8/site-packages/django/utils/dates.py:19
-#, fuzzy
-#| msgid "any"
-msgid "may"
-msgstr "Any"
+#: account/templates/recruiter/user_account.html:71
+msgid "deleteAccount"
+msgstr "Delete Account"
 
-#: env/lib/python3.8/site-packages/django/utils/dates.py:19
-msgid "jun"
-msgstr ""
+#: account/views/web.py:58
+msgid "addUserAllFieldsAreRequired."
+msgstr "All fields are required."
 
-#: account/views/web.py:150
+#: account/views/web.py:80
+msgid "inviteEmailYou'reInvited!"
+msgstr "You're Invited!"
+
+#: account/views/web.py:99
+msgid "inviteEmailInvitationSentSuccessfully!"
+msgstr "Invitation email sent successfully"
+
+#: account/views/web.py:101
+msgid "inviteEmailFailedToSendEmail."
+msgstr "Failed to send email."
+
+#: account/views/web.py:147
 msgid "Your account details have been successfully updated!"
 msgstr ""
 
-#: account/views/web.py:181
+#: account/views/web.py:177
 msgid "Your password has been successfully updated!"
 msgstr ""
 
-#: account/views/web.py:186
+#: account/views/web.py:182
 msgid "Please correct the errors below."
 msgstr ""
 
@@ -711,10 +735,6 @@ msgstr "Open"
 msgid "createWorkRequestClosed"
 msgstr "Closed"
 
-#: recruiting/models.py:49
-msgid "addRoleNoDescriptionProvided"
-msgstr "No description provided"
-
 #: recruiting/models.py:87 recruiting/models.py:100
 msgid "roleWagesHourly"
 msgstr "Hourly"
@@ -1063,16 +1083,16 @@ msgid "createMessageSendMessage"
 msgstr "Send Message"
 
 #: recruiting/templates/recruiting/messages/details.html:14
-msgid "Body:"
-msgstr ""
+msgid "messageDetailsBody:"
+msgstr "Body"
 
 #: recruiting/templates/recruiting/messages/details.html:20
-msgid "Sent at:"
-msgstr ""
+msgid "messageDetailsSentAt:"
+msgstr "Sent at:"
 
 #: recruiting/templates/recruiting/messages/details.html:28
-msgid "Back"
-msgstr ""
+msgid "messageDetailsBack"
+msgstr "Back"
 
 #: recruiting/templates/recruiting/messages/list.html:9
 msgid "myMessages"
@@ -1626,7 +1646,7 @@ msgid "workerDetailsEmail"
 msgstr "Email"
 
 #: recruiting/templates/recruiting/workers/detail.html:82
-#: recruiting/templates/recruiting/workers/detail.html:234
+#: recruiting/templates/recruiting/workers/detail.html:229
 msgid "workerDetailsPhoneNumber"
 msgstr "Phone Number"
 
@@ -1656,82 +1676,43 @@ msgstr "Worker status"
 msgid "workerDetailsAvailable"
 msgstr "Available"
 
-#: recruiting/templates/recruiting/workers/detail.html:157
+#: recruiting/templates/recruiting/workers/detail.html:158
 msgid "workerDetailsWorkInformation"
 msgstr "Work Information"
 
-#: recruiting/templates/recruiting/workers/detail.html:164
+#: recruiting/templates/recruiting/workers/detail.html:165
 msgid "workerDetailsEglishProficiency"
 msgstr "Eglish Proficiency"
 
-#: recruiting/templates/recruiting/workers/detail.html:167
-msgid "workerDetailsAdvanced"
-msgstr "Advanced"
-
-#: recruiting/templates/recruiting/workers/detail.html:176
+#: recruiting/templates/recruiting/workers/detail.html:177
 msgid "workerDetailsPassport"
 msgstr "Passport"
 
-#: recruiting/templates/recruiting/workers/detail.html:179
-#: recruiting/templates/recruiting/workers/detail.html:248
-msgid "workerDetailsYes"
-msgstr "Yes"
-
-#: recruiting/templates/recruiting/workers/detail.html:189
+#: recruiting/templates/recruiting/workers/detail.html:190
 msgid "workerDetailsWorkingLocations"
 msgstr "Working Locations"
 
-#: recruiting/templates/recruiting/workers/detail.html:193
-msgid "workerDetailsUtah"
-msgstr "Utah"
-
-#: recruiting/templates/recruiting/workers/detail.html:198
-msgid "workerDetailsAnotherLocation"
-msgstr "Another Location"
-
-#: recruiting/templates/recruiting/workers/detail.html:203
-msgid "workerDetailsArizona"
-msgstr "Arizona"
-
-#: recruiting/templates/recruiting/workers/detail.html:209
+#: recruiting/templates/recruiting/workers/detail.html:205
 msgid "workerDetailsPreferredEmployers"
 msgstr "Preferred Employers"
 
-#: recruiting/templates/recruiting/workers/detail.html:214
-msgid "workerDetailsUtahFarms"
-msgstr "Utah Farms"
-
-#: recruiting/templates/recruiting/workers/detail.html:219
-msgid "workerDetailsBob'sFruitFarm"
-msgstr "Bob's Fruit Farm"
-
-#: recruiting/templates/recruiting/workers/detail.html:226
+#: recruiting/templates/recruiting/workers/detail.html:221
 msgid "workerDetailsMedical/physicalConditions"
 msgstr "Medical/physical conditions"
 
-#: recruiting/templates/recruiting/workers/detail.html:228
-#: recruiting/templates/recruiting/workers/detail.html:232
-msgid "workerDetailsNone"
-msgstr "None"
-
-#: recruiting/templates/recruiting/workers/detail.html:230
+#: recruiting/templates/recruiting/workers/detail.html:225
 msgid "workerDetailsAnyInjuryOrConditionAggravatedByPhysicalActivity"
 msgstr "Any injury or condition aggravated by physical activity"
 
-#: recruiting/templates/recruiting/workers/detail.html:238
+#: recruiting/templates/recruiting/workers/detail.html:233
 msgid "workerDetailsWillingToSpendTimeOnFeet"
 msgstr "Willing to spend time on feet?"
 
-#: recruiting/templates/recruiting/workers/detail.html:240
-#: recruiting/templates/recruiting/workers/detail.html:244
-msgid "Yes"
-msgstr ""
-
-#: recruiting/templates/recruiting/workers/detail.html:242
+#: recruiting/templates/recruiting/workers/detail.html:237
 msgid "workerDetailsAbleToLift27kg"
 msgstr "Able to lift 27kg?"
 
-#: recruiting/templates/recruiting/workers/detail.html:246
+#: recruiting/templates/recruiting/workers/detail.html:241
 msgid "workerDetailsWillingToWorkInHotAndCold"
 msgstr "Willing to work in hot and cold?"
 
@@ -1860,71 +1841,85 @@ msgstr "Add Worker Experience"
 msgid "addWorkerExperienceSubmit"
 msgstr "Submit"
 
-#: recruiting/templates/recruiting/workers/work_experience_detail.html:10
-msgid "workExperienceDetails"
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:4
+msgid "workExperienceDetailsWorkExperience"
+msgstr "Work Experience"
+
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:11
+msgid "workExperienceDetailsWorkExperienceDetails"
 msgstr "Work Experience Details"
 
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:41
+msgid "workExperienceDetailsPresent"
+msgstr "Present"
 
-#: recruiting/templates/recruiting/workers/work_experience_detail.html:48
-msgid "jobDetails"
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:50
+msgid "workExperienceDetailsjobDetails"
 msgstr "Job Details"
 
-#: recruiting/templates/recruiting/workers/work_experience_detail.html:56
-msgid "supervisorDetails"
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:58
+msgid "workExperienceDetailsSupervisorDetails"
 msgstr "Supervisor Details"
 
-#: recruiting/templates/recruiting/workers/work_experience_detail.html:66
-msgid "workAuthorization"
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:68
+msgid "workExperienceDetailsWorkAuthorization"
 msgstr "Work Authorization"
+
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:70
+msgid "workExperienceDetailsVisaType:"
+msgstr "Visa Type:"
+
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:71
+msgid "workExperienceDetailsH2AWork:"
+msgstr "H2A Work:"
 
 #: recruiting/views/web.py:94
 msgid "Employer created successfully"
 msgstr ""
 
-
-#: recruiting/views/web.py:91
+#: recruiting/views/web.py:130
 msgid "jobOrderCreatedSuccessfully"
 msgstr "Job order created successfully"
 
-#: recruiting/views/web.py:129
+#: recruiting/views/web.py:168
 msgid "addRoleRoleCreatedSuccessfully"
 msgstr "Role created successfully"
 
-#: recruiting/views/web.py:174
+#: recruiting/views/web.py:213
 msgid "roleAddHoursRoleHoursSuccessfullyAdded"
 msgstr "Role hours successfully added"
 
-#: recruiting/views/web.py:184
+#: recruiting/views/web.py:223
 msgid "roleWagesRolesWagesSuccessfullyAdded"
 msgstr "Role wages successfully added"
 
-#: recruiting/views/web.py:194
+#: recruiting/views/web.py:233
 msgid "roleDeductionsRolesDeductionsSuccessfullyAdded"
 msgstr "Role deductions successfully dded"
 
-#: recruiting/views/web.py:210
+#: recruiting/views/web.py:249
 msgid "roleEmploymentLocationSuccessfullyAddedRoleLocation"
 msgstr "Successfully added role location"
 
-#: recruiting/views/web.py:222
+#: recruiting/views/web.py:261
 msgid "roleHousingInformationSuccessfullyAddedRoleHousingInformation"
 msgstr "Successfully added role housing information"
 
-#: recruiting/views/web.py:234
+#: recruiting/views/web.py:273
 msgid "roleMealProvisionSuccessfullyAddedRoleMealsInformation"
 msgstr "Successfully added role meals information"
 
-#: recruiting/views/web.py:266
+#: recruiting/views/web.py:305
 #, fuzzy
 #| msgid "addRoleRoleCreatedSuccessfully"
 msgid "messageCreatedSuccessfully"
 msgstr "Message created successfully"
 
-#: recruiting/views/workers.py:40
+#: recruiting/views/workers.py:62
 msgid "workerGroupDoesNotExist.PleaseCreateIt."
 msgstr "Worker group does not exist.Please create it."
 
-#: recruiting/views/workers.py:43
+#: recruiting/views/workers.py:65
 msgid "workerCreatedSuccessfully."
 msgstr "Worker created successfully."
 
@@ -2554,6 +2549,18 @@ msgstr "5+ years"
 msgid "minimumExperience"
 msgstr "Minimum experience"
 
+#: theme/templates/components/footer.html:9
+msgid "footerCopyright©"
+msgstr "Copyright ©"
+
+#: theme/templates/components/footer.html:9
+msgid "footerMaintainedBy"
+msgstr "Maintained by"
+
+#: theme/templates/components/footer.html:10
+msgid "footerAllRightsReserved"
+msgstr "All rights reserved"
+
 #: theme/templates/components/layouts/vertical/app-sidebar.html:8
 msgid "csiVisaProcessing"
 msgstr "CSI VISA PROCESSING"
@@ -2604,6 +2611,178 @@ msgstr "Logout"
 msgid "goodMorning"
 msgstr "Good morning"
 
+#: theme/templates/components/layouts/vertical/main-header.html:56
+msgid "mainHeaderMyAccount"
+msgstr "My Account"
+
+#: theme/templates/components/layouts/vertical/main-header.html:57
+msgid "mainHeaderUpdatePassword"
+msgstr "Update Password"
+
+#: theme/templates/components/layouts/vertical/main-header.html:58
+msgid "mainHeaderUserLogs"
+msgstr "User Logs"
+
+#: theme/templates/components/layouts/vertical/main-header.html:59
+msgid "mainHeaderManageUsers"
+msgstr "Manage Users"
+
+#: theme/templates/components/layouts/vertical/main-header.html:60
+msgid "mainHeaderLogOut"
+msgstr "Log out"
+
+#: theme/templates/components/modals/add_user_modal.html:18
+msgid "addUserInviteUser"
+msgstr "Invite User"
+
+#: theme/templates/components/modals/add_user_modal.html:23
+msgid "addUserThenAShortNotificationMessageGoesHereWithActionButtonsBelow."
+msgstr "Then a short notification message goes here with action buttons below."
+
+#: theme/templates/components/modals/add_user_modal.html:28
+msgid "addUserCURP"
+msgstr "CURP"
+
+#: theme/templates/components/modals/add_user_modal.html:42
+msgid "addUserFirstName"
+msgstr "First Name "
+
+#: theme/templates/components/modals/add_user_modal.html:56
+msgid "addUserLastName"
+msgstr "Last Name "
+
+#: theme/templates/components/modals/add_user_modal.html:70
+msgid "addUserEmail"
+msgstr "Email"
+
+#: theme/templates/components/modals/add_user_modal.html:84
+msgid "addUserRole"
+msgstr "Role"
+
+#: theme/templates/components/modals/add_user_modal.html:87
+msgid "addUserSelectRole"
+msgstr "Select Role"
+
+#: theme/templates/components/modals/add_user_modal.html:88
+msgid "addUserRecruiter"
+msgstr "Recruiter"
+
+#: theme/templates/components/modals/add_user_modal.html:97
+msgid "addUserCancel"
+msgstr "Cancel"
+
+#: theme/templates/components/modals/add_user_modal.html:103
+msgid "addUserSendInvite"
+msgstr "Send Invite"
+
+#: theme/templates/components/modals/edit_user_modal.html:7
+msgid "editUserEditUser"
+msgstr "Edit User"
+
+#: theme/templates/components/modals/edit_user_modal.html:15
+msgid "editUserCURP"
+msgstr "CURP"
+
+#: theme/templates/components/modals/edit_user_modal.html:20
+msgid "editUserFirstName"
+msgstr "First Name "
+
+#: theme/templates/components/modals/edit_user_modal.html:25
+msgid "editUserLastName"
+msgstr "Last Name "
+
+#: theme/templates/components/modals/edit_user_modal.html:30
+msgid "editUserEmail"
+msgstr "Email"
+
+#: theme/templates/components/modals/edit_user_modal.html:37
+msgid "editUserRole"
+msgstr "Role"
+
+#: theme/templates/components/modals/edit_user_modal.html:40
+msgid "editUserSelectRole"
+msgstr "Select Role"
+
+#: theme/templates/components/modals/edit_user_modal.html:41
+msgid "editUserRecruiter"
+msgstr "Recruiter"
+
+#: theme/templates/components/modals/edit_user_modal.html:50
+msgid "editUserCancel"
+msgstr "Cancel"
+
+#: theme/templates/components/modals/edit_user_modal.html:56
+msgid "editUserSave"
+msgstr "Save"
+
+#: theme/templates/ltr/password_reset_complete.html:8
+#: theme/templates/ltr/password_reset_complete.html:16
+msgid "passwordResetCompletePasswordResetComplete"
+msgstr "Password Reset Complete"
+
+#: theme/templates/ltr/password_reset_complete.html:17
+msgid "passwordResetCompleteYourPasswordHasBeenResetSuccessfully!YouCanNow"
+msgstr "Your password has been reset successfully! You can now"
+
+#: theme/templates/ltr/password_reset_complete.html:17
+msgid "passwordResetCompleteLogin"
+msgstr "Login"
+
+#: theme/templates/ltr/password_reset_confirm.html:13
+msgid "passwordResetEnterNewPassword"
+msgstr "Enter new password"
+
+#: theme/templates/ltr/password_reset_confirm.html:17
+msgid "passwordResetChangePassword"
+msgstr "Change password"
+
+#: theme/templates/ltr/password_reset_done.html:8
+#: theme/templates/ltr/password_reset_done.html:16
+msgid "passwordResetDonePasswordResetLinkSent"
+msgstr "Password reset link sent"
+
+#: theme/templates/ltr/password_reset_done.html:17
+msgid "passwordResetDoneWeHaveSentAnEmailWithInstructionsForResettingYourPassword."
+msgstr "We have sent an email with instructions for resetting your password."
+
+#: theme/templates/ltr/password_reset_email.html:2
+msgid "passwordResetEmailDear"
+msgstr "Dear"
+
+#: theme/templates/ltr/password_reset_email.html:4
+msgid "passwordResetEmailYou'reReceivingThisEmailBecauseYouRequestedAPasswordResetForYourAccount."
+msgstr ""
+"You are receiving this email because you requested a password reset for your "
+"account."
+
+#: theme/templates/ltr/password_reset_email.html:8
+msgid "passwordResetEmailClickHere"
+msgstr "Click here"
+
+#: theme/templates/ltr/password_reset_email.html:10
+msgid "passwordResetEmailToResetYourPassword."
+msgstr "to reset your password."
+
+#: theme/templates/ltr/password_reset_email.html:13
+msgid "passwordResetEmailThankYou"
+msgstr "Thank you"
+
+#: theme/templates/ltr/password_reset_form.html:8
+msgid "passwordResetFormResetPassword"
+msgstr "Reset password"
+
+#: theme/templates/ltr/password_reset_form.html:18
+msgid "passwordResetFormResetYourPassword"
+msgstr "Reset your password"
+
+#: theme/templates/ltr/password_reset_form.html:23
+msgid "passwordResetFormEmail"
+msgstr "Email"
+
+#: theme/templates/ltr/password_reset_form.html:25
+msgid "passwordResetFormSendResetLink"
+msgstr "Send reset link"
+
 #: theme/templates/users/users.html:6
 msgid "adminManageUsers"
 msgstr "Manage Users"
@@ -2651,3 +2830,39 @@ msgstr "You have been successfully logged out"
 #: theme/views.py:271
 msgid "youHaveSuccessfullyLoggedIn"
 msgstr "You have successfully logged in"
+
+#~ msgid "addRoleNoDescriptionProvided"
+#~ msgstr "No description provided"
+
+#~ msgid "workerDetailsAdvanced"
+#~ msgstr "Advanced"
+
+#~ msgid "workerDetailsYes"
+#~ msgstr "Yes"
+
+#~ msgid "workerDetailsUtah"
+#~ msgstr "Utah"
+
+#~ msgid "workerDetailsAnotherLocation"
+#~ msgstr "Another Location"
+
+#~ msgid "workerDetailsArizona"
+#~ msgstr "Arizona"
+
+#~ msgid "workerDetailsUtahFarms"
+#~ msgstr "Utah Farms"
+
+#~ msgid "workerDetailsBob'sFruitFarm"
+#~ msgstr "Bob's Fruit Farm"
+
+#~ msgid "workerDetailsNone"
+#~ msgstr "None"
+
+#~ msgid "jobDetails"
+#~ msgstr "Job Details"
+
+#~ msgid "supervisorDetails"
+#~ msgstr "Supervisor Details"
+
+#~ msgid "workAuthorization"
+#~ msgstr "Work Authorization"
