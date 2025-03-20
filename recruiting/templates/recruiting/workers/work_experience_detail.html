@@ -10,7 +10,6 @@
     <div class="flex justify-between items-center border-b pb-4 mb-6">
         <h1 class="text-3xl font-bold text-gray-900">{% translate "workExperienceDetails" %}</h1>
     </div>
-
     <!-- Work Experience Details -->
     <div class="bg-gray-50 p-6 rounded-lg shadow-inner">
         <!-- User Name -->
@@ -19,7 +18,6 @@
                 👤 <strong>{{ work_experience.user.get_full_name }}</strong>
             </div>
         </div>
-
         <!-- Work Info Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Country -->
@@ -40,11 +38,9 @@
                 </span>
             </div>
         </div>
-
         <!-- Job Experiences -->
         <div class="border-t mt-6 pt-4">
             <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "jobDetails" %}</h2>
-
             {% for job in job_experiences %}
                 <div class="p-4 border rounded-lg bg-white shadow-sm mb-4">
                     <p class="text-gray-700 text-lg flex items-center gap-2">
@@ -59,11 +55,9 @@
                 </div>
             {% endfor %}
         </div>
-
         <!-- Job Experience Details -->
         <div class="border-t mt-6 pt-4">
             <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "Preferences" %}</h2>
-
             {% for detail in job_experience_details %}
                 <div class="p-4 border rounded-lg bg-white shadow-sm mb-4">
                     <p class="text-gray-700 text-lg flex items-center gap-2">
@@ -72,7 +66,6 @@
                 </div>
             {% endfor %}
         </div>
-
         <!-- Supervisor Details -->
         <div class="border-t mt-6 pt-4">
             <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "supervisorDetails" %}</h2>
@@ -82,7 +75,6 @@
                 <p>📧 <a href="mailto:{{ work_experience.supervisor_email|default:"#" }}" class="text-blue-600 hover:underline">{{ work_experience.supervisor_email|default:"No Supervisor Email" }}</a></p>
             </div>
         </div>
-
         <!-- Visa & Work Details -->
         <div class="border-t mt-6 pt-4">
             <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "workAuthorization" %}</h2>
