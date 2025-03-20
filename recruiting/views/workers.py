@@ -22,7 +22,7 @@ class WorkerListView(View):
         filter_form = AdvancedFilterForm()
         search_query = request.GET.get('search', '')
         page_number = request.GET.get('page', 1)
-        per_page = request.GET.get('per_page', 4)  # Default to 4 per page if not provided
+        per_page = request.GET.get('per_page', 25)  # Default to 4 per page if not provided
 
         try:
             per_page = int(per_page)  # Convert per_page to an integer
