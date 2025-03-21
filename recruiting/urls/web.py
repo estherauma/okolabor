@@ -7,10 +7,10 @@ from recruiting.views.web import (
     RoleHoursCreateView, RoleHousingCreateView, RoleMealsCreateView,
     RoleQualificationsCreateView, RoleWagesCreateView, WorkRequestCreateView,
     WorkRequestDetailView, WorkRequestRoleCreateView, WorkRequestsListView,
-    OkoMessageDetailsView
+    OkoMessageDetailsView,
 )
 from recruiting.views.workers import (
-     WorkerCreateView, WorkerDetailsView, WorkerListView
+     WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView
 )
 
 from recruiting.views.workers import (
@@ -81,6 +81,10 @@ urlpatterns = [
     path('workers/',
          WorkerListView.as_view(),
          name='workers'),
+    path('assign-worker/', AssignWorkerView.as_view(), name='assign_worker'),
+    path('get-worker-details/', GetWorkerDetailsView.as_view(), name='get_worker_details'),
+#     path('assign_worker/', WorkerAssignmentCreateView.as_view(), name='assign_worker'),
+#     path('get_worker_details/', GetWorkerDetailsView.as_view(), name='get_worker_details'),
     path('workers/<str:pk>/',
          WorkerDetailsView.as_view(),
          name='worker_detail'),

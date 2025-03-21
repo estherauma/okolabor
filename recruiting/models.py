@@ -1,5 +1,6 @@
 from django.db import models
 from common.models import AuditableModel
+from account.models import User
 from django.utils.translation import gettext_lazy as _
 
 
@@ -28,6 +29,7 @@ class WorkRequests(AuditableModel):
         ('Open', _('createWorkRequestOpen')),
         ('Closed', _('createWorkRequestClosed')),
     )
+    
     name = models.CharField(max_length=255, null=False, blank=False)
     start_date = models.DateField(null=False, blank=False)
     end_date = models.DateField(null=True, blank=True)
@@ -35,11 +37,29 @@ class WorkRequests(AuditableModel):
     employer = models.ForeignKey(Employer, on_delete=models.DO_NOTHING)
     status = models.CharField(
         max_length=255, null=False, blank=False,
-        choices=STATUS_CHOICES, default='DRAFT'
+        choices=STATUS_CHOICES, default='Open'  # Set default to 'Open'
     )
 
     def __str__(self) -> str:
         return f'{self.name}'
+
+
+class WorkAssignment(models.Model):
+    STATUS_CHOICES = (
+        ('Assigned', 'Assigned'),
+        ('Accepted', 'Accepted'),
+        ('Completed', 'Completed'),
+        ('Cancelled', 'Cancelled'),
+    )
+
+    work_request = models.ManyToManyField(WorkRequests, related_name='assignments')  # Change to ManyToManyField
+    worker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assignments')
+    assigned_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Assigned')
+
+    def __str__(self):
+        return f"{self.worker.first_name} - {self.status}"
+
 
 
 class Role(AuditableModel):
