@@ -205,10 +205,10 @@
                         <span class="step-links">
                             {% if workers.has_previous %}
                                 <a href="?page={{ workers.previous_page_number }}&search={{ request.GET.search }}&per_page={{ request.GET.per_page }}">
-                                    <span style="font-weight: bold;">&lt;</span>
+                                    <span style="font-weight: bold;">Previous</span>
                                 </a>
                             {% else %}
-                                <span class="disabled"><span style="font-weight: bold;">&lt;</span></span>
+                                <span class="disabled"><span style="font-weight: bold;">Previous</span></span>
                             {% endif %}
                     
                             {% for i in workers.paginator.page_range %}
@@ -221,10 +221,10 @@
                     
                             {% if workers.has_next %}
                                 <a href="?page={{ workers.next_page_number }}&search={{ request.GET.search }}&per_page={{ request.GET.per_page }}">
-                                    <span style="font-weight: bold;">&gt;</span>
+                                    <span style="font-weight: bold;">Next</span>
                                 </a>
                             {% else %}
-                                <span class="disabled"><span style="font-weight: bold;">&gt;</span></span>
+                                <span class="disabled"><span style="font-weight: bold;">Next</span></span>
                             {% endif %}
                         </span>
                     </div>
