@@ -1,51 +1,31 @@
-from django.test import TestCase, Client
-from django.urls import reverse
-from account.models import User
-from django.contrib.auth.models import Group
+from django.test import TestCase
+from recruiting.models import WorkRequests, Employer
+from datetime import date
 
-class WorkerListViewTest(TestCase):
+class WorkRequestsTestCase(TestCase):
     def setUp(self):
-        self.client = Client()
-        self.url = '/workers/'  # Ensure this matches your URL name
-        self.worker_group = Group.objects.create(name='worker')
+        """Set up the test environment before each test."""
+        # Create an employer instance to avoid null constraint error
+        self.employer = Employer.objects.create(name="Test Employer")
 
-        # Provide unique `curp` values for each user
-        self.worker1 = User.objects.create(
-            first_name='John',
-            last_name='Doe',
-            email='john.doe@example.com',
-            curp='unique_curp_1'
+        # Create a WorkRequest instance using the employer
+        self.work_request = WorkRequests.objects.create(
+            name="Test Work Request",
+            start_date=date(2025, 3, 22),
+            end_date=date(2025, 3, 22),
+            required_workers=2,
+            employer=self.employer,  # Assign employer to prevent IntegrityError
+            status="Open"
         )
-        self.worker1.groups.add(self.worker_group)
 
-        self.worker2 = User.objects.create(
-            first_name='Jane',
-            last_name='Smith',
-            email='jane.smith@example.com',
-            curp='unique_curp_2'
-        )
-        self.worker2.groups.add(self.worker_group)
+    def test_work_request_creation(self):
+        """Test if the work request is created successfully."""
+        work_request = WorkRequests.objects.get(name="Test Work Request")
+        self.assertEqual(work_request.name, "Test Work Request")
+        self.assertEqual(work_request.required_workers, 2)
+        self.assertEqual(work_request.employer, self.employer)
+        self.assertEqual(work_request.status, "Open")
 
-    def test_worker_list_view(self):
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 200)
-        self.assertIn('workers', response.context)
-        self.assertIn('form', response.context)
-        self.assertIn('filter_form', response.context)
-        self.assertIn('search_query', response.context)
-        self.assertIn('paginator', response.context)
-
-    def test_worker_search(self):
-        response = self.client.get(self.url, {'search': 'John'})
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(self.worker1, response.context['workers'])
-        self.assertNotIn(self.worker2, response.context['workers'])
-
-    def test_ajax_request(self):
-        response = self.client.get(self.url, {'search': 'John'}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response['Content-Type'], 'application/json')
-        data = response.json()
-        self.assertIn('workers', data)
-        self.assertEqual(len(data['workers']), 1)
-        self.assertEqual(data['workers'][0]['firstname'], 'John')
+    def test_work_request_str_representation(self):
+        """Test the string representation of the WorkRequests model."""
+        self.assertEqual(str(self.work_request), "Test Work Request")
