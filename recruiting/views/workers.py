@@ -34,6 +34,7 @@ class WorkerListView(View):
 
         work_requests = WorkRequests.objects.filter(status='Open').prefetch_related('roles')
 
+        workers = User.objects.filter(groups__name='worker').order_by('-created_at')
         # Filtering workers
         if search_query:
             workers = workers.filter(
@@ -47,6 +48,10 @@ class WorkerListView(View):
         paginator = Paginator(workers, per_page)
         page_obj = paginator.get_page(page_number)
 
+        for worker in page_obj:
+            worker.profile_completion_percentage = worker.calculate_profile_completion()
+
+
         # Handle AJAX request for worker selection
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             workers_data = [
@@ -54,7 +59,8 @@ class WorkerListView(View):
                     'id': worker.id,
                     'firstname': worker.first_name,
                     'lastname': worker.last_name,
-                    'email': worker.email
+                    'email': worker.email,
+                    'profile_completion': worker.profile_completion_percentage
                 }
                 for worker in page_obj
             ]

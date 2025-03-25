@@ -89,6 +89,17 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
     
     def get_full_name(self):
         return f"{self.first_name} {self.middle_name} {self.last_name}".strip()
+    
+    def calculate_profile_completion(self):
+        """Calculates profile completion percentage based on filled fields."""
+        required_fields = [
+            'first_name', 'last_name', 'email', 'curp',
+            'profile_image', 'telephone', 'mobile',
+            'address_line_1', 'city', 'passport_number', 'dob','gender'
+        ]
+        filled_fields = sum(1 for field in required_fields if getattr(self, field, None))
+        total_fields = len(required_fields)
+        return round((filled_fields / total_fields) * 100, 2) if total_fields else 0
 
 
 class LoginEvent(BaseModel):
