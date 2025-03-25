@@ -200,7 +200,7 @@
                                             {{ worker.firstname }} {{ worker.lastname }}
                                         </a>
                                         {% else %}
-                                        <a href="{{worker.id}}">
+                                        <a href="{{ worker.id }}">
                                             {{ worker.email }}
                                         </a>
                                         {% endif %}
@@ -215,15 +215,16 @@
                                 {% endfor %}
                             </tbody>
                         </table>
+                        
                     </div>
                     <div class="pagination">
                         <span class="step-links">
                             {% if workers.has_previous %}
                                 <a href="?page={{ workers.previous_page_number }}&search={{ request.GET.search }}&per_page={{ request.GET.per_page }}">
-                                    <span style="font-weight: bold;">&lt;</span>
+                                    <span style="font-weight: bold;">Previous</span>
                                 </a>
                             {% else %}
-                                <span class="disabled"><span style="font-weight: bold;">&lt;</span></span>
+                                <span class="disabled"><span style="font-weight: bold;">Previous</span></span>
                             {% endif %}
 
                             {% for i in workers.paginator.page_range %}
@@ -236,10 +237,10 @@
 
                             {% if workers.has_next %}
                                 <a href="?page={{ workers.next_page_number }}&search={{ request.GET.search }}&per_page={{ request.GET.per_page }}">
-                                    <span style="font-weight: bold;">&gt;</span>
+                                    <span style="font-weight: bold;">Next</span>
                                 </a>
                             {% else %}
-                                <span class="disabled"><span style="font-weight: bold;">&gt;</span></span>
+                                <span class="disabled"><span style="font-weight: bold;">Next</span></span>
                             {% endif %}
                         </span>
                     </div>
@@ -301,20 +302,22 @@
 <!-- INTERNAL SELECT2 JS -->
 <script src="{% static 'assets/plugins/select2/select2.full.min.js' %}"></script>
 <!-- DATA TABLE JS-->
-<script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap5.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/js/jszip.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/pdfmake/pdfmake.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/pdfmake/vfs_fonts.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/js/buttons.html5.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/js/buttons.print.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/js/buttons.colVis.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js' %}"></script>
-<script src="{% static 'assets/js/table-data.js' %}"></script>
-<script src="{% static 'assets/js/worker-search.js' %}"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/jquery.dataTables.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/dataTables.bootstrap5.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/dataTables.buttons.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.bootstrap5.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/jszip.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/pdfmake/pdfmake.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/pdfmake/vfs_fonts.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.html5.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.print.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.colVis.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/dataTables.responsive.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.min.js"></script>
+<script src="{% static ''%}assets/js/table-data.js"></script>
+<script src="{% static ''%}assets/js/worker-search.js"></script>
+<script src="{% static ''%}assets/js/table-sorting.js"></script>
 <script src="{% static 'assets/js/worker_assignment.js' %}"></script>
+
 {% endblock scripts %}
 

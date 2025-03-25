@@ -1,14 +1,16 @@
 {% extends 'components/base.html' %}
 {% load i18n %}
-{% comment %} {% load static %} {% endcomment %}
-{% comment %} {% block styles %}
+{% load static %}  <!-- Load the static template tag library -->
+
+{% block styles %}
 <!-- SELECT2 CSS -->
-<link href="{% static ''%}assets/plugins/select2/select2.min.css" rel="stylesheet"/>
+<link href="{% static 'assets/plugins/select2/select2.min.css' %}" rel="stylesheet"/>
 <!-- DATA TABLE CSS -->
-<link href="{% static ''%}assets/plugins/datatable/css/dataTables.bootstrap5.css" rel="stylesheet"/>
-<link href="{% static ''%}assets/plugins/datatable/css/buttons.bootstrap5.min.css" rel="stylesheet"/>
-<link href="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.css" rel="stylesheet"/>
-{% endblock styles %} {% endcomment %}
+<link href="{% static 'assets/plugins/datatable/css/dataTables.bootstrap5.css' %}" rel="stylesheet"/>
+<link href="{% static 'assets/plugins/datatable/css/buttons.bootstrap5.min.css' %}" rel="stylesheet"/>
+<link href="{% static 'assets/plugins/datatable/responsive.bootstrap5.css' %}" rel="stylesheet"/>
+
+{% endblock styles %}
 
 {% block body %}
 <div class="page-header">
@@ -17,13 +19,6 @@
    {% translate "activeWorkerRequests(Progress)" %}
   </h1>
  </div>
- <!-- <div class="ms-auto pageheader-btn">
-        <a href="{% url 'recruiting_web:workrequest_create' %}" class="btn btn-primary btn-icon text-white me-2">
-            <span>
-                <i class="fe fe-plus"></i>
-            </span> New Job Order
-        </a>
-    </div> -->
 </div>
 <div class="parent-btn-grp">
  <div class="dropdown">
@@ -52,22 +47,15 @@
   {% translate "addNewJobOrder" %}
  </a>
 </div>
-<!-- <div class="ms-auto pageheader-btn">
-    <a href="{% url 'recruiting_web:workrequest_create' %}" class="btn btn-primary btn-icon text-white me-2">
-        <span>
-            <i class="fe fe-plus"></i>
-        </span> New Job Order
-    </a>
-</div> -->
 <div class="row row-sm">
  <div class="col-lg-12">
   <div class="card">
    <div class="card-body">
     <div class="table-responsive">
-     <table class="table text-nowrap border-bottom" id="basic-datatable">
+     <table class="table text-nowrap border-bottom" id="workrequest-datatable">
       <thead>
        <tr>
-        <th class="wd-15p border-bottom-0 theading-color">
+        <th class="wd-15p border-bottom-0 theading-color" style="color: black;">
          {% translate "workerRequest" %}
         </th>
         <th class="wd-15p border-bottom-0 theading-color">
@@ -135,35 +123,22 @@
 </div>
 {% endblock body %}
 
-{% comment %} {% block scripts %}
+{% block scripts %}
 <!-- INTERNAL SELECT2 JS -->
-<script src="{% static ''%}assets/plugins/select2/select2.full.min.js">
-</script>
+<script src="{% static 'assets/plugins/select2/select2.full.min.js' %}"></script>
 <!-- DATA TABLE JS-->
-<script src="{% static ''%}assets/plugins/datatable/js/jquery.dataTables.min.js">
-</script>
-<script src="{% static ''%}assets/plugins/datatable/js/dataTables.bootstrap5.js">
-</script>
-<script src="{% static ''%}assets/plugins/datatable/js/dataTables.buttons.min.js">
-</script>
-<script src="{% static ''%}assets/plugins/datatable/js/buttons.bootstrap5.min.js">
-</script>
-<script src="{% static ''%}assets/plugins/datatable/js/jszip.min.js">
-</script>
-<script src="{% static ''%}assets/plugins/datatable/pdfmake/pdfmake.min.js">
-</script>
-<script src="{% static ''%}assets/plugins/datatable/pdfmake/vfs_fonts.js">
-</script>
-<script src="{% static ''%}assets/plugins/datatable/js/buttons.html5.min.js">
-</script>
-<script src="{% static ''%}assets/plugins/datatable/js/buttons.print.min.js">
-</script>
-<script src="{% static ''%}assets/plugins/datatable/js/buttons.colVis.min.js">
-</script>
-<script src="{% static ''%}assets/plugins/datatable/dataTables.responsive.min.js">
-</script>
-<script src="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.min.js">
-</script>
-<script src="{% static ''%}assets/js/table-data.js">
-</script>
-{% endblock scripts %} {% endcomment %}
+<script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap5.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/jszip.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js' %}"></script>
+<script src="{% static 'assets/js/table-data.js' %}"></script>
+<script src="{% static 'assets/js/table-sorting.js' %}"></script>
+{% endblock scripts %}
