@@ -10,7 +10,7 @@ from recruiting.views.web import (
     OkoMessageDetailsView,
 )
 from recruiting.views.workers import (
-     WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView
+     WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView
 )
 
 from recruiting.views.workers import (
@@ -38,6 +38,9 @@ urlpatterns = [
     path('work-requests/<pk>/',
          WorkRequestDetailView.as_view(),
          name='workrequest_detail'),
+    path('workers/get-roles-for-work-request/<str:work_request_id>/', 
+         GetRolesForWorkRequestView.as_view(), 
+         name='get_roles_for_work_request'),
     path('work-requests/<pk>/roles/create/',
          WorkRequestRoleCreateView.as_view(),
          name='workrequest_role_create'),

@@ -14,15 +14,6 @@
 
 {% block body %}
 <div class="container-fluid" style="position: relative; height: auto">
-    {% if messages %}
-        <div class="container mt-3">
-            {% for message in messages %}
-                <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% endif %}" role="alert">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
 
     <div class="row">
         <div class="page-header custom-page-header d-flex flex-column">
@@ -267,19 +258,26 @@
                             <label for="modal_worker_name">{% translate "Selected Workers" %}</label>
                             <input type="text" id="modal_worker_name" class="form-control" readonly>
                         </div>
-                        <input type="hidden" id="modal_worker_id" name="worker_ids"> <!-- Updated to send as a single string -->
+                        <input type="hidden" id="modal_worker_id" name="worker_ids">
                     </div>
-                
+
                     <div class="form-group">
                         <label for="modal_work_request">{% translate "Work Request" %}</label>
-                        <select class="form-control" id="modal_work_request" name="work_request" multiple>
+                        <select class="form-control" id="modal_work_request" name="work_request">
+                            <option value="">{% translate "Select a work request" %}</option>
                             {% for work_request in work_requests %}
                                 <option value="{{ work_request.id }}">{{ work_request.name }}</option>
                             {% endfor %}
                         </select>
                     </div>
-                    
-                    
+
+                    <div class="form-group">
+                        <label for="modal_role">{% translate "Role" %}</label>
+                        <select class="form-control" id="modal_role" name="role">
+                            <option value="">{% translate "Select a role" %}</option>
+                        </select>
+                    </div>
+
                     <div class="form-group">
                         <label for="modal_status">{% translate "Status" %}</label>
                         <select class="form-control" id="modal_status" name="status">
@@ -291,11 +289,11 @@
                     </div>
                     <button type="submit" class="btn btn-primary">{% translate "Assign" %}</button>
                 </form>
-                
             </div>
         </div>
     </div>
 </div>
+
 
 {% endblock body %}
 {% block scripts %}
@@ -318,6 +316,8 @@
 <script src="{% static ''%}assets/js/worker-search.js"></script>
 <script src="{% static ''%}assets/js/table-sorting.js"></script>
 <script src="{% static 'assets/js/worker_assignment.js' %}"></script>
+<script src="{% static 'assets/js/get-roles.js' %}"></script>
+
 
 {% endblock scripts %}
 

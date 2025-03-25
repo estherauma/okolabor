@@ -13,11 +13,10 @@ from common.views import BaseCreateView
 from recruiting.forms import WorkerCreateForm, WorkExperienceCreateForm,WorkerAssignmentForm
 from theme.forms import AdvancedFilterForm, FilterWorkExperienceForm
 from account.models import UserPreference,UserDocuments
-from recruiting.models import WorkAssignment,WorkAssignment,WorkRequests
+from recruiting.models import WorkAssignment,WorkAssignment,WorkRequests,Role
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 import json
-
 
 class WorkerListView(View):
     def get(self, request):
@@ -33,11 +32,9 @@ class WorkerListView(View):
         except ValueError:
             per_page = 4  # Fallback default
 
-        work_requests = WorkRequests.objects.filter(status='Open')
-
+        work_requests = WorkRequests.objects.filter(status='Open').prefetch_related('roles')
 
         # Filtering workers
-        
         if search_query:
             workers = workers.filter(
                 Q(first_name__icontains=search_query) |
@@ -79,68 +76,69 @@ class WorkerListView(View):
         """Handles worker assignment"""
         worker_ids = request.POST.getlist('worker_ids[]')  # List of selected workers
         work_request_ids = request.POST.getlist('work_request')  # List of selected work requests
+        role_ids = request.POST.getlist('role')  # List of selected roles
         status = request.POST.get('status', 'Assigned')
 
-        if not worker_ids or not work_request_ids:
+        if not worker_ids or not work_request_ids or not role_ids:
             return JsonResponse({'error': 'Invalid request, missing data'}, status=400)
 
         work_requests = WorkRequests.objects.filter(id__in=work_request_ids)
-        if not work_requests.exists():
-            return JsonResponse({'error': 'Invalid work requests'}, status=400)
+        roles = Role.objects.filter(id__in=role_ids)
+
+        if not work_requests.exists() or not roles.exists():
+            return JsonResponse({'error': 'Invalid work requests or roles'}, status=400)
 
         for worker_id in worker_ids:
             worker = get_object_or_404(User, id=worker_id)
 
             # Create or update WorkAssignment for each worker
-            work_assignment, created = WorkAssignment.objects.get_or_create(worker=worker)
-
-            # Add multiple work requests to the worker's assignment
-            work_assignment.work_request.set(work_requests)  # Use `.set()` for ManyToManyField
-            work_assignment.status = status
-            work_assignment.save()
+            for role in roles:
+                work_assignment, created = WorkAssignment.objects.get_or_create(worker=worker, role=role)
+                work_assignment.work_request = role.work_request
+                work_assignment.status = status
+                work_assignment.save()
 
         return JsonResponse({'success': 'Workers assigned successfully!'})
 
-
     
-
 class AssignWorkerView(View):
     def post(self, request):
         try:
             worker_ids_str = request.POST.get("worker_ids")  # Comma-separated worker IDs
-            work_request_ids = request.POST.getlist("work_request")  # Get multiple work request IDs
+            work_request_id = request.POST.get("work_request")  # Single work request ID
+            role_id = request.POST.get("role")  # Single role ID
             status = request.POST.get("status", "Assigned")
 
-            if not worker_ids_str or not work_request_ids:
-                messages.error(request, "Missing data. Please select workers and work requests.")
+            if not worker_ids_str or not work_request_id or not role_id:
+                messages.error(request, "Missing data. Please select workers, work request, and role.")
                 return JsonResponse({"success": False, "message": "Missing data"}, status=400)
 
             worker_ids = worker_ids_str.split(",")  # Convert to list
-            
+            work_request = get_object_or_404(WorkRequests, id=work_request_id)
+            role = get_object_or_404(Role, id=role_id)
+
             for worker_id in worker_ids:
                 worker = get_object_or_404(User, id=worker_id)
 
                 # Create or update a WorkAssignment object for the worker
                 work_assignment, created = WorkAssignment.objects.get_or_create(
                     worker=worker,
-                    defaults={'status': status}
+                    role=role,
+                    defaults={'status': status, 'work_request': work_request}
                 )
-
-                # Add multiple work requests to the assignment
-                work_requests = WorkRequests.objects.filter(id__in=work_request_ids)
-                work_assignment.work_request.set(work_requests)  # Use `.set()` for ManyToManyField
 
                 if not created:
                     work_assignment.status = status
+                    work_assignment.work_request = work_request
                     work_assignment.save()
 
             messages.success(request, "Workers assigned successfully!")
             return redirect("recruiting_web:workers")
-            
 
         except Exception as e:
             messages.error(request, f"Error: {str(e)}")
             return JsonResponse({"success": False, "message": str(e)}, status=400)
+
 
 
     
@@ -156,39 +154,6 @@ class GetWorkerDetailsView(View):
 
         return JsonResponse({'workers': workers_data})
 
-    
-# class WorkerAssignmentCreateView(CreateView):
-#     model = WorkAssignment
-#     form_class = WorkerAssignmentForm
-#     template_name = 'recruiting/worker_assignments/create.html'
-
-#     def form_valid(self, form):
-#         messages.success(self.request, _('Worker assigned successfully.'))
-#         return super(WorkerAssignmentCreateView, self).form_valid(form)
-
-#     def form_invalid(self, form):
-#         for field, errors in form.errors.items():
-#             for error in errors:
-#                 messages.error(self.request, f'{field}: {error}')
-#         return super().form_invalid(form)
-
-#     def get_success_url(self):
-#         work_request_id = self.object.work_request.id
-#         return reverse('recruiting_web:list_assignments', kwargs={'work_request_id': work_request_id})
-    
-
-
-
-# @method_decorator(csrf_exempt, name='dispatch')
-# class GetWorkerDetailsView(View):
-#     def post(self, request, *args, **kwargs):
-#         worker_ids = request.POST.getlist('worker_ids')
-#         if not worker_ids:
-#             return JsonResponse({'error': 'No worker IDs provided'}, status=400)
-
-#         workers = User.objects.filter(id__in=worker_ids).values('id', 'first_name', 'last_name', 'email')
-#         worker_list = [{"id": worker["id"], "name": f"{worker['first_name']} {worker['last_name']} ({worker['email']})"} for worker in workers]
-#         return JsonResponse({'workers': worker_list})
 
 
 class WorkerCreateView(CreateView):
@@ -259,7 +224,16 @@ class WorkerDetailsView(View):
         }
         return render(request, 'recruiting/workers/detail.html', context)
 
+class GetRolesForWorkRequestView(View):
+    def get(self, request, work_request_id):
+        # Ensure the work request exists
+        get_object_or_404(WorkRequests, id=work_request_id)
 
+        # Fetch roles associated with the work request
+        roles = Role.objects.filter(work_request_id=work_request_id)
+        roles_data = [{'id': role.id, 'title': role.title} for role in roles]
+
+        return JsonResponse({'roles': roles_data})
     
 
 
