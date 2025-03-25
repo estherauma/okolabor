@@ -116,7 +116,7 @@ class AssignWorkerView(View):
             status = request.POST.get("status", "Assigned")
 
             if not worker_ids_str or not work_request_id or not role_id:
-                messages.error(request, "Missing data. Please select workers, work request, and role.")
+                messages.error(request, _("missingDataPleaseSelectWorkersWorkRequestAndRole"))
                 return JsonResponse({"success": False, "message": "Missing data"}, status=400)
 
             worker_ids = worker_ids_str.split(",")  # Convert to list
@@ -138,7 +138,7 @@ class AssignWorkerView(View):
                     work_assignment.work_request = work_request
                     work_assignment.save()
 
-            messages.success(request, "Workers assigned successfully!")
+            messages.success(request, _("workersAssignedSuccessfully!"))
             return redirect("recruiting_web:workers")
 
         except Exception as e:
