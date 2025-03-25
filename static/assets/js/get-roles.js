@@ -3,7 +3,7 @@ document.getElementById('modal_work_request').addEventListener('change', functio
     const roleSelect = document.getElementById('modal_role');
 
     // Clear previous options
-    roleSelect.innerHTML = '<option value="">{% translate "Select a role" %}</option>';
+    roleSelect.innerHTML = '<option value="">{% translate "selectARole" %}</option>';
 
     if (workRequestId) {
         fetch(`/workers/get-roles-for-work-request/${workRequestId}/`)

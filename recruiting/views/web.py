@@ -38,7 +38,8 @@ from recruiting.models import (
     Qualification,
     Role,
     Wages,
-    WorkRequests,WorkAssignment
+    WorkRequests,
+    WorkAssignment
 )
 
 
