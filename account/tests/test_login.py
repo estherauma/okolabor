@@ -9,6 +9,7 @@ from django.test.testcases import TestCase
 from rest_framework.test import APITestCase
 from account.models import User, UserWorkExperience
 from account.models import UserPreference
+from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
 class LoginAPITestCase(TestCase):
     def setUp(self):
@@ -113,12 +114,17 @@ class LoginAPITestCase(TestCase):
 
 class LoginTestCase(TestCase):
     def setUp(self):
-        self.client = APIClient()
-        
-        self.user = get_user_model().objects.create_user(
-            email='samsonkapeyi@fiftyeight.io',
-            password='adminwert1A'
+        # Ensure the group with ID 1 exists
+        group, created = Group.objects.get_or_create(id=1, name="Recruiter")
+
+        # Create a test user and add to the group
+        self.user = User.objects.create_user(
+            email="samsonkapeyi@fiftyeight.io",
+            password="adminwert1A"
         )
+        self.user.groups.add(group)  # Add user to group
+        self.user.save()
+        
         
     def test_login_template(self):
         response = self.client.get('/')
