@@ -189,10 +189,18 @@
                                         </a>
                                         {% endif %}
                                     </td>
-                                    <td>{% translate "chloe" %}</td>
+                                    <td>{{worker.city}}</td>
                                     <td>30%</td>
-                                    <td>{% translate "harvestingFruitPicking" %}</td>
-                                    <td>{% translate "intermediate" %}</td>
+                                    <td>
+                                        {% if worker.work_experience and worker.work_experience|length > 0 %}
+                                            {% for exp in worker.work_experience %}
+                                                {{ exp.work_title }}
+                                            {% endfor %}
+                                        {% else %}
+                                            No experience
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ worker.english_proficiency }}</td>
                                     <td>{% translate "any" %}</td>
                                     <td>{% translate "pending" %}</td>
                                 </tr>

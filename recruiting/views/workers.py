@@ -15,7 +15,6 @@ from theme.forms import AdvancedFilterForm, FilterWorkExperienceForm
 from account.models import UserPreference,UserDocuments
 
 
-
 class WorkerListView(View):
     def get(self, request):
         form = FilterWorkExperienceForm()
@@ -40,19 +39,44 @@ class WorkerListView(View):
         paginator = Paginator(workers, per_page)
         page_obj = paginator.get_page(page_number)
 
+        # 🔹 Add work experience & preferences to each worker in `page_obj`
+        for worker in page_obj:
+            # Fetch work experience
+            worker.work_experience = list(UserWorkExperience.objects.filter(user=worker).values(
+                'work_title', 'company', 'start_date', 'end_date', 'currently_working'
+            ))
+
+            # Fetch user preferences
+            preferences = UserPreference.objects.filter(user=worker)
+            preference_data = {pref.key: pref.value for pref in preferences}
+
+            # Get "English Proficiency" value or default to "-"
+            worker.english_proficiency = preference_data.get("English Proficiency", "-")
+
+        # ✅ If AJAX request, return JSON
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            workers_data = [{'id': worker.id, 'firstname': worker.first_name, 'lastname': worker.last_name, 'email': worker.email} for worker in page_obj]
+            workers_data = [{
+                'id': worker.id,
+                'firstname': worker.first_name,
+                'lastname': worker.last_name,
+                'email': worker.email,
+                'city': worker.city,
+                'work_experience': worker.work_experience,
+                'english_proficiency': worker.english_proficiency  # Include proficiency
+            } for worker in page_obj]
             return JsonResponse({'workers': workers_data, 'num_pages': paginator.num_pages})
 
+        # ✅ Pass updated `page_obj` with `work_experience` and `english_proficiency` to template
         context = {
             'workers': page_obj,
             'form': form,
             'filter_form': filter_form,
             'search_query': search_query,
             'paginator': paginator,
-            'per_page': per_page  # Pass per_page to template for reference
+            'per_page': per_page
         }
         return render(request, 'recruiting/workers/list.html', context)
+
 
 class WorkerCreateView(CreateView):
     model = User

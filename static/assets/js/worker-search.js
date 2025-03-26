@@ -16,19 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     resultsTableBody.innerHTML = ''; // Clear existing results
                     data.workers.forEach(worker => {
                         const row = `
-                            <tr class="text-center">
-                                <td>
-                                    <a href="workers/${worker.id}">
-                                        ${worker.email}
-                                    </a>
-                                </td>
-                                <td>Chloe</td>
-                                <td>30%</td>
-                                <td>Harvesting Fruit Picking</td>
-                                <td>Intermediate</td>
-                                <td>Any</td>
-                                <td>Pending</td>
-                            </tr>
+                            
                         `;
                         resultsTableBody.insertAdjacentHTML('beforeend', row);
                     });

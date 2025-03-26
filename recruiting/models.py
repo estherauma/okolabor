@@ -1,4 +1,5 @@
 from django.db import models
+from account.models import User
 from common.models import AuditableModel
 from django.utils.translation import gettext_lazy as _
 
@@ -243,3 +244,14 @@ class OkoMessageRecipients(AuditableModel):
 
     def __str__(self):
         return f'{self.recipient}'
+    
+class EmployerRecruiter(AuditableModel):
+    employer = models.ForeignKey(Employer, on_delete=models.CASCADE)
+    recruiter = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('employer', 'recruiter')
+
+    def __str__(self):
+        return f"{self.recruiter.first_name} -> {self.employer.name}"
+

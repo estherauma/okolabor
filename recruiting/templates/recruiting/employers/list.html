@@ -44,11 +44,46 @@
       </ul>
     </div>
   </div>
-  <a class="btn dark-green-button" href="{% url 'recruiting_web:workrequest_create' %}">
-    <span><i class="fe fe-plus"></i></span>
-    {% translate "addNewEmployer" %}
-  </a>
+  <div class="d-flex align-items-center gap-2">
+    <button class="btn dark-green-button" data-bs-toggle="modal" data-bs-target="#assignRecruiterModal">
+      {% translate "Assign Recruiter" %}
+    </button>
+    <a class="btn dark-green-button" href="{% url 'recruiting_web:workrequest_create' %}">
+      <span><i class="fe fe-plus"></i></span>
+      {% translate "addNewEmployer" %}
+    </a>
+  </div>
 </div>
+<div class="modal fade" id="assignRecruiterModal" tabindex="-1" aria-labelledby="assignRecruiterLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="assignRecruiterLabel">{% translate "Assign Recruiter" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="assignRecruiterForm">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="recruiterSelect" class="form-label">{% translate "Select Recruiter" %}</label>
+            <select id="recruiterSelect" class="form-control">
+              <option value="">{% translate "Choose Recruiter" %}</option>
+              {% for recruiter in recruiters %}
+              <option value="{{ recruiter.id }}">{{ recruiter.email }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <input type="hidden" id="selectedEmployers" name="selected_employers">
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Cancel" %}</button>
+        <button type="button" class="btn btn-primary" id="assignRecruiterBtn">{% translate "Assign" %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="row">
   <div class="col-12">
     <div class="card">
@@ -68,19 +103,25 @@
             </thead>
             <tbody>
               {% for employer in employers %}
-              <tr class="text-center">
+              <tr class="text-center" data-id="{{ employer.id }}">
                 <td><input class="table-checkbox" type="checkbox"/></td>
-                <td>{{ employer.name }}</td>
+                <td>
+                  <a href="/employers/{{ employer.id }}" class="text-decoration-none text-dark">
+                      {{ employer.name }}
+                  </a>
+              </td>
                 <td>{{ employer.email}}</td>
                 <td>{{ employer.address}}</td>
                 <td>{{ employer.country }}</td>
                 <td>{{ employer.phone }}</td>
                 <td>
-                  <a class="btn btn-primary" href="/employers/{{employer.id}}">
-                    <i class="fe fe-eye"></i>
-                    {% translate "view" %}
-                  </a>
-                </td>
+                  {% if employer.recruiters %}
+                      {{ employer.recruiters.0 }}  <!-- Display only the first recruiter -->
+                  {% else %}
+                      No recruiters assigned
+                  {% endif %}
+              </td>
+            
               </tr>
               {% endfor %}
             </tbody>
@@ -166,4 +207,5 @@
 <script src="{% static ''%}assets/js/table-data.js"></script>
 <script src="{% static ''%}assets/js/employer_search.js"></script>
 <script src="{% static ''%}assets/js/table-sorting.js"></script>
+<script src="{% static ''%}assets/js/assign_recruiter.js"></script>
 {% endblock scripts %}
