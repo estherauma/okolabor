@@ -115,11 +115,11 @@ class LoginAPITestCase(TestCase):
 class LoginTestCase(TestCase):
     def setUp(self):
         # Ensure the group with ID 1 exists
-        group, created = Group.objects.get_or_create(id=1, name="Recruiter")
+        group, created = Group.objects.get_or_create(id=1, name="recruiter")
 
         # Create a test user and add to the group
         self.user = User.objects.create_user(
-            email="samsonkapeyi@fiftyeight.io",
+            email="test@okolabor.io",
             password="adminwert1A"
         )
         self.user.groups.add(group)  # Add user to group
