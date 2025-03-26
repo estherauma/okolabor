@@ -250,7 +250,9 @@ class EmployerRecruiter(AuditableModel):
     recruiter = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ('employer', 'recruiter')
+        constraints = [
+            models.UniqueConstraint(fields=['employer', 'recruiter'], name='unique_employer_recruiter')
+        ]
 
     def __str__(self):
         return f"{self.recruiter.first_name} -> {self.employer.name}"
