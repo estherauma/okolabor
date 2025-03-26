@@ -48,24 +48,36 @@ class WorkerListView(View):
         paginator = Paginator(workers, per_page)
         page_obj = paginator.get_page(page_number)
 
+        # 🔹 Add work experience & preferences to each worker in `page_obj`
         for worker in page_obj:
+            # Fetch work experience
+            worker.work_experience = list(UserWorkExperience.objects.filter(user=worker).values(
+                'work_title', 'company', 'start_date', 'end_date', 'currently_working'
+            ))
             worker.profile_completion_percentage = worker.calculate_profile_completion()
 
+            # Fetch user preferences
+            preferences = UserPreference.objects.filter(user=worker)
+            preference_data = {pref.key: pref.value for pref in preferences}
 
-        # Handle AJAX request for worker selection
+            # Get "English Proficiency" value or default to "-"
+            worker.english_proficiency = preference_data.get("English Proficiency", "-")
+
+        # ✅ If AJAX request, return JSON
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            workers_data = [
-                {
-                    'id': worker.id,
-                    'firstname': worker.first_name,
-                    'lastname': worker.last_name,
-                    'email': worker.email,
-                    'profile_completion': worker.profile_completion_percentage
-                }
-                for worker in page_obj
-            ]
+            workers_data = [{
+                'id': worker.id,
+                'firstname': worker.first_name,
+                'lastname': worker.last_name,
+                'email': worker.email,
+                'city': worker.city,
+                'work_experience': worker.work_experience,
+                'english_proficiency': worker.english_proficiency,  # Include proficiency
+                'profile_completion': worker.profile_completion_percentage
+            } for worker in page_obj]
             return JsonResponse({'workers': workers_data, 'num_pages': paginator.num_pages})
 
+        # ✅ Pass updated `page_obj` with `work_experience` and `english_proficiency` to template
         context = {
             'workers': page_obj,
             'work_requests': work_requests,
