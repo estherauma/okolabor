@@ -85,7 +85,7 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
         return self.is_superuser
 
     def __str__(self):
-        return f'{self.email} {self.last_name}'
+        return f'{self.email} {self.last_name or ""}'.strip()
     
     def get_full_name(self):
         return f"{self.first_name} {self.middle_name} {self.last_name}".strip()
@@ -95,9 +95,9 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
         required_fields = [
             'first_name', 'last_name', 'email', 'curp',
             'profile_image', 'telephone', 'mobile',
-            'address_line_1', 'city', 'passport_number', 'dob','gender'
+            'address_line_1', 'city', 'passport_number', 'dob', 'gender'
         ]
-        filled_fields = sum(1 for field in required_fields if getattr(self, field, None))
+        filled_fields = sum(1 for field in required_fields if getattr(self, field, None) not in [None, ''])
         total_fields = len(required_fields)
         return round((filled_fields / total_fields) * 100, 2) if total_fields else 0
 

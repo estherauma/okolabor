@@ -18,6 +18,17 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 import json
 
+# Define onboarding steps for profile completion
+ONBOARDING_STEPS = [
+    "profileStepOne",
+    "workExperienceList",
+    "documentsStepOne",
+    "levelOfProficiency",
+    "recordVideo",
+    "workPreferenceStepOne",
+    "workPreferenceStepTwo"
+]
+
 class WorkerListView(View):
     def get(self, request):
         work_assign_form = WorkerAssignmentForm()
@@ -35,6 +46,7 @@ class WorkerListView(View):
         work_requests = WorkRequests.objects.filter(status='Open').prefetch_related('roles')
 
         workers = User.objects.filter(groups__name='worker').order_by('-created_at')
+
         # Filtering workers
         if search_query:
             workers = workers.filter(
@@ -42,29 +54,41 @@ class WorkerListView(View):
                 Q(last_name__icontains=search_query) |
                 Q(email__icontains=search_query)
             )
-        else:
-            workers = User.objects.filter(groups__name='worker').order_by('-created_at')
 
         paginator = Paginator(workers, per_page)
         page_obj = paginator.get_page(page_number)
 
+        # Fetch worker preferences and calculate profile completion
+        worker_data = []
         for worker in page_obj:
-            worker.profile_completion_percentage = worker.calculate_profile_completion()
+            profile_completion = self.calculate_profile_completion(worker)
+            worker_details = self.get_worker_preferences(worker)
+            
+            worker.profile_completion_percentage = profile_completion
 
+            latest_assignment = WorkAssignment.objects.filter(worker=worker).order_by('-assigned_date').first()
+            worker.latest_status = latest_assignment.status if latest_assignment else "No Assignment"
+            
+            for key, value in worker_details.items():
+                setattr(worker, key, value)
+
+            
+            worker_data.append({
+                'id': worker.id,
+                'firstname': worker.first_name,
+                'lastname': worker.last_name,
+                'email': worker.email,
+                'profile_completion': profile_completion,
+                **worker_details  # Merge worker details into response
+            })
 
         # Handle AJAX request for worker selection
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            workers_data = [
-                {
-                    'id': worker.id,
-                    'firstname': worker.first_name,
-                    'lastname': worker.last_name,
-                    'email': worker.email,
-                    'profile_completion': worker.profile_completion_percentage
-                }
-                for worker in page_obj
-            ]
-            return JsonResponse({'workers': workers_data, 'num_pages': paginator.num_pages})
+            print(worker_data,"worker_data")
+            return JsonResponse({
+                'workers': worker_data,
+                'num_pages': paginator.num_pages
+            })
 
         context = {
             'workers': page_obj,
@@ -77,6 +101,34 @@ class WorkerListView(View):
             'per_page': per_page,
         }
         return render(request, 'recruiting/workers/list.html', context)
+
+    def calculate_profile_completion(self, user):
+        """Calculate the profile completion percentage for a user"""
+        user_preferences = UserPreference.objects.filter(user=user, key__in=ONBOARDING_STEPS)
+
+        # Convert queryset into a dictionary {key: value}
+        user_prefs_dict = {pref.key: pref.value.lower() == "true" for pref in user_preferences}
+        # Count completed steps
+        completed_steps = sum(user_prefs_dict.get(step, False) for step in ONBOARDING_STEPS)
+        total_steps = len(ONBOARDING_STEPS)
+
+        # Calculate completion percentage
+        return round((completed_steps / total_steps) * 100, 2) if total_steps > 0 else 0
+
+    def get_worker_preferences(self, user):
+        """Fetch town, work experience, proficiency, and location preference from UserPreference"""
+        preference_keys = ["town", "workExperienceList", "levelOfProficiency", "locationPreference"]
+
+        preferences = UserPreference.objects.filter(user=user, key__in=preference_keys).values("key", "value")
+    
+        worker_details = {pref["key"]: pref["value"] for pref in preferences}
+
+        return {
+            "town": worker_details.get("town", "Not Provided"),
+            "work_experience": worker_details.get("workExperienceList", "Not Provided"),
+            "english_proficiency": worker_details.get("levelOfProficiency", "Not Provided"),
+            "location_preference": worker_details.get("locationPreference", "Not Provided"),
+        }
 
     def post(self, request):
         """Handles worker assignment"""
@@ -145,9 +197,6 @@ class AssignWorkerView(View):
             messages.error(request, f"Error: {str(e)}")
             return JsonResponse({"success": False, "message": str(e)}, status=400)
 
-
-
-    
 
 
 @method_decorator(csrf_exempt, name='dispatch')
