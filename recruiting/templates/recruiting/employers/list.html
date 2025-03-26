@@ -46,7 +46,7 @@
   </div>
   <div class="d-flex align-items-center gap-2">
     <button class="btn dark-green-button" data-bs-toggle="modal" data-bs-target="#assignRecruiterModal">
-      {% translate "Assign Recruiter" %}
+      {% translate "assignRecruiter" %}
     </button>
     <a class="btn dark-green-button" href="{% url 'recruiting_web:workrequest_create' %}">
       <span><i class="fe fe-plus"></i></span>
@@ -58,16 +58,16 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="assignRecruiterLabel">{% translate "Assign Recruiter" %}</h5>
+        <h5 class="modal-title" id="assignRecruiterLabel">{% translate "assignRecruiter" %}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form id="assignRecruiterForm">
           {% csrf_token %}
           <div class="mb-3">
-            <label for="recruiterSelect" class="form-label">{% translate "Select Recruiter" %}</label>
+            <label for="recruiterSelect" class="form-label">{% translate "selectRecruiter" %}</label>
             <select id="recruiterSelect" class="form-control">
-              <option value="">{% translate "Choose Recruiter" %}</option>
+              <option value="">{% translate "chooseRecruiter" %}</option>
               {% for recruiter in recruiters %}
               <option value="{{ recruiter.id }}">{{ recruiter.email }}</option>
               {% endfor %}

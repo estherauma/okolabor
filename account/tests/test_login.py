@@ -133,7 +133,7 @@ class LoginTestCase(TestCase):
 
     def test_login_success(self):
         response = self.client.post('/', {
-            'email': 'samsonkapeyi@fiftyeight.io',
+            'email': 'test@okolabor.io',
             'password': 'adminwert1A'}
         )
         self.assertEquals(response.status_code, 302)
