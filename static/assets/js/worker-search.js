@@ -2,6 +2,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.querySelector('.search-input');
     const resultsTableBody = document.querySelector('#basic-datatable tbody');
 
+    function updateAssignButtonState() {
+        const assignButton = document.querySelector(".dark-green-button");
+        const workerCheckboxes = document.querySelectorAll(".worker-checkbox");
+        const isAnyChecked = Array.from(workerCheckboxes).some(checkbox => checkbox.checked);
+        assignButton.disabled = !isAnyChecked; // Enable if at least one checkbox is checked
+    }
+
+    function attachCheckboxListeners() {
+        const workerCheckboxes = document.querySelectorAll(".worker-checkbox");
+        workerCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener("change", updateAssignButtonState);
+        });
+    }
+
     if (searchInput) {
         searchInput.addEventListener('input', function () {
             const query = searchInput.value;
@@ -15,15 +29,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(data => {
                     resultsTableBody.innerHTML = ''; // Clear existing results
                     data.workers.forEach(worker => {
+                        const firstName = worker.firstname || 'N/A';
+                        const lastName = worker.lastname || 'N/A';
+                        const email = worker.email || 'N/A';
+                        const profileCompletion = worker.profile_completion || '0';
+
                         const row = `
                             <tr class="text-center">
                                 <td>
-                                    <a href="workers/${worker.id}">
-                                        ${worker.email}
+                                    <input type="checkbox" class="worker-checkbox" value="${worker.id}" data-worker-name="${firstName} ${lastName}">
+                                </td>
+                                <td>
+                                    <a href="/workers/${worker.id}">
+                                        ${email}
                                     </a>
                                 </td>
                                 <td>Chloe</td>
-                                <td>30%</td>
+                                <td>${profileCompletion}%</td>
                                 <td>Harvesting Fruit Picking</td>
                                 <td>Intermediate</td>
                                 <td>Any</td>
@@ -32,7 +54,13 @@ document.addEventListener('DOMContentLoaded', function () {
                         `;
                         resultsTableBody.insertAdjacentHTML('beforeend', row);
                     });
+
+                    // Reattach event listeners after updating the table
+                    attachCheckboxListeners();
+                    updateAssignButtonState(); // Update button state after rendering new data
                 });
         });
     }
+
+    attachCheckboxListeners(); // Attach event listeners when the page loads
 });

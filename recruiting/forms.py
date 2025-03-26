@@ -6,7 +6,7 @@ from account.models import User
 from recruiting.models import (
     Deduction, Employer, Hours, OkoMessage, Qualification,
     EmploymentLocation, HousingInformation, MealProvision,
-    Role, Wages, WorkRequests
+    Role, Wages, WorkRequests,WorkAssignment
 )
 
 from account.models import (UserWorkExperience)
@@ -102,6 +102,28 @@ class WorkRequestForm(forms.ModelForm):
                 'class': 'form-control',
             }),
         }
+
+class WorkerAssignmentForm(forms.ModelForm):
+    work_request = forms.ModelMultipleChoiceField(
+        queryset=WorkRequests.objects.all(),
+        widget=forms.SelectMultiple(attrs={'class': 'form-control'}),
+        label=_("Work Request")
+    )
+
+    class Meta:
+        model = WorkAssignment
+        fields = ['work_request', 'worker', 'status']
+
+        labels = {
+            'worker': _("Worker"),
+            'status': _("Status"),
+        }
+
+        widgets = {
+            'worker': forms.Select(attrs={'class': 'form-control'}),
+            'status': forms.Select(attrs={'class': 'form-control'}),
+        }
+
 
 
 class WorkRequestRoleForm(forms.ModelForm):
