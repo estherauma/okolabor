@@ -4,15 +4,17 @@
 
 {% block styles %}
 <!-- SELECT2 CSS -->
-<link href="{% static ''%}assets/plugins/select2/select2.min.css" rel="stylesheet"/>
+<link href="{% static 'assets/plugins/select2/select2.min.css' %}" rel="stylesheet"/>
 <!-- DATA TABLE CSS -->
-<link href="{% static ''%}assets/plugins/datatable/css/dataTables.bootstrap5.css" rel="stylesheet"/>
-<link href="{% static ''%}assets/plugins/datatable/css/buttons.bootstrap5.min.css" rel="stylesheet"/>
-<link href="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.css" rel="stylesheet"/>
-<link href="{% static ''%}assets/css/workers.css" rel="stylesheet"/>
-{% endblock styles %} {% block body %}
+<link href="{% static 'assets/plugins/datatable/css/dataTables.bootstrap5.css' %}" rel="stylesheet"/>
+<link href="{% static 'assets/plugins/datatable/css/buttons.bootstrap5.min.css' %}" rel="stylesheet"/>
+<link href="{% static 'assets/plugins/datatable/responsive.bootstrap5.css' %}" rel="stylesheet"/>
+<link href="{% static 'assets/css/workers.css' %}" rel="stylesheet"/>
+{% endblock styles %}
 
+{% block body %}
 <div class="container-fluid" style="position: relative; height: auto">
+
     <div class="row">
         <div class="page-header custom-page-header d-flex flex-column">
             <h1 class="page-title">
@@ -149,10 +151,11 @@
                                 <li><a class="dropdown-item" href="?page=1&search={{ request.GET.search }}&per_page=20">{% translate "20PerPage" %}</a></li>
                             </ul>
                         </div>
-                        <a class="btn dark-green-button ms-3" href="#">
+                        <!-- <a class="btn dark-green-button ms-3" href="#" id="add-to-shortlist">
                             <span><i class="fe fe-plus"></i></span>
                             {% translate "addTo" %}
-                        </a>
+                        </a> -->
+                        <button class="btn dark-green-button ms-3" data-bs-toggle="modal" data-bs-target="#workerAssignmentModal" disabled>+{% translate "addTo" %}</button>
                         <a class="btn dark-green-button ms-3" href="{% url 'recruiting_web:recruiter_create_worker' %}">
                             <span><i class="fe fe-plus"></i></span>
                             {% translate "addWorker" %}
@@ -166,6 +169,7 @@
                         <table class="table text-nowrap border-bottom" id="basic-datatable">
                             <thead>
                                 <tr>
+                                    <th class="theading-color">{% translate "checkbox" %}</th>
                                     <th class="theading-color">{% translate "name" %}</th>
                                     <th class="theading-color">{% translate "town" %}</th>
                                     <th class="theading-color">{% translate "profileCompletion" %}</th>
@@ -179,6 +183,9 @@
                                 {% for worker in workers %}
                                 <tr class="text-center">
                                     <td>
+                                        <input type="checkbox" class="worker-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.first_name }} {{ worker.last_name }}">
+                                    </td>
+                                    <td>
                                         {% if worker.firstname and worker.lastname %}
                                         <a href="workers/{{ worker.id }}">
                                             {{ worker.firstname }} {{ worker.lastname }}
@@ -189,18 +196,10 @@
                                         </a>
                                         {% endif %}
                                     </td>
-                                    <td>{{worker.city}}</td>
-                                    <td>30%</td>
-                                    <td>
-                                        {% if worker.work_experience and worker.work_experience|length > 0 %}
-                                            {% for exp in worker.work_experience %}
-                                                {{ exp.work_title }}
-                                            {% endfor %}
-                                        {% else %}
-                                            No experience
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ worker.english_proficiency }}</td>
+                                    <td>{% translate "chloe" %}</td>
+                                    <td>{{ worker.profile_completion_percentage }}%</td>
+                                    <td>{% translate "harvestingFruitPicking" %}</td>
+                                    <td>{% translate "intermediate" %}</td>
                                     <td>{% translate "any" %}</td>
                                     <td>{% translate "pending" %}</td>
                                 </tr>
@@ -218,7 +217,7 @@
                             {% else %}
                                 <span class="disabled"><span style="font-weight: bold;">Previous</span></span>
                             {% endif %}
-                    
+
                             {% for i in workers.paginator.page_range %}
                                 {% if workers.number == i %}
                                     <span class="current">{{ i }}</span>
@@ -226,7 +225,7 @@
                                     <a href="?page={{ i }}&search={{ request.GET.search }}&per_page={{ request.GET.per_page }}">{{ i }}</a>
                                 {% endif %}
                             {% endfor %}
-                    
+
                             {% if workers.has_next %}
                                 <a href="?page={{ workers.next_page_number }}&search={{ request.GET.search }}&per_page={{ request.GET.per_page }}">
                                     <span style="font-weight: bold;">Next</span>
@@ -236,19 +235,70 @@
                             {% endif %}
                         </span>
                     </div>
-                    
                 </div>
             </div>
         </div>
     </div>
     <button class="btn btn-success mb-2" style="margin-left: 1500px; font-weight: bolder; border-radius: 50%; width: 50px; height: 50px; padding: 0;">+</button>
 </div>
+
+
+<div class="modal fade" id="workerAssignmentModal" tabindex="-1" aria-labelledby="workerAssignmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="workerAssignmentModalLabel">{% translate "assignWorker" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="assignWorkerForm" method="post" action="{% url 'recruiting_web:assign_worker' %}">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="modal_worker_name">{% translate "selectedWorkers" %}</label>
+                            <input type="text" id="modal_worker_name" class="form-control" readonly>
+                        </div>
+                        <input type="hidden" id="modal_worker_id" name="worker_ids">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="modal_work_request">{% translate "workRequest" %}</label>
+                        <select class="form-control" id="modal_work_request" name="work_request">
+                            <option value="">{% translate "Select a work request" %}</option>
+                            {% for work_request in work_requests %}
+                                <option value="{{ work_request.id }}">{{ work_request.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="modal_role">{% translate "Role" %}</label>
+                        <select class="form-control" id="modal_role" name="role">
+                            <option value="">{% translate "selectARole" %}</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="modal_status">{% translate "Status" %}</label>
+                        <select class="form-control" id="modal_status" name="status">
+                            <option value="Assigned">Assigned</option>
+                            <option value="Accepted">Accepted</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">{% translate "Assign" %}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 {% endblock body %}
-
 {% block scripts %}
-
 <!-- INTERNAL SELECT2 JS -->
-<script src="{% static ''%}assets/plugins/select2/select2.full.min.js"></script>
+<script src="{% static 'assets/plugins/select2/select2.full.min.js' %}"></script>
 <!-- DATA TABLE JS-->
 <script src="{% static ''%}assets/plugins/datatable/js/jquery.dataTables.min.js"></script>
 <script src="{% static ''%}assets/plugins/datatable/js/dataTables.bootstrap5.js"></script>
@@ -265,5 +315,9 @@
 <script src="{% static ''%}assets/js/table-data.js"></script>
 <script src="{% static ''%}assets/js/worker-search.js"></script>
 <script src="{% static ''%}assets/js/table-sorting.js"></script>
+<script src="{% static 'assets/js/worker_assignment.js' %}"></script>
+<script src="{% static 'assets/js/get-roles.js' %}"></script>
+
 
 {% endblock scripts %}
+

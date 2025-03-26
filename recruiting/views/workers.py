@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.contrib.auth.models import Group
 from django.core.paginator import Paginator
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.views import View
@@ -10,29 +10,38 @@ from django.views.generic import CreateView
 from django.db.models import Q
 from account.models import User, UserWorkExperience, UserJobExperience,UserJobExperienceDetails
 from common.views import BaseCreateView
-from recruiting.forms import WorkerCreateForm, WorkExperienceCreateForm
+from recruiting.forms import WorkerCreateForm, WorkExperienceCreateForm,WorkerAssignmentForm
 from theme.forms import AdvancedFilterForm, FilterWorkExperienceForm
 from account.models import UserPreference,UserDocuments
-
+from recruiting.models import WorkAssignment,WorkAssignment,WorkRequests,Role
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+import json
 
 class WorkerListView(View):
     def get(self, request):
+        work_assign_form = WorkerAssignmentForm()
         form = FilterWorkExperienceForm()
         filter_form = AdvancedFilterForm()
         search_query = request.GET.get('search', '')
         page_number = request.GET.get('page', 1)
-        per_page = request.GET.get('per_page', 25)  # Default to 4 per page if not provided
+        per_page = request.GET.get('per_page', 25)
 
         try:
-            per_page = int(per_page)  # Convert per_page to an integer
+            per_page = int(per_page)
         except ValueError:
-            per_page = 4  # Fallback to default if conversion fails
+            per_page = 4  # Fallback default
 
+        work_requests = WorkRequests.objects.filter(status='Open').prefetch_related('roles')
+
+        workers = User.objects.filter(groups__name='worker').order_by('-created_at')
+        # Filtering workers
         if search_query:
-            workers = User.objects.filter(
-                Q(groups__name='worker') &
-                (Q(first_name__icontains=search_query) | Q(last_name__icontains=search_query)) | Q(email__icontains=search_query)
-            ).order_by('-created_at')
+            workers = workers.filter(
+                Q(first_name__icontains=search_query) |
+                Q(last_name__icontains=search_query) |
+                Q(email__icontains=search_query)
+            )
         else:
             workers = User.objects.filter(groups__name='worker').order_by('-created_at')
 
@@ -45,6 +54,7 @@ class WorkerListView(View):
             worker.work_experience = list(UserWorkExperience.objects.filter(user=worker).values(
                 'work_title', 'company', 'start_date', 'end_date', 'currently_working'
             ))
+            worker.profile_completion_percentage = worker.calculate_profile_completion()
 
             # Fetch user preferences
             preferences = UserPreference.objects.filter(user=worker)
@@ -62,20 +72,106 @@ class WorkerListView(View):
                 'email': worker.email,
                 'city': worker.city,
                 'work_experience': worker.work_experience,
-                'english_proficiency': worker.english_proficiency  # Include proficiency
+                'english_proficiency': worker.english_proficiency,  # Include proficiency
+                'profile_completion': worker.profile_completion_percentage
             } for worker in page_obj]
             return JsonResponse({'workers': workers_data, 'num_pages': paginator.num_pages})
 
         # ✅ Pass updated `page_obj` with `work_experience` and `english_proficiency` to template
         context = {
             'workers': page_obj,
+            'work_requests': work_requests,
             'form': form,
+            'work_assign_form': work_assign_form,
             'filter_form': filter_form,
             'search_query': search_query,
             'paginator': paginator,
-            'per_page': per_page
+            'per_page': per_page,
         }
         return render(request, 'recruiting/workers/list.html', context)
+
+    def post(self, request):
+        """Handles worker assignment"""
+        worker_ids = request.POST.getlist('worker_ids[]')  # List of selected workers
+        work_request_ids = request.POST.getlist('work_request')  # List of selected work requests
+        role_ids = request.POST.getlist('role')  # List of selected roles
+        status = request.POST.get('status', 'Assigned')
+
+        if not worker_ids or not work_request_ids or not role_ids:
+            return JsonResponse({'error': 'Invalid request, missing data'}, status=400)
+
+        work_requests = WorkRequests.objects.filter(id__in=work_request_ids)
+        roles = Role.objects.filter(id__in=role_ids)
+
+        if not work_requests.exists() or not roles.exists():
+            return JsonResponse({'error': 'Invalid work requests or roles'}, status=400)
+
+        for worker_id in worker_ids:
+            worker = get_object_or_404(User, id=worker_id)
+
+            # Create or update WorkAssignment for each worker
+            for role in roles:
+                work_assignment, created = WorkAssignment.objects.get_or_create(worker=worker, role=role)
+                work_assignment.work_request = role.work_request
+                work_assignment.status = status
+                work_assignment.save()
+
+        return JsonResponse({'success': 'Workers assigned successfully!'})
+
+    
+class AssignWorkerView(View):
+    def post(self, request):
+        try:
+            worker_ids_str = request.POST.get("worker_ids")  # Comma-separated worker IDs
+            work_request_id = request.POST.get("work_request")  # Single work request ID
+            role_id = request.POST.get("role")  # Single role ID
+            status = request.POST.get("status", "Assigned")
+
+            if not worker_ids_str or not work_request_id or not role_id:
+                messages.error(request, _("missingDataPleaseSelectWorkersWorkRequestAndRole"))
+                return JsonResponse({"success": False, "message": "Missing data"}, status=400)
+
+            worker_ids = worker_ids_str.split(",")  # Convert to list
+            work_request = get_object_or_404(WorkRequests, id=work_request_id)
+            role = get_object_or_404(Role, id=role_id)
+
+            for worker_id in worker_ids:
+                worker = get_object_or_404(User, id=worker_id)
+
+                # Create or update a WorkAssignment object for the worker
+                work_assignment, created = WorkAssignment.objects.get_or_create(
+                    worker=worker,
+                    role=role,
+                    defaults={'status': status, 'work_request': work_request}
+                )
+
+                if not created:
+                    work_assignment.status = status
+                    work_assignment.work_request = work_request
+                    work_assignment.save()
+
+            messages.success(request, _("workersAssignedSuccessfully!"))
+            return redirect("recruiting_web:workers")
+
+        except Exception as e:
+            messages.error(request, f"Error: {str(e)}")
+            return JsonResponse({"success": False, "message": str(e)}, status=400)
+
+
+
+    
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class GetWorkerDetailsView(View):
+    def post(self, request, *args, **kwargs):
+        worker_ids = request.POST.getlist('worker_ids[]')  # Get selected worker IDs
+        workers = User.objects.filter(id__in=worker_ids)
+
+        workers_data = [{'id': worker.id, 'firstname': worker.first_name, 'lastname': worker.last_name, 'email': worker.email} for worker in workers]
+
+        return JsonResponse({'workers': workers_data})
+
 
 
 class WorkerCreateView(CreateView):
@@ -110,33 +206,6 @@ class WorkerCreateView(CreateView):
             kwargs={'pk': self.object.pk}
         )
 
-
-# class WorkerDetailsView(View):
-#     def get(self, request, pk):
-#         worker = get_object_or_404(User, pk=pk)
-#         preferences = UserPreference.objects.filter(user=worker)
-
-#         # Convert preferences into a dictionary for easy template access
-#         preference_data = {pref.key: pref.value for pref in preferences}
-
-#         workplaces = []
-#         if 'workplaces' in preference_data:
-#             workplaces = preference_data['workplaces'].split(',')
-#         preference_data['workplaces'] = workplaces
-
-#         Prefered_Employes = []
-#         if 'Prefered_Employes' in preference_data:
-#             Prefered_Employes = preference_data['Prefered_Employes'].split(',')
-#         preference_data['Prefered_Employes'] = Prefered_Employes
-
-#         print(Prefered_Employes,"Prefered_Employes")
-#         context = {
-#             'worker': worker,
-#             'preferences': preference_data,  # Now we have a dictionary for easy access
-#             'Prefered_Employes': Prefered_Employes,
-#             'workplaces': workplaces
-#         }
-#         return render(request, 'recruiting/workers/detail.html', context)
 
 class WorkerDetailsView(View):
     def get(self, request, pk):
@@ -173,7 +242,16 @@ class WorkerDetailsView(View):
         }
         return render(request, 'recruiting/workers/detail.html', context)
 
+class GetRolesForWorkRequestView(View):
+    def get(self, request, work_request_id):
+        # Ensure the work request exists
+        get_object_or_404(WorkRequests, id=work_request_id)
 
+        # Fetch roles associated with the work request
+        roles = Role.objects.filter(work_request_id=work_request_id)
+        roles_data = [{'id': role.id, 'title': role.title} for role in roles]
+
+        return JsonResponse({'roles': roles_data})
     
 
 
