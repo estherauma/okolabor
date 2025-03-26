@@ -82,7 +82,7 @@ class WorkerListView(View):
                 **worker_details  # Merge worker details into response
             })
 
-        # Handle AJAX request for worker selection
+        # ✅ If AJAX request, return JSON
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             print(worker_data,"worker_data")
             return JsonResponse({
@@ -90,6 +90,7 @@ class WorkerListView(View):
                 'num_pages': paginator.num_pages
             })
 
+        # ✅ Pass updated `page_obj` with `work_experience` and `english_proficiency` to template
         context = {
             'workers': page_obj,
             'work_requests': work_requests,
