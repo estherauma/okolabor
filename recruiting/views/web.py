@@ -174,25 +174,29 @@ class EmployerDetailView(View):
         context = {'employer': employer}
         return render(request, 'recruiting/employers/detail.html', context)
 
+# class WorkRequestsListView(View):
+#     def get(self, request):
+#         user = request.user  # Get logged-in recruiter
+
+#         # Check if the user is part of the recruiter group
+#         recruiter_group = Group.objects.get(id=1)  # Adjust ID if necessary
+#         if not recruiter_group.user_set.filter(id=user.id).exists():
+#             return JsonResponse({"success": False, "error": "Unauthorized"}, status=403)
+
+#         # Get employers assigned to the recruiter
+#         assigned_employers = EmployerRecruiter.objects.filter(recruiter=user).values_list("employer", flat=True)
+
+#         # Fetch work requests linked to those employers
+#         work_requests = WorkRequests.objects.filter(employer_id__in=assigned_employers)
+
+#         context = {"work_requests": work_requests}
+#         return render(request, "recruiting/work_requests/list.html", context)
+
 class WorkRequestsListView(View):
     def get(self, request):
-        user = request.user  # Get logged-in recruiter
-
-        # Check if the user is part of the recruiter group
-        recruiter_group = Group.objects.get(id=1)  # Adjust ID if necessary
-        if not recruiter_group.user_set.filter(id=user.id).exists():
-            return JsonResponse({"success": False, "error": "Unauthorized"}, status=403)
-
-        # Get employers assigned to the recruiter
-        assigned_employers = EmployerRecruiter.objects.filter(recruiter=user).values_list("employer", flat=True)
-
-        # Fetch work requests linked to those employers
-        work_requests = WorkRequests.objects.filter(employer_id__in=assigned_employers)
-
-        context = {"work_requests": work_requests}
-        return render(request, "recruiting/work_requests/list.html", context)
-
-
+        work_requests = WorkRequests.objects.all()
+        context = {'work_requests': work_requests}
+        return render(request, 'recruiting/work_requests/list.html', context)
 
 class WorkRequestCreateView(CreateView):
     model = WorkRequests
