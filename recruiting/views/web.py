@@ -168,10 +168,33 @@ class EmployerCreateView(CreateView):
         )
 
 
+# class EmployerDetailView(View):
+#     def get(self, request, pk):
+#         employer = get_object_or_404(Employer, pk=pk)
+#         context = {'employer': employer}
+#         return render(request, 'recruiting/employers/detail.html', context)
+
 class EmployerDetailView(View):
     def get(self, request, pk):
         employer = get_object_or_404(Employer, pk=pk)
-        context = {'employer': employer}
+        
+        # Get work requests related to this employer and group them
+        work_requests = WorkRequests.objects.filter(employer=employer)
+        
+        # Categorize work requests
+        in_progress_work_requests = work_requests.filter(status__in=['Open', 'Requested'])
+        closed_work_requests = work_requests.filter(status='Closed')
+        draft_work_requests = work_requests.filter(status='Draft')
+
+        recruiters = EmployerRecruiter.objects.filter(employer=employer).select_related('recruiter')
+        print(recruiters,"recruiters")
+        context = {
+            'employer': employer,
+            'in_progress_work_requests': in_progress_work_requests,
+            'closed_work_requests': closed_work_requests,
+            'draft_work_requests': draft_work_requests,
+            'recruiters': recruiters,
+        }
         return render(request, 'recruiting/employers/detail.html', context)
 
 class WorkRequestsListView(View):
