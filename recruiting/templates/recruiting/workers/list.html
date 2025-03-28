@@ -151,10 +151,6 @@
                                 <li><a class="dropdown-item" href="?page=1&search={{ request.GET.search }}&per_page=20">{% translate "20PerPage" %}</a></li>
                             </ul>
                         </div>
-                        <!-- <a class="btn dark-green-button ms-3" href="#" id="add-to-shortlist">
-                            <span><i class="fe fe-plus"></i></span>
-                            {% translate "addTo" %}
-                        </a> -->
                         <button class="btn dark-green-button ms-3" data-bs-toggle="modal" data-bs-target="#workerAssignmentModal" disabled>+{% translate "addTo" %}</button>
                         <a class="btn dark-green-button ms-3" href="{% url 'recruiting_web:recruiter_create_worker' %}">
                             <span><i class="fe fe-plus"></i></span>

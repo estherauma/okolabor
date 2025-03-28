@@ -1,12 +1,12 @@
 $(document).ready(function () {
     $('#basic-datatable, #employers-list-datatable, #workrequest-datatable').DataTable({
         "ordering": true,
-        "order": [], // Default ordering (no pre-sorting)
+        "order": [],
         "columnDefs": [{
             "targets": '_all',
-            "orderable": true // Enables sorting on all columns
+            "orderable": true 
         }],
-        "paging": false, // Disable pagination
-        "info": false, // Hide "Showing X to Y of Z entries"
+        "paging": false,
+        "info": false, 
     });
 });

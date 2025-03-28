@@ -54,51 +54,6 @@ from recruiting.models import (
     WorkAssignment,
 )
 
-
-# class EmployerListView(View):
-#     def get(self, request):
-#         employers = Employer.objects.all()
-#         context = {'employers': employers}
-#         return render(request, 'recruiting/employers/list.html', context)
-    
-# class EmployerListView(View):
-#     def get(self, request):
-#         query = request.GET.get('query')
-#         employers_list = Employer.objects.all()
-
-#         if query:
-#             employers_list = employers_list.filter(
-#                 Q(name__icontains=query) |
-#                 Q(email__icontains=query) |
-#                 Q(address__icontains=query) |
-#                 Q(country__icontains=query) |
-#                 Q(phone__icontains=query)
-#             )
-
-#         paginator = Paginator(employers_list, 10)  # Show 10 employers per page
-#         page_number = request.GET.get('page')
-#         employers = paginator.get_page(page_number)
-#         recruiter_group = Group.objects.get(id=1)  # Adjust ID if necessary
-#         recruiters = recruiter_group.user_set.all()
-
-#         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-#             # If it's an AJAX request, return JSON response
-#             employers_data = [{
-#                 'id': employer.id,
-#                 'name': employer.name,
-#                 'email': employer.email,
-#                 'address': employer.address,
-#                 'country': employer.country,
-#                 'phone': employer.phone
-#             } for employer in employers]
-#             return JsonResponse({
-#                 'employers': employers_data,
-#                 'has_more': employers.has_next()
-#             })
-
-#         context = {'employers': employers, 'query': query,'recruiters': recruiters}
-#         return render(request, 'recruiting/employers/list.html', context)
-
 class EmployerListView(View):
     def get(self, request):
         query = request.GET.get('query')
@@ -113,14 +68,12 @@ class EmployerListView(View):
                 Q(phone__icontains=query)
             )
 
-        paginator = Paginator(employers_list, 10)  # Show 10 employers per page
+        paginator = Paginator(employers_list, 10)
         page_number = request.GET.get('page')
         employers = paginator.get_page(page_number)
 
-        recruiter_group = Group.objects.get(id=1)  # Adjust ID if necessary
+        recruiter_group = Group.objects.get(id=1) 
         recruiters = recruiter_group.user_set.all()
-
-        # Fetch recruiters assigned to employers
         employers_data = []
         for employer in employers:
             assigned_recruiters = EmployerRecruiter.objects.filter(employer=employer)
@@ -133,7 +86,7 @@ class EmployerListView(View):
                 'address': employer.address,
                 'country': employer.country,
                 'phone': employer.phone,
-                'recruiters': recruiter_names  # List of recruiter names
+                'recruiters': recruiter_names 
             })
 
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -176,19 +129,12 @@ class EmployerDetailView(View):
 
 class WorkRequestsListView(View):
     def get(self, request):
-        user = request.user  # Get logged-in recruiter
-
-        # Check if the user is part of the recruiter group
-        recruiter_group = Group.objects.get(id=1)  # Adjust ID if necessary
+        user = request.user 
+        recruiter_group = Group.objects.get(id=1)  
         if not recruiter_group.user_set.filter(id=user.id).exists():
             return JsonResponse({"success": False, "error": "Unauthorized"}, status=403)
-
-        # Get employers assigned to the recruiter
         assigned_employers = EmployerRecruiter.objects.filter(recruiter=user).values_list("employer", flat=True)
-
-        # Fetch work requests linked to those employers
         work_requests = WorkRequests.objects.filter(employer_id__in=assigned_employers)
-
         context = {"work_requests": work_requests}
         return render(request, "recruiting/work_requests/list.html", context)
 
@@ -219,12 +165,9 @@ class WorkRequestCreateView(CreateView):
 class WorkRequestDetailView(View):
     def get(self, request, pk):
         work_request = get_object_or_404(WorkRequests, pk=pk)
-        
-        # Filter WorkAssignments with 'Assigned' or 'Accepted' status
         active_workers = WorkAssignment.objects.filter(
             work_request=work_request, status__in=['Assigned', 'Accepted']
         ).select_related('worker')
-
         context = {
             'workrequest': work_request,
             'active_workers': active_workers,
@@ -413,8 +356,6 @@ class AssignRecruiterView(View):
             
             if not employer_ids or not recruiter_id:
                 return JsonResponse({"success": False, "error": "invalidData"}, status=400)
-
-            # Check if recruiter exists
             try:
                 recruiter_group = Group.objects.get(id=1)  # Adjust ID if necessary
                 recruiters = recruiter_group.user_set.filter(id=recruiter_id)
@@ -424,8 +365,7 @@ class AssignRecruiterView(View):
                 recruiter = recruiters.first()
             except User.DoesNotExist:
                 return JsonResponse({"success": False, "error": "recruiterNotFoundInGroup"}, status=404)
-
-            # Assign recruiter to employers
+            
             employer_recruiter_objs = []
             for employer_id in employer_ids:
                 try:
@@ -455,8 +395,6 @@ class SendRecruiterEmailView(View):
 
             if not employer_ids or not recruiter_id:
                 return JsonResponse({"success": False, "error": "invalidJsonFormat"}, status=400)
-
-            # Check if recruiter exists in the group
             try:
                 recruiter_group = Group.objects.get(id=1)  # Adjust the group ID if necessary
                 recruiters = recruiter_group.user_set.filter(id=recruiter_id)
@@ -470,11 +408,9 @@ class SendRecruiterEmailView(View):
             except User.DoesNotExist:
                 return JsonResponse({"success": False, "error": "recruiterNotFoundInGroup"}, status=404)
 
-            # Send an email for each employer
             for employer_id in employer_ids:
                 employer = get_object_or_404(Employer, id=employer_id)
 
-                # Generate encoded links
                 encoded_employer_id = urlsafe_base64_encode(force_bytes(employer.id))
                 encoded_recruiter_id = urlsafe_base64_encode(force_bytes(recruiter.id))
 
@@ -511,14 +447,12 @@ class SendRecruiterEmailView(View):
 class AcceptRecruiterView(View):
     def get(self, request, employer_id, recruiter_id, *args, **kwargs):
         try:
-            # Decode the IDs
             employer_id = force_str(urlsafe_base64_decode(employer_id))
             recruiter_id = force_str(urlsafe_base64_decode(recruiter_id))
             employer = get_object_or_404(Employer, id=employer_id)
             recruiter = get_object_or_404(User, id=recruiter_id)
-            # Assign recruiter to employer
             EmployerRecruiter.objects.get_or_create(employer=employer, recruiter=recruiter)
-            # Send email to recruiter
+            
             subject = "recruiterAssignmentAccepted"
             message = f"""
             Hi {recruiter.first_name},
