@@ -184,11 +184,11 @@
                                     </td>
                                     <td>
                                         {% if worker.first_name and worker.last_name %}
-                                            <a href="workers/{{ worker.id }}">
+                                            <a href="{{ worker.id }}">
                                                 {{ worker.first_name }} {{ worker.last_name }}
                                             </a>
                                         {% else %}
-                                            <a href="workers/{{ worker.id }}">
+                                            <a href="{{ worker.id }}">
                                                 {{ worker.email }}
                                             </a>
                                         {% endif %}

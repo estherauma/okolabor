@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const assignButton = document.querySelector(".dark-green-button");
         const workerCheckboxes = document.querySelectorAll(".worker-checkbox");
         const isAnyChecked = Array.from(workerCheckboxes).some(checkbox => checkbox.checked);
-        assignButton.disabled = !isAnyChecked; // Enable if at least one checkbox is checked
+        assignButton.disabled = !isAnyChecked; 
     }
 
     function attachCheckboxListeners() {
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
             })
                 .then(response => response.json())
                 .then(data => {
-                    resultsTableBody.innerHTML = ''; // Clear existing results
+                    resultsTableBody.innerHTML = '';
                     data.workers.forEach(worker => {
                         const firstName = worker.firstname || 'N/A';
                         const lastName = worker.lastname || 'N/A';
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     <input type="checkbox" class="worker-checkbox" value="${worker.id}" data-worker-name="${firstName} ${lastName}">
                                 </td>
                                 <td>
-                                    <a href="/workers/${worker.id}">
+                                    <a href="/${worker.id}">
                                         ${email}
                                     </a>
                                 </td>
