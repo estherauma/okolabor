@@ -85,21 +85,10 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
         return self.is_superuser
 
     def __str__(self):
-        return f'{self.email} {self.last_name}'
+        return f'{self.email} {self.last_name or ""}'.strip()
     
     def get_full_name(self):
         return f"{self.first_name} {self.middle_name} {self.last_name}".strip()
-    
-    def calculate_profile_completion(self):
-        """Calculates profile completion percentage based on filled fields."""
-        required_fields = [
-            'first_name', 'last_name', 'email', 'curp',
-            'profile_image', 'telephone', 'mobile',
-            'address_line_1', 'city', 'passport_number', 'dob','gender'
-        ]
-        filled_fields = sum(1 for field in required_fields if getattr(self, field, None))
-        total_fields = len(required_fields)
-        return round((filled_fields / total_fields) * 100, 2) if total_fields else 0
 
 
 class LoginEvent(BaseModel):
@@ -186,8 +175,7 @@ class UserJobExperience(AuditableModel):
         related_name='crop_experiences', null=True, blank=True)
     job_type = models.CharField(max_length=256, null=False, blank=False)
     type_details = models.CharField(max_length=256, null=True, blank=True)
-    # duration = models.IntegerField(null=False, blank=False)
-    # duration_type = models.CharField(max_length=256, null=False, blank=False)
+
 
 
     def __str__(self):

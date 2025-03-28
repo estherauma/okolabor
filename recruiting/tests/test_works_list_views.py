@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from recruiting.models import WorkRequests, Employer, WorkAssignment, Role, User
+from account.models import UserPreference
 from django.contrib.auth.models import Group
 
 class WorkerListViewTestCase(TestCase):
@@ -38,6 +39,10 @@ class WorkerListViewTestCase(TestCase):
             password='password'
         )
         self.user.groups.add(self.worker_group)
+
+        # Create UserPreferences for the user
+        for step in ["profileStepOne", "workExperienceList", "documentsStepOne"]:
+            UserPreference.objects.create(user=self.user, key=step, value="True")
 
         self.client = Client()
 
@@ -104,3 +109,23 @@ class WorkerListViewTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
         expected_response = {'error': 'Invalid work requests or roles'}
         self.assertJSONEqual(response.content, expected_response)
+
+    def test_worker_list_view_profile_completion(self):
+        """Test the profile completion calculation."""
+        url = reverse('recruiting_web:workers')  # Adjust the URL name as per your configuration
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        # Check the context data directly
+        workers = response.context['workers']
+        self.assertTrue(hasattr(workers[0], 'profile_completion_percentage'))
+        self.assertGreater(workers[0].profile_completion_percentage, 0)
+
+
+    def test_worker_list_view_ajax_request(self):
+        """Test the AJAX request for WorkerListView."""
+        url = reverse('recruiting_web:workers')  # Adjust the URL name as per your configuration
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('workers', response.json())
+        self.assertIn('num_pages', response.json())
