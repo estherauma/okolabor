@@ -504,7 +504,7 @@ class RemoveWorkerFromAssignmentView(View):
             work_request_id = assignment.work_request.pk  
             assignment.worker = None
             assignment.role = None
-            assignment.status = 'Cancelled'
+            assignment.status = 'Deleted'
             assignment.save()
             return redirect(reverse('recruiting_web:workrequest_detail', kwargs={'pk': work_request_id}))
 
