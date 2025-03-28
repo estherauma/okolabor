@@ -18,7 +18,7 @@ from recruiting.views.workers import (
 from recruiting.views.web import AssignRecruiterView
 from recruiting.views.web import SendRecruiterEmailView
 from recruiting.views.web import AcceptRecruiterView
-from recruiting.views.web import RejectRecruiterView
+from recruiting.views.web import (RejectRecruiterView,RemoveWorkerFromAssignmentView)
 
 
 app_name = 'recruiting_web'
@@ -105,6 +105,6 @@ urlpatterns = [
     path("send-recruiter-email/", SendRecruiterEmailView.as_view(), name="send_recruiter_email"),
     path("accept-recruiter/<str:employer_id>/<str:recruiter_id>/", AcceptRecruiterView.as_view(), name="accept_recruiter"),
     path("reject-recruiter/<str:employer_id>/<str:recruiter_id>/", RejectRecruiterView.as_view(), name="reject_recruiter"),
-
+    path('remove-worker/<str:worker_id>/', RemoveWorkerFromAssignmentView.as_view(), name='remove_worker'),
 
 ]
