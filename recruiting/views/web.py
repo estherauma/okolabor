@@ -143,15 +143,18 @@ class EmployerDetailView(View):
             'recruiters': recruiters,
         }
         return render(request, 'recruiting/employers/detail.html', context)
-
+    
 class WorkRequestsListView(View):
     def get(self, request):
-        user = request.user 
-        recruiter_group = Group.objects.get(id=1)  
-        if not recruiter_group.user_set.filter(id=user.id).exists():
-            return JsonResponse({"success": False, "error": "Unauthorized"}, status=403)
-        assigned_employers = EmployerRecruiter.objects.filter(recruiter=user).values_list("employer", flat=True)
-        work_requests = WorkRequests.objects.filter(employer_id__in=assigned_employers)
+        user = request.user
+        recruiter_group = Group.objects.get(id=1)
+        is_recruiter = recruiter_group.user_set.filter(id=user.id).exists()
+        work_requests = WorkRequests.objects.none()
+        
+        if is_recruiter:
+            assigned_employers = EmployerRecruiter.objects.filter(recruiter=user).values_list("employer", flat=True)
+            work_requests = WorkRequests.objects.filter(employer_id__in=assigned_employers)
+
         context = {"work_requests": work_requests}
         return render(request, "recruiting/work_requests/list.html", context)
 
