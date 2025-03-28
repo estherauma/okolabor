@@ -54,6 +54,11 @@ from recruiting.models import (
     WorkAssignment,
 )
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> dc4a683ff3d316926c486cbd96fa65f3a52664e2
 class EmployerListView(View):
     def get(self, request):
         query = request.GET.get('query')
@@ -121,23 +126,58 @@ class EmployerCreateView(CreateView):
         )
 
 
+
 class EmployerDetailView(View):
     def get(self, request, pk):
         employer = get_object_or_404(Employer, pk=pk)
-        context = {'employer': employer}
+        
+        # Get work requests related to this employer and group them
+        work_requests = WorkRequests.objects.filter(employer=employer)
+        
+        # Categorize work requests
+        in_progress_work_requests = work_requests.filter(status__in=['Open', 'Requested'])
+        closed_work_requests = work_requests.filter(status='Closed')
+        draft_work_requests = work_requests.filter(status='Draft')
+
+        recruiters = EmployerRecruiter.objects.filter(employer=employer).select_related('recruiter')
+        context = {
+            'employer': employer,
+            'in_progress_work_requests': in_progress_work_requests,
+            'closed_work_requests': closed_work_requests,
+            'draft_work_requests': draft_work_requests,
+            'recruiters': recruiters,
+        }
         return render(request, 'recruiting/employers/detail.html', context)
 
 class WorkRequestsListView(View):
     def get(self, request):
+<<<<<<< HEAD
         user = request.user 
         recruiter_group = Group.objects.get(id=1)  
         if not recruiter_group.user_set.filter(id=user.id).exists():
             return JsonResponse({"success": False, "error": "Unauthorized"}, status=403)
         assigned_employers = EmployerRecruiter.objects.filter(recruiter=user).values_list("employer", flat=True)
         work_requests = WorkRequests.objects.filter(employer_id__in=assigned_employers)
+=======
+        user = request.user  # Get logged-in recruiter
+
+        # Check if the user is part of the recruiter group
+        recruiter_group = Group.objects.get(id=1)  # Adjust ID if necessary
+        is_recruiter = recruiter_group.user_set.filter(id=user.id).exists()
+
+        # If user is not a recruiter, return an empty work request list
+        work_requests = WorkRequests.objects.none()
+        
+        if is_recruiter:
+            # Get employers assigned to the recruiter
+            assigned_employers = EmployerRecruiter.objects.filter(recruiter=user).values_list("employer", flat=True)
+
+            # Fetch work requests linked to those employers
+            work_requests = WorkRequests.objects.filter(employer_id__in=assigned_employers)
+
+>>>>>>> dc4a683ff3d316926c486cbd96fa65f3a52664e2
         context = {"work_requests": work_requests}
         return render(request, "recruiting/work_requests/list.html", context)
-
 
 
 class WorkRequestCreateView(CreateView):
@@ -299,8 +339,6 @@ class RecruiterTodoView(LoginRequiredMixin, View):
     def get(self, request):
         # initialize filter form
         form = TodoFilterForm()
-
-
         user = User.objects.get(pk=request.user.id)
         todos = WorkRequests.objects.exclude(
             status='completed'
