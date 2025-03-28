@@ -109,6 +109,20 @@
        {{employer.zipcode}}
       </span>
      </li>
+     <li class="list-group-item">
+        <span>
+            <strong>{% translate "AssignedTo:" %}</strong>
+        </span>
+        <span class="">
+            {% if recruiters %}
+                {% for employer_recruiter in recruiters %}
+                    {{ employer_recruiter.recruiter.first_name }} {{ employer_recruiter.recruiter.last_name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            {% else %}
+            <strong>{% translate "NoRecruitersAssigned" %}</strong>
+            {% endif %}
+        </span>
+    </li>
     </ul>
    </div>
   </div>
@@ -117,7 +131,7 @@
   <div class="card">
    <div class="card-header">
     <h3 class="card-title">
-     {% translate "employerDetailsNewJobOrder/h3&gt;" %}
+     {% translate "inProgressWorkRequests" %}
     </h3>
    </div>
    <div class="card-body">
@@ -126,26 +140,30 @@
       <thead>
        <tr>
         <th class="border-bottom-0">
-         {% translate "employerDetailsName" %}
+         {% translate "requestID" %}
         </th>
         <th class="border-bottom-0">
-         {% translate "employerDetailsPosition" %}
+         {% translate "requestDate" %}
         </th>
         <th class="border-bottom-0">
-         {% translate "employerDetailsOffice" %}
+         {% translate "startDate" %}
         </th>
         <th class="border-bottom-0">
-         {% translate "employerDetailsAge" %}
-        </th>
-        <th class="border-bottom-0">
-         {% translate "employerDetailsStartDate" %}
-        </th>
-        <th class="border-bottom-0">
-         {% translate "employerDetailsSalary" %}
+         {% translate "status" %}
         </th>
        </tr>
       </thead>
       <tbody>
+        {% for work_request in in_progress_work_requests %}
+            <tr>
+                <td>{{ work_request.id }}</td>
+                <td>{{ work_request.created_at }}</td>  <!-- Assuming you have created_at field in AuditableModel -->
+                <td>{{ work_request.start_date }}</td>
+                <td>{{ work_request.status }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+      <!-- <tbody>
        <tr>
         <td>
          {% translate "employerDetailsTigerNixon" %}
@@ -206,23 +224,15 @@
          $86,000
         </td>
        </tr>
-      </tbody>
+      </tbody> -->
      </table>
-     <div style="display: inline-block;">
-      <button class="btn btn-secondary" id="button" style="margin-right: 10px;">
-       {% translate "employerDetailsDecline" %}
-      </button>
-      <button class="btn btn-success">
-       {% translate "employerDetailsAccept" %}
-      </button>
-     </div>
     </div>
    </div>
   </div>
   <div class="card">
    <div class="card-header">
     <h3 class="card-title">
-     {% translate "employerDetailsActiveJobOrders" %}
+     {% translate "closedWorkRequests" %}
     </h3>
    </div>
    <div class="card-body">
@@ -231,67 +241,25 @@
       <thead>
        <tr>
         <th class="wd-15p border-bottom-0">
-         {% translate "employerDetailsFirstName" %}
+         {% translate "requestID" %}
         </th>
         <th class="wd-15p border-bottom-0">
-         {% translate "employerDetailsLastName" %}
+         {% translate "requestDate" %}
         </th>
         <th class="wd-20p border-bottom-0">
-         {% translate "employerDetailsPosition" %}
-        </th>
-        <th class="wd-15p border-bottom-0">
-         {% translate "employerDetailsStartDate" %}
-        </th>
-        <th class="wd-10p border-bottom-0">
-         {% translate "employerDetailsSalary" %}
-        </th>
-        <th class="wd-25p border-bottom-0">
-         {% translate "employerDetailsE-mail" %}
+         {% translate "status" %}
         </th>
        </tr>
       </thead>
       <tbody>
-       <tr>
-        <td>
-         {% translate "employerDetailsBella" %}
-        </td>
-        <td>
-         {% translate "employerDetailsChloe" %}
-        </td>
-        <td>
-         {% translate "employerDetailsSystemDeveloper" %}
-        </td>
-        <td>
-         2018/03/12
-        </td>
-        <td>
-         $654,765
-        </td>
-        <td>
-         b.Chloe@datatables.net
-        </td>
-       </tr>
-       <tr>
-        <td>
-         {% translate "employerDetailsDonna" %}
-        </td>
-        <td>
-         {% translate "employerDetailsBond" %}
-        </td>
-        <td>
-         {% translate "employerDetailsAccountManager" %}
-        </td>
-        <td>
-         2012/02/21
-        </td>
-        <td>
-         $543,654
-        </td>
-        <td>
-         d.bond@datatables.net
-        </td>
-       </tr>
-      </tbody>
+        {% for work_request in closed_work_requests %}
+            <tr>
+                <td>{{ work_request.id }}</td>
+                <td>{{ work_request.created_at }}</td>
+                <td>{{ work_request.status }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
      </table>
     </div>
    </div>
@@ -299,75 +267,35 @@
   <div class="card">
    <div class="card-header">
     <h3 class="card-title">
-     {% translate "employerDetailsJobOrderHistory" %}
+     {% translate "draftWorkRequests" %}
     </h3>
    </div>
    <div class="card-body">
     <div class="table-responsive">
-     <table class="table table-bordered text-nowrap border-bottom" id="another-basic-datatable">
+     <table class="table table-bordered text-nowrap border-bottom" id="basic-datatable">
       <thead>
        <tr>
         <th class="wd-15p border-bottom-0">
-         {% translate "employerDetailsFirstName" %}
+         {% translate "requestID" %}
         </th>
         <th class="wd-15p border-bottom-0">
-         {% translate "employerDetailsLastName" %}
+         {% translate "requestDate" %}
         </th>
         <th class="wd-20p border-bottom-0">
-         {% translate "employerDetailsPosition" %}
-        </th>
-        <th class="wd-15p border-bottom-0">
-         {% translate "employerDetailsStartDate" %}
-        </th>
-        <th class="wd-10p border-bottom-0">
-         {% translate "employerDetailsSalary" %}
-        </th>
-        <th class="wd-25p border-bottom-0">
-         {% translate "employerDetailsE-mail" %}
+         {% translate "status" %}
         </th>
        </tr>
       </thead>
       <tbody>
-       <tr>
-        <td>
-         {% translate "employerDetailsJohn" %}
-        </td>
-        <td>
-         {% translate "employerDetailsDoe" %}
-        </td>
-        <td>
-         {% translate "employerDetailsSoftwareEngineer" %}
-        </td>
-        <td>
-         2019/10/12
-        </td>
-        <td>
-         $123,456
-        </td>
-        <td>
-         j.doe@datatables.net
-        </td>
-       </tr>
-       <tr>
-        <td>
-         {% translate "employerDetailsJane" %}
-        </td>
-        <td>
-         {% translate "employerDetailsSmith" %}
-        </td>
-        <td>
-         {% translate "employerDetailsProjectManager" %}
-        </td>
-        <td>
-         2015/05/23
-        </td>
-        <td>
-         $98,765
-        </td>
-        <td>
-         j.smith@datatables.net
-        </td>
-       </tr>
+        <tbody>
+            {% for work_request in draft_work_requests %}
+                <tr>
+                    <td>{{ work_request.id }}</td>
+                    <td>{{ work_request.created_at }}</td>
+                    <td>{{ work_request.status }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
       </tbody>
      </table>
     </div>
@@ -408,6 +336,7 @@
 </script>
 <script src="{% static 'assets/js/table-data.js' %}">
 </script>
+<script src="{% static 'assets/js/table-sorting.js' %}"></script>
 <script>
     $(document).ready(function () {
         if ($.fn.DataTable.isDataTable('#delete-datatable')) {
