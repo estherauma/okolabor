@@ -636,8 +636,8 @@
                         <td>{{ assignment.worker.first_name }} {{ assignment.worker.last_name }}</td>
                         <td>{{ assignment.role.title }}</td>
                         <td>{{ assignment.status }}</td>
-                        <td >
-                            <a href="{% url 'recruiting_web:remove_worker' assignment.worker_id %}" class="text-danger" title="{% translate 'Delete' %}">
+                        <td class="text-muted text-center">
+                            <a href="{% url 'recruiting_web:remove_worker' assignment.worker_id %}" class="text-danger" title="{% translate 'delete' %}">
                                 <i class="fas fa-trash-alt"></i>
                             </a>
                         </td>
