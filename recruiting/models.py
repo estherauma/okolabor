@@ -69,7 +69,7 @@ class WorkAssignment(AuditableModel):  # Assuming it extends an auditable model
 
     work_request = models.ForeignKey(WorkRequests, on_delete=models.CASCADE, related_name='assignments',null=True, blank=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE, related_name="assignments",null=True, blank=True)  # New role field
-    worker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assignments')
+    worker = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='assignments',null=True, blank=True)
     assigned_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Assigned')
 
