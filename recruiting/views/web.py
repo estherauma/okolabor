@@ -83,11 +83,8 @@ class EmployerListView(View):
         employers_data = []
         for employer in employers:
             assigned_recruiters = EmployerRecruiter.objects.filter(employer=employer)
-            print(assigned_recruiters,"assigned_recruiters")
             recruiter_names = [rec.recruiter.get_full_name() for rec in assigned_recruiters]
-            print(recruiter_names,"recruiter_names")
-
-            print(recruiter_names,"recruiter_names")
+           
             employers_data.append({
                 'id': employer.id,
                 'name': employer.name,
