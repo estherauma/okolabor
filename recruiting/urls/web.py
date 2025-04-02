@@ -7,7 +7,7 @@ from recruiting.views.web import (
     RoleHoursCreateView, RoleHousingCreateView, RoleMealsCreateView,
     RoleQualificationsCreateView, RoleWagesCreateView, WorkRequestCreateView,
     WorkRequestDetailView, WorkRequestRoleCreateView, WorkRequestsListView,
-    OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView
+    OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView,AssignRecruiterView,SendRecruiterEmailView,AcceptRecruiterView,RejectRecruiterView,RemoveWorkerFromAssignmentView
 )
 from recruiting.views.workers import (
      WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView
@@ -15,10 +15,6 @@ from recruiting.views.workers import (
 from recruiting.views.workers import (
      CreateWorkExperienceView, WorkExperienceDetailsView
 )
-from recruiting.views.web import AssignRecruiterView
-from recruiting.views.web import SendRecruiterEmailView
-from recruiting.views.web import AcceptRecruiterView
-from recruiting.views.web import RejectRecruiterView
 
 
 app_name = 'recruiting_web'
@@ -109,5 +105,6 @@ urlpatterns = [
     path('recruiters/remove/<str:employer_id>/<str:recruiter_id>/', RemoveRecruiterFromEmployerView.as_view(), name='remove_recruiter_from_employer'),
     path('access-denied/', AccessDeniedView.as_view(), name='access_denied'),
 
+    path('remove-worker/<str:worker_id>/', RemoveWorkerFromAssignmentView.as_view(), name='remove_worker'),
 
 ]
