@@ -394,14 +394,15 @@ class AssignRecruiterView(View):
                     )
                     employer_recruiter_objs.append(obj)
                 except Employer.DoesNotExist:
-                    messages.warning(request, f"Employer with ID {employer_id} not found.")
+                    messages.warning(request, f"employerWithId{employer_id}NotFound.")
+
 
             messages.success(request, f"successfullyAssignedRecruiterTo {len(employer_recruiter_objs)} employer(s).")
         
         except json.JSONDecodeError:
             messages.error(request, "invalidJSONFormat.")
         except Exception as e:
-            messages.error(request, f"An error occurred: {str(e)}")
+            messages.error(request, f"anErrorOccurred: {str(e)}")
 
         return redirect("recruiting_web:employer_list")  
     
@@ -415,19 +416,18 @@ class SendRecruiterEmailView(View):
             recruiter_id = data.get("recruiter_id")
 
             if not employer_ids or not recruiter_id:
-                return JsonResponse({"success": False, "error": "invalidJsonFormat"}, status=400)
+                messages.error(request, "invalidJsonFormat")
             try:
                 recruiter_group = Group.objects.get(id=1)
                 recruiters = recruiter_group.user_set.filter(id=recruiter_id)
 
                 if not recruiters.exists():
-                    return JsonResponse({"success": False, "error": "recruiterNotFoundInGroup"}, status=404)
+                    messages.error(request, "recruiterNotFoundInGroup")
 
                 recruiter = recruiters.first()
-                print(recruiter, "recruiter")
 
             except User.DoesNotExist:
-                return JsonResponse({"success": False, "error": "recruiterNotFoundInGroup"}, status=404)
+                messages.error(request, "recruiterNotFoundInGroup")
 
             for employer_id in employer_ids:
                 employer = get_object_or_404(Employer, id=employer_id)
@@ -457,12 +457,12 @@ class SendRecruiterEmailView(View):
 
                 send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [recruiter.email])
 
-            return JsonResponse({"success": True, "message": "emailsSentSuccessfully!"})
+            messages.success(request, "emailsSentSuccessfully!")
 
         except json.JSONDecodeError:
-            return JsonResponse({"success": False, "error": "invalidJsonFormat"}, status=400)
+            messages.error(request, "invalidJsonFormat")
         except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)}, status=500)
+            messages.error(request, str(e))
         
 class AcceptRecruiterView(View):
     def get(self, request, employer_id, recruiter_id, *args, **kwargs):
@@ -485,10 +485,10 @@ class AcceptRecruiterView(View):
 
             send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [recruiter.email])
             
-            return JsonResponse({"success": True, "message": "recruiterAssignmentAccepted"})
+            messages.success(request, "recruiterAssignmentAccepted.")
 
         except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)}, status=500)
+            messages.error(request, f"An error occurred: {str(e)}")
         
 class RejectRecruiterView(View):
     def get(self, request, employer_id, recruiter_id, *args, **kwargs):
@@ -498,9 +498,11 @@ class RejectRecruiterView(View):
 
             employer = get_object_or_404(Employer, id=employer_id)
             recruiter = get_object_or_404(User, id=recruiter_id)
+            messages.success(request, "recruiterAssignmentRejected.")
             return JsonResponse({"success": True, "message": "RecruiterAssignmentRejected!"})
 
         except Exception as e:
+            messages.error(request, f"anErrorOccurred: {str(e)}")
             return JsonResponse({"success": False, "error": str(e)}, status=500)
         
 
@@ -519,3 +521,26 @@ class RemoveWorkerFromAssignmentView(View):
             messages.error(request, f"Error removing worker: {str(e)}")
 
         return redirect(reverse('recruiting_web:workrequest_detail', kwargs={'pk': work_request_id}))
+
+@method_decorator(csrf_exempt, name='dispatch')
+class UpdateStatusView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            work_requests = data.get('work_requests', [])
+            status = data.get('status', '')
+            
+            if work_requests and status:
+                updated_count = WorkRequests.objects.filter(id__in=work_requests).update(status=status)
+                if updated_count > 0:
+                    messages.success(request, "workRequestsSuccessfullyUpdatedTo'{}'Status.".format(status))
+                    return JsonResponse({'success': True, 'message': f"workRequestsSuccessfullyUpdatedTo'{status}'Status."})
+                else:
+                    messages.error(request, "noWorkRequestsFoundToUpdate.")
+                    return JsonResponse({'success': False, 'message': 'noWorkRequestsFoundtoUpdate.'})
+            messages.error(request, "invalidDataProvided.")
+            return JsonResponse({'success': False, 'message': 'invalidDataProvided.'})
+
+        except json.JSONDecodeError:
+            messages.error(request, "invalidJSONData.")
+            return JsonResponse({'success': False, 'message': 'invalidJSONData.'})
