@@ -131,19 +131,13 @@
 			</a>
 		</li>
 
+		{% endif %}
+
 		<li>
 			<a class="side-menu__item" href="#"><i class="side-menu__icon icon icon-envelope"></i>
 				<span class="side-menu__label">{% translate "notifications" %}</span>
 			</a>
 		</li>
-
-		<li>
-			<a class="side-menu__item" href="{% url 'logout' %}"><i class="side-menu__icon icon icon-logout"></i>
-				<span class="side-menu__label">{% translate "logout" %}</span>
-			</a>
-		</li>
-
-		{% endif %}
 
 		<li>
 			<a class="side-menu__item" href="{% url 'logout' %}"><i class="side-menu__icon icon icon-logout"></i>
