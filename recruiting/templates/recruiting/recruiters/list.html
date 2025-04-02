@@ -19,6 +19,7 @@
             <h1 class="page-title">{% translate "recruiters" %}</h1>
         </div>
     </div>
+    
 
     <div class="row row-sm">
         <div class="col-lg-12">
@@ -28,30 +29,16 @@
                         <table class="table text-nowrap border-bottom" id="basic-datatable">
                             <thead>
                                 <tr>
+                                    <th class="theading-color">{% translate "Select" %}</th>
                                     <th class="theading-color">{% translate "recruiterName" %}</th>
-                                    <th class="theading-color">{% translate "employers" %}</th>
-                                    <th class="theading-color">{% translate "actions" %}</th>
                                     <th class="theading-color">{% translate "Status" %}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for data in recruiters %}
                                     <tr class="text-center">
+                                        <td><input type="checkbox" class="recruiter-checkbox" data-recruiter-id="{{ data.recruiter.id }}"></td>
                                         <td>{{ data.recruiter.first_name }} {{ data.recruiter.last_name }}</td>
-                                        <td>
-                                            <form id="assign-form-{{ data.recruiter.id }}" method="post">
-                                                {% csrf_token %}
-                                                <select>
-                                                    {% for employer in employers %}
-                                                        <option value="{{ employer.id }}">{{ employer.name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </form>
-                                        </td>
-                                        <td>
-                                            <button type="button" class="btn btn-success btn-sm" onclick="assignRecruiter('{{ data.recruiter.id }}')">{% translate "Assign" %} </button>
-                                            <button type="button" class="btn btn-danger btn-sm" onclick="removeRecruiter('{{ data.recruiter.id }}')">{% translate "Remove" %}</button>
-                                        </td>
                                         <td>
                                             {% if data.employer_names == "Not Assigned any person" %}
                                                 <span class="badge bg-danger">{{ data.employer_names }}</span>
@@ -63,10 +50,43 @@
                                 {% endfor %}
                             </tbody>
                         </table>
-                        
                     </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <button type="button" class="btn position-absolute top-0 end-0 m-3 btn-green" id="assign-button" disabled> + {% translate "Assign" %}</button>
 
-                   
+    <!-- Modal -->
+    <div class="modal fade" id="assignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="assignModalLabel">{% translate "Assign Recruiter" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Selected Recruiter: <span id="selected-recruiter-name" class="fw-bold"></span></p>
+                    <form id="assign-form" method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="employer-select" class="form-label">{% translate "Select Employer" %}</label>
+                            <select class="form-select" id="employer-select">
+                                {% for employer in employers %}
+                                    <option value="{{ employer.id }}">{{ employer.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="action-select" class="form-label">{% translate "Select Action" %}</label>
+                            <select class="form-select" id="action-select">
+                                <option value="assign">{% translate "Assign" %}</option>
+                                <option value="remove">{% translate "Remove" %}</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-primary" id="submit-button">{% translate "Submit" %}</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -76,6 +96,7 @@
     <button class="btn btn-success mb-2" style="position: fixed; bottom: 20px; right: 20px; font-weight: bolder; border-radius: 50%; width: 50px; height: 50px; padding: 0;">+</button>
 </div>
 {% endblock body %}
+
 {% block scripts %}
 <!-- INTERNAL SELECT2 JS -->
 <script src="{% static 'assets/plugins/select2/select2.full.min.js' %}"></script>
@@ -95,8 +116,4 @@
 <script src="{% static ''%}assets/js/table-sorting.js"></script>
 <script src="{% static ''%}assets/js/assign-recruiter-admin.js"></script>
 
-
-
 {% endblock scripts %}
-
-
