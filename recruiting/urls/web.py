@@ -7,7 +7,7 @@ from recruiting.views.web import (
     RoleHoursCreateView, RoleHousingCreateView, RoleMealsCreateView,
     RoleQualificationsCreateView, RoleWagesCreateView, WorkRequestCreateView,
     WorkRequestDetailView, WorkRequestRoleCreateView, WorkRequestsListView,
-    OkoMessageDetailsView,
+    OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView
 )
 from recruiting.views.workers import (
      WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView
@@ -103,6 +103,11 @@ urlpatterns = [
     path("send-recruiter-email/", SendRecruiterEmailView.as_view(), name="send_recruiter_email"),
     path("accept-recruiter/<str:employer_id>/<str:recruiter_id>/", AcceptRecruiterView.as_view(), name="accept_recruiter"),
     path("reject-recruiter/<str:employer_id>/<str:recruiter_id>/", RejectRecruiterView.as_view(), name="reject_recruiter"),
+
+    path('recruiters/', RecruiterListView.as_view(), name='recruiter_list'),
+    path('recruiters/add/<str:employer_id>/<str:recruiter_id>/', AddRecruiterToEmployerView.as_view(), name='add_recruiter_to_employer'),
+    path('recruiters/remove/<str:employer_id>/<str:recruiter_id>/', RemoveRecruiterFromEmployerView.as_view(), name='remove_recruiter_from_employer'),
+    path('access-denied/', AccessDeniedView.as_view(), name='access_denied'),
 
 
 ]

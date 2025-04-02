@@ -116,11 +116,14 @@
                 <td>{{ employer.phone }}</td>
                 <td>
                   {% if employer.recruiters %}
-                      {{ employer.recruiters.0 }}  <!-- Display only the first recruiter -->
+                      {% for recruiter in employer.recruiters %}
+                          {{ recruiter }}{% if not forloop.last %}, {% endif %}
+                      {% endfor %}
                   {% else %}
                       No recruiters assigned
                   {% endif %}
-              </td>
+                </td>
+              
             
               </tr>
               {% endfor %}
