@@ -1,5 +1,4 @@
 function assignRecruiter(recruiterId) {
-    console.log(recruiterId,"recruiterId")
     let form = document.getElementById(`assign-form-${recruiterId}`);
     let employerId = form.querySelector("select").value;
     form.action = `/recruiters/add/${employerId}/${recruiterId}/`;
@@ -7,8 +6,6 @@ function assignRecruiter(recruiterId) {
 }
 
 function removeRecruiter(recruiterId) {
-    console.log(recruiterId,"recruiterId")
-
     let form = document.getElementById(`assign-form-${recruiterId}`);
     let employerId = form.querySelector("select").value;
     form.action = `/recruiters/remove/${employerId}/${recruiterId}/`;

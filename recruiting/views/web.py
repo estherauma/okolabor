@@ -245,8 +245,6 @@ class RecruiterListView(LoginRequiredMixin, View):
                 "recruiter": recruiter,
                 "employer_names": employer_names if employer_names else "Not Assigned any person"
             })
-        print(recruiter_data,"recruiter_data")
-
         return render(request, 'recruiting/recruiters/list.html', {'recruiters': recruiter_data, 'employers': employers})
     
 
