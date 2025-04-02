@@ -54,10 +54,18 @@ from recruiting.models import (
     WorkAssignment,
 )
 
+
 class EmployerListView(View):
     def get(self, request):
+        user = request.user
         query = request.GET.get('query')
-        employers_list = Employer.objects.all().prefetch_related('employerrecruiter_set')
+
+        if user.groups.filter(name='admin').exists():
+            employers_list = Employer.objects.all().prefetch_related('employerrecruiter_set')
+        elif user.groups.filter(name='recruiter').exists():
+            employers_list = Employer.objects.filter(employerrecruiter__recruiter=user).prefetch_related('employerrecruiter_set')
+        else:
+            employers_list = Employer.objects.none()
 
         if query:
             employers_list = employers_list.filter(
@@ -72,13 +80,11 @@ class EmployerListView(View):
         page_number = request.GET.get('page')
         employers = paginator.get_page(page_number)
 
-        recruiter_group = Group.objects.get(id=1) 
-        recruiters = recruiter_group.user_set.all()
         employers_data = []
         for employer in employers:
             assigned_recruiters = EmployerRecruiter.objects.filter(employer=employer)
             recruiter_names = [rec.recruiter.get_full_name() for rec in assigned_recruiters]
-            employer.recruiters = recruiter_names
+           
             employers_data.append({
                 'id': employer.id,
                 'name': employer.name,
@@ -86,7 +92,7 @@ class EmployerListView(View):
                 'address': employer.address,
                 'country': employer.country,
                 'phone': employer.phone,
-                'recruiters': recruiter_names 
+                'recruiters': recruiter_names
             })
 
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -94,7 +100,8 @@ class EmployerListView(View):
                 'employers': employers_data,
                 'has_more': employers.has_next()
             })
-        context = {'employers': employers, 'query': query, 'recruiters': recruiters}
+
+        context = {'employers': employers_data, 'query': query}
         return render(request, 'recruiting/employers/list.html', context)
 
 
@@ -143,17 +150,21 @@ class EmployerDetailView(View):
             'recruiters': recruiters,
         }
         return render(request, 'recruiting/employers/detail.html', context)
-    
+
 class WorkRequestsListView(View):
     def get(self, request):
         user = request.user
-        recruiter_group = Group.objects.get(id=1)
-        is_recruiter = recruiter_group.user_set.filter(id=user.id).exists()
-        work_requests = WorkRequests.objects.none()
-        
-        if is_recruiter:
+        admin_group = Group.objects.get(name='admin')
+        recruiter_group = Group.objects.get(name='recruiter')
+
+        # Determine the list of work requests based on user role
+        if admin_group in user.groups.all():
+            work_requests = WorkRequests.objects.all()
+        elif recruiter_group in user.groups.all():
             assigned_employers = EmployerRecruiter.objects.filter(recruiter=user).values_list("employer", flat=True)
             work_requests = WorkRequests.objects.filter(employer_id__in=assigned_employers)
+        else:
+            work_requests = WorkRequests.objects.none()
 
         context = {"work_requests": work_requests}
         return render(request, "recruiting/work_requests/list.html", context)
