@@ -114,18 +114,18 @@ class LoginAPITestCase(TestCase):
 
 class LoginTestCase(TestCase):
     def setUp(self):
-        # Ensure the group with ID 1 exists
-        group, created = Group.objects.get_or_create(id=1, name="recruiter")
+        # Ensure the groups exist without specifying IDs
+        recruiter_group, created = Group.objects.get_or_create(name="recruiter")
+        admin_group, created = Group.objects.get_or_create(name="admin")
 
-        # Create a test user and add to the group
+        # Create a test user and add to the recruiter group
         self.user = User.objects.create_user(
             email="test@okolabor.io",
             password="adminwert1A"
         )
-        self.user.groups.add(group)  # Add user to group
+        self.user.groups.add(recruiter_group)  # Add user to recruiter group
         self.user.save()
-        
-        
+
     def test_login_template(self):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
@@ -138,8 +138,7 @@ class LoginTestCase(TestCase):
         )
         self.assertEquals(response.status_code, 302)
         self.assertRedirects(response, '/index/')
-        
-    
+
     def test_login_invalid_password(self):
         response = self.client.post('/', {
             'email': 'test@example.com',
@@ -151,6 +150,8 @@ class LoginTestCase(TestCase):
             'email': 'test',
             'password': 'testPassword1'})
         self.assertEquals(response.status_code, 200)
+
+
 
     
 
