@@ -5,9 +5,9 @@ from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import BaseModelForm
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render,redirect
 from django.urls import reverse
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic import CreateView
 from django.views.decorators.csrf import csrf_exempt
@@ -56,7 +56,6 @@ from recruiting.models import (
     WorkAssignment,
 )
 
-
 class EmployerListView(View):
     def get(self, request):
         user = request.user
@@ -65,7 +64,7 @@ class EmployerListView(View):
         if user.groups.filter(name='admin').exists():
             employers_list = Employer.objects.all().prefetch_related('employerrecruiter_set')
         elif user.groups.filter(name='recruiter').exists():
-            employers_list = Employer.objects.filter(employerrecruiter__recruiter=user).prefetch_related('employerrecruiter_set')
+            employers_list = Employer.objects.filter(employerrecruiter__recruiter=user).distinct()
         else:
             employers_list = Employer.objects.none()
 
@@ -85,8 +84,9 @@ class EmployerListView(View):
         employers_data = []
         for employer in employers:
             assigned_recruiters = EmployerRecruiter.objects.filter(employer=employer)
-            recruiter_names = [rec.recruiter.get_full_name() for rec in assigned_recruiters]
-           
+
+            recruiter_names = list(set(rec.recruiter.get_full_name() for rec in assigned_recruiters if rec.recruiter == user))
+
             employers_data.append({
                 'id': employer.id,
                 'name': employer.name,
@@ -134,7 +134,9 @@ class EmployerCreateView(CreateView):
 class EmployerDetailView(View):
     def get(self, request, pk):
         employer = get_object_or_404(Employer, pk=pk)
+        
         work_requests = WorkRequests.objects.filter(employer=employer)
+        
         in_progress_work_requests = work_requests.filter(status__in=['Open', 'Requested'])
         closed_work_requests = work_requests.filter(status='Closed')
         draft_work_requests = work_requests.filter(status='Draft')
@@ -155,7 +157,6 @@ class WorkRequestsListView(View):
         admin_group = Group.objects.get(name='admin')
         recruiter_group = Group.objects.get(name='recruiter')
 
-        # Determine the list of work requests based on user role
         if admin_group in user.groups.all():
             work_requests = WorkRequests.objects.all()
         elif recruiter_group in user.groups.all():
@@ -228,6 +229,70 @@ class WorkRequestRoleCreateView(CreateView):
             'recruiting_web:workrequest_detail',
             kwargs={'pk': self.object.work_request.pk}
         )
+
+class RecruiterListView(LoginRequiredMixin, View):
+    def get(self, request):
+        if not request.user.groups.filter(name='recruiter_admin').exists():
+            return redirect('recruiting_web:access_denied')
+
+        recruiters = User.objects.filter(groups__name='recruiter').prefetch_related('employerrecruiter_set__employer')
+        employers = Employer.objects.all()
+
+        recruiter_data = []
+        for recruiter in recruiters:
+            assigned_employers = recruiter.employerrecruiter_set.all()
+            employer_names = ", ".join([employer_recruiter.employer.name for employer_recruiter in assigned_employers])
+
+            recruiter_data.append({
+                "recruiter": recruiter,
+                "employer_names": employer_names if employer_names else "Not Assigned any person"
+            })
+        return render(request, 'recruiting/recruiters/list.html', {'recruiters': recruiter_data, 'employers': employers})
+    
+
+class AddRecruiterToEmployerView(LoginRequiredMixin, View):
+    def post(self, request, employer_id, recruiter_id):
+
+        if not request.user.groups.filter(name='recruiter_admin').exists():
+            return redirect('recruiting_web:access_denied')
+
+        employer = get_object_or_404(Employer, id=employer_id)
+        recruiter = get_object_or_404(User, id=recruiter_id)
+
+        employer_recruiter, created = EmployerRecruiter.objects.get_or_create(employer=employer, recruiter=recruiter)
+
+        if created:
+            messages.success(request, _("Recruiter {email} assigned to {employer}.").format(email=recruiter.email, employer=employer.name))
+        else:
+            messages.info(request, _("Recruiter {email} is already assigned to {employer}.").format(email=recruiter.email, employer=employer.name))
+
+        return redirect('recruiting_web:recruiter_list')
+
+
+class RemoveRecruiterFromEmployerView(LoginRequiredMixin, View):
+    def post(self, request, employer_id, recruiter_id):
+
+        if not request.user.groups.filter(name='recruiter_admin').exists():
+            return redirect('recruiting_web:access_denied')
+
+        employer = get_object_or_404(Employer, id=employer_id)
+        recruiter = get_object_or_404(User, id=recruiter_id)
+
+        num_deleted, deleted_info = EmployerRecruiter.objects.filter(employer=employer, recruiter=recruiter).delete()
+
+        if num_deleted > 0:
+            messages.success(request, _("Recruiter {email} removed from {employer}.").format(email=recruiter.email, employer=employer.name))
+        else:
+            messages.info(request, _("Recruiter {email} was already removed from {employer}.").format(email=recruiter.email, employer=employer.name))
+
+        return redirect('recruiting_web:recruiter_list')
+
+            
+
+class AccessDeniedView(View):
+    def get(self, request):
+        return render(request, 'recruiting/access_denied.html')
+
 
 
 class RoleDataBaseView(CreateView):

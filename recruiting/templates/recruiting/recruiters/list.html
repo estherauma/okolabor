@@ -1,0 +1,119 @@
+{% extends 'components/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block styles %}
+<!-- SELECT2 CSS -->
+<link href="{% static 'assets/plugins/select2/select2.min.css' %}" rel="stylesheet"/>
+<!-- DATA TABLE CSS -->
+<link href="{% static 'assets/plugins/datatable/css/dataTables.bootstrap5.css' %}" rel="stylesheet"/>
+<link href="{% static 'assets/plugins/datatable/css/buttons.bootstrap5.min.css' %}" rel="stylesheet"/>
+<link href="{% static 'assets/plugins/datatable/responsive.bootstrap5.css' %}" rel="stylesheet"/>
+<link href="{% static 'assets/css/workers.css' %}" rel="stylesheet"/>
+{% endblock styles %}
+
+{% block body %}
+<div class="container-fluid" style="position: relative; height: auto">
+    <div class="row">
+        <div class="page-header custom-page-header d-flex flex-column">
+            <h1 class="page-title">{% translate "recruiters" %}</h1>
+        </div>
+    </div>
+    
+
+    <div class="row row-sm">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table text-nowrap border-bottom" id="basic-datatable">
+                            <thead>
+                                <tr>
+                                    <th class="theading-color">{% translate "Select" %}</th>
+                                    <th class="theading-color">{% translate "recruiterName" %}</th>
+                                    <th class="theading-color">{% translate "Status" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for data in recruiters %}
+                                    <tr class="text-center">
+                                        <td><input type="checkbox" class="recruiter-checkbox" data-recruiter-id="{{ data.recruiter.id }}"></td>
+                                        <td>{{ data.recruiter.first_name }} {{ data.recruiter.last_name }}</td>
+                                        <td>
+                                            {% if data.employer_names == "Not Assigned any person" %}
+                                                <span class="badge bg-danger">{{ data.employer_names }}</span>
+                                            {% else %}
+                                                <span class="badge bg-success">{{ data.employer_names }}</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <button type="button" class="btn position-absolute top-0 end-0 m-3 btn-green" id="assign-button" disabled> + {% translate "Assign" %}</button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="assignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="assignModalLabel">{% translate "Assign Recruiter" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Selected Recruiter: <span id="selected-recruiter-name" class="fw-bold"></span></p>
+                    <form id="assign-form" method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="employer-select" class="form-label">{% translate "Select Employer" %}</label>
+                            <select class="form-select" id="employer-select">
+                                {% for employer in employers %}
+                                    <option value="{{ employer.id }}">{{ employer.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="action-select" class="form-label">{% translate "Select Action" %}</label>
+                            <select class="form-select" id="action-select">
+                                <option value="assign">{% translate "Assign" %}</option>
+                                <option value="remove">{% translate "Remove" %}</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-primary" id="submit-button">{% translate "Submit" %}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Add Button -->
+    <button class="btn btn-success mb-2" style="position: fixed; bottom: 20px; right: 20px; font-weight: bolder; border-radius: 50%; width: 50px; height: 50px; padding: 0;">+</button>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+<!-- INTERNAL SELECT2 JS -->
+<script src="{% static 'assets/plugins/select2/select2.full.min.js' %}"></script>
+<!-- DATA TABLE JS-->
+<script src="{% static ''%}assets/plugins/datatable/js/jquery.dataTables.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/dataTables.bootstrap5.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/dataTables.buttons.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.bootstrap5.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/jszip.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/pdfmake/pdfmake.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/pdfmake/vfs_fonts.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.html5.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.print.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.colVis.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/dataTables.responsive.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.min.js"></script>
+<script src="{% static ''%}assets/js/table-sorting.js"></script>
+<script src="{% static ''%}assets/js/assign-recruiter-admin.js"></script>
+
+{% endblock scripts %}
