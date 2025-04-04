@@ -1,0 +1,196 @@
+{% extends 'components/base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block styles %}
+<!-- SELECT2 CSS -->
+<link href="{% static 'assets/plugins/select2/select2.min.css' %}" rel="stylesheet"/>
+<!-- DATA TABLE CSS -->
+<link href="{% static 'assets/plugins/datatable/css/dataTables.bootstrap5.css' %}" rel="stylesheet"/>
+<link href="{% static 'assets/plugins/datatable/css/buttons.bootstrap5.min.css' %}" rel="stylesheet"/>
+<link href="{% static 'assets/plugins/datatable/responsive.bootstrap5.css' %}" rel="stylesheet"/>
+{% endblock styles %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    {% translate "employerDetailsEmployerDetails" %}
+                </h5>
+                <ul class="list-group no-margin">
+                    <li class="list-group-item">
+                        <span><strong>{% translate "employerDetailsEmail:" %}</strong></span>
+                        <span>{{ employer.email }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span><strong>{% translate "employerDetailsPhone:" %}</strong></span>
+                        <span>{{ employer.phone }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span><strong>{% translate "employerDetailsWebsite:" %}</strong></span>
+                        <span>{{ employer.website }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span><strong>{% translate "employerDetailsAddress:" %}</strong></span>
+                        <span>{{ employer.address }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span><strong>{% translate "employerDetailsCity:" %}</strong></span>
+                        <span>{{ employer.city }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span><strong>{% translate "employerDetailsState:" %}</strong></span>
+                        <span>{{ employer.state }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span><strong>{% translate "employerDetailsCountry:" %}</strong></span>
+                        <span>{{ employer.country }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span><strong>{% translate "employerDetailsZipCode:" %}</strong></span>
+                        <span>{{ employer.zipcode }}</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span><strong>{% translate "AssignedTo:" %}</strong></span>
+                        <span>
+                            {% if recruiters %}
+                                {% for employer_recruiter in recruiters %}
+                                    {{ employer_recruiter.recruiter.first_name }} {{ employer_recruiter.recruiter.last_name }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                <strong>{% translate "NoRecruitersAssigned" %}</strong>
+                            {% endif %}
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    {% translate "inProgressWorkRequests" %}
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive deleted-table">
+                    <table class="table table-bordered text-nowrap border-bottom" id="basic-datatable">
+                        <thead>
+                            <tr>
+                                <th class="border-bottom-0">{% translate "requestID" %}</th>
+                                <th class="border-bottom-0">{% translate "requestDate" %}</th>
+                                <th class="border-bottom-0">{% translate "startDate" %}</th>
+                                <th class="border-bottom-0">{% translate "status" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for work_request in in_progress_work_requests %}
+                                <tr>
+                                    <td>{{ work_request.id }}</td>
+                                    <td>{{ work_request.created_at }}</td>
+                                    <td>{{ work_request.start_date }}</td>
+                                    <td>{{ work_request.status }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">{% translate "NoInProgressWorkRequests" %}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    {% translate "closedWorkRequests" %}
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered text-nowrap border-bottom" id="basic-datatable">
+                        <thead>
+                            <tr>
+                                <th class="wd-15p border-bottom-0">{% translate "requestID" %}</th>
+                                <th class="wd-15p border-bottom-0">{% translate "requestDate" %}</th>
+                                <th class="wd-20p border-bottom-0">{% translate "status" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for work_request in closed_work_requests %}
+                                <tr>
+                                    <td>{{ work_request.id }}</td>
+                                    <td>{{ work_request.created_at }}</td>
+                                    <td>{{ work_request.status }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center">{% translate "NoClosedWorkRequests" %}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    {% translate "draftWorkRequests" %}
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered text-nowrap border-bottom" id="basic-datatable">
+                        <thead>
+                            <tr>
+                                <th class="wd-15p border-bottom-0">{% translate "requestID" %}</th>
+                                <th class="wd-15p border-bottom-0">{% translate "requestDate" %}</th>
+                                <th class="wd-20p border-bottom-0">{% translate "status" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for work_request in draft_work_requests %}
+                                <tr>
+                                    <td>{{ work_request.id }}</td>
+                                    <td>{{ work_request.created_at }}</td>
+                                    <td>{{ work_request.status }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center">{% translate "NoDraftWorkRequests" %}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}
+{% block scripts %}
+<!-- INTERNAL SELECT2 JS -->
+<script src="{% static ''%}assets/plugins/select2/select2.full.min.js"></script>
+<!-- DATA TABLE JS-->
+<script src="{% static ''%}assets/plugins/datatable/js/jquery.dataTables.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/dataTables.bootstrap5.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/dataTables.buttons.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.bootstrap5.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/jszip.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/pdfmake/pdfmake.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/pdfmake/vfs_fonts.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.html5.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.print.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.colVis.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/dataTables.responsive.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.min.js"></script>
+<script src="{% static ''%}assets/js/table-data.js"></script>
+<script src="{% static ''%}assets/js/employer_search.js"></script>
+<script src="{% static ''%}assets/js/table-sorting.js"></script>
+<script src="{% static ''%}assets/js/assign_recruiter.js"></script>
+{% endblock scripts %}

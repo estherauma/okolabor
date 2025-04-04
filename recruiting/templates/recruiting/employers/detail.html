@@ -18,291 +18,87 @@
   </h1>
  </div>
 </div>
+<h3>Employer Contacts</h3>
+<div class="d-flex flex-wrap gap-3">
+    {% for contact in contacts %}
+    <a href="{% url 'recruiting_web:contact_work_requests' contact.id %}" class="text-decoration-none text-dark">
+        <div class="card shadow-sm p-3" style="width: 18rem; cursor: pointer;">
+            <div class="card-body">
+                <h5 class="card-title">{{ contact.name }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">
+                    {{ contact.position|default:"No position specified" }}
+                </h6>
+                <p class="card-text">
+                    <strong>Email:</strong> {{ contact.email }}<br>
+                    <strong>Phone:</strong> {{ contact.phone }}
+                </p>
+            </div>
+        </div>
+    </a>
+    {% empty %}
+        <p>No contacts available.</p>
+    {% endfor %}
+</div>
+<div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+<div class="table-responsive">
+    <h3>Work Requests</h3>
+    <table class="table text-nowrap border-bottom" id="work-requests-list-datatable">
+        <thead>
+            <tr>
+                <th class="theading-color">Work Request ID</th>
+                <th class="theading-color">Start Date</th>
+                <th class="theading-color">End Date</th>
+                <th class="theading-color">Company</th>
+                <th class="theading-color">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for work_request in work_requests %}
+            <tr class="text-center" data-id="{{ work_request.id }}">
+                <td>
+                    <a href="/work-requests/{{ work_request.id }}" class="text-decoration-none text-dark">
+                        {{ work_request.id }}
+                    </a>
+                </td>
+                <td>{{ work_request.start_date }}</td>
+                <td>
+                    {% if work_request.end_date %}
+                        {{ work_request.end_date }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="/employers/{{ work_request.employer.id }}" class="text-decoration-none text-dark">
+                        {{ work_request.employer.name }}
+                    </a>
+                </td>
+                <td>
+                    <span class="badge 
+                        {% if work_request.status == 'Open' %}bg-success{% elif work_request.status == 'Requested' %}bg-warning{% elif work_request.status == 'Closed' %}bg-danger{% else %}bg-secondary{% endif %}">
+                        {{ work_request.status }}
+                    </span>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">No work requests available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+        </div>
+      </div>
+    </div>
+
 <!-- <div>
     <button id="button" class="btn btn-secondary" style="margin-right: 10px;">Edit Employer</button>
 </div> -->
-<div class="row">
- <div class="col-md-4">
-  <div class="card">
-   <div class="card-body">
-    <h5 class="card-title">
-     {% translate "employerDetailsEmployerDetails" %}
-    </h5>
-    <ul class="list-group no-margin">
-     <li class="list-group-item">
-      <span>
-       <strong>
-        {% translate "employerDetailsEmail:" %}
-       </strong>
-      </span>
-      <span class="">
-       {{employer.email}}
-      </span>
-     </li>
-     <li class="list-group-item">
-      <span>
-       <strong>
-        {% translate "employerDetailsPhone:" %}
-       </strong>
-      </span>
-      <span class="">
-       {{employer.phone}}
-      </span>
-     </li>
-     <li class="list-group-item">
-      <span>
-       <strong>
-        {% translate "employerDetailsWebsite:" %}
-       </strong>
-      </span>
-      <span class="">
-       {{employer.website}}
-      </span>
-     </li>
-     <li class="list-group-item">
-      <span>
-       <strong>
-        {% translate "employerDetailsAddress:" %}
-       </strong>
-      </span>
-      <span class="">
-       {{employer.address}}
-      </span>
-     </li>
-     <li class="list-group-item">
-      <span>
-       <strong>
-        {% translate "employerDetailsCity:" %}
-       </strong>
-      </span>
-      <span class="">
-       {{employer.city}}
-      </span>
-     </li>
-     <li class="list-group-item">
-      <span>
-       <strong>
-        {% translate "employerDetailsState:" %}
-       </strong>
-      </span>
-      <span class="">
-       {{employer.state}}
-      </span>
-     </li>
-     <li class="list-group-item">
-      <span>
-       <strong>
-        {% translate "employerDetailsCountry:" %}
-       </strong>
-      </span>
-      <span class="">
-       {{employer.country}}
-      </span>
-     </li>
-     <li class="list-group-item">
-      <span>
-       <strong>
-        {% translate "employerDetailsZipCode:" %}
-       </strong>
-      </span>
-      <span class="">
-       {{employer.zipcode}}
-      </span>
-     </li>
-     <li class="list-group-item">
-        <span>
-            <strong>{% translate "AssignedTo:" %}</strong>
-        </span>
-        <span class="">
-            {% if recruiters %}
-                {% for employer_recruiter in recruiters %}
-                    {{ employer_recruiter.recruiter.first_name }} {{ employer_recruiter.recruiter.last_name }}{% if not forloop.last %}, {% endif %}
-                {% endfor %}
-            {% else %}
-            <strong>{% translate "NoRecruitersAssigned" %}</strong>
-            {% endif %}
-        </span>
-    </li>
-    </ul>
-   </div>
-  </div>
- </div>
- <div class="col-md-8">
-  <div class="card">
-   <div class="card-header">
-    <h3 class="card-title">
-     {% translate "inProgressWorkRequests" %}
-    </h3>
-   </div>
-   <div class="card-body">
-    <div class="table-responsive deleted-table">
-     <table class="table table-bordered text-nowrap border-bottom" id="delete-datatable">
-      <thead>
-       <tr>
-        <th class="border-bottom-0">
-         {% translate "requestID" %}
-        </th>
-        <th class="border-bottom-0">
-         {% translate "requestDate" %}
-        </th>
-        <th class="border-bottom-0">
-         {% translate "startDate" %}
-        </th>
-        <th class="border-bottom-0">
-         {% translate "status" %}
-        </th>
-       </tr>
-      </thead>
-      <tbody>
-        {% for work_request in in_progress_work_requests %}
-            <tr>
-                <td>{{ work_request.id }}</td>
-                <td>{{ work_request.created_at }}</td>  <!-- Assuming you have created_at field in AuditableModel -->
-                <td>{{ work_request.start_date }}</td>
-                <td>{{ work_request.status }}</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-      <!-- <tbody>
-       <tr>
-        <td>
-         {% translate "employerDetailsTigerNixon" %}
-        </td>
-        <td>
-         {% translate "employerDetailsSystemArchitect" %}
-        </td>
-        <td>
-         {% translate "employerDetailsEdinburgh" %}
-        </td>
-        <td>
-         61
-        </td>
-        <td>
-         2011/04/25
-        </td>
-        <td>
-         $320,800
-        </td>
-       </tr>
-       <tr>
-        <td>
-         {% translate "employerDetailsGarrettWinters" %}
-        </td>
-        <td>
-         {% translate "employerDetailsAccountant" %}
-        </td>
-        <td>
-         {% translate "employerDetailsTokyo" %}
-        </td>
-        <td>
-         63
-        </td>
-        <td>
-         2011/07/25
-        </td>
-        <td>
-         $170,750
-        </td>
-       </tr>
-       <tr>
-        <td>
-         {% translate "employerDetailsAshtonCox" %}
-        </td>
-        <td>
-         {% translate "employerDetailsJuniorTechnicalAuthor" %}
-        </td>
-        <td>
-         {% translate "employerDetailsSanFrancisco" %}
-        </td>
-        <td>
-         66
-        </td>
-        <td>
-         2009/01/12
-        </td>
-        <td>
-         $86,000
-        </td>
-       </tr>
-      </tbody> -->
-     </table>
-    </div>
-   </div>
-  </div>
-  <div class="card">
-   <div class="card-header">
-    <h3 class="card-title">
-     {% translate "closedWorkRequests" %}
-    </h3>
-   </div>
-   <div class="card-body">
-    <div class="table-responsive">
-     <table class="table table-bordered text-nowrap border-bottom" id="basic-datatable">
-      <thead>
-       <tr>
-        <th class="wd-15p border-bottom-0">
-         {% translate "requestID" %}
-        </th>
-        <th class="wd-15p border-bottom-0">
-         {% translate "requestDate" %}
-        </th>
-        <th class="wd-20p border-bottom-0">
-         {% translate "status" %}
-        </th>
-       </tr>
-      </thead>
-      <tbody>
-        {% for work_request in closed_work_requests %}
-            <tr>
-                <td>{{ work_request.id }}</td>
-                <td>{{ work_request.created_at }}</td>
-                <td>{{ work_request.status }}</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-     </table>
-    </div>
-   </div>
-  </div>
-  <div class="card">
-   <div class="card-header">
-    <h3 class="card-title">
-     {% translate "draftWorkRequests" %}
-    </h3>
-   </div>
-   <div class="card-body">
-    <div class="table-responsive">
-     <table class="table table-bordered text-nowrap border-bottom" id="basic-datatable">
-      <thead>
-       <tr>
-        <th class="wd-15p border-bottom-0">
-         {% translate "requestID" %}
-        </th>
-        <th class="wd-15p border-bottom-0">
-         {% translate "requestDate" %}
-        </th>
-        <th class="wd-20p border-bottom-0">
-         {% translate "status" %}
-        </th>
-       </tr>
-      </thead>
-      <tbody>
-        <tbody>
-            {% for work_request in draft_work_requests %}
-                <tr>
-                    <td>{{ work_request.id }}</td>
-                    <td>{{ work_request.created_at }}</td>
-                    <td>{{ work_request.status }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-      </tbody>
-     </table>
-    </div>
-   </div>
-  </div>
- </div>
-</div>
+
 {% endblock body %}
 
 {% block scripts %}
