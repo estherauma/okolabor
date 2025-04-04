@@ -7,7 +7,7 @@ from recruiting.views.web import (
     RoleHoursCreateView, RoleHousingCreateView, RoleMealsCreateView,
     RoleQualificationsCreateView, RoleWagesCreateView, WorkRequestCreateView,
     WorkRequestDetailView, WorkRequestRoleCreateView, WorkRequestsListView,
-    OkoMessageDetailsView,
+    OkoMessageDetailsView,AddWorkersWorkRequests,ShowWorkerDetails,AddToShortlistView
 )
 from recruiting.views.workers import (
      WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView
@@ -38,6 +38,20 @@ urlpatterns = [
     path('work-requests/create/',
          WorkRequestCreateView.as_view(),
          name='workrequest_create'),
+
+    path('work-requests/<str:pk>/add-workers/<str:role_id>/',
+          AddWorkersWorkRequests.as_view(),
+          name='work_request_add_workers'),
+
+
+    path('work-requests/add-workers/<str:pk>/',
+         ShowWorkerDetails.as_view(),
+         name='show_worker_details'),
+     
+     path('add-to-shortlist/', 
+          AddToShortlistView.as_view(), 
+          name='add_to_shortlist'),
+
     path('work-requests/<pk>/',
          WorkRequestDetailView.as_view(),
          name='workrequest_detail'),

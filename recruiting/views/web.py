@@ -23,6 +23,8 @@ from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_str
 
 from account.models import User
+from recruiting.utils import *
+from recruiting.views.workers import WorkerDetailsView
 from recruiting.forms import (
     EmployerForm,
     OkoMessageCreateForm,
@@ -37,7 +39,13 @@ from recruiting.forms import (
     TodoFilterForm,
     WorkRequestForm,
     WorkRequestRoleForm,
+    WorkerAssignmentForm
 )
+from theme.forms import (
+    FilterWorkExperienceForm,
+    AdvancedFilterForm
+)
+from account.models import UserPreference
 from recruiting.models import (
     Deduction,
     Employer,
@@ -129,24 +137,32 @@ class EmployerDetailView(View):
         context = {'employer': employer}
         return render(request, 'recruiting/employers/detail.html', context)
 
+# class WorkRequestsListView(View):
+#     def get(self, request):
+#         user = request.user  # Get logged-in recruiter
+
+#         # Check if the user is part of the recruiter group
+#         recruiter_group = Group.objects.get(id=1)  # Adjust ID if necessary
+#         is_recruiter = recruiter_group.user_set.filter(id=user.id).exists()
+
+#         # If user is not a recruiter, return an empty work request list
+#         work_requests = WorkRequests.objects.none()
+        
+#         if is_recruiter:
+#             # Get employers assigned to the recruiter
+#             assigned_employers = EmployerRecruiter.objects.filter(recruiter=user).values_list("employer", flat=True)
+
+#             # Fetch work requests linked to those employers
+#             work_requests = WorkRequests.objects.filter(employer_id__in=assigned_employers)
+
+#         context = {"work_requests": work_requests}
+#         return render(request, "recruiting/work_requests/list.html", context)
+
 class WorkRequestsListView(View):
     def get(self, request):
-        user = request.user  # Get logged-in recruiter
-
-        # Check if the user is part of the recruiter group
-        recruiter_group = Group.objects.get(id=1)  # Adjust ID if necessary
-        if not recruiter_group.user_set.filter(id=user.id).exists():
-            return JsonResponse({"success": False, "error": "Unauthorized"}, status=403)
-
-        # Get employers assigned to the recruiter
-        assigned_employers = EmployerRecruiter.objects.filter(recruiter=user).values_list("employer", flat=True)
-
-        # Fetch work requests linked to those employers
-        work_requests = WorkRequests.objects.filter(employer_id__in=assigned_employers)
-
-        context = {"work_requests": work_requests}
-        return render(request, "recruiting/work_requests/list.html", context)
-
+        work_requests = WorkRequests.objects.all()
+        context = {'work_requests': work_requests}
+        return render(request, 'recruiting/work_requests/list.html', context)
 
 class WorkRequestCreateView(CreateView):
     model = WorkRequests
@@ -170,6 +186,96 @@ class WorkRequestCreateView(CreateView):
         )
 
 
+
+class AddWorkersWorkRequests(View):
+    def get(self, request, pk, role_id):
+        work_assign_form = WorkerAssignmentForm()
+        form = FilterWorkExperienceForm()
+        filter_form = AdvancedFilterForm()
+        search_query = request.GET.get('search', '')
+        page_number = request.GET.get('page', 1)
+        per_page = request.GET.get('per_page', 25)
+        shortlisted_workers = get_shortlisted_workers()
+
+        try:
+            per_page = int(per_page)
+        except ValueError:
+            per_page = 4  # Fallback default
+
+        # Retrieve the work request and role details using the provided IDs
+        work_request = get_object_or_404(WorkRequests, pk=pk)
+        role = get_object_or_404(Role, pk=role_id)
+
+        work_requests = WorkRequests.objects.filter(status='Open').prefetch_related('roles')
+        workers = User.objects.filter(groups__name='worker').order_by('-created_at')
+
+        if search_query:
+            workers = workers.filter(
+                Q(first_name__icontains=search_query) |
+                Q(last_name__icontains=search_query) |
+                Q(email__icontains=search_query)
+            )
+
+        paginator = Paginator(workers, per_page)
+        page_obj = paginator.get_page(page_number)
+
+        worker_data = []
+        for worker in page_obj:
+            profile_completion = calculate_profile_completion(worker)
+            worker_details = get_worker_preferences(worker)
+
+            worker.profile_completion_percentage = profile_completion
+            latest_assignment = WorkAssignment.objects.filter(worker=worker).order_by('-assigned_date').first()
+            worker.latest_status = latest_assignment.status if latest_assignment else "No Assignment"
+
+            for key, value in worker_details.items():
+                setattr(worker, key, value)
+
+            worker_data.append({
+                'id': worker.id,
+                'firstname': worker.first_name,
+                'lastname': worker.last_name,
+                'email': worker.email,
+                'profile_completion': profile_completion,
+                **worker_details  # Merge worker details into response
+            })
+
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'workers': worker_data, 'num_pages': paginator.num_pages})
+
+        context = {
+            'workers': page_obj,
+            'work_requests': work_requests,
+            'form': form,
+            'work_assign_form': work_assign_form,
+            'filter_form': filter_form,
+            'search_query': search_query,
+            'paginator': paginator,
+            'per_page': per_page,
+            'role': role,  # Pass the role details to the context
+            'work_request': work_request,  # Pass the work request details to the context
+            'shortlisted_workers': shortlisted_workers,
+        }
+        return render(request, 'recruiting/work_requests/create_addworker.html', context)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class AddToShortlistView(View):
+
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        worker_ids = data.get('workerIds', [])
+
+        if add_workers_to_shortlist(worker_ids):
+            return JsonResponse({'success': True})
+
+        return JsonResponse({'success': False})
+
+class ShowWorkerDetails(View):
+    def get(self, request, pk):
+        view = WorkerDetailsView()
+        return view.get(request, pk)
+
+
 class WorkRequestDetailView(View):
     def get(self, request, pk):
         work_request = get_object_or_404(WorkRequests, pk=pk)
@@ -181,10 +287,13 @@ class WorkRequestDetailView(View):
 
         context = {
             'workrequest': work_request,
+            'roles': work_request.roles.all(),
             'active_workers': active_workers,
         }
         return render(request, 'recruiting/work_requests/detail.html', context)
 
+
+    
 
 class WorkRequestRoleCreateView(CreateView):
     model = Role

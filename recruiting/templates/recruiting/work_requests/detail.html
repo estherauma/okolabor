@@ -84,14 +84,27 @@
     <div class="accordion" id="rolesAccordion">
      {% for role in workrequest.roles.all %}
      <div class="accordion-item">
-      <h2 class="accordion-header" id="heading{{ forloop.counter }}">
-       <button aria-controls="collapse{{ forloop.counter }}" aria-expanded="false" class="accordion-button collapsed" data-bs-target="#collapse{{ forloop.counter }}" data-bs-toggle="collapse" type="button">
-        {% translate "workRequestDetailsJobTitle" %}
-        <strong>
-         {{ role.title }}
-        </strong>
-       </button>
-      </h2>
+        <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+            <button aria-controls="collapse{{ forloop.counter }}" aria-expanded="false" 
+                    class="accordion-button collapsed d-flex align-items-center justify-content-between w-100"
+                    data-bs-target="#collapse{{ forloop.counter }}" data-bs-toggle="collapse" type="button">
+                
+                <div>
+                    {% translate "workRequestDetailsJobTitle" %}
+                    <strong>{{ role.title }}</strong>
+                </div>
+
+        
+                <a href="{% url 'recruiting_web:work_request_add_workers' pk=workrequest.id role_id=role.id %}">
+                    <button class="btn btn-warning btn-sm ms-3">
+                        +{% translate "addWorkers" %}
+                    </button>
+                </a>
+                
+        
+            </button>
+        </h2>
+        
       <div aria-labelledby="heading{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#rolesAccordion" id="collapse{{ forloop.counter }}">
        <div class="accordion-body">
         <div class="clearfix row mb-4">
