@@ -1,12 +1,16 @@
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('saveStatusBtn').addEventListener('click', function () {
-        const selectedStatus = document.getElementById('statusFilter').value;
+        const selectedStatus = document.getElementById('statusSelect').value; // Get status from modal dropdown
         const selectedWorkRequests = [];
+
+        // Collect checked checkboxes' data-ids
         document.querySelectorAll('.row-checkbox:checked').forEach(checkbox => {
             selectedWorkRequests.push(checkbox.getAttribute('data-id'));
         });
+
         if (selectedWorkRequests.length > 0) {
             const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
             fetch('/update-status/', {
                 method: 'POST',
                 headers: {
@@ -17,18 +21,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     work_requests: selectedWorkRequests,
                     status: selectedStatus
                 })
-            }).then(response => {
+            })
+            .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 return response.json();
-            }).then(data => {
+            })
+            .then(data => {
                 if (data.success) {
+                    alert('Status updated successfully!');
                     location.reload();
                 } else {
-                    console.log(data.error);
+                    alert('Error: ' + data.error);
                 }
-            }).catch(err => {
+            })
+            .catch(err => {
                 alert('An error occurred: ' + err.message);
             });
         } else {

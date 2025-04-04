@@ -4,6 +4,7 @@
 
 {% block styles %}
 <!-- SELECT2 CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link href="{% static 'assets/plugins/select2/select2.min.css' %}" rel="stylesheet"/>
 <!-- DATA TABLE CSS -->
 <link href="{% static 'assets/plugins/datatable/css/dataTables.bootstrap5.css' %}" rel="stylesheet"/>
@@ -37,18 +38,39 @@
             <a class="btn yellow-button add-job-btn" href="{% url 'recruiting_web:workrequest_create' %}" style="min-width: 150px;">
                 {% translate "addNewJobOrder" %}
             </a>
-            <select class="form-select status-dropdown" id="statusFilter" style="width: auto; min-width: 150px;">
-                <option value="Draft">{% translate "createWorkRequestDraft" %}</option>
-                <option value="Requested">{% translate "createWorkRequestRequested" %}</option>
-                <option value="Open">{% translate "createWorkRequestOpen" %}</option>
-                <option value="Closed">{% translate "createWorkRequestClosed" %}</option>
-            </select>
-            <button class="btn yellow-button add-job-btn" id="saveStatusBtn" type="button">
-                {% translate "save" %}
+            <!-- Edit Icon to open modal -->
+            <button type="button" class="btn yellow-button add-job-btn" data-bs-toggle="modal" data-bs-target="#statusModal">
+                <i class="fas fa-edit"></i> <!-- FontAwesome Edit Icon -->
             </button>
         </div>
     </div>
 </form>
+
+<!-- Status Update Modal -->
+<div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="statusModalLabel">{% translate "updateStatus" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label for="statusSelect">{% translate "selectStatus" %}:</label>
+                <select class="form-select" id="statusSelect">
+                    <option value="Draft">{% translate "createWorkRequestDraft" %}</option>
+                    <option value="Requested">{% translate "createWorkRequestRequested" %}</option>
+                    <option value="Open">{% translate "createWorkRequestOpen" %}</option>
+                    <option value="Closed">{% translate "createWorkRequestClosed" %}</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "close" %}</button>
+                <button type="button" class="btn btn-primary" id="saveStatusBtn">{% translate "save" %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row row-sm">
  <div class="col-lg-12">
   <div class="card">

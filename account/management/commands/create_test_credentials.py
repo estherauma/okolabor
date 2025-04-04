@@ -7,14 +7,13 @@ class Command(BaseCommand):
     help = 'Create test credentials'
 
     def handle(self, *args, **options):
-        print('Creating default usergroups')
+        print('Creating default user groups')
         self.create_roles()
         self.create_users()
-        # Create test credentials here
         print('Test credentials created')
-        
+
     def create_roles(self):
-        roles = ['worker', 'recruiter', 'employer', 'admin']
+        roles = ['worker', 'recruiter', 'employer', 'admin', 'recruiter_admin']
         for role_name in roles:
             # Use get_or_create to avoid duplications
             role, created = Group.objects.get_or_create(name=role_name)
@@ -44,9 +43,14 @@ class Command(BaseCommand):
                 'email': 'testadmin@okolabor.com',
                 'curp': 'HEGJ820506HBCRRN53',
                 'telephone': '+999752466603'
+            },
+            {
+                'email': 'testrecruiteradmin@okolabor.com',
+                'curp': 'HEGJ820506HBCRRN54',
+                'telephone': '+999752466604'
             }
         ]
-        
+
         for user_data in users:
             # Use get_or_create to avoid duplications
             user, created = User.objects.get_or_create(
@@ -58,7 +62,7 @@ class Command(BaseCommand):
                 self.stdout.write(f'User "{user_data["email"]}" created.')
             else:
                 self.stdout.write(f'User "{user_data["email"]}" already exists.')
-            
+
             # Assign roles (groups)
             if user_data['email'] == 'testworker@okolabor.com':
                 user.groups.add(Group.objects.get(name='worker'))
@@ -70,8 +74,10 @@ class Command(BaseCommand):
                 user.groups.add(Group.objects.get(name='admin'))
                 user.is_staff = True
                 user.is_superuser = True
-                
+            elif user_data['email'] == 'testrecruiteradmin@okolabor.com':
+                user.groups.add(Group.objects.get(name='recruiter_admin'))
+
             user.set_password(
                 user_data['email'].split('@')[0] + config('TEST_ACCOUNT_PASSWORD'))
-            
+
             user.save()
