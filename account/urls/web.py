@@ -1,6 +1,7 @@
 from django.urls import path
 from account.views.web import UpdatePasswordView, UserAccountView, UserActivitLogView, UserListView,AccountNotificationsView
 from account.views.web import edit_user_view
+
 urlpatterns = [
     path('', UserAccountView.as_view(), name='recruiter_account'),
     path('users/manage', UserListView.as_view(), name='manage_users'),

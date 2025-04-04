@@ -37,15 +37,57 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 import datetime
 from account.models import User, UserNotification
+from recruiting.models import WorkAssignment, Employer
 
 
 class UserListView(LoginRequiredMixin, View):
     def get(self, request):
-        users = User.objects.filter(groups__name='recruiter')
+        users = User.objects.filter(groups__name='recruiter').values(
+            'curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
+        )
         pending = User.objects.filter(
             is_active=False,
-            groups__name='recruiter')
-        context = {'users': users, 'pending_users': pending}
+            groups__name='recruiter'
+        ).values(
+            'curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
+        )
+
+        form = UpdateAccountDetailsForm() 
+        language_choices = form.fields["language"].choices
+
+        status_choices = [
+            (True, "Active"),
+            (False, "Inactive"),
+        ]
+
+        worker_assignments = WorkAssignment.objects.select_related('worker', 'role', 'work_request')
+        workers = [
+            {
+                'curp': assignment.worker.curp,
+                'email': assignment.worker.email,
+                'first_name': assignment.worker.first_name,
+                'last_name': assignment.worker.last_name,
+                'role': assignment.role.title if assignment.role else 'No Role',
+                'work_request': assignment.work_request.name if assignment.work_request else 'No Work Request',
+                'status': assignment.status,
+                'assigned_date': assignment.assigned_date
+            }
+            for assignment in worker_assignments if assignment.worker
+        ]
+
+        recruiter_admins = User.objects.filter(groups__name='recruiter_admin').values(
+            'curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
+        )
+
+        context = {
+            'users': users, 
+            'pending_users': pending,
+            'language_choices': language_choices,
+            'status_choices': status_choices,
+            'workers': workers,
+            'recruiter_admins': recruiter_admins,
+            
+            }
         return render(request, 'recruiter/manage_users.html', context)
 
     def post(self, request):
@@ -184,7 +226,7 @@ class UpdatePasswordView(LoginRequiredMixin, FormView):
 
 
 class AccountNotificationsView(LoginRequiredMixin, View):
-    template_name = 'notifications.html'
+    template_name = 'account/notifications.html'
 
     def get(self, request):
         notifications = UserNotification.objects.filter(user=request.user).order_by('-created_at')
@@ -199,18 +241,17 @@ def edit_user_view(request, curp):
     if request.method == "POST":
         form = UpdateAccountDetailsForm(request.POST, instance=user)
         if form.is_valid():
-            form.save()
-            
+            user = form.save(commit=False)
+            user.is_active = form.cleaned_data["is_active"] == "True"  # Convert string to boolean
+            user.save()
             messages.success(request, "User details updated successfully!")
-
             redirect_url = reverse("manage_users")
-            
             if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                 return JsonResponse({"success": True, "redirect_url": redirect_url})
-
             return redirect(redirect_url)
-
+        else:
+            return JsonResponse({"success": False, "error": form.errors}, status=400)
     else:
         form = UpdateAccountDetailsForm(instance=user)
 
-    return render(request, "components/modals/edit_user_modal.html", {"form": form, "user": user})
+    return render(request, "recruiter/recruiter_models/edit_user_modal.html", {"form": form, "user": user})
