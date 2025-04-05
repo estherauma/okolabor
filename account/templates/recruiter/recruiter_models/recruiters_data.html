@@ -6,7 +6,7 @@
                 {% translate "recruiters" %}
             </h3>
             <button class="btn btn yellow-button btn-icon ms-auto p-1" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#inviteUserModal">
-                {% translate "newUser" %}
+                +{% translate "newUser" %}
             </button>
         </div>
         <div class="table-responsive">
@@ -32,18 +32,20 @@
                         <td>{{ user.created_at }}</td>
                         <td>{{ user.is_active|yesno:_("active,inactive") }}</td>
                         <td>
-                            <!-- In your main template where you list users -->
                             <i
-                                class="side-menu__icon icon icon-pencil me-2 cursor-pointer edit-user-btn"
+                                class="side-menu__icon icon icon-pencil me-2 cursor-pointer edit-recruiter-btn"
                                 data-bs-toggle="modal"
-                                data-bs-target="#editUserModal"
-                                data-curp="{{ user.curp }}" 
-                                data-first-name="{{ user.first_name }}" 
-                                data-last-name="{{ user.last_name }}" 
-                                data-email="{{ user.email }}" 
-                                data-is-active="{{ user.is_active|yesno:'True,False' }}" 
-                                data-role="{{ user.role }}"
-                            ></i>
+                                data-bs-target="#editRecruiterModal"
+                                data-recruiter-curp="{{ user.curp }}"
+                                data-recruiter-first-name="{{ user.first_name }}"
+                                data-recruiter-last-name="{{ user.last_name }}"
+                                data-recruiter-email="{{ user.email }}"
+                                data-recruiter-is-active="{{ user.is_active }}"
+                                data-recruiter-language="{{ user.language }}"
+                                >
+                               
+                            </i>
+
                             <i class="side-menu__icon fa fa-trash-o cursor-pointer" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#confirmationModal"></i>
 
                         </td>
@@ -54,3 +56,5 @@
         </div>
     </div>
 </div>
+
+{% include 'recruiter/recruiter_models/edit_recruiter_modal.html' %}

@@ -6,7 +6,7 @@
             <h3 class="card-title green-color fw-bold mb-1">
                 {% translate "recruiterAdmin" %}
             </h3>
-            <button class="btn btn yellow-button btn-icon ms-auto p-1" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#inviteUserModal">
+            <button class="btn btn yellow-button btn-icon ms-auto p-1" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#AddRecruiterAdminModal">
                 {% translate "newUser" %}
             </button>
         </div>
@@ -35,15 +35,15 @@
                         <td>
                             <!-- In your main template where you list users -->
                             <i
-                                class="side-menu__icon icon icon-pencil me-2 cursor-pointer edit-user-btn"
+                                class="side-menu__icon icon icon-pencil me-2 cursor-pointer edit-recruiter-admin-btn"
                                 data-bs-toggle="modal"
-                                data-bs-target="#editUserModal"
-                                data-curp="{{ user.curp }}" 
-                                data-first-name="{{ user.first_name }}" 
-                                data-last-name="{{ user.last_name }}" 
-                                data-email="{{ user.email }}" 
-                                data-is-active="{{ user.is_active|yesno:'True,False' }}" 
-                                data-role="{{ user.role }}"
+                                data-bs-target="#editRecruiterAdminModal"
+                                data-recruiter-admin-curp="{{ user.curp }}" 
+                                data-recruiter-admin-first-name="{{ user.first_name }}" 
+                                data-recruiter-admin-last-name="{{ user.last_name }}" 
+                                data-recruiter-admin-email="{{ user.email }}" 
+                                data-recruiter-admin-is-active="{{ user.is_active|yesno:'True,False' }}" 
+                                data-recruiter-admin-role="{{ user.role }}"
                             ></i>
                             <i class="side-menu__icon fa fa-trash-o cursor-pointer" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#confirmationModal"></i>
 
@@ -55,3 +55,4 @@
         </div>
     </div>
 </div>
+{% include 'recruiter/recruiter_models/edit_recruiter_admin_modal.html' %}

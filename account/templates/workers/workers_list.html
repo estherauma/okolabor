@@ -6,6 +6,9 @@
             <h3 class="card-title green-color fw-bold mb-1">
                 {% translate "Workers" %}
             </h3>
+            <button class="btn btn yellow-button btn-icon ms-auto p-1" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#AddWorkerModal">
+                +{% translate "newWorker" %}
+            </button>
             
         </div>
         <div class="table-responsive">
@@ -18,7 +21,6 @@
                         <th class="theading-color text-start">{% translate "lastName" %}</th>
                         <th class="theading-color text-start">{% translate "createdAt" %}</th>
                         <th class="theading-color text-start">{% translate "activeStatus" %}</th>
-                        <th class="theading-color text-start">{% translate "workRequest" %}</th>
                         <th class="theading-color text-start">{% translate "actions" %}</th>
                     </tr>
                 </thead>
@@ -29,21 +31,19 @@
                         <td>{{ user.email }}</td>
                         <td>{{ user.first_name }}</td>
                         <td>{{ user.last_name }}</td>
-                        <td>{{ user.work_request }}</td>
-                        <td>{{ user.assigned_date }}</td>
+                        <td>{{ user.created_at }}</td>
                         <td>{{ user.is_active|yesno:_("active,inactive") }}</td>
                         <td>
                             <!-- In your main template where you list users -->
                             <i
                                 class="side-menu__icon icon icon-pencil me-2 cursor-pointer edit-user-btn"
                                 data-bs-toggle="modal"
-                                data-bs-target="#editUserModal"
+                                data-bs-target="#editWorkerModal"
                                 data-curp="{{ user.curp }}" 
-                                data-first-name="{{ user.first_name }}" 
-                                data-last-name="{{ user.last_name }}" 
                                 data-email="{{ user.email }}" 
+                                data-first-name="{{ user.first_name }}" 
+                                data-last-name="{{ user.last_name }}"
                                 data-is-active="{{ user.is_active|yesno:'True,False' }}" 
-                                data-role="{{ user.role }}"
                             ></i>
                             <i class="side-menu__icon fa fa-trash-o cursor-pointer" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#confirmationModal"></i>
 
@@ -55,3 +55,6 @@
         </div>
     </div>
 </div>
+
+{% include 'workers/worker_models/worker_edit_user_model.html'%}
+{% include 'workers/worker_models/add_worker_modal.html'%}

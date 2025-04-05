@@ -203,7 +203,6 @@ class WorkerCreateView(CreateView):
     template_name = 'recruiting/workers/create.html'
 
     def form_valid(self, form):
-        # Set the user as a worker
         worker = form.save()
         try:
             worker_group = Group.objects.get(name='worker')

@@ -16,7 +16,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from django.views import View
-from django.views.generic.edit import FormView
+from django.views.generic.edit import FormView,CreateView
 from django.http import JsonResponse
 from account.forms.account_update import UpdateAccountDetailsForm
 from account.forms.filter_logs import UserLogsFilterForm
@@ -38,6 +38,7 @@ from django.http import JsonResponse
 import datetime
 from account.models import User, UserNotification
 from recruiting.models import WorkAssignment, Employer
+from recruiting.forms import WorkerCreateForm,RecruiterAdminCreateForm
 
 
 class UserListView(LoginRequiredMixin, View):
@@ -53,6 +54,8 @@ class UserListView(LoginRequiredMixin, View):
         )
 
         form = UpdateAccountDetailsForm() 
+        form_worker_class = WorkerCreateForm()
+        form_recruiter_admin_class = RecruiterAdminCreateForm()
         language_choices = form.fields["language"].choices
 
         status_choices = [
@@ -60,32 +63,25 @@ class UserListView(LoginRequiredMixin, View):
             (False, "Inactive"),
         ]
 
-        worker_assignments = WorkAssignment.objects.select_related('worker', 'role', 'work_request')
-        workers = [
-            {
-                'curp': assignment.worker.curp,
-                'email': assignment.worker.email,
-                'first_name': assignment.worker.first_name,
-                'last_name': assignment.worker.last_name,
-                'role': assignment.role.title if assignment.role else 'No Role',
-                'work_request': assignment.work_request.name if assignment.work_request else 'No Work Request',
-                'status': assignment.status,
-                'assigned_date': assignment.assigned_date
-            }
-            for assignment in worker_assignments if assignment.worker
-        ]
+        workers_list = User.objects.filter(groups__name='worker').values(
+            'curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
+        )
 
         recruiter_admins = User.objects.filter(groups__name='recruiter_admin').values(
             'curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
         )
+
+        print(workers_list, "workers")
 
         context = {
             'users': users, 
             'pending_users': pending,
             'language_choices': language_choices,
             'status_choices': status_choices,
-            'workers': workers,
+            'workers': workers_list,
             'recruiter_admins': recruiter_admins,
+            'form_worker_class': form_worker_class,
+            'form_recruiter_admin_class': form_recruiter_admin_class,
             
             }
         return render(request, 'recruiter/manage_users.html', context)
@@ -255,3 +251,60 @@ def edit_user_view(request, curp):
         form = UpdateAccountDetailsForm(instance=user)
 
     return render(request, "recruiter/recruiter_models/edit_user_modal.html", {"form": form, "user": user})
+
+def edit_worker(request, curp):
+    if request.method == 'POST':
+        user = get_object_or_404(User, curp=curp)
+
+        user.first_name = request.POST.get('first_name')
+        user.last_name = request.POST.get('last_name')
+        user.email = request.POST.get('email')
+        user.is_active = request.POST.get('is_active')
+        user.language = request.POST.get('language')
+        user.save()
+
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'success': True})
+
+        messages.success(request, _('Worker updated successfully.'))
+        return redirect('manage_users')
+
+    return redirect('manage_users')
+
+class WorkerModalCreateView(View):
+    def post(self, request, *args, **kwargs):
+        form = WorkerCreateForm(request.POST)
+        if form.is_valid():
+            worker = form.save()
+            try:
+                worker_group = Group.objects.get(name='worker')
+                worker.groups.add(worker_group)
+            except Group.DoesNotExist:
+                messages.error(request, _("Worker group does not exist. Please create it."))
+                return redirect('manage_users')
+                
+
+            messages.success(request, _("worker created successfully."))
+            return redirect('manage_users')
+        else:
+            messages.error(request, _("Please correct the errors in the form."))
+            return redirect('manage_users')
+        
+
+class RecruiterAdminModalCreateView(View):
+    def post(self, request, *args, **kwargs):
+        form = RecruiterAdminCreateForm(request.POST)
+        if form.is_valid():
+            recruiter = form.save()
+            try:
+                recruiter_group = Group.objects.get(name='recruiter_admin')
+                recruiter.groups.add(recruiter_group)
+            except Group.DoesNotExist:
+                messages.error(request, _("Recruiter admin group does not exist. Please create it."))
+                return redirect('manage_users')
+
+            messages.success(request, _("Recruiter Admin created successfully."))
+            return redirect('manage_users')
+        else:
+            messages.error(request, _("Please correct the errors in the form."))
+            return redirect('manage_users')

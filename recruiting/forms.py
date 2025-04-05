@@ -647,6 +647,27 @@ class WorkerCreateForm(forms.ModelForm):
             'address_line_2': forms.TextInput(attrs={'class': 'form-control'}),
             'city': forms.TextInput(attrs={'class': 'form-control'})   
         }
+
+class RecruiterAdminCreateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['curp', 'first_name', 'last_name', 'email']
+
+        labels = {
+            'curp': _("curp"),
+            'first_name': _("firstName"),
+            'last_name': _("lastName"),
+            'email': _("email"),
+            
+        }
+
+        widgets = {
+            'curp': forms.TextInput(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            
+        }
         
 
 class WorkExperienceCreateForm(forms.ModelForm):
