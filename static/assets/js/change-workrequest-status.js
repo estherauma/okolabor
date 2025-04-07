@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(data => {
                 if (data.success) {
-                    alert('Status updated successfully!');
                     location.reload();
                 } else {
                     alert('Error: ' + data.error);
