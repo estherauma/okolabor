@@ -42,7 +42,7 @@ from recruiting.forms import (
 )
 from recruiting.models import (
     Deduction,
-    Employer,
+    Organization,
     EmploymentLocation,
     Hours,
     HousingInformation,
@@ -62,11 +62,11 @@ class EmployerListView(View):
         query = request.GET.get('query')
 
         if user.groups.filter(name='admin').exists():
-            employers_list = Employer.objects.all().prefetch_related('employerrecruiter_set')
+            employers_list = Organization.objects.all().prefetch_related('employerrecruiter_set')
         elif user.groups.filter(name='recruiter').exists():
-            employers_list = Employer.objects.filter(employerrecruiter__recruiter=user).distinct()
+            employers_list = Organization.objects.filter(employerrecruiter__recruiter=user).distinct()
         else:
-            employers_list = Employer.objects.none()
+            employers_list = Organization.objects.none()
 
         if query:
             employers_list = employers_list.filter(
@@ -109,7 +109,7 @@ class EmployerListView(View):
 
 
 class EmployerCreateView(CreateView):
-    model = Employer
+    model = Organization
     form_class = EmployerForm
     template_name = 'recruiting/employers/create.html'
 
@@ -236,7 +236,7 @@ class RecruiterListView(LoginRequiredMixin, View):
             return redirect('recruiting_web:access_denied')
 
         recruiters = User.objects.filter(groups__name='recruiter').prefetch_related('employerrecruiter_set__employer')
-        employers = Employer.objects.all()
+        employers = Organization.objects.all()
 
         recruiter_data = []
         for recruiter in recruiters:
@@ -464,7 +464,7 @@ class AssignRecruiterView(View):
             employer_recruiter_objs = []
             for employer_id in employer_ids:
                 try:
-                    employer = Employer.objects.get(id=employer_id)
+                    employer = Organization.objects.get(id=employer_id)
                     obj, created = EmployerRecruiter.objects.get_or_create(
                         employer=employer, recruiter=recruiter
                     )

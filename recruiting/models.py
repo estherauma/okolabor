@@ -5,7 +5,7 @@ from account.models import User
 from django.utils.translation import gettext_lazy as _
 
 
-class Employer(AuditableModel):
+class Organization(AuditableModel):
     name = models.CharField(max_length=255)
     email = models.EmailField(max_length=255)
     phone = models.CharField(max_length=255)
@@ -35,7 +35,7 @@ class WorkRequests(AuditableModel):
     start_date = models.DateField(null=False, blank=False)
     end_date = models.DateField(null=True, blank=True)
     required_workers = models.IntegerField(null=False, blank=False)
-    employer = models.ForeignKey(Employer, on_delete=models.DO_NOTHING)
+    employer = models.ForeignKey(Organization, on_delete=models.DO_NOTHING)
     status = models.CharField(
         max_length=255, null=False, blank=False,
         choices=STATUS_CHOICES, default='Open'  # Set default to 'Open'
@@ -271,7 +271,7 @@ class OkoMessageRecipients(AuditableModel):
         return f'{self.recipient}'
     
 class EmployerRecruiter(AuditableModel):
-    employer = models.ForeignKey(Employer, on_delete=models.CASCADE)
+    employer = models.ForeignKey(Organization, on_delete=models.CASCADE)
     recruiter = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
@@ -281,4 +281,3 @@ class EmployerRecruiter(AuditableModel):
 
     def __str__(self):
         return f"{self.recruiter.first_name} -> {self.employer.name}"
-

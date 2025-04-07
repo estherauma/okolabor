@@ -4,7 +4,7 @@ from django import forms
 from django.utils.translation import gettext_lazy as _ 
 from account.models import User
 from recruiting.models import (
-    Deduction, Employer, Hours, OkoMessage, Qualification,
+    Deduction, Organization, Hours, OkoMessage, Qualification,
     EmploymentLocation, HousingInformation, MealProvision,
     Role, Wages, WorkRequests,WorkAssignment
 )
@@ -13,7 +13,7 @@ from account.models import (UserWorkExperience)
 
 class EmployerForm(forms.ModelForm):
     class Meta:
-        model = Employer
+        model = Organization
         fields = ['name', 'email', 'phone', 'website',
                   'address', 'city', 'state', 'country',
                   'zip_code', 'description'
@@ -651,7 +651,7 @@ class WorkerCreateForm(forms.ModelForm):
 
 class WorkExperienceCreateForm(forms.ModelForm):
     company = forms.ModelChoiceField(
-        queryset=Employer.objects.all(),
+        queryset=Organization.objects.all(),
         widget=forms.Select(attrs={'class': 'form-control'}),
         empty_label=_("addWorkerExperienceSelectEmployer"),
         label=_("addWorkerExperienceCompany1"),

@@ -8,7 +8,7 @@ class WorkerListViewTestCase(TestCase):
     def setUp(self):
         """Set up the test environment before each test."""
         # Create an employer instance
-        self.employer = Employer.objects.create(name="Test Employer")
+        self.employer = Organization.objects.create(name="Test Employer")
 
         # Create a WorkRequest instance
         self.work_request = WorkRequests.objects.create(

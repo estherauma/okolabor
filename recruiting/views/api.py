@@ -1,6 +1,6 @@
 
 from drf_yasg.utils import swagger_auto_schema
-from recruiting.models import Employer, Role, WorkRequests
+from recruiting.models import Organization, Role, WorkRequests
 from recruiting.serializer import (
     EmployerSerializer, RoleSerializer,
     WRRoleSerializer, WorkRequestSerializer
@@ -15,7 +15,7 @@ from rest_framework.exceptions import ValidationError
 
 
 class EmployerAPIListView(ListCreateAPIView):
-    queryset = Employer.objects.all()
+    queryset = Organization.objects.all()
     serializer_class = EmployerSerializer
     permission_classes = (IsAuthenticated,)
 
@@ -100,4 +100,3 @@ class RoleAPIListView(ListCreateAPIView):
     def get(self, request, *args, **kwargs):
         serializer = self.get_serializer(self.get_queryset(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
