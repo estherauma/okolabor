@@ -687,19 +687,19 @@ class AssignEmployerContactView(View):
 
             # Check if employer ID is missing
             if not employer_id:
-                messages.error(request, "Employer ID is required.")
-                return redirect('recruiting_web:employer_list')
+                messages.error(request, "employerIDIsRequired.")
+                return JsonResponse({'error': 'employerIDIsRequired.'}, status=400)
 
             # Check if the email already exists
             if EmployerContact.objects.filter(email=email).exists():
                 messages.error(request, "Email already exists.")
-                return redirect('recruiting_web:employer_list')
+                return JsonResponse({'error': 'emailAlreadyExists.'}, status=400)
 
             try:
                 employer = Employer.objects.get(id=employer_id)
             except Employer.DoesNotExist:
                 messages.error(request, "Employer not found.")
-                return redirect('recruiting_web:employer_list')
+                return JsonResponse({'error': 'employerNotFound.'}, status=404)
 
             # Create the contact
             EmployerContact.objects.create(
@@ -712,12 +712,12 @@ class AssignEmployerContactView(View):
             )
 
             messages.success(request, _("ContactAssignedSuccessfully!"))
-            return redirect('recruiting_web:employer_list')
+            return JsonResponse({'success': True, 'message': 'ContactAssignedSuccessfully!'})
 
         except Exception as e:
             messages.error(request, str(e))
-            return redirect('recruiting_web:employer_list')
+            return JsonResponse({'error': str(e)}, status=500)
 
     def get(self, request, *args, **kwargs):
         messages.error(request, "GET not allowed")
-        return redirect('recruiting_web:employer_list')
+        return JsonResponse({'error': 'GET not allowed.'}, status=405)

@@ -33,6 +33,7 @@ document.getElementById("assignContactForm").addEventListener("submit", function
     })
     .then((response) => {
         if (response.redirected) {
+            // In case of redirect from backend, follow it
             window.location.href = response.url;
         } else {
             return response.json();
@@ -41,6 +42,12 @@ document.getElementById("assignContactForm").addEventListener("submit", function
     .then((data) => {
         if (data && data.status === "error") {
             alert("Error: " + data.error);
+        } else {
+            // ✅ SUCCESS: Close modal and reload page
+            $("#assignContactModal").modal("hide");
+            setTimeout(() => {
+                location.reload();
+            }, 500);
         }
     })
     .catch((error) => {
