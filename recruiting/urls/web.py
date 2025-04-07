@@ -1,3 +1,4 @@
+
 from django.urls import path
 
 from recruiting.views.web import (
@@ -7,7 +8,7 @@ from recruiting.views.web import (
     RoleHoursCreateView, RoleHousingCreateView, RoleMealsCreateView,
     RoleQualificationsCreateView, RoleWagesCreateView, WorkRequestCreateView,
     WorkRequestDetailView, WorkRequestRoleCreateView, WorkRequestsListView,
-    OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView,AssignRecruiterView,SendRecruiterEmailView,AcceptRecruiterView,RejectRecruiterView,RemoveWorkerFromAssignmentView
+    OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView,AssignRecruiterView,SendRecruiterEmailView,AcceptRecruiterView,RejectRecruiterView,RemoveWorkerFromAssignmentView,UpdateStatusView
 )
 from recruiting.views.workers import (
      WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView
@@ -106,5 +107,5 @@ urlpatterns = [
     path('access-denied/', AccessDeniedView.as_view(), name='access_denied'),
 
     path('remove-worker/<str:worker_id>/', RemoveWorkerFromAssignmentView.as_view(), name='remove_worker'),
-
+    path('update-status/', UpdateStatusView.as_view(), name='update_status'),
 ]
