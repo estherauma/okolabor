@@ -1,18 +1,17 @@
+document.getElementById("assignContactBtn").addEventListener("click", function () {
+    const employerId = this.getAttribute("data-employer-id");
+    document.getElementById("employerIdField").value = employerId;
+});
+
 document.getElementById("assignContactForm").addEventListener("submit", function (e) {
     e.preventDefault();
-    const selectedEmployers = Array.from(document.querySelectorAll(".table-checkbox:checked"))
-        .map((checkbox) => checkbox.closest("tr").getAttribute("data-id"));
 
+    const employerId = document.getElementById("employerIdField").value;
     const name = document.getElementById("contactName").value;
     const email = document.getElementById("contactEmail").value;
     const phone = document.getElementById("contactPhone").value;
     const position = document.getElementById("contactPosition").value;
     const isPrimary = document.getElementById("isPrimary").checked;
-
-    if (selectedEmployers.length === 0) {
-        alert("Please select at least one employer.");
-        return;
-    }
 
     $("#global-loader").fadeIn("slow");
     document.body.style.overflow = "hidden";
@@ -24,7 +23,7 @@ document.getElementById("assignContactForm").addEventListener("submit", function
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            employer_ids: selectedEmployers,
+            employer_id: employerId,
             name: name,
             email: email,
             phone: phone,

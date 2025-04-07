@@ -678,39 +678,46 @@ class AssignEmployerContactView(View):
     def post(self, request, *args, **kwargs):
         try:
             data = json.loads(request.body)
-            employer_ids = data.get("employer_ids", [])
+            employer_id = data.get("employer_id")
             name = data.get("name")
             email = data.get("email")
             phone = data.get("phone")
             position = data.get("position", "")
             is_primary = data.get("is_primary")
 
+            # Check if employer ID is missing
+            if not employer_id:
+                messages.error(request, "Employer ID is required.")
+                return redirect('recruiting_web:employer_list')
+
             # Check if the email already exists
             if EmployerContact.objects.filter(email=email).exists():
                 messages.error(request, "Email already exists.")
-                return redirect('recruiting_web:employer_list') 
+                return redirect('recruiting_web:employer_list')
 
-            for eid in employer_ids:
-                try:
-                    employer = Employer.objects.get(id=eid)
-                    EmployerContact.objects.create(
-                        employer=employer,
-                        name=name,
-                        email=email,
-                        phone=phone,
-                        position=position,
-                        is_primary=is_primary
-                    )
-                except Employer.DoesNotExist:
-                    continue
+            try:
+                employer = Employer.objects.get(id=employer_id)
+            except Employer.DoesNotExist:
+                messages.error(request, "Employer not found.")
+                return redirect('recruiting_web:employer_list')
+
+            # Create the contact
+            EmployerContact.objects.create(
+                employer=employer,
+                name=name,
+                email=email,
+                phone=phone,
+                position=position,
+                is_primary=is_primary
+            )
 
             messages.success(request, _("ContactAssignedSuccessfully!"))
-            return redirect('recruiting_web:employer_list') 
+            return redirect('recruiting_web:employer_list')
 
         except Exception as e:
             messages.error(request, str(e))
-            return redirect('recruiting_web:employer_list') 
+            return redirect('recruiting_web:employer_list')
 
     def get(self, request, *args, **kwargs):
         messages.error(request, "GET not allowed")
-        return redirect('recruiting_web:employer_list') 
+        return redirect('recruiting_web:employer_list')
