@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    $('#basic-datatable, #employers-list-datatable, #workrequest-datatable, #another-basic-datatable,').DataTable({
+    $('#basic-datatable, #employers-list-datatable, #workrequest-datatable, #another-basic-datatable, #recruiters-datatable').DataTable({
         "ordering": true,
         "order": [],
         "columnDefs": [{

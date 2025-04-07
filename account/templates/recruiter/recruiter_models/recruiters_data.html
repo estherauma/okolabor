@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load static %}
 <div class="card">
     <div class="card-body">
         <div class="d-flex justify-content-between">
@@ -6,11 +7,11 @@
                 {% translate "recruiters" %}
             </h3>
             <button class="btn btn yellow-button btn-icon ms-auto p-1" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#inviteUserModal">
-                +{% translate "newUser" %}
+                {% translate "newUser" %}
             </button>
         </div>
         <div class="table-responsive">
-            <table class="table text-nowrap border-bottom">
+            <table class="table text-nowrap border-bottom" id="recruiters-datatable">
                 <thead>
                     <tr>
                         <th class="theading-color text-start">{% translate "curp" %}</th>
@@ -58,3 +59,7 @@
 </div>
 
 {% include 'recruiter/recruiter_models/edit_recruiter_modal.html' %}
+
+{% block scripts %}
+    <script src="{% static ''%}assets/js/table-sorting.js"></script>
+{% endblock scripts %}
