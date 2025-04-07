@@ -672,3 +672,45 @@ class ContactWorkRequestsView(View):
         }
 
         return render(request, 'recruiting/work_requests/workrequest_details.html', context)
+    
+@method_decorator(csrf_exempt, name='dispatch')
+class AssignEmployerContactView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            employer_ids = data.get("employer_ids", [])
+            name = data.get("name")
+            email = data.get("email")
+            phone = data.get("phone")
+            position = data.get("position", "")
+            is_primary = data.get("is_primary")
+
+            # Check if the email already exists
+            if EmployerContact.objects.filter(email=email).exists():
+                messages.error(request, "Email already exists.")
+                return redirect('recruiting_web:employer_list') 
+
+            for eid in employer_ids:
+                try:
+                    employer = Employer.objects.get(id=eid)
+                    EmployerContact.objects.create(
+                        employer=employer,
+                        name=name,
+                        email=email,
+                        phone=phone,
+                        position=position,
+                        is_primary=is_primary
+                    )
+                except Employer.DoesNotExist:
+                    continue
+
+            messages.success(request, "Contact(s) assigned successfully!")
+            return redirect('recruiting_web:employer_list') 
+
+        except Exception as e:
+            messages.error(request, str(e))
+            return redirect('recruiting_web:employer_list') 
+
+    def get(self, request, *args, **kwargs):
+        messages.error(request, "GET not allowed")
+        return redirect('recruiting_web:employer_list') 
