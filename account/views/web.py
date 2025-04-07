@@ -339,3 +339,28 @@ class OrganizationCreateView(UserPassesTestMixin, CreateView):
             'recruiting_web:employer_detail',
             kwargs={'pk': self.object.pk}
         )
+    
+def edit_organization(request, organization_id):
+    if request.method == 'POST':
+        organization = get_object_or_404(Organization, pk=organization_id)
+
+        organization.name = request.POST.get('name')
+        organization.email = request.POST.get('email')
+        organization.phone = request.POST.get('phone')
+        organization.website = request.POST.get('website')
+        organization.address = request.POST.get('address')
+        organization.city = request.POST.get('city')
+        organization.state = request.POST.get('state')
+        organization.country = request.POST.get('country')
+        organization.zip_code = request.POST.get('zip_code')
+        organization.type = request.POST.get('type')
+        organization.is_active = request.POST.get('is_active')
+        organization.save()
+
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'success': True})
+
+        messages.success(request, _('organizationUpdatedSuccessfully.'))
+        return redirect('recruiting_web:employer_detail', pk=organization.pk)
+
+    return redirect('recruiting_web:employer_detail', pk=organization_id)

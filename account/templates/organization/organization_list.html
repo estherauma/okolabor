@@ -23,6 +23,7 @@
                         <th class="theading-color text-start">{% translate "address" %}</th>
                         <th class="theading-color text-start">{% translate "city" %}</th>
                         <th class="theading-color text-start">{% translate "state" %}</th>
+                        <th class="theading-color text-start">{% translate "Country" %}</th>
                         <th class="theading-color text-start">{% translate "address" %}</th>
                         <th class="theading-color text-start">{% translate "zipCode" %}</th>
                         <th class="theading-color text-start">{% translate "type" %}</th>
@@ -40,6 +41,7 @@
                         <td>{{ user.address }}</td>
                         <td>{{ user.city }}</td>
                         <td>{{ user.state }}</td>
+                        <td>{{ user.country }}</td>
                         <td>{{ user.address }}</td>
                         <td>{{ user.zip_code }}</td>
                         <td>{{ user.type }}</td>
@@ -47,14 +49,24 @@
                         <td>
                             <!-- In your main template where you list users -->
                             <i
-                                class="side-menu__icon icon icon-pencil me-2 cursor-pointer edit-user-btn"
+                                class="side-menu__icon icon icon-pencil me-2 cursor-pointer edit-organization-btn"
                                 data-bs-toggle="modal"
-                                data-bs-target="#editWorkerModal"
-                                data-curp="{{ user.curp }}" 
-                                data-email="{{ user.email }}" 
-                                data-first-name="{{ user.first_name }}" 
-                                data-last-name="{{ user.last_name }}"
-                                data-is-active="{{ user.is_active|yesno:'True,False' }}" 
+                                data-bs-target="#editOrganizationModal"
+                                data-organization-id="{{ user.id }}"
+                                data-organization-name="{{ user.name }}" 
+                                data-organization-email="{{ user.email }}" 
+                                data-organization-phone="{{ user.phone }}" 
+                                data-organization-website="{{ user.website }}"
+                                data-organization-address="{{ user.address|yesno:'True,False' }}" 
+                                data-organization-city="{{ user.city }}"
+                                data-organization-state="{{ user.state }}"
+                                data-organization-country="{{ user.country }}"
+                                data-organization-address="{{ user.address }}"
+                                data-organization-zipcode="{{ user.zip_code }}"
+                                data-organization-type="{{ user.type }}"
+                                data-organization-isactive="{{ user.is_active }}"
+
+
                             ></i>
                             <i class="side-menu__icon fa fa-trash-o cursor-pointer" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#confirmationModal"></i>
 
@@ -67,5 +79,4 @@
     </div>
 </div>
 
-{% include 'workers/worker_models/worker_edit_user_model.html'%}
-{% include 'workers/worker_models/add_worker_modal.html'%}
+{% include 'organization/edit_organization_modal.html'%}
