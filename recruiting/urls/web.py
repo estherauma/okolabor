@@ -8,7 +8,7 @@ from recruiting.views.web import (
     RoleHoursCreateView, RoleHousingCreateView, RoleMealsCreateView,
     RoleQualificationsCreateView, RoleWagesCreateView, WorkRequestCreateView,
     WorkRequestDetailView, WorkRequestRoleCreateView, WorkRequestsListView,
-    OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView,AssignRecruiterView,SendRecruiterEmailView,AcceptRecruiterView,RejectRecruiterView,RemoveWorkerFromAssignmentView,UpdateStatusView
+    OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView,AssignRecruiterView,SendRecruiterEmailView,AcceptRecruiterView,RejectRecruiterView,RemoveWorkerFromAssignmentView,UpdateStatusView,ContactWorkRequestsView
 )
 from recruiting.views.workers import (
      WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView
@@ -108,4 +108,5 @@ urlpatterns = [
 
     path('remove-worker/<str:worker_id>/', RemoveWorkerFromAssignmentView.as_view(), name='remove_worker'),
     path('update-status/', UpdateStatusView.as_view(), name='update_status'),
+    path('contacts/<str:contact_id>/work-requests/', ContactWorkRequestsView.as_view(), name='contact_work_requests'),
 ]

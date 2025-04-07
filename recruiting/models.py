@@ -85,10 +85,6 @@ class WorkAssignment(AuditableModel):  # Assuming it extends an auditable model
         return f"{worker_name} - {role_name} - {self.status}"
 
 
-
-
-
-
 class Hours(AuditableModel):
     role = models.OneToOneField(
         Role, on_delete=models.CASCADE,
@@ -287,3 +283,15 @@ class EmployerRecruiter(AuditableModel):
 
     def __str__(self):
         return f"{self.recruiter.first_name} -> {self.employer.name}"
+    
+
+class EmployerContact(AuditableModel):
+    employer = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="contacts")
+    name = models.CharField(max_length=255)
+    email = models.EmailField(max_length=255, unique=True)
+    phone = models.CharField(max_length=255)
+    position = models.CharField(max_length=255, blank=True, null=True)  # Optional job title/position
+    is_primary = models.BooleanField(default=False)  # Flag for primary contact
+
+    def __str__(self):
+        return f'{self.name} - {self.employer.name}'

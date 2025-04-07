@@ -55,6 +55,7 @@ from recruiting.models import (
     WorkRequests,
     EmployerRecruiter,
     WorkAssignment,
+    EmployerContact
 )
 
 class EmployerListView(View):
@@ -146,12 +147,15 @@ class EmployerDetailView(View):
         draft_work_requests = work_requests.filter(status='Draft')
 
         recruiters = EmployerRecruiter.objects.filter(employer=employer).select_related('recruiter')
+        contacts = employer.contacts.all()
         context = {
             'employer': employer,
             'in_progress_work_requests': in_progress_work_requests,
             'closed_work_requests': closed_work_requests,
             'draft_work_requests': draft_work_requests,
             'recruiters': recruiters,
+            'contacts': contacts,
+            'work_requests': work_requests
         }
         return render(request, 'recruiting/employers/detail.html', context)
 
@@ -434,7 +438,6 @@ class OkoMessageCreateView(CreateView):
 
 class OkoMessageDetailsView(View):
     def get(self, request,id):
-        print(request,id,"id")
         message = get_object_or_404(OkoMessage, pk=id)
         context = {'message': message}
         return render(request, 'recruiting/messages/details.html',context)
@@ -646,3 +649,26 @@ class UpdateStatusView(View):
         except json.JSONDecodeError:
             messages.error(request, "invalidJSONData.")
             return JsonResponse({'success': False, 'message': 'invalidJSONData.'})
+
+
+class ContactWorkRequestsView(View):
+    def get(self, request, contact_id):
+        contact = get_object_or_404(EmployerContact, id=contact_id)
+        employer = contact.employer 
+        recruiters = EmployerRecruiter.objects.filter(employer=employer).select_related('recruiter')
+        work_requests = WorkRequests.objects.filter(employer=employer)
+        in_progress_work_requests = work_requests.filter(status__in=['Open', 'Requested'])
+        closed_work_requests = work_requests.filter(status='Closed')
+        draft_work_requests = work_requests.filter(status='Draft')
+
+        context = {
+            'contact': contact,
+            'employer': employer,
+            'in_progress_work_requests': in_progress_work_requests,
+            'closed_work_requests': closed_work_requests,
+            'draft_work_requests': draft_work_requests,
+            'work_requests': work_requests,
+            'recruiters': recruiters,
+        }
+
+        return render(request, 'recruiting/work_requests/workrequest_details.html', context)
