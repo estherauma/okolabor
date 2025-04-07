@@ -22,6 +22,7 @@ from django.conf import settings
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_str
 from django.http import HttpResponseRedirect
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 
 from account.models import User
@@ -81,6 +82,9 @@ class EmployerListView(View):
         page_number = request.GET.get('page')
         employers = paginator.get_page(page_number)
 
+        recruiter_group = Group.objects.get(id=1) 
+        recruiters = recruiter_group.user_set.all()
+
         employers_data = []
         for employer in employers:
             assigned_recruiters = EmployerRecruiter.objects.filter(employer=employer)
@@ -103,7 +107,7 @@ class EmployerListView(View):
                 'has_more': employers.has_next()
             })
 
-        context = {'employers': employers_data, 'query': query}
+        context = {'employers': employers_data, 'query': query,'recruiters': recruiters}
         return render(request, 'recruiting/employers/list.html', context)
 
 
@@ -435,7 +439,6 @@ class OkoMessageDetailsView(View):
         context = {'message': message}
         return render(request, 'recruiting/messages/details.html',context)
     
-@method_decorator(csrf_exempt, name='dispatch')
 class AssignRecruiterView(View):
     def post(self, request):
         try:
@@ -444,42 +447,47 @@ class AssignRecruiterView(View):
             recruiter_id = data.get("recruiter_id")
 
             if not employer_ids or not recruiter_id:
-                messages.error(request, "invalidDataProvided.")
-                return redirect("recruiting_web:employer_list") 
+                return JsonResponse({"success": False, "error": "invalidDataProvidedMissingEmployerIdsOrRecruiterId."}, status=400)
 
-            # Fetch the recruiter group dynamically by name
             recruiter_group = Group.objects.filter(name="Recruiter").first()
             if not recruiter_group:
-                messages.error(request, "recruiterGroupNotFound.")
-                return redirect("recruiting_web:employer_list")
+                return JsonResponse({"success": False, "error": "recruiterGroupNotFound."}, status=404)
 
-            recruiters = recruiter_group.user_set.filter(id=recruiter_id)
+            recruiter = recruiter_group.user_set.filter(id=recruiter_id).first()
+            if not recruiter:
+                return JsonResponse({"success": False, "error": "recruiterNotFoundInRecruiterGroup."}, status=404)
 
-            if not recruiters.exists():
-                messages.error(request, "recruiterNotfoundInTheRecruiterGroup.")
-                return redirect("recruiting_web:employer_list")
+            assigned_employers = []
+            not_found_employers = []
 
-            recruiter = recruiters.first()
-
-            employer_recruiter_objs = []
             for employer_id in employer_ids:
                 try:
                     employer = Organization.objects.get(id=employer_id)
                     obj, created = EmployerRecruiter.objects.get_or_create(
                         employer=employer, recruiter=recruiter
                     )
-                    employer_recruiter_objs.append(obj)
-                except Employer.DoesNotExist:
-                    messages.warning(request, f"Employer with ID {employer_id} not found.")
+                    assigned_employers.append(employer_id)
+                except ObjectDoesNotExist:
+                    not_found_employers.append(employer_id)
 
-            messages.success(request, f"successfullyAssignedRecruiterTo {len(employer_recruiter_objs)} employer(s).")
-        
+            response_data = {
+                "success": True,
+                "message": f"successfullyAssignedRecruiterTo{len(assigned_employers)}Employers.",
+                "assignedEmployers": assigned_employers,
+                "notFoundEmployers": not_found_employers,
+            }
+
+            if not_found_employers:
+                response_data["warning"] = f"employersWithIds{not_found_employers}NotFound."
+
+            return JsonResponse(response_data)
+
         except json.JSONDecodeError:
-            messages.error(request, "invalidJSONFormat.")
-        except Exception as e:
-            messages.error(request, f"An error occurred: {str(e)}")
+            return JsonResponse({"success": False, "error": "invalidJsonFormat."}, status=400)
 
-        return redirect("recruiting_web:employer_list")  
+        except Exception as e:
+            return JsonResponse({"success": False, "error": f"anErrorOccurred{str(e)}"}, status=500)
+
     
     
 @method_decorator(csrf_exempt, name='dispatch')
@@ -491,19 +499,17 @@ class SendRecruiterEmailView(View):
             recruiter_id = data.get("recruiter_id")
 
             if not employer_ids or not recruiter_id:
-                return JsonResponse({"success": False, "error": "invalidJsonFormat"}, status=400)
-            try:
-                recruiter_group = Group.objects.get(id=1)
-                recruiters = recruiter_group.user_set.filter(id=recruiter_id)
+                return JsonResponse({"success": False, "error": "invalidJsonFormatMissingEmployerIdsOrRecruiterId."}, status=400)
 
-                if not recruiters.exists():
-                    return JsonResponse({"success": False, "error": "recruiterNotFoundInGroup"}, status=404)
+            recruiter_group = Group.objects.filter(id=1).first()
+            if not recruiter_group:
+                return JsonResponse({"success": False, "error": "recruiterGroupNotFound."}, status=404)
 
-                recruiter = recruiters.first()
-                print(recruiter, "recruiter")
+            recruiters = recruiter_group.user_set.filter(id=recruiter_id)
+            if not recruiters.exists():
+                return JsonResponse({"success": False, "error": "recruiterNotFoundInGroup."}, status=404)
 
-            except User.DoesNotExist:
-                return JsonResponse({"success": False, "error": "recruiterNotFoundInGroup"}, status=404)
+            recruiter = recruiters.first()
 
             for employer_id in employer_ids:
                 employer = get_object_or_404(Employer, id=employer_id)
@@ -533,22 +539,25 @@ class SendRecruiterEmailView(View):
 
                 send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [recruiter.email])
 
-            return JsonResponse({"success": True, "message": "emailsSentSuccessfully!"})
+            return JsonResponse({"success": True, "message": "emailsSentSuccessfully."})
 
         except json.JSONDecodeError:
-            return JsonResponse({"success": False, "error": "invalidJsonFormat"}, status=400)
-        except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)}, status=500)
+            return JsonResponse({"success": False, "error": "invalidJsonFormat."}, status=400)
         
+        except Exception as e:
+            return JsonResponse({"success": False, "error": f"anErrorOccurred{str(e)}"}, status=500)
+
 class AcceptRecruiterView(View):
     def get(self, request, employer_id, recruiter_id, *args, **kwargs):
         try:
             employer_id = force_str(urlsafe_base64_decode(employer_id))
             recruiter_id = force_str(urlsafe_base64_decode(recruiter_id))
+
             employer = get_object_or_404(Employer, id=employer_id)
             recruiter = get_object_or_404(User, id=recruiter_id)
-            EmployerRecruiter.objects.get_or_create(employer=employer, recruiter=recruiter)
-            
+
+            obj, created = EmployerRecruiter.objects.get_or_create(employer=employer, recruiter=recruiter)
+
             subject = "recruiterAssignmentAccepted"
             message = f"""
             Hi {recruiter.first_name},
@@ -558,14 +567,21 @@ class AcceptRecruiterView(View):
             Regards,
             Team
             """
-
             send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [recruiter.email])
-            
-            return JsonResponse({"success": True, "message": "recruiterAssignmentAccepted"})
+
+            messages.success(request, _("recruiterAssignmentAcceptedSuccessfully."))
+            return JsonResponse({"success": True, "message": "recruiterAssignmentAcceptedSuccessfully."})
+
+        except Employer.DoesNotExist:
+            return JsonResponse({"success": False, "error": "employerNotFound."}, status=404)
+
+        except User.DoesNotExist:
+            return JsonResponse({"success": False, "error": "recruiterNotFound."}, status=404)
 
         except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)}, status=500)
-        
+            messages.error(request, f"anErrorOccurred_{str(e)}")
+            return JsonResponse({"success": False, "error": f"anErrorOccurred_{str(e)}"}, status=500)
+
 class RejectRecruiterView(View):
     def get(self, request, employer_id, recruiter_id, *args, **kwargs):
         try:
@@ -574,11 +590,21 @@ class RejectRecruiterView(View):
 
             employer = get_object_or_404(Employer, id=employer_id)
             recruiter = get_object_or_404(User, id=recruiter_id)
-            return JsonResponse({"success": True, "message": "RecruiterAssignmentRejected!"})
+
+
+            messages.success(request, _("recruiterAssignmentRejectedSuccessfully."))
+            return JsonResponse({"success": True, "message": "recruiterAssignmentRejectedSuccessfully."})
+
+        except Employer.DoesNotExist:
+            return JsonResponse({"success": False, "error": "employerNotFound."}, status=404)
+
+        except User.DoesNotExist:
+            return JsonResponse({"success": False, "error": "recruiterNotFound."}, status=404)
 
         except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)}, status=500)
-        
+            messages.error(request, f"anErrorOccurred_{str(e)}")
+            return JsonResponse({"success": False, "error": f"anErrorOccurred_{str(e)}"}, status=500)
+
 
 class RemoveWorkerFromAssignmentView(View):
     def get(self, request, *args, **kwargs):
@@ -586,12 +612,37 @@ class RemoveWorkerFromAssignmentView(View):
             worker_id = kwargs.get('worker_id')
             assignment = get_object_or_404(WorkAssignment, worker__id=worker_id)
             work_request_id = assignment.work_request.pk  
+            
             assignment.status = 'Deleted'
             assignment.save()
 
-            messages.success(request, "workerAssignmentSuccessfullyMarkedAsDeleted.")
-
+            messages.success(request, _("WorkerAssignmentSuccessfullyMarkedAsDeleted."))
+        
         except Exception as e:
-            messages.error(request, f"Error removing worker: {str(e)}")
+            messages.error(request, f"errorRemovingWorker_{str(e)}")
+            return redirect(reverse('recruiting_web:workrequest_list'))
 
         return redirect(reverse('recruiting_web:workrequest_detail', kwargs={'pk': work_request_id}))
+
+@method_decorator(csrf_exempt, name='dispatch')
+class UpdateStatusView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            work_requests = data.get('work_requests', [])
+            status = data.get('status', '')
+            
+            if work_requests and status:
+                updated_count = WorkRequests.objects.filter(id__in=work_requests).update(status=status)
+                if updated_count > 0:
+                    messages.success(request, _("workRequestsSuccessfullyUpdatedTo'{}'Status.").format(status))
+                    return JsonResponse({'success': True, 'message': f"workRequestsSuccessfullyUpdatedTo'{status}'Status."})
+                else:
+                    messages.error(request, _("noWorkRequestsFoundToUpdate."))
+                    return JsonResponse({'success': False, 'message': 'noWorkRequestsFoundtoUpdate.'})
+            messages.error(request, _("invalidDataProvided."))
+            return JsonResponse({'success': False, 'message': 'invalidDataProvided.'})
+
+        except json.JSONDecodeError:
+            messages.error(request, "invalidJSONData.")
+            return JsonResponse({'success': False, 'message': 'invalidJSONData.'})

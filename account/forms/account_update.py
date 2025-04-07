@@ -4,14 +4,25 @@ from django.utils.translation import gettext_lazy as _
 
 
 class UpdateAccountDetailsForm(forms.ModelForm):
+    STATUS_CHOICES = [
+        (True, _("Active")),
+        (False, _("Inactive")),
+    ]
+
+    is_active = forms.ChoiceField(
+        choices=STATUS_CHOICES, 
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+
     class Meta:
         model = User
-        fields = ["curp", "first_name", "last_name", "email", "language"]
+        fields = ["curp", "first_name", "last_name", "email", "language", "is_active"]
         labels = {
-            "curp": _("curp"),
-            "first_name": _("firstName"),
-            "last_name": _("lastName"),
-            "email": _("email"),
+            "curp": _("CURP"),
+            "first_name": _("First Name"),
+            "last_name": _("Last Name"),
+            "email": _("Email"),
+            "is_active": _("Status"),
         }
 
     def __init__(self, *args, **kwargs):
@@ -27,3 +38,6 @@ class UpdateAccountDetailsForm(forms.ModelForm):
 
         # Override language choices if needed
         self.fields["language"].choices = LanguageChoices.choices
+
+        # Ensure the status field reflects the user's current state
+        self.fields["is_active"].initial = str(self.instance.is_active)
