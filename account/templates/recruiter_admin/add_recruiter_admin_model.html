@@ -1,0 +1,31 @@
+{% load i18n %}
+<div class="modal fade" id="AddRecruiterAdminModal" tabindex="-1" aria-labelledby="AddRecruiterModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content modal-bg">
+      <div class="modal-header border-0">
+        <h5 class="modal-title w-100 text-center fw-bold modal-title-custom" id="AddRecruiterModalLabel">
+          {% translate "Add Recruiter Admin" %}
+        </h5>
+      </div>
+      <div class="modal-body text-start">
+        <form method="post" action="{% url 'recruiter_admin_modal_create' %}">
+          {% csrf_token %}
+          {% for field in form_recruiter_admin_class %}
+          <div class="form-group my-3">
+            <label>{{ field.label }}</label>
+            <div class="input-group input-group-outline is_valid my-3">
+              {{ field }}
+              {% if field.errors %}
+                <div class="text-danger small">{{ field.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
+          <button class="btn btn-primary w-100" type="submit">
+            {% translate "Submit" %}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
