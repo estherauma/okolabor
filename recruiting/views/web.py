@@ -672,3 +672,52 @@ class ContactWorkRequestsView(View):
         }
 
         return render(request, 'recruiting/work_requests/workrequest_details.html', context)
+    
+@method_decorator(csrf_exempt, name='dispatch')
+class AssignEmployerContactView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            employer_id = data.get("employer_id")
+            name = data.get("name")
+            email = data.get("email")
+            phone = data.get("phone")
+            position = data.get("position", "")
+            is_primary = data.get("is_primary")
+
+            # Check if employer ID is missing
+            if not employer_id:
+                messages.error(request, "employerIDIsRequired.")
+                return JsonResponse({'error': 'employerIDIsRequired.'}, status=400)
+
+            # Check if the email already exists
+            if EmployerContact.objects.filter(email=email).exists():
+                messages.error(request, "Email already exists.")
+                return JsonResponse({'error': 'emailAlreadyExists.'}, status=400)
+
+            try:
+                employer = Employer.objects.get(id=employer_id)
+            except Employer.DoesNotExist:
+                messages.error(request, "Employer not found.")
+                return JsonResponse({'error': 'employerNotFound.'}, status=404)
+
+            # Create the contact
+            EmployerContact.objects.create(
+                employer=employer,
+                name=name,
+                email=email,
+                phone=phone,
+                position=position,
+                is_primary=is_primary
+            )
+
+            messages.success(request, _("ContactAssignedSuccessfully!"))
+            return JsonResponse({'success': True, 'message': 'ContactAssignedSuccessfully!'})
+
+        except Exception as e:
+            messages.error(request, str(e))
+            return JsonResponse({'error': str(e)}, status=500)
+
+    def get(self, request, *args, **kwargs):
+        messages.error(request, "GET not allowed")
+        return JsonResponse({'error': 'GET not allowed.'}, status=405)
