@@ -133,7 +133,7 @@ class EmployerCreateView(CreateView):
 
 class EmployerDetailView(View):
     def get(self, request, pk):
-        employer = get_object_or_404(Employer, pk=pk)
+        employer = get_object_or_404(Organization, pk=pk)
         
         work_requests = WorkRequests.objects.filter(employer=employer)
         

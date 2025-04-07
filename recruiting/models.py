@@ -6,6 +6,11 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Organization(AuditableModel):
+    TYPE_CHOICES = (
+        ('admin', 'Admin'),
+        ('employer', 'Employer'),
+        ('recruiter', 'Recruiter'),
+    )
     name = models.CharField(max_length=255)
     email = models.EmailField(max_length=255)
     phone = models.CharField(max_length=255)
@@ -18,6 +23,7 @@ class Organization(AuditableModel):
     description = models.TextField()
     is_active = models.BooleanField(default=True)
     is_verified = models.BooleanField(default=False)
+    type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='recruiter')
 
     def __str__(self):
         return f'{self.name}'
