@@ -704,7 +704,7 @@ class AssignEmployerContactView(View):
                 except Employer.DoesNotExist:
                     continue
 
-            messages.success(request, "Contact(s) assigned successfully!")
+            messages.success(request, _("ContactAssignedSuccessfully!"))
             return redirect('recruiting_web:employer_list') 
 
         except Exception as e:
