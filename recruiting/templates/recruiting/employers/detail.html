@@ -18,7 +18,7 @@
   </h1>
  </div>
 </div>
-<h3>Employer Contacts</h3>
+<h3>employerContacts</h3>
 <div class="d-flex flex-wrap gap-3">
     {% for contact in contacts %}
     <a href="{% url 'recruiting_web:contact_work_requests' contact.id %}" class="text-decoration-none text-dark">
@@ -36,7 +36,7 @@
         </div>
     </a>
     {% empty %}
-        <p>No contacts available.</p>
+        <p>noContactsAvailable.</p>
     {% endfor %}
 </div>
 <div class="row">
@@ -44,13 +44,13 @@
       <div class="card">
         <div class="card-body">
 <div class="table-responsive">
-    <h3>Work Requests</h3>
+    <h3>workRequests</h3>
     <table class="table text-nowrap border-bottom" id="work-requests-list-datatable">
         <thead>
             <tr>
-                <th class="theading-color">Work Request ID</th>
-                <th class="theading-color">Start Date</th>
-                <th class="theading-color">End Date</th>
+                <th class="theading-color">workRequestID</th>
+                <th class="theading-color">startDate</th>
+                <th class="theading-color">endDate</th>
                 <th class="theading-color">Company</th>
                 <th class="theading-color">Status</th>
             </tr>
@@ -85,7 +85,7 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="5" class="text-center">No work requests available.</td>
+                <td colspan="5" class="text-center">noWorkRequestsAvailable.</td>
             </tr>
             {% endfor %}
         </tbody>
