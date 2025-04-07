@@ -1,5 +1,5 @@
 from django.urls import path
-from account.views.web import UpdatePasswordView, UserAccountView, UserActivitLogView, UserListView,AccountNotificationsView,WorkerModalCreateView,RecruiterAdminModalCreateView
+from account.views.web import UpdatePasswordView, UserAccountView, UserActivitLogView, UserListView,AccountNotificationsView,WorkerModalCreateView,RecruiterAdminModalCreateView,OrganizationCreateView
 from account.views.web import edit_user_view,edit_worker
 
 urlpatterns = [
@@ -12,5 +12,6 @@ urlpatterns = [
     path('edit-worker/<str:curp>/', edit_worker, name='edit_worker'),
     path('workers/modal-create/', WorkerModalCreateView.as_view(), name='worker_modal_create'),
     path('recruiter-admin/modal-create/', RecruiterAdminModalCreateView.as_view(), name='recruiter_admin_modal_create'),
+    path('organizations/create/', OrganizationCreateView.as_view(), name='organization_create')
 
 ]
