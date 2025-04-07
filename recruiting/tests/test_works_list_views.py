@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from recruiting.models import WorkRequests, Employer, WorkAssignment, Role, User
+from recruiting.models import WorkRequests, Organization, WorkAssignment, Role, User
 from account.models import UserPreference
 from django.contrib.auth.models import Group
 
