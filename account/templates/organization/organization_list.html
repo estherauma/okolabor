@@ -1,0 +1,82 @@
+{% load static %}
+{% load i18n %}
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex justify-content-between">
+            <h3 class="card-title green-color fw-bold mb-1">
+                {% translate "Workers" %}
+            </h3>
+            <a href="{% url 'organization_create' %}" class="btn btn yellow-button btn-icon ms-auto p-1">
+                +{% translate "AddOrganization" %}
+            </a>
+            
+            
+        </div>
+        <div class="table-responsive">
+            <table class="table text-nowrap border-bottom">
+                <thead>
+                    <tr>
+                        <th class="theading-color text-start">{% translate "name" %}</th>
+                        <th class="theading-color text-start">{% translate "email" %}</th>
+                        <th class="theading-color text-start">{% translate "phoneNumber" %}</th>
+                        <th class="theading-color text-start">{% translate "website" %}</th>
+                        <th class="theading-color text-start">{% translate "address" %}</th>
+                        <th class="theading-color text-start">{% translate "city" %}</th>
+                        <th class="theading-color text-start">{% translate "state" %}</th>
+                        <th class="theading-color text-start">{% translate "Country" %}</th>
+                        <th class="theading-color text-start">{% translate "address" %}</th>
+                        <th class="theading-color text-start">{% translate "zipCode" %}</th>
+                        <th class="theading-color text-start">{% translate "type" %}</th>
+                        <th class="theading-color text-start">{% translate "status" %}</th>
+                        <th class="theading-color text-start">{% translate "actions" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in organizations %}
+                    <tr class="green-color text-start">
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.phone }}</td>
+                        <td>{{ user.website }}</td>
+                        <td>{{ user.address }}</td>
+                        <td>{{ user.city }}</td>
+                        <td>{{ user.state }}</td>
+                        <td>{{ user.country }}</td>
+                        <td>{{ user.address }}</td>
+                        <td>{{ user.zip_code }}</td>
+                        <td>{{ user.type }}</td>
+                        <td>{{ user.is_active|yesno:_("active,inactive") }}</td>
+                        <td>
+                            <!-- In your main template where you list users -->
+                            <i
+                                class="side-menu__icon icon icon-pencil me-2 cursor-pointer edit-organization-btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editOrganizationModal"
+                                data-organization-id="{{ user.id }}"
+                                data-organization-name="{{ user.name }}" 
+                                data-organization-email="{{ user.email }}" 
+                                data-organization-phone="{{ user.phone }}" 
+                                data-organization-website="{{ user.website }}"
+                                data-organization-address="{{ user.address|yesno:'True,False' }}" 
+                                data-organization-city="{{ user.city }}"
+                                data-organization-state="{{ user.state }}"
+                                data-organization-country="{{ user.country }}"
+                                data-organization-address="{{ user.address }}"
+                                data-organization-zipcode="{{ user.zip_code }}"
+                                data-organization-type="{{ user.type }}"
+                                data-organization-isactive="{{ user.is_active }}"
+
+
+                            ></i>
+                            <i class="side-menu__icon fa fa-trash-o cursor-pointer" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#confirmationModal"></i>
+
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% include 'organization/edit_organization_modal.html'%}
