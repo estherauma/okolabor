@@ -3,6 +3,10 @@ from account.models import User
 from common.models import AuditableModel
 from account.models import User
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
 
 
 class Organization(AuditableModel):

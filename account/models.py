@@ -2,7 +2,7 @@ from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-
+from django.conf import settings
 from common.models import AuditableModel, BaseModel
 
 
@@ -75,6 +75,13 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
     gender = models.CharField(max_length=15,  blank=True, null=True)
     dob = models.DateField(null=True, blank=True)
     reset_code = models.CharField(max_length=256, null=True, blank=True)
+
+    organization = models.ForeignKey(
+        'recruiting.Organization',  # 👈 use app_label.ModelName as a string
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL
+    )
 
     USERNAME_FIELD = 'curp'
 

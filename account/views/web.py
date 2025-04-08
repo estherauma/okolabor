@@ -36,6 +36,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.http import JsonResponse
 import datetime
+import json
 from account.models import User, UserNotification
 from recruiting.models import WorkAssignment,Organization
 from recruiting.forms import WorkerCreateForm,RecruiterAdminCreateForm,EmployerForm
@@ -43,15 +44,7 @@ from recruiting.forms import WorkerCreateForm,RecruiterAdminCreateForm,EmployerF
 
 class UserListView(LoginRequiredMixin, View):
     def get(self, request):
-        users = User.objects.filter(groups__name='recruiter').values(
-            'curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
-        )
-        pending = User.objects.filter(
-            is_active=False,
-            groups__name='recruiter'
-        ).values(
-            'curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
-        )
+        
 
         form = UpdateAccountDetailsForm() 
         form_worker_class = WorkerCreateForm()
@@ -67,25 +60,48 @@ class UserListView(LoginRequiredMixin, View):
             'curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
         )
 
-        recruiter_admins = User.objects.filter(groups__name='recruiter_admin').values(
-            'curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
-        )
-
+        
         organizations = Organization.objects.all().values(
             'id', 'name', 'email', 'phone', 'website', 'address', 'city', 'state', 'country', 'zip_code', 'type','is_active'
         )
 
-        print(workers_list, "workers")
+        recruiters = list(User.objects.filter(groups__name='recruiter').values(
+            'id','curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
+        ))
+        for r in recruiters:
+            r['group'] = 'recruiter'
+
+        recruiter_admins = list(User.objects.filter(groups__name='recruiter_admin').values(
+            'id','curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
+        ))
+        for ra in recruiter_admins:
+            ra['group'] = 'recruiter_admin'
+
+        employer = list(User.objects.filter(groups__name='employer').values(
+            'curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
+        ))
+        for ra in employer:
+            ra['group'] = 'employer'
+
+        employer_admin = list(User.objects.filter(groups__name='employer_admin').values(
+            'curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
+        ))
+        for ra in employer_admin:
+            ra['group'] = 'employer_admin'
+
+        combined_users = recruiters + recruiter_admins
+
+        combined_employer = employer + employer_admin
+
 
         context = {
-            'users': users, 
-            'pending_users': pending,
+            'users': combined_users, 
             'language_choices': language_choices,
             'status_choices': status_choices,
             'workers': workers_list,
-            'recruiter_admins': recruiter_admins,
             'form_worker_class': form_worker_class,
             'form_recruiter_admin_class': form_recruiter_admin_class,
+            'employers_list': combined_employer,
             'organizations': organizations,
             
             }
@@ -96,8 +112,11 @@ class UserListView(LoginRequiredMixin, View):
         last_name = request.POST.get('last_name')
         user_email = request.POST.get('email')
         curp = request.POST.get('curp')
+        role = request.POST.get('role')
 
-        if not all([first_name, last_name, user_email, curp]):
+        print(role,"role")
+
+        if not all([first_name, last_name, user_email, curp, role]):
             messages.error(request, _("addUserAllFieldsAreRequired."))
             return redirect('manage_users')
 
@@ -109,13 +128,14 @@ class UserListView(LoginRequiredMixin, View):
             is_active=True
         )
 
-        recruiter_group, created = Group.objects.get_or_create(name='recruiter')
-        user.groups.add(recruiter_group)
+        # Assign the correct role (group)
+        if role in ['recruiter', 'recruiter_admin','employer', 'employer_admin']:
+            group, created = Group.objects.get_or_create(name=role)
+            user.groups.add(group)
 
-
+        # Invite email logic
         token = PasswordResetTokenGenerator().make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
-
         current_site = get_current_site(request)
         site_url = f"{request.scheme}://{current_site.domain}"
         invite_link = f"{site_url}{reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})}"
@@ -138,12 +158,14 @@ class UserListView(LoginRequiredMixin, View):
         )
         email.content_subtype = 'html'
         email_sent = email.send()
+
         if email_sent:
             messages.success(request, _("inviteEmailInvitationSentSuccessfully!"))
         else:
             messages.error(request, _("inviteEmailFailedToSendEmail."))
 
         return redirect('manage_users')
+
 
 class UserActivitLogView(LoginRequiredMixin, View):
     def get(self, request):
@@ -243,8 +265,16 @@ def edit_user_view(request, curp):
         form = UpdateAccountDetailsForm(request.POST, instance=user)
         if form.is_valid():
             user = form.save(commit=False)
-            user.is_active = form.cleaned_data["is_active"] == "True"  # Convert string to boolean
+            user.is_active = form.cleaned_data["is_active"]
             user.save()
+
+            # Update group
+            group_name = form.cleaned_data.get("group")
+            if group_name:
+                user.groups.clear()
+                group, _ = Group.objects.get_or_create(name=group_name)
+                user.groups.add(group)
+
             messages.success(request, "UserDetailsUpdatedSuccessfully!")
             redirect_url = reverse("manage_users")
             if request.headers.get("X-Requested-With") == "XMLHttpRequest":
@@ -255,7 +285,37 @@ def edit_user_view(request, curp):
     else:
         form = UpdateAccountDetailsForm(instance=user)
 
-    return render(request, "recruiter/recruiter_models/edit_user_modal.html", {"form": form, "user": user})
+    return render(request, "recruiter/recruiter_models/edit_recruiter_modal.html", {"form": form, "user": user})
+
+
+def edit_employer_view(request, curp):
+    user = get_object_or_404(User, curp=curp)
+
+    if request.method == "POST":
+        form = UpdateAccountDetailsForm(request.POST, instance=user)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_active = form.cleaned_data["is_active"]
+            user.save()
+
+            # Update group
+            group_name = form.cleaned_data.get("group")
+            if group_name:
+                user.groups.clear()
+                group, _ = Group.objects.get_or_create(name=group_name)
+                user.groups.add(group)
+
+            messages.success(request, "UserDetailsUpdatedSuccessfully!")
+            redirect_url = reverse("manage_users")
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return JsonResponse({"success": True, "redirect_url": redirect_url})
+            return redirect(redirect_url)
+        else:
+            return JsonResponse({"success": False, "error": form.errors}, status=400)
+    else:
+        form = UpdateAccountDetailsForm(instance=user)
+
+    return render(request, "employers/edit_employer_modal.html", {"form": form, "user": user})
 
 def edit_worker(request, curp):
     if request.method == 'POST':
@@ -364,3 +424,28 @@ def edit_organization(request, organization_id):
         return redirect('recruiting_web:employer_detail', pk=organization.pk)
 
     return redirect('recruiting_web:employer_detail', pk=organization_id)
+
+def assign_organization(request):
+    if request.method == "POST":
+        org_id = request.POST.get("organization_id")
+        selected_users = json.loads(request.POST.get("selected_users", "[]"))
+
+        if not org_id or not selected_users:
+            messages.error(request, _("pleaseSelectUsersAndAnOrganization."))
+            return redirect('manage_users')  
+
+        try:
+            org = Organization.objects.get(id=org_id)
+            users = User.objects.filter(id__in=selected_users)
+            for user in users:
+                user.organization = org 
+                user.save()
+
+            messages.success(request, _("organizationAssignedSuccessfullyToSelectedUsers."))
+        except Organization.DoesNotExist:
+            messages.error(request, _("selectedOrganizationDoesNotExist."))
+
+        return redirect('manage_users')
+
+    messages.error(request, _("invalidRequestMethod."))
+    return redirect('manage_users')

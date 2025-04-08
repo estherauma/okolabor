@@ -1,6 +1,6 @@
 from django.urls import path
 from account.views.web import UpdatePasswordView, UserAccountView, UserActivitLogView, UserListView,AccountNotificationsView,WorkerModalCreateView,RecruiterAdminModalCreateView,OrganizationCreateView
-from account.views.web import edit_user_view,edit_worker,edit_organization
+from account.views.web import edit_user_view,edit_worker,edit_organization,edit_employer_view,assign_organization
 
 urlpatterns = [
     path('', UserAccountView.as_view(), name='recruiter_account'),
@@ -12,7 +12,10 @@ urlpatterns = [
     path('recruiter-admin/modal-create/', RecruiterAdminModalCreateView.as_view(), name='recruiter_admin_modal_create'),
     path('organizations/create/', OrganizationCreateView.as_view(), name='organization_create'),
     path('edit-user/<str:curp>/', edit_user_view, name='edit_user'),
+    path('edit-employer/<str:curp>/', edit_employer_view, name='edit_employer'),
     path('edit-worker/<str:curp>/', edit_worker, name='edit_worker'),
     path('organization/<str:organization_id>/edit/', edit_organization, name='edit_organization'),
+    path('assign-organization/', assign_organization, name='assign_organization')
+
 
 ]

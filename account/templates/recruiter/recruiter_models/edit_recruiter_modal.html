@@ -40,6 +40,14 @@
               <option value="False">Inactive</option>
             </select>
           </div>
+          <div class="mb-3">
+            <label for="edit_recruiter_group" class="form-label">{% translate "editUserGroup" %}</label>
+            <select class="form-select" id="edit_recruiter_group" name="group" required>
+                <option value="recruiter">{% translate "Recruiter" %}</option>
+                <option value="recruiter_admin">{% translate "Recruiter Admin" %}</option>
+            </select>
+        </div>
+        
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
