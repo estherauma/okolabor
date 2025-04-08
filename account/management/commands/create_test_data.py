@@ -60,7 +60,7 @@ class Command(BaseCommand):
                     state=fake.state(),
                     country=fake.country(),
                     zip_code=fake.zipcode(),
-                    description=fake.sentence(nb_words=3),
+                    description=fake.sentence(nb_words=3)[:30],
                     is_active=True,
                     is_verified=random.choice([True, False]),
                     type='recruiter'
@@ -94,7 +94,7 @@ class Command(BaseCommand):
                 role=role,
                 on_call=random.choice([True, False]),
                 estimate_weekly_hours=f"{random.randint(30, 60)} hrs",
-                job_description=fake.sentence(nb_words=4),
+                job_description=fake.sentence(nb_words=3),
                 **work_days
             )
         
@@ -310,7 +310,7 @@ class Command(BaseCommand):
                     work_under_h2a_in_usa=random.choice(['Yes', 'No'])
                 )
                 
-                create_job_details
+                create_job_details(work_experience)
         
         def create_job_details(work_experience):
             job_types = [
@@ -366,18 +366,18 @@ class Command(BaseCommand):
                     
                 
                 
-            UserJobExperienceDetails.objects.create(
-                job_experience=job_experience,
-                kind=item,
-                value = value,
-                is_attachment = is_attachment
-            )
+                UserJobExperienceDetails.objects.create(
+                    job_experience=job_experience,
+                    kind=item,
+                    value = value,
+                    is_attachment = is_attachment
+                )
 
     
         
         def create_test_workers():
             print('Creating test workers')
-            for _ in range(1):
+            for _ in range(65):
                 user = User.objects.create(
                     email=fake.email(),
                     first_name=fake.first_name(),
