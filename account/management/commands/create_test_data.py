@@ -41,7 +41,7 @@ class Command(BaseCommand):
                     state=fake.state(),
                     country=fake.country(),
                     zip_code=fake.zipcode(),
-                    description=fake.sentence(words=3),
+                    description=fake.sentence(nb_words=3),
                     is_active=True,
                     is_verified=random.choice([True, False]),
                     type='employer'
@@ -60,7 +60,7 @@ class Command(BaseCommand):
                     state=fake.state(),
                     country=fake.country(),
                     zip_code=fake.zipcode(),
-                    description=fake.sentence(words=3),
+                    description=fake.sentence(nb_words=3),
                     is_active=True,
                     is_verified=random.choice([True, False]),
                     type='recruiter'
@@ -94,7 +94,7 @@ class Command(BaseCommand):
                 role=role,
                 on_call=random.choice([True, False]),
                 estimate_weekly_hours=f"{random.randint(30, 60)} hrs",
-                job_description=fake.sentence(words=4),
+                job_description=fake.sentence(nb_words=4),
                 **work_days
             )
         
@@ -242,7 +242,7 @@ class Command(BaseCommand):
                 title=fake.job(),
                 usdol_case_number=fake.bothify(text='A#####'),
                 number_of_required_workers=random.randint(1, 10),
-                description=fake.sentence(words=3),
+                description=fake.sentence(nb_words=3),
                 work_type=random.choice(['Full-time', 'Part-time', 'Temporary', 'Seasonal']),
                 work_request=work_request
             )
