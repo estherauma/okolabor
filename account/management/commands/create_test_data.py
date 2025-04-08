@@ -1,12 +1,15 @@
 from datetime import timedelta
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group
-from account.models import User
+from account.models import User, UserJobExperience, UserJobExperienceDetails, UserWorkExperience
 from decouple import config
 
 # faker
 from faker import Faker
-from recruiting.models import Deduction, EmploymentLocation, Hours, HousingInformation, MealProvision, Organization, Qualification, Role, Wages, WorkRequests
+from recruiting.models import (
+    Deduction, EmploymentLocation, Hours, HousingInformation,
+    MealProvision, Organization, Qualification, Role, Wages, WorkRequests
+)
 import random
 fake = Faker()
 
@@ -19,7 +22,6 @@ class Command(BaseCommand):
         # self.create_organizations()
         self.create_work_experiences()
       
-
     def create_organizations(self):
         def generate_email(company_name):
             username = fake.user_name().replace('.', '').replace('-', '')
@@ -286,6 +288,92 @@ class Command(BaseCommand):
         print('Job orders created successfully')
     
     def create_work_experiences(self):
+        def create_experiences(user):
+            for _ in range(2):
+                start_date = fake.date_between(start_date='-5y', end_date='-1y')
+                currently_working = random.choice([True, False])
+                end_date = None if currently_working else start_date + timedelta(days=random.randint(180, 720))
+
+                work_experience = UserWorkExperience.objects.create(
+                    user=user,
+                    country=fake.country(),
+                    state=fake.state(),
+                    visa_type=random.choice(["H-2A", "H-2B", "Other"]),
+                    company=fake.company(),
+                    start_date=start_date,
+                    currently_working=currently_working,
+                    end_date=end_date,
+                    work_title=fake.job(),
+                    supervisor_name=fake.name(),
+                    supervisor_tel=fake.phone_number(),
+                    supervisor_email=fake.email(),
+                    work_under_h2a_in_usa=random.choice(['Yes', 'No'])
+                )
+                
+                create_job_details
+        
+        def create_job_details(work_experience):
+            job_types = [
+                'Animals', 'Construction', 'Crop And Horticulture',
+                'Licensed Vehicle Operation', 'Mechanics',
+                'Work Supervsion/Management', 'Other'
+            ]
+
+            for _ in range(random.randint(1, 3)):  # Create 1–3 job details per experience
+                job_type = random.choice(job_types)
+                type_detail = random.choice([
+                    'Asses', 'Bess', 'Camels', 'Apples',
+                    'Apricots', 'Bananas', 'Cherries'])
+
+                job_experience = UserJobExperience.objects.create(
+                    user=work_experience.user,
+                    work_experience=work_experience,
+                    job_type=job_type,
+                    type_details=type_detail
+                )
+                
+                # Create experience details
+                create_experience_details(job_experience)
+            
+        
+        def create_experience_details(job_experience):
+            details =  [
+                'responsiblities', 'explanation', 'license',
+                'evidence', 'visa', 'explanation_video'
+            ]
+            for item in details:
+                value, is_attachment = '', False
+                if item == 'responsiblities':
+                    value = random.choice([
+                        'Breeding', 'Caring', 'Packaging', 'Processing',
+                        'Harvesting', 'Planting', 'Cultivating', 'Farming'
+                    ])                
+                elif item == 'explanation':
+                    value = fake.paragraph(nb_sentences=3)
+                
+                elif item == 'license':
+                    is_attachment = True
+                    value = '/uploads/samples/sample_license.jpg'
+                elif item == 'evidence':
+                    is_attachment = True
+                    value = '/uploads/samples/sample_evidence.jpg'
+                elif item == 'visa':
+                    is_attachment = True
+                    value = '/uploads/samples/sample_visa.webp'
+                elif item == 'explanation_video':
+                    is_attachment = True
+                    value = '/uploads/samples/sample_video.mp4'
+                    
+                
+                
+            UserJobExperienceDetails.objects.create(
+                job_experience=job_experience,
+                kind=item,
+                value = value,
+                is_attachment = is_attachment
+            )
+
+    
         
         def create_test_workers():
             print('Creating test workers')
@@ -306,16 +394,9 @@ class Command(BaseCommand):
                 user.set_password(user.password)
                 user.groups.add(Group.objects.get(name='worker'))
                 user.save()
-        def create_experiences(self):
-            pass
-        
-        def create_job_details(self):
-            pass
-        
-        def create_experience_details(self):
-            pass
-        
-        pass 
-    
+                
+                create_experiences(user)
+        # start the process of creating workers
+        # each worker gets assigned 2 experiences 
+        # each experience gets assigned job details and experience details
         create_test_workers()
-        
