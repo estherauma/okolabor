@@ -75,7 +75,7 @@ class UserListView(LoginRequiredMixin, View):
             'id', 'name', 'email', 'phone', 'website', 'address', 'city', 'state', 'country', 'zip_code', 'type','is_active'
         )
 
-        print(workers_list, "workers")
+       
 
         context = {
             'users': users, 

@@ -16,7 +16,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         print('Creating organizations')
-        self.create_organizations()
+        # self.create_organizations()
+        self.create_work_experiences()
       
 
     def create_organizations(self):
@@ -251,9 +252,7 @@ class Command(BaseCommand):
             create_employment_location(role)
             create_housing_info(role)
             create_meal_proovision(role)
-            
-            
-            
+        
         
         def start_job_order_creation(self):
             print("Creating job orders")
@@ -287,6 +286,26 @@ class Command(BaseCommand):
         print('Job orders created successfully')
     
     def create_work_experiences(self):
+        
+        def create_test_workers():
+            print('Creating test workers')
+            for _ in range(1):
+                user = User.objects.create(
+                    email=fake.email(),
+                    first_name=fake.first_name(),
+                    last_name=fake.last_name(),
+                    curp=fake.bothify(text='????######??????##'),
+                    telephone=fake.phone_number(),
+                    password=fake.password(),
+                    address_line_1=fake.street_address(),
+                    address_line_2=fake.street_address(),
+                    address_line_3=fake.street_address(),
+                    city=fake.city(),
+                    gender=random.choice(['Male', 'Female'])
+                )
+                user.set_password(user.password)
+                user.groups.add(Group.objects.get(name='worker'))
+                user.save()
         def create_experiences(self):
             pass
         
@@ -296,4 +315,7 @@ class Command(BaseCommand):
         def create_experience_details(self):
             pass
         
-        pass   
+        pass 
+    
+        create_test_workers()
+        
