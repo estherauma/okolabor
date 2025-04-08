@@ -42,9 +42,9 @@ class LanguageChoices(models.TextChoices):
 class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
     email = models.EmailField('email address', unique=True)
     curp = models.CharField('curp', max_length=18, unique=True)
-    first_name = models.CharField('first name', max_length=30, blank=True)
-    last_name = models.CharField('last name', max_length=30, blank=True)
-    middle_name = models.CharField('middle name', max_length=30, blank=True)
+    first_name = models.CharField('first name', max_length=255, blank=True)
+    last_name = models.CharField('last name', max_length=255, blank=True)
+    middle_name = models.CharField('middle name', max_length=255, blank=True)
     is_active = models.BooleanField('active', default=True)
     is_verified = models.BooleanField('verified', default=False)
     is_staff = models.BooleanField(default=False)
@@ -54,24 +54,24 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
     language = models.CharField(max_length=10, default=LanguageChoices.ES_MX,
                                 choices=LanguageChoices.choices)
     access_code = models.CharField('access_code', null=True,
-                                   blank=True, max_length=30)
+                                   blank=True, max_length=255)
     position = models.CharField('position', null=True,
-                                blank=True, max_length=30)
+                                blank=True, max_length=255)
     telephone = models.CharField('telephone', unique=False,
-                                 null=True, blank=True, max_length=30)
+                                 null=True, blank=True, max_length=255)
     telephone_verified = models.BooleanField('telephone_verified',
                                              default=False)
     mobile = models.CharField('mobile', null=True, blank=True,
-                              max_length=30)
+                              max_length=255)
     address_line_1 = models.CharField('address_line_1',
-                                      null=True, blank=True, max_length=30)
+                                      null=True, blank=True, max_length=255)
     address_line_2 = models.CharField('address_line_2',
-                                      null=True, blank=True, max_length=30)
+                                      null=True, blank=True, max_length=255)
     address_line_3 = models.CharField('address_line_3',
-                                      null=True, blank=True, max_length=30)
-    city = models.CharField('city', null=True, blank=True, max_length=30)
+                                      null=True, blank=True, max_length=255)
+    city = models.CharField('city', null=True, blank=True, max_length=255)
     passport_number = models.CharField('passport_number',
-                                       null=True, blank=True, max_length=30)
+                                       null=True, blank=True, max_length=255)
     gender = models.CharField(max_length=15,  blank=True, null=True)
     dob = models.DateField(null=True, blank=True)
     reset_code = models.CharField(max_length=256, null=True, blank=True)

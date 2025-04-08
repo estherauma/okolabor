@@ -165,7 +165,14 @@ test_results/
 test-reports/
 logs/
 newenv/
-uploads/
+# Ignore everything in uploads
+uploads/*
+
+# But don't ignore the samples folder
+!uploads/samples/
+
+# Don't ignore everything inside the samples folder
+!uploads/samples/**
 **/**-services-credentials.json
 staticfiles/
 meetingnotes.md
