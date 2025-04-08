@@ -19,7 +19,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         print('Creating organizations')
-        # self.create_organizations()
+        self.create_organizations()
         self.create_work_experiences()
       
     def create_organizations(self):
