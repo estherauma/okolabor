@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
 from django.contrib.auth.models import Group
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.sites.shortcuts import get_current_site
@@ -37,8 +37,8 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 import datetime
 from account.models import User, UserNotification
-from recruiting.models import WorkAssignment, Employer
-from recruiting.forms import WorkerCreateForm,RecruiterAdminCreateForm
+from recruiting.models import WorkAssignment,Organization
+from recruiting.forms import WorkerCreateForm,RecruiterAdminCreateForm,EmployerForm
 
 
 class UserListView(LoginRequiredMixin, View):
@@ -71,7 +71,11 @@ class UserListView(LoginRequiredMixin, View):
             'curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
         )
 
-        print(workers_list, "workers")
+        organizations = Organization.objects.all().values(
+            'id', 'name', 'email', 'phone', 'website', 'address', 'city', 'state', 'country', 'zip_code', 'type','is_active'
+        )
+
+       
 
         context = {
             'users': users, 
@@ -82,6 +86,7 @@ class UserListView(LoginRequiredMixin, View):
             'recruiter_admins': recruiter_admins,
             'form_worker_class': form_worker_class,
             'form_recruiter_admin_class': form_recruiter_admin_class,
+            'organizations': organizations,
             
             }
         return render(request, 'recruiter/manage_users.html', context)
@@ -182,7 +187,7 @@ class UserAccountView(LoginRequiredMixin, View):
         form = UpdateAccountDetailsForm(request.POST, instance=request.user)
         if form.is_valid():
             user = form.save()
-            messages.success(request, _('Your account details have been successfully updated!'))
+            messages.success(request, _('YourAccountDetailsHaveBeenSuccessfullyUpdated!'))
             response = redirect('recruiter_account')
             if hasattr(user, 'language'):
                 response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user.language.lower())
@@ -212,12 +217,12 @@ class UpdatePasswordView(LoginRequiredMixin, FormView):
         """Handle successful form submission."""
         form.save()
         update_session_auth_hash(self.request, form.user)  # Prevent logout after password change
-        messages.success(self.request, _('Your password has been successfully updated!'))
+        messages.success(self.request, _('YourPasswordHasBeenSuccessfullyUpdated!'))
         return redirect(self.success_url)
 
     def form_invalid(self, form):
         """Handle form errors."""
-        messages.error(self.request, _('Please correct the errors below.'))
+        messages.error(self.request, _('PleaseCorrectTheErrorsBelow.'))
         return super().form_invalid(form)
 
 
@@ -240,7 +245,7 @@ def edit_user_view(request, curp):
             user = form.save(commit=False)
             user.is_active = form.cleaned_data["is_active"] == "True"  # Convert string to boolean
             user.save()
-            messages.success(request, "User details updated successfully!")
+            messages.success(request, "UserDetailsUpdatedSuccessfully!")
             redirect_url = reverse("manage_users")
             if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                 return JsonResponse({"success": True, "redirect_url": redirect_url})
@@ -266,7 +271,7 @@ def edit_worker(request, curp):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({'success': True})
 
-        messages.success(request, _('Worker updated successfully.'))
+        messages.success(request, _('WorkerUpdatedSuccessfully.'))
         return redirect('manage_users')
 
     return redirect('manage_users')
@@ -280,14 +285,14 @@ class WorkerModalCreateView(View):
                 worker_group = Group.objects.get(name='worker')
                 worker.groups.add(worker_group)
             except Group.DoesNotExist:
-                messages.error(request, _("Worker group does not exist. Please create it."))
+                messages.error(request, _("WorkerGroupDoesNotExistPleaseCreateIt."))
                 return redirect('manage_users')
                 
 
-            messages.success(request, _("worker created successfully."))
+            messages.success(request, _("workerCreatedSuccessfully."))
             return redirect('manage_users')
         else:
-            messages.error(request, _("Please correct the errors in the form."))
+            messages.error(request, _("pleaseCorrectTheErrorsInTheForm"))
             return redirect('manage_users')
         
 
@@ -300,11 +305,62 @@ class RecruiterAdminModalCreateView(View):
                 recruiter_group = Group.objects.get(name='recruiter_admin')
                 recruiter.groups.add(recruiter_group)
             except Group.DoesNotExist:
-                messages.error(request, _("Recruiter admin group does not exist. Please create it."))
+                messages.error(request, _("recruiterAdminGroupDoesNotExistPleaseCreateIt."))
                 return redirect('manage_users')
 
-            messages.success(request, _("Recruiter Admin created successfully."))
+            messages.success(request, _("recruiterAdminCreatedSuccessfully."))
             return redirect('manage_users')
         else:
-            messages.error(request, _("Please correct the errors in the form."))
+            messages.error(request, _("pleaseCorrectTheErrorsInTheForm."))
             return redirect('manage_users')
+        
+
+class OrganizationCreateView(UserPassesTestMixin, CreateView):
+    model = Organization
+    form_class = EmployerForm
+    template_name = 'organization/create_organization.html'
+
+    def test_func(self):
+       
+        return self.request.user.is_superuser
+
+    def form_valid(self, form):
+        messages.success(self.request, _('organizationCreatedSuccessfully'))
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(self.request, f'{field}: {error}')
+        return super().form_invalid(form)
+
+    def get_success_url(self):
+        return reverse(
+            'recruiting_web:employer_detail',
+            kwargs={'pk': self.object.pk}
+        )
+    
+def edit_organization(request, organization_id):
+    if request.method == 'POST':
+        organization = get_object_or_404(Organization, pk=organization_id)
+
+        organization.name = request.POST.get('name')
+        organization.email = request.POST.get('email')
+        organization.phone = request.POST.get('phone')
+        organization.website = request.POST.get('website')
+        organization.address = request.POST.get('address')
+        organization.city = request.POST.get('city')
+        organization.state = request.POST.get('state')
+        organization.country = request.POST.get('country')
+        organization.zip_code = request.POST.get('zip_code')
+        organization.type = request.POST.get('type')
+        organization.is_active = request.POST.get('is_active')
+        organization.save()
+
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'success': True})
+
+        messages.success(request, _('organizationUpdatedSuccessfully.'))
+        return redirect('recruiting_web:employer_detail', pk=organization.pk)
+
+    return redirect('recruiting_web:employer_detail', pk=organization_id)

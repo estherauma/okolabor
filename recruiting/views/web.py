@@ -43,7 +43,7 @@ from recruiting.forms import (
 )
 from recruiting.models import (
     Deduction,
-    Employer,
+    Organization,
     EmploymentLocation,
     Hours,
     HousingInformation,
@@ -64,11 +64,11 @@ class EmployerListView(View):
         query = request.GET.get('query')
 
         if user.groups.filter(name='admin').exists():
-            employers_list = Employer.objects.all().prefetch_related('employerrecruiter_set')
+            employers_list = Organization.objects.all().prefetch_related('employerrecruiter_set')
         elif user.groups.filter(name='recruiter').exists():
-            employers_list = Employer.objects.filter(employerrecruiter__recruiter=user).distinct()
+            employers_list = Organization.objects.filter(employerrecruiter__recruiter=user).distinct()
         else:
-            employers_list = Employer.objects.none()
+            employers_list = Organization.objects.none()
 
         if query:
             employers_list = employers_list.filter(
@@ -114,7 +114,7 @@ class EmployerListView(View):
 
 
 class EmployerCreateView(CreateView):
-    model = Employer
+    model = Organization
     form_class = EmployerForm
     template_name = 'recruiting/employers/create.html'
 
@@ -138,7 +138,7 @@ class EmployerCreateView(CreateView):
 
 class EmployerDetailView(View):
     def get(self, request, pk):
-        employer = get_object_or_404(Employer, pk=pk)
+        employer = get_object_or_404(Organization, pk=pk)
         
         work_requests = WorkRequests.objects.filter(employer=employer)
         
@@ -244,7 +244,7 @@ class RecruiterListView(LoginRequiredMixin, View):
             return redirect('recruiting_web:access_denied')
 
         recruiters = User.objects.filter(groups__name='recruiter').prefetch_related('employerrecruiter_set__employer')
-        employers = Employer.objects.all()
+        employers = Organization.objects.all()
 
         recruiter_data = []
         for recruiter in recruiters:
@@ -264,7 +264,7 @@ class AddRecruiterToEmployerView(LoginRequiredMixin, View):
         if not request.user.groups.filter(name='recruiter_admin').exists():
             return redirect('recruiting_web:access_denied')
 
-        employer = get_object_or_404(Employer, id=employer_id)
+        employer = get_object_or_404(Organization, id=employer_id)
         recruiter = get_object_or_404(User, id=recruiter_id)
 
         employer_recruiter, created = EmployerRecruiter.objects.get_or_create(employer=employer, recruiter=recruiter)
@@ -283,7 +283,7 @@ class RemoveRecruiterFromEmployerView(LoginRequiredMixin, View):
         if not request.user.groups.filter(name='recruiter_admin').exists():
             return redirect('recruiting_web:access_denied')
 
-        employer = get_object_or_404(Employer, id=employer_id)
+        employer = get_object_or_404(Organization, id=employer_id)
         recruiter = get_object_or_404(User, id=recruiter_id)
 
         num_deleted, deleted_info = EmployerRecruiter.objects.filter(employer=employer, recruiter=recruiter).delete()
@@ -465,8 +465,8 @@ class AssignRecruiterView(View):
 
             for employer_id in employer_ids:
                 try:
-                    employer = Employer.objects.get(id=employer_id)
-                    _, created = EmployerRecruiter.objects.get_or_create(
+                    employer = Organization.objects.get(id=employer_id)
+                    obj, created = EmployerRecruiter.objects.get_or_create(
                         employer=employer, recruiter=recruiter
                     )
                     assigned_employers.append(employer_id)
@@ -515,7 +515,7 @@ class SendRecruiterEmailView(View):
             recruiter = recruiters.first()
 
             for employer_id in employer_ids:
-                employer = get_object_or_404(Employer, id=employer_id)
+                employer = get_object_or_404(Organization, id=employer_id)
                 encoded_employer_id = urlsafe_base64_encode(force_bytes(employer.id))
                 encoded_recruiter_id = urlsafe_base64_encode(force_bytes(recruiter.id))
 
@@ -556,7 +556,7 @@ class AcceptRecruiterView(View):
             employer_id = force_str(urlsafe_base64_decode(employer_id))
             recruiter_id = force_str(urlsafe_base64_decode(recruiter_id))
 
-            employer = get_object_or_404(Employer, id=employer_id)
+            employer = get_object_or_404(Organization, id=employer_id)
             recruiter = get_object_or_404(User, id=recruiter_id)
 
             obj, created = EmployerRecruiter.objects.get_or_create(employer=employer, recruiter=recruiter)
@@ -575,7 +575,7 @@ class AcceptRecruiterView(View):
             messages.success(request, _("recruiterAssignmentAcceptedSuccessfully."))
             return JsonResponse({"success": True, "message": "recruiterAssignmentAcceptedSuccessfully."})
 
-        except Employer.DoesNotExist:
+        except Organization.DoesNotExist:
             return JsonResponse({"success": False, "error": "employerNotFound."}, status=404)
 
         except User.DoesNotExist:
@@ -591,14 +591,14 @@ class RejectRecruiterView(View):
             employer_id = force_str(urlsafe_base64_decode(employer_id))
             recruiter_id = force_str(urlsafe_base64_decode(recruiter_id))
 
-            employer = get_object_or_404(Employer, id=employer_id)
+            employer = get_object_or_404(Organization, id=employer_id)
             recruiter = get_object_or_404(User, id=recruiter_id)
 
 
             messages.success(request, _("recruiterAssignmentRejectedSuccessfully."))
             return JsonResponse({"success": True, "message": "recruiterAssignmentRejectedSuccessfully."})
 
-        except Employer.DoesNotExist:
+        except Organization.DoesNotExist:
             return JsonResponse({"success": False, "error": "employerNotFound."}, status=404)
 
         except User.DoesNotExist:

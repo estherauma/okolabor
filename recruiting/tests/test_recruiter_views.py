@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import Group
-from recruiting.models import Employer, EmployerRecruiter, User
+from recruiting.models import Organization, EmployerRecruiter, User
 from django.contrib.messages import get_messages
 
 class RecruiterListViewTest(TestCase):
@@ -14,7 +14,7 @@ class RecruiterListViewTest(TestCase):
         self.recruiter_group = Group.objects.create(name='recruiter')
         self.recruiter_user.groups.add(self.recruiter_group)
 
-        self.employer = Employer.objects.create(name='Test Employer')
+        self.employer = Organization.objects.create(name='Test Employer')
         EmployerRecruiter.objects.create(employer=self.employer, recruiter=self.recruiter_user)
 
     def test_access_denied_for_non_admin(self):
@@ -39,7 +39,7 @@ class AddRecruiterToEmployerViewTest(TestCase):
         self.recruiter_group = Group.objects.create(name='recruiter')
         self.recruiter_user.groups.add(self.recruiter_group)
 
-        self.employer = Employer.objects.create(name='Test Employer')
+        self.employer = Organization.objects.create(name='Test Employer')
 
     def test_add_recruiter_to_employer(self):
         self.client.login(curp='admin_curp', password='password')
@@ -70,7 +70,7 @@ class RemoveRecruiterFromEmployerViewTest(TestCase):
         self.recruiter_group = Group.objects.create(name='recruiter')
         self.recruiter_user.groups.add(self.recruiter_group)
 
-        self.employer = Employer.objects.create(name='Test Employer')
+        self.employer = Organization.objects.create(name='Test Employer')
         self.employer_recruiter = EmployerRecruiter.objects.create(employer=self.employer, recruiter=self.recruiter_user)
 
     def test_remove_recruiter_from_employer(self):

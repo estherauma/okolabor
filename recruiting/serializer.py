@@ -1,14 +1,14 @@
 from rest_framework import serializers
 
 from recruiting.models import (
-    Deduction, Employer, EmploymentLocation, Hours, HousingInformation,
+    Deduction, Organization, EmploymentLocation, Hours, HousingInformation,
     MealProvision, Qualification, Role, Wages, WorkRequests
 )
 
 
 class EmployerSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Employer
+        model = Organization
         fields = '__all__'
 
 

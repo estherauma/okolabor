@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from recruiting.models import WorkRequests, Employer, WorkAssignment, Role, User
+from recruiting.models import WorkRequests, Organization, WorkAssignment, Role, User
 from account.models import UserPreference
 from django.contrib.auth.models import Group
 
@@ -8,7 +8,7 @@ class WorkerListViewTestCase(TestCase):
     def setUp(self):
         """Set up the test environment before each test."""
         # Create an employer instance
-        self.employer = Employer.objects.create(name="Test Employer")
+        self.employer = Organization.objects.create(name="Test Employer")
 
         # Create a WorkRequest instance
         self.work_request = WorkRequests.objects.create(
