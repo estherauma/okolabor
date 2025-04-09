@@ -1,40 +1,46 @@
 {% extends 'components/base.html' %}
 {% load i18n %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-multiselect@1.1.1/dist/css/bootstrap-multiselect.css">
 
-{% block title %} Work Experience {% endblock title %}
+{% endblock styles %}
+
+{% block title %} Work Experience {% endblock %}
 
 {% block body %}
 <div class="page-header">
- <div>
-  <h1 class="page-title">
-   {% translate "addWorkerExperienceAddWorkerExperience" %}
-  </h1>
- </div>
-</div>
-<div class="row">
- <div class="col-md-9 col-xs-12">
-  <div class="card my-4 mb-4 offwhite-background">
-   <div class="card-body">
-    <form method="post">
-     {% csrf_token %}
-                    {% for field in form %}
-     <div class="col">
-      <div class="form-group my-3">
-       <label>
-        {{field.label}}
-       </label>
-       <div class="input-group input-group-outline is_valid my-3">
-        {{ field }}
-       </div>
-      </div>
-     </div>
-     {% endfor %}
-     <button class="btn dark-green-button" type="submit">
-      {% translate "addWorkerExperienceSubmit" %}
-     </button>
-    </form>
-   </div>
+  <div>
+    <h1 class="page-title">{% translate "addWorkerExperienceAddWorkerExperience" %}</h1>
   </div>
- </div>
 </div>
+
+<div class="row">
+  <div class="col-md-9 col-xs-12">
+    <div class="card my-4 mb-4 offwhite-background">
+      <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          {% for field in form %}
+            <div class="form-group my-3" id="div_{{ field.id_for_label }}">
+              <label>{{ field.label }}</label>
+              <div class="input-group input-group-outline is_valid my-3">
+                {{ field }}
+              </div>
+            </div>
+          {% endfor %}
+          <button class="btn dark-green-button" type="submit">
+            {% translate "addWorkerExperienceSubmit" %}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{% static ''%}assets/js/add_work_experince.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-multiselect@1.1.1/dist/js/bootstrap-multiselect.min.js"></script>
 {% endblock %}
