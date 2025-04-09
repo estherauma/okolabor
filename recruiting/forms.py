@@ -8,7 +8,7 @@ from recruiting.models import (
     EmploymentLocation, HousingInformation, MealProvision,
     Role, Wages, WorkRequests,WorkAssignment
 )
-
+from django.core.exceptions import ValidationError
 from account.models import (UserWorkExperience)
 class EmployerForm(forms.ModelForm):
     class Meta:
@@ -749,11 +749,9 @@ class WorkExperienceCreateForm(forms.ModelForm):
         label="Crop Tasks"
     )
     
-    company = forms.ModelChoiceField(
-        queryset=Organization.objects.all(),
-        widget=forms.Select(attrs={'class': 'form-control'}),
-        empty_label=_("addWorkerExperienceSelectEmployer"),
-        label=_("addWorkerExperienceCompany1"),
+    company = forms.CharField(
+    label=_("addWorkerExperienceCompany1"),
+    widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
 
     mechanic_jobs = forms.MultipleChoiceField(
@@ -780,6 +778,18 @@ class WorkExperienceCreateForm(forms.ModelForm):
     license_file = forms.FileField(required=False, label="Certification (License)")
     video_file = forms.FileField(required=False, label="One-minute Video Introduction")
 
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        start_date = cleaned_data.get("start_date")
+        end_date = cleaned_data.get("end_date")
+
+        if start_date and end_date and start_date > end_date:
+            raise ValidationError({
+                "end_date": _("End date cannot be earlier than start date.")
+            })
+    
+
     class Meta:
         model = UserWorkExperience
         fields = ['user', 'company', 'work_title', 'start_date', 'end_date',
@@ -798,7 +808,11 @@ class WorkExperienceCreateForm(forms.ModelForm):
             'visa_type': _("addWorkerExperienceVisaType"),
         }
         widgets = {
-            'user': forms.Select(attrs={'class': 'form-control'}),
+            'user': forms.Select(attrs={
+            'class': 'form-control',
+            'readonly': 'readonly',  # not standard for select, but won't block submission
+            'style': 'pointer-events: none; background-color: #e9ecef;',  # disables user interaction visually
+            }),
             'company': forms.TextInput(attrs={'class': 'form-control'}),
             'work_title': forms.TextInput(attrs={'class': 'form-control'}),
             'start_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),

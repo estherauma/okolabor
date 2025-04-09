@@ -316,7 +316,7 @@ class CreateWorkExperienceView(BaseCreateView):
             if uploaded_file:
                 folder = 'certificates' if kind in ['visa', 'license'] else 'explanation'
                 filename = uploaded_file.name
-                relative_path = os.path.join(folder, filename)
+                relative_path = os.path.join('uploads', folder, filename)
                 full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
 
                 os.makedirs(os.path.dirname(full_path), exist_ok=True)
@@ -396,7 +396,8 @@ class WorkExperienceDetailsView(View):
     def get(self, request, pk):
         work_experience = get_object_or_404(UserWorkExperience, pk=pk)
         job_experiences = UserJobExperience.objects.filter(work_experience=work_experience)
-        job_experience_details = UserJobExperienceDetails.objects.filter(job_experience__in=job_experiences)
+        job_experience_details = UserJobExperienceDetails.objects.filter(job_experience__in=job_experiences).all().values()
+        
         context = {'work_experience': work_experience,
                    'job_experiences': job_experiences,
             'job_experience_details': job_experience_details}
