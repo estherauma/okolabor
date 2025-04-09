@@ -1,0 +1,44 @@
+{% load i18n %}
+<div
+  class="modal fade"
+  id="confirmationModal"
+  tabindex="-1"
+  aria-labelledby="confirmationModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div
+      class="modal-content"
+      style="border-radius: 8px"
+    >
+      <div class="modal-header border-0">
+        <h5
+          class="modal-title w-100 text-center fw-bold modal-title-custom"
+          id="confirmationModalLabel"
+        >
+          {% translate 'assignEmployer' %}
+        </h5>
+      </div>
+      <div class="modal-body text-start">
+        <p class="mb-4 modal-subtitle-custom text-center" >
+           {% translate 'doYouWantToWorkWithNewEmployer' %}
+        </p>
+          <div class="d-flex justify-content-center gap-2 mt-4">
+            <button
+              type="button"
+              class="btn grey-button modal-buttons-custom"
+              data-bs-dismiss="modal"
+            >
+               {% translate 'No'%}
+            </button>
+            <button
+              type="submit"
+              class="btn light-green-button modal-buttons-custom"
+            >
+              {% translate 'Yes'%}
+            </button>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>

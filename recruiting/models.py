@@ -1,11 +1,18 @@
 from django.db import models
-from account.models import User
 from common.models import AuditableModel
-from account.models import User
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
-class Employer(AuditableModel):
+
+class Organization(AuditableModel):
+    TYPE_CHOICES = (
+        ('admin', 'Admin'),
+        ('employer', 'Employer'),
+        ('recruiter', 'Recruiter'),
+    )
     name = models.CharField(max_length=255)
     email = models.EmailField(max_length=255)
     phone = models.CharField(max_length=255)
@@ -18,6 +25,7 @@ class Employer(AuditableModel):
     description = models.TextField()
     is_active = models.BooleanField(default=True)
     is_verified = models.BooleanField(default=False)
+    type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='recruiter')
 
     def __str__(self):
         return f'{self.name}'
@@ -35,7 +43,7 @@ class WorkRequests(AuditableModel):
     start_date = models.DateField(null=False, blank=False)
     end_date = models.DateField(null=True, blank=True)
     required_workers = models.IntegerField(null=False, blank=False)
-    employer = models.ForeignKey(Employer, on_delete=models.DO_NOTHING)
+    employer = models.ForeignKey(Organization, on_delete=models.DO_NOTHING)
     status = models.CharField(
         max_length=255, null=False, blank=False,
         choices=STATUS_CHOICES, default='Open'  # Set default to 'Open'
@@ -69,7 +77,7 @@ class WorkAssignment(AuditableModel):  # Assuming it extends an auditable model
 
     work_request = models.ForeignKey(WorkRequests, on_delete=models.CASCADE, related_name='assignments',null=True, blank=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE, related_name="assignments",null=True, blank=True)  # New role field
-    worker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assignments')
+    worker = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='assignments',null=True, blank=True)
     assigned_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Assigned')
 
@@ -77,10 +85,6 @@ class WorkAssignment(AuditableModel):  # Assuming it extends an auditable model
         worker_name = self.worker.first_name if self.worker else 'No Worker'
         role_name = self.role.title if self.role else 'No Role'
         return f"{worker_name} - {role_name} - {self.status}"
-
-
-
-
 
 
 class Hours(AuditableModel):
@@ -271,7 +275,7 @@ class OkoMessageRecipients(AuditableModel):
         return f'{self.recipient}'
     
 class EmployerRecruiter(AuditableModel):
-    employer = models.ForeignKey(Employer, on_delete=models.CASCADE)
+    employer = models.ForeignKey(Organization, on_delete=models.CASCADE)
     recruiter = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
@@ -281,4 +285,15 @@ class EmployerRecruiter(AuditableModel):
 
     def __str__(self):
         return f"{self.recruiter.first_name} -> {self.employer.name}"
+    
 
+class EmployerContact(AuditableModel):
+    employer = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="contacts")
+    name = models.CharField(max_length=255)
+    email = models.EmailField(max_length=255)
+    phone = models.CharField(max_length=255)
+    position = models.CharField(max_length=255, blank=True, null=True) 
+    is_primary = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.name} - {self.employer.name}'

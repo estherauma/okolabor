@@ -5,9 +5,9 @@ from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import BaseModelForm
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render,redirect
 from django.urls import reverse
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic import CreateView
 from django.views.decorators.csrf import csrf_exempt
@@ -21,6 +21,9 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_str
+from django.http import HttpResponseRedirect
+from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import redirect
 
 from account.models import User
 from recruiting.utils import *
@@ -48,7 +51,7 @@ from theme.forms import (
 from account.models import UserPreference
 from recruiting.models import (
     Deduction,
-    Employer,
+    Organization,
     EmploymentLocation,
     Hours,
     HousingInformation,
@@ -60,12 +63,20 @@ from recruiting.models import (
     WorkRequests,
     EmployerRecruiter,
     WorkAssignment,
+    EmployerContact
 )
 
 class EmployerListView(View):
     def get(self, request):
+        user = request.user
         query = request.GET.get('query')
-        employers_list = Employer.objects.all().prefetch_related('employerrecruiter_set')
+
+        if user.groups.filter(name='admin').exists():
+            employers_list = Organization.objects.all().prefetch_related('employerrecruiter_set')
+        elif user.groups.filter(name='recruiter').exists():
+            employers_list = Organization.objects.filter(employerrecruiter__recruiter=user).distinct()
+        else:
+            employers_list = Organization.objects.none()
 
         if query:
             employers_list = employers_list.filter(
@@ -76,19 +87,19 @@ class EmployerListView(View):
                 Q(phone__icontains=query)
             )
 
-        paginator = Paginator(employers_list, 10)  # Show 10 employers per page
+        paginator = Paginator(employers_list, 10)
         page_number = request.GET.get('page')
         employers = paginator.get_page(page_number)
 
-        recruiter_group = Group.objects.get(id=1)  # Adjust ID if necessary
+        recruiter_group = Group.objects.get(id=1) 
         recruiters = recruiter_group.user_set.all()
 
-        # Fetch recruiters assigned to employers
         employers_data = []
         for employer in employers:
             assigned_recruiters = EmployerRecruiter.objects.filter(employer=employer)
-            recruiter_names = [rec.recruiter.get_full_name() for rec in assigned_recruiters]
-            employer.recruiters = recruiter_names
+
+            recruiter_names = list(set(rec.recruiter.get_full_name() for rec in assigned_recruiters if rec.recruiter == user))
+
             employers_data.append({
                 'id': employer.id,
                 'name': employer.name,
@@ -96,7 +107,7 @@ class EmployerListView(View):
                 'address': employer.address,
                 'country': employer.country,
                 'phone': employer.phone,
-                'recruiters': recruiter_names  # List of recruiter names
+                'recruiters': recruiter_names
             })
 
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -104,13 +115,14 @@ class EmployerListView(View):
                 'employers': employers_data,
                 'has_more': employers.has_next()
             })
-        context = {'employers': employers, 'query': query, 'recruiters': recruiters}
+
+        context = {'employers': employers_data, 'query': query,'recruiters': recruiters}
         return render(request, 'recruiting/employers/list.html', context)
 
 
 
 class EmployerCreateView(CreateView):
-    model = Employer
+    model = Organization
     form_class = EmployerForm
     template_name = 'recruiting/employers/create.html'
 
@@ -131,10 +143,28 @@ class EmployerCreateView(CreateView):
         )
 
 
+
 class EmployerDetailView(View):
     def get(self, request, pk):
-        employer = get_object_or_404(Employer, pk=pk)
-        context = {'employer': employer}
+        employer = get_object_or_404(Organization, pk=pk)
+        
+        work_requests = WorkRequests.objects.filter(employer=employer)
+        
+        in_progress_work_requests = work_requests.filter(status__in=['Open', 'Requested'])
+        closed_work_requests = work_requests.filter(status='Closed')
+        draft_work_requests = work_requests.filter(status='Draft')
+
+        recruiters = EmployerRecruiter.objects.filter(employer=employer).select_related('recruiter')
+        contacts = employer.contacts.all()
+        context = {
+            'employer': employer,
+            'in_progress_work_requests': in_progress_work_requests,
+            'closed_work_requests': closed_work_requests,
+            'draft_work_requests': draft_work_requests,
+            'recruiters': recruiters,
+            'contacts': contacts,
+            'work_requests': work_requests
+        }
         return render(request, 'recruiting/employers/detail.html', context)
 
 # class WorkRequestsListView(View):
@@ -160,9 +190,21 @@ class EmployerDetailView(View):
 
 class WorkRequestsListView(View):
     def get(self, request):
-        work_requests = WorkRequests.objects.all()
-        context = {'work_requests': work_requests}
-        return render(request, 'recruiting/work_requests/list.html', context)
+        user = request.user
+        admin_group = Group.objects.get(name='admin')
+        recruiter_group = Group.objects.get(name='recruiter')
+
+        if admin_group in user.groups.all():
+            work_requests = WorkRequests.objects.all()
+        elif recruiter_group in user.groups.all():
+            assigned_employers = EmployerRecruiter.objects.filter(recruiter=user).values_list("employer", flat=True)
+            work_requests = WorkRequests.objects.filter(employer_id__in=assigned_employers)
+        else:
+            work_requests = WorkRequests.objects.none()
+
+        context = {"work_requests": work_requests}
+        return render(request, "recruiting/work_requests/list.html", context)
+
 
 class WorkRequestCreateView(CreateView):
     model = WorkRequests
@@ -279,12 +321,9 @@ class ShowWorkerDetails(View):
 class WorkRequestDetailView(View):
     def get(self, request, pk):
         work_request = get_object_or_404(WorkRequests, pk=pk)
-        
-        # Filter WorkAssignments with 'Assigned' or 'Accepted' status
         active_workers = WorkAssignment.objects.filter(
             work_request=work_request, status__in=['Assigned', 'Accepted']
         ).select_related('worker')
-
         context = {
             'workrequest': work_request,
             'roles': work_request.roles.all(),
@@ -320,6 +359,70 @@ class WorkRequestRoleCreateView(CreateView):
             'recruiting_web:workrequest_detail',
             kwargs={'pk': self.object.work_request.pk}
         )
+
+class RecruiterListView(LoginRequiredMixin, View):
+    def get(self, request):
+        if not request.user.groups.filter(name='recruiter_admin').exists():
+            return redirect('recruiting_web:access_denied')
+
+        recruiters = User.objects.filter(groups__name='recruiter').prefetch_related('employerrecruiter_set__employer')
+        employers = Organization.objects.all()
+
+        recruiter_data = []
+        for recruiter in recruiters:
+            assigned_employers = recruiter.employerrecruiter_set.all()
+            employer_names = ", ".join([employer_recruiter.employer.name for employer_recruiter in assigned_employers])
+
+            recruiter_data.append({
+                "recruiter": recruiter,
+                "employer_names": employer_names if employer_names else "Not Assigned any person"
+            })
+        return render(request, 'recruiting/recruiters/list.html', {'recruiters': recruiter_data, 'employers': employers})
+    
+
+class AddRecruiterToEmployerView(LoginRequiredMixin, View):
+    def post(self, request, employer_id, recruiter_id):
+
+        if not request.user.groups.filter(name='recruiter_admin').exists():
+            return redirect('recruiting_web:access_denied')
+
+        employer = get_object_or_404(Organization, id=employer_id)
+        recruiter = get_object_or_404(User, id=recruiter_id)
+
+        employer_recruiter, created = EmployerRecruiter.objects.get_or_create(employer=employer, recruiter=recruiter)
+
+        if created:
+            messages.success(request, _("Recruiter {email} assigned to {employer}.").format(email=recruiter.email, employer=employer.name))
+        else:
+            messages.info(request, _("Recruiter {email} is already assigned to {employer}.").format(email=recruiter.email, employer=employer.name))
+
+        return redirect('recruiting_web:recruiter_list')
+
+
+class RemoveRecruiterFromEmployerView(LoginRequiredMixin, View):
+    def post(self, request, employer_id, recruiter_id):
+
+        if not request.user.groups.filter(name='recruiter_admin').exists():
+            return redirect('recruiting_web:access_denied')
+
+        employer = get_object_or_404(Organization, id=employer_id)
+        recruiter = get_object_or_404(User, id=recruiter_id)
+
+        num_deleted, deleted_info = EmployerRecruiter.objects.filter(employer=employer, recruiter=recruiter).delete()
+
+        if num_deleted > 0:
+            messages.success(request, _("Recruiter {email} removed from {employer}.").format(email=recruiter.email, employer=employer.name))
+        else:
+            messages.info(request, _("Recruiter {email} was already removed from {employer}.").format(email=recruiter.email, employer=employer.name))
+
+        return redirect('recruiting_web:recruiter_list')
+
+            
+
+class AccessDeniedView(View):
+    def get(self, request):
+        return render(request, 'recruiting/access_denied.html')
+
 
 
 class RoleDataBaseView(CreateView):
@@ -419,8 +522,6 @@ class RecruiterTodoView(LoginRequiredMixin, View):
     def get(self, request):
         # initialize filter form
         form = TodoFilterForm()
-
-
         user = User.objects.get(pk=request.user.id)
         todos = WorkRequests.objects.exclude(
             status='completed'
@@ -459,56 +560,62 @@ class OkoMessageCreateView(CreateView):
 
 class OkoMessageDetailsView(View):
     def get(self, request,id):
-        print(request,id,"id")
         message = get_object_or_404(OkoMessage, pk=id)
-        print(message,"message")
         context = {'message': message}
         return render(request, 'recruiting/messages/details.html',context)
     
-@method_decorator(csrf_exempt, name='dispatch')
 class AssignRecruiterView(View):
     def post(self, request):
         try:
-            # Read and log the request body
             data = json.loads(request.body)
             employer_ids = data.get("employer_ids", [])
             recruiter_id = data.get("recruiter_id")
-            
+
             if not employer_ids or not recruiter_id:
-                return JsonResponse({"success": False, "error": "invalidData"}, status=400)
+                return JsonResponse({"success": False, "error": "invalidDataProvidedMissingEmployerIdsOrRecruiterId."}, status=400)
 
-            # Check if recruiter exists
-            try:
-                recruiter_group = Group.objects.get(id=1)  # Adjust ID if necessary
-                recruiters = recruiter_group.user_set.filter(id=recruiter_id)
+            recruiter_group = Group.objects.filter(name="Recruiter").first()
+            if not recruiter_group:
+                return JsonResponse({"success": False, "error": "recruiterGroupNotFound."}, status=404)
 
-                if not recruiters.exists():
-                    return JsonResponse({"success": False, "error": "recruiterNotFoundInGroup"}, status=404)
-                recruiter = recruiters.first()
-            except User.DoesNotExist:
-                return JsonResponse({"success": False, "error": "recruiterNotFoundInGroup"}, status=404)
+            recruiter = recruiter_group.user_set.filter(id=recruiter_id).first()
+            if not recruiter:
+                return JsonResponse({"success": False, "error": "recruiterNotFoundInRecruiterGroup."}, status=404)
 
-            # Assign recruiter to employers
-            employer_recruiter_objs = []
+            assigned_employers = []
+            not_found_employers = []
+
             for employer_id in employer_ids:
                 try:
-                    employer = Employer.objects.get(id=employer_id)
+                    employer = Organization.objects.get(id=employer_id)
                     obj, created = EmployerRecruiter.objects.get_or_create(
                         employer=employer, recruiter=recruiter
                     )
-                    employer_recruiter_objs.append(obj)
-                except Employer.DoesNotExist:
-                    print(f"Employer with ID {employer_id} not found")  # Debugging log
+                    assigned_employers.append(employer_id)
+                except ObjectDoesNotExist:
+                    not_found_employers.append(employer_id)
 
+            response_data = {
+                "success": True,
+                "message": f"successfullyAssignedRecruiterTo{len(assigned_employers)}Employers.",
+                "assignedEmployers": assigned_employers,
+                "notFoundEmployers": not_found_employers,
+            }
 
-            return JsonResponse({"success": True, "assigned": len(employer_recruiter_objs)})
+            if not_found_employers:
+                response_data["warning"] = f"employersWithIds{not_found_employers}NotFound."
+
+            return JsonResponse(response_data)
 
         except json.JSONDecodeError:
-            return JsonResponse({"success": False, "error": "invalidJsonFormat"}, status=400)
+            return JsonResponse({"success": False, "error": "invalidJsonFormat."}, status=400)
+
         except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)}, status=500)
-        
-@method_decorator(csrf_exempt, name='dispatch')  # Disable CSRF for testing, remove this in production
+            return JsonResponse({"success": False, "error": f"anErrorOccurred{str(e)}"}, status=500)
+
+    
+    
+@method_decorator(csrf_exempt, name='dispatch')
 class SendRecruiterEmailView(View):
     def post(self, request, *args, **kwargs):
         try:
@@ -517,27 +624,20 @@ class SendRecruiterEmailView(View):
             recruiter_id = data.get("recruiter_id")
 
             if not employer_ids or not recruiter_id:
-                return JsonResponse({"success": False, "error": "invalidJsonFormat"}, status=400)
+                return JsonResponse({"success": False, "error": "invalidJsonFormatMissingEmployerIdsOrRecruiterId."}, status=400)
 
-            # Check if recruiter exists in the group
-            try:
-                recruiter_group = Group.objects.get(id=1)  # Adjust the group ID if necessary
-                recruiters = recruiter_group.user_set.filter(id=recruiter_id)
+            recruiter_group = Group.objects.filter(id=1).first()
+            if not recruiter_group:
+                return JsonResponse({"success": False, "error": "recruiterGroupNotFound."}, status=404)
 
-                if not recruiters.exists():
-                    return JsonResponse({"success": False, "error": "recruiterNotFoundInGroup"}, status=404)
+            recruiters = recruiter_group.user_set.filter(id=recruiter_id)
+            if not recruiters.exists():
+                return JsonResponse({"success": False, "error": "recruiterNotFoundInGroup."}, status=404)
 
-                recruiter = recruiters.first()
-                print(recruiter, "recruiter")
+            recruiter = recruiters.first()
 
-            except User.DoesNotExist:
-                return JsonResponse({"success": False, "error": "recruiterNotFoundInGroup"}, status=404)
-
-            # Send an email for each employer
             for employer_id in employer_ids:
-                employer = get_object_or_404(Employer, id=employer_id)
-
-                # Generate encoded links
+                employer = get_object_or_404(Organization, id=employer_id)
                 encoded_employer_id = urlsafe_base64_encode(force_bytes(employer.id))
                 encoded_recruiter_id = urlsafe_base64_encode(force_bytes(recruiter.id))
 
@@ -564,24 +664,25 @@ class SendRecruiterEmailView(View):
 
                 send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [recruiter.email])
 
-            return JsonResponse({"success": True, "message": "emailsSentSuccessfully!"})
+            return JsonResponse({"success": True, "message": "emailsSentSuccessfully."})
 
         except json.JSONDecodeError:
-            return JsonResponse({"success": False, "error": "invalidJsonFormat"}, status=400)
-        except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)}, status=500)
+            return JsonResponse({"success": False, "error": "invalidJsonFormat."}, status=400)
         
+        except Exception as e:
+            return JsonResponse({"success": False, "error": f"anErrorOccurred{str(e)}"}, status=500)
+
 class AcceptRecruiterView(View):
     def get(self, request, employer_id, recruiter_id, *args, **kwargs):
         try:
-            # Decode the IDs
             employer_id = force_str(urlsafe_base64_decode(employer_id))
             recruiter_id = force_str(urlsafe_base64_decode(recruiter_id))
-            employer = get_object_or_404(Employer, id=employer_id)
+
+            employer = get_object_or_404(Organization, id=employer_id)
             recruiter = get_object_or_404(User, id=recruiter_id)
-            # Assign recruiter to employer
-            EmployerRecruiter.objects.get_or_create(employer=employer, recruiter=recruiter)
-            # Send email to recruiter
+
+            obj, created = EmployerRecruiter.objects.get_or_create(employer=employer, recruiter=recruiter)
+
             subject = "recruiterAssignmentAccepted"
             message = f"""
             Hi {recruiter.first_name},
@@ -591,24 +692,154 @@ class AcceptRecruiterView(View):
             Regards,
             Team
             """
-
             send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [recruiter.email])
-            
-            return JsonResponse({"success": True, "message": "recruiterAssignmentAccepted"})
+
+            messages.success(request, _("recruiterAssignmentAcceptedSuccessfully."))
+            return JsonResponse({"success": True, "message": "recruiterAssignmentAcceptedSuccessfully."})
+
+        except Organization.DoesNotExist:
+            return JsonResponse({"success": False, "error": "employerNotFound."}, status=404)
+
+        except User.DoesNotExist:
+            return JsonResponse({"success": False, "error": "recruiterNotFound."}, status=404)
 
         except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)}, status=500)
-        
+            messages.error(request, f"anErrorOccurred_{str(e)}")
+            return JsonResponse({"success": False, "error": f"anErrorOccurred_{str(e)}"}, status=500)
+
 class RejectRecruiterView(View):
     def get(self, request, employer_id, recruiter_id, *args, **kwargs):
         try:
-            # Decode the IDs
             employer_id = force_str(urlsafe_base64_decode(employer_id))
             recruiter_id = force_str(urlsafe_base64_decode(recruiter_id))
 
-            employer = get_object_or_404(Employer, id=employer_id)
+            employer = get_object_or_404(Organization, id=employer_id)
             recruiter = get_object_or_404(User, id=recruiter_id)
-            return JsonResponse({"success": True, "message": "RecruiterAssignmentRejected!"})
+
+
+            messages.success(request, _("recruiterAssignmentRejectedSuccessfully."))
+            return JsonResponse({"success": True, "message": "recruiterAssignmentRejectedSuccessfully."})
+
+        except Organization.DoesNotExist:
+            return JsonResponse({"success": False, "error": "employerNotFound."}, status=404)
+
+        except User.DoesNotExist:
+            return JsonResponse({"success": False, "error": "recruiterNotFound."}, status=404)
 
         except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)}, status=500)
+            messages.error(request, f"anErrorOccurred_{str(e)}")
+            return JsonResponse({"success": False, "error": f"anErrorOccurred_{str(e)}"}, status=500)
+
+
+class RemoveWorkerFromAssignmentView(View):
+    def get(self, request, *args, **kwargs):
+        try:
+            worker_id = kwargs.get('worker_id')
+            assignment = get_object_or_404(WorkAssignment, worker__id=worker_id)
+            work_request_id = assignment.work_request.pk  
+            
+            assignment.status = 'Deleted'
+            assignment.save()
+
+            messages.success(request, _("WorkerAssignmentSuccessfullyMarkedAsDeleted."))
+        
+        except Exception as e:
+            messages.error(request, f"errorRemovingWorker_{str(e)}")
+            return redirect(reverse('recruiting_web:workrequest_list'))
+
+        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={'pk': work_request_id}))
+
+@method_decorator(csrf_exempt, name='dispatch')
+class UpdateStatusView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            work_requests = data.get('work_requests', [])
+            status = data.get('status', '')
+            
+            if work_requests and status:
+                updated_count = WorkRequests.objects.filter(id__in=work_requests).update(status=status)
+                if updated_count > 0:
+                    messages.success(request, _("workRequestsSuccessfullyUpdatedTo'{}'Status.").format(status))
+                    return JsonResponse({'success': True, 'message': f"workRequestsSuccessfullyUpdatedTo'{status}'Status."})
+                else:
+                    messages.error(request, _("noWorkRequestsFoundToUpdate."))
+                    return JsonResponse({'success': False, 'message': 'noWorkRequestsFoundtoUpdate.'})
+            messages.error(request, _("invalidDataProvided."))
+            return JsonResponse({'success': False, 'message': 'invalidDataProvided.'})
+
+        except json.JSONDecodeError:
+            messages.error(request, "invalidJSONData.")
+            return JsonResponse({'success': False, 'message': 'invalidJSONData.'})
+
+
+class ContactWorkRequestsView(View):
+    def get(self, request, contact_id):
+        contact = get_object_or_404(EmployerContact, id=contact_id)
+        employer = contact.employer 
+        recruiters = EmployerRecruiter.objects.filter(employer=employer).select_related('recruiter')
+        work_requests = WorkRequests.objects.filter(employer=employer)
+        in_progress_work_requests = work_requests.filter(status__in=['Open', 'Requested'])
+        closed_work_requests = work_requests.filter(status='Closed')
+        draft_work_requests = work_requests.filter(status='Draft')
+
+        context = {
+            'contact': contact,
+            'employer': employer,
+            'in_progress_work_requests': in_progress_work_requests,
+            'closed_work_requests': closed_work_requests,
+            'draft_work_requests': draft_work_requests,
+            'work_requests': work_requests,
+            'recruiters': recruiters,
+        }
+
+        return render(request, 'recruiting/work_requests/workrequest_details.html', context)
+    
+@method_decorator(csrf_exempt, name='dispatch')
+class AssignEmployerContactView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            employer_id = data.get("employer_id")
+            name = data.get("name")
+            email = data.get("email")
+            phone = data.get("phone")
+            position = data.get("position", "")
+            is_primary = data.get("is_primary")
+
+            # Check if employer ID is missing
+            if not employer_id:
+                messages.error(request, "employerIDIsRequired.")
+                return JsonResponse({'error': 'employerIDIsRequired.'}, status=400)
+
+            # Check if the email already exists
+            if EmployerContact.objects.filter(email=email).exists():
+                messages.error(request, "Email already exists.")
+                return JsonResponse({'error': 'emailAlreadyExists.'}, status=400)
+
+            try:
+                employer = Employer.objects.get(id=employer_id)
+            except Employer.DoesNotExist:
+                messages.error(request, "Employer not found.")
+                return JsonResponse({'error': 'employerNotFound.'}, status=404)
+
+            # Create the contact
+            EmployerContact.objects.create(
+                employer=employer,
+                name=name,
+                email=email,
+                phone=phone,
+                position=position,
+                is_primary=is_primary
+            )
+
+            messages.success(request, _("ContactAssignedSuccessfully!"))
+            return JsonResponse({'success': True, 'message': 'ContactAssignedSuccessfully!'})
+
+        except Exception as e:
+            messages.error(request, str(e))
+            return JsonResponse({'error': str(e)}, status=500)
+
+    def get(self, request, *args, **kwargs):
+        messages.error(request, "GET not allowed")
+        return JsonResponse({'error': 'GET not allowed.'}, status=405)

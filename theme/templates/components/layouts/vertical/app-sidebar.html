@@ -52,19 +52,45 @@
 			</a>
 		</li>
 
+		{% elif request.user|has_group:"recruiter_admin" %}
+
+		<li class="slide" style="padding-top: 50px;">
+			<a class="side-menu__item {% if request.path == '/index/' %}active{% endif %}" data-bs-toggle="slide" href="/index"><i
+					class="side-menu__icon fe fe-home"></i>
+					<span class="side-menu__label">{% translate "home" %}</span>
+			</a>
+		</li>
+
+		<li>
+			<a class="side-menu__item" href="{% url 'recruiting_web:recruiter_list' %}"><i class="side-menu__icon mdi mdi-tune"></i>
+				<span class="side-menu__label">{% translate "recruiters" %}</span>
+			</a>
+		</li>
+
+		<hr>
+
+		<li>
+			<a class="side-menu__item" href="{% url 'recruiting_web:recruiter_todo' %}"><i class="side-menu__icon icon icon-briefcase"></i>
+				<span class="side-menu__label">{% translate "toDo" %}</span></a>
+		</li>
+
+		<li>
+			<a class="side-menu__item" href="{% url 'recruiting_web:recruiter_messages' %}"><i class="side-menu__icon icon icon-envelope"></i>
+				<span class="side-menu__label">{% translate "messages" %}</span>
+			</a>
+		</li>
+
+
 		{% elif request.user|has_group:"employer" %}
 
 		{% elif request.user|has_group:"admin" %}
-
-		<li>
-			<h3>{% translate "jobOrders" %}</h3>
-		</li>
+		
 		
 		<li>
 			<h3>{% translate "admin" %}</h3>
 		</li>
 		<li>
-			<a class="side-menu__item" href="/users">
+			<a class="side-menu__item" href="/account/users/manage">
 				<i class="side-menu__icon icon icon-people"></i>
 				<span class="side-menu__label">{% translate "manageUsers" %}</span>
 			</a>
@@ -87,19 +113,13 @@
 			</a>
 		</li>
 
+		{% endif %}
+
 		<li>
 			<a class="side-menu__item" href="#"><i class="side-menu__icon icon icon-envelope"></i>
 				<span class="side-menu__label">{% translate "notifications" %}</span>
 			</a>
 		</li>
-
-		<li>
-			<a class="side-menu__item" href="{% url 'logout' %}"><i class="side-menu__icon icon icon-logout"></i>
-				<span class="side-menu__label">{% translate "logout" %}</span>
-			</a>
-		</li>
-
-		{% endif %}
 
 		<li>
 			<a class="side-menu__item" href="{% url 'logout' %}"><i class="side-menu__icon icon icon-logout"></i>

@@ -83,7 +83,6 @@
     </div>
   </div>
 </div>
-
 <div class="row">
   <div class="col-12">
     <div class="card">
@@ -116,11 +115,14 @@
                 <td>{{ employer.phone }}</td>
                 <td>
                   {% if employer.recruiters %}
-                      {{ employer.recruiters.0 }}  <!-- Display only the first recruiter -->
+                      {% for recruiter in employer.recruiters %}
+                          {{ recruiter }}{% if not forloop.last %}, {% endif %}
+                      {% endfor %}
                   {% else %}
                       No recruiters assigned
                   {% endif %}
-              </td>
+                </td>
+              
             
               </tr>
               {% endfor %}
@@ -208,4 +210,6 @@
 <script src="{% static ''%}assets/js/employer_search.js"></script>
 <script src="{% static ''%}assets/js/table-sorting.js"></script>
 <script src="{% static ''%}assets/js/assign_recruiter.js"></script>
+
+
 {% endblock scripts %}

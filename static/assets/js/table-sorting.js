@@ -1,12 +1,16 @@
 $(document).ready(function () {
-    $('#basic-datatable, #employers-list-datatable, #workrequest-datatable').DataTable({
-        "ordering": true,
-        "order": [], // Default ordering (no pre-sorting)
-        "columnDefs": [{
-            "targets": '_all',
-            "orderable": true // Enables sorting on all columns
-        }],
-        "paging": false, // Disable pagination
-        "info": false, // Hide "Showing X to Y of Z entries"
-    });
+    if ($.fn.DataTable) { 
+        $('#basic-datatable, #employers-list-datatable, #workrequest-datatable, #another-basic-datatable, #work-requests-list-datatable, #datatable-closed, #datatable-in-progress, #datatable-draft').DataTable({
+            "ordering": true,
+            "order": [],
+            "columnDefs": [{
+                "targets": '_all',
+                "orderable": true 
+            }],
+            "paging": false,
+            "info": false
+        });
+    } else {
+        console.error("DataTables library is not loaded.");
+    }
 });

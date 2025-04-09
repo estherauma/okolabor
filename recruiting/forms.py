@@ -4,21 +4,20 @@ from django import forms
 from django.utils.translation import gettext_lazy as _ 
 from account.models import User
 from recruiting.models import (
-    Deduction, Employer, Hours, OkoMessage, Qualification,
+    Deduction, Organization, Hours, OkoMessage, Qualification,
     EmploymentLocation, HousingInformation, MealProvision,
     Role, Wages, WorkRequests,WorkAssignment
 )
 
 from account.models import (UserWorkExperience)
-
 class EmployerForm(forms.ModelForm):
     class Meta:
-        model = Employer
+        model = Organization
         fields = ['name', 'email', 'phone', 'website',
                   'address', 'city', 'state', 'country',
-                  'zip_code', 'description'
+                  'zip_code', 'description', 'type'
                   ]
-        
+
         labels = {
             'name': _('createEmployerName'),
             'email': _('createEmployerEmail'),
@@ -30,37 +29,25 @@ class EmployerForm(forms.ModelForm):
             'country': _('createEmployerCountry'),
             'zip_code': _('createEmployerZipCode'),
             'description': _('createEmployerDescription'),
+            'type': _('OrganizationType'),
         }
 
         widgets = {
-            'name': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
-            'email': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
-            'phone': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
-            'website': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
-            'address': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
-            'city': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
-            'state': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
-            'country': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
-            'zip_code': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.TextInput(attrs={'class': 'form-control'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'website': forms.TextInput(attrs={'class': 'form-control'}),
+            'address': forms.TextInput(attrs={'class': 'form-control'}),
+            'city': forms.TextInput(attrs={'class': 'form-control'}),
+            'state': forms.TextInput(attrs={'class': 'form-control'}),
+            'country': forms.TextInput(attrs={'class': 'form-control'}),
+            'zip_code': forms.TextInput(attrs={'class': 'form-control'}),
+            'type': forms.Select(attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(EmployerForm, self).__init__(*args, **kwargs)
+        self.fields['type'].initial = 'recruiter'
 
 
 class WorkRequestForm(forms.ModelForm):
@@ -647,11 +634,32 @@ class WorkerCreateForm(forms.ModelForm):
             'address_line_2': forms.TextInput(attrs={'class': 'form-control'}),
             'city': forms.TextInput(attrs={'class': 'form-control'})   
         }
+
+class RecruiterAdminCreateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['curp', 'first_name', 'last_name', 'email']
+
+        labels = {
+            'curp': _("curp"),
+            'first_name': _("firstName"),
+            'last_name': _("lastName"),
+            'email': _("email"),
+            
+        }
+
+        widgets = {
+            'curp': forms.TextInput(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            
+        }
         
 
 class WorkExperienceCreateForm(forms.ModelForm):
     company = forms.ModelChoiceField(
-        queryset=Employer.objects.all(),
+        queryset=Organization.objects.all(),
         widget=forms.Select(attrs={'class': 'form-control'}),
         empty_label=_("addWorkerExperienceSelectEmployer"),
         label=_("addWorkerExperienceCompany1"),

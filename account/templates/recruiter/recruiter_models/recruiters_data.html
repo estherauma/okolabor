@@ -1,0 +1,82 @@
+{% load i18n %}
+{% load static %}
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+            <h3 class="card-title green-color fw-bold mb-1">
+                {% translate "recruiters" %}
+            </h3>
+            <div class="d-flex">
+                <button type="button" class="btn btn-green mt-3 me-2" id="assign-organization-btn" data-bs-toggle="modal" data-bs-target="#assignOrganizationModal">
+                     {% translate "assignOrganization" %}
+                </button>
+                <button class="btn btn yellow-button btn-icon p-1" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#inviteUserModal">
+                    {% translate "newUser" %}
+                </button>
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table text-nowrap border-bottom" id="recruiters-datatable">
+                <thead>
+                    <tr>
+                        <th class="theading-color text-start"><input type="checkbox" id="select-all-checkbox"></th>
+                        <th class="theading-color text-start">{% translate "curp" %}</th>
+                        <th class="theading-color text-start">{% translate "email" %}</th>
+                        <th class="theading-color text-start">{% translate "firstName" %}</th>
+                        <th class="theading-color text-start">{% translate "lastName" %}</th>
+                        <th class="theading-color text-start">{% translate "createdAt" %}</th>
+                        <th class="theading-color text-start">{% translate "activeStatus" %}</th>
+                        <th class="theading-color text-start">{% translate "group" %}</th>
+                        <th class="theading-color text-start">{% translate "actions" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr class="green-color text-start">
+                        <td>
+                            <input type="checkbox" class="form-check-input recruiter-checkbox" value="{{ user.id }}">
+                        </td>
+                        <td>{{ user.curp }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.first_name }}</td>
+                        <td>{{ user.last_name }}</td>
+                        <td>{{ user.created_at }}</td>
+                        <td>{{ user.is_active|yesno:_("active,inactive") }}</td>
+                        <td>{{ user.group }}</td>
+
+                        <td>
+                            <i
+                                class="side-menu__icon icon icon-pencil me-2 cursor-pointer edit-recruiter-btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editRecruiterModal"
+                                data-recruiter-curp="{{ user.curp }}"
+                                data-recruiter-first-name="{{ user.first_name }}"
+                                data-recruiter-last-name="{{ user.last_name }}"
+                                data-recruiter-email="{{ user.email }}"
+                                data-recruiter-is-active="{{ user.is_active }}"
+                                data-recruiter-language="{{ user.language }}"
+                                data-recruiter-group="{{ user.group }}"
+                                >
+                               
+                            </i>
+
+                            <i class="side-menu__icon fa fa-trash-o cursor-pointer" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#confirmationModal"></i>
+
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% include 'recruiter/recruiter_models/edit_recruiter_modal.html' %}
+{% include 'recruiter/recruiter_models/assign-organization-modal.html' %}
+
+
+{% block scripts %}
+    <script src="{% static ''%}assets/js/table-sorting.js"></script>
+
+{% endblock scripts %}

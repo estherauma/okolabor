@@ -1,3 +1,4 @@
+
 from django.urls import path
 
 from recruiting.views.web import (
@@ -7,7 +8,7 @@ from recruiting.views.web import (
     RoleHoursCreateView, RoleHousingCreateView, RoleMealsCreateView,
     RoleQualificationsCreateView, RoleWagesCreateView, WorkRequestCreateView,
     WorkRequestDetailView, WorkRequestRoleCreateView, WorkRequestsListView,
-    OkoMessageDetailsView,AddWorkersWorkRequests,ShowWorkerDetails,AddToShortlistView
+    OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView,AssignRecruiterView,SendRecruiterEmailView,AcceptRecruiterView,RejectRecruiterView,RemoveWorkerFromAssignmentView,UpdateStatusView,ContactWorkRequestsView,AssignEmployerContactView,AddWorkersWorkRequests,ShowWorkerDetails,AddToShortlistView
 )
 from recruiting.views.workers import (
      WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView
@@ -15,10 +16,6 @@ from recruiting.views.workers import (
 from recruiting.views.workers import (
      CreateWorkExperienceView, WorkExperienceDetailsView
 )
-from recruiting.views.web import AssignRecruiterView
-from recruiting.views.web import SendRecruiterEmailView
-from recruiting.views.web import AcceptRecruiterView
-from recruiting.views.web import RejectRecruiterView
 
 
 app_name = 'recruiting_web'
@@ -118,5 +115,13 @@ urlpatterns = [
     path("accept-recruiter/<str:employer_id>/<str:recruiter_id>/", AcceptRecruiterView.as_view(), name="accept_recruiter"),
     path("reject-recruiter/<str:employer_id>/<str:recruiter_id>/", RejectRecruiterView.as_view(), name="reject_recruiter"),
 
+    path('recruiters/', RecruiterListView.as_view(), name='recruiter_list'),
+    path('recruiters/add/<str:employer_id>/<str:recruiter_id>/', AddRecruiterToEmployerView.as_view(), name='add_recruiter_to_employer'),
+    path('recruiters/remove/<str:employer_id>/<str:recruiter_id>/', RemoveRecruiterFromEmployerView.as_view(), name='remove_recruiter_from_employer'),
+    path('access-denied/', AccessDeniedView.as_view(), name='access_denied'),
 
+    path('remove-worker/<str:worker_id>/', RemoveWorkerFromAssignmentView.as_view(), name='remove_worker'),
+    path('update-status/', UpdateStatusView.as_view(), name='update_status'),
+    path('contacts/<str:contact_id>/work-requests/', ContactWorkRequestsView.as_view(), name='contact_work_requests'),
+    path('assign-contact/', AssignEmployerContactView.as_view(), name='assign_employer_contact'),
 ]

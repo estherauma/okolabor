@@ -1,0 +1,69 @@
+{% load static %}
+{% load i18n %}
+<div class="modal fade" id="editEmployerModal" tabindex="-1" aria-labelledby="editEmployerModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="editEmployerForm" method="POST" data-base-action="/account/edit-employer/curp_placeholder/">
+
+
+      {% csrf_token %}
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{% translate "editEmployer" %}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="edit_employer_curp" class="form-label">{% translate "editUserCURP" %}</label>
+            <input type="text" class="form-control" id="edit_employer_curp" name="curp" readonly>
+          </div>
+
+          <div class="mb-3">
+            <label for="edit_employer_first_name" class="form-label">{% translate "editUserFirstName" %}</label>
+            <input type="text" class="form-control" id="edit_employer_first_name" name="first_name" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="edit_employer_last_name" class="form-label">{% translate "editUserLastName" %}</label>
+            <input type="text" class="form-control" id="edit_employer_last_name" name="last_name" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="edit_employer_email" class="form-label">{% translate "editUserEmail" %}</label>
+            <input type="email" class="form-control" id="edit_employer_email" name="email" readonly>
+          </div>
+
+          <div class="mb-3">
+            <label for="edit_employer_language" class="form-label">{% translate "Language" %}</label>
+            <input type="text" class="form-control" id="edit_employer_language" name="language" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="edit_employer_is_active" class="form-label">{% translate "editUserIsActive" %}</label>
+            <select class="form-select" id="edit_employer_is_active" name="is_active" required>
+              <option value="True">{% translate "Active" %}</option>
+              <option value="False">{% translate "Inactive" %}</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="edit_employer_group" class="form-label">{% translate "editUserGroup" %}</label>
+            <select class="form-select" id="edit_employer_group" name="group" required>
+              <option value="employer">{% translate "Employer" %}</option>
+              <option value="employer_admin">{% translate "Employer Admin" %}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Cancel" %}</button>
+          <button type="submit" class="btn btn-success">{% translate "Save" %}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% block scripts %}
+  <script src="{% static 'assets/js/employer-edit-model.js' %}"></script>
+{% endblock scripts %}

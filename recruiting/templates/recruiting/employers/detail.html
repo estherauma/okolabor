@@ -17,364 +17,144 @@
    {{employer.name}}
   </h1>
  </div>
+ <button class="btn dark-green-button"
+        data-bs-toggle="modal"
+        data-bs-target="#assignContactModal"
+        id="assignContactBtn"
+        data-employer-id="{{ employer.id }}">
+    {% translate "assignContactEmployer" %}
+</button>
 </div>
-<!-- <div>
-    <button id="button" class="btn btn-secondary" style="margin-right: 10px;">Edit Employer</button>
-</div> -->
+<h3>employerContacts</h3>
+
+<div class="modal fade" id="assignContactModal" tabindex="-1" aria-labelledby="assignContactLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="POST" id="assignContactForm">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="assignContactLabel">{% translate "assignContactEmployer" %}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'Close' %}"></button>
+          </div>
+          <input type="hidden" id="employerIdField" name="employer_id">
+          <div class="modal-body">
+            <input type="hidden" id="selectedEmployersForContact" name="selected_employers">
+            
+            <div class="mb-3">
+              <label for="contactName" class="form-label">{% translate "contactName" %}</label>
+              <input type="text" class="form-control" id="contactName" name="name" required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="contactEmail" class="form-label">{% translate "Email" %}</label>
+              <input type="email" class="form-control" id="contactEmail" name="email" required>
+            </div>
+  
+            <div class="mb-3">
+              <label for="contactPhone" class="form-label">{% translate "Phone" %}</label>
+              <input type="text" class="form-control" id="contactPhone" name="phone" required>
+            </div>
+  
+            <div class="mb-3">
+              <label for="contactPosition" class="form-label">{% translate "Position" %}</label>
+              <input type="text" class="form-control" id="contactPosition" name="position">
+            </div>
+  
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="true" id="isPrimary" name="is_primary">
+              <label class="form-check-label" for="isPrimary">
+                {% translate "IsPrimaryContact" %}
+              </label>
+            </div>
+          </div>
+  
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Cancel" %}</button>
+            <button type="submit" class="btn btn-primary" id="assignContactBtn">
+              {% translate "Save" %}
+            </button>
+            
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+<div class="d-flex flex-wrap gap-3">
+    {% for contact in contacts %}
+    <a href="{% url 'recruiting_web:contact_work_requests' contact.id %}" class="text-decoration-none text-dark">
+        <div class="card shadow-sm p-3" style=" cursor: pointer;">
+            <div class="card-body">
+                <h5 class="card-title">{{ contact.name }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">
+                    {{ contact.position|default:"No position specified" }}
+                </h6>
+                <p class="card-text">
+                    <strong>Email:</strong> {{ contact.email }}<br>
+                    <strong>Phone:</strong> {{ contact.phone }}
+                </p>
+            </div>
+        </div>
+    </a>
+    {% empty %}
+        <p>noContactsAvailable.</p>
+    {% endfor %}
+</div>
 <div class="row">
- <div class="col-md-4">
-  <div class="card">
-   <div class="card-body">
-    <h5 class="card-title">
-     {% translate "employerDetailsEmployerDetails" %}
-    </h5>
-    <ul class="list-group no-margin">
-     <li class="list-group-item">
-      <span>
-       <strong>
-        {% translate "employerDetailsEmail:" %}
-       </strong>
-      </span>
-      <span class="">
-       {{employer.email}}
-      </span>
-     </li>
-     <li class="list-group-item">
-      <span>
-       <strong>
-        {% translate "employerDetailsPhone:" %}
-       </strong>
-      </span>
-      <span class="">
-       {{employer.phone}}
-      </span>
-     </li>
-     <li class="list-group-item">
-      <span>
-       <strong>
-        {% translate "employerDetailsWebsite:" %}
-       </strong>
-      </span>
-      <span class="">
-       {{employer.website}}
-      </span>
-     </li>
-     <li class="list-group-item">
-      <span>
-       <strong>
-        {% translate "employerDetailsAddress:" %}
-       </strong>
-      </span>
-      <span class="">
-       {{employer.address}}
-      </span>
-     </li>
-     <li class="list-group-item">
-      <span>
-       <strong>
-        {% translate "employerDetailsCity:" %}
-       </strong>
-      </span>
-      <span class="">
-       {{employer.city}}
-      </span>
-     </li>
-     <li class="list-group-item">
-      <span>
-       <strong>
-        {% translate "employerDetailsState:" %}
-       </strong>
-      </span>
-      <span class="">
-       {{employer.state}}
-      </span>
-     </li>
-     <li class="list-group-item">
-      <span>
-       <strong>
-        {% translate "employerDetailsCountry:" %}
-       </strong>
-      </span>
-      <span class="">
-       {{employer.country}}
-      </span>
-     </li>
-     <li class="list-group-item">
-      <span>
-       <strong>
-        {% translate "employerDetailsZipCode:" %}
-       </strong>
-      </span>
-      <span class="">
-       {{employer.zipcode}}
-      </span>
-     </li>
-    </ul>
-   </div>
-  </div>
- </div>
- <div class="col-md-8">
-  <div class="card">
-   <div class="card-header">
-    <h3 class="card-title">
-     {% translate "employerDetailsNewJobOrder/h3&gt;" %}
-    </h3>
-   </div>
-   <div class="card-body">
-    <div class="table-responsive deleted-table">
-     <table class="table table-bordered text-nowrap border-bottom" id="delete-datatable">
-      <thead>
-       <tr>
-        <th class="border-bottom-0">
-         {% translate "employerDetailsName" %}
-        </th>
-        <th class="border-bottom-0">
-         {% translate "employerDetailsPosition" %}
-        </th>
-        <th class="border-bottom-0">
-         {% translate "employerDetailsOffice" %}
-        </th>
-        <th class="border-bottom-0">
-         {% translate "employerDetailsAge" %}
-        </th>
-        <th class="border-bottom-0">
-         {% translate "employerDetailsStartDate" %}
-        </th>
-        <th class="border-bottom-0">
-         {% translate "employerDetailsSalary" %}
-        </th>
-       </tr>
-      </thead>
-      <tbody>
-       <tr>
-        <td>
-         {% translate "employerDetailsTigerNixon" %}
-        </td>
-        <td>
-         {% translate "employerDetailsSystemArchitect" %}
-        </td>
-        <td>
-         {% translate "employerDetailsEdinburgh" %}
-        </td>
-        <td>
-         61
-        </td>
-        <td>
-         2011/04/25
-        </td>
-        <td>
-         $320,800
-        </td>
-       </tr>
-       <tr>
-        <td>
-         {% translate "employerDetailsGarrettWinters" %}
-        </td>
-        <td>
-         {% translate "employerDetailsAccountant" %}
-        </td>
-        <td>
-         {% translate "employerDetailsTokyo" %}
-        </td>
-        <td>
-         63
-        </td>
-        <td>
-         2011/07/25
-        </td>
-        <td>
-         $170,750
-        </td>
-       </tr>
-       <tr>
-        <td>
-         {% translate "employerDetailsAshtonCox" %}
-        </td>
-        <td>
-         {% translate "employerDetailsJuniorTechnicalAuthor" %}
-        </td>
-        <td>
-         {% translate "employerDetailsSanFrancisco" %}
-        </td>
-        <td>
-         66
-        </td>
-        <td>
-         2009/01/12
-        </td>
-        <td>
-         $86,000
-        </td>
-       </tr>
-      </tbody>
-     </table>
-     <div style="display: inline-block;">
-      <button class="btn btn-secondary" id="button" style="margin-right: 10px;">
-       {% translate "employerDetailsDecline" %}
-      </button>
-      <button class="btn btn-success">
-       {% translate "employerDetailsAccept" %}
-      </button>
-     </div>
-    </div>
-   </div>
-  </div>
-  <div class="card">
-   <div class="card-header">
-    <h3 class="card-title">
-     {% translate "employerDetailsActiveJobOrders" %}
-    </h3>
-   </div>
-   <div class="card-body">
-    <div class="table-responsive">
-     <table class="table table-bordered text-nowrap border-bottom" id="basic-datatable">
-      <thead>
-       <tr>
-        <th class="wd-15p border-bottom-0">
-         {% translate "employerDetailsFirstName" %}
-        </th>
-        <th class="wd-15p border-bottom-0">
-         {% translate "employerDetailsLastName" %}
-        </th>
-        <th class="wd-20p border-bottom-0">
-         {% translate "employerDetailsPosition" %}
-        </th>
-        <th class="wd-15p border-bottom-0">
-         {% translate "employerDetailsStartDate" %}
-        </th>
-        <th class="wd-10p border-bottom-0">
-         {% translate "employerDetailsSalary" %}
-        </th>
-        <th class="wd-25p border-bottom-0">
-         {% translate "employerDetailsE-mail" %}
-        </th>
-       </tr>
-      </thead>
-      <tbody>
-       <tr>
-        <td>
-         {% translate "employerDetailsBella" %}
-        </td>
-        <td>
-         {% translate "employerDetailsChloe" %}
-        </td>
-        <td>
-         {% translate "employerDetailsSystemDeveloper" %}
-        </td>
-        <td>
-         2018/03/12
-        </td>
-        <td>
-         $654,765
-        </td>
-        <td>
-         b.Chloe@datatables.net
-        </td>
-       </tr>
-       <tr>
-        <td>
-         {% translate "employerDetailsDonna" %}
-        </td>
-        <td>
-         {% translate "employerDetailsBond" %}
-        </td>
-        <td>
-         {% translate "employerDetailsAccountManager" %}
-        </td>
-        <td>
-         2012/02/21
-        </td>
-        <td>
-         $543,654
-        </td>
-        <td>
-         d.bond@datatables.net
-        </td>
-       </tr>
-      </tbody>
-     </table>
-    </div>
-   </div>
-  </div>
-  <div class="card">
-   <div class="card-header">
-    <h3 class="card-title">
-     {% translate "employerDetailsJobOrderHistory" %}
-    </h3>
-   </div>
-   <div class="card-body">
-    <div class="table-responsive">
-     <table class="table table-bordered text-nowrap border-bottom" id="another-basic-datatable">
-      <thead>
-       <tr>
-        <th class="wd-15p border-bottom-0">
-         {% translate "employerDetailsFirstName" %}
-        </th>
-        <th class="wd-15p border-bottom-0">
-         {% translate "employerDetailsLastName" %}
-        </th>
-        <th class="wd-20p border-bottom-0">
-         {% translate "employerDetailsPosition" %}
-        </th>
-        <th class="wd-15p border-bottom-0">
-         {% translate "employerDetailsStartDate" %}
-        </th>
-        <th class="wd-10p border-bottom-0">
-         {% translate "employerDetailsSalary" %}
-        </th>
-        <th class="wd-25p border-bottom-0">
-         {% translate "employerDetailsE-mail" %}
-        </th>
-       </tr>
-      </thead>
-      <tbody>
-       <tr>
-        <td>
-         {% translate "employerDetailsJohn" %}
-        </td>
-        <td>
-         {% translate "employerDetailsDoe" %}
-        </td>
-        <td>
-         {% translate "employerDetailsSoftwareEngineer" %}
-        </td>
-        <td>
-         2019/10/12
-        </td>
-        <td>
-         $123,456
-        </td>
-        <td>
-         j.doe@datatables.net
-        </td>
-       </tr>
-       <tr>
-        <td>
-         {% translate "employerDetailsJane" %}
-        </td>
-        <td>
-         {% translate "employerDetailsSmith" %}
-        </td>
-        <td>
-         {% translate "employerDetailsProjectManager" %}
-        </td>
-        <td>
-         2015/05/23
-        </td>
-        <td>
-         $98,765
-        </td>
-        <td>
-         j.smith@datatables.net
-        </td>
-       </tr>
-      </tbody>
-     </table>
-    </div>
-   </div>
-  </div>
- </div>
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+<div class="table-responsive">
+    <h3>workRequests</h3>
+    <table class="table text-nowrap border-bottom" id="work-requests-list-datatable">
+        <thead>
+            <tr>
+                <th class="theading-color">workRequestID</th>
+                <th class="theading-color">startDate</th>
+                <th class="theading-color">endDate</th>
+                <th class="theading-color">Company</th>
+                <th class="theading-color">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for work_request in work_requests %}
+            <tr class="text-center" data-id="{{ work_request.id }}">
+                <td>
+                    <a href="/work-requests/{{ work_request.id }}" class="text-decoration-none text-dark">
+                        {{ work_request.name }}
+                    </a>
+                </td>
+                <td>{{ work_request.start_date }}</td>
+                <td>
+                    {% if work_request.end_date %}
+                        {{ work_request.end_date }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="/employers/{{ work_request.employer.id }}" class="text-decoration-none text-dark">
+                        {{ work_request.employer.name }}
+                    </a>
+                </td>
+                <td>
+                    <span class="badge 
+                        {% if work_request.status == 'Open' %}bg-success{% elif work_request.status == 'Requested' %}bg-warning{% elif work_request.status == 'Closed' %}bg-danger{% else %}bg-secondary{% endif %}">
+                        {{ work_request.status }}
+                    </span>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">noWorkRequestsAvailable.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
+        </div>
+      </div>
+    </div>
+
 {% endblock body %}
 
 {% block scripts %}
@@ -408,6 +188,8 @@
 </script>
 <script src="{% static 'assets/js/table-data.js' %}">
 </script>
+<script src="{% static 'assets/js/table-sorting.js' %}"></script>
+<script src="{% static ''%}assets/js/assign_contact_employer.js"></script>
 <script>
     $(document).ready(function () {
         if ($.fn.DataTable.isDataTable('#delete-datatable')) {

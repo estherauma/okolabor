@@ -7,14 +7,17 @@ class Command(BaseCommand):
     help = 'Create test credentials'
 
     def handle(self, *args, **options):
-        print('Creating default usergroups')
+        print('Creating default user groups')
         self.create_roles()
         self.create_users()
-        # Create test credentials here
         print('Test credentials created')
-        
+
     def create_roles(self):
-        roles = ['worker', 'recruiter', 'employer', 'admin']
+        roles = [
+            'worker', 'admin',
+            'recruiter', 'recruiter_admin',
+            'employer', 'employer_admin'
+            ]
         for role_name in roles:
             # Use get_or_create to avoid duplications
             role, created = Group.objects.get_or_create(name=role_name)
@@ -31,22 +34,32 @@ class Command(BaseCommand):
                 'telephone': '+999752466600'
             },
             {
-                'email': 'testrecruiter@okolabor.com',
+                'email': 'testadmin@okolabor.com',
                 'curp': 'HEGJ820506HBCRRN51',
                 'telephone': '+999752466601'
             },
             {
-                'email': 'testemployer@okolabor.com',
+                'email': 'testrecruiter@okolabor.com',
                 'curp': 'HEGJ820506HBCRRN52',
                 'telephone': '+999752466602'
             },
             {
-                'email': 'testadmin@okolabor.com',
+                'email': 'testrecruiteradmin@okolabor.com',
                 'curp': 'HEGJ820506HBCRRN53',
                 'telephone': '+999752466603'
-            }
+            },
+            {
+                'email': 'testemployer@okolabor.com',
+                'curp': 'HEGJ820506HBCRRN54',
+                'telephone': '+999752466604'
+            },
+            {
+                'email': 'testemployeradmin@okolabor.com',
+                'curp': 'HEGJ820506HBCRRN55',
+                'telephone': '+999752466605'
+            }   
         ]
-        
+
         for user_data in users:
             # Use get_or_create to avoid duplications
             user, created = User.objects.get_or_create(
@@ -58,20 +71,22 @@ class Command(BaseCommand):
                 self.stdout.write(f'User "{user_data["email"]}" created.')
             else:
                 self.stdout.write(f'User "{user_data["email"]}" already exists.')
-            
+
             # Assign roles (groups)
             if user_data['email'] == 'testworker@okolabor.com':
                 user.groups.add(Group.objects.get(name='worker'))
-            elif user_data['email'] == 'testrecruiter@okolabor.com':
-                user.groups.add(Group.objects.get(name='recruiter'))
-            elif user_data['email'] == 'testemployer@okolabor.com':
-                user.groups.add(Group.objects.get(name='employer'))
             elif user_data['email'] == 'testadmin@okolabor.com':
                 user.groups.add(Group.objects.get(name='admin'))
-                user.is_staff = True
-                user.is_superuser = True
-                
+            elif user_data['email'] == 'testrecruiter@okolabor.com':
+                user.groups.add(Group.objects.get(name='recruiter'))
+            elif user_data['email'] == 'testrecruiteradmin@okolabor.com':
+                user.groups.add(Group.objects.get(name='recruiter_admin'))
+            elif user_data['email'] == 'testemployer@okolabor.com':
+                user.groups.add(Group.objects.get(name='employer'))
+            elif user_data['email'] == 'testemployeradmin@okolabor.com':
+                user.groups.add(Group.objects.get(name='employer_admin'))
+            # Set password
             user.set_password(
                 user_data['email'].split('@')[0] + config('TEST_ACCOUNT_PASSWORD'))
-            
+
             user.save()
