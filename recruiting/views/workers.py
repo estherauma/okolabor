@@ -16,6 +16,8 @@ from account.models import UserPreference,UserDocuments
 from recruiting.models import WorkAssignment,WorkAssignment,WorkRequests,Role
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from content.models import AggregatedContent
+from content.serializers import AggregatedContentSerializer
 import json
 
 ONBOARDING_STEPS = [
@@ -296,3 +298,80 @@ class WorkExperienceDetailsView(View):
             'job_experience_details': job_experience_details}
         return render(request, 
             'recruiting/workers/work_experience_detail.html', context)
+
+
+
+def export_worker_details(request):
+    latest = AggregatedContent.objects.latest('created_at')
+    serializer = AggregatedContentSerializer(latest, many=False)
+    aggregated_data = serializer.data
+    content = aggregated_data.get('content', {})
+    english_content = content.get('en', {})
+
+    work_preference_step_one = english_content.get('workPreferenceStepOne', {}).get('form_questions', [])
+    work_preference_step_two = english_content.get('workPreferenceStepTwo', {}).get('form_questions', [])
+    profile_step_one = english_content.get('profileStepOne', {}).get('form_questions', [])
+    profile_step_two = english_content.get('profileStepTwo', {}).get('form_questions', [])
+
+    profile_step_two_questions = english_content.get('profileStepTwo', {}).get('form_questions', [])
+    profile_step_two_page_title = english_content.get('profileStepTwo', {}).get('pageTitle', "")
+
+    english_proficiency_title = next(
+        (q.get("label") for q in profile_step_two_questions if q.get("key") == "englishProficiency"), 
+        profile_step_two_page_title
+    ) or "What is your level of English proficiency?"
+
+    excluded_keys = {
+        "English Proficiency",
+        "profileStepOne",
+        "profile",
+        "workExperienceList",
+        "workExperience",
+        "documentsStepOne",
+        "documents",
+        "levelOfProficiency",
+        "englishProficiency",
+        "workPreferenceStepTwo",
+        "workPreferences",
+        "suitabilityForWork",
+        "workPreferenceStepOne",
+        "recordVideo",
+        "englishProficiencyTwo",
+    }
+
+    filtered_questions = [
+        q for q in (work_preference_step_one + work_preference_step_two + profile_step_one + profile_step_two)
+        if q['key'] not in excluded_keys
+    ]
+
+    preference_label_map = {q['key']: q.get('label', q['key']) for q in filtered_questions}
+
+    if "englishProficiency" in preference_label_map:
+        preference_label_map["englishProficiency"] = english_proficiency_title
+
+    data = []
+
+    worker_users = User.objects.filter(groups__name="worker")
+
+    for user in worker_users:
+        preferences = UserPreference.objects.filter(user=user)
+
+        worker_data = {}
+
+        for pref in preferences:
+            if pref.key not in excluded_keys:
+                question_label = preference_label_map.get(pref.key, pref.key)
+                worker_data[question_label] = pref.value
+
+        if worker_data:  
+            data.append(worker_data)
+
+    df = pd.DataFrame(data)
+
+    response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    response["Content-Disposition"] = 'attachment; filename="worker_preferences.xlsx"'
+
+    with pd.ExcelWriter(response, engine="openpyxl") as writer:
+        df.to_excel(writer, index=False, sheet_name="Worker Preferences")
+
+    return response
