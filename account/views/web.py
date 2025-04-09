@@ -120,7 +120,7 @@ class UserListView(LoginRequiredMixin, View):
         curp = request.POST.get('curp')
         role = request.POST.get('role')
 
-        print(role,"role")
+        
 
         if not all([first_name, last_name, user_email, curp, role]):
             messages.error(request, _("addUserAllFieldsAreRequired."))
