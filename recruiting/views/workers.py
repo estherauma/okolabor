@@ -1,4 +1,6 @@
 from django.contrib import messages
+import os
+from django.conf import settings
 from django.http import JsonResponse
 from django.contrib.auth.models import Group
 from django.core.paginator import Paginator
@@ -271,26 +273,131 @@ class GetRolesForWorkRequestView(View):
     
 
 
+SECTOR_CHOICES = [
+    ('animals', 'Animals'),
+    ('construction', 'Construction'),
+    ('crop_horticulture', 'Crop and Horticulture'),
+    ('licensed_vehicle_operation', 'Licensed Vehicle Operation'),
+    ('mechanics', 'Mechanics'),
+    ('worker_supervision', 'Worker Supervision / Management'),
+    ('other', 'Other'),
+]
+
 class CreateWorkExperienceView(BaseCreateView):
     model = UserWorkExperience
     form_class = WorkExperienceCreateForm
     template_name = 'recruiting/workers/work_experience_create.html'
 
     def form_valid(self, form):
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        user = form.cleaned_data['user']
+        work_experience = self.object
+
+        # Get selected sector and convert to readable label
+        selected_sector = form.cleaned_data.get('type_sector', 'General')
+        sector_dict = dict(SECTOR_CHOICES)
+        readable_sector = sector_dict.get(selected_sector, selected_sector)
+
+        # Create a UserJobExperience with sector as job_type
+        job_experience = UserJobExperience.objects.create(
+            user=user,
+            work_experience=work_experience,
+            job_type=readable_sector
+        )
+
+        # Save uploaded files to UserDocuments and link in details
+        uploaded_files = {
+            'visa': self.request.FILES.get('visa_file'),
+            'license': self.request.FILES.get('license_file'),
+            'explanation_video': self.request.FILES.get('video_file'),
+        }
+
+        for kind, uploaded_file in uploaded_files.items():
+            if uploaded_file:
+                folder = 'certificates' if kind in ['visa', 'license'] else 'explanation'
+                filename = uploaded_file.name
+                relative_path = os.path.join('uploads', folder, filename)
+                full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
+
+                os.makedirs(os.path.dirname(full_path), exist_ok=True)
+
+                with open(full_path, 'wb+') as destination:
+                    for chunk in uploaded_file.chunks():
+                        destination.write(chunk)
+
+                # Save in UserDocuments
+                doc, created = UserDocuments.objects.get_or_create(
+                    user=user,
+                    path=relative_path,
+                    kind=kind,
+                    defaults={
+                        'description': f'{kind.title()} for job experience',
+                        'file_type': uploaded_file.content_type
+                    }
+                )
+
+                # Save in JobExperienceDetails
+                UserJobExperienceDetails.objects.create(
+                    job_experience=job_experience,
+                    kind=kind,
+                    value=relative_path,
+                    is_attachment=True,
+                )
+
+        # Save description field
+        description = form.cleaned_data.get('description')
+        if description:
+            UserJobExperienceDetails.objects.create(
+                job_experience=job_experience,
+                kind='description',
+                value=description,
+                is_attachment=False,
+            )
+
+        # Map sector-specific multi-select fields to be saved as kind/value
+        conditional_fields = {
+            'animals': {
+                'animal_types': 'animal_type',
+                'animal_jobs': 'animal_task',
+            },
+            'crop_horticulture': {
+                'crop_types': 'crop_type',
+                'crop_jobs': 'crop_task',
+            },
+            'mechanics': {
+                'mechanic_jobs': 'mechanic_task',
+            },
+            'worker_supervision': {
+                'supervision_jobs': 'supervision_task',
+            },
+        }
+
+        # Save each selected option from relevant fields to details
+        fields_for_sector = conditional_fields.get(selected_sector, {})
+        for form_field, detail_kind in fields_for_sector.items():
+            values = form.cleaned_data.get(form_field)
+            if values:
+                for val in values:
+                    UserJobExperienceDetails.objects.create(
+                        job_experience=job_experience,
+                        kind=detail_kind,
+                        value=val,
+                        is_attachment=False,
+                    )
+
+        return response
 
     def get_success_url(self):
-        return reverse(
-            'recruiting_web:worker_detail',
-            kwargs={'pk': self.object.user.pk}
-        )
+        return reverse('recruiting_web:worker_detail', kwargs={'pk': self.object.user.pk})
+
 
 
 class WorkExperienceDetailsView(View):
     def get(self, request, pk):
         work_experience = get_object_or_404(UserWorkExperience, pk=pk)
         job_experiences = UserJobExperience.objects.filter(work_experience=work_experience)
-        job_experience_details = UserJobExperienceDetails.objects.filter(job_experience__in=job_experiences)
+        job_experience_details = UserJobExperienceDetails.objects.filter(job_experience__in=job_experiences).all().values()
+        
         context = {'work_experience': work_experience,
                    'job_experiences': job_experiences,
             'job_experience_details': job_experience_details}
