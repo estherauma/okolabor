@@ -9,8 +9,10 @@ document.addEventListener("DOMContentLoaded", function () {
       const lastName = this.getAttribute("data-recruiter-last-name") || "";
       const email = this.getAttribute("data-recruiter-email") || "";
       const isActive = this.getAttribute("data-recruiter-is-active") || "";
-      const language = this.getAttribute("data-recruiter-language") || ""
+      const language = this.getAttribute("data-recruiter-language") || "";
+      const group = this.getAttribute("data-recruiter-group") || "";
 
+      // Populate modal form fields
       document.getElementById("edit_recruiter_curp").value = curp;
       document.getElementById("edit_recruiter_first_name").value = firstName;
       document.getElementById("edit_recruiter_last_name").value = lastName;
@@ -18,6 +20,13 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("edit_recruiter_is_active").value = isActive;
       document.getElementById("edit_recruiter_language").value = language;
 
+      // 👇 Populate group dropdown
+      const groupSelect = document.getElementById("edit_recruiter_group");
+      if (groupSelect) {
+        groupSelect.value = group;
+      }
+
+      // 👇 Set dynamic form action
       if (editUserForm) {
         editUserForm.action = editUserForm.action.replace("curp_placeholder", curp);
       }
