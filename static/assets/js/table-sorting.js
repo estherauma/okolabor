@@ -13,7 +13,7 @@ $(document).ready(function () {
         });
 
         // Special setting for #workrequest-datatable
-        $('#workrequest-datatable, #employers-list-datatable, #workers-list-datatable').DataTable({
+        $('#workrequest-datatable, #employers-list-datatable').DataTable({
             "ordering": true,
             "order": [],
             "columnDefs": [{
@@ -22,6 +22,18 @@ $(document).ready(function () {
             }],
             "paging": true,   
             "info": true
+        });
+
+        $('#recruiters-datatable,#workers-list-datatable').DataTable({
+            "ordering": true,
+            "order": [],
+            "columnDefs": [{
+                "targets": '_all',
+                "orderable": true
+            }],
+            "paging": true,   
+            "info": true,
+            "searching": false
         });
     } else {
         console.error("DataTables library is not loaded.");

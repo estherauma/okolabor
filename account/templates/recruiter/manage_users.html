@@ -1,7 +1,17 @@
-<!-- main_template.html -->
+
 {% extends 'components/base.html' %}
 {% load static %}
 {% load i18n %}
+{% block styles %}
+<!-- SELECT2 CSS -->
+<link href="{% static ''%}assets/plugins/select2/select2.min.css" rel="stylesheet"/>
+<link href="{% static ''%}assets/plugins/common/style.css" rel="stylesheet"/>
+<!-- DATA TABLE CSS -->
+<link href="{% static ''%}assets/plugins/datatable/css/dataTables.bootstrap5.css" rel="stylesheet"/>
+<link href="{% static ''%}assets/plugins/datatable/css/buttons.bootstrap5.min.css" rel="stylesheet"/>
+<link href="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.css" rel="stylesheet"/>
+
+{% endblock styles %}
 {% block body %}
 <div class="page-header">
   <div>
