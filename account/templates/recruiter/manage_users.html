@@ -17,7 +17,6 @@
                   <ul class="tabs-menu nav">
                     <li class=""><a href="#tab1" class="active" data-bs-toggle="tab">{% translate "Workers" %}</a></li>
                     <li><a href="#tab2" data-bs-toggle="tab" class="">{% translate "recruiters" %}</a></li>
-                    <li><a href="#tab3" data-bs-toggle="tab" class="">{% translate "recruiterAdmin" %}</a></li>
                     <li><a href="#tab4" data-bs-toggle="tab" class="">{% translate "employerAdmins" %}</a></li>
                   </ul>
                   <div class="tab-content">
@@ -27,11 +26,9 @@
                       <div class="tab-pane" id="tab2">
                           {% include 'recruiter/recruiter_models/recruiters_data.html' %}
                       </div>
-                      <div class="tab-pane" id="tab3">
-                        {% include 'recruiter_admin/recruiter_admin_list.html' %}
-                      </div>
+                      
                       <div class="tab-pane" id="tab4">
-                        {% include 'organization/organization_list.html' %}
+                        {% include 'employers/employer_list.html' %}
                       </div>
                   </div>
               </div>
@@ -39,12 +36,9 @@
       </div>
   </div>
 </div>
-
-<!-- Add User Modal -->
 {% include 'recruiter/recruiter_models/add_user_modal.html' %}
 {% include 'recruiter/recruiter_models/confirmation_modal.html' %}
 {% include 'workers/worker_models/worker_confirmation_model.html'%}
-{% include 'recruiter_admin/add_recruiter_admin_model.html'%}
 
 
 {% endblock %}

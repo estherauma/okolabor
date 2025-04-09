@@ -1,0 +1,31 @@
+{% load static %}
+{% load i18n %}
+<div class="modal fade" id="assignEmployerOrganizationModal" tabindex="-1" aria-labelledby="assignOrgLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="assignEmployerOrganizationForm">
+            {% csrf_token %}
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="assignOrgLabel">{% translate "assignOrganization" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'Close' %}"></button>
+                </div>
+                <div class="modal-body">
+                    <select class="form-select" name="organization_id" required>
+                        <option value="">{% translate "selectOrganization" %}</option>
+                        {% for org in employer_organizations %}
+                            <option value="{{ org.id }}">{{ org.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="hidden" name="selected_users" id="selectedEmployerUsersInput">
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">{% translate "Assign" %}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% block scripts %}
+    <script src="{% static 'assets/js/assign-employer-organization-modal.js' %}"></script>
+{% endblock scripts %}
