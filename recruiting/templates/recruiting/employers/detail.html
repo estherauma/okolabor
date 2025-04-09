@@ -17,8 +17,68 @@
    {{employer.name}}
   </h1>
  </div>
+ <button class="btn dark-green-button"
+        data-bs-toggle="modal"
+        data-bs-target="#assignContactModal"
+        id="assignContactBtn"
+        data-employer-id="{{ employer.id }}">
+    {% translate "assignContactEmployer" %}
+</button>
 </div>
 <h3>employerContacts</h3>
+
+<div class="modal fade" id="assignContactModal" tabindex="-1" aria-labelledby="assignContactLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="POST" id="assignContactForm">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="assignContactLabel">{% translate "assignContactEmployer" %}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'Close' %}"></button>
+          </div>
+          <input type="hidden" id="employerIdField" name="employer_id">
+          <div class="modal-body">
+            <input type="hidden" id="selectedEmployersForContact" name="selected_employers">
+            
+            <div class="mb-3">
+              <label for="contactName" class="form-label">{% translate "contactName" %}</label>
+              <input type="text" class="form-control" id="contactName" name="name" required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="contactEmail" class="form-label">{% translate "Email" %}</label>
+              <input type="email" class="form-control" id="contactEmail" name="email" required>
+            </div>
+  
+            <div class="mb-3">
+              <label for="contactPhone" class="form-label">{% translate "Phone" %}</label>
+              <input type="text" class="form-control" id="contactPhone" name="phone" required>
+            </div>
+  
+            <div class="mb-3">
+              <label for="contactPosition" class="form-label">{% translate "Position" %}</label>
+              <input type="text" class="form-control" id="contactPosition" name="position">
+            </div>
+  
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="true" id="isPrimary" name="is_primary">
+              <label class="form-check-label" for="isPrimary">
+                {% translate "IsPrimaryContact" %}
+              </label>
+            </div>
+          </div>
+  
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Cancel" %}</button>
+            <button type="submit" class="btn btn-primary" id="assignContactBtn">
+              {% translate "Save" %}
+            </button>
+            
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 <div class="d-flex flex-wrap gap-3">
     {% for contact in contacts %}
     <a href="{% url 'recruiting_web:contact_work_requests' contact.id %}" class="text-decoration-none text-dark">
@@ -129,6 +189,7 @@
 <script src="{% static 'assets/js/table-data.js' %}">
 </script>
 <script src="{% static 'assets/js/table-sorting.js' %}"></script>
+<script src="{% static ''%}assets/js/assign_contact_employer.js"></script>
 <script>
     $(document).ready(function () {
         if ($.fn.DataTable.isDataTable('#delete-datatable')) {

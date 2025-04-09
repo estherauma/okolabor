@@ -1,16 +1,4 @@
 $(document).ready(function () {
-<<<<<<< HEAD
-    $('#basic-datatable, #employers-list-datatable, #workrequest-datatable, #another-basic-datatable, #recruiters-datatable').DataTable({
-        "ordering": true,
-        "order": [],
-        "columnDefs": [{
-            "targets": '_all',
-            "orderable": true 
-        }],
-        "paging": false,
-        "info": false, 
-    });
-=======
     if ($.fn.DataTable) { 
         $('#basic-datatable, #employers-list-datatable, #workrequest-datatable, #another-basic-datatable, #work-requests-list-datatable, #datatable-closed, #datatable-in-progress, #datatable-draft').DataTable({
             "ordering": true,
@@ -25,5 +13,4 @@ $(document).ready(function () {
     } else {
         console.error("DataTables library is not loaded.");
     }
->>>>>>> origin/dev
 });

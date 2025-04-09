@@ -29,22 +29,22 @@ class Command(BaseCommand):
                 'telephone': '+999752466600'
             },
             {
-                'email': 'testrecruiter@okolabor.com',
+                'email': 'testadmin@okolabor.com',
                 'curp': 'HEGJ820506HBCRRN51',
                 'telephone': '+999752466601'
             },
             {
-                'email': 'testemployer@okolabor.com',
+                'email': 'testrecruiter@okolabor.com',
                 'curp': 'HEGJ820506HBCRRN52',
                 'telephone': '+999752466602'
             },
             {
-                'email': 'testadmin@okolabor.com',
+                'email': 'testrecruiteradmin@okolabor.com',
                 'curp': 'HEGJ820506HBCRRN53',
                 'telephone': '+999752466603'
             },
             {
-                'email': 'testrecruiteradmin@okolabor.com',
+                'email': 'testemployer@okolabor.com',
                 'curp': 'HEGJ820506HBCRRN54',
                 'telephone': '+999752466604'
             },
@@ -68,14 +68,10 @@ class Command(BaseCommand):
 
             if user_data['email'] == 'testworker@okolabor.com':
                 user.groups.add(Group.objects.get(name='worker'))
-            elif user_data['email'] == 'testrecruiter@okolabor.com':
-                user.groups.add(Group.objects.get(name='recruiter'))
-            elif user_data['email'] == 'testemployer@okolabor.com':
-                user.groups.add(Group.objects.get(name='employer'))
             elif user_data['email'] == 'testadmin@okolabor.com':
                 user.groups.add(Group.objects.get(name='admin'))
-                user.is_staff = True
-                user.is_superuser = True
+            elif user_data['email'] == 'testrecruiter@okolabor.com':
+                user.groups.add(Group.objects.get(name='recruiter'))
             elif user_data['email'] == 'testrecruiteradmin@okolabor.com':
                 user.groups.add(Group.objects.get(name='recruiter_admin'))
             elif user_data['email'] == 'testemployeradmin@okolabor.com':
