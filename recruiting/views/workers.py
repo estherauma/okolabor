@@ -18,6 +18,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from content.models import AggregatedContent
 from content.serializers import AggregatedContentSerializer
+import pandas as pd
+from django.http import HttpResponse
 import json
 
 ONBOARDING_STEPS = [
