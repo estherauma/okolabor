@@ -2,18 +2,24 @@
 {% load static %}
 <div class="card">
     <div class="card-body">
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between align-items-center">
             <h3 class="card-title green-color fw-bold mb-1">
                 {% translate "Employers" %}
             </h3>
-            <button class="btn btn yellow-button btn-icon ms-auto p-1" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#inviteEmployeModal">
-                +{% translate "newEmployer" %}
-            </button>
+            <div class="d-flex">
+                <button type="button" class="btn btn-green mt-3 me-2" id="assign-employer-organization-btn" data-bs-toggle="modal" data-bs-target="#assignEmployerOrganizationModal">
+                    {% translate "assignEmployeOrganization" %}
+                </button>
+                <button class="btn btn yellow-button btn-icon ms-auto p-1" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#inviteEmployeModal">
+                    +{% translate "newEmployer" %}
+                </button>
+            </div>
         </div>
         <div class="table-responsive">
             <table class="table text-nowrap border-bottom" id="recruiters-datatable">
                 <thead>
                     <tr>
+                        <th class="theading-color text-start"><input type="checkbox" id="select-all-employer-checkbox"></th>
                         <th class="theading-color text-start">{% translate "curp" %}</th>
                         <th class="theading-color text-start">{% translate "email" %}</th>
                         <th class="theading-color text-start">{% translate "firstName" %}</th>
@@ -27,6 +33,10 @@
                 <tbody>
                     {% for user in employers_list %}
                     <tr class="green-color text-start">
+                        <td>
+                            <input type="checkbox" class="form-check-input employer-checkbox" value="{{ user.id }}">
+
+                        </td>
                         <td>{{ user.curp }}</td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.first_name }}</td>
@@ -63,6 +73,9 @@
 
 {% include 'employers/edit_employer_modal.html' %}
 {% include 'employers/create_employer.html' %}
+{% include 'employers/assign-employer-organization-modal.html' %}
+
+
 
 {% block scripts %}
     <script src="{% static ''%}assets/js/table-sorting.js"></script>

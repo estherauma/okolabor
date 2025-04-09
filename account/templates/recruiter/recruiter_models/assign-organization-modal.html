@@ -6,13 +6,13 @@
             {% csrf_token %}
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="assignOrgLabel">Assign Organization</h5>
+                    <h5 class="modal-title" id="assignOrgLabel">{% translate "assignOrganization" %}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'Close' %}"></button>
                 </div>
                 <div class="modal-body">
                     <select class="form-select" name="organization_id" required>
                         <option value="">{% translate "Select Organization" %}</option>
-                        {% for org in organizations %}
+                        {% for org in recruiter_organizations %}
                             <option value="{{ org.id }}">{{ org.name }}</option>
                         {% endfor %}
                     </select>
@@ -27,8 +27,6 @@
     </div>
 </div>
 
-
 {% block scripts %}
-    <script src="{% static ''%}assets/js/assign-organization-modal.js"></script>
+    <script src="{% static 'assets/js/assign-organization-modal.js' %}"></script>
 {% endblock scripts %}
-

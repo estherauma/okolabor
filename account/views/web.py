@@ -35,6 +35,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 import datetime
 import json
 from account.models import User, UserNotification
@@ -61,8 +62,12 @@ class UserListView(LoginRequiredMixin, View):
         )
 
         
-        organizations = Organization.objects.all().values(
-            'id', 'name', 'email', 'phone', 'website', 'address', 'city', 'state', 'country', 'zip_code', 'type','is_active'
+        recruiter_organizations = Organization.objects.filter(type='recruiter').values(
+            'id', 'name', 'email', 'phone', 'website', 'address', 'city', 'state', 'country', 'zip_code', 'type', 'is_active'
+        )
+
+        employer_organizations = Organization.objects.filter(type='employer').values(
+            'id', 'name', 'email', 'phone', 'website', 'address', 'city', 'state', 'country', 'zip_code', 'type', 'is_active'
         )
 
         recruiters = list(User.objects.filter(groups__name='recruiter').values(
@@ -78,13 +83,13 @@ class UserListView(LoginRequiredMixin, View):
             ra['group'] = 'recruiter_admin'
 
         employer = list(User.objects.filter(groups__name='employer').values(
-            'curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
+            'id','curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
         ))
         for ra in employer:
             ra['group'] = 'employer'
 
         employer_admin = list(User.objects.filter(groups__name='employer_admin').values(
-            'curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
+            'id','curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
         ))
         for ra in employer_admin:
             ra['group'] = 'employer_admin'
@@ -102,7 +107,8 @@ class UserListView(LoginRequiredMixin, View):
             'form_worker_class': form_worker_class,
             'form_recruiter_admin_class': form_recruiter_admin_class,
             'employers_list': combined_employer,
-            'organizations': organizations,
+            'recruiter_organizations': recruiter_organizations,
+            'employer_organizations': employer_organizations,
             
             }
         return render(request, 'recruiter/manage_users.html', context)
@@ -425,27 +431,33 @@ def edit_organization(request, organization_id):
 
     return redirect('recruiting_web:employer_detail', pk=organization_id)
 
+@require_POST
 def assign_organization(request):
-    if request.method == "POST":
-        org_id = request.POST.get("organization_id")
-        selected_users = json.loads(request.POST.get("selected_users", "[]"))
+    org_id = request.POST.get("organization_id")
+    selected_users = request.POST.get("selected_users")
+   
 
-        if not org_id or not selected_users:
-            messages.error(request, _("pleaseSelectUsersAndAnOrganization."))
-            return redirect('manage_users')  
+    try:
+        selected_users = json.loads(selected_users or "[]")
+    except json.JSONDecodeError:
+        messages.error(request, _("invalidUserSelection."))
+        return JsonResponse({"success": False, "error": _("Invalid user selection.")})
 
-        try:
-            org = Organization.objects.get(id=org_id)
-            users = User.objects.filter(id__in=selected_users)
-            for user in users:
-                user.organization = org 
-                user.save()
+    if not org_id or not selected_users:
+        messages.error(request, _("pleaseSelectUsersAndanOrganization."))
+        return JsonResponse({"success": False, "error": _("pleaseSelectUsersAndAnOrganization.")})
 
-            messages.success(request, _("organizationAssignedSuccessfullyToSelectedUsers."))
-        except Organization.DoesNotExist:
-            messages.error(request, _("selectedOrganizationDoesNotExist."))
+    org = get_object_or_404(Organization, id=org_id)
+    users = User.objects.filter(id__in=selected_users)
 
-        return redirect('manage_users')
+    if not users.exists():
+        messages.error(request, _("noValidUsersSelected."))
+        return JsonResponse({"success": False, "error": _("noalidUsersSelected.")})
 
-    messages.error(request, _("invalidRequestMethod."))
-    return redirect('manage_users')
+    try:
+        users.update(organization=org)
+        messages.success(request, _("organizationAssignedSuccessfullyToSelectedUsers."))
+        return JsonResponse({"success": True, "message": _("organizationAssignedSuccessfullyToSelectedUsers.")})
+    except Exception as e:
+        messages.error(request, _("failedToAssignOrganization: ") + str(e))
+        return JsonResponse({"success": False, "error": _("failedToAssignOrganization: ") + str(e)})

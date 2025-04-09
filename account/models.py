@@ -77,7 +77,7 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
     reset_code = models.CharField(max_length=256, null=True, blank=True)
 
     organization = models.ForeignKey(
-        'recruiting.Organization',  # 👈 use app_label.ModelName as a string
+        'recruiting.Organization',
         null=True,
         blank=True,
         on_delete=models.SET_NULL
