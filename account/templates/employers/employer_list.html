@@ -33,9 +33,8 @@
                 <tbody>
                     {% for user in employers_list %}
                     <tr class="green-color text-start">
-                        <td>
+                        <td style="padding-left:32px;">
                             <input type="checkbox" class="form-check-input employer-checkbox" value="{{ user.id }}">
-
                         </td>
                         <td>{{ user.curp }}</td>
                         <td>{{ user.email }}</td>
@@ -57,11 +56,8 @@
                                 data-employer-language="{{ user.language }}"
                                 data-employer-group="{{ user.group }}"
                                 >
-                               
                             </i>
-
                             <i class="side-menu__icon fa fa-trash-o cursor-pointer" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#confirmationModal"></i>
-
                         </td>
                     </tr>
                     {% endfor %}

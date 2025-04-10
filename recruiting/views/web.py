@@ -68,11 +68,14 @@ from recruiting.models import (
 
 class EmployerListView(View):
     def get(self, request):
+        print("EmployerListView")
         user = request.user
         query = request.GET.get('query')
 
         if user.groups.filter(name='admin').exists():
-            employers_list = Organization.objects.all().prefetch_related('employerrecruiter_set')
+            employers_list = Organization.objects.all()
+            print('admin employer list')
+            print(len(employers_list))
         elif user.groups.filter(name='recruiter').exists():
             employers_list = Organization.objects.filter(employerrecruiter__recruiter=user).distinct()
         else:
@@ -87,7 +90,7 @@ class EmployerListView(View):
                 Q(phone__icontains=query)
             )
 
-        paginator = Paginator(employers_list, 10)
+        paginator = Paginator(employers_list, len(employers_list))
         page_number = request.GET.get('page')
         employers = paginator.get_page(page_number)
 

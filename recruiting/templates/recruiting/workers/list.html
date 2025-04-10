@@ -14,26 +14,6 @@
 
 {% block body %}
 <div class="container-fluid" style="position: relative; height: auto">
-
-    <div class="row">
-        <div class="page-header custom-page-header d-flex flex-column">
-            <h1 class="page-title">
-                {% translate "listWorkers" %}
-            </h1>
-            <div class="search-bar-workers">
-                <div class="container">
-                    <form method="get">
-                        <div class="input-group search-input-group">
-                            <button class="btn search-btn" type="submit">
-                                <i class="fa fa-search"></i>
-                            </button>
-                            <input aria-label="Search" class="form-control search-input" name="search" placeholder="{% translate 'searchWorkers'%}" type="text" value="{{ request.GET.search }}"/>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="d-flex justify-content-between">
         <button class="btn green-color-workers">
             <i aria-hidden="true" class="fa fa-filter"></i>
@@ -155,6 +135,10 @@
                         <a class="btn dark-green-button ms-3" href="{% url 'recruiting_web:recruiter_create_worker' %}">
                             <span><i class="fe fe-plus"></i></span>
                             {% translate "addWorker" %}
+                        </a>
+                        <a class="btn dark-green-button ms-3" href="{% url 'recruiting_web:export-workers' %}">
+                            <span><i class="fa fa-upload me-1"></i></span>
+                            {% translate "workersExportWorkers"%}
                         </a>
                     </div>
                 </div>
@@ -317,4 +301,3 @@
 <script src="{% static ''%}assets/js/get-roles.js"></script>
 
 {% endblock scripts %}
-

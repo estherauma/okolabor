@@ -1,4 +1,6 @@
 from django.contrib import messages
+import os
+from django.conf import settings
 from django.http import JsonResponse
 from django.contrib.auth.models import Group
 from django.core.paginator import Paginator
@@ -16,6 +18,10 @@ from account.models import UserPreference,UserDocuments
 from recruiting.models import WorkAssignment,WorkAssignment,WorkRequests,Role
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from content.models import AggregatedContent
+from content.serializers import AggregatedContentSerializer
+import pandas as pd
+from django.http import HttpResponse
 import json
 
 ONBOARDING_STEPS = [
@@ -271,28 +277,209 @@ class GetRolesForWorkRequestView(View):
     
 
 
+SECTOR_CHOICES = [
+    ('animals', 'Animals'),
+    ('construction', 'Construction'),
+    ('crop_horticulture', 'Crop and Horticulture'),
+    ('licensed_vehicle_operation', 'Licensed Vehicle Operation'),
+    ('mechanics', 'Mechanics'),
+    ('worker_supervision', 'Worker Supervision / Management'),
+    ('other', 'Other'),
+]
+
 class CreateWorkExperienceView(BaseCreateView):
     model = UserWorkExperience
     form_class = WorkExperienceCreateForm
     template_name = 'recruiting/workers/work_experience_create.html'
 
     def form_valid(self, form):
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        user = form.cleaned_data['user']
+        work_experience = self.object
+
+        # Get selected sector and convert to readable label
+        selected_sector = form.cleaned_data.get('type_sector', 'General')
+        sector_dict = dict(SECTOR_CHOICES)
+        readable_sector = sector_dict.get(selected_sector, selected_sector)
+
+        # Create a UserJobExperience with sector as job_type
+        job_experience = UserJobExperience.objects.create(
+            user=user,
+            work_experience=work_experience,
+            job_type=readable_sector
+        )
+
+        # Save uploaded files to UserDocuments and link in details
+        uploaded_files = {
+            'visa': self.request.FILES.get('visa_file'),
+            'license': self.request.FILES.get('license_file'),
+            'explanation_video': self.request.FILES.get('video_file'),
+        }
+
+        for kind, uploaded_file in uploaded_files.items():
+            if uploaded_file:
+                folder = 'certificates' if kind in ['visa', 'license'] else 'explanation'
+                filename = uploaded_file.name
+                relative_path = os.path.join('uploads', folder, filename)
+                full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
+
+                os.makedirs(os.path.dirname(full_path), exist_ok=True)
+
+                with open(full_path, 'wb+') as destination:
+                    for chunk in uploaded_file.chunks():
+                        destination.write(chunk)
+
+                # Save in UserDocuments
+                doc, created = UserDocuments.objects.get_or_create(
+                    user=user,
+                    path=relative_path,
+                    kind=kind,
+                    defaults={
+                        'description': f'{kind.title()} for job experience',
+                        'file_type': uploaded_file.content_type
+                    }
+                )
+
+                # Save in JobExperienceDetails
+                UserJobExperienceDetails.objects.create(
+                    job_experience=job_experience,
+                    kind=kind,
+                    value=relative_path,
+                    is_attachment=True,
+                )
+
+        # Save description field
+        description = form.cleaned_data.get('description')
+        if description:
+            UserJobExperienceDetails.objects.create(
+                job_experience=job_experience,
+                kind='description',
+                value=description,
+                is_attachment=False,
+            )
+
+        # Map sector-specific multi-select fields to be saved as kind/value
+        conditional_fields = {
+            'animals': {
+                'animal_types': 'animal_type',
+                'animal_jobs': 'animal_task',
+            },
+            'crop_horticulture': {
+                'crop_types': 'crop_type',
+                'crop_jobs': 'crop_task',
+            },
+            'mechanics': {
+                'mechanic_jobs': 'mechanic_task',
+            },
+            'worker_supervision': {
+                'supervision_jobs': 'supervision_task',
+            },
+        }
+
+        # Save each selected option from relevant fields to details
+        fields_for_sector = conditional_fields.get(selected_sector, {})
+        for form_field, detail_kind in fields_for_sector.items():
+            values = form.cleaned_data.get(form_field)
+            if values:
+                for val in values:
+                    UserJobExperienceDetails.objects.create(
+                        job_experience=job_experience,
+                        kind=detail_kind,
+                        value=val,
+                        is_attachment=False,
+                    )
+
+        return response
 
     def get_success_url(self):
-        return reverse(
-            'recruiting_web:worker_detail',
-            kwargs={'pk': self.object.user.pk}
-        )
+        return reverse('recruiting_web:worker_detail', kwargs={'pk': self.object.user.pk})
+
 
 
 class WorkExperienceDetailsView(View):
     def get(self, request, pk):
         work_experience = get_object_or_404(UserWorkExperience, pk=pk)
         job_experiences = UserJobExperience.objects.filter(work_experience=work_experience)
-        job_experience_details = UserJobExperienceDetails.objects.filter(job_experience__in=job_experiences)
+        job_experience_details = UserJobExperienceDetails.objects.filter(job_experience__in=job_experiences).all().values()
+        
         context = {'work_experience': work_experience,
                    'job_experiences': job_experiences,
             'job_experience_details': job_experience_details}
         return render(request, 
             'recruiting/workers/work_experience_detail.html', context)
+
+
+
+class ExportWorkerDetailsView(View):
+    def get(self, request, *args, **kwargs):
+        latest = AggregatedContent.objects.latest('created_at')
+        serializer = AggregatedContentSerializer(latest, many=False)
+        aggregated_data = serializer.data
+        content = aggregated_data.get('content', {})
+        english_content = content.get('en', {})
+
+        work_preference_step_one = english_content.get('workPreferenceStepOne', {}).get('form_questions', [])
+        work_preference_step_two = english_content.get('workPreferenceStepTwo', {}).get('form_questions', [])
+        profile_step_one = english_content.get('profileStepOne', {}).get('form_questions', [])
+        profile_step_two = english_content.get('profileStepTwo', {}).get('form_questions', [])
+
+        profile_step_two_questions = profile_step_two
+        profile_step_two_page_title = english_content.get('profileStepTwo', {}).get('pageTitle', "")
+
+        english_proficiency_title = next(
+            (q.get("label") for q in profile_step_two_questions if q.get("key") == "englishProficiency"),
+            profile_step_two_page_title
+        ) or "What is your level of English proficiency?"
+
+        excluded_keys = {
+            "English Proficiency",
+            "profileStepOne",
+            "profile",
+            "workExperienceList",
+            "workExperience",
+            "documentsStepOne",
+            "documents",
+            "levelOfProficiency",
+            "englishProficiency",
+            "workPreferenceStepTwo",
+            "workPreferences",
+            "suitabilityForWork",
+            "workPreferenceStepOne",
+            "recordVideo",
+            "englishProficiencyTwo",
+        }
+
+        filtered_questions = [
+            q for q in (work_preference_step_one + work_preference_step_two + profile_step_one + profile_step_two)
+            if q['key'] not in excluded_keys
+        ]
+
+        preference_label_map = {q['key']: q.get('label', q['key']) for q in filtered_questions}
+
+        if "englishProficiency" in preference_label_map:
+            preference_label_map["englishProficiency"] = english_proficiency_title
+
+        data = []
+        worker_users = User.objects.filter(groups__name="worker")
+
+        for user in worker_users:
+            preferences = UserPreference.objects.filter(user=user)
+            worker_data = {}
+
+            for pref in preferences:
+                if pref.key not in excluded_keys:
+                    question_label = preference_label_map.get(pref.key, pref.key)
+                    worker_data[question_label] = pref.value
+
+            if worker_data:
+                data.append(worker_data)
+
+        df = pd.DataFrame(data)
+
+        response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        response["Content-Disposition"] = 'attachment; filename="worker_preferences.xlsx"'
+
+        with pd.ExcelWriter(response, engine="openpyxl") as writer:
+            df.to_excel(writer, index=False, sheet_name="Worker Preferences")
+
+        return response

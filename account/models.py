@@ -223,7 +223,7 @@ class UserReportedProblem(AuditableModel):
             User, on_delete=models.CASCADE, related_name='resolved_problems',
             null=True, blank=True)
     resolved_at = models.DateTimeField(null=True, blank=True)
-
+    
     def __str__(self):
         return f'{self.user.curp} - {self.topic} - {self.status}'
 
