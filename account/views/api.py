@@ -36,9 +36,11 @@ class RegisterView(APIView):
     def post(self, request):
         serializer = RegistrationSerializer(data=request.data)
         if serializer.is_valid():
+            language = serializer.validated_data.get('language')
             user = User.objects.create_user(
                 email=serializer.validated_data['email'],
                 curp=serializer.validated_data['curp'],
+                language=language,
                 is_active=False,
                 is_verified=False
             )
