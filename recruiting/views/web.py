@@ -90,7 +90,10 @@ class EmployerListView(View):
                 Q(phone__icontains=query)
             )
 
-        paginator = Paginator(employers_list, len(employers_list))
+        if employers_list.exists():
+            paginator = Paginator(employers_list, len(employers_list))
+        else:
+            paginator = Paginator(employers_list, 1)  # Default to 1 to avoid division by zero
         page_number = request.GET.get('page')
         employers = paginator.get_page(page_number)
 
@@ -869,7 +872,7 @@ class UpdateStatusView(View):
             if work_requests and status:
                 updated_count = WorkRequests.objects.filter(id__in=work_requests).update(status=status)
                 if updated_count > 0:
-                    messages.success(request, _("workRequestsSuccessfullyUpdatedTo'{}'Status.").format(status))
+                    messages.success(request, _("updateWorkRequestsSuccessfullyUpdatedTo'{}'Status.").format(status))
                     return JsonResponse({'success': True, 'message': f"workRequestsSuccessfullyUpdatedTo'{status}'Status."})
                 else:
                     messages.error(request, _("noWorkRequestsFoundToUpdate."))
