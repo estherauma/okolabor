@@ -82,7 +82,10 @@ class EmployerListView(View):
                 Q(phone__icontains=query)
             )
 
-        paginator = Paginator(employers_list, len(employers_list))
+        if employers_list.exists():
+            paginator = Paginator(employers_list, len(employers_list))
+        else:
+            paginator = Paginator(employers_list, 1)  # Default to 1 to avoid division by zero
         page_number = request.GET.get('page')
         employers = paginator.get_page(page_number)
 
