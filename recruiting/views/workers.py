@@ -483,3 +483,47 @@ class ExportWorkerDetailsView(View):
             df.to_excel(writer, index=False, sheet_name="Worker Preferences")
 
         return response
+    
+
+class UploadDocumentsView(View):
+    def post(self, request, *args, **kwargs):
+        worker_id = request.POST.get("worker_id")
+        user = get_object_or_404(User, pk=worker_id)
+
+        # Map field names from the form to the kind we want to store
+        doc_map = {
+            'profile_picture': 'profile_picture',
+            'passport': 'passport',
+            'us_driving_license': 'driving-licence-us',
+            'mexico_driving_license': 'driving-licence-mexico',
+        }
+
+        for field_name, kind in doc_map.items():
+            uploaded_file = request.FILES.get(field_name)
+            if uploaded_file:
+                # Determine folder based on kind
+                folder = 'certificates' if kind in ['passport', 'driving-licence-us', 'driving-licence-mexico'] else 'explanation'
+
+                # Construct paths
+                filename = uploaded_file.name
+                relative_path = os.path.join('uploads', folder, filename)
+                full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
+
+                os.makedirs(os.path.dirname(full_path), exist_ok=True)
+
+                # Save file to disk
+                with open(full_path, 'wb+') as destination:
+                    for chunk in uploaded_file.chunks():
+                        destination.write(chunk)
+
+                # Always create a new UserDocuments record
+                UserDocuments.objects.create(
+                    user=user,
+                    path=relative_path,
+                    kind=kind,
+                    description=f'{kind.title().replace("-", " ")} for user profile',
+                    file_type=uploaded_file.content_type
+                )
+
+        messages.success(request, f"Documents uploaded for {user.get_full_name() or user.username}.")
+        return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))

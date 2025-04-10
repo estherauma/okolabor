@@ -14,7 +14,7 @@ from recruiting.views.workers import (
      WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView
 )
 from recruiting.views.workers import (
-     CreateWorkExperienceView, WorkExperienceDetailsView,ExportWorkerDetailsView
+     CreateWorkExperienceView, WorkExperienceDetailsView,ExportWorkerDetailsView,UploadDocumentsView
 )
 
 
@@ -111,4 +111,5 @@ urlpatterns = [
     path('contacts/<str:contact_id>/work-requests/', ContactWorkRequestsView.as_view(), name='contact_work_requests'),
     path('assign-contact/', AssignEmployerContactView.as_view(), name='assign_employer_contact'),
     path('export/workers/', ExportWorkerDetailsView.as_view(), name='export-workers'),
+    path('upload-documents/', UploadDocumentsView.as_view(), name='upload_documents'),
 ]

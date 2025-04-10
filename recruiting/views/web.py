@@ -24,6 +24,7 @@ from django.utils.encoding import force_str
 from django.http import HttpResponseRedirect
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
+import os
 
 from account.models import User
 from recruiting.forms import (
@@ -55,7 +56,7 @@ from recruiting.models import (
     WorkRequests,
     EmployerRecruiter,
     WorkAssignment,
-    EmployerContact
+    EmployerContact,
 )
 
 class EmployerListView(View):
@@ -696,8 +697,8 @@ class AssignEmployerContactView(View):
                 return JsonResponse({'error': 'emailAlreadyExists.'}, status=400)
 
             try:
-                employer = Employer.objects.get(id=employer_id)
-            except Employer.DoesNotExist:
+                employer = Organization.objects.get(id=employer_id)
+            except Organization.DoesNotExist:
                 messages.error(request, "Employer not found.")
                 return JsonResponse({'error': 'employerNotFound.'}, status=404)
 
@@ -721,3 +722,4 @@ class AssignEmployerContactView(View):
     def get(self, request, *args, **kwargs):
         messages.error(request, "GET not allowed")
         return JsonResponse({'error': 'GET not allowed.'}, status=405)
+    
