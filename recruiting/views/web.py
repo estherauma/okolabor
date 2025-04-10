@@ -333,21 +333,29 @@ class AddWorkersWorkRequests(View):
                 'status': assignment.status,
                 **worker_details
             })
-            
+
         cancelled_workers_data = []
+        unique_cancelled_workers = set()
         for assignment in cancel_workers:
             worker = assignment.worker
-            profile_completion = calculate_profile_completion(worker)
-            worker_details = get_worker_preferences(worker)
-            cancelled_workers_data.append({
-                'id': worker.id,
-                'firstname': worker.first_name,
-                'lastname': worker.last_name,
-                'email': worker.email,
-                'profile_completion': profile_completion,
-                'status': assignment.status,
-                **worker_details
-            })
+            if worker.id not in unique_cancelled_workers:
+                unique_cancelled_workers.add(worker.id)
+                profile_completion = calculate_profile_completion(worker)
+                worker_details = get_worker_preferences(worker)
+                cancelled_workers_data.append({
+                    'id': worker.id,
+                    'firstname': worker.first_name,
+                    'lastname': worker.last_name,
+                    'email': worker.email,
+                    'profile_completion': profile_completion,
+                    'status': assignment.status,
+                    **worker_details
+                })
+
+        shortlisted_count = len(shortlisted_workers_data)
+        offersent_count = len(offersent_workers_data)
+        confirmed_count = len(confirmed_workers_data)
+        cancelled_count = len(cancelled_workers_data)
 
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({'workers': worker_data, 'num_pages': paginator.num_pages})
@@ -367,6 +375,10 @@ class AddWorkersWorkRequests(View):
             'offersent_workers': offersent_workers_data,
             'confirmed_workers': confirmed_workers_data,
             'cancelled_workers': cancelled_workers_data,
+            'shortlisted_count': shortlisted_count,
+            'offersent_count': offersent_count,
+            'confirmed_count': confirmed_count,
+            'cancelled_count': cancelled_count,
         }
         return render(request, 'recruiting/work_requests/create_addworker.html', context)
 

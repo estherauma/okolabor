@@ -31,17 +31,22 @@ def get_worker_preferences(user):
         "english_proficiency": worker_details.get("levelOfProficiency", "Not Provided"),
         "location_preference": worker_details.get("locationPreference", "Not Provided"),
     }
+
+
 def add_workers_to_shortlist(worker_ids):
     added_any = False
-    already_shortlisted = []
+    already_assigned = []
     for worker_id in worker_ids:
         worker = User.objects.get(id=worker_id)
-        if WorkAssignment.objects.filter(worker=worker, status='assigned').exists():
-            already_shortlisted.append(worker_id)
+        latest_assignment = WorkAssignment.objects.filter(worker=worker).order_by('-assigned_date').first()
+        if latest_assignment and latest_assignment.status in ['offersent', 'confirmed', 'assigned']:
+            already_assigned.append(worker.first_name + " " + worker.last_name)
             continue
+        WorkAssignment.objects.filter(worker=worker, status='cancelled').delete()
         WorkAssignment.objects.create(worker=worker, status='assigned')
         added_any = True
-    return added_any, already_shortlisted
+    return added_any, already_assigned
+
 
 
 def get_shortlisted_workers(status='assigned'):
