@@ -13,6 +13,14 @@ class RegistrationSerializer(serializers.Serializer):
     password = serializers.CharField(required=True)
     password_repeat = serializers.CharField(required=True)
     language = serializers.CharField(required=True)
+    
+    
+    def validate_language(self, value):
+        if value not in [LanguageChoices.EN, LanguageChoices.ES_MX]:
+            raise serializers.ValidationError(
+                'Language must be either en or es-MX'
+            )
+        return value
 
     def validate_password(self, value):
         if len(value) < 8:
