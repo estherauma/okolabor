@@ -12,7 +12,7 @@ class RegistrationSerializer(serializers.Serializer):
     curp = serializers.CharField(required=True)
     password = serializers.CharField(required=True)
     password_repeat = serializers.CharField(required=True)
-    language = serializers.CharField(required=False)
+    language = serializers.CharField(required=True)
 
     def validate_password(self, value):
         if len(value) < 8:
