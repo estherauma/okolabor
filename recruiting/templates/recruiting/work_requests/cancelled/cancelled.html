@@ -1,0 +1,33 @@
+{% load i18n %}
+<div class="tab-pane" id="tab4">
+    <div class="table-responsive">
+        <table class="table text-nowrap border-bottom" id="confirmed-table">
+            <thead>
+                <tr>
+                    <th class="theading-color">{% translate "name" %}</th>
+                    <th class="theading-color">{% translate "email" %}</th>
+                    <th class="theading-color">{% translate "town" %}</th>
+                    <th class="theading-color">{% translate "profileCompletion" %}</th>
+                    <th class="theading-color">{% translate "experience" %}</th>
+                    <th class="theading-color">{% translate "englishProficiency" %}</th>
+                    <th class="theading-color">{% translate "locationPreference" %}</th>
+                    <th class="theading-color">{% translate "offerStatus" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for worker in cancelled_workers %}
+                    <tr class="text-center">
+                        <td>{{ worker.firstname }} {{ worker.lastname }}</td>
+                        <td>{{ worker.email }}</td>
+                        <td>{{ worker.town|default:"Not Provided" }}</td>
+                        <td>{{ worker.profile_completion|default:0 }}%</td>
+                        <td>{{ worker.work_experience|default:"Not Provided" }}</td>
+                        <td>{{ worker.english_proficiency|default:"Not Provided" }}</td>
+                        <td>{{ worker.location_preference|default:"Not Provided" }}</td>
+                        <td>{{ worker.status }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
