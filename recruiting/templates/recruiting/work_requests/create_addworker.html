@@ -30,7 +30,7 @@
 
             <!-- Header Section -->
             <div class="container text-center mt-3">
-                <h3>Add Workers: {{ work_request.name }}</h3>
+                <h3>{% translate "addWorkers" %}: {{ role.title }}</h3>
                 <select class="form-select w-auto mx-auto mt-2">
                     <option selected>{{role.title}}</option>
                 </select>
@@ -153,137 +153,30 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <div class="card-pay">
+                    <div class="card-workers">
                         <ul class="tabs-menu nav">
                             <li class=""><a href="#tab1" class="active" data-bs-toggle="tab">{% translate "allWorkers" %}</a></li>
                             <li><a href="#tab2" data-bs-toggle="tab" class="">{% translate "shortlist" %}</a></li>
                             <li><a href="#tab3" data-bs-toggle="tab" class="">{% translate "offerSent" %}</a></li>
                             <li><a href="#tab4" data-bs-toggle="tab" class="">{% translate "confirmed" %}</a></li>
+                            <li><a href="#tab5" data-bs-toggle="tab" class="">{% translate "cancelled" %}</a></li>
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane active show" id="tab1">
-                                <div class="d-flex align-items-center justify-content-between mb-2">
-                                    <button class="setting-btn all-workers-setting-btn">
-                                        <i aria-hidden="true" class="fa fa-cog"></i>
-                                    </button>
-                                    <div>
-                                        <button class="btn dark-green-button ms-3" id="addToShortlistBtn" disabled>
-                                            +{% translate "addToShortlist" %}
-                                        </button>
-                                        <a class="btn dark-green-button ms-3" href="{% url 'recruiting_web:recruiter_create_worker' %}">
-                                            <span><i class="fe fe-plus"></i></span>
-                                            {% translate "sendOffer" %}
-                                        </a>
-                                    </div>
-                                </div>
-                                <!-- Table and other content for All Workers -->
-                                <div class="table-responsive">
-                                    <table class="table text-nowrap border-bottom" id="basic-datatable">
-                                        <thead>
-                                            <tr>
-                                                <th class="theading-color">{% translate "checkbox" %}</th>
-                                                <th class="theading-color">{% translate "name" %}</th>
-                                                <th class="theading-color">{% translate "town" %}</th>
-                                                <th class="theading-color">{% translate "profileCompletion" %}</th>
-                                                <th class="theading-color">{% translate "experience" %}</th>
-                                                <th class="theading-color">{% translate "englishProficiency" %}</th>
-                                                <th class="theading-color">{% translate "locationPreference" %}</th>
-                                                <th class="theading-color">{% translate "offerStatus" %}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for worker in workers %}
-                                            <tr class="text-center">
-                                                <td>
-                                                    <input type="checkbox" class="worker-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.first_name }} {{ worker.last_name }}">
-                                                </td>
-                                                <td>
-                                                    {% if worker.first_name and worker.last_name %}
-                                                        <a href="{{ worker.id }}">
-                                                            {{ worker.first_name }} {{ worker.last_name }}
-                                                        </a>
-                                                    {% else %}
-                                                        <a href="{{ worker.id }}">
-                                                            {{ worker.email }}
-                                                        </a>
-                                                    {% endif %}
-                                                </td>
-                                                <td>{{ worker.town|default:"Not Provided" }}</td>
-                                                <td>{{ worker.profile_completion_percentage|default:0 }}%</td>
-                                                <td>{{ worker.work_experience|default:"Not Provided" }}</td>
-                                                <td>{{ worker.english_proficiency|default:"Not Provided" }}</td>
-                                                <td>{{ worker.location_preference|default:"Not Provided" }}</td>
-                                                <td>{{ worker.latest_status }}</td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="pagination">
-                                    <span class="step-links">
-                                        {% if workers.has_previous %}
-                                            <a href="?page={{ workers.previous_page_number }}&search={{ request.GET.search }}&per_page={{ request.GET.per_page }}">
-                                                <span style="font-weight: bold;">Previous</span>
-                                            </a>
-                                        {% else %}
-                                            <span class="disabled"><span style="font-weight: bold;">Previous</span></span>
-                                        {% endif %}
-    
-                                        {% for i in workers.paginator.page_range %}
-                                            {% if workers.number == i %}
-                                                <span class="current">{{ i }}</span>
-                                            {% elif i > workers.number|add:'-3' and i < workers.number|add:'3' %}
-                                                <a href="?page={{ i }}&search={{ request.GET.search }}&per_page={{ request.GET.per_page }}">{{ i }}</a>
-                                            {% endif %}
-                                        {% endfor %}
-    
-                                        {% if workers.has_next %}
-                                            <a href="?page={{ workers.next_page_number }}&search={{ request.GET.search }}&per_page={{ request.GET.per_page }}">
-                                                <span style="font-weight: bold;">Next</span>
-                                            </a>
-                                        {% else %}
-                                            <span class="disabled"><span style="font-weight: bold;">Next</span></span>
-                                        {% endif %}
-                                    </span>
-                                </div>
+                                {% include 'recruiting/work_requests/allworkers/allworkers.html' %}
                             </div>
                             <div class="tab-pane" id="tab2">
-                                <div class="d-flex align-items-center justify-content-between mb-2">
-                                    <button class="setting-btn shortlist-setting-btn">
-                                        <i aria-hidden="true" class="fa fa-cog"></i>
-                                    </button>
-                                    <a class="btn dark-green-button ms-3" href="{% url 'recruiting_web:recruiter_create_worker' %}">
-                                        <span><i class="fe fe-plus"></i></span>
-                                        Send Offer
-                                    </a>
-                                </div>
-                                <div class="table-responsive">
-                                    <table class="table text-nowrap border-bottom" id="basic-datatable">
-                                        <thead>
-                                            <tr>
-                                                <th class="theading-color">Name</th>
-                                                <th class="theading-color">Email</th>
-                                                <!-- Add more headers as needed -->
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for worker in shortlisted_workers %}
-                                            <tr class="text-center">
-                                                <td>{{ worker.worker.first_name }} {{ worker.worker.last_name }}</td>
-                                                <td>{{ worker.worker.email }}</td>
-                                                <!-- Add more columns as needed -->
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <!-- Content for Shortlist -->
+                                {% include 'recruiting/work_requests/shortlist/shortlist.html' %}
+                                
                             </div>
                             <div class="tab-pane" id="tab3">
-                                <!-- Content for Offer Sent -->
+                                {% include 'recruiting/work_requests/offersent/offersent.html' %}
                             </div>
                             <div class="tab-pane" id="tab4">
-                                <!-- Content for Confirmed -->
+                                {% include 'recruiting/work_requests/confirmed/confirmed.html' %}
+                            </div>
+                            <div class="tab-pane" id="tab5">
+                                {% include 'recruiting/work_requests/cancelled/cancelled.html' %}
                             </div>
                         </div>
                     </div>

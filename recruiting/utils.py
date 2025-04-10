@@ -2,6 +2,7 @@
 from account.models import UserPreference, User
 from recruiting.models import WorkAssignment
 from django.conf import settings
+from django.contrib import messages
 
 ONBOARDING_STEPS = [
     "profileStepOne",
@@ -30,12 +31,18 @@ def get_worker_preferences(user):
         "english_proficiency": worker_details.get("levelOfProficiency", "Not Provided"),
         "location_preference": worker_details.get("locationPreference", "Not Provided"),
     }
-
 def add_workers_to_shortlist(worker_ids):
+    added_any = False
+    already_shortlisted = []
     for worker_id in worker_ids:
         worker = User.objects.get(id=worker_id)
-        WorkAssignment.objects.create(worker=worker, status='Assigned')
-    return True
+        if WorkAssignment.objects.filter(worker=worker, status='assigned').exists():
+            already_shortlisted.append(worker_id)
+            continue
+        WorkAssignment.objects.create(worker=worker, status='assigned')
+        added_any = True
+    return added_any, already_shortlisted
 
-def get_shortlisted_workers():
-    return WorkAssignment.objects.filter(status='Assigned')
+
+def get_shortlisted_workers(status='assigned'):
+    return WorkAssignment.objects.filter(status=status)

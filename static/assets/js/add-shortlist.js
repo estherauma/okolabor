@@ -26,10 +26,10 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert('Workers added to shortlist!');
-                // Optionally, update the UI to reflect the changes
-            } else {
-                alert('Failed to add workers to shortlist.');
+                location.reload();
+            }
+            else {
+                location.reload();
             }
         });
     });

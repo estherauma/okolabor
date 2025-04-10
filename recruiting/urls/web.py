@@ -8,7 +8,7 @@ from recruiting.views.web import (
     RoleHoursCreateView, RoleHousingCreateView, RoleMealsCreateView,
     RoleQualificationsCreateView, RoleWagesCreateView, WorkRequestCreateView,
     WorkRequestDetailView, WorkRequestRoleCreateView, WorkRequestsListView,
-    OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView,AssignRecruiterView,SendRecruiterEmailView,AcceptRecruiterView,RejectRecruiterView,RemoveWorkerFromAssignmentView,UpdateStatusView,ContactWorkRequestsView,AssignEmployerContactView,AddWorkersWorkRequests,ShowWorkerDetails,AddToShortlistView
+    OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView,AssignRecruiterView,SendRecruiterEmailView,AcceptRecruiterView,RejectRecruiterView,RemoveWorkerFromAssignmentView,UpdateStatusView,ContactWorkRequestsView,AssignEmployerContactView,AddWorkersWorkRequests,ShowWorkerDetails,AddToShortlistView,UpdateWorkerStatusView,CancelOfferView
 )
 from recruiting.views.workers import (
      WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView
@@ -39,13 +39,19 @@ urlpatterns = [
     path('work-requests/<str:pk>/add-workers/<str:role_id>/',
           AddWorkersWorkRequests.as_view(),
           name='work_request_add_workers'),
-
+          
+    path('update-worker-status/', 
+         UpdateWorkerStatusView.as_view(), 
+         name='update_worker_status'),
+    path('cancel-offer/', 
+         CancelOfferView.as_view(), 
+         name='cancel_offer'),
 
     path('work-requests/add-workers/<str:pk>/',
          ShowWorkerDetails.as_view(),
          name='show_worker_details'),
      
-     path('add-to-shortlist/', 
+    path('add-to-shortlist/', 
           AddToShortlistView.as_view(), 
           name='add_to_shortlist'),
 
