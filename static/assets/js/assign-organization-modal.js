@@ -32,7 +32,6 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert("✅ Organization assigned successfully.");
                 location.reload();
             } else {
                 alert(data.error || "❌ Something went wrong.");
