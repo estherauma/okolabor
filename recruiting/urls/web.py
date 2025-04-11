@@ -127,7 +127,7 @@ urlpatterns = [
          name='recruiter_admin_list'),
     path('recruiters/add/<str:employer_id>/<str:recruiter_id>/', AddRecruiterToEmployerView.as_view(), name='add_recruiter_to_employer'),
     path('recruiters/remove/<str:employer_id>/<str:recruiter_id>/', RemoveRecruiterFromEmployerView.as_view(), name='remove_recruiter_from_employer'),
-#     path('access-denied/', AccessDeniedView.as_view(), name='access_denied'),
+    path('access-denied/', AccessDeniedView.as_view(), name='access_denied'),
 
     path('remove-worker/<str:worker_id>/', RemoveWorkerFromAssignmentView.as_view(), name='remove_worker'),
     path('update-status/', UpdateStatusView.as_view(), name='update_status'),
