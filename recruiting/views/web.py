@@ -73,7 +73,7 @@ class EmployerListView(View):
         query = request.GET.get('query')
 
         if user.groups.filter(name='admin').exists():
-            employers_list = Organization.objects.all()
+            employers_list = Organization.objects.filter(type='employer')
         elif user.groups.filter(name='recruiter').exists():
             employers_list = Organization.objects.filter(employerrecruiter__recruiter=user).distinct()
         else:
