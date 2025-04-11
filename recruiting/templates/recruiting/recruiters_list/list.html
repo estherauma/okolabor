@@ -1,0 +1,195 @@
+{% extends 'components/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block styles %}
+<!-- SELECT2 CSS -->
+<link href="{% static ''%}assets/plugins/select2/select2.min.css" rel="stylesheet"/>
+<link href="{% static ''%}assets/plugins/common/style.css" rel="stylesheet"/>
+<!-- DATA TABLE CSS -->
+<link href="{% static ''%}assets/plugins/datatable/css/dataTables.bootstrap5.css" rel="stylesheet"/>
+<link href="{% static ''%}assets/plugins/datatable/css/buttons.bootstrap5.min.css" rel="stylesheet"/>
+<link href="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.css" rel="stylesheet"/>
+{% endblock styles %}
+
+{% block body %}
+
+<div class="parent-btn-grp">
+  <div class="employers-list-flex">
+    <button class="setting-btn">
+      <i aria-hidden="true" class="fa fa-cog"></i>
+    </button>
+    <div class="dropdown">
+      <button aria-expanded="false" class="btn dropdown-toggle dropdown-btn" data-bs-toggle="dropdown" id="dropdownMenuButton" type="button">
+        {% translate "assigned" %}
+      </button>
+      <ul aria-labelledby="dropdownMenuButton" class="dropdown-menu">
+        <li><a class="dropdown-item" href="#">{% translate "employersOption1" %}</a></li>
+        <li><a class="dropdown-item" href="#">{% translate "employersOption2" %}</a></li>
+        <li><a class="dropdown-item" href="#">{% translate "employersOption3" %}</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <button class="btn dark-green-button" data-bs-toggle="modal" data-bs-target="#assignRecruiterModal">
+      {% translate "assignRecruiter" %}
+    </button>
+    <a class="btn dark-green-button" href="{% url 'recruiting_web:employer_create' %}">
+      <span><i class="fe fe-plus"></i></span>
+      {% translate "listAddNewEmployer" %}
+    </a>
+  </div>
+</div>
+<div class="modal fade" id="assignRecruiterModal" tabindex="-1" aria-labelledby="assignRecruiterLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="assignRecruiterLabel">{% translate "assignRecruiter" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="assignRecruiterForm">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="recruiterSelect" class="form-label">{% translate "selectRecruiter" %}</label>
+            <select id="recruiterSelect" class="form-control">
+              <option value="">{% translate "chooseRecruiter" %}</option>
+              {% for recruiter in recruiters %}
+              <option value="{{ recruiter.id }}">{{ recruiter.email }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <input type="hidden" id="selectedEmployers" name="selected_employers">
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Cancel" %}</button>
+        <button type="button" class="btn btn-primary" id="assignRecruiterBtn">{% translate "Assign" %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table text-nowrap border-bottom" id="employers-list-datatable">
+            <thead>
+              <tr>
+                <th></th>
+                <th class="theading-color">{% translate "companyName" %}</th>
+                <th class="theading-color">{% translate "manageUsersEmail" %}</th>
+                <th class="theading-color">{% translate "location" %}</th>
+                <th class="theading-color">{% translate "phoneNumber" %}</th>
+                <th class="theading-color">{% translate "assignedTo" %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for recruiter in recruiters %}
+              <tr class="text-center" data-id="{{ recruiter.id }}">
+                <td><input class="table-checkbox" type="checkbox"/></td>
+                <td>
+                  <a href="/employers/{{ recruiter.id }}" class="text-decoration-none text-dark">
+                      {{ recruiter.name }}
+                  </a>
+                </td>
+                <td>{{ recruiter.email }}</td>
+                <td>{{ recruiter.address }}, {{ recruiter.country }}</td>
+                <td>{{ recruiter.phone }}</td>
+                <td>
+                  {% if recruiter.recruiters %}
+                      {% for recruiter_name in recruiter.recruiters %}
+                          {{ recruiter_name }}{% if not forloop.last %}, {% endif %}
+                      {% endfor %}
+                  {% else %}
+                      No recruiters assigned
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <div class="container mt-5">
+            <nav aria-label="Page navigation example">
+              <ul class="pagination justify-content-center">
+                {% if recruiters.has_previous %}
+                  <li class="page-item">
+                    <a class="page-link" href="?page=1&query={{ query }}" aria-label="First">
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{ recruiters.previous_page_number }}&query={{ query }}" aria-label="Previous">
+                      <span aria-hidden="true">&lsaquo;</span>
+                    </a>
+                  </li>
+                {% else %}
+                  <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-label="Previous">
+                      <span aria-hidden="true">&lsaquo;</span>
+                    </a>
+                  </li>
+                {% endif %}
+
+                {% for page_num in recruiters.paginator.page_range %}
+                  {% if page_num == recruiters.number %}
+                    <li class="page-item active">
+                      <a class="page-link" href="#">{{ page_num }}</a>
+                    </li>
+                  {% elif page_num > recruiters.number|add:'-3' and page_num < recruiters.number|add:'3' %}
+                    <li class="page-item">
+                      <a class="page-link" href="?page={{ page_num }}&query={{ query }}">{{ page_num }}</a>
+                    </li>
+                  {% endif %}
+                {% endfor %}
+
+                {% if recruiters.has_next %}
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{ recruiters.next_page_number }}&query={{ query }}" aria-label="Next">
+                      <span aria-hidden="true">&rsaquo;</span>
+                    </a>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{ recruiters.paginator.num_pages }}&query={{ query }}" aria-label="Last">
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
+                {% else %}
+                  <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-label="Next">
+                      <span aria-hidden="true">&rsaquo;</span>
+                    </a>
+                  </li>
+                {% endif %}
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+<!-- INTERNAL SELECT2 JS -->
+<script src="{% static ''%}assets/plugins/select2/select2.full.min.js"></script>
+<!-- DATA TABLE JS-->
+<script src="{% static ''%}assets/plugins/datatable/js/jquery.dataTables.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/dataTables.bootstrap5.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/dataTables.buttons.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.bootstrap5.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/jszip.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/pdfmake/pdfmake.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/pdfmake/vfs_fonts.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.html5.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.print.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.colVis.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/dataTables.responsive.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.min.js"></script>
+<script src="{% static ''%}assets/js/table-data.js"></script>
+<script src="{% static ''%}assets/js/employer_search.js"></script>
+<script src="{% static ''%}assets/js/table-sorting.js"></script>
+<script src="{% static ''%}assets/js/assign_recruiter.js"></script>
+{% endblock scripts %}

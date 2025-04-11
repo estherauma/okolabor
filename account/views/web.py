@@ -461,3 +461,5 @@ def assign_organization(request):
     except Exception as e:
         messages.error(request, _("failedToAssignOrganization: ") + str(e))
         return JsonResponse({"success": False, "error": _("failedToAssignOrganization: ") + str(e)})
+
+
