@@ -489,7 +489,6 @@ class UploadDocumentsView(View):
     def post(self, request, *args, **kwargs):
         worker_id = request.POST.get("worker_id")
         user = get_object_or_404(User, pk=worker_id)
-
         doc_map = {
             'profile_picture': 'profile_picture',
             'passport': 'passport',
@@ -502,16 +501,15 @@ class UploadDocumentsView(View):
             if uploaded_file:
                 folder = 'certificates' if kind in ['passport', 'driving-licence-us', 'driving-licence-mexico'] else 'explanation'
 
+
                 filename = uploaded_file.name
                 relative_path = os.path.join('uploads', folder, filename)
                 full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
 
                 os.makedirs(os.path.dirname(full_path), exist_ok=True)
-
                 with open(full_path, 'wb+') as destination:
                     for chunk in uploaded_file.chunks():
                         destination.write(chunk)
-
                 UserDocuments.objects.create(
                     user=user,
                     path=relative_path,
@@ -566,3 +564,4 @@ class UploadLanguageProficiencyView(View):
 
         messages.success(request, "Language proficiency information saved successfully.")
         return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
+

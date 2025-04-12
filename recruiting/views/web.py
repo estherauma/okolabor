@@ -980,3 +980,4 @@ class AssignEmployerContactView(View):
     def get(self, request, *args, **kwargs):
         messages.error(request, "GET not allowed")
         return JsonResponse({'error': 'GET not allowed.'}, status=405)
+

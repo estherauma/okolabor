@@ -136,5 +136,4 @@ urlpatterns = [
     path('export/workers/', ExportWorkerDetailsView.as_view(), name='export-workers'),
     path('upload-documents/', UploadDocumentsView.as_view(), name='upload_documents'),
     path('upload-languages/', UploadLanguageProficiencyView.as_view(), name='upload_languages'),
-
 ]
