@@ -200,12 +200,13 @@
             <label for="infoType" class="form-label">Select Type</label>
             <select id="infoType" class="form-select" onchange="handleInfoTypeChange()">
               <option value="">-- Select --</option>
+
               <option value="documents" data-action="{% url 'recruiting_web:upload_documents' %}">Documents</option>
               <option value="languages" data-action="{% url 'recruiting_web:upload_languages' %}">Languages</option>
               <option value="preferences" data-action="{% url 'recruiting_web:upload_preferences' %}">User Preferences</option>
             </select>
 
-            <!-- Document Fields -->
+
             <div id="documentFields" class="mt-3" style="display: none;">
               <div class="mb-2">
                 <label for="profilePicture" class="form-label">Profile Picture</label>
@@ -224,6 +225,7 @@
                 <input type="file" class="form-control" id="mexicoDriving" name="mexico_driving_license">
               </div>
             </div>
+
 
             <!-- Language Fields -->
             <div id="languageFields" class="mt-3" style="display: none;">
@@ -299,6 +301,7 @@
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button type="submit" class="btn btn-primary">Save</button>
           </div>
+
 
         </div>
       </div>
