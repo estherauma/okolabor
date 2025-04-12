@@ -76,11 +76,11 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
     dob = models.DateField(null=True, blank=True)
     reset_code = models.CharField(max_length=256, null=True, blank=True)
 
-    organization = models.ForeignKey(
+    
+    organizations = models.ManyToManyField(
         'recruiting.Organization',
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL
+        related_name='recruiters',
+        blank=True
     )
 
     USERNAME_FIELD = 'curp'

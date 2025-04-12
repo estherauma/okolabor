@@ -65,6 +65,7 @@ from recruiting.models import (
     EmployerRecruiter,
     WorkAssignment,
     EmployerContact,
+    EmployerRecruiterOrgLink
 )
 
 class EmployerListView(View):
@@ -988,7 +989,7 @@ class AssignEmployersToRecruiterOrgView(View):
     def post(self, request, *args, **kwargs):
         try:
             data = json.loads(request.body)
-            employer_ids = data.get('employer_ids')
+            employer_ids = data.get('employer_org_id')
             recruiter_org_id = data.get('recruiter_org_id')
 
             if not employer_ids or not recruiter_org_id:
@@ -997,19 +998,25 @@ class AssignEmployersToRecruiterOrgView(View):
                 return JsonResponse({'success': False, 'message': msg})
 
             recruiter_org = get_object_or_404(Organization, id=recruiter_org_id, type='recruiter')
-            recruiters = User.objects.filter(organization=recruiter_org)
+            recruiters = User.objects.filter(organizations=recruiter_org)
 
             for employer_id in employer_ids:
-                employer = get_object_or_404(Organization, id=employer_id, type='employer')
+                employer_org = get_object_or_404(Organization, id=employer_id, type='employer')
+
+                EmployerRecruiterOrgLink.objects.get_or_create(
+                    employer_org=employer_org,
+                    recruiter_org=recruiter_org
+                )
+
                 for recruiter in recruiters:
-                    EmployerRecruiter.objects.get_or_create(employer=employer, recruiter=recruiter)
+                    EmployerRecruiter.objects.get_or_create(employer=employer_org, recruiter=recruiter)
 
             msg = _('employersAssignedSuccessfully.')
             messages.success(request, msg)
             return JsonResponse({'success': True, 'message': msg})
 
         except json.JSONDecodeError:
-            msg = _('InvalidJSONData.')
+            msg = _('Invalid JSON data.')
             messages.error(request, msg)
             return JsonResponse({'success': False, 'message': msg})
 

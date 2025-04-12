@@ -7,6 +7,7 @@ User = get_user_model()
 
 
 
+
 class Organization(AuditableModel):
     TYPE_CHOICES = (
         ('admin', 'Admin'),
@@ -285,6 +286,17 @@ class EmployerRecruiter(AuditableModel):
 
     def __str__(self):
         return f"{self.recruiter.first_name} -> {self.employer.name}"
+    
+class EmployerRecruiterOrgLink(AuditableModel):
+    employer_org = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='assigned_recruiter_orgs')
+    recruiter_org = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='assigned_employer_orgs')
+
+    class Meta:
+        unique_together = ('employer_org', 'recruiter_org')
+
+    def __str__(self):
+        return f"{self.employer_org.name} → {self.recruiter_org.name}"
+
     
 
 class EmployerContact(AuditableModel):
