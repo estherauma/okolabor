@@ -486,24 +486,30 @@ class ExportWorkerDetailsView(View):
     
 
 class UploadDocumentsView(View):
+    upload_paths = {
+        'contract': 'uploads/visa',
+        'passport': 'uploads/passports',
+        'profile_picture': 'uploads/profiles',
+        'english_video': 'uploads/english_videos',
+        'us_driving_license': 'uploads/driver_licenses',
+        'mexico_driving_license': 'uploads/driver_licenses',
+        'certificate': 'uploads/certificates',
+        'visa': 'uploads/visa',
+        'photo': 'uploads/photos',
+        'job_experience_license': 'uploads/job_experiences/licenses',
+        'job_experience_media': 'uploads/job_experiences/media',
+        'explanation_video': 'uploads/explanation_videos',
+    }
+
     def post(self, request, *args, **kwargs):
         worker_id = request.POST.get("worker_id")
         user = get_object_or_404(User, pk=worker_id)
 
-        doc_map = {
-            'profile_picture': 'profile_picture',
-            'passport': 'passport',
-            'us_driving_license': 'driving-licence-us',
-            'mexico_driving_license': 'driving-licence-mexico',
-        }
-
-        for field_name, kind in doc_map.items():
+        for field_name, upload_dir in self.upload_paths.items():
             uploaded_file = request.FILES.get(field_name)
             if uploaded_file:
-                folder = 'certificates' if kind in ['passport', 'driving-licence-us', 'driving-licence-mexico'] else 'explanation'
-
                 filename = uploaded_file.name
-                relative_path = os.path.join('uploads', folder, filename)
+                relative_path = os.path.join(upload_dir, filename)
                 full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
 
                 os.makedirs(os.path.dirname(full_path), exist_ok=True)
@@ -515,8 +521,8 @@ class UploadDocumentsView(View):
                 UserDocuments.objects.create(
                     user=user,
                     path=relative_path,
-                    kind=kind,
-                    description=f'{kind.title().replace("-", " ")} for user profile',
+                    kind=field_name,
+                    description=f'{field_name.replace("_", " ").title()} for user profile',
                     file_type=uploaded_file.content_type
                 )
 
@@ -535,7 +541,6 @@ class UploadLanguageProficiencyView(View):
 
         user = get_object_or_404(User, id=worker_id)
 
-        # Save language preference
         UserPreference.objects.update_or_create(
             user=user,
             key="english_proficiency",
@@ -543,11 +548,10 @@ class UploadLanguageProficiencyView(View):
             defaults={"value": language_level},
         )
 
-        # Save video if required
         if language_level != "none" and language_video:
-            folder = "language_videos"
+            folder = "uploads/english_videos"
             filename = language_video.name
-            relative_path = os.path.join("uploads", folder, filename)
+            relative_path = os.path.join(folder, filename)
             full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
 
             os.makedirs(os.path.dirname(full_path), exist_ok=True)
@@ -559,10 +563,38 @@ class UploadLanguageProficiencyView(View):
             UserDocuments.objects.create(
                 user=user,
                 path=relative_path,
-                kind="language_video",
-                description="Language Proficiency Video",
+                kind="english_video",
+                description="English Language Proficiency Video",
                 file_type=language_video.content_type,
             )
 
         messages.success(request, "Language proficiency information saved successfully.")
+        return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
+
+    
+class UploadUserPreferenceView(View):
+    def post(self, request, *args, **kwargs):
+        worker_id = request.POST.get("worker_id")
+        user = get_object_or_404(User, id=worker_id)
+
+        preferences = {
+            "preferred_countries": request.POST.getlist("preferred_countries"),
+            "work_sectors": request.POST.getlist("work_sectors"),
+            "preferences_note": request.POST.get("preferences_note"),
+            "availability_month": request.POST.getlist("availability_months"),
+        }
+
+        for key, value in preferences.items():
+            if value:
+                if isinstance(value, list):
+                    value = ", ".join(value)
+
+                UserPreference.objects.update_or_create(
+                    user=user,
+                    key=key,
+                    kind="preference",
+                    defaults={"value": value},
+                )
+
+        messages.success(request, "User preferences saved successfully.")
         return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
