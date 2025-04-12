@@ -489,8 +489,6 @@ class UploadDocumentsView(View):
     def post(self, request, *args, **kwargs):
         worker_id = request.POST.get("worker_id")
         user = get_object_or_404(User, pk=worker_id)
-
-        # Map field names from the form to the kind we want to store
         doc_map = {
             'profile_picture': 'profile_picture',
             'passport': 'passport',
@@ -501,22 +499,17 @@ class UploadDocumentsView(View):
         for field_name, kind in doc_map.items():
             uploaded_file = request.FILES.get(field_name)
             if uploaded_file:
-                # Determine folder based on kind
                 folder = 'certificates' if kind in ['passport', 'driving-licence-us', 'driving-licence-mexico'] else 'explanation'
 
-                # Construct paths
+
                 filename = uploaded_file.name
                 relative_path = os.path.join('uploads', folder, filename)
                 full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
 
                 os.makedirs(os.path.dirname(full_path), exist_ok=True)
-
-                # Save file to disk
                 with open(full_path, 'wb+') as destination:
                     for chunk in uploaded_file.chunks():
                         destination.write(chunk)
-
-                # Always create a new UserDocuments record
                 UserDocuments.objects.create(
                     user=user,
                     path=relative_path,
@@ -527,3 +520,48 @@ class UploadDocumentsView(View):
 
         messages.success(request, f"Documents uploaded for {user.get_full_name() or user.username}.")
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
+    
+class UploadLanguageProficiencyView(View):
+    def post(self, request, *args, **kwargs):
+        worker_id = request.POST.get("worker_id")
+        language_level = request.POST.get("language_level")
+        language_video = request.FILES.get("language_video")
+
+        if not worker_id or not language_level:
+            messages.error(request, "Worker or language level is missing.")
+            return redirect("/")
+
+        user = get_object_or_404(User, id=worker_id)
+
+        # Save language preference
+        UserPreference.objects.update_or_create(
+            user=user,
+            key="english_proficiency",
+            kind="language",
+            defaults={"value": language_level},
+        )
+
+        # Save video if required
+        if language_level != "none" and language_video:
+            folder = "language_videos"
+            filename = language_video.name
+            relative_path = os.path.join("uploads", folder, filename)
+            full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
+
+            os.makedirs(os.path.dirname(full_path), exist_ok=True)
+
+            with open(full_path, "wb+") as destination:
+                for chunk in language_video.chunks():
+                    destination.write(chunk)
+
+            UserDocuments.objects.create(
+                user=user,
+                path=relative_path,
+                kind="language_video",
+                description="Language Proficiency Video",
+                file_type=language_video.content_type,
+            )
+
+        messages.success(request, "Language proficiency information saved successfully.")
+        return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
+

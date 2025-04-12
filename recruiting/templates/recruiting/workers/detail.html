@@ -188,10 +188,12 @@
             <label for="infoType" class="form-label">Select Type</label>
             <select id="infoType" class="form-select" onchange="handleInfoTypeChange()">
               <option value="">-- Select --</option>
-              <option value="documents">Documents</option>
-              <option value="languages">Languages</option>
+
+              <option value="documents" data-action="{% url 'recruiting_web:upload_documents' %}">Documents</option>
+              <option value="languages" data-action="{% url 'recruiting_web:upload_languages' %}">Languages</option>
               <option value="preferences">User Preferences</option>
             </select>
+
 
             <div id="documentFields" class="mt-3" style="display: none;">
               <div class="mb-2">
@@ -211,6 +213,34 @@
                 <input type="file" class="form-control" id="mexicoDriving" name="mexico_driving_license">
               </div>
             </div>
+
+
+            <!-- Language Fields -->
+            <div id="languageFields" class="mt-3" style="display: none;">
+              <label class="form-label">Select Language Proficiency</label>
+              <div class="form-check">
+                  <input class="form-check-input" type="radio" name="language_level" value="fluent" id="fluent" onclick="toggleVideoUpload()">
+                  <label class="form-check-label" for="fluent">Fluent</label>
+              </div>
+              <div class="form-check">
+                  <input class="form-check-input" type="radio" name="language_level" value="intermediate" id="intermediate" onclick="toggleVideoUpload()">
+                  <label class="form-check-label" for="intermediate">Intermediate</label>
+              </div>
+              <div class="form-check">
+                  <input class="form-check-input" type="radio" name="language_level" value="basic" id="basic" onclick="toggleVideoUpload()">
+                  <label class="form-check-label" for="basic">Basic</label>
+              </div>
+              <div class="form-check">
+                  <input class="form-check-input" type="radio" name="language_level" value="none" id="none" onclick="toggleVideoUpload()">
+                  <label class="form-check-label" for="none">None</label>
+              </div>
+
+              <div class="mt-2" id="videoUploadSection" style="display: none;">
+                  <label for="languageVideo" class="form-label mt-2">Upload Language Video</label>
+                  <input type="file" class="form-control" id="languageVideo" name="language_video">
+              </div>
+            </div>
+
           </div>
 
           <div class="modal-footer">
@@ -218,14 +248,12 @@
             <button type="submit" class="btn btn-primary">Save</button>
           </div>
 
+
         </div>
       </div>
     </div>
 </form>
 
-  
-  
-  
     <div class="card-body">
         <div class="row">
             {% for key, value in preferences.items %}
@@ -298,16 +326,63 @@
 {% block scripts %}
 <script>
     function handleInfoTypeChange() {
-        const selectedValue = document.getElementById("infoType").value;
+        const selectedOption = document.getElementById("infoType").selectedOptions[0];
+        const selectedValue = selectedOption.value;
+        const actionUrl = selectedOption.getAttribute("data-action");
+
+        // Show/hide fields
         const documentFields = document.getElementById("documentFields");
-    
-        if (selectedValue === "documents") {
-            documentFields.style.display = "block";
-        } else {
-            documentFields.style.display = "none";
+        const languageFields = document.getElementById("languageFields");
+
+        documentFields.style.display = (selectedValue === "documents") ? "block" : "none";
+        languageFields.style.display = (selectedValue === "languages") ? "block" : "none";
+
+        // Set form action dynamically
+        if (actionUrl) {
+            document.getElementById("documentUploadForm").action = actionUrl;
         }
     }
-    </script>
+
+    function toggleVideoUpload() {
+        const selectedLevel = document.querySelector('input[name="language_level"]:checked');
+        const videoUpload = document.getElementById("videoUploadSection");
+
+        if (selectedLevel && selectedLevel.value === "none") {
+            videoUpload.style.display = "none";
+        } else {
+            videoUpload.style.display = "block";
+        }
+    }
+
+    document.getElementById("documentUploadForm").addEventListener("submit", function(e) {
+        const infoType = document.getElementById("infoType").value;
+
+        if (!infoType) {
+            alert("Please select an information type.");
+            e.preventDefault();
+            return;
+        }
+
+        if (infoType === "languages") {
+            const selectedLevel = document.querySelector('input[name="language_level"]:checked');
+            const videoInput = document.getElementById("languageVideo");
+
+            if (!selectedLevel) {
+                alert("Please select a language level.");
+                e.preventDefault();
+                return;
+            }
+
+            if (selectedLevel.value !== "none" && videoInput.files.length === 0) {
+                alert("Please upload a video for your selected language level.");
+                e.preventDefault();
+                return;
+            }
+        }
+    });
+</script>
+
+
     
 
 
