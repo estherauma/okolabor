@@ -74,9 +74,7 @@ class EmployerListView(View):
         query = request.GET.get('query')
 
         if user.groups.filter(name='admin').exists():
-            employers_list = Organization.objects.all()
-            print('admin employer list')
-            print(len(employers_list))
+            employers_list = Organization.objects.filter(type='employer')
         elif user.groups.filter(name='recruiter').exists():
             employers_list = Organization.objects.filter(employerrecruiter__recruiter=user).distinct()
         else:
@@ -91,7 +89,10 @@ class EmployerListView(View):
                 Q(phone__icontains=query)
             )
 
-        paginator = Paginator(employers_list, len(employers_list))
+        if employers_list.exists():
+            paginator = Paginator(employers_list, len(employers_list))
+        else:
+            paginator = Paginator(employers_list, 1)  # Default to 1 to avoid division by zero
         page_number = request.GET.get('page')
         employers = paginator.get_page(page_number)
 
@@ -122,7 +123,53 @@ class EmployerListView(View):
 
         context = {'employers': employers_data, 'query': query,'recruiters': recruiters}
         return render(request, 'recruiting/employers/list.html', context)
+    
 
+
+class RecruiterListViewInAdmin(View):
+    def get(self, request):
+        user = request.user
+        query = request.GET.get('query')
+
+        if user.groups.filter(name='admin').exists():
+            recruiters_list = Organization.objects.filter(type='recruiter')
+        else:
+            recruiters_list = Organization.objects.none()
+
+        if query:
+            recruiters_list = recruiters_list.filter(
+                Q(name__icontains=query) |
+                Q(email__icontains=query) |
+                Q(address__icontains=query) |
+                Q(city__icontains=query) |
+                Q(country__icontains=query) |
+                Q(phone__icontains=query)
+            )
+
+        paginator = Paginator(recruiters_list, len(recruiters_list)) 
+        page_number = request.GET.get('page')
+        recruiters = paginator.get_page(page_number)
+
+        recruiters_data = []
+        for recruiter in recruiters:
+            recruiters_data.append({
+                'id': recruiter.id,
+                'name': recruiter.name,
+                'email': recruiter.email,
+                'address': recruiter.address,
+                'country': recruiter.country,
+                'phone': recruiter.phone,
+                'type': recruiter.type
+            })
+
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({
+                'recruiters': recruiters_data,
+                'has_more': recruiters.has_next()
+            })
+
+        context = {'recruiters': recruiters_data, 'query': query}
+        return render(request, 'recruiting/recruiters_list/list.html', context)
 
 
 class EmployerCreateView(CreateView):
@@ -171,26 +218,6 @@ class EmployerDetailView(View):
         }
         return render(request, 'recruiting/employers/detail.html', context)
 
-# class WorkRequestsListView(View):
-#     def get(self, request):
-#         user = request.user  # Get logged-in recruiter
-
-#         # Check if the user is part of the recruiter group
-#         recruiter_group = Group.objects.get(id=1)  # Adjust ID if necessary
-#         is_recruiter = recruiter_group.user_set.filter(id=user.id).exists()
-
-#         # If user is not a recruiter, return an empty work request list
-#         work_requests = WorkRequests.objects.none()
-        
-#         if is_recruiter:
-#             # Get employers assigned to the recruiter
-#             assigned_employers = EmployerRecruiter.objects.filter(recruiter=user).values_list("employer", flat=True)
-
-#             # Fetch work requests linked to those employers
-#             work_requests = WorkRequests.objects.filter(employer_id__in=assigned_employers)
-
-#         context = {"work_requests": work_requests}
-#         return render(request, "recruiting/work_requests/list.html", context)
 
 class WorkRequestsListView(View):
     def get(self, request):
@@ -870,7 +897,7 @@ class UpdateStatusView(View):
             if work_requests and status:
                 updated_count = WorkRequests.objects.filter(id__in=work_requests).update(status=status)
                 if updated_count > 0:
-                    messages.success(request, _("workRequestsSuccessfullyUpdatedTo'{}'Status.").format(status))
+                    messages.success(request, _("updateWorkRequestsSuccessfullyUpdatedTo'{}'Status.").format(status))
                     return JsonResponse({'success': True, 'message': f"workRequestsSuccessfullyUpdatedTo'{status}'Status."})
                 else:
                     messages.error(request, _("noWorkRequestsFoundToUpdate."))
