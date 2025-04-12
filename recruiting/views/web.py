@@ -27,6 +27,8 @@ from django.shortcuts import redirect
 import os
 
 from account.models import User
+from recruiting.utils import *
+from recruiting.views.workers import WorkerDetailsView
 from recruiting.forms import (
     EmployerForm,
     OkoMessageCreateForm,
@@ -41,7 +43,13 @@ from recruiting.forms import (
     TodoFilterForm,
     WorkRequestForm,
     WorkRequestRoleForm,
+    WorkerAssignmentForm
 )
+from theme.forms import (
+    FilterWorkExperienceForm,
+    AdvancedFilterForm
+)
+from account.models import UserPreference
 from recruiting.models import (
     Deduction,
     Organization,
@@ -61,11 +69,12 @@ from recruiting.models import (
 
 class EmployerListView(View):
     def get(self, request):
+        print("EmployerListView")
         user = request.user
         query = request.GET.get('query')
 
         if user.groups.filter(name='admin').exists():
-            employers_list = Organization.objects.all().prefetch_related('employerrecruiter_set')
+            employers_list = Organization.objects.filter(type='employer')
         elif user.groups.filter(name='recruiter').exists():
             employers_list = Organization.objects.filter(employerrecruiter__recruiter=user).distinct()
         else:
@@ -80,7 +89,10 @@ class EmployerListView(View):
                 Q(phone__icontains=query)
             )
 
-        paginator = Paginator(employers_list, 10)
+        if employers_list.exists():
+            paginator = Paginator(employers_list, len(employers_list))
+        else:
+            paginator = Paginator(employers_list, 1)  # Default to 1 to avoid division by zero
         page_number = request.GET.get('page')
         employers = paginator.get_page(page_number)
 
@@ -111,7 +123,53 @@ class EmployerListView(View):
 
         context = {'employers': employers_data, 'query': query,'recruiters': recruiters}
         return render(request, 'recruiting/employers/list.html', context)
+    
 
+
+class RecruiterListViewInAdmin(View):
+    def get(self, request):
+        user = request.user
+        query = request.GET.get('query')
+
+        if user.groups.filter(name='admin').exists():
+            recruiters_list = Organization.objects.filter(type='recruiter')
+        else:
+            recruiters_list = Organization.objects.none()
+
+        if query:
+            recruiters_list = recruiters_list.filter(
+                Q(name__icontains=query) |
+                Q(email__icontains=query) |
+                Q(address__icontains=query) |
+                Q(city__icontains=query) |
+                Q(country__icontains=query) |
+                Q(phone__icontains=query)
+            )
+
+        paginator = Paginator(recruiters_list, len(recruiters_list)) 
+        page_number = request.GET.get('page')
+        recruiters = paginator.get_page(page_number)
+
+        recruiters_data = []
+        for recruiter in recruiters:
+            recruiters_data.append({
+                'id': recruiter.id,
+                'name': recruiter.name,
+                'email': recruiter.email,
+                'address': recruiter.address,
+                'country': recruiter.country,
+                'phone': recruiter.phone,
+                'type': recruiter.type
+            })
+
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({
+                'recruiters': recruiters_data,
+                'has_more': recruiters.has_next()
+            })
+
+        context = {'recruiters': recruiters_data, 'query': query}
+        return render(request, 'recruiting/recruiters_list/list.html', context)
 
 
 class EmployerCreateView(CreateView):
@@ -160,6 +218,7 @@ class EmployerDetailView(View):
         }
         return render(request, 'recruiting/employers/detail.html', context)
 
+
 class WorkRequestsListView(View):
     def get(self, request):
         user = request.user
@@ -200,6 +259,200 @@ class WorkRequestCreateView(CreateView):
         )
 
 
+
+class AddWorkersWorkRequests(View):
+    def get(self, request, pk, role_id):
+        work_assign_form = WorkerAssignmentForm()
+        form = FilterWorkExperienceForm()
+        filter_form = AdvancedFilterForm()
+        search_query = request.GET.get('search', '')
+        page_number = request.GET.get('page', 1)
+        per_page = request.GET.get('per_page', 25)
+
+        try:
+            per_page = int(per_page)
+        except ValueError:
+            per_page = 4  # Fallback default
+
+        work_request = get_object_or_404(WorkRequests, pk=pk)
+        role = get_object_or_404(Role, pk=role_id)
+
+        work_requests = WorkRequests.objects.filter(status='Open').prefetch_related('roles')
+        workers = User.objects.filter(groups__name='worker').order_by('-created_at')
+
+        if search_query:
+            workers = workers.filter(
+                Q(first_name__icontains=search_query) |
+                Q(last_name__icontains=search_query) |
+                Q(email__icontains=search_query)
+            )
+
+        paginator = Paginator(workers, per_page)
+        page_obj = paginator.get_page(page_number)
+
+        worker_data = []
+        for worker in page_obj:
+            profile_completion = calculate_profile_completion(worker)
+            worker_details = get_worker_preferences(worker)
+
+            worker.profile_completion_percentage = profile_completion
+            latest_assignment = WorkAssignment.objects.filter(worker=worker).order_by('-assigned_date').first()
+            worker.latest_status = latest_assignment.status if latest_assignment else "No Assignment"
+
+            for key, value in worker_details.items():
+                setattr(worker, key, value)
+
+            worker_data.append({
+                'id': worker.id,
+                'firstname': worker.first_name,
+                'lastname': worker.last_name,
+                'email': worker.email,
+                'profile_completion': profile_completion,
+                **worker_details
+            })
+
+        # Retrieve shortlisted workers based on status
+        shortlisted_workers = get_shortlisted_workers(status='assigned')
+        offersent_workers = get_shortlisted_workers(status='offersent')
+        confirmed_workers = get_shortlisted_workers(status='confirmed')
+        cancel_workers = get_shortlisted_workers(status='cancelled')
+
+        shortlisted_workers_data = []
+        for assignment in shortlisted_workers:
+            worker = assignment.worker
+            profile_completion = calculate_profile_completion(worker)
+            worker_details = get_worker_preferences(worker)
+            shortlisted_workers_data.append({
+                'id': worker.id,
+                'firstname': worker.first_name,
+                'lastname': worker.last_name,
+                'email': worker.email,
+                'profile_completion': profile_completion,
+                'status': assignment.status,
+                **worker_details
+            })
+
+        offersent_workers_data = []
+        for assignment in offersent_workers:
+            worker = assignment.worker
+            profile_completion = calculate_profile_completion(worker)
+            worker_details = get_worker_preferences(worker)
+            offersent_workers_data.append({
+                'id': worker.id,
+                'firstname': worker.first_name,
+                'lastname': worker.last_name,
+                'email': worker.email,
+                'profile_completion': profile_completion,
+                'status': assignment.status,
+                **worker_details
+            })
+
+        confirmed_workers_data = []
+        for assignment in confirmed_workers:
+            worker = assignment.worker
+            profile_completion = calculate_profile_completion(worker)
+            worker_details = get_worker_preferences(worker)
+            confirmed_workers_data.append({
+                'id': worker.id,
+                'firstname': worker.first_name,
+                'lastname': worker.last_name,
+                'email': worker.email,
+                'profile_completion': profile_completion,
+                'status': assignment.status,
+                **worker_details
+            })
+
+        cancelled_workers_data = []
+        unique_cancelled_workers = set()
+        for assignment in cancel_workers:
+            worker = assignment.worker
+            if worker.id not in unique_cancelled_workers:
+                unique_cancelled_workers.add(worker.id)
+                profile_completion = calculate_profile_completion(worker)
+                worker_details = get_worker_preferences(worker)
+                cancelled_workers_data.append({
+                    'id': worker.id,
+                    'firstname': worker.first_name,
+                    'lastname': worker.last_name,
+                    'email': worker.email,
+                    'profile_completion': profile_completion,
+                    'status': assignment.status,
+                    **worker_details
+                })
+
+        shortlisted_count = len(shortlisted_workers_data)
+        offersent_count = len(offersent_workers_data)
+        confirmed_count = len(confirmed_workers_data)
+        cancelled_count = len(cancelled_workers_data)
+
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'workers': worker_data, 'num_pages': paginator.num_pages})
+
+        context = {
+            'workers': page_obj,
+            'work_requests': work_requests,
+            'form': form,
+            'work_assign_form': work_assign_form,
+            'filter_form': filter_form,
+            'search_query': search_query,
+            'paginator': paginator,
+            'per_page': per_page,
+            'role': role,
+            'work_request': work_request,
+            'shortlisted_workers': shortlisted_workers_data,
+            'offersent_workers': offersent_workers_data,
+            'confirmed_workers': confirmed_workers_data,
+            'cancelled_workers': cancelled_workers_data,
+            'shortlisted_count': shortlisted_count,
+            'offersent_count': offersent_count,
+            'confirmed_count': confirmed_count,
+            'cancelled_count': cancelled_count,
+        }
+        return render(request, 'recruiting/work_requests/create_addworker.html', context)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class UpdateWorkerStatusView(View):
+    def post(self, request, *args, **kwargs):
+        worker_ids = request.POST.getlist('worker_ids[]')
+        WorkAssignment.objects.filter(worker_id__in=worker_ids, status='assigned').update(status='offersent')
+        messages.success(request, _("offerSentSuccessfully."))
+        return JsonResponse({'status':'success','success': 'True', 'message': 'Offer sent successfully.'})
+
+@method_decorator(csrf_exempt, name='dispatch')
+class CancelOfferView(View):
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        worker_ids = data.get('worker_ids', [])
+        WorkAssignment.objects.filter(worker_id__in=worker_ids, status='offersent').update(status='cancelled')
+        messages.success(request, _("OfferCancelledSuccessfully."))
+        return JsonResponse({'status': 'success', 'message': 'Offer cancelled successfully.'})
+    
+@method_decorator(csrf_exempt, name='dispatch')
+class AddToShortlistView(View):
+
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        worker_ids = data.get('workerIds', [])
+
+        added_any, already_shortlisted = add_workers_to_shortlist(worker_ids)
+
+        if added_any:
+            messages.success(request, _("Workers added to shortlist successfully."))
+            return JsonResponse({'success': True})
+        else:
+            if len(already_shortlisted) > 1:
+                messages.error(request, _("Workers are already shortlisted."))
+            else:
+                messages.error(request, _("Worker is already shortlisted."))
+            return JsonResponse({'success': False, 'message': 'All workers are already shortlisted.'})
+
+
+class ShowWorkerDetails(View):
+    def get(self, request, pk):
+        view = WorkerDetailsView()
+        return view.get(request, pk)
+
+
 class WorkRequestDetailView(View):
     def get(self, request, pk):
         work_request = get_object_or_404(WorkRequests, pk=pk)
@@ -208,10 +461,13 @@ class WorkRequestDetailView(View):
         ).select_related('worker')
         context = {
             'workrequest': work_request,
+            'roles': work_request.roles.all(),
             'active_workers': active_workers,
         }
         return render(request, 'recruiting/work_requests/detail.html', context)
 
+
+    
 
 class WorkRequestRoleCreateView(CreateView):
     model = Role
@@ -246,6 +502,8 @@ class RecruiterListView(LoginRequiredMixin, View):
 
         recruiters = User.objects.filter(groups__name='recruiter').prefetch_related('employerrecruiter_set__employer')
         employers = Organization.objects.all()
+
+        print(recruiters,"recruiters")
 
         recruiter_data = []
         for recruiter in recruiters:
@@ -639,7 +897,7 @@ class UpdateStatusView(View):
             if work_requests and status:
                 updated_count = WorkRequests.objects.filter(id__in=work_requests).update(status=status)
                 if updated_count > 0:
-                    messages.success(request, _("workRequestsSuccessfullyUpdatedTo'{}'Status.").format(status))
+                    messages.success(request, _("updateWorkRequestsSuccessfullyUpdatedTo'{}'Status.").format(status))
                     return JsonResponse({'success': True, 'message': f"workRequestsSuccessfullyUpdatedTo'{status}'Status."})
                 else:
                     messages.error(request, _("noWorkRequestsFoundToUpdate."))
@@ -722,4 +980,4 @@ class AssignEmployerContactView(View):
     def get(self, request, *args, **kwargs):
         messages.error(request, "GET not allowed")
         return JsonResponse({'error': 'GET not allowed.'}, status=405)
-    
+
