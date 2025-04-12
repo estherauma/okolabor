@@ -24,6 +24,7 @@ from django.utils.encoding import force_str
 from django.http import HttpResponseRedirect
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
+import os
 
 from account.models import User
 from recruiting.utils import *
@@ -63,7 +64,7 @@ from recruiting.models import (
     WorkRequests,
     EmployerRecruiter,
     WorkAssignment,
-    EmployerContact
+    EmployerContact,
 )
 
 class EmployerListView(View):
@@ -979,3 +980,4 @@ class AssignEmployerContactView(View):
     def get(self, request, *args, **kwargs):
         messages.error(request, "GET not allowed")
         return JsonResponse({'error': 'GET not allowed.'}, status=405)
+
