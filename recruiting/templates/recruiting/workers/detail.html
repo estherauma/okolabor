@@ -373,70 +373,183 @@
     </div>
 </form>
 
-    <div class="card-body">
-        <div class="row">
-            {% for key, value in preferences.items %}
-                <div class="col-md-12 col-sm-6 mb-3" style="position: relative;">
-                    <p class="gray-color">
-                        {% translate key %}
-                    </p>
-                    <p>
-                        {% if key != "workplaces" and key != "Prefered_Employes" %}
-                            {{ value|default:"-" }}
-                        {% endif %}
-                    </p>
-    
-                    {% if key == "English Proficiency" %}
-                        {% if documents.english_proficiency %}
-                            <div style="position: relative; display: inline-block;">
-                                <video width="150" controls>
-                                    <source src="{{ documents.english_proficiency.path }}" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                                <img alt="record" src="{% static 'assets/record.png' %}" 
-                                     style="width: 40px; position: absolute; top: 0; left: 40px; margin-top: 40px;"/>
-                            </div>
-                        {% else %}
-                            <p>No English Proficiency Video Uploaded</p>
-                        {% endif %}
-    
-                    {% elif key == "Passport" %}
-                        {% if documents.passport %}
-                            <div style="position: relative; display: inline-block;">
-                                <a href="{{ documents.passport.path }}" target="_blank">
-                                    <img alt="passport" src="{% static 'assets/images/passport1.png' %}" style="width: 150px;"/>
-                                </a>
-                            </div>
-                        {% else %}
-                            <p>No Passport Uploaded</p>
-                        {% endif %}
-    
-                    {% elif key == "workplaces" %}
-                        <div class="row">
-                            {% for workplace in workplaces %}
-                                <div class="col-md-3 col-sm-12 mb-3">
-                                    <button class="btn offwhite-button" style="width: 100%;">
-                                        {{ workplace }}
-                                    </button>
-                                </div>
-                            {% endfor %}
-                        </div>
-    
-                    {% elif key == "Prefered_Employes" %}
-                        <div class="row">
-                            {% for preferred_employe in preferred_employees %}
-                                <div class="col-md-3 col-sm-6 mb-3">
-                                    <button class="btn offwhite-button" style="width: 100%;">
-                                        {{ preferred_employe }}
-                                    </button>
-                                </div>
-                            {% endfor %}
-                        </div>
+
+
+<div class="card-body">
+  <div class="row">
+    {% for key, value in preferences.items %}
+      <div class="col-md-12 col-sm-6 mb-3" style="position: relative;">
+        <p class="gray-color">{% translate key %}</p>
+        <p>
+          {% if key != "workplaces" and key != "Prefered_Employes" %}
+            {{ value|default:"-" }}
+          {% endif %}
+        </p>
+
+        {% if key == "English Proficiency" and documents.english_proficiency %}
+          <div class="col-12 mb-3">
+            <p class="gray-color">English Proficiency</p>
+            <div class="row">
+              <div class="col-md-4 col-sm-6 mb-3">
+                {% with documents.english_proficiency.path as clean_path %}
+                  {% with clean_path|lower as filename %}
+                    {% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename or ".gif" in filename %}
+                      <img
+                        src="{{ base_url }}uploads/{{ clean_path }}"
+                        alt="English Proficiency"
+                        class="border object-contain w-100 clickable-media"
+                        style="max-height: 200px;"
+                        data-type="image"
+                        data-src="{{ base_url }}uploads/{{ clean_path }}"
+                      />
+                    {% elif ".mp4" in filename or ".webm" in filename or ".ogg" in filename %}
+                      <div class="video-container clickable-media"
+                           data-type="video"
+                           data-src="{{ base_url }}uploads/{{ clean_path }}">
+                           <video
+                           controls
+                           class="border w-100 preview-video"
+                           style="max-height: 200px;"
+                           data-src="{{ base_url }}uploads/{{ clean_path }}"
+                       >
+                           <source src="{{ base_url }}uploads/{{ clean_path }}" type="video/mp4">
+                           Your browser does not support the video tag.
+                       </video>
+                      </div>
                     {% endif %}
-                </div>
+                  {% endwith %}
+                {% endwith %}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if key == "Passport" and documents.passport %}
+          <div class="col-12 mb-3">
+            <p class="gray-color">Passport</p>
+            <div class="row">
+              <div class="col-md-4 col-sm-6 mb-3">
+                {% with documents.passport.path as clean_path %}
+                  {% with clean_path|lower as filename %}
+                    {% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename or ".gif" in filename %}
+                      <img
+                        src="{{ base_url }}uploads/{{ clean_path }}"
+                        alt="Passport"
+                        class="border object-contain w-100 clickable-media"
+                        style="max-height: 200px;"
+                        data-type="image"
+                        data-src="{{ base_url }}uploads/{{ clean_path }}"
+                      />
+                    {% elif ".mp4" in filename or ".webm" in filename or ".ogg" in filename %}
+                      <div class="video-container clickable-media"
+                           data-type="video"
+                           data-src="{{ base_url }}uploads/{{ clean_path }}">
+                           <video
+                           controls
+                           class="border w-100 preview-video"
+                           style="max-height: 200px;"
+                           data-src="{{ base_url }}uploads/{{ clean_path }}"
+                       >
+                           <source src="{{ base_url }}uploads/{{ clean_path }}" type="video/mp4">
+                           Your browser does not support the video tag.
+                       </video>
+                      </div>
+                    {% endif %}
+                  {% endwith %}
+                {% endwith %}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if key == "workplaces" %}
+          <div class="row">
+            {% for workplace in workplaces %}
+              <div class="col-md-3 col-sm-12 mb-3">
+                <button class="btn offwhite-button" style="width: 100%;">
+                  {{ workplace }}
+                </button>
+              </div>
             {% endfor %}
+          </div>
+        {% elif key == "Prefered_Employes" %}
+          <div class="row">
+            {% for preferred_employe in preferred_employees %}
+              <div class="col-md-3 col-sm-6 mb-3">
+                <button class="btn offwhite-button" style="width: 100%;">
+                  {{ preferred_employe }}
+                </button>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <!-- Loop through remaining documents -->
+    {% for kind, docs in documents.items %}
+      {% if kind != "passport" and kind != "english_proficiency" %}
+        <div class="col-12 mb-3">
+          <p class="gray-color">{% translate kind %}</p>
+          <div class="row">
+            {% for doc in docs %}
+              <div class="col-md-4 col-sm-6 mb-3">
+                {% with doc.path as clean_path %}
+                  {% with clean_path|lower as filename %}
+                    {% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename or ".gif" in filename %}
+                      <img
+                        src="{{ base_url }}uploads/{{ clean_path }}"
+                        alt="{{ kind }}"
+                        class="border object-contain w-100 clickable-media"
+                        style="max-height: 200px;"
+                        data-type="image"
+                        data-src="{{ base_url }}uploads/{{ clean_path }}"
+                      />
+                    {% elif ".mp4" in filename or ".webm" in filename or ".ogg" in filename %}
+                      <div class="video-container clickable-media"
+                           data-type="video"
+                           data-src="{{ base_url }}uploads/{{ clean_path }}">
+                           <video
+                           controls
+                           class="border w-100 preview-video"
+                           style="max-height: 200px;"
+                           data-src="{{ base_url }}uploads/{{ clean_path }}"
+                       >
+                           <source src="{{ base_url }}uploads/{{ clean_path }}" type="video/mp4">
+                           Your browser does not support the video tag.
+                       </video>
+                      </div>
+                    {% endif %}
+                  {% endwith %}
+                {% endwith %}
+              </div>
+            {% endfor %}
+          </div>
         </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="mediaModal" tabindex="-1" aria-labelledby="mediaModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="mediaModalLabel">Media Viewer</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="mediaContent"></div>
+      </div>
     </div>
+  </div>
+</div>
+
+
+
  </div>
 
 </div>
@@ -444,98 +557,121 @@
 
 {% block scripts %}
 <script>
-    function handleInfoTypeChange() {
-        const selectedOption = document.getElementById("infoType").selectedOptions[0];
-        const selectedValue = selectedOption.value;
-        const actionUrl = selectedOption.getAttribute("data-action");
+  document.addEventListener("DOMContentLoaded", function () {
+      blockPastMonthsInPicker();
+      validateFormBeforeSubmit();
 
-        // Show/hide field sections
-        const documentFields = document.getElementById("documentFields");
-        const languageFields = document.getElementById("languageFields");
-        const preferencesFields = document.getElementById("preferencesFields");
+      // Attach event listener to healthStatus dropdown
+      const healthStatusSelect = document.getElementById("healthStatus");
+      if (healthStatusSelect) {
+          healthStatusSelect.addEventListener("change", toggleHealthConditionField);
+          toggleHealthConditionField(); // Run once on load to handle prefilled forms
+      }
 
-        if (documentFields) documentFields.style.display = (selectedValue === "documents") ? "block" : "none";
-        if (languageFields) languageFields.style.display = (selectedValue === "languages") ? "block" : "none";
-        if (preferencesFields) preferencesFields.style.display = (selectedValue === "preferences") ? "block" : "none";
+      // Handle clickable media
+      document.querySelectorAll('.clickable-media').forEach(item => {
+          item.addEventListener('click', event => {
+              const type = event.currentTarget.getAttribute('data-type');
+              const src = event.currentTarget.getAttribute('data-src');
+              const mediaContent = document.getElementById('mediaContent');
 
-        // Update form action
-        if (actionUrl) {
-            document.getElementById("documentUploadForm").action = actionUrl;
-        }
-    }
+              if (type === 'image') {
+                  mediaContent.innerHTML = `<img src="${src}" class="img-fluid" alt="Media">`;
+              } else if (type === 'video') {
+                  mediaContent.innerHTML = `<video controls class="w-100">
+                                              <source src="${src}" type="video/mp4">
+                                              Your browser does not support the video tag.
+                                            </video>`;
+              }
 
-    function toggleVideoUpload() {
-        const selectedLevel = document.querySelector('input[name="language_level"]:checked');
-        const videoUpload = document.getElementById("videoUploadSection");
+              // Show the modal
+              $('#mediaModal').modal('show');
+          });
+      });
+  });
 
-        if (selectedLevel && selectedLevel.value === "none") {
-            videoUpload.style.display = "none";
-        } else {
-            videoUpload.style.display = "block";
-        }
-    }
+  function handleInfoTypeChange() {
+      const selectedOption = document.getElementById("infoType").selectedOptions[0];
+      const selectedValue = selectedOption.value;
+      const actionUrl = selectedOption.getAttribute("data-action");
 
-    function blockPastMonthsInPicker() {
-        const availabilityInput = document.getElementById("availabilityDate");
-        if (availabilityInput) {
-            const now = new Date();
-            const month = (now.getMonth() + 1).toString().padStart(2, '0');
-            const year = now.getFullYear();
-            availabilityInput.min = `${year}-${month}`;
-        }
-    }
+      // Show/hide field sections
+      const documentFields = document.getElementById("documentFields");
+      const languageFields = document.getElementById("languageFields");
+      const preferencesFields = document.getElementById("preferencesFields");
 
-    function validateFormBeforeSubmit() {
-        const form = document.getElementById("documentUploadForm");
+      if (documentFields) documentFields.style.display = (selectedValue === "documents") ? "block" : "none";
+      if (languageFields) languageFields.style.display = (selectedValue === "languages") ? "block" : "none";
+      if (preferencesFields) preferencesFields.style.display = (selectedValue === "preferences") ? "block" : "none";
 
-        form.addEventListener("submit", function(e) {
-            const infoType = document.getElementById("infoType").value;
+      // Update form action
+      if (actionUrl) {
+          document.getElementById("documentUploadForm").action = actionUrl;
+      }
+  }
 
-            if (!infoType) {
-                alert("Please select an information type.");
-                e.preventDefault();
-                return;
-            }
+  function toggleVideoUpload() {
+      const selectedLevel = document.querySelector('input[name="language_level"]:checked');
+      const videoUpload = document.getElementById("videoUploadSection");
 
-            if (infoType === "languages") {
-                const selectedLevel = document.querySelector('input[name="language_level"]:checked');
-                const videoInput = document.getElementById("languageVideo");
+      if (selectedLevel && selectedLevel.value === "none") {
+          videoUpload.style.display = "none";
+      } else {
+          videoUpload.style.display = "block";
+      }
+  }
 
-                if (!selectedLevel) {
-                    alert("Please select a language level.");
-                    e.preventDefault();
-                    return;
-                }
-                if (selectedLevel.value !== "none" && videoInput.files.length === 0) {
-                    alert("Please upload a video for your selected language level.");
-                    e.preventDefault();
-                    return;
-                }
-            }
-        });
-    }
+  function blockPastMonthsInPicker() {
+      const availabilityInput = document.getElementById("availabilityDate");
+      if (availabilityInput) {
+          const now = new Date();
+          const month = (now.getMonth() + 1).toString().padStart(2, '0');
+          const year = now.getFullYear();
+          availabilityInput.min = `${year}-${month}`;
+      }
+  }
 
-    function toggleHealthConditionField() {
-        const healthStatus = document.getElementById("healthStatus").value;
-        const conditionField = document.getElementById("healthConditionField");
+  function validateFormBeforeSubmit() {
+      const form = document.getElementById("documentUploadForm");
 
-        if (conditionField) {
-            conditionField.style.display = (healthStatus === "yes") ? "block" : "none";
-        }
-    }
+      form.addEventListener("submit", function(e) {
+          const infoType = document.getElementById("infoType").value;
 
-    document.addEventListener("DOMContentLoaded", function () {
-        blockPastMonthsInPicker();
-        validateFormBeforeSubmit();
+          if (!infoType) {
+              alert("Please select an information type.");
+              e.preventDefault();
+              return;
+          }
 
-        // Attach event listener to healthStatus dropdown
-        const healthStatusSelect = document.getElementById("healthStatus");
-        if (healthStatusSelect) {
-            healthStatusSelect.addEventListener("change", toggleHealthConditionField);
-            toggleHealthConditionField(); // Run once on load to handle prefilled forms
-        }
-    });
+          if (infoType === "languages") {
+              const selectedLevel = document.querySelector('input[name="language_level"]:checked');
+              const videoInput = document.getElementById("languageVideo");
+
+              if (!selectedLevel) {
+                  alert("Please select a language level.");
+                  e.preventDefault();
+                  return;
+              }
+              if (selectedLevel.value !== "none" && videoInput.files.length === 0) {
+                  alert("Please upload a video for your selected language level.");
+                  e.preventDefault();
+                  return;
+              }
+          }
+      });
+  }
+
+  function toggleHealthConditionField() {
+      const healthStatus = document.getElementById("healthStatus").value;
+      const conditionField = document.getElementById("healthConditionField");
+
+      if (conditionField) {
+          conditionField.style.display = (healthStatus === "yes") ? "block" : "none";
+      }
+  }
 </script>
+
+
 
 
 
