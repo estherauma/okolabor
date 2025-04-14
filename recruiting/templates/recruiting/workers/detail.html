@@ -1,6 +1,18 @@
 {% extends 'components/base.html' %}
 {% load i18n %}
 {% load static %}
+
+{% block styles %}
+<!-- SELECT2 CSS -->
+<link href="{% static ''%}assets/plugins/select2/select2.min.css" rel="stylesheet"/>
+<link href="{% static ''%}assets/plugins/common/style.css" rel="stylesheet"/>
+<!-- DATA TABLE CSS -->
+<link href="{% static ''%}assets/plugins/datatable/css/dataTables.bootstrap5.css" rel="stylesheet"/>
+<link href="{% static ''%}assets/plugins/datatable/css/buttons.bootstrap5.min.css" rel="stylesheet"/>
+<link href="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.css" rel="stylesheet"/>
+
+{% endblock styles %}
+
 {% block body %}
 <div class="page-header">
  <div>
@@ -191,7 +203,7 @@
 
               <option value="documents" data-action="{% url 'recruiting_web:upload_documents' %}">Documents</option>
               <option value="languages" data-action="{% url 'recruiting_web:upload_languages' %}">Languages</option>
-              <option value="preferences">User Preferences</option>
+              <option value="preferences" data-action="{% url 'recruiting_web:upload_preferences' %}">User Preferences</option>
             </select>
 
 
@@ -241,14 +253,121 @@
               </div>
             </div>
 
+            <!-- Preferences Fields -->
+            <div id="preferencesFields" class="mt-3" style="display: none;">
+                <div class="mb-2">
+                  <label for="preferredCountries" class="form-label">Select Preferred Countries</label>
+                  <select multiple class="form-select" id="preferredCountries" name="preferred_countries">
+                    <option value="usa">USA</option>
+                    <option value="canada">Canada</option>
+                    <option value="mexico">Mexico</option>
+                    <option value="australia">Australia</option>
+                    <option value="uk">UK</option>
+                  </select>
+                </div>
+                <div class="mb-2">
+                  <label for="workSectors" class="form-label">Select Work Sectors</label>
+                  <select multiple class="form-select" id="workSectors" name="work_sectors">
+                    <option value="animals">Animals</option>
+                    <option value="construction">Construction</option>
+                    <option value="crop_horticulture">Crop and Horticulture</option>
+                    <option value="vehicle_operation">Licenced Vehicle Operation</option>
+                    <option value="mechanics">Mechanics</option>
+                    <option value="supervision">Worker Supervision/Management</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div class="mb-2">
+                  <label for="preferencesNote" class="form-label">Tell us about your preferences</label>
+                  <textarea class="form-control" id="preferencesNote" name="preferences_note" rows="3"></textarea>
+                </div>
+              
+                {% load custom_filters %}
+                {% next_12_months as availability_months %}
+              
+                <div class="mb-2">
+                  <label for="availabilityMonths" class="form-label">Availability (until)</label>
+                  <select multiple class="form-select" id="availabilityMonths" name="availability_months">
+                    {% for month in availability_months %}
+                      <option value="{{ month.label }}">{{ month.label }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              
+                <!-- Health status -->
+                <div class="mb-2">
+                  <label class="form-label">
+                    Do you have any physical or mental conditions that could limit you for a labor intensive job?
+                  </label><br>
+                  <div>
+                    <input type="radio" name="healthStatus" value="yes" onchange="toggleHealthConditionField()" class="me-2"> Yes
+                    <input type="radio" name="healthStatus" value="no" onchange="toggleHealthConditionField()" class="me-1"> No
+                  </div>
+                </div>
+              
+                <div class="mb-2" id="healthConditionField" style="display: none;">
+                  <label for="healthCondition" class="form-label">Please list the condition(s)</label>
+                  <textarea class="form-control" name="healthCondition" rows="3"></textarea>
+                </div>
+              
+                <!-- Suffered Injury -->
+                <div class="mb-2">
+                  <label class="form-label">
+                    Have you suffered an injury that could be aggravated by intense physical activity?
+                  </label><br>
+                  <div>
+                    <input type="radio" name="suffred_injury" value="yes" class="me-2"> Yes
+                    <input type="radio" name="suffred_injury" value="no" class="me-1"> No
+                  </div>
+                </div>
+              
+                <!-- Longer Period of Time -->
+                <div class="mb-2">
+                  <label class="form-label">
+                    Are you willing and able to work on your feet for long periods of time?
+                  </label><br>
+                  <div>
+                    <input type="radio" name="longerPeriodOfTime" value="yes" class="me-2"> Yes
+                    <input type="radio" name="longerPeriodOfTime" value="no" class="me-1"> No
+                  </div>
+                </div>
+              
+                <!-- Lift/Carry Consent -->
+                <div class="mb-2">
+                  <label class="form-label">
+                    Are you willing and able to lift/carry up to 68 pounds?
+                  </label><br>
+                  <div>
+                    <input type="radio" name="consent" value="yes" class="me-2"> Yes
+                    <input type="radio" name="consent" value="no" class="me-1"> No
+                  </div>
+                </div>
+              
+                <!-- Physical Activities Not Preferred -->
+                <div class="mb-2">
+                  <label for="physicalActivities" class="form-label">
+                    Are there physical activities you would prefer not to perform?
+                  </label>
+                  <textarea class="form-control" name="physicalActivities" rows="3"></textarea>
+                </div>
+              
+                <!-- Work Environment -->
+                <div class="mb-2">
+                  <label class="form-label">
+                    Are you unwilling to work in either hot or cold temperatures?
+                  </label><br>
+                  <div>
+                    <input type="radio" name="workEnvironment" value="yes" class="me-2"> Yes
+                    <input type="radio" name="workEnvironment" value="no" class="me-1"> No
+                  </div>
+                </div>
+              </div>
+              
           </div>
-
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button type="submit" class="btn btn-primary">Save</button>
           </div>
-
-
         </div>
       </div>
     </div>
@@ -330,14 +449,16 @@
         const selectedValue = selectedOption.value;
         const actionUrl = selectedOption.getAttribute("data-action");
 
-        // Show/hide fields
+        // Show/hide field sections
         const documentFields = document.getElementById("documentFields");
         const languageFields = document.getElementById("languageFields");
+        const preferencesFields = document.getElementById("preferencesFields");
 
-        documentFields.style.display = (selectedValue === "documents") ? "block" : "none";
-        languageFields.style.display = (selectedValue === "languages") ? "block" : "none";
+        if (documentFields) documentFields.style.display = (selectedValue === "documents") ? "block" : "none";
+        if (languageFields) languageFields.style.display = (selectedValue === "languages") ? "block" : "none";
+        if (preferencesFields) preferencesFields.style.display = (selectedValue === "preferences") ? "block" : "none";
 
-        // Set form action dynamically
+        // Update form action
         if (actionUrl) {
             document.getElementById("documentUploadForm").action = actionUrl;
         }
@@ -354,33 +475,68 @@
         }
     }
 
-    document.getElementById("documentUploadForm").addEventListener("submit", function(e) {
-        const infoType = document.getElementById("infoType").value;
-
-        if (!infoType) {
-            alert("Please select an information type.");
-            e.preventDefault();
-            return;
+    function blockPastMonthsInPicker() {
+        const availabilityInput = document.getElementById("availabilityDate");
+        if (availabilityInput) {
+            const now = new Date();
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const year = now.getFullYear();
+            availabilityInput.min = `${year}-${month}`;
         }
+    }
 
-        if (infoType === "languages") {
-            const selectedLevel = document.querySelector('input[name="language_level"]:checked');
-            const videoInput = document.getElementById("languageVideo");
+    function validateFormBeforeSubmit() {
+        const form = document.getElementById("documentUploadForm");
 
-            if (!selectedLevel) {
-                alert("Please select a language level.");
+        form.addEventListener("submit", function(e) {
+            const infoType = document.getElementById("infoType").value;
+
+            if (!infoType) {
+                alert("Please select an information type.");
                 e.preventDefault();
                 return;
             }
 
-            if (selectedLevel.value !== "none" && videoInput.files.length === 0) {
-                alert("Please upload a video for your selected language level.");
-                e.preventDefault();
-                return;
+            if (infoType === "languages") {
+                const selectedLevel = document.querySelector('input[name="language_level"]:checked');
+                const videoInput = document.getElementById("languageVideo");
+
+                if (!selectedLevel) {
+                    alert("Please select a language level.");
+                    e.preventDefault();
+                    return;
+                }
+                if (selectedLevel.value !== "none" && videoInput.files.length === 0) {
+                    alert("Please upload a video for your selected language level.");
+                    e.preventDefault();
+                    return;
+                }
             }
+        });
+    }
+
+    function toggleHealthConditionField() {
+        const healthStatus = document.getElementById("healthStatus").value;
+        const conditionField = document.getElementById("healthConditionField");
+
+        if (conditionField) {
+            conditionField.style.display = (healthStatus === "yes") ? "block" : "none";
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        blockPastMonthsInPicker();
+        validateFormBeforeSubmit();
+
+        // Attach event listener to healthStatus dropdown
+        const healthStatusSelect = document.getElementById("healthStatus");
+        if (healthStatusSelect) {
+            healthStatusSelect.addEventListener("change", toggleHealthConditionField);
+            toggleHealthConditionField(); // Run once on load to handle prefilled forms
         }
     });
 </script>
+
 
 
     
