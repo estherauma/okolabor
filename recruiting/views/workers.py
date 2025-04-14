@@ -238,6 +238,7 @@ class WorkerCreateView(CreateView):
 class WorkerDetailsView(View):
     def get(self, request, pk):
         worker = get_object_or_404(User, pk=pk)
+        base_url = request.build_absolute_uri('/')
         work_experience = UserWorkExperience.objects.filter(user=worker).first()
         preferences = UserPreference.objects.filter(user=worker)
 
@@ -262,7 +263,8 @@ class WorkerDetailsView(View):
             'preferences': preference_data,
             'workplaces': workplaces,
             'preferred_employees': preferred_employees,
-            'documents': document_dict  
+            'documents': document_dict,
+            'base_url': base_url
         }
         return render(request, 'recruiting/workers/detail.html', context)
 
