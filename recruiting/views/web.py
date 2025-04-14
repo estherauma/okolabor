@@ -65,6 +65,7 @@ from recruiting.models import (
     EmployerRecruiter,
     WorkAssignment,
     EmployerContact,
+    EmployerRecruiterOrgLink
 )
 
 class EmployerListView(View):
@@ -97,7 +98,9 @@ class EmployerListView(View):
         employers = paginator.get_page(page_number)
 
         recruiter_group = Group.objects.get(id=1) 
-        recruiters = recruiter_group.user_set.all()
+        # recruiters = recruiter_group.user_set.all()
+        
+        recruiter_organizations = Organization.objects.filter(type='recruiter')
 
         employers_data = []
         for employer in employers:
@@ -121,7 +124,7 @@ class EmployerListView(View):
                 'has_more': employers.has_next()
             })
 
-        context = {'employers': employers_data, 'query': query,'recruiters': recruiters}
+        context = {'employers': employers_data, 'query': query,'recruiters': recruiter_organizations}
         return render(request, 'recruiting/employers/list.html', context)
     
 
@@ -980,3 +983,45 @@ class AssignEmployerContactView(View):
     def get(self, request, *args, **kwargs):
         messages.error(request, "GET not allowed")
         return JsonResponse({'error': 'GET not allowed.'}, status=405)
+    
+@method_decorator(csrf_exempt, name='dispatch')
+class AssignEmployersToRecruiterOrgView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            employer_ids = data.get('employer_org_id')
+            recruiter_org_id = data.get('recruiter_org_id')
+
+            if not employer_ids or not recruiter_org_id:
+                msg = _('missingEmployerIDsOrRecruiterOrganizationID.')
+                messages.error(request, msg)
+                return JsonResponse({'success': False, 'message': msg})
+
+            recruiter_org = get_object_or_404(Organization, id=recruiter_org_id, type='recruiter')
+            recruiters = User.objects.filter(organizations=recruiter_org)
+
+            for employer_id in employer_ids:
+                employer_org = get_object_or_404(Organization, id=employer_id, type='employer')
+
+                EmployerRecruiterOrgLink.objects.get_or_create(
+                    employer_org=employer_org,
+                    recruiter_org=recruiter_org
+                )
+
+                for recruiter in recruiters:
+                    EmployerRecruiter.objects.get_or_create(employer=employer_org, recruiter=recruiter)
+
+            msg = _('employersAssignedSuccessfully.')
+            messages.success(request, msg)
+            return JsonResponse({'success': True, 'message': msg})
+
+        except json.JSONDecodeError:
+            msg = _('Invalid JSON data.')
+            messages.error(request, msg)
+            return JsonResponse({'success': False, 'message': msg})
+
+        except Exception as e:
+            messages.error(request, str(e))
+            return JsonResponse({'success': False, 'message': str(e)})
+
+
