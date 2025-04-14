@@ -13,7 +13,7 @@ from account.serializers import (
 from account.models import (
     User, UserJobExperience, UserDocuments, UserJobExperienceDetails,
     UserNotification, UserPreference,
-    UserReportedProblem, UserWorkExperience
+    UserReportedProblem, UserWorkExperience,LanguageChoices
 )
 from account.jwt_manager import JwtManager
 from django.shortcuts import get_object_or_404
@@ -36,7 +36,7 @@ class RegisterView(APIView):
     def post(self, request):
         serializer = RegistrationSerializer(data=request.data)
         if serializer.is_valid():
-            language = serializer.validated_data.get('language')
+            language = serializer.validated_data.get('language') or LanguageChoices.ES_MX
             user = User.objects.create_user(
                 email=serializer.validated_data['email'],
                 curp=serializer.validated_data['curp'],
