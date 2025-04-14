@@ -230,14 +230,27 @@ class WorkRequestsListView(View):
 
         if admin_group in user.groups.all():
             work_requests = WorkRequests.objects.all()
+
         elif recruiter_group in user.groups.all():
-            assigned_employers = EmployerRecruiter.objects.filter(recruiter=user).values_list("employer", flat=True)
-            work_requests = WorkRequests.objects.filter(employer_id__in=assigned_employers)
+            
+            user_orgs = user.organizations.all()  
+            if user_orgs.exists():
+                user_org = user_orgs.first() 
+
+                
+                assigned_employer_ids = EmployerRecruiterOrgLink.objects.filter(
+                    recruiter_org=user_org
+                ).values_list("employer_org_id", flat=True)
+
+                work_requests = WorkRequests.objects.filter(employer_id__in=assigned_employer_ids)
+            else:
+                work_requests = WorkRequests.objects.none()
         else:
             work_requests = WorkRequests.objects.none()
 
         context = {"work_requests": work_requests}
         return render(request, "recruiting/work_requests/list.html", context)
+
 
 
 class WorkRequestCreateView(CreateView):
