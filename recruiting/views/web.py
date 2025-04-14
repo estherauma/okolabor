@@ -222,23 +222,6 @@ class EmployerDetailView(View):
         return render(request, 'recruiting/employers/detail.html', context)
 
 
-# class WorkRequestsListView(View):
-#     def get(self, request):
-#         user = request.user
-#         admin_group = Group.objects.get(name='admin')
-#         recruiter_group = Group.objects.get(name='recruiter')
-
-#         if admin_group in user.groups.all():
-#             work_requests = WorkRequests.objects.all()
-#         elif recruiter_group in user.groups.all():
-#             assigned_employers = EmployerRecruiter.objects.filter(recruiter=user).values_list("employer", flat=True)
-#             work_requests = WorkRequests.objects.filter(employer_id__in=assigned_employers)
-#         else:
-#             work_requests = WorkRequests.objects.none()
-
-#         context = {"work_requests": work_requests}
-#         return render(request, "recruiting/work_requests/list.html", context)
-
 class WorkRequestsListView(View):
     def get(self, request):
         user = request.user
