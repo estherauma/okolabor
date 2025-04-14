@@ -487,18 +487,18 @@ class ExportWorkerDetailsView(View):
 
 class UploadDocumentsView(View):
     upload_paths = {
-        'contract': 'uploads/visa',
-        'passport': 'uploads/passports',
-        'profile_picture': 'uploads/profiles',
-        'english_video': 'uploads/english_videos',
-        'us_driving_license': 'uploads/driver_licenses',
-        'mexico_driving_license': 'uploads/driver_licenses',
-        'certificate': 'uploads/certificates',
-        'visa': 'uploads/visa',
-        'photo': 'uploads/photos',
-        'job_experience_license': 'uploads/job_experiences/licenses',
-        'job_experience_media': 'uploads/job_experiences/media',
-        'explanation_video': 'uploads/explanation_videos',
+    'contract': 'visa',
+    'passport': 'passports',
+    'profile_picture': 'profiles',
+    'english_video': 'english_videos',
+    'us_driving_license': 'driver_licenses',
+    'mexico_driving_license': 'driver_licenses',
+    'certificate': 'certificates',
+    'visa': 'visa',
+    'photo': 'photos',
+    'job_experience_license': 'job_experiences/licenses',
+    'job_experience_media': 'job_experiences/media',
+    'explanation_video': 'explanation_videos',
     }
 
     def post(self, request, *args, **kwargs):
