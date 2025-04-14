@@ -570,16 +570,30 @@ class UploadLanguageProficiencyView(View):
         return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
 
     
+from django.views import View
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
+from django.contrib import messages
+from account.models import UserPreference
+from account.models import User  # Or wherever your User model is
+
 class UploadUserPreferenceView(View):
     def post(self, request, *args, **kwargs):
         worker_id = request.POST.get("worker_id")
         user = get_object_or_404(User, id=worker_id)
 
         preferences = {
-            "preferred_countries": request.POST.getlist("preferred_countries"),
-            "work_sectors": request.POST.getlist("work_sectors"),
-            "preferences_note": request.POST.get("preferences_note"),
-            "availability_month": request.POST.getlist("availability_months"),
+            "whereYouWantToWork": request.POST.getlist("preferred_countries"),
+            "kindOfWork": request.POST.getlist("work_sectors"),
+            "tellUsMore": request.POST.get("preferences_note"),
+            "availability": request.POST.getlist("availability_months"),
+            "healthStatus": request.POST.get("healthStatus"),
+            "healthCondition": request.POST.get("healthCondition"),
+            "suffred_injury": request.POST.get("suffred_injury"),
+            "longerPeriodOfTime": request.POST.get("longerPeriodOfTime"),
+            "consent": request.POST.get("consent"),
+            "physicalActivities": request.POST.get("physicalActivities"),
+            "workEnvironment": request.POST.get("workEnvironment"),
         }
 
         for key, value in preferences.items():
@@ -596,3 +610,4 @@ class UploadUserPreferenceView(View):
 
         messages.success(request, "User preferences saved successfully.")
         return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
+
