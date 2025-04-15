@@ -1,4 +1,4 @@
-{% load i18n%}
+{% load i18n %}
 <div class="d-flex align-items-center justify-content-between mb-2">
     <button class="setting-btn all-workers-setting-btn">
         <i aria-hidden="true" class="fa fa-cog"></i>
@@ -7,9 +7,13 @@
         <button class="btn dark-green-button ms-3" id="addToShortlistBtn" disabled>
             +{% translate "addToShortlist" %}
         </button>
-        
     </div>
 </div>
+
+<!-- Hidden inputs for work_request_id and role_id -->
+<input type="hidden" id="workRequestId" value="{{ work_request.id }}">
+<input type="hidden" id="roleId" value="{{ role.id }}">
+
 <!-- Table and other content for All Workers -->
 <div class="table-responsive">
     <table class="table text-nowrap border-bottom" id="basic-datatable">
@@ -53,6 +57,7 @@
         </tbody>
     </table>
 </div>
+
 <div class="pagination">
     <span class="step-links">
         {% if workers.has_previous %}
