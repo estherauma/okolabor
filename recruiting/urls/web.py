@@ -8,13 +8,13 @@ from recruiting.views.web import (
     RoleHoursCreateView, RoleHousingCreateView, RoleMealsCreateView,
     RoleQualificationsCreateView, RoleWagesCreateView, WorkRequestCreateView,
     WorkRequestDetailView, WorkRequestRoleCreateView, WorkRequestsListView,
-    OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView,AssignRecruiterView,SendRecruiterEmailView,AcceptRecruiterView,RejectRecruiterView,RemoveWorkerFromAssignmentView,UpdateStatusView,ContactWorkRequestsView,AssignEmployerContactView
+    OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView,AssignRecruiterView,SendRecruiterEmailView,AcceptRecruiterView,RejectRecruiterView,RemoveWorkerFromAssignmentView,UpdateStatusView,ContactWorkRequestsView,AssignEmployerContactView,AddWorkersWorkRequests,ShowWorkerDetails,AddToShortlistView,UpdateWorkerStatusView,CancelOfferView,RecruiterListViewInAdmin,AssignEmployersToRecruiterOrgView
 )
 from recruiting.views.workers import (
      WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView
 )
 from recruiting.views.workers import (
-     CreateWorkExperienceView, WorkExperienceDetailsView,ExportWorkerDetailsView
+     CreateWorkExperienceView, WorkExperienceDetailsView,ExportWorkerDetailsView,UploadDocumentsView,UploadLanguageProficiencyView,UploadUserPreferenceView
 )
 
 
@@ -35,6 +35,26 @@ urlpatterns = [
     path('work-requests/create/',
          WorkRequestCreateView.as_view(),
          name='workrequest_create'),
+
+    path('work-requests/<str:pk>/add-workers/<str:role_id>/',
+          AddWorkersWorkRequests.as_view(),
+          name='work_request_add_workers'),
+          
+    path('update-worker-status/', 
+         UpdateWorkerStatusView.as_view(), 
+         name='update_worker_status'),
+    path('cancel-offer/', 
+         CancelOfferView.as_view(), 
+         name='cancel_offer'),
+
+    path('work-requests/add-workers/<str:pk>/',
+         ShowWorkerDetails.as_view(),
+         name='show_worker_details'),
+     
+    path('add-to-shortlist/', 
+          AddToShortlistView.as_view(), 
+          name='add_to_shortlist'),
+
     path('work-requests/<pk>/',
          WorkRequestDetailView.as_view(),
          name='workrequest_detail'),
@@ -97,11 +117,15 @@ urlpatterns = [
     path('work-experience/<pk>/details', WorkExperienceDetailsView.as_view(),
          name='work_experience_details'),
     path("assign-recruiter/", AssignRecruiterView.as_view(), name="assign_recruiter"),
+    path('assign-employers-to-recruiter/', AssignEmployersToRecruiterOrgView.as_view(), name='assign_employers_to_recruiter_org'),
     path("send-recruiter-email/", SendRecruiterEmailView.as_view(), name="send_recruiter_email"),
     path("accept-recruiter/<str:employer_id>/<str:recruiter_id>/", AcceptRecruiterView.as_view(), name="accept_recruiter"),
     path("reject-recruiter/<str:employer_id>/<str:recruiter_id>/", RejectRecruiterView.as_view(), name="reject_recruiter"),
 
     path('recruiters/', RecruiterListView.as_view(), name='recruiter_list'),
+    path('recruiter/',
+         RecruiterListViewInAdmin.as_view(),
+         name='recruiter_admin_list'),
     path('recruiters/add/<str:employer_id>/<str:recruiter_id>/', AddRecruiterToEmployerView.as_view(), name='add_recruiter_to_employer'),
     path('recruiters/remove/<str:employer_id>/<str:recruiter_id>/', RemoveRecruiterFromEmployerView.as_view(), name='remove_recruiter_from_employer'),
     path('access-denied/', AccessDeniedView.as_view(), name='access_denied'),
@@ -111,4 +135,8 @@ urlpatterns = [
     path('contacts/<str:contact_id>/work-requests/', ContactWorkRequestsView.as_view(), name='contact_work_requests'),
     path('assign-contact/', AssignEmployerContactView.as_view(), name='assign_employer_contact'),
     path('export/workers/', ExportWorkerDetailsView.as_view(), name='export-workers'),
+    path('upload-documents/', UploadDocumentsView.as_view(), name='upload_documents'),
+    path('upload-languages/', UploadLanguageProficiencyView.as_view(), name='upload_languages'),
+    path('upload-preferences/', UploadUserPreferenceView.as_view(), name='upload_preferences'),
+
 ]

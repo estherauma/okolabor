@@ -7,6 +7,7 @@ User = get_user_model()
 
 
 
+
 class Organization(AuditableModel):
     TYPE_CHOICES = (
         ('admin', 'Admin'),
@@ -67,19 +68,19 @@ class Role(AuditableModel):
     def __str__(self):
         return f'{self.title}'
     
-class WorkAssignment(AuditableModel):  # Assuming it extends an auditable model
+class WorkAssignment(AuditableModel):
     STATUS_CHOICES = (
-        ('Assigned', 'Assigned'),
-        ('Accepted', 'Accepted'),
-        ('Completed', 'Completed'),
-        ('Cancelled', 'Cancelled'),
+        ('assigned', 'Assigned'),
+        ('offersent', 'Offer Sent'),
+        ('confirmed', 'Confirmed'),
+        ('rejected', 'Rejected'),
+        ('cancelled', 'Cancelled'),
     )
-
     work_request = models.ForeignKey(WorkRequests, on_delete=models.CASCADE, related_name='assignments',null=True, blank=True)
-    role = models.ForeignKey(Role, on_delete=models.CASCADE, related_name="assignments",null=True, blank=True)  # New role field
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, related_name="assignments",null=True, blank=True)
     worker = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='assignments',null=True, blank=True)
     assigned_date = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Assigned')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='assigned')
 
     def __str__(self):
         worker_name = self.worker.first_name if self.worker else 'No Worker'
@@ -285,6 +286,17 @@ class EmployerRecruiter(AuditableModel):
 
     def __str__(self):
         return f"{self.recruiter.first_name} -> {self.employer.name}"
+    
+class EmployerRecruiterOrgLink(AuditableModel):
+    employer_org = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='assigned_recruiter_orgs')
+    recruiter_org = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='assigned_employer_orgs')
+
+    class Meta:
+        unique_together = ('employer_org', 'recruiter_org')
+
+    def __str__(self):
+        return f"{self.employer_org.name} → {self.recruiter_org.name}"
+
     
 
 class EmployerContact(AuditableModel):

@@ -1,13 +1,10 @@
 {% extends 'components/base.html' %}
 {% load i18n %}
-
 {% load custom_filters %}
 
-
-{% block title %} {% translate "workExperienceDetailsWorkExperience"%} {% endblock title %}
+{% block title %} {% translate "workExperienceDetailsWorkExperience" %} {% endblock title %}
 
 {% block body %}
-
 <div class="container mx-auto max-w-3xl p-8 bg-white shadow-lg rounded-xl">
     <!-- Page Header -->
     <div class="flex justify-between items-center border-b pb-4 mb-6">
@@ -57,59 +54,56 @@
                     </p>
                 </div>
             {% endfor %}
-
         </div>
         <!-- Job Experience Details -->
         <div class="border-t mt-6 pt-4">
-    <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "Preferences" %}</h2>
-    {% for detail in job_experience_details %}
-        <div class="p-4 border rounded-lg bg-white shadow-sm mb-4">
-            <p class="text-gray-700 text-lg flex items-center gap-2">
-                📌 <strong>{{ detail.kind }}</strong>:
-            </p>
-            <!-- <img src="http://localhost:8000/uploads/{{ detail.value }}" alt="{{ detail.kind }}" class="mt-2 max-w-xs border" />
-            <video controls class="mt-2 max-w-xs border">
-                <source src="http://localhost:8000/uploads/{{ detail.value }}" type="video/mp4">
-
-                Your browser does not support the video tag.
-            </video> -->
-
-            {% with detail.value|strip_leading_slash as clean_path %}
-            {% with clean_path|lower as filename %}
-                {% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename or ".gif" in filename %}
-                    <img 
-                        src="http://localhost:8000/{{ clean_path }}" 
-                        alt="{{ detail.kind }}" 
-                        class="mt-2 border object-contain" 
-                        style="max-width: 300px; max-height: 200px;"
-                    />
-                {% elif ".mp4" in filename or ".webm" in filename or ".ogg" in filename %}
-                    <video 
-                        controls 
-                        class="mt-2 border" 
-                        style="max-width: 300px; max-height: 200px;"
-                    >
-                        <source src="http://localhost:8000/{{ clean_path }}" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                {% else %}
-                    <a 
-                        href="http://localhost:8000/{{ clean_path }}" 
-                        target="_blank" 
-                        class="text-blue-600 underline"
-                    >
-                        {{ clean_path }}
-                    </a>
+            <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "Preferences" %}</h2>
+            {% for detail in job_experience_details %}
+                {% if "visa" not in detail.kind|lower %}
+                    <div class="p-4 border rounded-lg bg-white shadow-sm mb-4">
+                        <p class="text-gray-700 text-lg flex items-center gap-2">
+                            📌 <strong>{{ detail.kind }}</strong>:
+                        </p>
+                        {% with detail.value|strip_leading_slash as clean_path %}
+                        {% with clean_path|lower as filename %}
+                            {% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename or ".gif" in filename or ".webp" in filename %}
+                                <img
+                                    src="{{ base_url }}{{ clean_path }}"
+                                    alt="{{ detail.kind }}"
+                                    class="mt-2 border object-contain clickable-media"
+                                    style="max-width: 300px; max-height: 200px;"
+                                    data-type="image"
+                                    data-src="{{ base_url }}{{ clean_path }}"
+                                />
+                            {% elif ".mp4" in filename or ".webm" in filename or ".ogg" in filename %}
+                                <div class="video-container clickable-media"
+                                     data-type="video"
+                                     data-src="{{ base_url }}{{ clean_path }}">
+                                    <video
+                                        controls
+                                        class="mt-2 border"
+                                        style="max-width: 300px; max-height: 200px;"
+                                    >
+                                        <source src="{{ base_url }}{{ clean_path }}" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            {% else %}
+                                <a
+                                    href="{{ base_url }}{{ clean_path }}"
+                                    target="_blank"
+                                    class="text-blue-600 underline"
+                                >
+                                    {{ clean_path }}
+                                </a>
+                            {% endif %}
+                        {% endwith %}
+                        {% endwith %}
+                    </div>
                 {% endif %}
-            {% endwith %}
-        {% endwith %}
-        
-
-        
+            {% endfor %}
         </div>
-    {% endfor %}
-</div>
-
+        
         <!-- Supervisor Details -->
         <div class="border-t mt-6 pt-4">
             <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "workExperienceDetailsSupervisorDetails" %}</h2>
@@ -125,16 +119,17 @@
             <div class="text-lg text-gray-700 space-y-1">
                 <p>🛂 <strong>visaType:</strong> {{ work_experience.visa_type|default:"No Visa Type" }}</p>
                 <p>🇺🇸 <strong>h2AWork:</strong> {{ work_experience.work_under_h2a_in_usa|default:"No H2A Work Info" }}</p>
-        
                 {% for detail in job_experience_details %}
                     {% if detail.kind == "visa" %}
                         {% with detail.value|lower as filename %}
-                            {% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename or ".gif" in filename %}
-                                <img 
-                                    src="http://localhost:8000/{{ detail.value }}" 
-                                    alt="Visa Document" 
-                                    class="mt-2 border object-contain"
+                            {% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename or ".gif" in filename or ".webp" in filename %}
+                                <img
+                                    src="{{ base_url }}uploads/samples/sample_visa.webp"
+                                    alt="Visa Document"
+                                    class="mt-2 border object-contain clickable-media"
                                     style="max-width: 300px; max-height: 200px;"
+                                    data-type="image"
+                                    data-src="{{ base_url }}uploads/samples/sample_visa.webp"
                                 />
                             {% endif %}
                         {% endwith %}
@@ -142,8 +137,47 @@
                 {% endfor %}
             </div>
         </div>
-        
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="mediaModal" tabindex="-1" aria-labelledby="mediaModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="mediaModalLabel">Media Viewer</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="mediaContent"></div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('.clickable-media').forEach(item => {
+            item.addEventListener('click', event => {
+                const type = event.currentTarget.getAttribute('data-type');
+                const src = event.currentTarget.getAttribute('data-src');
+                const mediaContent = document.getElementById('mediaContent');
+
+                if (type === 'image') {
+                    mediaContent.innerHTML = `<img src="${src}" class="img-fluid" alt="Media">`;
+                } else if (type === 'video') {
+                    mediaContent.innerHTML = `<video controls class="w-100">
+                                                <source src="${src}" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                              </video>`;
+                }
+                $('#mediaModal').modal('show');
+            });
+        });
+    });
+</script>
+
+{% endblock scripts %}
