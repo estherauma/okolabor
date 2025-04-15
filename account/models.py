@@ -52,7 +52,7 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
                                             blank=True, max_length=125)
     profile_image = models.URLField(null=True, blank=True)
     language = models.CharField(max_length=10, default=LanguageChoices.ES_MX,
-                                choices=LanguageChoices.choices,null=True,blank=True)
+                                choices=LanguageChoices.choices)
     access_code = models.CharField('access_code', null=True,
                                    blank=True, max_length=255)
     position = models.CharField('position', null=True,
