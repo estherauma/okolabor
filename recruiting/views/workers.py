@@ -13,7 +13,7 @@ from django.db.models import Q
 from account.models import User, UserWorkExperience, UserJobExperience,UserJobExperienceDetails
 from common.views import BaseCreateView
 from recruiting.forms import WorkerCreateForm, WorkExperienceCreateForm,WorkerAssignmentForm
-from theme.forms import AdvancedFilterForm, FilterWorkExperienceForm
+from theme.forms import AdvancedFilterForm, FilterWorkExperienceForm,DynamicWorkExperienceForm
 from account.models import UserPreference,UserDocuments
 from recruiting.models import WorkAssignment,WorkAssignment,WorkRequests,Role
 from django.views.decorators.csrf import csrf_exempt
@@ -36,8 +36,9 @@ ONBOARDING_STEPS = [
 
 class WorkerListView(View):
     def get(self, request):
+        print("Incoming GET data:", request.GET)
         work_assign_form = WorkerAssignmentForm()
-        form = FilterWorkExperienceForm()
+        form = DynamicWorkExperienceForm(request.GET or None)
         filter_form = AdvancedFilterForm()
         search_query = request.GET.get('search', '')
         page_number = request.GET.get('page', 1)
@@ -46,16 +47,39 @@ class WorkerListView(View):
         try:
             per_page = int(per_page)
         except ValueError:
-            per_page = 4  
+            per_page = 25
 
-        work_requests = WorkRequests.objects.filter(status='Open').prefetch_related('roles')
         workers = User.objects.filter(groups__name='worker').order_by('-created_at')
+
+        # 🔍 Search Filter
         if search_query:
             workers = workers.filter(
                 Q(first_name__icontains=search_query) |
                 Q(last_name__icontains=search_query) |
                 Q(email__icontains=search_query)
             )
+
+        # 🔍 Experience Filters
+        type_sector = request.GET.get('type_sector')
+        dynamic_field_1 = request.GET.get('dynamic_field_1')
+        dynamic_field_2 = request.GET.get('dynamic_field_2')
+
+        if type_sector:
+            workers = workers.filter(
+                crop_experiences__job_type__iexact=type_sector
+            )
+
+        if dynamic_field_1:
+            workers = workers.filter(
+                crop_experiences__type_details__iexact=dynamic_field_1
+            )
+
+        if dynamic_field_2:
+            workers = workers.filter(
+                crop_experiences__job_experience_details__value__iexact=dynamic_field_2
+            )
+
+        workers = workers.distinct()
 
         paginator = Paginator(workers, per_page)
         page_obj = paginator.get_page(page_number)
@@ -64,16 +88,15 @@ class WorkerListView(View):
         for worker in page_obj:
             profile_completion = self.calculate_profile_completion(worker)
             worker_details = self.get_worker_preferences(worker)
-            
+
             worker.profile_completion_percentage = profile_completion
 
             latest_assignment = WorkAssignment.objects.filter(worker=worker).order_by('-assigned_date').first()
             worker.latest_status = latest_assignment.status if latest_assignment else "No Assignment"
-            
+
             for key, value in worker_details.items():
                 setattr(worker, key, value)
 
-            
             worker_data.append({
                 'id': worker.id,
                 'firstname': worker.first_name,
@@ -82,6 +105,7 @@ class WorkerListView(View):
                 'profile_completion': profile_completion,
                 **worker_details
             })
+
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({
                 'workers': worker_data,
@@ -90,7 +114,7 @@ class WorkerListView(View):
 
         context = {
             'workers': page_obj,
-            'work_requests': work_requests,
+            'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
             'form': form,
             'work_assign_form': work_assign_form,
             'filter_form': filter_form,
