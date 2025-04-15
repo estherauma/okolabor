@@ -503,7 +503,7 @@
                         class="border object-contain w-100 clickable-media"
                         style="max-height: 200px;"
                         data-type="image"
-                        data-src="{{ base_url }}uploads/{{ clean_path }}"
+                        data-src="{{ base_url }}{{ clean_path }}"
                       />
                     {% elif ".mp4" in filename or ".webm" in filename or ".ogg" in filename %}
                       <div class="video-container clickable-media"
@@ -515,7 +515,7 @@
                            style="max-height: 200px;"
                            data-src="{{ base_url }}/{{ clean_path }}"
                        >
-                           <source src="{{ base_url }}uploads/{{ clean_path }}" type="video/mp4">
+                           <source src="{{ base_url }}{{ clean_path }}" type="video/mp4">
                            Your browser does not support the video tag.
                        </video>
                       </div>
