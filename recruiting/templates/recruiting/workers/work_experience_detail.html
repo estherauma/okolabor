@@ -59,48 +59,51 @@
         <div class="border-t mt-6 pt-4">
             <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "Preferences" %}</h2>
             {% for detail in job_experience_details %}
-                <div class="p-4 border rounded-lg bg-white shadow-sm mb-4">
-                    <p class="text-gray-700 text-lg flex items-center gap-2">
-                        📌 <strong>{{ detail.kind }}</strong>:
-                    </p>
-                    {% with detail.value|strip_leading_slash as clean_path %}
-                    {% with clean_path|lower as filename %}
-                        {% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename or ".gif" in filename or ".webp" in filename %}
-                            <img
-                                src="{{ base_url }}{{ clean_path }}"
-                                alt="{{ detail.kind }}"
-                                class="mt-2 border object-contain clickable-media"
-                                style="max-width: 300px; max-height: 200px;"
-                                data-type="image"
-                                data-src="{{ base_url }}{{ clean_path }}"
-                            />
-                        {% elif ".mp4" in filename or ".webm" in filename or ".ogg" in filename %}
-                            <div class="video-container clickable-media"
-                                 data-type="video"
-                                 data-src="{{ base_url }}{{ clean_path }}">
-                                <video
-                                    controls
-                                    class="mt-2 border"
+                {% if "visa" not in detail.kind|lower %}
+                    <div class="p-4 border rounded-lg bg-white shadow-sm mb-4">
+                        <p class="text-gray-700 text-lg flex items-center gap-2">
+                            📌 <strong>{{ detail.kind }}</strong>:
+                        </p>
+                        {% with detail.value|strip_leading_slash as clean_path %}
+                        {% with clean_path|lower as filename %}
+                            {% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename or ".gif" in filename or ".webp" in filename %}
+                                <img
+                                    src="{{ base_url }}{{ clean_path }}"
+                                    alt="{{ detail.kind }}"
+                                    class="mt-2 border object-contain clickable-media"
                                     style="max-width: 300px; max-height: 200px;"
+                                    data-type="image"
+                                    data-src="{{ base_url }}{{ clean_path }}"
+                                />
+                            {% elif ".mp4" in filename or ".webm" in filename or ".ogg" in filename %}
+                                <div class="video-container clickable-media"
+                                     data-type="video"
+                                     data-src="{{ base_url }}{{ clean_path }}">
+                                    <video
+                                        controls
+                                        class="mt-2 border"
+                                        style="max-width: 300px; max-height: 200px;"
+                                    >
+                                        <source src="{{ base_url }}{{ clean_path }}" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            {% else %}
+                                <a
+                                    href="{{ base_url }}{{ clean_path }}"
+                                    target="_blank"
+                                    class="text-blue-600 underline"
                                 >
-                                    <source src="{{ base_url }}{{ clean_path }}" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-                        {% else %}
-                            <a
-                                href="{{ base_url }}{{ clean_path }}"
-                                target="_blank"
-                                class="text-blue-600 underline"
-                            >
-                                {{ clean_path }}
-                            </a>
-                        {% endif %}
-                    {% endwith %}
-                    {% endwith %}
-                </div>
+                                    {{ clean_path }}
+                                </a>
+                            {% endif %}
+                        {% endwith %}
+                        {% endwith %}
+                    </div>
+                {% endif %}
             {% endfor %}
         </div>
+        
         <!-- Supervisor Details -->
         <div class="border-t mt-6 pt-4">
             <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "workExperienceDetailsSupervisorDetails" %}</h2>
