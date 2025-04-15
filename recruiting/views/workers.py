@@ -400,13 +400,15 @@ class CreateWorkExperienceView(BaseCreateView):
 
 class WorkExperienceDetailsView(View):
     def get(self, request, pk):
+        base_url = request.build_absolute_uri('/')
         work_experience = get_object_or_404(UserWorkExperience, pk=pk)
         job_experiences = UserJobExperience.objects.filter(work_experience=work_experience)
         job_experience_details = UserJobExperienceDetails.objects.filter(job_experience__in=job_experiences).all().values()
         
         context = {'work_experience': work_experience,
                    'job_experiences': job_experiences,
-            'job_experience_details': job_experience_details}
+            'job_experience_details': job_experience_details,
+            'base_url': base_url}
         return render(request, 
             'recruiting/workers/work_experience_detail.html', context)
 
@@ -489,18 +491,18 @@ class ExportWorkerDetailsView(View):
 
 class UploadDocumentsView(View):
     upload_paths = {
-    'contract': 'visa',
-    'passport': 'passports',
-    'profile_picture': 'profiles',
-    'english_video': 'english_videos',
-    'us_driving_license': 'driver_licenses',
-    'mexico_driving_license': 'driver_licenses',
-    'certificate': 'certificates',
-    'visa': 'visa',
-    'photo': 'photos',
-    'job_experience_license': 'job_experiences/licenses',
-    'job_experience_media': 'job_experiences/media',
-    'explanation_video': 'explanation_videos',
+    'contract': 'uploads/visa',
+    'passport': 'uploads/passports',
+    'profile_picture': 'uploads/profiles',
+    'english_video': 'uploads/english_videos',
+    'us_driving_license': 'uploads/driver_licenses',
+    'mexico_driving_license': 'uploads/driver_licenses',
+    'certificate': 'uploads/certificates',
+    'visa': 'uploads/visa',
+    'photo': 'uploads/photos',
+    'job_experience_license': 'uploads/job_experiences/licenses',
+    'job_experience_media': 'uploads/job_experiences/media',
+    'explanation_video': 'uploads/explanation_videos',
     }
 
     def post(self, request, *args, **kwargs):

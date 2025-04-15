@@ -395,24 +395,24 @@
                   {% with clean_path|lower as filename %}
                     {% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename or ".gif" in filename %}
                       <img
-                        src="{{ base_url }}{{ clean_path }}"
+                        src="{{ base_url }}/{{ clean_path }}"
                         alt="English Proficiency"
                         class="border object-contain w-100 clickable-media"
                         style="max-height: 200px;"
                         data-type="image"
-                        data-src="{{ base_url }}{{ clean_path }}"
+                        data-src="{{ base_url }}/{{ clean_path }}"
                       />
                     {% elif ".mp4" in filename or ".webm" in filename or ".ogg" in filename %}
                       <div class="video-container clickable-media"
                            data-type="video"
-                           data-src="{{ base_url }}{{ clean_path }}">
+                           data-src="{{ base_url }}/{{ clean_path }}">
                            <video
                            controls
                            class="border w-100 preview-video"
                            style="max-height: 200px;"
-                           data-src="{{ base_url }}{{ clean_path }}"
+                           data-src="{{ base_url }}/{{ clean_path }}"
                        >
-                           <source src="{{ base_url }}{{ clean_path }}" type="video/mp4">
+                           <source src="{{ base_url }}/{{ clean_path }}" type="video/mp4">
                            Your browser does not support the video tag.
                        </video>
                       </div>
@@ -433,24 +433,24 @@
                   {% with clean_path|lower as filename %}
                     {% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename or ".gif" in filename %}
                       <img
-                        src="{{ base_url }}{{ clean_path }}"
+                        src="{{ base_url }}/{{ clean_path }}"
                         alt="Passport"
                         class="border object-contain w-100 clickable-media"
                         style="max-height: 200px;"
                         data-type="image"
-                        data-src="{{ base_url }}{{ clean_path }}"
+                        data-src="{{ base_url }}/{{ clean_path }}"
                       />
                     {% elif ".mp4" in filename or ".webm" in filename or ".ogg" in filename %}
                       <div class="video-container clickable-media"
                            data-type="video"
-                           data-src="{{ base_url }}{{ clean_path }}">
+                           data-src="{{ base_url }}/{{ clean_path }}">
                            <video
                            controls
                            class="border w-100 preview-video"
                            style="max-height: 200px;"
-                           data-src="{{ base_url }}{{ clean_path }}"
+                           data-src="{{ base_url }}/{{ clean_path }}"
                        >
-                           <source src="{{ base_url }}{{ clean_path }}" type="video/mp4">
+                           <source src="{{ base_url }}/{{ clean_path }}" type="video/mp4">
                            Your browser does not support the video tag.
                        </video>
                       </div>
@@ -498,7 +498,7 @@
                   {% with clean_path|lower as filename %}
                     {% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename or ".gif" in filename %}
                       <img
-                        src="{{ base_url }}{{ clean_path }}"
+                        src="{{ base_url }}/{{ clean_path }}"
                         alt="{{ kind }}"
                         class="border object-contain w-100 clickable-media"
                         style="max-height: 200px;"
@@ -508,12 +508,12 @@
                     {% elif ".mp4" in filename or ".webm" in filename or ".ogg" in filename %}
                       <div class="video-container clickable-media"
                            data-type="video"
-                           data-src="{{ base_url }}{{ clean_path }}">
+                           data-src="{{ base_url }}/{{ clean_path }}">
                            <video
                            controls
                            class="border w-100 preview-video"
                            style="max-height: 200px;"
-                           data-src="{{ base_url }}{{ clean_path }}"
+                           data-src="{{ base_url }}/{{ clean_path }}"
                        >
                            <source src="{{ base_url }}{{ clean_path }}" type="video/mp4">
                            Your browser does not support the video tag.
