@@ -36,7 +36,6 @@ ONBOARDING_STEPS = [
 
 class WorkerListView(View):
     def get(self, request):
-        print("Incoming GET data:", request.GET)
         work_assign_form = WorkerAssignmentForm()
         form = DynamicWorkExperienceForm(request.GET or None)
         filter_form = AdvancedFilterForm()
