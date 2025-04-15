@@ -209,6 +209,92 @@ class FilterWorkExperienceForm(forms.Form):
         widget=forms.Select(attrs={'class': 'form-control custom-dropdown'}),
         label=_("minimumExperience")
     )
+
+
+class DynamicWorkExperienceForm(forms.Form):
+    SECTOR_CHOICES = [
+        ('Animals', _('Animals')),
+        ('Construction', _('Construction')),
+        ('Crop and Horticulture', _('Crop and Horticulture')),
+        ('Licensed Vehicle Operation', _('Licensed Vehicle Operation')),
+        ('Mechanics', _('Mechanics')),
+        ('Worker Supervision/Management', _('Worker Supervision/Management')),
+        ('Other', _('Other')),
+    ]
+
+    TYPE_SPECIFIC_OPTIONS = {
+        'Animals': {
+            'second_label': _('Animal Type'),
+            'second_choices': [
+                ('Asses', _('Asses')),
+                ('Bees', _('Bees')),
+                ('Buffalo', _('Buffalo')),
+            ],
+            'third_label': _('Tasks'),
+            'third_choices': [
+                ('Breeding', _('Breeding')),
+                ('Caring', _('Caring')),
+                ('Packaging', _('Packaging')),
+            ]
+        },
+        'Crop and Horticulture': {
+            'second_label': _('Crop Type'),
+            'second_choices': [
+                ('Avocados', _('Avocados')),
+                ('Bananas', _('Bananas')),
+                ('Brazil nuts', _('Brazil nuts')),
+            ],
+            'third_label': _('Tasks'),
+            'third_choices': [
+                ('Cultivating', _('Cultivating')),
+                ('Grading and sorting', _('Grading and sorting')),
+                ('Harvesting', _('Harvesting')),
+                ('Other', _('Other')),
+            ]
+        },
+        'Mechanics': {
+            'second_label': _('Tasks'),
+            'second_choices': [
+                ('Car', _('Car')),
+                ('Agricultural Equipment/Machinery', _('Agricultural Equipment/Machinery')),
+            ],
+            'third_label': None,
+            'third_choices': None
+        },
+        'Worker Supervision/Management': {
+            'second_label': _('Tasks'),
+            'second_choices': [
+                ('Animals', _('Animals')),
+                ('Crop and Horticulture', _('Crop and Horticulture')),
+                ('Other', _('Other')),
+            ],
+            'third_label': None,
+            'third_choices': None
+        }
+        # Construction, Licensed Vehicle Operation, Other => no other fields
+    }
+
+    type_sector = forms.ChoiceField(
+        choices=SECTOR_CHOICES,
+        label=_("Type / Sector"),
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_type_sector'}),
+    )
+
+    # These are dynamic placeholders; values will be updated client-side via JavaScript
+    dynamic_field_1 = forms.ChoiceField(
+        choices=[],
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_dynamic_field_1'}),
+        label=_(""),
+    )
+
+    dynamic_field_2 = forms.ChoiceField(
+        choices=[],
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_dynamic_field_2'}),
+        label=_(""),
+    )
+
         
 class AdvancedFilterForm(forms.Form):
     choices = [
