@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from account.models import (
     User, UserJobExperience, UserDocuments, UserJobExperienceDetails, UserNotification, UserPreference,
-    UserReportedProblem, UserWorkExperience
+    UserReportedProblem, UserWorkExperience,LanguageChoices
 )
 import re
 from common.twilio import OTPVerification
@@ -12,6 +12,18 @@ class RegistrationSerializer(serializers.Serializer):
     curp = serializers.CharField(required=True)
     password = serializers.CharField(required=True)
     password_repeat = serializers.CharField(required=True)
+    language = serializers.CharField(required=False)
+    
+    
+    def validate_language(self, value):
+        if value in [None, '']:
+            return value 
+        if value not in [LanguageChoices.EN, LanguageChoices.ES_MX]:
+            raise serializers.ValidationError(
+                'Language must be either "en" or "es-MX".'
+            )
+        return value
+
 
     def validate_password(self, value):
         if len(value) < 8:
@@ -50,7 +62,7 @@ class RegistrationSerializer(serializers.Serializer):
 class UserSerilizer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email', 'curp', 'is_active', 'is_verified')
+        fields = ('id', 'email', 'curp', 'is_active', 'is_verified','language')
 
 
 class LoginSerializer(serializers.Serializer):

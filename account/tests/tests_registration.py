@@ -18,7 +18,8 @@ class RegistrationAPITestCase(APITestCase):
             'email': 'test@example.com',
             'curp': 'HEGJ820506HBCRRN09',
             'password': 'adminwert1A',
-            'password_repeat': 'adminwert1A'
+            'password_repeat': 'adminwert1A',
+            'language':'en'
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -34,7 +35,8 @@ class RegistrationAPITestCase(APITestCase):
             'email': 'invalid_email',
             'curp': 'HEGJ820506HBCRRN09',
             'password': 'testpassword',
-            'password_repeat': 'testpassword'
+            'password_repeat': 'testpassword',
+            'language':'en'
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -47,7 +49,8 @@ class RegistrationAPITestCase(APITestCase):
             'email': 'invalid_email',
             'curp': 'HEGJ820506HBCRRN',
             'password': 'testpassword',
-            'password_repeat': 'testpassword'
+            'password_repeat': 'testpassword',
+            'language':'en'
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -60,12 +63,14 @@ class RegistrationAPITestCase(APITestCase):
             'email': 'invalid_email',
             'curp': 'HEGJ820506HBCRRN09',
             'password': 'testpassword',
-            'password_repeat': 'testpas'
+            'password_repeat': 'testpas',
+            'language':'en'
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(User.objects.count(), 0)
         self.assertEqual(response.data['password'][0], 'Passwords do not match')
+        
 class RegistrationTestCase(TestCase):
     def setUp(self):
         self.client= APIClient()
