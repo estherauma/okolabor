@@ -3,12 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#: theme/forms.py:288 theme/forms.py:295
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-15 12:49+0300\n"
+"POT-Creation-Date: 2025-04-16 08:45+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,15 +47,19 @@ msgstr "Apellido"
 
 #: account/forms/account_update.py:37
 #: recruiting/templates/recruiting/employers/detail.html:49
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:49
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:92
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:166
 msgid "Email"
 msgstr "Correo electrónico"
 
 #: account/forms/account_update.py:38 recruiting/forms.py:106
 #: recruiting/templates/recruiting/recruiters/list.html:34
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:115
 #: recruiting/templates/recruiting/work_requests/allworkers/allworkers.html:29
 #: recruiting/templates/recruiting/work_requests/detail.html:706
 #: recruiting/templates/recruiting/work_requests/shortlist/shortlist.html:25
-#: recruiting/templates/recruiting/workers/list.html:264
+#: recruiting/templates/recruiting/workers/list.html:287
 msgid "Status"
 msgstr "Estado"
 
@@ -119,6 +124,7 @@ msgstr "Tipo de acción"
 #: account/templates/employers/assign-employer-organization-modal.html:10
 #: account/templates/recruiter/recruiter_modals/assign-organization-modal.html:10
 #: recruiting/templates/recruiting/employers/detail.html:37
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:37
 #, fuzzy
 #| msgid "closing"
 msgid "Close"
@@ -136,7 +142,7 @@ msgstr "Tipo de acción"
 #: recruiting/templates/recruiting/recruiters/list.html:59
 #: recruiting/templates/recruiting/recruiters/list.html:84
 #: recruiting/templates/recruiting/recruiters_list/list.html:64
-#: recruiting/templates/recruiting/workers/list.html:272
+#: recruiting/templates/recruiting/workers/list.html:295
 #, fuzzy
 #| msgid "assigned"
 msgid "Assign"
@@ -288,6 +294,7 @@ msgstr "Empleadoras"
 #: recruiting/templates/recruiting/employers/detail.html:72
 #: recruiting/templates/recruiting/employers/list.html:70
 #: recruiting/templates/recruiting/recruiters_list/list.html:63
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:72
 #, fuzzy
 #| msgid "addUserCancel"
 msgid "Cancel"
@@ -296,6 +303,7 @@ msgstr "Cancelar"
 #: account/templates/employers/edit_employer_modal.html:60
 #: account/templates/recruiter/recruiter_modals/edit_recruiter_modal.html:54
 #: recruiting/templates/recruiting/employers/detail.html:74
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:74
 msgid "Save"
 msgstr ""
 
@@ -672,7 +680,7 @@ msgstr "Trabajador creado con éxito"
 msgid "WorkerGroupDoesNotExistPleaseCreateIt."
 msgstr "El grupo de trabajadores no existe. Por favor créelo."
 
-#: account/views/web.py:358 recruiting/views/workers.py:220
+#: account/views/web.py:358 recruiting/views/workers.py:243
 msgid "workerCreatedSuccessfully."
 msgstr "Trabajador creado con éxito"
 
@@ -1294,6 +1302,8 @@ msgstr "Enviar"
 
 #: recruiting/templates/recruiting/employers/detail.html:25
 #: recruiting/templates/recruiting/employers/detail.html:36
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:25
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:36
 #, fuzzy
 #| msgid "adminUnassignedEmployers"
 msgid "assignContactEmployer"
@@ -1301,58 +1311,73 @@ msgstr "Empleadores no asignados"
 
 #: recruiting/templates/recruiting/employers/detail.html:44
 #: recruiting/templates/recruiting/employers/list.html:86
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:44
 msgid "contactName"
 msgstr "Nombre de contacto"
 
 #: recruiting/templates/recruiting/employers/detail.html:54
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:54
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:93
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:169
 msgid "Phone"
 msgstr ""
 
 #: recruiting/templates/recruiting/employers/detail.html:59
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:59
 #, fuzzy
 #| msgid "option1"
 msgid "Position"
 msgstr "Opción 1"
 
 #: recruiting/templates/recruiting/employers/detail.html:66
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:66
 msgid "IsPrimaryContact"
 msgstr ""
 
-#: recruiting/templates/recruiting/employers/detail.html:201
+#: recruiting/templates/recruiting/employers/detail.html:252
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:245
 msgid "datatableSearch"
 msgstr "Buscar"
 
-#: recruiting/templates/recruiting/employers/detail.html:202
+#: recruiting/templates/recruiting/employers/detail.html:253
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:246
 #, python-format
 msgid "Show %(menu)s entries"
 msgstr "Mostrar %(menu)s entradas"
 
-#: recruiting/templates/recruiting/employers/detail.html:203
+#: recruiting/templates/recruiting/employers/detail.html:254
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:247
 #, python-format
 msgid "Showing %(start)s to %(end)s of %(total)s entries"
 msgstr "Mostrando %(start)s a %(end)s de %(total)s entradas"
 
-#: recruiting/templates/recruiting/employers/detail.html:204
+#: recruiting/templates/recruiting/employers/detail.html:255
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:248
 msgid "datatableNoEntriesAvailable"
 msgstr "No hay entradas disponibles"
 
-#: recruiting/templates/recruiting/employers/detail.html:205
+#: recruiting/templates/recruiting/employers/detail.html:256
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:249
 msgid "datatableNoMatchingRecordsFound"
 msgstr "No se encontraron registros coincidentes"
 
-#: recruiting/templates/recruiting/employers/detail.html:207
+#: recruiting/templates/recruiting/employers/detail.html:258
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:251
 msgid "datatableFirst"
 msgstr "Primero"
 
-#: recruiting/templates/recruiting/employers/detail.html:208
+#: recruiting/templates/recruiting/employers/detail.html:259
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:252
 msgid "datatableLast"
 msgstr "Último"
 
-#: recruiting/templates/recruiting/employers/detail.html:209
+#: recruiting/templates/recruiting/employers/detail.html:260
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:253
 msgid "datatableNext"
 msgstr "Próximo"
 
-#: recruiting/templates/recruiting/employers/detail.html:210
+#: recruiting/templates/recruiting/employers/detail.html:261
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:254
 msgid "datatablePrevious"
 msgstr "Previo"
 
@@ -1507,6 +1532,84 @@ msgstr ""
 msgid "Submit"
 msgstr "Enviar"
 
+#: recruiting/templates/recruiting/recruiters_list/list.html:103
+#, fuzzy
+#| msgid "employers"
+msgid "noEmployersAssigned"
+msgstr "Empleadoras"
+
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:28
+#, fuzzy
+#| msgid "employers"
+msgid "employerContacts"
+msgstr "Empleadoras"
+
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:99
+#, fuzzy
+#| msgid "workerDetailsAvailable"
+msgid "noContactsAvailable"
+msgstr "Disponible"
+
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:111
+#, fuzzy
+#| msgid "workRequest"
+msgid "workRequestID"
+msgstr "SolicitudDeTrabajo"
+
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:112
+#: recruiting/templates/recruiting/work_requests/list.html:92
+#: recruiting/templates/recruiting/work_requests/workrequest_details.html:85
+msgid "startDate"
+msgstr "Fecha de inicio"
+
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:113
+msgid "endDate"
+msgstr ""
+
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:114
+#, fuzzy
+#| msgid "company"
+msgid "Company"
+msgstr "Compañía"
+
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:145
+#, fuzzy
+#| msgid "workerDetailsAvailable"
+msgid "noWorkRequestsAvailable"
+msgstr "Disponible"
+
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:159
+#, fuzzy
+#| msgid "addUserRecruiter"
+msgid "assignedRecruiters"
+msgstr "Reclutador"
+
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:165
+#, fuzzy
+#| msgid "lastName"
+msgid "Name"
+msgstr "Apellido"
+
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:167
+#, fuzzy
+#| msgid "addressLine1"
+msgid "Address"
+msgstr "Dirección Línea 1"
+
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:168
+msgid "Country"
+msgstr ""
+
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:170
+#, fuzzy
+#| msgid "adminUnassignedEmployers"
+msgid "assignedEmployers"
+msgstr "Empleadores no asignados"
+
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:192
+msgid "noEmployerOrganizationsAssigned"
+msgstr ""
+
 #: recruiting/templates/recruiting/todo.html:8
 #: theme/templates/components/layouts/vertical/app-sidebar.html:62
 msgid "toDo"
@@ -1562,7 +1665,7 @@ msgstr "Añadir a la lista de favoritos"
 
 #: recruiting/templates/recruiting/work_requests/allworkers/allworkers.html:22
 #: recruiting/templates/recruiting/work_requests/shortlist/shortlist.html:17
-#: recruiting/templates/recruiting/workers/list.html:152
+#: recruiting/templates/recruiting/workers/list.html:175
 msgid "checkbox"
 msgstr ""
 
@@ -1571,7 +1674,7 @@ msgstr ""
 #: recruiting/templates/recruiting/work_requests/confirmed/confirmed.html:7
 #: recruiting/templates/recruiting/work_requests/offersent/offersent.html:12
 #: recruiting/templates/recruiting/work_requests/shortlist/shortlist.html:18
-#: recruiting/templates/recruiting/workers/list.html:153
+#: recruiting/templates/recruiting/workers/list.html:176
 msgid "name"
 msgstr "Nombre"
 
@@ -1580,7 +1683,7 @@ msgstr "Nombre"
 #: recruiting/templates/recruiting/work_requests/confirmed/confirmed.html:9
 #: recruiting/templates/recruiting/work_requests/offersent/offersent.html:14
 #: recruiting/templates/recruiting/work_requests/shortlist/shortlist.html:20
-#: recruiting/templates/recruiting/workers/list.html:154
+#: recruiting/templates/recruiting/workers/list.html:177
 msgid "town"
 msgstr "Ciudad"
 
@@ -1589,7 +1692,7 @@ msgstr "Ciudad"
 #: recruiting/templates/recruiting/work_requests/confirmed/confirmed.html:10
 #: recruiting/templates/recruiting/work_requests/offersent/offersent.html:15
 #: recruiting/templates/recruiting/work_requests/shortlist/shortlist.html:21
-#: recruiting/templates/recruiting/workers/list.html:155
+#: recruiting/templates/recruiting/workers/list.html:178
 msgid "profileCompletion"
 msgstr "Finalización de perfil"
 
@@ -1598,7 +1701,7 @@ msgstr "Finalización de perfil"
 #: recruiting/templates/recruiting/work_requests/confirmed/confirmed.html:11
 #: recruiting/templates/recruiting/work_requests/offersent/offersent.html:16
 #: recruiting/templates/recruiting/work_requests/shortlist/shortlist.html:22
-#: recruiting/templates/recruiting/workers/list.html:156
+#: recruiting/templates/recruiting/workers/list.html:179
 msgid "experience"
 msgstr "Experiencia"
 
@@ -1607,7 +1710,7 @@ msgstr "Experiencia"
 #: recruiting/templates/recruiting/work_requests/confirmed/confirmed.html:12
 #: recruiting/templates/recruiting/work_requests/offersent/offersent.html:17
 #: recruiting/templates/recruiting/work_requests/shortlist/shortlist.html:23
-#: recruiting/templates/recruiting/workers/list.html:157
+#: recruiting/templates/recruiting/workers/list.html:180
 msgid "englishProficiency"
 msgstr "Dominio del inglés"
 
@@ -1616,14 +1719,14 @@ msgstr "Dominio del inglés"
 #: recruiting/templates/recruiting/work_requests/confirmed/confirmed.html:13
 #: recruiting/templates/recruiting/work_requests/offersent/offersent.html:18
 #: recruiting/templates/recruiting/work_requests/shortlist/shortlist.html:24
-#: recruiting/templates/recruiting/workers/list.html:158
+#: recruiting/templates/recruiting/workers/list.html:181
 msgid "locationPreference"
 msgstr "Preferencia de ubicación"
 
 #: recruiting/templates/recruiting/work_requests/cancelled/cancelled.html:14
 #: recruiting/templates/recruiting/work_requests/confirmed/confirmed.html:14
 #: recruiting/templates/recruiting/work_requests/offersent/offersent.html:19
-#: recruiting/templates/recruiting/workers/list.html:159
+#: recruiting/templates/recruiting/workers/list.html:182
 msgid "offerStatus"
 msgstr "Estatus de oferta"
 
@@ -1637,7 +1740,7 @@ msgstr "Enviar"
 
 #: recruiting/templates/recruiting/work_requests/create_addworker.html:25
 #: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:24
-#: recruiting/templates/recruiting/workers/detail.html:29
+#: recruiting/templates/recruiting/workers/detail.html:28
 msgid "workerDetailsBack"
 msgstr "Atrás"
 
@@ -1649,19 +1752,19 @@ msgstr "Agregar Trabajadores"
 
 #: recruiting/templates/recruiting/work_requests/create_addworker.html:50
 #: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:51
-#: recruiting/templates/recruiting/workers/list.html:20
+#: recruiting/templates/recruiting/workers/list.html:21
 msgid "advancedFilter"
 msgstr "Filtro avanzado"
 
 #: recruiting/templates/recruiting/work_requests/create_addworker.html:60
 #: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:62
-#: recruiting/templates/recruiting/workers/list.html:30
+#: recruiting/templates/recruiting/workers/list.html:36
 msgid "selectPrimaryJobExperience"
 msgstr "Seleccionar experiencia laboral principal"
 
 #: recruiting/templates/recruiting/work_requests/create_addworker.html:64
 #: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:66
-#: recruiting/templates/recruiting/workers/list.html:34
+#: recruiting/templates/recruiting/workers/list.html:40
 msgid "what'sThis?"
 msgstr "¿Qué es esto?"
 
@@ -1669,26 +1772,25 @@ msgstr "¿Qué es esto?"
 #: recruiting/templates/recruiting/work_requests/create_addworker.html:107
 #: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:84
 #: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:109
-#: recruiting/templates/recruiting/workers/list.html:52
-#: recruiting/templates/recruiting/workers/list.html:77
+#: recruiting/templates/recruiting/workers/list.html:63
+#: recruiting/templates/recruiting/workers/list.html:99
 msgid "x"
 msgstr "X"
 
 #: recruiting/templates/recruiting/work_requests/create_addworker.html:89
 #: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:91
-#: recruiting/templates/recruiting/workers/list.html:59
 msgid "otherExperience"
 msgstr "Otra experiencia"
 
 #: recruiting/templates/recruiting/work_requests/create_addworker.html:114
 #: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:116
-#: recruiting/templates/recruiting/workers/list.html:84
+#: recruiting/templates/recruiting/workers/list.html:79
 msgid "addAnotherExperience"
 msgstr "Agregar otra experiencia"
 
 #: recruiting/templates/recruiting/work_requests/create_addworker.html:119
 #: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:121
-#: recruiting/templates/recruiting/workers/list.html:89
+#: recruiting/templates/recruiting/workers/list.html:109
 msgid "furtherFilters"
 msgstr "Filtros adicionales"
 
@@ -2123,7 +2225,7 @@ msgid "workAssignedWorkerInformation"
 msgstr "Información del trabajador"
 
 #: recruiting/templates/recruiting/work_requests/detail.html:705
-#: recruiting/templates/recruiting/workers/list.html:257
+#: recruiting/templates/recruiting/workers/list.html:280
 msgid "Role"
 msgstr "Papel"
 
@@ -2196,11 +2298,6 @@ msgstr "Solicitud de trabajador"
 #: recruiting/templates/recruiting/work_requests/list.html:89
 msgid "deadline"
 msgstr "Fecha límite"
-
-#: recruiting/templates/recruiting/work_requests/list.html:92
-#: recruiting/templates/recruiting/work_requests/workrequest_details.html:85
-msgid "startDate"
-msgstr "Fecha de inicio"
 
 #: recruiting/templates/recruiting/work_requests/list.html:98
 #: recruiting/templates/recruiting/work_requests/list.html:135
@@ -2310,137 +2407,141 @@ msgstr ""
 msgid "NoDraftWorkRequests"
 msgstr "Estado"
 
-#: recruiting/templates/recruiting/workers/detail.html:20
+#: recruiting/templates/recruiting/workers/detail.html:19
 msgid "workerDetailsWorkerDetails"
 msgstr "Detalles de la trabajadora"
 
-#: recruiting/templates/recruiting/workers/detail.html:37
+#: recruiting/templates/recruiting/workers/detail.html:36
 msgid "workerDetailsAB"
 msgstr "AB"
 
-#: recruiting/templates/recruiting/workers/detail.html:49
+#: recruiting/templates/recruiting/workers/detail.html:48
 #, fuzzy, python-format
 #| msgid "profile76%%Complete"
 msgid "profile76%%Complete"
 msgstr "Perfil 76% completa"
 
-#: recruiting/templates/recruiting/workers/detail.html:51
+#: recruiting/templates/recruiting/workers/detail.html:50
 msgid "workerDetailsEditProfile"
 msgstr "Editar perfil"
 
-#: recruiting/templates/recruiting/workers/detail.html:59
+#: recruiting/templates/recruiting/workers/detail.html:58
 msgid "workerDetailsAddToShortlist"
 msgstr "Añadir a la lista de favoritos"
 
-#: recruiting/templates/recruiting/workers/detail.html:62
+#: recruiting/templates/recruiting/workers/detail.html:61
 msgid "workerDetailsSendOffer"
 msgstr "Enviar oferta"
 
-#: recruiting/templates/recruiting/workers/detail.html:72
+#: recruiting/templates/recruiting/workers/detail.html:71
 msgid "workerDetailsContact"
 msgstr "Contacto"
 
-#: recruiting/templates/recruiting/workers/detail.html:75
+#: recruiting/templates/recruiting/workers/detail.html:74
 msgid "workerDetailsSendMessage"
 msgstr "Enviar mensaje"
 
-#: recruiting/templates/recruiting/workers/detail.html:80
+#: recruiting/templates/recruiting/workers/detail.html:79
 msgid "workerDetailsAddress"
 msgstr "Dirección"
 
-#: recruiting/templates/recruiting/workers/detail.html:90
+#: recruiting/templates/recruiting/workers/detail.html:89
 msgid "workerDetailsEmail"
 msgstr "Correo electrónico"
 
-#: recruiting/templates/recruiting/workers/detail.html:94
+#: recruiting/templates/recruiting/workers/detail.html:93
 msgid "workerDetailsPhoneNumber"
 msgstr "Número de teléfono"
 
-#: recruiting/templates/recruiting/workers/detail.html:98
+#: recruiting/templates/recruiting/workers/detail.html:97
 msgid "workerDetailsGender"
 msgstr "Género"
 
-#: recruiting/templates/recruiting/workers/detail.html:109
+#: recruiting/templates/recruiting/workers/detail.html:108
 msgid "workerDetailsWorkExperience"
 msgstr "Experiencia laboral"
 
-#: recruiting/templates/recruiting/workers/detail.html:112
+#: recruiting/templates/recruiting/workers/detail.html:111
 msgid "workerDetailsAddWorkExperience"
 msgstr "+ Agregar experiencia laboral"
 
-#: recruiting/templates/recruiting/workers/detail.html:163
+#: recruiting/templates/recruiting/workers/detail.html:162
 msgid "workerDetailsWorkerStatus"
 msgstr "Condición de trabajador"
 
-#: recruiting/templates/recruiting/workers/detail.html:167
+#: recruiting/templates/recruiting/workers/detail.html:166
 msgid "workerDetailsAvailable"
 msgstr "Disponible"
 
-#: recruiting/templates/recruiting/workers/detail.html:177
+#: recruiting/templates/recruiting/workers/detail.html:176
 msgid "workerDetailsWorkInformation"
 msgstr "Información del trabajo"
 
-#: recruiting/templates/recruiting/workers/detail.html:181
+#: recruiting/templates/recruiting/workers/detail.html:180
 #, fuzzy
 #| msgid "accountInformation"
 msgid "addInformation"
 msgstr "Información de la cuenta"
 
-#: recruiting/templates/recruiting/workers/list.html:121
+#: recruiting/templates/recruiting/workers/list.html:72
+msgid "Apply Filters"
+msgstr ""
+
+#: recruiting/templates/recruiting/workers/list.html:144
 msgid "showResults"
 msgstr "Mostrar resultados"
 
-#: recruiting/templates/recruiting/workers/list.html:125
+#: recruiting/templates/recruiting/workers/list.html:148
 msgid "selectRows"
 msgstr "Seleccionar filas"
 
-#: recruiting/templates/recruiting/workers/list.html:128
+#: recruiting/templates/recruiting/workers/list.html:151
 msgid "5PerPage"
 msgstr "5 por página"
 
-#: recruiting/templates/recruiting/workers/list.html:129
+#: recruiting/templates/recruiting/workers/list.html:152
 msgid "10PerPage"
 msgstr "10 por página"
 
-#: recruiting/templates/recruiting/workers/list.html:130
+#: recruiting/templates/recruiting/workers/list.html:153
 msgid "15PerPage"
 msgstr "15 por página"
 
-#: recruiting/templates/recruiting/workers/list.html:131
+#: recruiting/templates/recruiting/workers/list.html:154
 msgid "20PerPage"
 msgstr "20 por página"
 
-#: recruiting/templates/recruiting/workers/list.html:134
+#: recruiting/templates/recruiting/workers/list.html:157
 msgid "addTo"
 msgstr "añadir"
 
-#: recruiting/templates/recruiting/workers/list.html:137
+#: recruiting/templates/recruiting/workers/list.html:160
 msgid "addWorker"
 msgstr "Agregar trabajador"
 
-#: recruiting/templates/recruiting/workers/list.html:141
+#: recruiting/templates/recruiting/workers/list.html:164
 msgid "workersExportWorkers"
 msgstr "Trabajadores de exportación"
 
-#: recruiting/templates/recruiting/workers/list.html:232
+#: recruiting/templates/recruiting/workers/list.html:255
 msgid "assignWorker"
 msgstr "AsignarTrabajador"
 
-#: recruiting/templates/recruiting/workers/list.html:240
+#: recruiting/templates/recruiting/workers/list.html:263
 msgid "selectedWorkers"
 msgstr "TrabajadoresSeleccionados"
 
-#: recruiting/templates/recruiting/workers/list.html:247
+#: recruiting/templates/recruiting/workers/list.html:270
 msgid "workRequest"
 msgstr "SolicitudDeTrabajo"
 
-#: recruiting/templates/recruiting/workers/list.html:249
+#: recruiting/templates/recruiting/workers/list.html:272
 #, fuzzy
 #| msgid "workerRequest"
 msgid "Select a work request"
 msgstr "Solicitud de trabajador"
 
-#: recruiting/templates/recruiting/workers/list.html:259
+#: recruiting/templates/recruiting/workers/list.html:282
 msgid "selectARole"
 msgstr "SeleccionarUnRol"
 
@@ -2482,155 +2583,155 @@ msgstr "Detalles del supervisor"
 msgid "workExperienceDetailsWorkAuthorization"
 msgstr "Autorizacion de trabajo"
 
-#: recruiting/views/web.py:186
+#: recruiting/views/web.py:209
 msgid "Employer created successfully"
 msgstr ""
 
-#: recruiting/views/web.py:264
+#: recruiting/views/web.py:359
 msgid "jobOrderCreatedSuccessfully"
 msgstr "Orden de trabajo creada exitosamente"
 
-#: recruiting/views/web.py:463
+#: recruiting/views/web.py:558
 #, fuzzy
 #| msgid "emailsSentSuccessfully"
 msgid "offerSentSuccessfully."
 msgstr "Correo enviado con éxito"
 
-#: recruiting/views/web.py:472
+#: recruiting/views/web.py:567
 #, fuzzy
 #| msgid "workerCreatedSuccessfully."
 msgid "OfferCancelledSuccessfully."
 msgstr "Trabajador creado con éxito"
 
-#: recruiting/views/web.py:492
+#: recruiting/views/web.py:585
 #, fuzzy
 #| msgid "workerCreatedSuccessfully."
 msgid "workersAddedToShortlistSuccessfully."
 msgstr "Trabajador creado con éxito"
 
-#: recruiting/views/web.py:495
+#: recruiting/views/web.py:588
 msgid "someWorkersAreAlreadyShortlisted."
 msgstr ""
 
-#: recruiting/views/web.py:558
+#: recruiting/views/web.py:648
 msgid "addRoleRoleCreatedSuccessfully"
 msgstr "Rol creado exitosamente"
 
-#: recruiting/views/web.py:607
+#: recruiting/views/web.py:697
 #, python-brace-format
 msgid "Recruiter {email} assigned to {employer}."
 msgstr ""
 
-#: recruiting/views/web.py:609
+#: recruiting/views/web.py:699
 #, python-brace-format
 msgid "Recruiter {email} is already assigned to {employer}."
 msgstr ""
 
-#: recruiting/views/web.py:626
+#: recruiting/views/web.py:716
 #, python-brace-format
 msgid "Recruiter {email} removed from {employer}."
 msgstr ""
 
-#: recruiting/views/web.py:628
+#: recruiting/views/web.py:718
 #, python-brace-format
 msgid "Recruiter {email} was already removed from {employer}."
 msgstr ""
 
-#: recruiting/views/web.py:669
+#: recruiting/views/web.py:759
 msgid "roleAddHoursRoleHoursSuccessfullyAdded"
 msgstr "Horas de rol agregadas exitosamente"
 
-#: recruiting/views/web.py:679
+#: recruiting/views/web.py:769
 msgid "roleWagesRolesWagesSuccessfullyAdded"
 msgstr "Salario de rol añadido correctamente"
 
-#: recruiting/views/web.py:689
+#: recruiting/views/web.py:779
 msgid "roleDeductionsRolesDeductionsSuccessfullyAdded"
 msgstr "Deducciones de roles agregadas exitosamente"
 
-#: recruiting/views/web.py:705
+#: recruiting/views/web.py:795
 msgid "roleEmploymentLocationSuccessfullyAddedRoleLocation"
 msgstr "Ubicación del rol agregada exitosamente"
 
-#: recruiting/views/web.py:717
+#: recruiting/views/web.py:807
 msgid "roleHousingInformationSuccessfullyAddedRoleHousingInformation"
 msgstr "Información de alojamiento del rol agregada exitosamente"
 
-#: recruiting/views/web.py:729
+#: recruiting/views/web.py:819
 msgid "roleMealProvisionSuccessfullyAddedRoleMealsInformation"
 msgstr "Información sobre comidas de rol agregada exitosamente"
 
-#: recruiting/views/web.py:759
+#: recruiting/views/web.py:849
 msgid "messageCreatedSuccessfully"
 msgstr "Mensaje creado exitosamente"
 
-#: recruiting/views/web.py:909
+#: recruiting/views/web.py:999
 #, fuzzy
 #| msgid "recruiterAssignmentAccepted"
 msgid "recruiterAssignmentAcceptedSuccessfully."
 msgstr "Asignación de Reclutador Aceptada"
 
-#: recruiting/views/web.py:932
+#: recruiting/views/web.py:1022
 #, fuzzy
 #| msgid "recruiterAssignmentRequest"
 msgid "recruiterAssignmentRejectedSuccessfully."
 msgstr "Solicitud de Asignación de Reclutador"
 
-#: recruiting/views/web.py:956
+#: recruiting/views/web.py:1046
 #, fuzzy
 #| msgid "workersAssignedSuccessfully."
 msgid "WorkerAssignmentSuccessfullyMarkedAsDeleted."
 msgstr "¡Trabajadores asignados con éxito!"
 
-#: recruiting/views/web.py:975
+#: recruiting/views/web.py:1065
 msgid "updateWorkRequestsSuccessfullyUpdatedTo'{}'Status."
 msgstr ""
 
-#: recruiting/views/web.py:978
+#: recruiting/views/web.py:1068
 #, fuzzy
 #| msgid "createWorkRequestEndDate"
 msgid "noWorkRequestsFoundToUpdate."
 msgstr "Fecha de finalización"
 
-#: recruiting/views/web.py:980
+#: recruiting/views/web.py:1070
 #, fuzzy
 #| msgid "invalidData"
 msgid "invalidDataProvided."
 msgstr "datos inválidos"
 
-#: recruiting/views/web.py:1048
+#: recruiting/views/web.py:1138
 #, fuzzy
 #| msgid "workersAssignedSuccessfully."
 msgid "ContactAssignedSuccessfully!"
 msgstr "¡Trabajadores asignados con éxito!"
 
-#: recruiting/views/web.py:1068
+#: recruiting/views/web.py:1158
 msgid "missingEmployerIDsOrRecruiterOrganizationID."
 msgstr ""
 
-#: recruiting/views/web.py:1086
+#: recruiting/views/web.py:1176
 #, fuzzy
 #| msgid "workersAssignedSuccessfully."
 msgid "employersAssignedSuccessfully."
 msgstr "¡Trabajadores asignados con éxito!"
 
-#: recruiting/views/web.py:1091
+#: recruiting/views/web.py:1181
 #, fuzzy
 #| msgid "invalidData"
 msgid "Invalid JSON data."
 msgstr "datos inválidos"
 
-#: recruiting/views/workers.py:164
+#: recruiting/views/workers.py:187
 msgid "missingDataPleaseSelectWorkersWorkRequestAndRole"
 msgstr "faltanDatosPorFavorSeleccioneTrabajadoresSolicitudDeTrabajoYRol"
 
-#: recruiting/views/workers.py:185
+#: recruiting/views/workers.py:208
 #, fuzzy
 #| msgid "workersAssignedSuccessfully."
 msgid "workersAssignedSuccessfully!"
 msgstr "¡Trabajadores asignados con éxito!"
 
-#: recruiting/views/workers.py:217
+#: recruiting/views/workers.py:240
 msgid "workerGroupDoesNotExist.PleaseCreateIt."
 msgstr "El grupo de trabajadores no existe. Por favor créelo."
 
@@ -3184,7 +3285,7 @@ msgstr "Plantación"
 msgid "planting"
 msgstr "Plantación"
 
-#: theme/forms.py:191
+#: theme/forms.py:191 theme/forms.py:249
 #, fuzzy
 #| msgid "cultivating"
 msgid "Cultivating"
@@ -3194,7 +3295,7 @@ msgstr "Cultivando"
 msgid "cultivating"
 msgstr "Cultivando"
 
-#: theme/forms.py:192
+#: theme/forms.py:192 theme/forms.py:251
 msgid "Harvesting"
 msgstr ""
 
@@ -3202,7 +3303,7 @@ msgstr ""
 msgid "harvesting"
 msgstr "Cosecha"
 
-#: theme/forms.py:193
+#: theme/forms.py:193 theme/forms.py:237
 #, fuzzy
 #| msgid "packaging"
 msgid "Packaging"
@@ -3212,7 +3313,7 @@ msgstr "Embalaje"
 msgid "packaging"
 msgstr "Embalaje"
 
-#: theme/forms.py:194
+#: theme/forms.py:194 theme/forms.py:250
 #, fuzzy
 #| msgid "gradingAndSorting"
 msgid "Grading and sorting"
@@ -3222,7 +3323,7 @@ msgstr "Clasificación y ordenación"
 msgid "gradingAndSorting"
 msgstr "Clasificación y ordenación"
 
-#: theme/forms.py:195
+#: theme/forms.py:195 theme/forms.py:222 theme/forms.py:252 theme/forms.py:269
 #, fuzzy
 #| msgid "other"
 msgid "Other"
@@ -3259,6 +3360,98 @@ msgstr "5+ years"
 #: theme/forms.py:210
 msgid "minimumExperience"
 msgstr "Experiencia mínima"
+
+#: theme/forms.py:216 theme/forms.py:267
+msgid "Animals"
+msgstr ""
+
+#: theme/forms.py:217
+#, fuzzy
+#| msgid "option1"
+msgid "Construction"
+msgstr "Opción 1"
+
+#: theme/forms.py:218 theme/forms.py:268
+msgid "Crop and Horticulture"
+msgstr ""
+
+#: theme/forms.py:219
+msgid "Licensed Vehicle Operation"
+msgstr ""
+
+#: theme/forms.py:220
+msgid "Mechanics"
+msgstr ""
+
+#: theme/forms.py:221
+msgid "Worker Supervision/Management"
+msgstr ""
+
+#: theme/forms.py:227
+msgid "Animal Type"
+msgstr ""
+
+#: theme/forms.py:229
+msgid "Asses"
+msgstr ""
+
+#: theme/forms.py:230
+msgid "Bees"
+msgstr ""
+
+#: theme/forms.py:231
+msgid "Buffalo"
+msgstr ""
+
+#: theme/forms.py:233 theme/forms.py:247 theme/forms.py:256 theme/forms.py:265
+msgid "Tasks"
+msgstr ""
+
+#: theme/forms.py:235
+#, fuzzy
+#| msgid "pending"
+msgid "Breeding"
+msgstr "Pendiente"
+
+#: theme/forms.py:236
+msgid "Caring"
+msgstr ""
+
+#: theme/forms.py:241
+#, fuzzy
+#| msgid "cropType"
+msgid "Crop Type"
+msgstr "Tipo de cultivo"
+
+#: theme/forms.py:243
+#, fuzzy
+#| msgid "avocados"
+msgid "Avocados"
+msgstr "Aguacates"
+
+#: theme/forms.py:244
+#, fuzzy
+#| msgid "bananas"
+msgid "Bananas"
+msgstr "Plátanos"
+
+#: theme/forms.py:245
+#, fuzzy
+#| msgid "brazilNuts"
+msgid "Brazil nuts"
+msgstr "Nueces de Brasil"
+
+#: theme/forms.py:258
+msgid "Car"
+msgstr ""
+
+#: theme/forms.py:259
+msgid "Agricultural Equipment/Machinery"
+msgstr ""
+
+#: theme/forms.py:279
+msgid "Type / Sector"
+msgstr ""
 
 #: theme/templates/components/footer.html:9
 msgid "footerCopyright©"
@@ -3506,9 +3699,6 @@ msgstr "Has iniciado sesión correctamente"
 #~ msgid "searchWorkers"
 #~ msgstr "Trabajadoras de búsqueda"
 
-#~ msgid "employers"
-#~ msgstr "Empleadoras"
-
 #~ msgid "admin"
 #~ msgstr "Administradora"
 
@@ -3680,9 +3870,6 @@ msgstr "Has iniciado sesión correctamente"
 
 #~ msgid "intermediate"
 #~ msgstr "Intermedia"
-
-#~ msgid "pending"
-#~ msgstr "Pendiente"
 
 #~ msgid "workExperienceDetailsjobDetails"
 #~ msgstr "Detalles del trabajo"

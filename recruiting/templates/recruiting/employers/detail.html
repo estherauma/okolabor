@@ -39,27 +39,27 @@
           <input type="hidden" id="employerIdField" name="employer_id">
           <div class="modal-body">
             <input type="hidden" id="selectedEmployersForContact" name="selected_employers">
-            
+
             <div class="mb-3">
               <label for="contactName" class="form-label">{% translate "contactName" %}</label>
               <input type="text" class="form-control" id="contactName" name="name" required>
             </div>
-            
+
             <div class="mb-3">
               <label for="contactEmail" class="form-label">{% translate "Email" %}</label>
               <input type="email" class="form-control" id="contactEmail" name="email" required>
             </div>
-  
+
             <div class="mb-3">
               <label for="contactPhone" class="form-label">{% translate "Phone" %}</label>
               <input type="text" class="form-control" id="contactPhone" name="phone" required>
             </div>
-  
+
             <div class="mb-3">
               <label for="contactPosition" class="form-label">{% translate "Position" %}</label>
               <input type="text" class="form-control" id="contactPosition" name="position">
             </div>
-  
+
             <div class="form-check">
               <input class="form-check-input" type="checkbox" value="true" id="isPrimary" name="is_primary">
               <label class="form-check-label" for="isPrimary">
@@ -67,13 +67,13 @@
               </label>
             </div>
           </div>
-  
+
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Cancel" %}</button>
             <button type="submit" class="btn btn-primary" id="assignContactBtn">
               {% translate "Save" %}
             </button>
-            
+
           </div>
         </form>
       </div>
@@ -137,10 +137,7 @@
                     </a>
                 </td>
                 <td>
-                    <span class="badge 
-                        {% if work_request.status == 'Open' %}bg-success{% elif work_request.status == 'Requested' %}bg-warning{% elif work_request.status == 'Closed' %}bg-danger{% else %}bg-secondary{% endif %}">
-                        {{ work_request.status }}
-                    </span>
+                    <span>{{ work_request.status }}</span>
                 </td>
             </tr>
             {% empty %}
@@ -154,6 +151,59 @@
         </div>
       </div>
     </div>
+
+    <!-- New Card for Assigned Recruiters -->
+    <div class="col-12 mt-4">
+      <div class="card">
+        <div class="card-body">
+          <h3>assignedRecruiters</h3>
+            <div class="table-responsive">
+                <table class="table text-nowrap border-bottom" id="assigned-orgs-table">
+                    <thead>
+                        <tr>
+                            
+                            <th class="theading-color">Name</th>
+                            <th class="theading-color">Email</th>
+                            <th class="theading-color">Address</th>
+                            <th class="theading-color">Country</th>
+                            <th class="theading-color">Phone</th>
+                            <th class="theading-color">Recruiters</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for org in assigned_organizations %}
+                        <tr class="text-center">
+                            
+                            <td>{{ org.name }}</td>
+                            <td>{{ org.email }}</td>
+                            <td>{{ org.address }}</td>
+                            <td>{{ org.country }}</td>
+                            <td>{{ org.phone }}</td>
+                            <td>
+                                <ul>
+                                    {% if org.recruiters %}
+                                        {% for recruiter in org.recruiters %}
+                                            {{ recruiter }}{% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        No recruiters assigned
+                                    {% endif %}
+                                    {% comment %} {{org.recruiters}} {% endcomment %}
+                                </ul>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center">noOrganizationsAssigned.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
 
 {% endblock body %}
 
@@ -195,7 +245,7 @@
         if ($.fn.DataTable.isDataTable('#delete-datatable')) {
             $('#delete-datatable').DataTable().destroy();
         }
-    
+
         $('#delete-datatable').DataTable({
             "language": {
                 "search": "{% translate 'datatableSearch' %}",
@@ -212,7 +262,7 @@
             }
         });
     });
-    
+
 </script>
 
 {% endblock scripts %}

@@ -87,7 +87,7 @@
               <tr class="text-center" data-id="{{ recruiter.id }}">
                 <td><input class="table-checkbox" type="checkbox"/></td>
                 <td>
-                  <a href="/employers/{{ recruiter.id }}" class="text-decoration-none text-dark">
+                  <a href="/recruiters-org/{{ recruiter.id }}" class="text-decoration-none text-dark">
                       {{ recruiter.name }}
                   </a>
                 </td>
@@ -95,12 +95,12 @@
                 <td>{{ recruiter.address }}, {{ recruiter.country }}</td>
                 <td>{{ recruiter.phone }}</td>
                 <td>
-                  {% if recruiter.recruiters %}
-                      {% for recruiter_name in recruiter.recruiters %}
-                          {{ recruiter_name }}{% if not forloop.last %}, {% endif %}
+                  {% if recruiter.employers %}
+                      {% for employer_name in recruiter.employers %}
+                          {{ employer_name }}{% if not forloop.last %}, {% endif %}
                       {% endfor %}
                   {% else %}
-                      No recruiters assigned
+                      {% translate "noEmployersAssigned" %}
                   {% endif %}
                 </td>
               </tr>
