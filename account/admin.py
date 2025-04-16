@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from account.models import (
     LoginEvent, User, UserActivityLog, UserDocuments, UserJobExperienceDetails, UserNotification, UserPreference, UserWorkExperience,
-    UserWorkExperienceDocuments, UserJobExperience, UserReportedProblem
+    UserWorkExperienceDocuments, UserJobExperience, UserReportedProblem,Log
 )
 
 # Register your models here.
@@ -17,3 +17,4 @@ admin.site.register(UserReportedProblem)
 admin.site.register(UserNotification)
 admin.site.register(UserActivityLog)
 admin.site.register(LoginEvent)
+admin.site.register(Log)

@@ -4,7 +4,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from common.models import AuditableModel, BaseModel
-
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -250,3 +251,14 @@ class UserActivityLog(AuditableModel):
 
     def __str__(self):
         return f'{self.user.curp} - {self.action} - {self.created_at}'
+
+class Log(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.CharField(max_length=255)
+    content_object = GenericForeignKey('content_type', 'object_id')
+    action = models.CharField(max_length=255)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.action} on {self.content_type.model} by {self.user.first_name}"

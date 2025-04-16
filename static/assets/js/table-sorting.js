@@ -1,7 +1,7 @@
 $(document).ready(function () {
     if ($.fn.DataTable) {
         // Tables with common settings
-        $('#basic-datatable, #another-basic-datatable, #work-requests-list-datatable, #datatable-closed, #datatable-in-progress, #datatable-draft').DataTable({
+        $('#basic-datatable, #another-basic-datatable, #work-requests-list-datatable, #datatable-closed, #datatable-in-progress, #datatable-draft, #logs-table').DataTable({
             "ordering": true,
             "order": [],
             "columnDefs": [{
