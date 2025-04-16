@@ -92,8 +92,11 @@ def check_passport_match(sender, instance, **kwargs):
 
 User = get_user_model()
 
+# def is_migration_running():
+#     return 'makemigrations' in sys.argv or 'migrate' in sys.argv
 def is_migration_running():
-    return 'makemigrations' in sys.argv or 'migrate' in sys.argv
+    return any(cmd in sys.argv for cmd in ['makemigrations', 'migrate', 'test', 'collectstatic', 'flush', 'loaddata'])
+
 
 @receiver(post_save)
 def log_create_update(sender, instance, created, **kwargs):
