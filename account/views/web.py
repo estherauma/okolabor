@@ -469,7 +469,7 @@ def assign_organization(request):
 
 class LogListView(LoginRequiredMixin, ListView):
     model = Log
-    template_name = 'logs/logs.html'
+    template_name = 'userlogs/logs.html'
     context_object_name = 'logs'
 
     def get_queryset(self):
@@ -506,6 +506,6 @@ class LogListView(LoginRequiredMixin, ListView):
 
 class LogDetailView(LoginRequiredMixin, DetailView):
     model = Log
-    template_name = 'logs/log_detail.html'
+    template_name = 'userlogs/log_detail.html'
     context_object_name = 'log'
 
