@@ -1,4 +1,5 @@
 {% extends 'components/base.html' %}
+{% load custom_filters %}
 {% block styles %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 {% endblock styles %}
@@ -612,17 +613,80 @@
    </div>
   </div>
   <!-- work information card -->
+
   <div class="card">
-   <div class="card-header bg-primary">
-    <div class="card-title">
-     <h3 class="card-title text-white">
-      {% translate "workRequestDetailsWorkerInformation" %}
-     </h3>
+    <div class="card-header bg-primary">
+        <h3 class="card-title text-white">
+            {% translate "workRequestDetailsWorkerInformation" %}
+        </h3>
     </div>
-   </div>
-   <div class="card-body">
-   </div>
-  </div>
+    <div class="card-body">
+        <div>
+            <div class="d-flex justify-content-between">
+                <div><strong>{% translate "Shortlist" %}</strong></div>
+                <div><strong>{{ total_shortlist_count }}</strong></div>
+            </div>
+            <ul>
+                {% for role in roles %}
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <a href="{% url 'recruiting_web:summary' pk=workrequest.id role_id=role.id %}?tab=shortlist">
+                                {{ role.title }}
+                            </a>
+                        </div>
+                        <div>{{ worker_summary.assigned|get:role.title }}</div>
+                    </div>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div>
+            <div class="d-flex justify-content-between">
+                <div><strong>{% translate "offerSent(pending)" %}</strong></div>
+                <div><strong>{{ total_offersent_count }}</strong></div>
+            </div>
+            <ul>
+                {% for role in roles %}
+                    <li>
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <a href="{% url 'recruiting_web:summary' pk=workrequest.id role_id=role.id %}?tab=offersent">
+                                    {{ role.title }}
+                                </a>
+                            </div>
+                            <div>{{ worker_summary.offersent|get:role.title }}</div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div>
+            <div class="d-flex justify-content-between">
+                <div><strong>{% translate "Confirmed" %}</strong></div>
+                <div><strong>{{ total_confirmed_count }}</strong></div>
+            </div>
+            <ul>
+                {% for role in roles %}
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <a href="{% url 'recruiting_web:summary' pk=workrequest.id role_id=role.id %}?tab=confirmed">
+                                {{ role.title }}
+                            </a>
+                        </div>
+                        <div>{{ worker_summary.confirmed|get:role.title }}</div>
+                    </div>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+  
 
   <!-- assigned the workers information-->
   <div class="card">
@@ -670,5 +734,6 @@
 
  </div>
 </div>
+
 {% endblock body %}
 

@@ -8,7 +8,7 @@ from recruiting.views.web import (
     RoleHoursCreateView, RoleHousingCreateView, RoleMealsCreateView,
     RoleQualificationsCreateView, RoleWagesCreateView, WorkRequestCreateView,
     WorkRequestDetailView, WorkRequestRoleCreateView, WorkRequestsListView,
-    OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView,AssignRecruiterView,SendRecruiterEmailView,AcceptRecruiterView,RejectRecruiterView,RemoveWorkerFromAssignmentView,UpdateStatusView,ContactWorkRequestsView,AssignEmployerContactView,AddWorkersWorkRequests,ShowWorkerDetails,AddToShortlistView,UpdateWorkerStatusView,CancelOfferView,RecruiterListViewInAdmin,AssignEmployersToRecruiterOrgView
+    OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView,AssignRecruiterView,SendRecruiterEmailView,AcceptRecruiterView,RejectRecruiterView,RemoveWorkerFromAssignmentView,UpdateStatusView,ContactWorkRequestsView,AssignEmployerContactView,AddWorkersWorkRequests,ShowWorkerDetails,AddToShortlistView,UpdateWorkerStatusView,CancelOfferView,RecruiterListViewInAdmin,AssignEmployersToRecruiterOrgView,SummaryViews,RecruiterDetailView
 )
 from recruiting.views.workers import (
      WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView
@@ -29,12 +29,17 @@ urlpatterns = [
     path('employers/<pk>/',
          EmployerDetailView.as_view(),
          name='employer_detail'),
+    
     path('work-requests/',
          WorkRequestsListView.as_view(),
          name='workrequest_list'),
     path('work-requests/create/',
          WorkRequestCreateView.as_view(),
          name='workrequest_create'),
+    
+    path('summary/<str:pk>/<str:role_id>/', 
+         SummaryViews.as_view(), 
+         name='summary'),
 
     path('work-requests/<str:pk>/add-workers/<str:role_id>/',
           AddWorkersWorkRequests.as_view(),
@@ -126,6 +131,9 @@ urlpatterns = [
     path('recruiter/',
          RecruiterListViewInAdmin.as_view(),
          name='recruiter_admin_list'),
+    path('recruiters-org/<pk>/',
+         RecruiterDetailView.as_view(),
+         name='recruiter_org_detail'),
     path('recruiters/add/<str:employer_id>/<str:recruiter_id>/', AddRecruiterToEmployerView.as_view(), name='add_recruiter_to_employer'),
     path('recruiters/remove/<str:employer_id>/<str:recruiter_id>/', RemoveRecruiterFromEmployerView.as_view(), name='remove_recruiter_from_employer'),
     path('access-denied/', AccessDeniedView.as_view(), name='access_denied'),

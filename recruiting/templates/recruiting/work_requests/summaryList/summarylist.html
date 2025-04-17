@@ -1,0 +1,212 @@
+{% extends 'components/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block styles %}
+<!-- SELECT2 CSS -->
+<link href="{% static 'assets/plugins/select2/select2.min.css' %}" rel="stylesheet"/>
+<!-- DATA TABLE CSS -->
+<link href="{% static 'assets/plugins/datatable/css/dataTables.bootstrap5.css' %}" rel="stylesheet"/>
+<link href="{% static 'assets/plugins/datatable/css/buttons.bootstrap5.min.css' %}" rel="stylesheet"/>
+<link href="{% static 'assets/plugins/datatable/responsive.bootstrap5.css' %}" rel="stylesheet"/>
+<link href="{% static 'assets/css/workers.css' %}" rel="stylesheet"/>
+{% endblock styles %}
+
+{% block body %}
+<div class="container-fluid" style="position: relative; height: auto">
+    <div class="row">
+        <div class="background-green d-flex flex-column">
+            <!-- Back Button -->
+            <div class="container mt-3">
+                <a class="white-color" href="{% url 'recruiting_web:workrequest_detail' pk=work_request.pk %}">
+                    <i class="mdi mdi-arrow-left white-color fs-5"></i>
+                    <span class="white-color">
+                        {% translate "workerDetailsBack" %}
+                    </span>
+                </a>
+            </div>
+
+            <!-- Header Section -->
+            <div class="container text-center mt-3">
+                <h3>{% translate "addWorkers" %}: {{ role.title }}</h3>
+                <select class="form-select w-auto mx-auto mt-2">
+                    <option selected>{{ role.title }}</option>
+                </select>
+                <div class="mt-2">
+                    {% if tab == 'shortlist' %}
+                        <span class="badge bg-success">Shortlist: {{ shortlisted_count }}</span>
+                    {% elif tab == 'offersent' %}
+                        <span class="badge bg-warning">Offer Sent: {{ offersent_count }}</span>
+                    {% elif tab == 'confirmed' %}
+                        <span class="badge bg-primary">Confirmed: {{ confirmed_count }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between">
+        <button class="btn green-color-workers">
+            <i aria-hidden="true" class="fa fa-filter"></i>
+            {% translate "advancedFilter" %}
+        </button>
+        <button aria-controls="collapsewithbutton" aria-expanded="false" class="btn green-color-workers collapsed toggle-sign" data-bs-target="#collapseCard" data-bs-toggle="collapse" type="button">
+            <span class="sign medium-font">+</span>
+        </button>
+    </div>
+
+    <div class="collapse" id="collapseCard">
+        <div class="card offwhite-color card-body">
+            <span class="d-flex align-items-center">
+                <h3 class="card-title green-color d-contents">
+                    {% translate "selectPrimaryJobExperience" %}
+                </h3>
+                <button class="btn btn-link green-color-workers" data-bs-placement="top" data-bs-toggle="tooltip" title="Fill in the fields to add job experience">
+                    <i aria-hidden="true" class="fa fa-question-circle-o"></i>
+                    {% translate "what'sThis?" %}
+                </button>
+            </span>
+            <form method="post">
+                {% csrf_token %}
+                <div class="row align-items-center">
+                    {% for field in form %}
+                    <div class="col">
+                        <div class="form-group">
+                            <label class="form-label gray-color text" for="{{ field.id_for_label }}">
+                                {% translate field.label %}
+                            </label>
+                            {{ field }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <div class="col-auto">
+                        <button class="btn" type="button">
+                            <span class="sign medium-font">{% translate "x" %}</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <span class="d-flex align-items-center mt-3 mb-3">
+                <h3 class="card-title green-color">
+                    {% translate "otherExperience" %}
+                </h3>
+            </span>
+            <form method="post">
+                {% csrf_token %}
+                <div class="row align-items-center">
+                    {% for field in form %}
+                    <div class="col">
+                        <div class="form-group">
+                            <label class="form-label gray-color text" for="{{ field.id_for_label }}">
+                                {% translate field.label %}
+                            </label>
+                            {{ field }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <div class="col-auto">
+                        <button class="btn" type="button">
+                            <span class="sign medium-font">{% translate "x" %}</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <a class="btn light-green-button min-content-width" href="{% url 'recruiting_web:workrequest_create' %}">
+                <span><i class="fe fe-plus"></i></span>
+                {% translate "addAnotherExperience" %}
+            </a>
+            <div class="form-row align-items-center">
+                <span class="mt-5 ms-2 mb-3">
+                    <h3 class="card-title green-color d-contents">
+                        {% translate "furtherFilters" %}
+                    </h3>
+                </span>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="row align-items-center">
+                    {% for field in filter_form %}
+                    <div class="col-md-4 col-sm-6 col-xs-6">
+                        <div class="form-group">
+                            <label class="form-label gray-color" for="{{ field.id_for_label }}">
+                                {% translate field.label %}
+                            </label>
+                            {{ field }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row row-sm">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-workers">
+                        <ul class="tabs-menu nav">
+                            <li id="shortlist-li">
+                                <a href="javascript:void(0)" class="nav-link" id="shortlist-tab" onclick="showTab('shortlist')">
+                                    {% translate "shortlist" %}
+                                </a>
+                            </li>
+                            <li id="offersent-li">
+                                <a href="javascript:void(0)" class="nav-link" id="offersent-tab" onclick="showTab('offersent')">
+                                    {% translate "offersent" %}
+                                </a>
+                            </li>
+                            <li id="confirmed-li">
+                                <a href="javascript:void(0)" class="nav-link" id="confirmed-tab" onclick="showTab('confirmed')">
+                                    {% translate "confirmed" %}
+                                </a>
+                            </li>
+                        </ul>
+                        
+                        
+                        <div class="tab-content">
+                            <div class="tab-pane {% if tab == 'shortlist' %}active{% endif %}" id="shortlist" style="display: none !important;">
+                                {% include 'recruiting/work_requests/shortlist/shortlist.html' %}
+                            </div>
+                            <div class="tab-pane {% if tab == 'offersent' %}active{% endif %}" id="offersent" style="display: none !important;">
+                                {% include 'recruiting/work_requests/offersent/offersent.html' %}
+                            </div>
+                            <div class="tab-pane {% if tab == 'confirmed' %}active{% endif %}" id="confirmed" style="display: none !important;">
+                                {% include 'recruiting/work_requests/confirmed/confirmed.html' %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <button class="btn btn-success mb-2" style="margin-left: 1500px; font-weight: bolder; border-radius: 50%; width: 50px; height: 50px; padding: 0;">+</button>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+<!-- INTERNAL SELECT2 JS -->
+<script src="{% static 'assets/plugins/select2/select2.full.min.js' %}"></script>
+<!-- DATA TABLE JS-->
+<script src="{% static ''%}assets/plugins/datatable/js/jquery.dataTables.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/dataTables.bootstrap5.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/dataTables.buttons.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.bootstrap5.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/jszip.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/pdfmake/pdfmake.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/pdfmake/vfs_fonts.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.html5.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.print.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.colVis.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/dataTables.responsive.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.min.js"></script>
+<script src="{% static ''%}assets/js/table-data.js"></script>
+<script src="{% static ''%}assets/js/worker-search.js"></script>
+<script src="{% static ''%}assets/js/table-sorting.js"></script>
+<script src="{% static ''%}assets/js/worker-tabs.js"></script>
+<script src="{% static ''%}assets/js/summarylist.js"></script>
+
+
+{% endblock scripts %}

@@ -3,6 +3,8 @@ from account.models import UserPreference, User
 from recruiting.models import WorkAssignment
 from django.conf import settings
 from django.contrib import messages
+from django.shortcuts import get_object_or_404
+from recruiting.models import WorkRequests, Role
 
 ONBOARDING_STEPS = [
     "profileStepOne",
@@ -33,21 +35,48 @@ def get_worker_preferences(user):
     }
 
 
-def add_workers_to_shortlist(worker_ids):
+def add_workers_to_shortlist(worker_ids, work_request_id, role_id):
     added_any = False
     already_assigned = []
+    work_request = get_object_or_404(WorkRequests, pk=work_request_id)
+    role = get_object_or_404(Role, pk=role_id)
+
     for worker_id in worker_ids:
-        worker = User.objects.get(id=worker_id)
-        latest_assignment = WorkAssignment.objects.filter(worker=worker).order_by('-assigned_date').first()
-        if latest_assignment and latest_assignment.status in ['offersent', 'confirmed', 'assigned']:
+        worker = get_object_or_404(User, pk=worker_id)
+
+        # Check if the worker is already assigned to the same role in the same work request
+        existing_assignment = WorkAssignment.objects.filter(
+            worker=worker,
+            work_request=work_request,
+            role=role,
+            status__in=['offersent', 'confirmed', 'assigned']
+        ).first()
+
+        if existing_assignment:
             already_assigned.append(worker.first_name + " " + worker.last_name)
             continue
-        WorkAssignment.objects.filter(worker=worker, status='cancelled').delete()
-        WorkAssignment.objects.create(worker=worker, status='assigned')
+
+        # Delete any cancelled assignments for the worker in the same work request and role
+        WorkAssignment.objects.filter(
+            worker=worker,
+            work_request=work_request,
+            role=role,
+            status='cancelled'
+        ).delete()
+
+        # Create a new WorkAssignment with the role and work_request properly set
+        WorkAssignment.objects.create(
+            work_request=work_request,
+            role=role,
+            worker=worker,
+            status='assigned'
+        )
         added_any = True
+
     return added_any, already_assigned
 
-
-
-def get_shortlisted_workers(status='assigned'):
-    return WorkAssignment.objects.filter(status=status)
+def get_shortlisted_workers(status, role_id):
+    return WorkAssignment.objects.filter(
+        status=status,
+        role_id=role_id
+    ).select_related('worker')
