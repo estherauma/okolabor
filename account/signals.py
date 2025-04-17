@@ -12,6 +12,9 @@ from account.middleware import get_current_user
 from datetime import datetime, date
 import sys
 from django.contrib.auth.models import AnonymousUser
+import json
+from django.db.models import Model, ManyToManyField, ForeignKey, OneToOneField
+from datetime import datetime, date
 
 
 
@@ -94,11 +97,43 @@ def check_passport_match(sender, instance, **kwargs):
 
 User = get_user_model()
 
+# def serialize_instance(instance):
+#     data = model_to_dict(instance)
+#     for key, value in data.items():
+#         if isinstance(value, (datetime, date)):
+#             data[key] = value.isoformat()
+#     return data
+
 def serialize_instance(instance):
-    data = model_to_dict(instance)
-    for key, value in data.items():
-        if isinstance(value, (datetime, date)):
-            data[key] = value.isoformat()
+    data = {}
+
+    for field in instance._meta.get_fields():
+        try:
+            value = getattr(instance, field.name)
+
+            if isinstance(field, ManyToManyField):
+                # Convert related objects to a list of string representations
+                data[field.name] = [str(obj) for obj in value.all()]
+
+            elif isinstance(field, (ForeignKey, OneToOneField)):
+                # Store a string representation of related objects
+                data[field.name] = str(value) if value else None
+
+            elif isinstance(value, (datetime, date)):
+                data[field.name] = value.isoformat()
+
+            else:
+                # Try to JSON serialize the value, else convert to string
+                try:
+                    json.dumps(value)
+                    data[field.name] = value
+                except TypeError:
+                    data[field.name] = str(value)
+
+        except Exception:
+            # Safely handle missing or inaccessible fields
+            data[field.name] = None
+
     return data
 
 def is_migration_running():
