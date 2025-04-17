@@ -36,9 +36,10 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+from django.views.generic import ListView
 import datetime
 import json
-from account.models import User, UserNotification
+from account.models import User, UserNotification,Log
 from recruiting.models import WorkAssignment,Organization
 from recruiting.forms import WorkerCreateForm,RecruiterAdminCreateForm,EmployerForm
 
@@ -461,5 +462,43 @@ def assign_organization(request):
     except Exception as e:
         messages.error(request, _("failedToAssignOrganization: ") + str(e))
         return JsonResponse({"success": False, "error": _("failedToAssignOrganization: ") + str(e)})
+
+from django.db.models import Q
+
+class LogListView(LoginRequiredMixin, ListView):
+    model = Log
+    template_name = 'logs/logs.html'
+    context_object_name = 'logs'
+
+    def get_queryset(self):
+        user = self.request.user
+        base_query = Log.objects.all()
+        orgs = user.organizations.all()
+
+        if user.groups.filter(name='recruiter_admin').exists():
+            base_query = base_query.filter(
+                Q(user__organizations__in=orgs, user__groups__name='recruiter') |
+                Q(user=user)
+            ).distinct()
+
+        elif user.groups.filter(name='employer_admin').exists():
+            base_query = base_query.filter(
+                Q(user__organizations__in=orgs, user__groups__name='employer') |
+                Q(user=user)
+            ).distinct()
+
+        elif user.groups.filter(name='recruiter').exists():
+            base_query = base_query.filter(user=user)
+
+        elif user.groups.filter(name='employer').exists():
+            base_query = base_query.filter(user=user)
+
+        elif not user.groups.filter(name='admin').exists():
+            base_query = base_query.filter(user=user)
+
+        return base_query.exclude(
+            content_type__model__in=['session', 'logentry']
+        ).order_by('-timestamp')
+
 
 
