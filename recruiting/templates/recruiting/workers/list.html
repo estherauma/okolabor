@@ -42,9 +42,9 @@
             </span>
     
             <div id="form-container">
-                <!-- Filter form -->
+                <!-- Combined Filter Form -->
                 <form method="get" id="filter-form">
-                    <!-- Initial form group goes here -->
+                    <!-- Dynamic Filter Inputs -->
                     <div id="filter-inputs-container">
                         <div class="job-experience-form">
                             <div class="row align-items-center">
@@ -67,20 +67,41 @@
                         </div>
                     </div>
             
-                    <!-- Submit button -->
+                    <!-- Add Another Filter Button -->
+                    <button class="btn light-green-button min-content-width mt-3" type="button" onclick="addAnotherExperience()">
+                        <span><i class="fe fe-plus"></i></span>
+                        {% translate "addAnotherExperience" %}
+                    </button>
+            
+                    <!-- Additional Filters Section (Previously separate) -->
+                    <div class="form-row align-items-center">
+                        <span class="mt-5 ms-2 mb-3">
+                            <h3 class="card-title green-color d-contents">
+                                {% translate "furtherFilters" %}
+                            </h3>
+                        </span>
+                    </div>
+                    <div class="row align-items-center">
+                        {% for field in filter_form %}
+                        <div class="col-md-4 col-sm-6 col-xs-6">
+                            <div class="form-group">
+                                <label class="form-label gray-color" for="{{ field.id_for_label }}">
+                                    {% translate field.label %}
+                                </label>
+                                {{ field }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+            
+                    <!-- Submit Button -->
                     <button class="btn light-green-button min-content-width mt-3" type="submit">
                         {% translate "Apply Filters" %}
                     </button>
                 </form>
-            
-                <!-- Add another filter button -->
-                <button class="btn light-green-button min-content-width mt-3" type="button" onclick="addAnotherExperience()">
-                    <span><i class="fe fe-plus"></i></span>
-                    {% translate "addAnotherExperience" %}
-                </button>
             </div>
             
-            <!-- Hidden form template for cloning -->
+            <!-- Hidden template for dynamic form cloning -->
             <div id="form-template" style="display: none;">
                 <div class="job-experience-form">
                     <div class="row align-items-center">
@@ -102,30 +123,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="form-row align-items-center">
-            <span class="mt-5 ms-2 mb-3">
-                <h3 class="card-title green-color d-contents">
-                    {% translate "furtherFilters" %}
-                </h3>
-            </span>
-        </div>
-        <form method="post">
-            {% csrf_token %}
-            <div class="row align-items-center">
-                {% for field in filter_form %}
-                <div class="col-md-4 col-sm-6 col-xs-6">
-                    <div class="form-group">
-                        <label class="form-label gray-color" for="{{ field.id_for_label }}">
-                            {% translate field.label %}
-                        </label>
-                        {{ field }}
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </form>
-    </div>
+            
     </div>
     
             
@@ -133,11 +131,6 @@
     <div class="row row-sm">
         <div class="col-lg-12">
             <div class="row mb-2">
-                <div class="col-md-1 col-sm-1 col-xs-12">
-                    <button class="setting-btn">
-                        <i aria-hidden="true" class="fa fa-cog"></i>
-                    </button>
-                </div>
                 <div class="col-md-11 col-sm-11 col-xs-12">
                     <div class="d-flex align-items-center justify-content-end">
                         <p class="theading-color show-text show-text">
@@ -323,8 +316,4 @@
 <script src="{% static ''%}assets/js/worker-assignment.js"></script>
 <script src="{% static ''%}assets/js/get-roles.js"></script>
 <script src="{% static ''%}assets/js/dynamic_filter.js"></script>
-
-
-
-
 {% endblock scripts %}
