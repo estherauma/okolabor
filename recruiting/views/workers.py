@@ -23,6 +23,8 @@ from content.serializers import AggregatedContentSerializer
 import pandas as pd
 from django.http import HttpResponse
 import json
+from datetime import date
+
 
 ONBOARDING_STEPS = [
     "profileStepOne",
@@ -38,7 +40,7 @@ class WorkerListView(View):
     def get(self, request):
         work_assign_form = WorkerAssignmentForm()
         form = DynamicWorkExperienceForm(request.GET or None)
-        filter_form = AdvancedFilterForm()
+        filter_form = AdvancedFilterForm(request.GET or None)
         search_query = request.GET.get('search', '')
         page_number = request.GET.get('page', 1)
         per_page = request.GET.get('per_page', 25)
@@ -78,6 +80,20 @@ class WorkerListView(View):
                 crop_experiences__job_experience_details__value__iexact=dynamic_field_2
             )
 
+        # 🔍 Advanced Filter Form (from UserPreference model)
+        if filter_form.is_valid():
+            for field_name, value in filter_form.cleaned_data.items():
+                if value:
+                    if field_name == 'availability' and isinstance(value, date):
+                        workers = workers.filter(
+                    userpreference__key='availability',
+                    userpreference__value__gte=value.strftime('%Y-%m-%d')
+                )
+                else:
+                    workers = workers.filter(
+                    userpreference__key=field_name,
+                    userpreference__value__iexact=value
+                )
         workers = workers.distinct()
 
         paginator = Paginator(workers, per_page)
@@ -105,12 +121,14 @@ class WorkerListView(View):
                 **worker_details
             })
 
+        # 🔄 AJAX Support
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({
                 'workers': worker_data,
                 'num_pages': paginator.num_pages
             })
 
+        # 🌐 Full Page Render
         context = {
             'workers': page_obj,
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
