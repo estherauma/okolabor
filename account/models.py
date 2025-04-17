@@ -253,7 +253,7 @@ class UserActivityLog(AuditableModel):
         return f'{self.user.curp} - {self.action} - {self.created_at}'
 
 class Log(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.CharField(max_length=255)
     content_object = GenericForeignKey('content_type', 'object_id')
@@ -261,4 +261,5 @@ class Log(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.action} on {self.content_type.model} by {self.user.first_name}"
+        user_name = self.user.first_name if self.user else "Anonymous"
+        return f"{self.action} on {self.content_type.model} by {user_name}"
