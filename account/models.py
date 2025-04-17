@@ -259,7 +259,12 @@ class Log(models.Model):
     content_object = GenericForeignKey('content_type', 'object_id')
     action = models.CharField(max_length=255)
     timestamp = models.DateTimeField(auto_now_add=True)
+    data_before = models.JSONField(null=True, blank=True)
+    data_after = models.JSONField(null=True, blank=True)
 
     def __str__(self):
-        user_name = self.user.first_name if self.user else "Anonymous"
-        return f"{self.action} on {self.content_type.model} by {user_name}"
+        model_name = self.content_type.model_class().__name__
+        obj_display = str(self.content_object) if self.content_object else self.object_id
+        user_name = self.user.get_full_name() or self.user.first_name if self.user else "Anonymous"
+        return f"{self.action} on {model_name} [{obj_display}] by {user_name}"
+

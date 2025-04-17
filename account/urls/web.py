@@ -1,5 +1,5 @@
 from django.urls import path
-from account.views.web import UpdatePasswordView, UserAccountView, UserActivitLogView, UserListView,AccountNotificationsView,WorkerModalCreateView,RecruiterAdminModalCreateView,OrganizationCreateView,LogListView
+from account.views.web import UpdatePasswordView, UserAccountView, UserActivitLogView, UserListView,AccountNotificationsView,WorkerModalCreateView,RecruiterAdminModalCreateView,OrganizationCreateView,LogListView,LogDetailView
 from account.views.web import edit_user_view,edit_worker,edit_organization,edit_employer_view,assign_organization
 
 urlpatterns = [
@@ -16,6 +16,7 @@ urlpatterns = [
     path('edit-worker/<str:curp>/', edit_worker, name='edit_worker'),
     path('organization/<str:organization_id>/edit/', edit_organization, name='edit_organization'),
     path('logs/', LogListView.as_view(), name='view_logs'),
+    path('logs/<str:pk>/', LogDetailView.as_view(), name='log_detail'),
 
 
 ]

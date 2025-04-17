@@ -35,8 +35,10 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.http import JsonResponse
+from django.db.models import Q
 from django.views.decorators.http import require_POST
 from django.views.generic import ListView
+from django.views.generic.detail import DetailView
 import datetime
 import json
 from account.models import User, UserNotification,Log
@@ -463,11 +465,11 @@ def assign_organization(request):
         messages.error(request, _("failedToAssignOrganization: ") + str(e))
         return JsonResponse({"success": False, "error": _("failedToAssignOrganization: ") + str(e)})
 
-from django.db.models import Q
+
 
 class LogListView(LoginRequiredMixin, ListView):
     model = Log
-    template_name = 'logs/logs.html'
+    template_name = 'userlogs/logs.html'
     context_object_name = 'logs'
 
     def get_queryset(self):
@@ -501,4 +503,9 @@ class LogListView(LoginRequiredMixin, ListView):
         ).order_by('-timestamp')
 
 
+
+class LogDetailView(LoginRequiredMixin, DetailView):
+    model = Log
+    template_name = 'userlogs/log_detail.html'
+    context_object_name = 'log'
 
