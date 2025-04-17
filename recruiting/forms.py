@@ -10,6 +10,7 @@ from recruiting.models import (
 )
 from django.core.exceptions import ValidationError
 from account.models import (UserWorkExperience)
+from recruiting.utils import get_sector_choices, get_animal_type_choices,get_crop_type_choices,get_animal_responsibilities_choices,get_mechanics_responsibilities_choices,get_crop_responsibilities_choices,get_licensed_vehicle_choices,get_construction_responsibilities_choices,get_worker_supervision_choices
 class EmployerForm(forms.ModelForm):
     class Meta:
         model = Organization
@@ -715,35 +716,41 @@ SUPERVISION_JOB_CHOICES = [
      
 
 class WorkExperienceCreateForm(forms.ModelForm):
+    def __init__(self, *args, language='en', **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['type_sector'].choices = get_sector_choices()
+        self.fields['animal_types'].choices = get_animal_type_choices()
+        self.fields['responsibilities_types'].choices = get_animal_responsibilities_choices()
+        self.fields['crop_types'].choices = get_crop_type_choices()
+        self.fields['crop_job_types'].choices = get_crop_responsibilities_choices()
+        self.fields['mechanic_job_types'].choices = get_mechanics_responsibilities_choices()
+        self.fields['supervision_jobs_types'].choices = get_worker_supervision_choices()
+
     type_sector = forms.ChoiceField(
-        choices=SECTOR_CHOICES,
         widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_type_sector'}),
         label="Type / Sector"
     )
 
+
     animal_types = forms.MultipleChoiceField(
-        choices=ANIMAL_TYPE_CHOICES,
         widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_animal_types'}),
         required=False,
         label="Animal Types"
     )
 
-    animal_jobs = forms.MultipleChoiceField(
-        choices=ANIMAL_JOB_CHOICES,
+    responsibilities_types = forms.MultipleChoiceField(
         widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_animal_jobs'}),
         required=False,
         label="Animal Tasks"
     )
 
     crop_types = forms.MultipleChoiceField(
-        choices=CROP_TYPE_CHOICES,
         widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_crop_types'}),
         required=False,
         label="Crop Types"
     )
 
-    crop_jobs = forms.MultipleChoiceField(
-        choices=CROP_JOB_CHOICES,
+    crop_job_types = forms.MultipleChoiceField(
         widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_crop_jobs'}),
         required=False,
         label="Crop Tasks"
@@ -754,15 +761,13 @@ class WorkExperienceCreateForm(forms.ModelForm):
     widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
 
-    mechanic_jobs = forms.MultipleChoiceField(
-        choices=MECHANIC_JOB_CHOICES,
+    mechanic_job_types = forms.MultipleChoiceField(
         widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_mechanic_jobs'}),
         required=False,
         label="Mechanic Tasks"
     )
 
-    supervision_jobs = forms.MultipleChoiceField(
-        choices=SUPERVISION_JOB_CHOICES,
+    supervision_jobs_types = forms.MultipleChoiceField(
         widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_supervision_jobs'}),
         required=False,
         label="Supervision Tasks"
