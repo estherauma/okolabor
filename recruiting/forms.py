@@ -657,62 +657,6 @@ class RecruiterAdminCreateForm(forms.ModelForm):
             
         }
 
-
-SECTOR_CHOICES = [
-    ('animals', 'Animals'),
-    ('construction', 'Construction'),
-    ('crop_horticulture', 'Crop and Horticulture'),
-    ('licensed_vehicle_operation', 'Licensed Vehicle Operation'),
-    ('mechanics', 'Mechanics'),
-    ('worker_supervision', 'Worker Supervision / Management'),
-    ('other', 'Other'),
-]
-
-ANIMAL_TYPE_CHOICES = [
-    ('asses', 'Asses'),
-    ('bees', 'Bees'),
-    ('buffalo', 'Buffalo'),
-    ('camels', 'Camels'),
-    # ... Add all animal types
-]
-
-CROP_TYPE_CHOICES = [
-    ('agave_fibres', 'Agave Fibres'),
-    ('almonds', 'Almonds'),
-    ('anise', 'Anise'),
-    ('apples', 'Apples'),
-    # ... Add all crop types
-]
-
-ANIMAL_JOB_CHOICES = [
-    ('breeding', 'Breeding'),
-    ('caring', 'Caring'),
-    ('packaging', 'Packaging'),
-    ('processing', 'Processing'),
-    ('slaughtering', 'Slaughtering'),
-    ('other', 'Other'),
-]
-
-CROP_JOB_CHOICES = [
-    ('cultivating', 'Cultivating'),
-    ('grading_sorting', 'Grading and Sorting'),
-    ('harvesting', 'Harvesting'),
-    ('packaging', 'Packaging'),
-    ('planting', 'Planting'),
-    ('other', 'Other'),
-]
-
-MECHANIC_JOB_CHOICES = [
-    ('agriculture_machinery', 'Agriculture Machinery'),
-    ('car', 'Car'),
-    ('other', 'Other'),
-]
-
-SUPERVISION_JOB_CHOICES = [
-    ('animals', 'Animals'),
-    ('crop_horticulture', 'Crop and Horticulture'),
-    ('other', 'Other'),
-]
      
 
 class WorkExperienceCreateForm(forms.ModelForm):
@@ -791,7 +735,7 @@ class WorkExperienceCreateForm(forms.ModelForm):
 
         if start_date and end_date and start_date > end_date:
             raise ValidationError({
-                "end_date": _("End date cannot be earlier than start date.")
+                "end_date": _("endDateCannotBeEarlierThanStartDate.")
             })
     
 
