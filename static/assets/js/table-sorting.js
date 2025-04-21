@@ -1,7 +1,7 @@
 $(document).ready(function () {
     if ($.fn.DataTable) {
         // Tables with common settings
-        $('#basic-datatable, #another-basic-datatable, #work-requests-list-datatable, #datatable-closed, #datatable-in-progress, #datatable-draft').DataTable({
+        $('#basic-datatable, #another-basic-datatable, #work-requests-list-datatable, #datatable-closed, #datatable-in-progress, #datatable-draft, #logs-table').DataTable({
             "ordering": true,
             "order": [],
             "columnDefs": [{
@@ -13,7 +13,7 @@ $(document).ready(function () {
         });
 
         // Special setting for #workrequest-datatable
-        $('#workrequest-datatable, #employers-list-datatable').DataTable({
+        $('#workrequest-datatable, #employers-list-datatable, #logstable').DataTable({
             "ordering": true,
             "order": [],
             "columnDefs": [{
@@ -23,6 +23,23 @@ $(document).ready(function () {
             "paging": true,   
             "info": true
         });
+
+        // if (!$.fn.DataTable.isDataTable('#logs-table')) {
+        //     $('#logs-table').DataTable({
+        //         "ordering": true,
+        //         "order": [],
+        //         "columnDefs": [{
+        //             "targets": '_all',
+        //             "orderable": true
+        //         }],
+        //         "paging": true,
+        //         "info": true,
+                
+        //     });
+        // }
+
+        
+        
 
         $('#recruiters-datatable,#workers-list-datatable').DataTable({
             "ordering": true,
