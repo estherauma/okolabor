@@ -24,6 +24,8 @@ import pandas as pd
 from django.http import HttpResponse
 import json
 from datetime import date
+from recruiting.utils import get_sector_choices
+from common.utils import StaticContent
 
 
 ONBOARDING_STEPS = [
@@ -319,22 +321,12 @@ class GetRolesForWorkRequestView(View):
         return JsonResponse({'roles': roles_data})
     
 
-
-SECTOR_CHOICES = [
-    ('animals', 'Animals'),
-    ('construction', 'Construction'),
-    ('crop_horticulture', 'Crop and Horticulture'),
-    ('licensed_vehicle_operation', 'Licensed Vehicle Operation'),
-    ('mechanics', 'Mechanics'),
-    ('worker_supervision', 'Worker Supervision / Management'),
-    ('other', 'Other'),
-]
-
 class CreateWorkExperienceView(BaseCreateView):
     model = UserWorkExperience
     form_class = WorkExperienceCreateForm
     template_name = 'recruiting/workers/work_experience_create.html'
-
+    content_service = StaticContent()
+    
     def form_valid(self, form):
         response = super().form_valid(form)
         user = form.cleaned_data['user']
@@ -342,7 +334,7 @@ class CreateWorkExperienceView(BaseCreateView):
 
         # Get selected sector and convert to readable label
         selected_sector = form.cleaned_data.get('type_sector', 'General')
-        sector_dict = dict(SECTOR_CHOICES)
+        sector_dict = dict(self.content_service.get_sector_choices())
         readable_sector = sector_dict.get(selected_sector, selected_sector)
 
         # Create a UserJobExperience with sector as job_type
@@ -579,7 +571,7 @@ class UploadLanguageProficiencyView(View):
         language_video = request.FILES.get("language_video")
 
         if not worker_id or not language_level:
-            messages.error(request, "Worker or language level is missing.")
+            messages.error(request, "WorkerOrLanguageLevelIsMissing.")
             return redirect("/")
 
         user = get_object_or_404(User, id=worker_id)
@@ -611,16 +603,9 @@ class UploadLanguageProficiencyView(View):
                 file_type=language_video.content_type,
             )
 
-        messages.success(request, "Language proficiency information saved successfully.")
+        messages.success(request, "languageProficiencyInformationSavedSuccessfully.")
         return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
 
-    
-from django.views import View
-from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse
-from django.contrib import messages
-from account.models import UserPreference
-from account.models import User  # Or wherever your User model is
 
 class UploadUserPreferenceView(View):
     def post(self, request, *args, **kwargs):
@@ -653,6 +638,6 @@ class UploadUserPreferenceView(View):
                     defaults={"value": value},
                 )
 
-        messages.success(request, "User preferences saved successfully.")
+        messages.success(request, "userPreferencesSavedSuccessfully.")
         return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
 
