@@ -10,7 +10,7 @@ from recruiting.models import (
 )
 from django.core.exceptions import ValidationError
 from account.models import (UserWorkExperience)
-from common.utils import ContentChoicesService
+from common.utils import StaticContent
 
 class EmployerForm(forms.ModelForm):
     class Meta:
@@ -710,7 +710,7 @@ class WorkExperienceCreateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        content_service = ContentChoicesService()
+        content_service = StaticContent()
 
         field_config = {
             'type_sector': {

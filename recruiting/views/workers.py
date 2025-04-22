@@ -25,7 +25,7 @@ from django.http import HttpResponse
 import json
 from datetime import date
 from recruiting.utils import get_sector_choices
-from common.utils import ContentChoicesService
+from common.utils import StaticContent
 
 
 ONBOARDING_STEPS = [
@@ -325,7 +325,7 @@ class CreateWorkExperienceView(BaseCreateView):
     model = UserWorkExperience
     form_class = WorkExperienceCreateForm
     template_name = 'recruiting/workers/work_experience_create.html'
-    content_service = ContentChoicesService()
+    content_service = StaticContent()
     
     def form_valid(self, form):
         response = super().form_valid(form)

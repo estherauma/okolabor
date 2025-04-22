@@ -1,7 +1,7 @@
 from django.utils.translation import get_language
 from content.models import AggregatedContent
 
-class ContentChoicesService:
+class StaticContent:
     def __init__(self):
         raw_lang = get_language().strip().lower()
         self.language = 'es-MX' if raw_lang == 'es-mx' else 'en'
