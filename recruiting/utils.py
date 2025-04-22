@@ -85,15 +85,12 @@ def get_shortlisted_workers(status, role_id):
     ).select_related('worker')
 
 
-
 def get_sector_choices():
     raw_lang = get_language().strip().lower()
     language = 'es-MX' if raw_lang == 'es-mx' else 'en'
-
     try:
         aggregated = AggregatedContent.objects.first()
         job_data = aggregated.content.get(language, {}).get("primaryJobType", {}).get("data", [])
-
         choices = []
         for item in job_data:
             value = item["name"].strip().lower().replace(" ", "_").replace("/", "").replace("-", "_")
@@ -105,94 +102,4 @@ def get_sector_choices():
         print("[get_sector_choices] Error:", e)
         return []
 
-def get_animal_type_choices():
-    raw_lang = get_language().strip().lower()
-    language = 'es-MX' if raw_lang == 'es-mx' else 'en'
 
-    try:
-        aggregated = AggregatedContent.objects.first()
-        if not aggregated:
-            return []
-
-        animal_data = aggregated.content.get(language, {}).get("animalTypes", {}).get("data", [])
-
-        choices = []
-        for item in animal_data:
-            value = item["name"].strip().lower().replace(" ", "_").replace("/", "").replace("-", "_")
-            label = item["label"]
-            choices.append((value, label))
-
-        return choices
-    except Exception as e:
-        print("[get_animal_type_choices] Error:", e)
-        return []
-    
-def get_responsibilities_choices(category=None):
-    from django.utils.translation import get_language
-
-    raw_lang = get_language().strip().lower()
-    language = 'es-MX' if raw_lang == 'es-mx' else 'en'
-
-    try:
-        aggregated = AggregatedContent.objects.first()
-        if not aggregated:
-            return []
-
-        all_data = aggregated.content.get(language, {}).get("responsibilities", {}).get("data", [])
-        choices = []
-
-        for item in all_data:
-            if not item.get("enabled", False):
-                continue 
-
-            categories = item.get("category", [])
-            if category and category not in categories:
-                continue 
-
-            value = item["name"].strip().lower().replace(" ", "_").replace("/", "").replace("-", "_")
-            label = item["label"]
-            choices.append((value, label))
-
-        return choices
-    except Exception as e:
-        return []
-
-def get_crop_type_choices():
-    raw_lang = get_language().strip().lower()
-    language = 'es-MX' if raw_lang == 'es-mx' else 'en'
-
-    try:
-        aggregated = AggregatedContent.objects.first()
-        if not aggregated:
-            return []
-
-        animal_data = aggregated.content.get(language, {}).get("cropType", {}).get("data", [])
-
-        choices = []
-        for item in animal_data:
-            value = item["name"].strip().lower().replace(" ", "_").replace("/", "").replace("-", "_")
-            label = item["label"]
-            choices.append((value, label))
-
-        return choices
-    except Exception as e:
-        return []
-    
-def get_animal_responsibilities_choices():
-    return get_responsibilities_choices(category="Animals")
-
-def get_mechanics_responsibilities_choices():
-    return get_responsibilities_choices(category="Mechanics")
-
-def get_crop_responsibilities_choices():
-    return get_responsibilities_choices(category="Crop and horticulture")
-
-def get_licensed_vehicle_choices():
-    return get_responsibilities_choices(category="Licensed vehicle operation ")
-
-def get_construction_responsibilities_choices():
-    return get_responsibilities_choices(category="Construction")
-
-def get_worker_supervision_choices():
-    return get_responsibilities_choices(category="Worker supervision / management")
-    

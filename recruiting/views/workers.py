@@ -25,6 +25,7 @@ from django.http import HttpResponse
 import json
 from datetime import date
 from recruiting.utils import get_sector_choices
+from common.utils import ContentChoicesService
 
 
 ONBOARDING_STEPS = [
@@ -324,6 +325,7 @@ class CreateWorkExperienceView(BaseCreateView):
     model = UserWorkExperience
     form_class = WorkExperienceCreateForm
     template_name = 'recruiting/workers/work_experience_create.html'
+    content_service = ContentChoicesService()
     
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -332,8 +334,7 @@ class CreateWorkExperienceView(BaseCreateView):
 
         # Get selected sector and convert to readable label
         selected_sector = form.cleaned_data.get('type_sector', 'General')
-        sector_dict = dict(get_sector_choices())
-        print(sector_dict,"sector_dict")
+        sector_dict = dict(self.content_service.get_sector_choices())
         readable_sector = sector_dict.get(selected_sector, selected_sector)
 
         # Create a UserJobExperience with sector as job_type
