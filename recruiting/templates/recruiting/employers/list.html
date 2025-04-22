@@ -88,6 +88,8 @@
                 <th class="theading-color">{% translate "location" %}</th>
                 <th class="theading-color">{% translate "phoneNumber" %}</th>
                 <th class="theading-color">{% translate "assignedTo" %}</th>
+                <th class="theading-color">{% translate "actions" %}</th>
+
               </tr>
             </thead>
             <tbody>
@@ -112,6 +114,15 @@
                       No recruiters assigned
                   {% endif %}
                 </td>
+                <td>
+                  <a href="{% url 'recruiting_web:employer_delete' employer.id %}" 
+                     class="text-danger" 
+                     onclick="return confirm('Are you sure you want to delete this organization?');" 
+                     title="Delete">
+                    <i class="fas fa-trash-alt"></i>
+                  </a>
+                </td>
+                
               
             
               </tr>

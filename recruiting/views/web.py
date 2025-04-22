@@ -146,6 +146,14 @@ class EmployerListView(View):
         return render(request, 'recruiting/employers/list.html', context)
 
 
+
+
+class EmployerDeleteView(DeleteView):
+    model = Organization
+    template_name = 'recruiting_web/employer_confirm_delete.html'
+    success_url = reverse_lazy('recruiting_web:employer_list')
+
+
 class RecruiterListViewInAdmin(View):
     def get(self, request):
         user = request.user
