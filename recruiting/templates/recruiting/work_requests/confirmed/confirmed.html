@@ -1,7 +1,9 @@
 {% load i18n %}
+{% load user_role_tags %}
 {% load static %}
 <div class="tab-pane" id="tab4">
     <div class="table-responsive">
+        {% if request.user|has_group:"admin" or request.user|has_group:"recruiter_admin" or request.user|has_group:"recruiter" %}
         <div class="d-flex justify-content-end my-2">
             <button class="btn btn-secondary ms-2" id="assignWorkRequestConfirmBtn" style="display: none;">
                 <i class="fa fa-tasks me-1"></i>
@@ -12,6 +14,7 @@
                   {% translate "copyWorkers" %}
               </button>
         </div>
+        {% endif %}
         <table class="table text-nowrap border-bottom" id="confirmed-table">
             <thead>
                 <tr>

@@ -1,8 +1,10 @@
 {% load i18n %}
+{% load user_role_tags %}
 {% load static %}
 <div class="tab-pane" id="tab3">
     <div class="table-responsive">
         <div class="d-flex justify-content-end my-2">
+          {% if request.user|has_group:"admin" or request.user|has_group:"recruiter_admin" or request.user|has_group:"recruiter" %}
             <button class="btn btn-secondary ms-2" id="assignWorkRequestOfferBtn" style="display: none;">
                 <i class="fa fa-tasks me-1"></i>
                 {% translate "assignWorkRequest" %}
@@ -11,6 +13,7 @@
                   <i class="fa fa-copy me-1"></i>
                   {% translate "copyWorkers" %}
               </button>
+          {% endif %}
             <button id="cancel-offer-btn" class="btn btn-danger">{% translate "cancelOffer"%}</button>
         </div>
         <table class="table text-nowrap border-bottom" id="offer-sent-table">
