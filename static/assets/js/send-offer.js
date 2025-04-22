@@ -1,8 +1,10 @@
 const updateWorkerStatusUrl = '/update-worker-status/';
 
     document.getElementById('sendOfferBtn').addEventListener('click', function() {
-        const workerCheckboxes = document.querySelectorAll('.worker-checkbox:checked');
+        const workerCheckboxes = document.querySelectorAll('.worker-shortlist-checkbox:checked');
         const workerIds = Array.from(workerCheckboxes).map(checkbox => checkbox.value);
+
+        console.log(workerCheckboxes, "workerCheckboxes");
 
         console.log(workerIds,"workerIds");
 

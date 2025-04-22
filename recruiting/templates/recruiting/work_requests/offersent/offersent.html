@@ -3,12 +3,20 @@
 <div class="tab-pane" id="tab3">
     <div class="table-responsive">
         <div class="d-flex justify-content-end my-2">
+            <button class="btn btn-secondary ms-2" id="assignWorkRequestOfferBtn" style="display: none;">
+                <i class="fa fa-tasks me-1"></i>
+                {% translate "assignWorkRequest" %}
+            </button>
+              <button class="btn btn-warning" id="copyOfferBtn">
+                  <i class="fa fa-copy me-1"></i>
+                  {% translate "copyWorkers" %}
+              </button>
             <button id="cancel-offer-btn" class="btn btn-danger">{% translate "cancelOffer"%}</button>
         </div>
         <table class="table text-nowrap border-bottom" id="offer-sent-table">
             <thead>
                 <tr>
-                    <th class="theading-color"><input type="checkbox" id="select-all"></th>
+                    <th class="theading-color">{% translate "checkbox" %}</th>
                     <th class="theading-color">{% translate "name" %}</th>
                     <th class="theading-color">{% translate "email" %}</th>
                     <th class="theading-color">{% translate "town" %}</th>
@@ -22,7 +30,9 @@
             <tbody>
                 {% for worker in offersent_workers %}
                     <tr class="text-center">
-                        <td><input type="checkbox" name="worker_ids" value="{{ worker.id }}"></td>
+                        <td>
+                          <input type="checkbox" class="worker-offer-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.firstname }} {{ worker.lastname }}">
+                      </td>
                         <td>{{ worker.firstname }} {{ worker.lastname }}</td>
                         <td>{{ worker.email }}</td>
                         <td>{{ worker.town|default:"Not Provided" }}</td>
@@ -38,6 +48,44 @@
         
     </div>
 </div>
+
+
+<!-- Copy Modal -->
+<div class="modal fade" id="copyOfferModal" tabindex="-1" aria-labelledby="copyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="copyOfferForm"
+              data-url="{% url 'recruiting_web:copy_workers' %}"
+              data-get-roles-url="{% url 'recruiting_web:get_roles' %}"
+              data-csrf="{{ csrf_token }}">
+          <div class="modal-header">
+            <h5 class="modal-title" id="copyModalLabel">{% translate "copyWorkersToAnotherWorkRequest" %}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <label for="target_offer_work_request">{% translate "selectWorkRequest" %}:</label>
+            <select name="work_request" id="target_offer_work_request" class="form-select" required>
+              <option value="" disabled selected>{% translate "Select a work request" %}</option>
+              {% for wr in work_requests %}
+                <option value="{{ wr.id }}">{{ wr.name }}</option>
+              {% endfor %}
+            </select>
+            <label for="role_offer_id">{% translate "selectRole" %}:</label>
+            <select name="role" id="role_offer_id" class="form-select" required>
+              <option value="" disabled selected>{% translate "Select a role" %}</option>
+            </select>
+            <input type="hidden" name="status" value="assigned">
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success" id="copySubmitBtn">{% translate "addWorkers" %}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
 {% block scripts %}
     <script src="{% static 'assets/js/cancel-offer.js' %}"></script>
+    <script src="{% static 'assets/js/copy-offer-workers.js' %}"></script>
+
 {% endblock scripts %}

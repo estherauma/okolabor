@@ -10,7 +10,8 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic import CreateView
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt,csrf_protect
+from django.views.decorators.http import require_POST
 import json
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import Group
@@ -67,7 +68,8 @@ from recruiting.models import (
     EmployerRecruiter,
     WorkAssignment,
     EmployerContact,
-    EmployerRecruiterOrgLink
+    EmployerRecruiterOrgLink,
+    WorkerStatus,
 )
 
     
@@ -524,10 +526,12 @@ class AddWorkersWorkRequests(View):
 
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({'workers': worker_data, 'num_pages': paginator.num_pages})
+        
+        print(work_requests,"work_requests")
 
         context = {
             'workers': page_obj,  # All workers (not role-specific)
-            'work_requests': work_requests,
+            'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
             'form': form,
             'work_assign_form': work_assign_form,
             'filter_form': filter_form,
@@ -547,6 +551,56 @@ class AddWorkersWorkRequests(View):
         }
         return render(request, 'recruiting/work_requests/create_addworker.html', context)
 
+@method_decorator(require_POST, name='dispatch')
+class CopyWorkersView(View):
+    def post(self, request):
+        worker_ids = request.POST.getlist('worker_ids[]')
+        work_request_id = request.POST.get('work_request')
+        role_id = request.POST.get('role')
+        status = request.POST.get('status', 'Assigned')
+
+        if not worker_ids or not work_request_id or not role_id:
+            messages.error(request, _('Invalid request, missing data'))
+            return JsonResponse({'error': _('Invalid request, missing data')}, status=400)
+
+        work_request = get_object_or_404(WorkRequests, id=work_request_id)
+        role = get_object_or_404(Role, id=role_id)
+
+        try:
+            for worker_id in worker_ids:
+                worker = get_object_or_404(User, id=worker_id)
+
+                work_assignment, created = WorkAssignment.objects.get_or_create(
+                    worker=worker,
+                    role=role
+                )
+                work_assignment.work_request = work_request
+                work_assignment.status = status
+                work_assignment.save()
+
+            messages.success(request, _('workersAssignedSuccessfully!'))
+            return JsonResponse({'success': _('Workers assigned successfully!')})
+        
+        except Exception as e:
+            messages.error(request, _('anErrorOccurred: ') + str(e))
+            return JsonResponse({'error': _('An error occurred: ') + str(e)}, status=500)
+
+class GetRolesView(View):
+    def get(self, request, *args, **kwargs):
+        work_request_id = request.GET.get('work_request_id')
+        if not work_request_id:
+            return JsonResponse({'error': 'Work request ID is required'}, status=400)
+
+        try:
+            # Fetch the work request with related roles using prefetch_related
+            work_request = WorkRequests.objects.filter(id=work_request_id).prefetch_related('roles').first()
+            if not work_request:
+                return JsonResponse({'error': 'Work request not found'}, status=404)
+
+            roles_data = [{'id': role.id, 'title': role.title} for role in work_request.roles.all()]
+            return JsonResponse({'roles': roles_data})
+        except WorkRequests.DoesNotExist:
+            return JsonResponse({'error': 'Work request not found'}, status=404)
 
 
 
