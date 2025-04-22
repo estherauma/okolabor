@@ -69,7 +69,6 @@ from recruiting.models import (
     WorkAssignment,
     EmployerContact,
     EmployerRecruiterOrgLink,
-    WorkerStatus,
 )
 
     
