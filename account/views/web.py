@@ -467,6 +467,42 @@ def assign_organization(request):
 
 
 
+# class LogListView(LoginRequiredMixin, ListView):
+#     model = Log
+#     template_name = 'userlogs/logs.html'
+#     context_object_name = 'logs'
+
+#     def get_queryset(self):
+#         user = self.request.user
+#         base_query = Log.objects.all()
+#         orgs = user.organizations.all()
+
+#         if user.groups.filter(name='recruiter_admin').exists():
+#             base_query = base_query.filter(
+#                 Q(user__organizations__in=orgs, user__groups__name='recruiter') |
+#                 Q(user=user)
+#             ).distinct()
+#             print(base_query,'base_query')
+
+#         elif user.groups.filter(name='employer_admin').exists():
+#             base_query = base_query.filter(
+#                 Q(user__organizations__in=orgs, user__groups__name='employer') |
+#                 Q(user=user)
+#             ).distinct()
+
+#         elif user.groups.filter(name='recruiter').exists():
+#             base_query = base_query.filter(user=user)
+
+#         elif user.groups.filter(name='employer').exists():
+#             base_query = base_query.filter(user=user)
+
+#         elif not user.groups.filter(name='admin').exists():
+#             base_query = base_query.filter(user=user)
+
+#         return base_query.exclude(
+#             content_type__model__in=['session', 'logentry']
+#         ).order_by('-timestamp')
+
 class LogListView(LoginRequiredMixin, ListView):
     model = Log
     template_name = 'userlogs/logs.html'
@@ -475,18 +511,19 @@ class LogListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         user = self.request.user
         base_query = Log.objects.all()
-        orgs = user.organizations.all()
+        orgs = user.organizations.all() 
+
 
         if user.groups.filter(name='recruiter_admin').exists():
             base_query = base_query.filter(
-                Q(user__organizations__in=orgs, user__groups__name='recruiter') |
-                Q(user=user)
+                Q(user__organizations__in=orgs) & 
+                Q(user__groups__name__in=['recruiter', 'recruiter_admin'])
             ).distinct()
 
         elif user.groups.filter(name='employer_admin').exists():
             base_query = base_query.filter(
-                Q(user__organizations__in=orgs, user__groups__name='employer') |
-                Q(user=user)
+                Q(user__organizations__in=orgs) & 
+                Q(user__groups__name__in=['employer', 'employer_admin'])
             ).distinct()
 
         elif user.groups.filter(name='recruiter').exists():
@@ -501,8 +538,6 @@ class LogListView(LoginRequiredMixin, ListView):
         return base_query.exclude(
             content_type__model__in=['session', 'logentry']
         ).order_by('-timestamp')
-
-
 
 class LogDetailView(LoginRequiredMixin, DetailView):
     model = Log
