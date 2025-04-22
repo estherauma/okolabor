@@ -53,21 +53,6 @@ class WorkRequests(AuditableModel):
     def __str__(self) -> str:
         return f'{self.name}'
 
-class WorkerStatus(AuditableModel):
-    STATUS_CHOICES = (
-        ('shortlist', 'Shortlist'),
-        ('confirmed', 'Confirmed'),
-        ('offered', 'Offered'),
-    )
-
-    worker = models.ForeignKey(User, on_delete=models.CASCADE)
-    work_request = models.ForeignKey(WorkRequests, on_delete=models.CASCADE)
-    status = models.CharField(max_length=50, choices=STATUS_CHOICES)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        unique_together = ('worker', 'work_request', 'status')
-
 
 
 class Role(AuditableModel):
