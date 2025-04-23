@@ -55,3 +55,7 @@ class StaticContent:
 
     def get_worker_supervision_choices(self):
         return self.get_responsibilities_choices("Worker supervision / management")
+    
+    def get_document_labels(self):
+        documents_section = self.content.get("documents", {}).get("form_questions", [])
+        return {doc["key"]: doc["label"] for doc in documents_section}

@@ -191,12 +191,12 @@
         <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="infoModalLabel">Add Information</h5>
+            <h5 class="modal-title" id="infoModalLabel">addInformation</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
 
           <div class="modal-body">
-            <label for="infoType" class="form-label">Select Type</label>
+            <label for="infoType" class="form-label">selectType</label>
             <select id="infoType" class="form-select" onchange="handleInfoTypeChange()">
               <option value="">-- Select --</option>
 
@@ -208,22 +208,23 @@
 
             <div id="documentFields" class="mt-3" style="display: none;">
               <div class="mb-2">
-                <label for="profilePicture" class="form-label">Profile Picture</label>
+                <label for="profilePicture" class="form-label">{{ document_labels.profile_picture }}</label>
                 <input type="file" class="form-control" id="profilePicture" name="profile_picture">
               </div>
               <div class="mb-2">
-                <label for="passport" class="form-label">Passport</label>
+                <label for="passport" class="form-label">{{ document_labels.passport }}</label>
                 <input type="file" class="form-control" id="passport" name="passport">
               </div>
               <div class="mb-2">
-                <label for="usDriving" class="form-label">US Driving License</label>
-                <input type="file" class="form-control" id="usDriving" name="us_driving_license">
+                <label for="usDriving" class="form-label">{{ document_labels.us_driver_license }}</label>
+                <input type="file" class="form-control" id="usDriving" name="us_driver_license">
               </div>
               <div class="mb-2">
-                <label for="mexicoDriving" class="form-label">Mexico Driving License</label>
-                <input type="file" class="form-control" id="mexicoDriving" name="mexico_driving_license">
+                <label for="mexicoDriving" class="form-label">{{ document_labels.mexico_driver_license }}</label>
+                <input type="file" class="form-control" id="mexicoDriving" name="mexico_driver_license">
               </div>
             </div>
+            
 
 
             <!-- Language Fields -->
@@ -637,9 +638,19 @@
           const infoType = document.getElementById("infoType").value;
 
           if (!infoType) {
-              alert("Please select an information type.");
+              alert("pleaseSelectAnInformationType.");
               e.preventDefault();
               return;
+          }
+
+          if (infoType === "documents") {
+              const profilePictureInput = document.getElementById("profilePicture");
+
+              if (!profilePictureInput || profilePictureInput.files.length === 0) {
+                  alert("pleaseUploadAProfilePictureItIsRequired.");
+                  e.preventDefault();
+                  return;
+              }
           }
 
           if (infoType === "languages") {
@@ -647,12 +658,12 @@
               const videoInput = document.getElementById("languageVideo");
 
               if (!selectedLevel) {
-                  alert("Please select a language level.");
+                  alert("pleaseSelectALanguagelevel.");
                   e.preventDefault();
                   return;
               }
               if (selectedLevel.value !== "none" && videoInput.files.length === 0) {
-                  alert("Please upload a video for your selected language level.");
+                  alert("pleaseUploadAVideoForYourSelectedLanguageLevel.");
                   e.preventDefault();
                   return;
               }
