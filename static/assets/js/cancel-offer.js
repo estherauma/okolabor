@@ -1,6 +1,6 @@
 document.getElementById('cancel-offer-btn').addEventListener('click', function() {
     var workerIds = [];
-    var checkboxes = document.querySelectorAll('input[name="worker_ids"]:checked');
+    var checkboxes = document.querySelectorAll('input[name="worker-offer-checkbox"]:checked');
     checkboxes.forEach(function(checkbox) {
         workerIds.push(checkbox.value);
     });
