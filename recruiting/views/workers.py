@@ -318,14 +318,12 @@ class CreateWorkExperienceView(BaseCreateView):
     template_name = 'recruiting/workers/work_experience_create.html'
 
     def form_valid(self, form):
-        current_user = self.request.user
-        # Set created_by and updated_by
-        form.instance.created_by = current_user.id
-        form.instance.updated_by = current_user.id
+        user = self.request.user
+        form.instance.save(user=user.id)
         response = super().form_valid(form)
+        self.object.save(user=user.id)
         user = form.cleaned_data['user']
         work_experience = self.object
-
         # Get selected sector and convert to readable label
         selected_sector = form.cleaned_data.get('type_sector', 'General')
         sector_dict = dict(SECTOR_CHOICES)

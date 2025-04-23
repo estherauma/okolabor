@@ -23,6 +23,17 @@ class AuditableModel(BaseModel):
 
     class Meta:
         abstract = True
+        
+    def save(self, *args, **kwargs):
+        user_id = kwargs.pop('user', None)
+
+        if self._state.adding and user_id:
+            self.created_by = user_id
+        elif user_id:
+            self.updated_by = user_id
+
+        super().save(*args, **kwargs)
+
 
 
 auditable_fields = [
