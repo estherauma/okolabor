@@ -10,6 +10,8 @@ from recruiting.models import (
 )
 from django.core.exceptions import ValidationError
 from account.models import (UserWorkExperience)
+from common.utils import StaticContent
+
 class EmployerForm(forms.ModelForm):
     class Meta:
         model = Organization
@@ -656,145 +658,129 @@ class RecruiterAdminCreateForm(forms.ModelForm):
             
         }
 
-
-SECTOR_CHOICES = [
-    ('animals', 'Animals'),
-    ('construction', 'Construction'),
-    ('crop_horticulture', 'Crop and Horticulture'),
-    ('licensed_vehicle_operation', 'Licensed Vehicle Operation'),
-    ('mechanics', 'Mechanics'),
-    ('worker_supervision', 'Worker Supervision / Management'),
-    ('other', 'Other'),
-]
-
-ANIMAL_TYPE_CHOICES = [
-    ('asses', 'Asses'),
-    ('bees', 'Bees'),
-    ('buffalo', 'Buffalo'),
-    ('camels', 'Camels'),
-    # ... Add all animal types
-]
-
-CROP_TYPE_CHOICES = [
-    ('agave_fibres', 'Agave Fibres'),
-    ('almonds', 'Almonds'),
-    ('anise', 'Anise'),
-    ('apples', 'Apples'),
-    # ... Add all crop types
-]
-
-ANIMAL_JOB_CHOICES = [
-    ('breeding', 'Breeding'),
-    ('caring', 'Caring'),
-    ('packaging', 'Packaging'),
-    ('processing', 'Processing'),
-    ('slaughtering', 'Slaughtering'),
-    ('other', 'Other'),
-]
-
-CROP_JOB_CHOICES = [
-    ('cultivating', 'Cultivating'),
-    ('grading_sorting', 'Grading and Sorting'),
-    ('harvesting', 'Harvesting'),
-    ('packaging', 'Packaging'),
-    ('planting', 'Planting'),
-    ('other', 'Other'),
-]
-
-MECHANIC_JOB_CHOICES = [
-    ('agriculture_machinery', 'Agriculture Machinery'),
-    ('car', 'Car'),
-    ('other', 'Other'),
-]
-
-SUPERVISION_JOB_CHOICES = [
-    ('animals', 'Animals'),
-    ('crop_horticulture', 'Crop and Horticulture'),
-    ('other', 'Other'),
-]
      
 
 class WorkExperienceCreateForm(forms.ModelForm):
     type_sector = forms.ChoiceField(
-        choices=SECTOR_CHOICES,
         widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_type_sector'}),
-        label="Type / Sector"
     )
 
     animal_types = forms.MultipleChoiceField(
-        choices=ANIMAL_TYPE_CHOICES,
         widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_animal_types'}),
         required=False,
-        label="Animal Types"
     )
 
-    animal_jobs = forms.MultipleChoiceField(
-        choices=ANIMAL_JOB_CHOICES,
+    responsibilities_types = forms.MultipleChoiceField(
         widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_animal_jobs'}),
         required=False,
-        label="Animal Tasks"
     )
 
     crop_types = forms.MultipleChoiceField(
-        choices=CROP_TYPE_CHOICES,
         widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_crop_types'}),
         required=False,
-        label="Crop Types"
     )
 
-    crop_jobs = forms.MultipleChoiceField(
-        choices=CROP_JOB_CHOICES,
+    crop_job_types = forms.MultipleChoiceField(
         widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_crop_jobs'}),
         required=False,
-        label="Crop Tasks"
-    )
-    
-    company = forms.CharField(
-    label=_("addWorkerExperienceCompany1"),
-    widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
 
-    mechanic_jobs = forms.MultipleChoiceField(
-        choices=MECHANIC_JOB_CHOICES,
+    company = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+    )
+
+    mechanic_job_types = forms.MultipleChoiceField(
         widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_mechanic_jobs'}),
         required=False,
-        label="Mechanic Tasks"
     )
 
-    supervision_jobs = forms.MultipleChoiceField(
-        choices=SUPERVISION_JOB_CHOICES,
+    supervision_jobs_types = forms.MultipleChoiceField(
         widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_supervision_jobs'}),
         required=False,
-        label="Supervision Tasks"
     )
 
     description = forms.CharField(
         widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'id': 'id_description'}),
         required=False,
-        label="Short Description"
     )
 
-    visa_file = forms.FileField(required=False, label="Visa Document")
-    license_file = forms.FileField(required=False, label="Certification (License)")
-    video_file = forms.FileField(required=False, label="One-minute Video Introduction")
+    visa_file = forms.FileField(required=False)
+    certificate_file = forms.FileField(required=False)
+    video_file = forms.FileField(required=False)
 
-    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        content_service = StaticContent()
+
+        field_config = {
+            'type_sector': {
+                'choices': content_service.get_sector_choices,
+                'label': content_service.get_label_for_field('primaryJobType'),
+            },
+            'animal_types': {
+                'choices': content_service.get_animal_type_choices,
+                'label': content_service.get_label_for_field('animalType'),
+            },
+            'responsibilities_types': {
+                'choices': content_service.get_animal_responsibilities_choices,
+                'label': content_service.get_label_for_field('responsibilities'),
+            },
+            'crop_types': {
+                'choices': content_service.get_crop_type_choices,
+                'label': content_service.get_label_for_field('cropType'),
+            },
+            'crop_job_types': {
+                'choices': content_service.get_crop_responsibilities_choices,
+                'label': content_service.get_label_for_field('crop_job_types'),
+            },
+            'mechanic_job_types': {
+                'choices': content_service.get_mechanics_responsibilities_choices,
+                'label': content_service.get_label_for_field('mechanic_job_types'),
+            },
+            'supervision_jobs_types': {
+                'choices': content_service.get_worker_supervision_choices,
+                'label': content_service.get_label_for_field('supervision_jobs_types'),
+            },
+            'company': {
+                'label': content_service.get_label_for_field('company'),
+            },
+            'description': {
+                'label': content_service.get_label_for_field('explanation'),
+            },
+            'visa_file': {
+                'label': content_service.get_label_for_field('visa'),
+            },
+            'certificate_file': {
+                'label': content_service.get_label_for_field('certificate'),
+            },
+            'video_file': {
+                'label': content_service.get_label_for_field('explanation_video'),
+            },
+        }
+
+        for field_name, config in field_config.items():
+            if field_name in self.fields:
+                if 'choices' in config:
+                    self.fields[field_name].choices = config['choices']()
+                if 'label' in config:
+                    self.fields[field_name].label = config['label']
+
     def clean(self):
         cleaned_data = super().clean()
         start_date = cleaned_data.get("start_date")
         end_date = cleaned_data.get("end_date")
-
         if start_date and end_date and start_date > end_date:
             raise ValidationError({
-                "end_date": _("End date cannot be earlier than start date.")
+                "end_date": _("endDateCannotBeEarlierThanStartDate.")
             })
-    
 
     class Meta:
         model = UserWorkExperience
-        fields = ['user', 'company', 'work_title', 'start_date', 'end_date',
-                  'country', 'supervisor_name', 'supervisor_tel', 'supervisor_email',
-                  'visa_type']
+        fields = [
+            'user', 'company', 'work_title', 'start_date', 'end_date',
+            'country', 'supervisor_name', 'supervisor_tel', 'supervisor_email',
+            'visa_type'
+        ]
         labels = {
             'user': _("addWorkerExperienceUser"),
             'company': _("addWorkerExperienceCompany"),
@@ -809,9 +795,9 @@ class WorkExperienceCreateForm(forms.ModelForm):
         }
         widgets = {
             'user': forms.Select(attrs={
-            'class': 'form-control',
-            'readonly': 'readonly',  # not standard for select, but won't block submission
-            'style': 'pointer-events: none; background-color: #e9ecef;',  # disables user interaction visually
+                'class': 'form-control',
+                'readonly': 'readonly',
+                'style': 'pointer-events: none; background-color: #e9ecef;',
             }),
             'company': forms.TextInput(attrs={'class': 'form-control'}),
             'work_title': forms.TextInput(attrs={'class': 'form-control'}),

@@ -1,0 +1,109 @@
+{% extends 'components/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block styles %}
+<!-- SELECT2 CSS -->
+<link href="{% static 'assets/plugins/select2/select2.min.css' %}" rel="stylesheet"/>
+<link href="{% static 'assets/plugins/common/style.css' %}" rel="stylesheet"/>
+<!-- DATA TABLE CSS -->
+<link href="{% static 'assets/plugins/datatable/css/dataTables.bootstrap5.css' %}" rel="stylesheet"/>
+<link href="{% static 'assets/plugins/datatable/css/buttons.bootstrap5.min.css' %}" rel="stylesheet"/>
+<link href="{% static 'assets/plugins/datatable/responsive.bootstrap5.css' %}" rel="stylesheet"/>
+{% endblock styles %}
+
+{% block body %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">{% translate "userDetailsLog" %}</h1>
+  </div>
+</div>
+
+<div class="row row-sm">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="container mt-4">
+          <h2 class="mb-3">{% translate "userDetails" %}</h2>
+
+          <p><strong>{% translate "User" %}:</strong> {{ log.user.email }}</p>
+          <p><strong>{% translate "Action" %}:</strong> {{ log.action }}</p>
+          <p><strong>{% translate "Timestamp" %}:</strong> {{ log.timestamp|date:"d M Y, g:i a" }}</p>
+          <p><strong>{% translate "Entity" %}:</strong> {{ log.content_type.model }}</p>
+
+          {% if log.data_before %}
+            <div class="mt-4">
+              <h4> {% translate "beforeChanges" %} </h4>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                  <thead class="table-dark">
+                    <tr>
+                      <th class="text-white">{% translate "Field" %} </th>
+                      <th class="text-white">{% translate "Value" %} </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for key, value in log.data_before.items %}
+                      <tr>
+                        <td>{{ key }}</td>
+                        <td>{{ value }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          {% endif %}
+
+          {% if log.data_after %}
+            <div class="mt-4">
+              <h4> {% translate "afterChanges" %}</h4>
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                  <thead class="table-dark">
+                    <tr>
+                      <th class="text-white">{% translate "Field"%}</th>
+                      <th class="text-white">{% translate "Value" %} </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for key, value in log.data_after.items %}
+                      <tr>
+                        <td>{{ key }}</td>
+
+                        <td>{{ value }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<!-- INTERNAL SELECT2 JS -->
+<script src="{% static 'assets/plugins/select2/select2.full.min.js' %}"></script>
+<!-- DATA TABLE JS -->
+<script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap5.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/jszip.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js' %}"></script>
+<script src="{% static 'assets/js/table-data.js' %}"></script>
+<script src="{% static 'assets/js/employer_search.js' %}"></script>
+<script src="{% static 'assets/js/table-sorting.js' %}"></script>
+{% endblock scripts %}

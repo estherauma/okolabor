@@ -1,0 +1,70 @@
+{% extends 'components/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block styles %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="{% static 'assets/plugins/select2/select2.min.css' %}" rel="stylesheet"/>
+<!-- DATA TABLE CSS -->
+<link href="{% static 'assets/plugins/datatable/css/dataTables.bootstrap5.css' %}" rel="stylesheet"/>
+<link href="{% static 'assets/plugins/datatable/css/buttons.bootstrap5.min.css' %}" rel="stylesheet"/>
+<link href="{% static 'assets/plugins/datatable/responsive.bootstrap5.css' %}" rel="stylesheet"/>
+{% endblock styles %}
+
+{% block body %}
+<div class="container-fluid" style="position: relative; height: auto">
+    <h1>
+        {% translate "Logs" %}
+    </h1>
+    <div class="row row-sm">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table text-nowrap border-bottom" id="logstable">
+                            <thead>
+                                <tr>
+                                    <th class="theading-color">{% translate "User" %}</th>
+                                    <th class="theading-color">{% translate "Entity" %}</th>
+                                    <th class="theading-color">{% translate "Action" %}</th>
+                                    <th class="theading-color">{% translate "Timestamp" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for log in logs %}
+                                <tr class="text-center">
+                                    <td><a href="{% url 'log_detail' log.pk %}">{{ log.user.email }}</a></td>
+                                    <td>{{ log.content_type.model }}</td>
+                                    <td>{{ log.action }}</td>
+                                    <td>{{ log.timestamp }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+<!-- INTERNAL SELECT2 JS -->
+<script src="{% static 'assets/plugins/select2/select2.full.min.js' %}"></script>
+<!-- DATA TABLE JS-->
+<script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap5.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/jszip.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js' %}"></script>
+<script src="{% static 'assets/js/table-data.js' %}"></script>
+<script src="{% static 'assets/js/table-sorting.js' %}"></script>
+{% endblock scripts %}
