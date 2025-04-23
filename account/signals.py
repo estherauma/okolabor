@@ -97,13 +97,6 @@ def check_passport_match(sender, instance, **kwargs):
 
 User = get_user_model()
 
-# def serialize_instance(instance):
-#     data = model_to_dict(instance)
-#     for key, value in data.items():
-#         if isinstance(value, (datetime, date)):
-#             data[key] = value.isoformat()
-#     return data
-
 def serialize_instance(instance):
     data = {}
 
