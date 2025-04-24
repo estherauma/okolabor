@@ -23,6 +23,10 @@ from content.serializers import AggregatedContentSerializer
 import pandas as pd
 from django.http import HttpResponse
 import json
+from datetime import date
+from recruiting.utils import get_sector_choices
+from common.utils import StaticContent
+
 
 ONBOARDING_STEPS = [
     "profileStepOne",
@@ -38,7 +42,7 @@ class WorkerListView(View):
     def get(self, request):
         work_assign_form = WorkerAssignmentForm()
         form = DynamicWorkExperienceForm(request.GET or None)
-        filter_form = AdvancedFilterForm()
+        filter_form = AdvancedFilterForm(request.GET or None)
         search_query = request.GET.get('search', '')
         page_number = request.GET.get('page', 1)
         per_page = request.GET.get('per_page', 25)
@@ -78,6 +82,20 @@ class WorkerListView(View):
                 crop_experiences__job_experience_details__value__iexact=dynamic_field_2
             )
 
+        # 🔍 Advanced Filter Form (from UserPreference model)
+        if filter_form.is_valid():
+            for field_name, value in filter_form.cleaned_data.items():
+                if value:
+                    if field_name == 'availability' and isinstance(value, date):
+                        workers = workers.filter(
+                    userpreference__key='availability',
+                    userpreference__value__gte=value.strftime('%Y-%m-%d')
+                )
+                else:
+                    workers = workers.filter(
+                    userpreference__key=field_name,
+                    userpreference__value__iexact=value
+                )
         workers = workers.distinct()
 
         paginator = Paginator(workers, per_page)
@@ -105,12 +123,14 @@ class WorkerListView(View):
                 **worker_details
             })
 
+        # 🔄 AJAX Support
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({
                 'workers': worker_data,
                 'num_pages': paginator.num_pages
             })
 
+        # 🌐 Full Page Render
         context = {
             'workers': page_obj,
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
@@ -301,29 +321,19 @@ class GetRolesForWorkRequestView(View):
         return JsonResponse({'roles': roles_data})
     
 
-
-SECTOR_CHOICES = [
-    ('animals', 'Animals'),
-    ('construction', 'Construction'),
-    ('crop_horticulture', 'Crop and Horticulture'),
-    ('licensed_vehicle_operation', 'Licensed Vehicle Operation'),
-    ('mechanics', 'Mechanics'),
-    ('worker_supervision', 'Worker Supervision / Management'),
-    ('other', 'Other'),
-]
-
 class CreateWorkExperienceView(BaseCreateView):
     model = UserWorkExperience
     form_class = WorkExperienceCreateForm
     template_name = 'recruiting/workers/work_experience_create.html'
-
+    content_service = StaticContent()
+    
     def form_valid(self, form):
         response = super().form_valid(form)
         user = form.cleaned_data['user']
         work_experience = self.object
         # Get selected sector and convert to readable label
         selected_sector = form.cleaned_data.get('type_sector', 'General')
-        sector_dict = dict(SECTOR_CHOICES)
+        sector_dict = dict(self.content_service.get_sector_choices())
         readable_sector = sector_dict.get(selected_sector, selected_sector)
 
         # Create a UserJobExperience with sector as job_type
@@ -560,7 +570,7 @@ class UploadLanguageProficiencyView(View):
         language_video = request.FILES.get("language_video")
 
         if not worker_id or not language_level:
-            messages.error(request, "Worker or language level is missing.")
+            messages.error(request, "WorkerOrLanguageLevelIsMissing.")
             return redirect("/")
 
         user = get_object_or_404(User, id=worker_id)
@@ -592,16 +602,9 @@ class UploadLanguageProficiencyView(View):
                 file_type=language_video.content_type,
             )
 
-        messages.success(request, "Language proficiency information saved successfully.")
+        messages.success(request, "languageProficiencyInformationSavedSuccessfully.")
         return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
 
-    
-from django.views import View
-from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse
-from django.contrib import messages
-from account.models import UserPreference
-from account.models import User  # Or wherever your User model is
 
 class UploadUserPreferenceView(View):
     def post(self, request, *args, **kwargs):
@@ -634,6 +637,6 @@ class UploadUserPreferenceView(View):
                     defaults={"value": value},
                 )
 
-        messages.success(request, "User preferences saved successfully.")
+        messages.success(request, "userPreferencesSavedSuccessfully.")
         return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
 

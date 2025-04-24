@@ -5,6 +5,9 @@ from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from recruiting.models import WorkRequests, Role
+from content.models import AggregatedContent
+from django.utils.translation import get_language
+
 
 ONBOARDING_STEPS = [
     "profileStepOne",
@@ -80,3 +83,23 @@ def get_shortlisted_workers(status, role_id):
         status=status,
         role_id=role_id
     ).select_related('worker')
+
+
+def get_sector_choices():
+    raw_lang = get_language().strip().lower()
+    language = 'es-MX' if raw_lang == 'es-mx' else 'en'
+    try:
+        aggregated = AggregatedContent.objects.first()
+        job_data = aggregated.content.get(language, {}).get("primaryJobType", {}).get("data", [])
+        choices = []
+        for item in job_data:
+            value = item["name"].strip().lower().replace(" ", "_").replace("/", "").replace("-", "_")
+            label = item["label"]
+            choices.append((value, label))
+
+        return choices
+    except Exception as e:
+        print("[get_sector_choices] Error:", e)
+        return []
+
+
