@@ -301,13 +301,17 @@ class WorkerDetailsView(View):
                 "file_type": doc.file_type,
                 "description": doc.description
             })
+
+        static_content = StaticContent()
+        document_labels = static_content.get_document_labels()
         context = {
             'worker': worker,
             'preferences': preference_data,
             'workplaces': workplaces,
             'preferred_employees': preferred_employees,
             'documents': document_dict,
-            'base_url': base_url
+            'base_url': base_url,
+            'document_labels': document_labels,
         }
         return render(request, 'recruiting/workers/detail.html', context)
 
@@ -347,13 +351,13 @@ class CreateWorkExperienceView(BaseCreateView):
         # Save uploaded files to UserDocuments and link in details
         uploaded_files = {
             'visa': self.request.FILES.get('visa_file'),
-            'license': self.request.FILES.get('license_file'),
+            'certificate': self.request.FILES.get('certificate_file'),
             'explanation_video': self.request.FILES.get('video_file'),
         }
 
         for kind, uploaded_file in uploaded_files.items():
             if uploaded_file:
-                folder = 'certificates' if kind in ['visa', 'license'] else 'explanation'
+                folder = 'certificates' if kind in ['visa', 'certificate'] else 'explanation'
                 filename = uploaded_file.name
                 relative_path = os.path.join('uploads', folder, filename)
                 full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
@@ -524,19 +528,20 @@ class ExportWorkerDetailsView(View):
 
 class UploadDocumentsView(View):
     upload_paths = {
-    'contract': 'uploads/visa',
-    'passport': 'uploads/passports',
-    'profile_picture': 'uploads/profiles',
-    'english_video': 'uploads/english_videos',
-    'us_driving_license': 'uploads/driver_licenses',
-    'mexico_driving_license': 'uploads/driver_licenses',
-    'certificate': 'uploads/certificates',
-    'visa': 'uploads/visa',
-    'photo': 'uploads/photos',
-    'job_experience_license': 'uploads/job_experiences/licenses',
-    'job_experience_media': 'uploads/job_experiences/media',
-    'explanation_video': 'uploads/explanation_videos',
+    'contract': 'visa',
+    'passport': 'passports',
+    'profile_picture': 'profiles',
+    'english_video': 'english_videos',
+    'us_driving_license': 'driver_licenses',
+    'mexico_driving_license': 'driver_licenses',
+    'certificate': 'certificates',
+    'visa': 'visa',
+    'photo': 'photos',
+    'job_experience_license': 'job_experiences/licenses',
+    'job_experience_media': 'job_experiences/media',
+    'explanation_video': 'explanation_videos',
     }
+
 
     def post(self, request, *args, **kwargs):
         worker_id = request.POST.get("worker_id")
