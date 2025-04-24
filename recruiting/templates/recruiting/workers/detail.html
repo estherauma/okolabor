@@ -256,111 +256,109 @@
             <!-- Preferences Fields -->
             <div id="preferencesFields" class="mt-3" style="display: none;">
                 <div class="mb-2">
-                  <label for="preferredCountries" class="form-label">Select Preferred Countries</label>
+                  <label for="preferredCountries" class="form-label">{{ preferred_countries_label }}</label>
                   <select multiple class="form-select" id="preferredCountries" name="preferred_countries">
-                    <option value="usa">USA</option>
-                    <option value="canada">Canada</option>
-                    <option value="mexico">Mexico</option>
-                    <option value="australia">Australia</option>
-                    <option value="uk">UK</option>
+                    {% for option in preferred_countries_options %}
+                      <option value="{{ option.value }}">{{ option.label }}</option>
+                    {% endfor %}
                   </select>
                 </div>
+
                 <div class="mb-2">
-                  <label for="workSectors" class="form-label">Select Work Sectors</label>
+                  <label for="workSectors" class="form-label">{{ work_sectors_label }}</label>
                   <select multiple class="form-select" id="workSectors" name="work_sectors">
-                    <option value="animals">Animals</option>
-                    <option value="construction">Construction</option>
-                    <option value="crop_horticulture">Crop and Horticulture</option>
-                    <option value="vehicle_operation">Licenced Vehicle Operation</option>
-                    <option value="mechanics">Mechanics</option>
-                    <option value="supervision">Worker Supervision/Management</option>
-                    <option value="other">Other</option>
+                    {% for option in work_sectors_options %}
+                      <option value="{{ option.value }}">{{ option.label }}</option>
+                    {% endfor %}
                   </select>
                 </div>
+
                 <div class="mb-2">
-                  <label for="preferencesNote" class="form-label">Tell us about your preferences</label>
+                  <label for="preferencesNote" class="form-label">{{ preferences_note_label }}</label>
                   <textarea class="form-control" id="preferencesNote" name="preferences_note" rows="3"></textarea>
                 </div>
-              
+
                 {% load custom_filters %}
                 {% next_12_months as availability_months %}
-              
+
                 <div class="mb-2">
-                  <label for="availabilityMonths" class="form-label">Availability (until)</label>
+                  <label for="availabilityMonths" class="form-label">{{ availability_label }}</label>
                   <select multiple class="form-select" id="availabilityMonths" name="availability_months">
                     {% for month in availability_months %}
                       <option value="{{ month.label }}">{{ month.label }}</option>
                     {% endfor %}
                   </select>
                 </div>
+
               
                 <!-- Health status -->
                 <div class="mb-2">
                   <label class="form-label">
-                    Do you have any physical or mental conditions that could limit you for a labor intensive job?
+                      {{ health_status_label }}
                   </label><br>
                   <div>
-                    <input type="radio" name="healthStatus" value="yes" onchange="toggleHealthConditionField()" class="me-2"> Yes
-                    <input type="radio" name="healthStatus" value="no" onchange="toggleHealthConditionField()" class="me-1"> No
+                      <input type="radio" name="healthStatus" value="yes" onchange="toggleHealthConditionField()" class="me-2"> Yes
+                      <input type="radio" name="healthStatus" value="no" onchange="toggleHealthConditionField()" class="me-1"> No
                   </div>
-                </div>
+              </div>
               
-                <div class="mb-2" id="healthConditionField" style="display: none;">
-                  <label for="healthCondition" class="form-label">Please list the condition(s)</label>
+              <div class="mb-2" id="healthConditionField" style="display: none;">
+                  <label for="healthCondition" class="form-label">{{ health_condition_label }}</label>
                   <textarea class="form-control" name="healthCondition" rows="3"></textarea>
-                </div>
+              </div>
               
-                <!-- Suffered Injury -->
-                <div class="mb-2">
+              <!-- Suffered Injury -->
+              <div class="mb-2">
                   <label class="form-label">
-                    Have you suffered an injury that could be aggravated by intense physical activity?
+                      {{ suffered_injury_label }}
                   </label><br>
                   <div>
-                    <input type="radio" name="suffred_injury" value="yes" class="me-2"> Yes
-                    <input type="radio" name="suffred_injury" value="no" class="me-1"> No
+                      <input type="radio" name="suffred_injury" value="yes" class="me-2"> Yes
+                      <input type="radio" name="suffred_injury" value="no" class="me-1"> No
                   </div>
-                </div>
+              </div>
               
-                <!-- Longer Period of Time -->
-                <div class="mb-2">
+              <!-- Longer Period of Time -->
+              <div class="mb-2">
                   <label class="form-label">
-                    Are you willing and able to work on your feet for long periods of time?
+                      {{ longer_period_of_time_label }}
                   </label><br>
                   <div>
-                    <input type="radio" name="longerPeriodOfTime" value="yes" class="me-2"> Yes
-                    <input type="radio" name="longerPeriodOfTime" value="no" class="me-1"> No
+                      <input type="radio" name="longerPeriodOfTime" value="yes" class="me-2"> Yes
+                      <input type="radio" name="longerPeriodOfTime" value="no" class="me-1"> No
                   </div>
-                </div>
+              </div>
               
-                <!-- Lift/Carry Consent -->
-                <div class="mb-2">
+              <!-- Lift/Carry Consent -->
+              <div class="mb-2">
                   <label class="form-label">
-                    Are you willing and able to lift/carry up to 68 pounds?
+                      {{ consent_label }}
                   </label><br>
                   <div>
-                    <input type="radio" name="consent" value="yes" class="me-2"> Yes
-                    <input type="radio" name="consent" value="no" class="me-1"> No
+                      <input type="radio" name="consent" value="yes" class="me-2"> Yes
+                      <input type="radio" name="consent" value="no" class="me-1"> No
                   </div>
-                </div>
+              </div>
               
-                <!-- Physical Activities Not Preferred -->
-                <div class="mb-2">
+              <!-- Physical Activities Not Preferred -->
+              <div class="mb-2">
                   <label for="physicalActivities" class="form-label">
-                    Are there physical activities you would prefer not to perform?
+                      {{ physical_activities_label }}
                   </label>
                   <textarea class="form-control" name="physicalActivities" rows="3"></textarea>
-                </div>
+              </div>
               
-                <!-- Work Environment -->
-                <div class="mb-2">
+              <!-- Work Environment -->
+              <div class="mb-2">
                   <label class="form-label">
-                    Are you unwilling to work in either hot or cold temperatures?
+                      {{ work_environment_label }}
                   </label><br>
                   <div>
-                    <input type="radio" name="workEnvironment" value="yes" class="me-2"> Yes
-                    <input type="radio" name="workEnvironment" value="no" class="me-1"> No
+                      <input type="radio" name="workEnvironment" value="yes" class="me-2"> Yes
+                      <input type="radio" name="workEnvironment" value="no" class="me-1"> No
                   </div>
-                </div>
+              </div>
+              
               </div>
               
           </div>
@@ -672,13 +670,13 @@
   }
 
   function toggleHealthConditionField() {
-      const healthStatus = document.getElementById("healthStatus").value;
-      const conditionField = document.getElementById("healthConditionField");
+    const selected = document.querySelector('input[name="healthStatus"]:checked');
+    const conditionField = document.getElementById("healthConditionField");
+    if (selected && conditionField) {
+      conditionField.style.display = (selected.value === "yes") ? "block" : "none";
+    }
+}
 
-      if (conditionField) {
-          conditionField.style.display = (healthStatus === "yes") ? "block" : "none";
-      }
-  }
 </script>
 
 

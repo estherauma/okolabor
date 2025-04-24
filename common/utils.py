@@ -59,3 +59,24 @@ class StaticContent:
     def get_document_labels(self):
         documents_section = self.content.get("documents", {}).get("form_questions", [])
         return {doc["key"]: doc["label"] for doc in documents_section}
+    
+    def get_label_for_preference_field(self, key, section="form_questions"):
+        questions = self.content.get("workPreferenceStepOne", {}).get(section, [])
+        for q in questions:
+            if q.get("key") == key:
+                return q.get("label", key)
+        return key
+
+    def get_options_for_preference_field(self, key, section="form_questions"):
+        questions = self.content.get("workPreferenceStepOne", {}).get(section, [])
+        for q in questions:
+            if q.get("key") == key:
+                return q.get("options", [])
+        return []
+    
+    def get_label_for_preference_field_two(self, key, section="form_questions"):
+        questions = self.content.get("workPreferenceStepTwo", {}).get(section, [])
+        for q in questions:
+            if q.get("key") == key:
+                return q.get("label", key)
+        return key
