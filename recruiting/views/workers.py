@@ -150,7 +150,7 @@ class WorkerListView(View):
         completed_steps = sum(user_prefs_dict.get(step, False) for step in ONBOARDING_STEPS)
         total_steps = len(ONBOARDING_STEPS)
 
-        return round((completed_steps / total_steps) * 100, 2) if total_steps > 0 else 0
+        return round((completed_steps / total_steps) * 100) if total_steps > 0 else 0
 
     def get_worker_preferences(self, user):
         """Fetch town, work experience, proficiency, and location preference from UserPreference"""
