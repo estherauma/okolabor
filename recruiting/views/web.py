@@ -359,7 +359,6 @@ class RecruiterDetailView(View):
 class WorkRequestsListView(View):
     def get(self, request):
         user = request.user
-        print(user,"user")
         admin_group = Group.objects.get(name='admin')
         recruiter_group = Group.objects.get(name='recruiter')
 
@@ -367,8 +366,7 @@ class WorkRequestsListView(View):
             work_requests = WorkRequests.objects.all()
 
         elif recruiter_group in user.groups.all():
-            user_orgs = user.organizations.all()  
-            print(user_orgs,"recruiter group")
+            user_orgs = user.organizations.all()
             if user_orgs.exists():
                 user_org = user_orgs.first() 
 

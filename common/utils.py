@@ -3,7 +3,8 @@ from content.models import AggregatedContent
 
 class StaticContent:
     def __init__(self):
-        raw_lang = get_language().strip().lower()
+        # raw_lang = get_language().strip().lower()
+        raw_lang = (get_language() or 'es-MX').strip().lower()
         self.language = 'es-MX' if raw_lang == 'es-mx' else 'en'
         self.content = {}
         aggregated = AggregatedContent.objects.first()
@@ -55,3 +56,28 @@ class StaticContent:
 
     def get_worker_supervision_choices(self):
         return self.get_responsibilities_choices("Worker supervision / management")
+    
+    def get_document_labels(self):
+        documents_section = self.content.get("documents", {}).get("form_questions", [])
+        return {doc["key"]: doc["label"] for doc in documents_section}
+    
+    def get_label_for_preference_field(self, key, section="form_questions"):
+        questions = self.content.get("workPreferenceStepOne", {}).get(section, [])
+        for q in questions:
+            if q.get("key") == key:
+                return q.get("label", key)
+        return key
+
+    def get_options_for_preference_field(self, key, section="form_questions"):
+        questions = self.content.get("workPreferenceStepOne", {}).get(section, [])
+        for q in questions:
+            if q.get("key") == key:
+                return q.get("options", [])
+        return []
+    
+    def get_label_for_preference_field_two(self, key, section="form_questions"):
+        questions = self.content.get("workPreferenceStepTwo", {}).get(section, [])
+        for q in questions:
+            if q.get("key") == key:
+                return q.get("label", key)
+        return key

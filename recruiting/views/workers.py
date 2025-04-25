@@ -150,7 +150,7 @@ class WorkerListView(View):
         completed_steps = sum(user_prefs_dict.get(step, False) for step in ONBOARDING_STEPS)
         total_steps = len(ONBOARDING_STEPS)
 
-        return round((completed_steps / total_steps) * 100, 2) if total_steps > 0 else 0
+        return round((completed_steps / total_steps) * 100) if total_steps > 0 else 0
 
     def get_worker_preferences(self, user):
         """Fetch town, work experience, proficiency, and location preference from UserPreference"""
@@ -284,9 +284,7 @@ class WorkerDetailsView(View):
         base_url = request.build_absolute_uri('/')
         work_experience = UserWorkExperience.objects.filter(user=worker).first()
         preferences = UserPreference.objects.filter(user=worker)
-
         preference_data = {pref.key: pref.value for pref in preferences}
-
         workplaces = preference_data.get('workplaces', '').split(',') if 'workplaces' in preference_data else []
         preferred_employees = preference_data.get('Prefered_Employes', '').split(',') if 'Prefered_Employes' in preference_data else []
 
@@ -301,13 +299,44 @@ class WorkerDetailsView(View):
                 "file_type": doc.file_type,
                 "description": doc.description
             })
+
+        static_content = StaticContent()
+        document_labels = static_content.get_document_labels()
+        preferred_countries_label = static_content.get_label_for_preference_field("whereYouWantToWork")
+        preferred_countries_options = static_content.get_options_for_preference_field("whereYouWantToWork")
+        work_sectors_label = static_content.get_label_for_preference_field("kindOfWork")
+        work_sectors_options = static_content.get_options_for_preference_field("kindOfWork")
+        preferences_note_label = static_content.get_label_for_preference_field("tellUsMore")
+        availability_label = static_content.get_label_for_preference_field("availability")
+        health_status_label = static_content.get_label_for_preference_field_two("healthStatus")
+        health_condition_label = static_content.get_label_for_preference_field_two("healthCondition")
+        suffered_injury_label = static_content.get_label_for_preference_field_two("suffred_injury")
+        longer_period_of_time_label = static_content.get_label_for_preference_field_two("longerPeriodOfTime")
+        consent_label = static_content.get_label_for_preference_field_two("consent")
+        physical_activities_label = static_content.get_label_for_preference_field_two("physicalActivities")
+        work_environment_label = static_content.get_label_for_preference_field_two("workEnvironment")
+        
         context = {
             'worker': worker,
             'preferences': preference_data,
             'workplaces': workplaces,
             'preferred_employees': preferred_employees,
             'documents': document_dict,
-            'base_url': base_url
+            'base_url': base_url,
+            'document_labels': document_labels,
+            'preferred_countries_label': preferred_countries_label,
+            'preferred_countries_options': preferred_countries_options,
+            'work_sectors_label': work_sectors_label,
+            'work_sectors_options': work_sectors_options,
+            'preferences_note_label': preferences_note_label,
+            'availability_label': availability_label,
+            'health_status_label': health_status_label,
+            'health_condition_label': health_condition_label,
+            'suffered_injury_label': suffered_injury_label,
+            'longer_period_of_time_label': longer_period_of_time_label,
+            'consent_label': consent_label,
+            'physical_activities_label': physical_activities_label,
+            'work_environment_label': work_environment_label,
         }
         return render(request, 'recruiting/workers/detail.html', context)
 
@@ -347,13 +376,13 @@ class CreateWorkExperienceView(BaseCreateView):
         # Save uploaded files to UserDocuments and link in details
         uploaded_files = {
             'visa': self.request.FILES.get('visa_file'),
-            'license': self.request.FILES.get('license_file'),
+            'certificate': self.request.FILES.get('certificate_file'),
             'explanation_video': self.request.FILES.get('video_file'),
         }
 
         for kind, uploaded_file in uploaded_files.items():
             if uploaded_file:
-                folder = 'certificates' if kind in ['visa', 'license'] else 'explanation'
+                folder = 'certificates' if kind in ['visa', 'certificate'] else 'explanation'
                 filename = uploaded_file.name
                 relative_path = os.path.join('uploads', folder, filename)
                 full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
@@ -538,6 +567,7 @@ class UploadDocumentsView(View):
     'explanation_video': 'uploads/explanation_videos',
     }
 
+
     def post(self, request, *args, **kwargs):
         worker_id = request.POST.get("worker_id")
         user = get_object_or_404(User, pk=worker_id)
@@ -611,20 +641,22 @@ class UploadUserPreferenceView(View):
     def post(self, request, *args, **kwargs):
         worker_id = request.POST.get("worker_id")
         user = get_object_or_404(User, id=worker_id)
+        static_content = StaticContent()
 
         preferences = {
-            "whereYouWantToWork": request.POST.getlist("preferred_countries"),
-            "kindOfWork": request.POST.getlist("work_sectors"),
-            "tellUsMore": request.POST.get("preferences_note"),
-            "availability": request.POST.getlist("availability_months"),
-            "healthStatus": request.POST.get("healthStatus"),
-            "healthCondition": request.POST.get("healthCondition"),
-            "suffred_injury": request.POST.get("suffred_injury"),
-            "longerPeriodOfTime": request.POST.get("longerPeriodOfTime"),
-            "consent": request.POST.get("consent"),
-            "physicalActivities": request.POST.get("physicalActivities"),
-            "workEnvironment": request.POST.get("workEnvironment"),
+        static_content.get_label_for_preference_field("whereYouWantToWork"): request.POST.getlist("preferred_countries"),
+        static_content.get_label_for_preference_field("kindOfWork"): request.POST.getlist("work_sectors"),
+        static_content.get_label_for_preference_field("tellUsMore"): request.POST.get("preferences_note"),
+        static_content.get_label_for_preference_field("availability"): request.POST.getlist("availability_months"),
+        static_content.get_label_for_preference_field_two("healthStatus"): request.POST.get("healthStatus"),
+        static_content.get_label_for_preference_field_two("healthCondition"): request.POST.get("healthCondition"),
+        static_content.get_label_for_preference_field_two("suffred_injury"): request.POST.get("suffred_injury"),
+        static_content.get_label_for_preference_field_two("longerPeriodOfTime"): request.POST.get("longerPeriodOfTime"),
+        static_content.get_label_for_preference_field_two("consent"): request.POST.get("consent"),
+        static_content.get_label_for_preference_field_two("physicalActivities"): request.POST.get("physicalActivities"),
+        static_content.get_label_for_preference_field_two("workEnvironment"): request.POST.get("workEnvironment"),
         }
+
 
         for key, value in preferences.items():
             if value:
