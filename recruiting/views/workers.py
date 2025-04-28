@@ -318,7 +318,6 @@ class WorkerDetailsView(View):
         work_environment_label = static_content.get_label_for_preference_field_two("workEnvironment")
         language_options = static_content.get_english_proficiency_options()
         language_label = static_content.get_label_for_field("englishProficiency")
-        print(language_options,"language_options")
         
         context = {
             'worker': worker,
