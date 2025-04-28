@@ -88,6 +88,8 @@
                 <th class="theading-color">{% translate "location" %}</th>
                 <th class="theading-color">{% translate "phoneNumber" %}</th>
                 <th class="theading-color">{% translate "assignedTo" %}</th>
+                <th class="theading-color">{% translate "actions" %}</th>
+
               </tr>
             </thead>
             <tbody>
@@ -112,6 +114,17 @@
                       No recruiters assigned
                   {% endif %}
                 </td>
+                <td>
+                  <i 
+                    class="fa fa-trash text-danger" 
+                    style="cursor: pointer;" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#deleteModal{{ employer.id }}" 
+                    title="Delete">
+                  </i>
+
+                </td>
+                
               
             
               </tr>
@@ -178,6 +191,35 @@
     </div>
   </div>
 </div>
+
+<!-- Delete Modal -->
+{% for employer in employers %}
+  {% if employer.id %}
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal{{ employer.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ employer.id }}" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form method="POST" action="{% url 'recruiting_web:employer_delete' employer.id %}">
+            {% csrf_token %}
+            <div class="modal-header">
+              <h5 class="modal-title" id="deleteModalLabel{{ employer.id }}">{% translate "confirmDelete" %}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              {% translate 'areYouSureYouWantToDelete'%} <strong>{{ employer.name }}</strong>?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel'%}</button>
+              <button type="submit" class="btn btn-danger">{% translate 'Delete'%}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endfor %}
+
+
 {% endblock body %}
 
 {% block scripts %}

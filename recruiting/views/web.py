@@ -6,10 +6,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import BaseModelForm
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render,redirect
-from django.urls import reverse
+from django.urls import reverse,reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from django.views.generic import CreateView
+from django.views.generic import CreateView,DeleteView
 from django.views.decorators.csrf import csrf_exempt,csrf_protect
 from django.views.decorators.http import require_POST
 import json
@@ -22,7 +22,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_str
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,HttpResponseForbidden
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 from collections import defaultdict
@@ -145,6 +145,25 @@ class EmployerListView(View):
         }
         return render(request, 'recruiting/employers/list.html', context)
 
+        
+class EmployerDeleteView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        user = request.user
+        employer = get_object_or_404(Organization, pk=pk, type='employer')
+
+        if user.groups.filter(name='admin').exists():
+            employer_name = employer.name
+            employer.delete()
+            messages.success(request, _('Employer "%(employer_name)s" DeletedSuccessfully.') % {'employer_name': employer_name})
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'success'})
+            return redirect('recruiting_web:employer_list')
+
+        else:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'forbidden'}, status=403)
+            return HttpResponseForbidden(_("youDoNotHavePermissionToDeleteThisEmployer."))
+
 
 class RecruiterListViewInAdmin(View):
     def get(self, request):
@@ -177,7 +196,6 @@ class RecruiterListViewInAdmin(View):
                 link.employer_org.name for link in assigned_links
             ))
             
-            print(assigned_employers, "assigned_employers")
 
             recruiters_data.append({
                 'id': recruiter.id,
@@ -199,6 +217,24 @@ class RecruiterListViewInAdmin(View):
         context = {'recruiters': recruiters_data, 'query': query}
         return render(request, 'recruiting/recruiters_list/list.html', context)
 
+
+class RecruiterDeleteView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        user = request.user
+        recruiter = get_object_or_404(Organization, pk=pk, type='recruiter')
+
+        if user.groups.filter(name='admin').exists():
+            recruiter_name = recruiter.name
+            recruiter.delete()
+            messages.success(request, _('Recruiter "%(recruiter_name)s" deletedSuccessfully.') % {'recruiter_name': recruiter_name})
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'success'})
+            return redirect('recruiting_web:recruiter_admin_list')
+
+        else:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'forbidden'}, status=403)
+            return HttpResponseForbidden(_("youDoNotHavePermissionToDeleteThisRecruiter."))
 
 
 class EmployerCreateView(CreateView):
