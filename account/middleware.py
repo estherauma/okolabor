@@ -4,7 +4,6 @@ _user = threading.local()
 
 def get_current_user():
     user = getattr(_user, 'value', None)
-    print("DEBUG :: Current user from middleware =>", user)
     return user
 
 
