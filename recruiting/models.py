@@ -287,18 +287,24 @@ class EmployerRecruiter(AuditableModel):
 
     def __str__(self):
         return f"{self.recruiter.first_name} -> {self.employer.name}"
-    
+
 class EmployerRecruiterOrgLink(AuditableModel):
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+    )
     employer_org = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='assigned_recruiter_orgs')
     recruiter_org = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='assigned_employer_orgs')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         unique_together = ('employer_org', 'recruiter_org')
 
     def __str__(self):
-        return f"{self.employer_org.name} → {self.recruiter_org.name}"
+        return f"{self.employer_org.name} → {self.recruiter_org.name} [{self.status}]"
 
-    
 
 class EmployerContact(AuditableModel):
     employer = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="contacts")
