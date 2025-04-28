@@ -365,7 +365,6 @@ class CreateWorkExperienceView(BaseCreateView):
         response = super().form_valid(form)
         user = form.cleaned_data['user']
         work_experience = self.object
-
         # Get selected sector and convert to readable label
         selected_sector = form.cleaned_data.get('type_sector', 'General')
         sector_dict = dict(self.content_service.get_sector_choices())
