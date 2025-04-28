@@ -285,6 +285,25 @@ class WorkerDetailsView(View):
         work_experience = UserWorkExperience.objects.filter(user=worker).first()
         preferences = UserPreference.objects.filter(user=worker)
         preference_data = {pref.key: pref.value for pref in preferences}
+        tracking_keys = [
+            'profileStepOne',
+            'workExperience',
+            'workExperienceList',
+            'documentsStepOne',
+            'levelOfProficiency',
+            'recordVideo',
+            'workPreferenceStepOne',
+            'workPreferenceStepTwo',
+            'englishProficiencyTwo',
+            'suitabilityForWork',
+            'profile',
+            'documents',
+            'englishProficiency',
+            'workPreferences',
+        ]
+        
+        for key in tracking_keys:
+            preference_data.pop(key, None)
         workplaces = preference_data.get('workplaces', '').split(',') if 'workplaces' in preference_data else []
         preferred_employees = preference_data.get('Prefered_Employes', '').split(',') if 'Prefered_Employes' in preference_data else []
         
@@ -596,7 +615,8 @@ class UploadDocumentsView(View):
                     file_type=uploaded_file.content_type
                 )
 
-        messages.success(request, f"Documents uploaded for {user.get_full_name() or user.username}.")
+        text = _('documentsUploadedFor')
+        messages.success(request, f"{text} {user.get_full_name() or user.username}.")
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
     
 class UploadLanguageProficiencyView(View):
@@ -638,7 +658,7 @@ class UploadLanguageProficiencyView(View):
                 file_type=language_video.content_type,
             )
 
-        messages.success(request, "languageProficiencyInformationSavedSuccessfully.")
+        messages.success(request, _("languageProficiencyInformationSavedSuccessfully."))
         return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
 
 
@@ -675,6 +695,6 @@ class UploadUserPreferenceView(View):
                     defaults={"value": value},
                 )
 
-        messages.success(request, "userPreferencesSavedSuccessfully.")
+        messages.success(request, _("userPreferencesSavedSuccessfully."))
         return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
 
