@@ -1199,12 +1199,10 @@ class AssignEmployerContactView(View):
             
             print(employer_id, name, email, phone, position, is_primary)
 
-            # Check if employer ID is missing
             if not employer_id:
                 messages.error(request, "employerIDIsRequired.")
                 return JsonResponse({'error': 'employerIDIsRequired.'}, status=400)
 
-            # Check if the email already exists
             if EmployerContact.objects.filter(email=email).exists():
                 messages.error(request, "Email already exists.")
                 return JsonResponse({'error': 'emailAlreadyExists.'}, status=400)
@@ -1215,7 +1213,6 @@ class AssignEmployerContactView(View):
                 messages.error(request, "Employer not found.")
                 return JsonResponse({'error': 'employerNotFound.'}, status=404)
 
-            # Create the contact
             EmployerContact.objects.create(
                 employer=employer,
                 name=name,
@@ -1269,7 +1266,6 @@ class AssignEmployersToRecruiterOrgView(View):
 
                     if primary_contacts.exists():
                         for primary_contact in primary_contacts:
-                            print(primary_contact.name, "is a primary contact") 
                             protocol = 'https' if request.is_secure() else 'http'
                             domain = request.get_host()
                             subject = "Recruiter Assignment Notification"
@@ -1366,7 +1362,6 @@ class EmployerRecruiterOrgStatusListView(ListView):
     context_object_name = 'links'
 
     def get_queryset(self):
-        # You can customize which statuses you want to show
         return EmployerRecruiterOrgLink.objects.filter(status__in=['accepted', 'rejected','pending']).select_related('employer_org', 'recruiter_org')
 
 
@@ -1433,7 +1428,6 @@ class SummaryViews(View):
                 **worker_details
             })
 
-        # Get tab-specific worker data
         shortlisted_workers_data = []
         offersent_workers_data = []
         confirmed_workers_data = []
