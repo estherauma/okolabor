@@ -287,6 +287,7 @@ class WorkerDetailsView(View):
         preference_data = {pref.key: pref.value for pref in preferences}
         workplaces = preference_data.get('workplaces', '').split(',') if 'workplaces' in preference_data else []
         preferred_employees = preference_data.get('Prefered_Employes', '').split(',') if 'Prefered_Employes' in preference_data else []
+        
 
         documents = UserDocuments.objects.filter(user=worker)
         document_dict = {}
@@ -315,6 +316,9 @@ class WorkerDetailsView(View):
         consent_label = static_content.get_label_for_preference_field_two("consent")
         physical_activities_label = static_content.get_label_for_preference_field_two("physicalActivities")
         work_environment_label = static_content.get_label_for_preference_field_two("workEnvironment")
+        language_options = static_content.get_english_proficiency_options()
+        language_label = static_content.get_label_for_field("englishProficiency")
+        print(language_options,"language_options")
         
         context = {
             'worker': worker,
@@ -337,6 +341,8 @@ class WorkerDetailsView(View):
             'consent_label': consent_label,
             'physical_activities_label': physical_activities_label,
             'work_environment_label': work_environment_label,
+            'language_options': language_options,
+            'language_label': language_label
         }
         return render(request, 'recruiting/workers/detail.html', context)
 
@@ -360,7 +366,6 @@ class CreateWorkExperienceView(BaseCreateView):
         response = super().form_valid(form)
         user = form.cleaned_data['user']
         work_experience = self.object
-
         # Get selected sector and convert to readable label
         selected_sector = form.cleaned_data.get('type_sector', 'General')
         sector_dict = dict(self.content_service.get_sector_choices())

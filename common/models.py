@@ -1,5 +1,7 @@
 from common.push_id import push_id
 from django.db import models
+from common.middleware import get_current_user
+from django.utils import timezone
 
 
 class BaseModel(models.Model):
@@ -23,6 +25,33 @@ class AuditableModel(BaseModel):
 
     class Meta:
         abstract = True
+              
+    def save(self, *args, **kwargs):
+        user = get_current_user()
+        user_id = getattr(user, 'id', None)
+
+        if self._state.adding and user_id:
+            self.created_by = user_id
+            self.updated_by = user_id 
+        elif user_id:
+            self.updated_by = user_id
+
+        super().save(*args, **kwargs)
+
+
+    def delete(self, *args, user=None, **kwargs):
+        if user is None:
+            user = get_current_user()
+        
+        user_id = getattr(user, 'id', None)
+        
+        if user_id:
+            self.deleted_by = user_id
+        
+        self.deleted = True
+        self.deleted_at = timezone.now()
+        
+        self.save()
 
 
 auditable_fields = [

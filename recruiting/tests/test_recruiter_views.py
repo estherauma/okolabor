@@ -90,4 +90,4 @@ class RemoveRecruiterFromEmployerViewTest(TestCase):
 
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(len(messages), 1)
-        self.assertEqual(str(messages[0]), f"Recruiter {self.recruiter_user.email} was already removed from {self.employer.name}.")
+        self.assertEqual(str(messages[0]), f"Recruiter {self.recruiter_user.email} removed from {self.employer.name}.")
