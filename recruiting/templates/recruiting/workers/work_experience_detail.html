@@ -1,183 +1,167 @@
-{% extends 'components/base.html' %}
+{% load static %}
 {% load i18n %}
 {% load custom_filters %}
 
-{% block title %} {% translate "workExperienceDetailsWorkExperience" %} {% endblock title %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{% translate "workExperienceDetailsWorkExperience" %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
 
-{% block body %}
-<div class="container mx-auto max-w-3xl p-8 bg-white shadow-lg rounded-xl">
-    <!-- Page Header -->
-    <div class="flex justify-between items-center border-b pb-4 mb-6">
-        <h1 class="text-3xl font-bold text-gray-900">{% translate "workExperienceDetailsWorkExperienceDetails" %}</h1>
-    </div>
-    <!-- Work Experience Details -->
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  {% block styles %}
+  <link href="{% static 'assets/css/work-experience-details.css' %}" rel="stylesheet" />
+  {% endblock %}
+</head>
+<body>
+    <h3>
+        {{ work_experience.user.get_full_name }} - {% translate "workExperienceDetailsWorkExperienceDetails" %}
+    </h3
+    <br>
+  <div class="container mx-auto max-w-3xl p-8 bg-white shadow-lg rounded-xl mt-8">
+
+    
     <div class="bg-gray-50 p-6 rounded-lg shadow-inner">
-        <!-- User Name -->
-        <div class="flex items-center gap-3 mb-6">
-            <div class="flex items-center justify-center w-12 h-12 bg-blue-100 text-blue-600 rounded-full text-2xl font-bold">
-                👤 <strong>{{ work_experience.user.get_full_name }}</strong>
-            </div>
+      <div class="flex items-center gap-3 mb-6">
+        <div >
+          {{ work_experience.user.get_full_name }} - Work Experience
         </div>
-        <!-- Work Info Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Country -->
-            <div class="flex items-center gap-3 bg-white p-4 shadow-sm rounded-lg">
-                <span class="text-2xl">📍</span>
-                <span class="text-lg font-medium text-gray-700">{{ work_experience.country|default:"No Country" }}</span>
-            </div>
-            <!-- Work Period -->
-            <div class="flex items-center gap-3 bg-white p-4 shadow-sm rounded-lg">
-                <span class="text-2xl">📅</span>
-                <span class="text-lg font-medium text-gray-700">
-                    {{ work_experience.start_date|date:"F d, Y" }} -
-                    {% if work_experience.end_date %}
-                        {{ work_experience.end_date|date:"F d, Y" }}
-                    {% else %}
-                        {% translate "workExperienceDetailsPresent" %}
-                    {% endif %}
-                </span>
-            </div>
-        </div>
-        <!-- Job Experiences -->
-        <div class="border-t mt-6 pt-4">
-            <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "jobDetails" %}</h2>
-            {% for job in job_experiences %}
-                <div class="p-4 border rounded-lg bg-white shadow-sm mb-4">
-                    <p class="text-gray-700 text-lg flex items-center gap-2">
-                        🏢 Company - <span>{{ job.work_experience.company|default:"No Company" }}</span>
-                    </p>
-                    <p class="text-gray-700 text-lg flex items-center gap-2">
-                        🚜 JobType - <span>{{ job.job_type|default:"No Job Type" }}</span>
-                    </p>
-                    <p class="text-gray-700 text-lg flex items-center gap-2">
-                        📋 typeDetails - <span>{{ job.type_details|default:"No Type Details" }}</span>
-                    </p>
-                </div>
-            {% endfor %}
-        </div>
-        <!-- Job Experience Details -->
-        <div class="border-t mt-6 pt-4">
-            <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "Preferences" %}</h2>
-            {% for detail in job_experience_details %}
-                {% if "visa" not in detail.kind|lower %}
-                    <div class="p-4 border rounded-lg bg-white shadow-sm mb-4">
-                        <p class="text-gray-700 text-lg flex items-center gap-2">
-                            📌 <strong>{{ detail.kind }}</strong>:
-                        </p>
-                        {% with detail.value|strip_leading_slash as clean_path %}
-                        {% with clean_path|lower as filename %}
-                            {% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename or ".gif" in filename or ".webp" in filename %}
-                                <img
-                                    src="{{ base_url }}{{ clean_path }}"
-                                    alt="{{ detail.kind }}"
-                                    class="mt-2 border object-contain clickable-media"
-                                    style="max-width: 300px; max-height: 200px;"
-                                    data-type="image"
-                                    data-src="{{ base_url }}{{ clean_path }}"
-                                />
-                            {% elif ".mp4" in filename or ".webm" in filename or ".ogg" in filename %}
-                                <div class="video-container clickable-media"
-                                     data-type="video"
-                                     data-src="{{ base_url }}{{ clean_path }}">
-                                    <video
-                                        controls
-                                        class="mt-2 border"
-                                        style="max-width: 300px; max-height: 200px;"
-                                    >
-                                        <source src="{{ base_url }}{{ clean_path }}" type="video/mp4">
-                                        Your browser does not support the video tag.
-                                    </video>
-                                </div>
-                            {% else %}
-                                <a
-                                    href="{{ base_url }}{{ clean_path }}"
-                                    target="_blank"
-                                    class="text-blue-600 underline"
-                                >
-                                    {{ clean_path }}
-                                </a>
-                            {% endif %}
-                        {% endwith %}
-                        {% endwith %}
-                    </div>
-                {% endif %}
-            {% endfor %}
-        </div>
-        
-        <!-- Supervisor Details -->
-        <div class="border-t mt-6 pt-4">
-            <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "workExperienceDetailsSupervisorDetails" %}</h2>
-            <div class="space-y-2 text-lg text-gray-700">
-                <p>📛 <strong>{{ work_experience.supervisor_name|default:"No Supervisor Name" }}</strong></p>
-                <p>📞 <a href="tel:{{ work_experience.supervisor_tel|default:"#" }}" class="text-blue-600 hover:underline">{{ work_experience.supervisor_tel|default:"No Supervisor Tel" }}</a></p>
-                <p>📧 <a href="mailto:{{ work_experience.supervisor_email|default:"#" }}" class="text-blue-600 hover:underline">{{ work_experience.supervisor_email|default:"No Supervisor Email" }}</a></p>
-            </div>
-        </div>
-        <!-- Visa & Work Details -->
-        <div class="border-t mt-6 pt-4">
-            <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "workExperienceDetailsWorkAuthorization" %}</h2>
-            <div class="text-lg text-gray-700 space-y-1">
-                <p>🛂 <strong>visaType:</strong> {{ work_experience.visa_type|default:"No Visa Type" }}</p>
-                <p>🇺🇸 <strong>h2AWork:</strong> {{ work_experience.work_under_h2a_in_usa|default:"No H2A Work Info" }}</p>
-                {% for detail in job_experience_details %}
-                    {% if detail.kind == "visa" %}
-                        {% with detail.value|lower as filename %}
-                            {% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename or ".gif" in filename or ".webp" in filename %}
-                                <img
-                                    src="{{ base_url }}uploads/samples/sample_visa.webp"
-                                    alt="Visa Document"
-                                    class="mt-2 border object-contain clickable-media"
-                                    style="max-width: 300px; max-height: 200px;"
-                                    data-type="image"
-                                    data-src="{{ base_url }}uploads/samples/sample_visa.webp"
-                                />
-                            {% endif %}
-                        {% endwith %}
-                    {% endif %}
-                {% endfor %}
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="mediaModal" tabindex="-1" aria-labelledby="mediaModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="mediaModalLabel">Media Viewer</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
-      <div class="modal-body">
-        <div id="mediaContent"></div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="flex items-center gap-3 bg-white p-4 shadow-sm rounded-lg">
+          <span class="text-2xl">📍</span>
+          <span class="text-lg font-medium text-gray-700">{{ work_experience.country|default:"No Country" }}</span>
+        </div>
+        <div class="flex items-center gap-3 bg-white p-4 shadow-sm rounded-lg">
+          <span class="text-2xl">📅</span>
+          <span class="text-lg font-medium text-gray-700">
+            {{ work_experience.start_date|date:"F d, Y" }} -
+            {% if work_experience.end_date %}
+              {{ work_experience.end_date|date:"F d, Y" }}
+            {% else %}
+              {% translate "workExperienceDetailsPresent" %}
+            {% endif %}
+          </span>
+        </div>
+      </div>
+
+      <div class="border-t mt-6 pt-4">
+        <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "jobDetails" %}</h2>
+        {% for job in job_experiences %}
+        <div class="p-4 border rounded-lg bg-white shadow-sm mb-4">
+          <p class="text-gray-700 text-lg flex items-center gap-2">
+            🏢 Company - <span>{{ job.work_experience.company|default:"No Company" }}</span>
+          </p>
+          <p class="text-gray-700 text-lg flex items-center gap-2">
+            🚜 JobType - <span>{{ job.job_type|default:"No Job Type" }}</span>
+          </p>
+          <p class="text-gray-700 text-lg flex items-center gap-2">
+            📋 typeDetails - <span>{{ job.type_details|default:"No Type Details" }}</span>
+          </p>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="border-t mt-6 pt-4">
+        <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "Preferences" %}</h2>
+        {% for detail in job_experience_details %}
+          {% if "visa" not in detail.kind|lower %}
+          <div class="p-4 border rounded-lg bg-white shadow-sm mb-4">
+            <p class="text-gray-700 text-lg flex items-center gap-2">📌 <strong>{{ detail.kind }}</strong>:</p>
+            {% with detail.value|strip_leading_slash as clean_path %}
+              {% with clean_path|lower as filename %}
+                {% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename or ".gif" in filename or ".webp" in filename %}
+                  <img src="{{ base_url }}{{ clean_path }}" alt="{{ detail.kind }}" class="mt-2 border object-contain clickable-media" style="max-width: 300px; max-height: 200px" data-type="image" data-src="{{ base_url }}{{ clean_path }}" />
+                {% elif ".mp4" in filename or ".webm" in filename or ".ogg" in filename %}
+                  <div class="video-container clickable-media" data-type="video" data-src="{{ base_url }}{{ clean_path }}">
+                    <video controls class="mt-2 border" style="max-width: 300px; max-height: 200px">
+                      <source src="{{ base_url }}{{ clean_path }}" type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                {% else %}
+                  <a href="{{ base_url }}{{ clean_path }}" target="_blank" class="text-blue-600 underline">{{ clean_path }}</a>
+                {% endif %}
+              {% endwith %}
+            {% endwith %}
+          </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <div class="border-t mt-6 pt-4">
+        <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "workExperienceDetailsSupervisorDetails" %}</h2>
+        <div class="space-y-2 text-lg text-gray-700">
+          <p>📛 <strong>{{ work_experience.supervisor_name|default:"No Supervisor Name" }}</strong></p>
+          <p>📞 <a href="tel:{{ work_experience.supervisor_tel|default:'#' }}" class="text-blue-600 hover:underline">{{ work_experience.supervisor_tel|default:"No Supervisor Tel" }}</a></p>
+          <p>📧 <a href="mailto:{{ work_experience.supervisor_email|default:'#' }}" class="text-blue-600 hover:underline">{{ work_experience.supervisor_email|default:"No Supervisor Email" }}</a></p>
+        </div>
+      </div>
+
+      <div class="border-t mt-6 pt-4">
+        <h2 class="text-xl font-semibold text-gray-900 mb-2">{% translate "workExperienceDetailsWorkAuthorization" %}</h2>
+        <div class="text-lg text-gray-700 space-y-1">
+          <p>🛂 <strong>visaType:</strong> {{ work_experience.visa_type|default:"No Visa Type" }}</p>
+          <p>🇺🇸 <strong>h2AWork:</strong> {{ work_experience.work_under_h2a_in_usa|default:"No H2A Work Info" }}</p>
+          {% for detail in job_experience_details %}
+            {% if detail.kind == "visa" %}
+              {% with detail.value|lower as filename %}
+                {% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename or ".gif" in filename or ".webp" in filename %}
+                  <img src="{{ base_url }}uploads/samples/sample_visa.webp" alt="Visa Document" class="mt-2 border object-contain clickable-media" style="max-width: 300px; max-height: 200px" data-type="image" data-src="{{ base_url }}uploads/samples/sample_visa.webp" />
+                {% endif %}
+              {% endwith %}
+            {% endif %}
+          {% endfor %}
+        </div>
       </div>
     </div>
   </div>
-</div>
-{% endblock %}
-{% block scripts %}
-<script>
+
+  <!-- Modal -->
+  <div class="modal fade" id="mediaModal" tabindex="-1" aria-labelledby="mediaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="mediaModalLabel">Media Viewer</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div id="mediaContent"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
     document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll('.clickable-media').forEach(item => {
-            item.addEventListener('click', event => {
-                const type = event.currentTarget.getAttribute('data-type');
-                const src = event.currentTarget.getAttribute('data-src');
-                const mediaContent = document.getElementById('mediaContent');
+      document.querySelectorAll(".clickable-media").forEach((item) => {
+        item.addEventListener("click", (event) => {
+          const type = event.currentTarget.getAttribute("data-type");
+          const src = event.currentTarget.getAttribute("data-src");
+          const mediaContent = document.getElementById("mediaContent");
 
-                if (type === 'image') {
-                    mediaContent.innerHTML = `<img src="${src}" class="img-fluid" alt="Media">`;
-                } else if (type === 'video') {
-                    mediaContent.innerHTML = `<video controls class="w-100">
-                                                <source src="${src}" type="video/mp4">
-                                                Your browser does not support the video tag.
-                                              </video>`;
-                }
-                $('#mediaModal').modal('show');
-            });
+          if (type === "image") {
+            mediaContent.innerHTML = `<img src="${src}" class="img-fluid" alt="Media">`;
+          } else if (type === "video") {
+            mediaContent.innerHTML = `<video controls class="w-100"><source src="${src}" type="video/mp4">Your browser does not support the video tag.</video>`;
+          }
+
+          new bootstrap.Modal(document.getElementById("mediaModal")).show();
         });
+      });
     });
-</script>
-
-{% endblock scripts %}
+  </script>
+</body>
+</html>
