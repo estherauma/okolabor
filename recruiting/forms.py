@@ -595,35 +595,44 @@ class OkoMessageCreateForm(forms.ModelForm):
 
 
 class WorkerCreateForm(forms.ModelForm):
-    
     gender_choices = [
-        ('M', _('male')), 
-        ('F', _('female')), 
+        ('M', _('Male')),
+        ('F', _('Female')),
     ]
-    
+
     gender = forms.ChoiceField(
-        choices=gender_choices, 
+        choices=gender_choices,
         widget=forms.Select(attrs={'class': 'form-control'}),
         label=_("gender")
     )
-    
-    class Meta: 
-        model = User
-        fields = ['email', 'curp', 'first_name', 'last_name', 'dob', 'gender', 'telephone', 'address_line_1', 'address_line_2', 'city']
-        
-        labels = {
-            'email': _("email"),
-            'curp': _("curp"),
-            'first_name': _("firstName"),
-            'last_name': _("lastName"),
-            'dob': _("dateOfBirth"),
-            'gender': _("gender"),
-            'telephone': _("telephone"),
-            'address_line_1': _("addressLine1"),
-            'address_line_2': _("addressLine2"),
-            'city': _("city"),
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        static = StaticContent()
+        label_keys = {
+            'first_name': 'firstName',
+            'last_name': 'lastName',
+            'dob': 'dob',
+            'gender': 'gender',
+            'telephone': 'phone',
+            'address_line_1': 'addressLineOne',
+            'address_line_2': 'addressLineTwo',
+            'city': 'Town',
+            'curp': 'curp',
+            'email': 'email',
         }
-        
+
+        for field_name, json_key in label_keys.items():
+            if field_name in self.fields:
+                self.fields[field_name].label = static.get_profile_step_one_label(json_key)
+
+    class Meta:
+        model = User
+        fields = [
+            'email', 'curp', 'first_name', 'last_name', 'dob', 'gender',
+            'telephone', 'address_line_1', 'address_line_2', 'city'
+        ]
         widgets = {
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'curp': forms.TextInput(attrs={'class': 'form-control'}),
@@ -634,8 +643,9 @@ class WorkerCreateForm(forms.ModelForm):
             'telephone': forms.TextInput(attrs={'class': 'form-control'}),
             'address_line_1': forms.TextInput(attrs={'class': 'form-control'}),
             'address_line_2': forms.TextInput(attrs={'class': 'form-control'}),
-            'city': forms.TextInput(attrs={'class': 'form-control'})   
+            'city': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
 
 class RecruiterAdminCreateForm(forms.ModelForm):
     class Meta:
@@ -646,8 +656,7 @@ class RecruiterAdminCreateForm(forms.ModelForm):
             'curp': _("curp"),
             'first_name': _("firstName"),
             'last_name': _("lastName"),
-            'email': _("email"),
-            
+            'email': _("email"),  
         }
 
         widgets = {
