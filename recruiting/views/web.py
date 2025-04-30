@@ -1269,8 +1269,8 @@ class AssignEmployersToRecruiterOrgView(View):
                             protocol = 'https' if request.is_secure() else 'http'
                             domain = request.get_host()
                             subject = "Recruiter Assignment Notification"
-                            accept_url = f"{protocol}://{domain}{reverse('recruiting_web:update-employer-recruiter-status')}?action=accept&employer_org_id={employer_org.id}&recruiter_org_id={recruiter_org.id}&primary_contact_id={primary_contact.id}"
-                            reject_url = f"{protocol}://{domain}{reverse('recruiting_web:update-employer-recruiter-status')}?action=reject&employer_org_id={employer_org.id}&recruiter_org_id={recruiter_org.id}&primary_contact_id={primary_contact.id}"
+                            accept_url = f"{protocol}://{domain}/update-employer-recruiter-status/?action=accept&employer_org_id={employer_org.id}&recruiter_org_id={recruiter_org.id}&primary_contact_id={primary_contact.id}"
+                            reject_url = f"{protocol}://{domain}/update-employer-recruiter-status/?action=reject&employer_org_id={employer_org.id}&recruiter_org_id={recruiter_org.id}&primary_contact_id={primary_contact.id}"
                             message = f"""
                         Hi {primary_contact.name},
 
@@ -1324,37 +1324,45 @@ def update_employer_recruiter_status(request):
     primary_contact = get_object_or_404(EmployerContact, id=primary_contact_id)
 
     try:
-        
-        relation = EmployerRecruiterOrgLink.objects.get(employer_org=employer_org, recruiter_org=recruiter_org)
+        relation = EmployerRecruiterOrgLink.objects.get(
+            employer_org=employer_org, recruiter_org=recruiter_org
+        )
+
+        # ✅ Block re-use of the link
+        if relation.status in ['accepted', 'rejected']:
+            return JsonResponse({
+                'success': False,
+                'message': f'This assignment has already been {relation.status}.'
+            })
 
         if action == 'accept':
             relation.status = 'accepted'
-            relation.updated_by = request.user
-            relation.save()
-
+            msg = _('You have accepted the recruiter assignment.')
             subject = "Recruiter Assignment Accepted"
             message = f"Your organization '{employer_org.name}' has successfully accepted the assignment from '{recruiter_org.name}'."
-            send_mail(subject, message, 'no-reply@yourdomain.com', [primary_contact.email])
-
-            msg = _('youHaveAcceptedTheRecruiterAssignment.')
-            messages.success(request, msg)
 
         elif action == 'reject':
             relation.status = 'rejected'
-            relation.updated_by = request.user
-            relation.save()
-
+            msg = _('You have rejected the recruiter assignment.')
             subject = "Recruiter Assignment Rejected"
             message = f"Your organization '{employer_org.name}' has rejected the assignment from '{recruiter_org.name}'."
-            send_mail(subject, message, 'no-reply@yourdomain.com', [primary_contact.email])
 
-            msg = _('youHaveRejectedTheRecruiterAssignment.')
-            messages.success(request, msg)
+        else:
+            return JsonResponse({'success': False, 'message': 'Invalid action.'})
 
-        return JsonResponse({'success': True, 'message': 'Status updated successfully'})
+        # Save status and updater
+        relation.user_updated_by = primary_contact
+        relation.save()
+
+        # Send confirmation email
+        send_mail(subject, message, settings.EMAIL_HOST_USER, [primary_contact.email])
+        messages.success(request, msg)
+
+        return JsonResponse({'success': True, 'message': msg})
 
     except EmployerRecruiterOrgLink.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'No relationship found'})
+
 
 class EmployerRecruiterOrgStatusListView(ListView):
     model = EmployerRecruiterOrgLink
@@ -1362,7 +1370,14 @@ class EmployerRecruiterOrgStatusListView(ListView):
     context_object_name = 'links'
 
     def get_queryset(self):
-        return EmployerRecruiterOrgLink.objects.filter(status__in=['accepted', 'rejected','pending']).select_related('employer_org', 'recruiter_org')
+        return EmployerRecruiterOrgLink.objects.filter(
+            status__in=['accepted', 'rejected', 'pending']
+        ).select_related(
+            'employer_org',
+            'recruiter_org',
+            'user_updated_by__user'  # Optimizes access to user fields in template
+        )
+
 
 
 class SummaryViews(View):

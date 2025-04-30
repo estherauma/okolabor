@@ -45,11 +45,9 @@
                                     <td>{{ link.employer_org.name }}</td>
                                     <td>{{ link.recruiter_org.name }}</td>
                                     <td>{{ link.get_status_display }}</td>
-                                    <td>{% if link.updated_by %}
-                                        {{ link.updated_by.first_name }} {{ link.updated_by.last_name }}
-                                        {% else %}
-                                            N/A
-                                        {% endif %}
+                                    <td>
+                                        {{ link.user_updated_by.name }}
+
                                     </td>
                                     <td>{{ link.updated_at|date:"Y-m-d H:i" }}</td>
                                 </tr>
