@@ -56,6 +56,7 @@ msgstr "Correo electrónico"
 #: account/forms/account_update.py:38 recruiting/forms.py:108
 #: recruiting/templates/recruiting/recruiters/list.html:34
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:115
+#: recruiting/templates/recruiting/relationship/recruiter_status_list.html:34
 #: recruiting/templates/recruiting/work_requests/allworkers/allworkers.html:29
 #: recruiting/templates/recruiting/work_requests/detail.html:706
 #: recruiting/templates/recruiting/work_requests/shortlist/shortlist.html:37
@@ -1527,6 +1528,14 @@ msgstr "Completa"
 msgid "areYouSureYouWantToDelete"
 msgstr ""
 
+#: recruiting/templates/recruiting/employers/list.html:213
+#: recruiting/templates/recruiting/recruiters_list/list.html:200
+#: recruiting/templates/recruiting/work_requests/detail.html:707
+#, fuzzy
+#| msgid "deleteAccount"
+msgid "Delete"
+msgstr "Eliminar cuenta"
+
 #: recruiting/templates/recruiting/messages/create.html:10
 msgid "createMessageCreateMessage"
 msgstr "Crear mensaje"
@@ -1688,8 +1697,38 @@ msgstr "Empleadores no asignados"
 msgid "noEmployerOrganizationsAssigned"
 msgstr ""
 
+#: recruiting/templates/recruiting/relationship/recruiter_status_list.html:19
+#, fuzzy
+#| msgid "Status"
+msgid "acceptRejectStatus"
+msgstr "Estado"
+
+#: recruiting/templates/recruiting/relationship/recruiter_status_list.html:32
+#, fuzzy
+#| msgid "actionType"
+msgid "employerOrganization"
+msgstr "Tipo de acción"
+
+#: recruiting/templates/recruiting/relationship/recruiter_status_list.html:33
+#, fuzzy
+#| msgid "actionType"
+msgid "recruiterOrganization"
+msgstr "Tipo de acción"
+
+#: recruiting/templates/recruiting/relationship/recruiter_status_list.html:35
+#, fuzzy
+#| msgid "date"
+msgid "updatedBy"
+msgstr "Fecha"
+
+#: recruiting/templates/recruiting/relationship/recruiter_status_list.html:36
+#, fuzzy
+#| msgid "Status"
+msgid "updatedAt"
+msgstr "Estado"
+
 #: recruiting/templates/recruiting/todo.html:8
-#: theme/templates/components/layouts/vertical/app-sidebar.html:68
+#: theme/templates/components/layouts/vertical/app-sidebar.html:84
 msgid "toDo"
 msgstr "A Hacer"
 
@@ -2614,7 +2653,7 @@ msgstr "Información del trabajo"
 #, fuzzy
 #| msgid "accountInformation"
 msgid "addInformation"
-msgstr "Información de la cuenta"
+msgstr "Añadir información"
 
 #: recruiting/templates/recruiting/workers/list.html:99
 msgid "Apply Filters"
@@ -2897,14 +2936,22 @@ msgstr ""
 #: recruiting/views/web.py:1264
 #, fuzzy
 #| msgid "workersAssignedSuccessfully."
-msgid "employersAssignedSuccessfully."
+msgid "EmployersAssignedSuccessfully."
 msgstr "¡Trabajadores asignados con éxito!"
 
 #: recruiting/views/web.py:1269
 #, fuzzy
 #| msgid "invalidData"
-msgid "Invalid JSON data."
+msgid "invalidJSONData."
 msgstr "datos inválidos"
+
+#: recruiting/views/web.py:1343
+msgid "youHaveAcceptedTheRecruiterAssignment."
+msgstr ""
+
+#: recruiting/views/web.py:1355
+msgid "youHaveRejectedTheRecruiterAssignment."
+msgstr ""
 
 #: recruiting/views/workers.py:207
 msgid "missingDataPleaseSelectWorkersWorkRequestAndRole"
@@ -3663,14 +3710,10 @@ msgid "jobOrders"
 msgstr "Órdenes de trabajo"
 
 #: theme/templates/components/layouts/vertical/app-sidebar.html:53
-#, fuzzy
-#| msgid "userLogs"
 msgid "UserLogs"
 msgstr "Registros de usuarios"
 
 #: theme/templates/components/layouts/vertical/app-sidebar.html:60
-#, fuzzy
-#| msgid "mainHeaderManageUsers"
 msgid "sideBarManageUsers"
 msgstr "Manage Users"
 
@@ -3856,11 +3899,6 @@ msgstr "Has iniciado sesión correctamente"
 
 #~ msgid "addWorkerExperienceCompany1"
 #~ msgstr "Compañía"
-
-#, fuzzy
-#~| msgid "locationPreference"
-#~ msgid "Preferences"
-#~ msgstr "Preferencia de ubicación"
 
 #~ msgid "workerDetailsEglishProficiency"
 #~ msgstr "Dominio del inglés"

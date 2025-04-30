@@ -93,5 +93,13 @@ class StaticContent:
         questions = self.content.get("profileStepTwo", {}).get(section, [])
         for q in questions:
             if q.get("key") == key:
-                return q.get("label") or key  # Use key if label is None
+                return q.get("label") or key
         return key
+    
+    def get_profile_step_one_label(self, key, section="form_questions"):
+        questions = self.content.get("profileStepOne", {}).get(section, [])
+        for q in questions:
+            if q.get("key") == key:
+                return q.get("label") or key 
+        return key 
+

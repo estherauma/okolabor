@@ -16,6 +16,8 @@ document.getElementById("assignContactForm").addEventListener("submit", function
     $("#global-loader").fadeIn("slow");
     document.body.style.overflow = "hidden";
 
+    console.log(employerId,"employerId");
+
     fetch("/assign-contact/", {
         method: "POST",
         headers: {

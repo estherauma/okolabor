@@ -287,18 +287,7 @@ class EmployerRecruiter(AuditableModel):
 
     def __str__(self):
         return f"{self.recruiter.first_name} -> {self.employer.name}"
-    
-class EmployerRecruiterOrgLink(AuditableModel):
-    employer_org = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='assigned_recruiter_orgs')
-    recruiter_org = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='assigned_employer_orgs')
 
-    class Meta:
-        unique_together = ('employer_org', 'recruiter_org')
-
-    def __str__(self):
-        return f"{self.employer_org.name} → {self.recruiter_org.name}"
-
-    
 
 class EmployerContact(AuditableModel):
     employer = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="contacts")
@@ -307,6 +296,30 @@ class EmployerContact(AuditableModel):
     phone = models.CharField(max_length=255)
     position = models.CharField(max_length=255, blank=True, null=True) 
     is_primary = models.BooleanField(default=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True) 
 
     def __str__(self):
         return f'{self.name} - {self.employer.name}'
+    
+class EmployerRecruiterOrgLink(AuditableModel):
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+    )
+    employer_org = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='assigned_recruiter_orgs')
+    recruiter_org = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='assigned_employer_orgs')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    user_updated_by = models.ForeignKey(EmployerContact, on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        unique_together = ('employer_org', 'recruiter_org')
+        
+    def updated_by_name(self):
+        if self.user_updated_by and self.user_updated_by.user:
+            return f"{self.user_updated_by.user.first_name} {self.user_updated_by.user.last_name}"
+        return "N/A"
+
+
+    def __str__(self):
+        return f"{self.employer_org.name} → {self.recruiter_org.name} [{self.status}]"
