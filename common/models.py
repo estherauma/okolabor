@@ -22,6 +22,7 @@ class AuditableModel(BaseModel):
     created_by = models.CharField(max_length=256, null=True, blank=True)
     updated_by = models.CharField(max_length=256, null=True, blank=True)
     deleted_by = models.CharField(max_length=256, null=True, blank=True)
+    deleted = models.BooleanField(default=False)
 
     class Meta:
         abstract = True
@@ -35,7 +36,7 @@ class AuditableModel(BaseModel):
             self.updated_by = user_id 
         elif user_id:
             self.updated_by = user_id
-
+        
         super().save(*args, **kwargs)
 
 
@@ -44,14 +45,16 @@ class AuditableModel(BaseModel):
             user = get_current_user()
         
         user_id = getattr(user, 'id', None)
+        print(f'Deleting object: {self.pk} by user {user_id}')
         
         if user_id:
             self.deleted_by = user_id
         
         self.deleted = True
         self.deleted_at = timezone.now()
-        
-        self.save()
+
+        self.save(update_fields=['deleted', 'deleted_by', 'deleted_at'])  # explicitly save only updated fields
+
 
 
 auditable_fields = [
@@ -63,3 +66,8 @@ auditable_fields = [
     'deleted_by',
     'deleted',
 ]
+
+
+class SoftDeleteManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(deleted=False)
