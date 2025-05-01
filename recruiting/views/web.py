@@ -1480,6 +1480,25 @@ class EmployerRecruiterOrgStatusListView(ListView):
             'user_updated_by__user'  # Optimizes access to user fields in template
         )
 
+class EmployerRecruiterOrgLinkDeleteView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        link = get_object_or_404(EmployerRecruiterOrgLink, pk=pk, deleted=False)
+
+        # Optional: Add permission logic here
+        if request.user.groups.filter(name='admin').exists():
+            link_str = str(link)
+            link.delete(user=request.user)
+            messages.success(request, _('Link "%(link_str)s" deleted successfully.') % {'link_str': link_str})
+
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'success'})
+
+            return redirect('recruiting_web:recruiter-status-list')  # Adjust to your list view name
+        else:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'forbidden'}, status=403)
+
+            return HttpResponseForbidden(_("You do not have permission to delete this link."))
 
 
 class SummaryViews(View):

@@ -8,7 +8,7 @@ from recruiting.views.web import (
     RoleHoursCreateView, RoleHousingCreateView, RoleMealsCreateView,
     RoleQualificationsCreateView, RoleWagesCreateView, WorkRequestCreateView,
     WorkRequestDetailView, WorkRequestRoleCreateView, WorkRequestsListView,
-    OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView,AssignRecruiterView,SendRecruiterEmailView,AcceptRecruiterView,RejectRecruiterView,RemoveWorkerFromAssignmentView,UpdateStatusView,ContactWorkRequestsView,AssignEmployerContactView,AddWorkersWorkRequests,ShowWorkerDetails,AddToShortlistView,UpdateWorkerStatusView,CancelOfferView,RecruiterListViewInAdmin,AssignEmployersToRecruiterOrgView,SummaryViews,RecruiterDetailView,GetRolesView,CopyWorkersView,EmployerDeleteView,EmployerEditView,RecruiterDeleteView,RecruiterEditView,update_employer_recruiter_status,EmployerRecruiterOrgStatusListView,WorkRequestEditView,WorkRequestDeleteView
+    OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView,AssignRecruiterView,SendRecruiterEmailView,AcceptRecruiterView,RejectRecruiterView,RemoveWorkerFromAssignmentView,UpdateStatusView,ContactWorkRequestsView,AssignEmployerContactView,AddWorkersWorkRequests,ShowWorkerDetails,AddToShortlistView,UpdateWorkerStatusView,CancelOfferView,RecruiterListViewInAdmin,AssignEmployersToRecruiterOrgView,SummaryViews,RecruiterDetailView,GetRolesView,CopyWorkersView,EmployerDeleteView,EmployerEditView,RecruiterDeleteView,RecruiterEditView,update_employer_recruiter_status,EmployerRecruiterOrgStatusListView,WorkRequestEditView,WorkRequestDeleteView,EmployerRecruiterOrgLinkDeleteView
 )
 from recruiting.views.workers import (
      WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView
@@ -147,6 +147,7 @@ urlpatterns = [
     path("accept-recruiter/<str:employer_id>/<str:recruiter_id>/", AcceptRecruiterView.as_view(), name="accept_recruiter"),
     path("reject-recruiter/<str:employer_id>/<str:recruiter_id>/", RejectRecruiterView.as_view(), name="reject_recruiter"),
     path('recruiter-status-list/', EmployerRecruiterOrgStatusListView.as_view(), name='recruiter-status-list'),
+    path('employer-recruiter-link/delete/<str:pk>/', EmployerRecruiterOrgLinkDeleteView.as_view(), name='employer_recruiter_link_delete'),
 
     path('recruiters/', RecruiterListView.as_view(), name='recruiter_list'),
     path('recruiter/',
