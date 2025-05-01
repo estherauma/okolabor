@@ -129,6 +129,11 @@ class EmployerListView(View):
                 'address': employer.address,
                 'country': employer.country,
                 'phone': employer.phone,
+                'website': employer.website,
+                'city': employer.city,
+                'state': employer.state,
+                'zipcode': employer.zip_code,
+                'description': employer.description,
                 'recruiters': recruiter_org_names  
             })
 
@@ -231,6 +236,11 @@ class RecruiterListViewInAdmin(View):
                 'country': recruiter.country,
                 'phone': recruiter.phone,
                 'type': recruiter.type,
+                'website': recruiter.website,
+                'city': recruiter.city,
+                'state': recruiter.state,
+                'zip_code': recruiter.zip_code,
+                'description': recruiter.description,
                 'employers': assigned_employers
             })
 
