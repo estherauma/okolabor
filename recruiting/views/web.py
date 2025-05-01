@@ -164,6 +164,32 @@ class EmployerDeleteView(LoginRequiredMixin, View):
                 return JsonResponse({'status': 'forbidden'}, status=403)
             return HttpResponseForbidden(_("youDoNotHavePermissionToDeleteThisEmployer."))
 
+class EmployerEditView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        user = request.user
+        employer = get_object_or_404(Organization, pk=pk, type='employer')
+
+        if user.groups.filter(name='admin').exists():
+            employer.name = request.POST.get('name')
+            employer.email = request.POST.get('email')
+            employer.phone = request.POST.get('phone')
+            employer.website = request.POST.get('website')
+            employer.address = request.POST.get('address')
+            employer.city = request.POST.get('city')
+            employer.state = request.POST.get('state')
+            employer.country = request.POST.get('country')
+            employer.zip_code = request.POST.get('zip_code')
+            employer.description = request.POST.get('description')
+            employer.save()
+
+            messages.success(request, _('Employer "%(employer_name)s" Edited Successfully.') % {'employer_name': employer.name})
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'success'})
+            return redirect('recruiting_web:employer_list')
+        else:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'forbidden'}, status=403)
+            return HttpResponseForbidden(_("You do not have permission to edit this employer."))
 
 class RecruiterListViewInAdmin(View):
     def get(self, request):
@@ -236,6 +262,33 @@ class RecruiterDeleteView(LoginRequiredMixin, View):
                 return JsonResponse({'status': 'forbidden'}, status=403)
             return HttpResponseForbidden(_("youDoNotHavePermissionToDeleteThisRecruiter."))
 
+class RecruiterEditView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        user = request.user
+        recruiter = get_object_or_404(Organization, pk=pk, type='recruiter')
+
+        if user.groups.filter(name='admin').exists():
+            recruiter_name = recruiter.name
+            recruiter.name = request.POST.get('name')
+            recruiter.email = request.POST.get('email')
+            recruiter.phone = request.POST.get('phone')
+            recruiter.website = request.POST.get('website')
+            recruiter.address = request.POST.get('address')
+            recruiter.city = request.POST.get('city')
+            recruiter.state = request.POST.get('state')
+            recruiter.country = request.POST.get('country')
+            recruiter.zip_code = request.POST.get('zip_code')
+            recruiter.description = request.POST.get('description')
+            recruiter.save()
+
+            messages.success(request, _('Recruiter "%(recruiter_name)s" editedSuccessfully.') % {'recruiter_name': recruiter.name})
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'success'})
+            return redirect('recruiting_web:recruiter_admin_list')
+        else:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'forbidden'}, status=403)
+            return HttpResponseForbidden(_("You do not have permission to edit this recruiter."))
 
 class EmployerCreateView(CreateView):
     model = Organization
