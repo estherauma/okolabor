@@ -1,7 +1,7 @@
 {% extends 'components/base.html' %}
 {% load static %}
 {% load i18n %}
-
+{% load user_role_tags %}
 {% block styles %}
 <!-- SELECT2 CSS -->
 <link href="{% static 'assets/plugins/select2/select2.min.css' %}" rel="stylesheet"/>
@@ -173,6 +173,12 @@
                                     <th class="theading-color">{% translate "englishProficiency" %}</th>
                                     <th class="theading-color">{% translate "locationPreference" %}</th>
                                     <th class="theading-color">{% translate "offerStatus" %}</th>
+                                    {% if request.user|has_group:"admin" %}
+                                        <th class="theading-color">
+                                            {% translate "actions" %}
+                                        </th>
+                                    {% endif %}
+                                    
                                 </tr>
                             </thead>
                             <tbody>
@@ -199,6 +205,24 @@
                                     <td>{{ worker.english_proficiency|default:"Not Provided" }}</td>
                                     <td>{{ worker.location_preference|default:"Not Provided" }}</td>
                                     <td>{{ worker.latest_status }}</td>
+                                    {% if request.user|has_group:"admin" %}
+                                        <td>
+                                        <i
+                                            class="fa fa-trash text-danger"
+                                            style="cursor: pointer;"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal{{ worker.id }}"
+                                            title="Delete">
+                                        </i>
+                                        <i
+                                            class="fa fa-edit text-primary"
+                                            style="cursor: pointer;"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editModal{{ worker.id }}"
+                                            title="Edit">
+                                        </i>
+                                        </td>
+                                    {% endif %}
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -292,6 +316,68 @@
     </div>
 </div>
 
+{% for worker in workers %}
+  <!-- Edit Modal -->
+  <div class="modal fade" id="editModal{{ worker.id }}" tabindex="-1" aria-labelledby="editModalLabel{{ worker.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="POST" action="{% url 'edit_worker' worker.id %}">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="editModalLabel{{ worker.id }}">{% translate "Edit Worker" %}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="first_name{{ worker.id }}" class="form-label">{% translate "First Name" %}</label>
+              <input type="text" class="form-control" id="first_name{{ worker.id }}" name="first_name" value="{{ worker.first_name }}">
+            </div>
+            <div class="mb-3">
+              <label for="last_name{{ worker.id }}" class="form-label">{% translate "Last Name" %}</label>
+              <input type="text" class="form-control" id="last_name{{ worker.id }}" name="last_name" value="{{ worker.last_name }}">
+            </div>
+            <div class="mb-3">
+              <label for="email{{ worker.id }}" class="form-label">{% translate "Email" %}</label>
+              <input type="email" class="form-control" id="email{{ worker.id }}" name="email" value="{{ worker.email }}">
+            </div>
+            <div class="mb-3">
+              <label for="username{{ worker.id }}" class="form-label">{% translate "Username" %}</label>
+              <input type="text" class="form-control" id="username{{ worker.id }}" name="username" value="{{ worker.username }}">
+            </div>
+            <div class="mb-3">
+              <label for="town{{ worker.id }}" class="form-label">{% translate "Town" %}</label>
+              <input type="text" class="form-control" id="town{{ worker.id }}" name="town" value="{{ worker.town }}">
+            </div>
+            <div class="mb-3">
+              <label for="work_experience{{ worker.id }}" class="form-label">{% translate "Work Experience" %}</label>
+              <input type="text" class="form-control" id="work_experience{{ worker.id }}" name="work_experience" value="{{ worker.work_experience }}">
+            </div>
+            <div class="mb-3">
+              <label for="english_proficiency{{ worker.id }}" class="form-label">{% translate "English Proficiency" %}</label>
+              <input type="text" class="form-control" id="english_proficiency{{ worker.id }}" name="english_proficiency" value="{{ worker.english_proficiency }}">
+            </div>
+            <div class="mb-3">
+              <label for="location_preference{{ worker.id }}" class="form-label">{% translate "Location Preference" %}</label>
+              <input type="text" class="form-control" id="location_preference{{ worker.id }}" name="location_preference" value="{{ worker.location_preference }}">
+            </div>
+            <div class="mb-3">
+              <label for="latest_status{{ worker.id }}" class="form-label">{% translate "Latest Status" %}</label>
+              <select class="form-control" id="latest_status{{ worker.id }}" name="latest_status">
+                {% for choice in WorkAssignment.STATUS_CHOICES %}
+                  <option value="{{ choice.0 }}" {% if worker.latest_status == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
+            <button type="submit" class="btn btn-primary">{% translate 'Save' %}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endfor %}
 
 {% endblock body %}
 {% block scripts %}
