@@ -129,6 +129,11 @@ class EmployerListView(View):
                 'address': employer.address,
                 'country': employer.country,
                 'phone': employer.phone,
+                'website': employer.website,
+                'city': employer.city,
+                'state': employer.state,
+                'zipcode': employer.zip_code,
+                'description': employer.description,
                 'recruiters': recruiter_org_names  
             })
 
@@ -149,11 +154,13 @@ class EmployerListView(View):
 class EmployerDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         user = request.user
-        employer = get_object_or_404(Organization, pk=pk, type='employer')
+        employer = get_object_or_404(Organization, pk=pk, type='employer', deleted=False)
+
 
         if user.groups.filter(name='admin').exists():
             employer_name = employer.name
-            employer.delete()
+            employer.delete(user=user)
+            
             messages.success(request, _('Employer "%(employer_name)s" DeletedSuccessfully.') % {'employer_name': employer_name})
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
@@ -231,6 +238,11 @@ class RecruiterListViewInAdmin(View):
                 'country': recruiter.country,
                 'phone': recruiter.phone,
                 'type': recruiter.type,
+                'website': recruiter.website,
+                'city': recruiter.city,
+                'state': recruiter.state,
+                'zip_code': recruiter.zip_code,
+                'description': recruiter.description,
                 'employers': assigned_employers
             })
 
@@ -247,11 +259,11 @@ class RecruiterListViewInAdmin(View):
 class RecruiterDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         user = request.user
-        recruiter = get_object_or_404(Organization, pk=pk, type='recruiter')
+        recruiter = get_object_or_404(Organization, pk=pk, type='recruiter',deleted=False)
 
         if user.groups.filter(name='admin').exists():
             recruiter_name = recruiter.name
-            recruiter.delete()
+            recruiter.delete(user=user)
             messages.success(request, _('Recruiter "%(recruiter_name)s" deletedSuccessfully.') % {'recruiter_name': recruiter_name})
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
