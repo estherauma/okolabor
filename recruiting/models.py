@@ -1,5 +1,5 @@
 from django.db import models
-from common.models import AuditableModel
+from common.models import AuditableModel,SoftDeleteManager
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 
@@ -23,10 +23,13 @@ class Organization(AuditableModel):
     state = models.CharField(max_length=255)
     country = models.CharField(max_length=255)
     zip_code = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(help_text="Organization description.")
     is_active = models.BooleanField(default=True)
     is_verified = models.BooleanField(default=False)
     type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='recruiter')
+    
+    objects = SoftDeleteManager()  # Filters out deleted
+    all_objects = models.Manager()
 
     def __str__(self):
         return f'{self.name}'
@@ -49,6 +52,9 @@ class WorkRequests(AuditableModel):
         max_length=255, null=False, blank=False,
         choices=STATUS_CHOICES, default='Open'  # Set default to 'Open'
     )
+    
+    objects = SoftDeleteManager()  # Only active (non-deleted)
+    all_objects = models.Manager()  # All including deleted
 
     def __str__(self) -> str:
         return f'{self.name}'

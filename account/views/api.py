@@ -24,7 +24,7 @@ from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 
 from common.email import EmailHelper
-from account.signals import check_passport_match_signal
+# from account.signals import check_passport_match_signal
 from django.contrib.auth.models import Group
 
 
