@@ -52,6 +52,9 @@ class WorkRequests(AuditableModel):
         max_length=255, null=False, blank=False,
         choices=STATUS_CHOICES, default='Open'  # Set default to 'Open'
     )
+    
+    objects = SoftDeleteManager()  # Only active (non-deleted)
+    all_objects = models.Manager()  # All including deleted
 
     def __str__(self) -> str:
         return f'{self.name}'
