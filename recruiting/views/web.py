@@ -513,7 +513,6 @@ class WorkRequestDeleteView(LoginRequiredMixin, View):
 
 class AddWorkersWorkRequests(View):
     def get(self, request, pk, role_id):
-        print(role_id, "role id")
         work_assign_form = WorkerAssignmentForm()
         form = FilterWorkExperienceForm()
         filter_form = AdvancedFilterForm()
@@ -542,8 +541,6 @@ class AddWorkersWorkRequests(View):
         workers = User.objects.filter(
             groups__name='worker'
         ).distinct().order_by('-created_at')
-
-        print(workers, "workers")
 
         if search_query:
             workers = workers.filter(
@@ -664,7 +661,6 @@ class AddWorkersWorkRequests(View):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({'workers': worker_data, 'num_pages': paginator.num_pages})
         
-        print(work_requests,"work_requests")
 
         context = {
             'workers': page_obj,  # All workers (not role-specific)
@@ -875,7 +871,7 @@ class DeleteRoleView(View):
     def post(self, request, pk):
         role = get_object_or_404(Role, pk=pk)
         work_request_pk = role.work_request.pk 
-        role.delete()
+        role.delete(user=request.user)
         messages.success(request, 'Role deleted successfully.')
         return redirect('recruiting_web:workrequest_detail', pk=work_request_pk)
 
@@ -887,7 +883,6 @@ class RecruiterListView(LoginRequiredMixin, View):
         recruiters = User.objects.filter(groups__name='recruiter').prefetch_related('employerrecruiter_set__employer')
         employers = Organization.objects.all()
 
-        print(recruiters,"recruiters")
 
         recruiter_data = []
         for recruiter in recruiters:
@@ -1328,7 +1323,6 @@ class AssignEmployerContactView(View):
             position = data.get("position", "")
             is_primary = data.get("is_primary")
             
-            print(employer_id, name, email, phone, position, is_primary)
 
             if not employer_id:
                 messages.error(request, "employerIDIsRequired.")
@@ -1513,7 +1507,6 @@ class EmployerRecruiterOrgStatusListView(ListView):
 
 class SummaryViews(View):
     def get(self, request, pk, role_id):
-        print(role_id, "role id")
         work_assign_form = WorkerAssignmentForm()
         form = FilterWorkExperienceForm()
         filter_form = AdvancedFilterForm()
