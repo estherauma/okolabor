@@ -454,6 +454,35 @@ class WorkRequestsListView(View):
             }
         return render(request, "recruiting/work_requests/list.html", context)
 
+class DeleteAssignedOrganizationView(View):
+    def post(self, request, employer_id, recruiter_org_id):
+        employer = get_object_or_404(Organization, pk=employer_id)
+        recruiter_org = get_object_or_404(Organization, pk=recruiter_org_id)
+
+        # Delete the assignment link between employer and recruiter organization
+        EmployerRecruiterOrgLink.objects.filter(
+            employer_org=employer,
+            recruiter_org=recruiter_org
+        ).delete()
+        messages.success(self.request, _('employerRecruiterDeletedSuccessfully'))
+        return redirect('recruiting_web:employer_detail', pk=employer.id)
+
+
+
+class DeleteEmployerOrganizationFromRecruiterView(View):
+    def post(self, request, recruiter_org_id, employer_org_id):
+        recruiter_org = get_object_or_404(Organization, pk=recruiter_org_id, type='recruiter')
+        employer_org = get_object_or_404(Organization, pk=employer_org_id)
+
+        # Delete the link between recruiter and employer
+        EmployerRecruiterOrgLink.objects.filter(
+            recruiter_org=recruiter_org,
+            employer_org=employer_org
+        ).delete()
+        messages.success(self.request, _('employerRecruiterDeletedSuccessfully'))
+
+        return redirect('recruiting_web:recruiter_org_detail', pk=recruiter_org.id)
+
 
 
 class WorkRequestCreateView(CreateView):
