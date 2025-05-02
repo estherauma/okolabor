@@ -764,14 +764,17 @@ class WorkRequestDetailView(View):
             elif status == 'confirmed':
                 total_confirmed_count += count
 
+        roles_qs = work_request.roles.filter(deleted_at__isnull=True)
+
         role_forms = {
             role.id: WorkRequestRoleForm(instance=role)
-            for role in work_request.roles.all()
+            for role in roles_qs
         }
+
         
         context = {
             'workrequest': work_request,
-            'roles': work_request.roles.all(),
+            'roles': roles_qs,
             'role_forms': role_forms,
             'worker_summary': worker_summary,
             'total_shortlist_count': total_shortlist_count,
