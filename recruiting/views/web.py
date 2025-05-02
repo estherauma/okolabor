@@ -27,6 +27,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 from collections import defaultdict
 from django.db.models import Count
+from django.template.loader import render_to_string
 import os
 from recruiting.utils import get_worker_preferences, calculate_profile_completion
 from account.models import User
@@ -685,6 +686,7 @@ class ShowWorkerDetails(View):
 class WorkRequestDetailView(View):
     def get(self, request, pk):
         work_request = get_object_or_404(WorkRequests, pk=pk)
+        
 
         grouped_counts = WorkAssignment.objects.filter(
             work_request=work_request,
@@ -709,10 +711,15 @@ class WorkRequestDetailView(View):
             elif status == 'confirmed':
                 total_confirmed_count += count
 
+        role_forms = {
+            role.id: WorkRequestRoleForm(instance=role)
+            for role in work_request.roles.all()
+        }
         
         context = {
             'workrequest': work_request,
             'roles': work_request.roles.all(),
+            'role_forms': role_forms,
             'worker_summary': worker_summary,
             'total_shortlist_count': total_shortlist_count,
             'total_offersent_count': total_offersent_count,
@@ -747,6 +754,25 @@ class WorkRequestRoleCreateView(CreateView):
             'recruiting_web:workrequest_detail',
             kwargs={'pk': self.object.work_request.pk}
         )
+    
+class EditRoleView(View):
+    def post(self, request, pk):
+        role = get_object_or_404(Role, pk=pk)
+        form = WorkRequestRoleForm(request.POST, instance=role)
+        if form.is_valid():       
+            form.save()
+            messages.success(request, 'Role updated successfully.')
+            return redirect('recruiting_web:workrequest_detail', pk=role.work_request.pk)
+        else:
+            return redirect('recruiting_web:workrequest_detail', pk=role.work_request.pk)
+        
+class DeleteRoleView(View):
+    def post(self, request, pk):
+        role = get_object_or_404(Role, pk=pk)
+        work_request_pk = role.work_request.pk 
+        role.delete()
+        messages.success(request, 'Role deleted successfully.')
+        return redirect('recruiting_web:workrequest_detail', pk=work_request_pk)
 
 class RecruiterListView(LoginRequiredMixin, View):
     def get(self, request):
@@ -1416,3 +1442,4 @@ class SummaryViews(View):
         }
 
         return render(request, 'recruiting/work_requests/summaryList/summarylist.html', context)
+

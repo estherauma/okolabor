@@ -90,22 +90,82 @@
             <button aria-controls="collapse{{ forloop.counter }}" aria-expanded="false" 
                     class="accordion-button collapsed d-flex align-items-center justify-content-between w-100"
                     data-bs-target="#collapse{{ forloop.counter }}" data-bs-toggle="collapse" type="button">
-                
                 <div>
                     {% translate "workRequestDetailsJobTitle" %}
                     <strong>{{ role.title }}</strong>
                 </div>
-
-        
                 <a href="{% url 'recruiting_web:work_request_add_workers' pk=workrequest.id role_id=role.id %}">
                     <button class="btn btn-warning btn-sm ms-3">
                         +{% translate "addWorkers" %}
                     </button>
                 </a>
+                <!-- Edit Button -->
+                <i 
+                class="fa fa-edit text-primary"
+                style="cursor: pointer; font-size: 20px;padding-left:10px;" 
+                data-bs-toggle="modal"
+                data-bs-target="#editRoleModal{{ role.id }}"
+                title="Edit">
+                </i>
+             <!-- Delete Button -->
+                <i 
+                class="fa fa-trash text-danger"
+                style="cursor: pointer; font-size: 20px;padding-left:10px;" 
+                data-bs-toggle="modal"
+                data-bs-target="#deleteRoleModal{{ role.id }}"
+                title="Delete">
+                </i>
                 
-        
-            </button>
         </h2>
+        {% for role in workrequest.roles.all %}
+        
+            <div class="modal fade" id="editRoleModal{{ role.id }}" tabindex="-1" aria-labelledby="editRoleModalLabel{{ role.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                    <form method="POST" action="{% url 'recruiting_web:edit-role' role.id %}">
+                    {% csrf_token %}
+                    
+                    {{ role_forms|get:role.id }}
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
+                        <button type="submit" class="btn btn-primary">{% translate 'Save' %}</button>
+                    </div>
+                    </form>
+                </div>
+                </div>
+            </div>
+        {% endfor %}
+
+        <!-- Delete Modal -->
+    <div class="modal fade" id="deleteRoleModal{{ role.id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        
+        <div class="modal-header">
+          <h5 class="modal-title">Confirm Delete</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <div class="modal-body">
+          Are you sure you want to delete the role <strong>{{ role.title }}</strong>?
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          
+          <form method="POST" action="{% url 'recruiting_web:delete_role' role.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </form>
+        </div>
+  
+      </div>
+    </div>
+  </div>
+  
+
+
+
         
       <div aria-labelledby="heading{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#rolesAccordion" id="collapse{{ forloop.counter }}">
        <div class="accordion-body">
@@ -736,4 +796,5 @@
 </div>
 
 {% endblock body %}
+
 

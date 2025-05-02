@@ -8,7 +8,7 @@ from recruiting.views.web import (
     RoleHoursCreateView, RoleHousingCreateView, RoleMealsCreateView,
     RoleQualificationsCreateView, RoleWagesCreateView, WorkRequestCreateView,
     WorkRequestDetailView, WorkRequestRoleCreateView, WorkRequestsListView,
-    OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView,AssignRecruiterView,SendRecruiterEmailView,AcceptRecruiterView,RejectRecruiterView,RemoveWorkerFromAssignmentView,UpdateStatusView,ContactWorkRequestsView,AssignEmployerContactView,AddWorkersWorkRequests,ShowWorkerDetails,AddToShortlistView,UpdateWorkerStatusView,CancelOfferView,RecruiterListViewInAdmin,AssignEmployersToRecruiterOrgView,SummaryViews,RecruiterDetailView,GetRolesView,CopyWorkersView,EmployerDeleteView,RecruiterDeleteView
+    OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView,AssignRecruiterView,SendRecruiterEmailView,AcceptRecruiterView,RejectRecruiterView,RemoveWorkerFromAssignmentView,UpdateStatusView,ContactWorkRequestsView,AssignEmployerContactView,AddWorkersWorkRequests,ShowWorkerDetails,AddToShortlistView,UpdateWorkerStatusView,CancelOfferView,RecruiterListViewInAdmin,AssignEmployersToRecruiterOrgView,SummaryViews,RecruiterDetailView,GetRolesView,CopyWorkersView,EmployerDeleteView,RecruiterDeleteView,EditRoleView,DeleteRoleView
 )
 from recruiting.views.workers import (
      WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView
@@ -72,6 +72,15 @@ urlpatterns = [
     path('work-requests/<pk>/',
          WorkRequestDetailView.as_view(),
          name='workrequest_detail'),
+
+    path('role/<str:pk>/edit/', 
+         EditRoleView.as_view(), 
+         name='edit-role'),
+
+     path('role/<str:pk>/delete/', 
+          DeleteRoleView.as_view(), 
+          name='delete_role'),
+
     path('workers/get-roles-for-work-request/<str:work_request_id>/', 
          GetRolesForWorkRequestView.as_view(), 
          name='get_roles_for_work_request'),
