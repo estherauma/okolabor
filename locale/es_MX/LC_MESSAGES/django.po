@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-01 07:25+0300\n"
+"POT-Creation-Date: 2025-04-30 13:48+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2747,35 +2747,49 @@ msgstr "Agregar experiencia de trabajadores"
 msgid "addWorkerExperienceSubmit"
 msgstr "Enviar"
 
-#: recruiting/templates/recruiting/workers/work_experience_detail.html:5
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:9
 msgid "workExperienceDetailsWorkExperience"
 msgstr "Experiencia laboral"
 
-#: recruiting/templates/recruiting/workers/work_experience_detail.html:11
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:33
+msgid "workExperienceDetailsBack"
+msgstr "Atrás"
+
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:36
 msgid "workExperienceDetailsWorkExperienceDetails"
 msgstr "Detalles de la experiencia laboral"
 
-#: recruiting/templates/recruiting/workers/work_experience_detail.html:36
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:53
+msgid "datesOfEmployment"
+msgstr "Fechas de empleo"
+
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:61
 msgid "workExperienceDetailsPresent"
 msgstr "Presente"
 
-#: recruiting/templates/recruiting/workers/work_experience_detail.html:43
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:69
 msgid "jobDetails"
 msgstr "detallesDelTrabajo"
 
-#: recruiting/templates/recruiting/workers/work_experience_detail.html:60
-#, fuzzy
-#| msgid "locationPreference"
-msgid "Preferences"
-msgstr "Preferencia de ubicación"
-
-#: recruiting/templates/recruiting/workers/work_experience_detail.html:109
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:81
 msgid "workExperienceDetailsSupervisorDetails"
 msgstr "Detalles del supervisor"
 
-#: recruiting/templates/recruiting/workers/work_experience_detail.html:118
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:91
 msgid "workExperienceDetailsWorkAuthorization"
 msgstr "Autorizacion de trabajo"
+
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:103
+#, fuzzy
+#| msgid "notifications"
+msgid "Certifications"
+msgstr "Notificaciones"
+
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:131
+#, fuzzy
+#| msgid "other"
+msgid "Other Media"
+msgstr "Otra"
 
 #: recruiting/views/web.py:157
 #, fuzzy, python-format
@@ -2957,27 +2971,21 @@ msgstr "Fecha de finalización"
 msgid "invalidDataProvided."
 msgstr "datos inválidos"
 
-#: recruiting/views/web.py:1278
-#, fuzzy
-#| msgid "workersAssignedSuccessfully."
+#: recruiting/views/web.py:1226
 msgid "ContactAssignedSuccessfully!"
-msgstr "¡Trabajadores asignados con éxito!"
-
-#: recruiting/views/web.py:1299
-msgid "missingEmployerIDsorRecruiterOrganizationID."
 msgstr ""
 
-#: recruiting/views/web.py:1352
-#, fuzzy
-#| msgid "workersAssignedSuccessfully."
-msgid "EmployersAssignedSuccessfully."
-msgstr "¡Trabajadores asignados con éxito!"
+#: recruiting/views/web.py:1246
+msgid "missingEmployerIDsOrRecruiterOrganizationID."
+msgstr ""
 
-#: recruiting/views/web.py:1357
-#, fuzzy
-#| msgid "invalidData"
+#: recruiting/views/web.py:1264
+msgid "EmployersAssignedSuccessfully."
+msgstr ""
+
+#: recruiting/views/web.py:1269
 msgid "invalidJSONData."
-msgstr "datos inválidos"
+msgstr ""
 
 #: recruiting/views/web.py:1393
 msgid "You have accepted the recruiter assignment."
@@ -3759,33 +3767,19 @@ msgstr "Empleadoras"
 msgid "jobOrders"
 msgstr "Órdenes de trabajo"
 
-#: theme/templates/components/layouts/vertical/app-sidebar.html:52
-#, fuzzy
-#| msgid "addUserRecruiter"
-msgid "recruitersList"
-msgstr "Reclutador"
-
-#: theme/templates/components/layouts/vertical/app-sidebar.html:61
-#, fuzzy
-#| msgid "userLogs"
+#: theme/templates/components/layouts/vertical/app-sidebar.html:53
 msgid "UserLogs"
 msgstr "Registros de usuarios"
 
-#: theme/templates/components/layouts/vertical/app-sidebar.html:68
-#, fuzzy
-#| msgid "mainHeaderManageUsers"
+#: theme/templates/components/layouts/vertical/app-sidebar.html:60
 msgid "sideBarManageUsers"
 msgstr "Manage Users"
 
-#: theme/templates/components/layouts/vertical/app-sidebar.html:76
-msgid "employerAcceptRejectStatus"
-msgstr ""
-
-#: theme/templates/components/layouts/vertical/app-sidebar.html:89
+#: theme/templates/components/layouts/vertical/app-sidebar.html:73
 msgid "messages"
 msgstr "Mensajes"
 
-#: theme/templates/components/layouts/vertical/app-sidebar.html:95
+#: theme/templates/components/layouts/vertical/app-sidebar.html:79
 msgid "logout"
 msgstr "Cerrar sesión"
 
@@ -4180,9 +4174,6 @@ msgstr "Has iniciado sesión correctamente"
 
 #~ msgid "workExperienceDetailsVisaType:"
 #~ msgstr "Tipo de visa:"
-
-#~ msgid "workExperienceDetailsH2AWork:"
-#~ msgstr "Trabajo H2A:"
 
 #~ msgid "manageUsersNewUser"
 #~ msgstr "+ Nuevo usuario"
