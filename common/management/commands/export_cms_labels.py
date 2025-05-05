@@ -28,6 +28,7 @@ class Command(BaseCommand):
                     continue
 
                 additional_text = page_data.get('additionalText', [])
+                print(additional_text)
                 for item in additional_text:
                     key = item.get('key')
                     value = item.get('value')
