@@ -11,7 +11,7 @@ from recruiting.views.web import (
     OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView,AssignRecruiterView,SendRecruiterEmailView,AcceptRecruiterView,RejectRecruiterView,RemoveWorkerFromAssignmentView,UpdateStatusView,ContactWorkRequestsView,AssignEmployerContactView,AddWorkersWorkRequests,ShowWorkerDetails,AddToShortlistView,UpdateWorkerStatusView,CancelOfferView,RecruiterListViewInAdmin,AssignEmployersToRecruiterOrgView,SummaryViews,RecruiterDetailView,GetRolesView,CopyWorkersView,EmployerDeleteView,EmployerEditView,RecruiterDeleteView,RecruiterEditView,update_employer_recruiter_status,EmployerRecruiterOrgStatusListView,WorkRequestEditView,WorkRequestDeleteView,EmployerRecruiterOrgLinkDeleteView
 )
 from recruiting.views.workers import (
-     WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView
+     WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,WorkerEditView,WorkerDeleteView
 )
 from recruiting.views.workers import (
      CreateWorkExperienceView, WorkExperienceDetailsView,ExportWorkerDetailsView,UploadDocumentsView,UploadLanguageProficiencyView,UploadUserPreferenceView
@@ -128,6 +128,9 @@ urlpatterns = [
     path('workers/',
          WorkerListView.as_view(),
          name='workers'),
+    # urls.py
+    path('worker/edit/<str:pk>/', WorkerEditView.as_view(), name='edit_worker'),
+    path('worker/delete/<str:pk>/', WorkerDeleteView.as_view(), name='worker_delete'),
     path('assign-worker/', AssignWorkerView.as_view(), name='assign_worker'),
     path('get-worker-details/', GetWorkerDetailsView.as_view(), name='get_worker_details'),
     path('workers/<str:pk>/',

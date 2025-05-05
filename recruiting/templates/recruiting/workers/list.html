@@ -211,7 +211,7 @@
                                             class="fa fa-trash text-danger"
                                             style="cursor: pointer;"
                                             data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal{{ worker.id }}"
+                                            data-bs-target="#deleteModalWorker{{ worker.id }}"
                                             title="Delete">
                                         </i>
                                         <i
@@ -303,11 +303,13 @@
                     <div class="form-group">
                         <label for="modal_status">{% translate "Status" %}</label>
                         <select class="form-control" id="modal_status" name="status">
-                            <option value="Assigned">Assigned</option>
-                            <option value="Accepted">Accepted</option>
-                            <option value="Completed">Completed</option>
-                            <option value="Cancelled">Cancelled</option>
+                            {% for choice in status_choices %}
+                                <option value="{{ choice.0 }}" {% if choice.0 == worker.latest_status %}selected{% endif %}>
+                                    {{ choice.1 }}
+                                </option>
+                            {% endfor %}
                         </select>
+                        
                     </div>
                     <button type="submit" class="btn btn-primary">{% translate "Assign" %}</button>
                 </form>
@@ -321,7 +323,7 @@
   <div class="modal fade" id="editModal{{ worker.id }}" tabindex="-1" aria-labelledby="editModalLabel{{ worker.id }}" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-        <form method="POST" action="{% url 'edit_worker' worker.id %}">
+        <form method="POST" action="{% url 'recruiting_web:edit_worker' worker.id %}">
           {% csrf_token %}
           <div class="modal-header">
             <h5 class="modal-title" id="editModalLabel{{ worker.id }}">{% translate "Edit Worker" %}</h5>
@@ -339,10 +341,6 @@
             <div class="mb-3">
               <label for="email{{ worker.id }}" class="form-label">{% translate "Email" %}</label>
               <input type="email" class="form-control" id="email{{ worker.id }}" name="email" value="{{ worker.email }}">
-            </div>
-            <div class="mb-3">
-              <label for="username{{ worker.id }}" class="form-label">{% translate "Username" %}</label>
-              <input type="text" class="form-control" id="username{{ worker.id }}" name="username" value="{{ worker.username }}">
             </div>
             <div class="mb-3">
               <label for="town{{ worker.id }}" class="form-label">{% translate "Town" %}</label>
@@ -363,8 +361,11 @@
             <div class="mb-3">
               <label for="latest_status{{ worker.id }}" class="form-label">{% translate "Latest Status" %}</label>
               <select class="form-control" id="latest_status{{ worker.id }}" name="latest_status">
-                {% for choice in WorkAssignment.STATUS_CHOICES %}
-                  <option value="{{ choice.0 }}" {% if worker.latest_status == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                {% for choice in status_choices %}
+                <option value="{{ choice.0 }}" {% if choice.0|stringformat:"s" == worker.latest_status|stringformat:"s" %}selected{% endif %}>
+                    {{ choice.1 }}
+                  </option>
+                  
                 {% endfor %}
               </select>
             </div>
@@ -372,6 +373,28 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
             <button type="submit" class="btn btn-primary">{% translate 'Save' %}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal fade" id="deleteModalWorker{{ worker.id }}" tabindex="-1" aria-labelledby="deleteModalWorkerLabel{{ worker.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="POST" action="{% url 'recruiting_web:worker_delete' worker.id %}">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalWorkerLabel{{ worker.id }}">{% translate "confirmDelete" %}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            {% translate 'areYouSureYouWantToDelete'%} <strong>{{ worker.first_name }}{{worker.last_name}}</strong>?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel'%}</button>
+            <button type="submit" class="btn btn-danger">{% translate 'Delete'%}</button>
           </div>
         </form>
       </div>
