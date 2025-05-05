@@ -26,6 +26,7 @@ from drf_yasg.utils import swagger_auto_schema
 from common.email import EmailHelper
 # from account.signals import check_passport_match_signal
 from django.contrib.auth.models import Group
+from django.utils.translation import gettext as _
 
 
 class RegisterView(APIView):
@@ -293,7 +294,7 @@ class UserDocumentDetailsView(APIView):
         document = get_object_or_404(UserDocuments, pk=document_id)
         serilizer = UserDocumentSerializer(document)
         if document.kind == 'passport' and document.cloud_vision_match is False:
-
+            # TODO: CHANGE
             check_passport_match_signal.send(sender=UserDocumentDetailsView, instance=document)
         return Response(
             serilizer.data,
@@ -603,8 +604,8 @@ class UserAccountRecovery(APIView):
                     to_emails=[user.email],
                     subject='Restablece tu contraseña de okolabor',
                     body={
-                        'correo_electrónico': user.email,
-                        'token_rest_contraseña': reset_code,
+                        _('passwordResetTemplateEmail'): user.email,
+                        _('passwordResetTemplateToken'): reset_code,
                     }
                 )
 

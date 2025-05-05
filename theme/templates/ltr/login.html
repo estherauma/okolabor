@@ -63,20 +63,20 @@
                         </div>
                         <div class="input100 login-fields">
                             <input type="email" name="{{ form.email.name }}" id="{{ form.email.id_for_label }}"
-                             placeholder="Username" class="login-input">                             
+                             placeholder="{% translate "loginWebUsername" %}" class="login-input">                             
                         </div>
                         <br>
                         
                         <div class="input100 login-fields">                           
                             <input type="password" name="{{ form.password.name }}" id="{{ form.password.id_for_label }}"
-                             placeholder="Password" class="login-input">                            
+                             placeholder="{% translate "loginWebPassword" %}" class="login-input">                            
                         </div>
                         <div class="text-center pt-3">
-                            <a href="{% url 'password-reset' %}" class="ms-1 white-link float-end">Forgotten password</a>
+                            <a href="{% url 'password-reset' %}" class="ms-1 white-link float-end">{% translate "loginForgotPasswordText" %}</a>
                         </div>
                         <div class="container-login100-form-btn">
                             <button type="submit" class="login100-form-btn btn-green">
-                                Log in
+                                {% translate "loginButtonText" %}
                             </button>
                         </div>
                         
