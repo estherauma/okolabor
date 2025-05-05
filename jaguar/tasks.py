@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from common.cloud_vision import detect_text_in_image
 from common.logger import AppLogger
 from django.utils.translation import gettext as _
+from django.utils import translation
 
 User = get_user_model()
 
@@ -16,6 +17,8 @@ def process_file_upload(self, user_id, entity_type, description, file_name, file
     from account.models import UserDocuments  # Adjust import as needed
 
     User = get_user_model()
+    user = User.objects.get(id=user_id)
+    translation.activate(user.language)
 
     # Create folder if missing
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
