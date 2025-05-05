@@ -120,7 +120,7 @@
      <div class="col-10">
       <div class="row">
        <a href="{% url 'recruiting_web:work_experience_details' pk=exp.id %}"><h5 class="green-color">{{exp.company}}</h5></a>
-       <div class="col-6" style="display: flex; align-items: center;">
+       <div class="col-4" style="display: flex; align-items: center;">
         <br/>
         <i class="side-menu__icon icon-location-pin" style="margin-right: 5px;">
         </i>
@@ -128,14 +128,32 @@
          {{exp.country}}
         </span>
        </div>
-       <div class="col-6" style="display: flex; align-items: center;">
+       <div class="col-4" style="display: flex; align-items: center;">
         <i class="side-menu__icon icon-calendar" style="margin-right: 5px;">
         </i>
         <span class="side-menu__label">
             {{ exp.start_date }} <br> - {{ exp.end_date }}
         </span>
        </div>
+       <div class="col-4">
+        <i 
+        class="fa fa-edit text-primary"
+        style="cursor: pointer; font-size: 20px;padding-left:10px;" 
+        data-bs-toggle="modal"
+        data-bs-target="#editExperinceModal{{ exp.id }}"
+        title="Edit">
+        </i>
+     <!-- Delete Button -->
+        <i 
+        class="fa fa-trash text-danger"
+        style="cursor: pointer; font-size: 20px;padding-left:10px;" 
+        data-bs-toggle="modal"
+        data-bs-target="#deleteExperinceModal{{ exp.id }}"
+        title="Delete">
+        </i>
       </div>
+      </div>
+      
     {% for job in job_experiences %}
             <div class="p-4 border rounded-lg bg-white shadow-sm mb-4">
                 <p class="text-gray-700 text-lg flex items-center gap-2">
