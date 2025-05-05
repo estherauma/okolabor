@@ -5,6 +5,7 @@ from account.models import UserDocuments, UserNotification
 from django.contrib.auth import get_user_model
 from common.cloud_vision import detect_text_in_image
 from common.logger import AppLogger
+from django.utils.translation import gettext as _
 
 User = get_user_model()
 
@@ -46,16 +47,13 @@ def process_file_upload(self, user_id, entity_type, description, file_name, file
         document.save()
         
         if details_match:
-            message = '¡Su pasaporte ha sido verificado!'
+            message = _('passportVerifiedNotificationBody')
         else:
-            message = (
-                'No se ha podido verificar su pasaporte. '
-                'Asegúrese de que sus datos coincidan con lo que está en su pasaporte.'
-            )
+            message = _('passportNotVerifiedNotificationBody')
 
         UserNotification.objects.create(
             user=document.user,
-            title='Verificación de pasaporte',
+            title=_('passportVerifiedNotificationTitle'),
             message=message
         )
 
@@ -78,22 +76,16 @@ def extract_current_details(user_id):
     else: 
         user_details.append(user.last_name)
         
-    print(user_details  )
-    print('--------------------------------')
     return user_details
 
 
 def check_details_match(user_details, cloud_vision_response):
     logger = AppLogger(log_file='logs/file_processing.log')
     user_details_upper = [detail.upper() for detail in user_details]
-    logger.info(f'User details: {user_details_upper}')
     cloud_vision_response_upper = [
         response.upper() for response in cloud_vision_response]
-    logger.info(f'Cloud vision response: {cloud_vision_response_upper}')
-    print(cloud_vision_response_upper)
     return all(
         detail in cloud_vision_response_upper for detail in user_details_upper)
-
 
 def check_passport_match(instance, **kwargs):
     logger = AppLogger(log_file='logs/django_signal.log')
@@ -102,7 +94,6 @@ def check_passport_match(instance, **kwargs):
     instance.cloud_vision_response = check_passport
 
     user_details = extract_current_details(instance.user_id)
-    # logger.info(f'User details: {user_details}')
     details_match = check_details_match(
         user_details, instance.cloud_vision_response)
 
@@ -113,9 +104,9 @@ def check_passport_match(instance, **kwargs):
     if details_match:
         # Create passport verifed notification
         # Your passsword has been verified
-        message = '¡Su pasaporte ha sido verificado!'
+        message = _('passportVerifiedNotificationBody')
         UserNotification.objects.create(
             user=instance.user,
-            title='Verificación de pasaporte', message=message)
+            title=_('passportVerifiedNotificationTitle'), message=message)
 
     instance.save()
