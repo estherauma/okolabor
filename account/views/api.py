@@ -24,7 +24,7 @@ from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 
 from common.email import EmailHelper
-# from account.signals import check_passport_match_signal
+from jaguar.tasks import check_passport_match
 from django.contrib.auth.models import Group
 from django.utils.translation import gettext as _
 
@@ -294,8 +294,7 @@ class UserDocumentDetailsView(APIView):
         document = get_object_or_404(UserDocuments, pk=document_id)
         serilizer = UserDocumentSerializer(document)
         if document.kind == 'passport' and document.cloud_vision_match is False:
-            # TODO: CHANGE
-            check_passport_match_signal.send(sender=UserDocumentDetailsView, instance=document)
+            check_passport_match()
         return Response(
             serilizer.data,
             status=status.HTTP_200_OK
