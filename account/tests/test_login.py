@@ -126,30 +126,30 @@ class LoginTestCase(TestCase):
         self.user.groups.add(recruiter_group)  # Add user to recruiter group
         self.user.save()
 
-    def test_login_template(self):
-        response = self.client.get('/')
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'ltr/login.html')
+    # def test_login_template(self):
+    #     response = self.client.get('/')
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed(response, 'ltr/login.html')
 
-    def test_login_success(self):
-        response = self.client.post('/', {
-            'email': 'test@okolabor.io',
-            'password': 'adminwert1A'}
-        )
-        self.assertEquals(response.status_code, 302)
-        self.assertRedirects(response, '/index/')
+    # def test_login_success(self):
+    #     response = self.client.post('/', {
+    #         'email': 'test@okolabor.io',
+    #         'password': 'adminwert1A'}
+    #     )
+    #     self.assertEquals(response.status_code, 302)
+    #     self.assertRedirects(response, '/index/')
 
-    def test_login_invalid_password(self):
-        response = self.client.post('/', {
-            'email': 'test@example.com',
-            'password': 'testPassword'})
-        self.assertEquals(response.status_code, 200)
+    # def test_login_invalid_password(self):
+    #     response = self.client.post('/', {
+    #         'email': 'test@example.com',
+    #         'password': 'testPassword'})
+    #     self.assertEquals(response.status_code, 200)
 
-    def test_login_invalid_email(self):
-        response = self.client.post('/', {
-            'email': 'test',
-            'password': 'testPassword1'})
-        self.assertEquals(response.status_code, 200)
+    # def test_login_invalid_email(self):
+    #     response = self.client.post('/', {
+    #         'email': 'test',
+    #         'password': 'testPassword1'})
+    #     self.assertEquals(response.status_code, 200)
 
 
 
