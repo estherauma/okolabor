@@ -420,7 +420,6 @@ class RecruiterDetailView(View):
         }
         return render(request, 'recruiting/recruiters_list/workrequest_detail.html', context)
 
-
 class WorkRequestsListView(View):
     def get(self, request):
         user = request.user
@@ -434,8 +433,6 @@ class WorkRequestsListView(View):
             user_orgs = user.organizations.all()
             if user_orgs.exists():
                 user_org = user_orgs.first() 
-
-                
                 assigned_employer_ids = EmployerRecruiterOrgLink.objects.filter(
                     recruiter_org=user_org
                 ).values_list("employer_org_id", flat=True)
@@ -445,14 +442,20 @@ class WorkRequestsListView(View):
                 work_requests = WorkRequests.objects.none()
         else:
             work_requests = WorkRequests.objects.none()
-            
-        employers = Organization.objects.filter(type='employer')
-        
+
+        # Attach recruiter_org to each work request
+        for wr in work_requests:
+            recruiter_link = EmployerRecruiterOrgLink.objects.filter(employer_org=wr.employer).first()
+            wr.recruiter_org = recruiter_link.recruiter_org if recruiter_link else None
+
+        print(work_requests, "work_requests")
         context = {
             "work_requests": work_requests,
-            "employers": employers
-            }
+            "employers": Organization.objects.filter(type='employer'),
+            "recruiter": Organization.objects.filter(type='recruiter'),
+        }
         return render(request, "recruiting/work_requests/list.html", context)
+
 
 class DeleteAssignedOrganizationView(View):
     def post(self, request, employer_id, recruiter_org_id):
