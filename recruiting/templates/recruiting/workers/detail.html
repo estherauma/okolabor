@@ -166,11 +166,58 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
-        <form method="POST" action="{% url 'recruiting_web:edit-role' exp.id %}">
+        <form method="POST" action="{% url 'recruiting_web:edit-role' exp.id %}" enctype="multipart/form-data">
           {% csrf_token %}
           <div class="modal-body p-4">
-            {{ experience_forms|get:exp.id }}
+            {% with form=experience_forms|get:exp.id %}
+              {% for field in form %}
+                {% if field.name not in 'visa_type visa_file license_file video_file' %}
+                  <div class="form-group my-3" id="div_{{ field.id_for_label }}">
+                    <label>{{ field.label }}</label>
+                    <div class="input-group input-group-outline is_valid my-3">
+                      {{ field }}
+                      {% if field.errors %}
+                        <div class="text-danger small">{{ field.errors|join:", " }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+                {% endif %}
+              {% endfor %}
+        
+              <!-- Visa Type -->
+              <div class="form-group my-3" id="div_{{ form.visa_type.id_for_label }}">
+                <label>{{ form.visa_type.label }}</label>
+                <div class="input-group input-group-outline is_valid my-3">
+                  {{ form.visa_type }}
+                </div>
+              </div>
+        
+              <!-- Visa Document (file) -->
+              <div class="form-group my-3" id="div_{{ form.visa_file.id_for_label }}">
+                <label>{{ form.visa_file.label }}</label>
+                <div class="input-group input-group-outline is_valid my-3">
+                  {{ form.visa_file }}
+                </div>
+              </div>
+        
+              <!-- Certification (License file) -->
+              <div class="form-group my-3" id="div_{{ form.license_file.id_for_label }}">
+                <label>{{ form.license_file.label }}</label>
+                <div class="input-group input-group-outline is_valid my-3">
+                  {{ form.license_file }}
+                </div>
+              </div>
+        
+              <!-- Video File -->
+              <div class="form-group my-3" id="div_{{ form.video_file.id_for_label }}">
+                <label>{{ form.video_file.label }}</label>
+                <div class="input-group input-group-outline is_valid my-3">
+                  {{ form.video_file }}
+                </div>
+              </div>
+            {% endwith %}
           </div>
+        
           <div class="modal-footer bg-light">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
               {% translate 'Cancel' %}
@@ -180,6 +227,7 @@
             </button>
           </div>
         </form>
+        
       </div>
     </div>
   </div>
@@ -194,7 +242,7 @@
                     📋 typeDetails - <span>{{ job.type_details|default:"No Type Details" }}</span>
                 </p>
             </div>
-        {% endfor %}
+    {% endfor %}
      </div>
     </div>
     <br/>
@@ -719,7 +767,99 @@
 }
 
 </script>
-
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const initializeModalValidation = (container) => {
+      const sectorField = container.querySelector("[id^='id_type_sector']");
+      const startDateInput = container.querySelector("[id^='id_start_date']");
+      const endDateInput = container.querySelector("[id^='id_end_date']");
+  
+      const toggleFields = () => {
+        const value = sectorField?.value?.trim();
+  
+        const show = (id) => {
+          const el = container.querySelector(`#div_${id}`);
+          if (el) el.style.display = "block";
+        };
+  
+        const hide = (id) => {
+          const el = container.querySelector(`#div_${id}`);
+          if (el) el.style.display = "none";
+        };
+  
+        const allFields = [
+          "id_animal_types",
+          "id_animal_jobs",
+          "id_crop_types",
+          "id_crop_jobs",
+          "id_mechanic_jobs",
+          "id_supervision_jobs",
+          "id_description"
+        ];
+        allFields.forEach(hide);
+  
+        if (value === "crop_and_horticulture") {
+          show("id_crop_types");
+          show("id_crop_jobs");
+          show("id_description");
+        } else if (
+          ["construction", "licensed_vehicle_operation", "other"].includes(value)
+        ) {
+          show("id_description");
+        } else if (value === "animals") {
+          show("id_animal_types");
+          show("id_animal_jobs");
+          show("id_description");
+        } else if (value === "mechanics") {
+          show("id_mechanic_jobs");
+          show("id_description");
+        } else if (value === "worker_supervision__management") {
+          show("id_supervision_jobs");
+          show("id_description");
+        }
+      };
+  
+      const validateDates = () => {
+        const errorMsgId = "date-error-msg";
+        const oldError = container.querySelector(`#${errorMsgId}`);
+        if (oldError) oldError.remove();
+  
+        const start = new Date(startDateInput?.value);
+        const end = new Date(endDateInput?.value);
+  
+        if (startDateInput?.value && endDateInput?.value && start > end) {
+          const error = document.createElement("div");
+          error.id = errorMsgId;
+          error.className = "text-danger mt-2";
+          error.innerText = "End date cannot be earlier than start date.";
+          endDateInput.parentElement.appendChild(error);
+        }
+      };
+  
+      if (sectorField) {
+        sectorField.addEventListener("change", toggleFields);
+        toggleFields();
+      }
+  
+      if (startDateInput && endDateInput) {
+        startDateInput.addEventListener("change", validateDates);
+        endDateInput.addEventListener("change", validateDates);
+      }
+    };
+  
+    // For main add form (outside modals)
+    initializeModalValidation(document);
+  
+    // For each edit modal form
+    const modals = document.querySelectorAll(".modal");
+    modals.forEach((modal) => {
+      modal.addEventListener("shown.bs.modal", () => {
+        initializeModalValidation(modal);
+      });
+    });
+  });
+  </script>
+  
 
 
 
