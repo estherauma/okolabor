@@ -601,7 +601,7 @@ class UserAccountRecovery(APIView):
                 email_helper = EmailHelper()
                 email_helper.send_email(
                     to_emails=[user.email],
-                    subject='Restablece tu contraseña de okolabor',
+                    subject=_('passwordResetTemplateSubject'),
                     body={
                         _('passwordResetTemplateEmail'): user.email,
                         _('passwordResetTemplateToken'): reset_code,

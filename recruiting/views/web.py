@@ -420,7 +420,6 @@ class RecruiterDetailView(View):
         }
         return render(request, 'recruiting/recruiters_list/workrequest_detail.html', context)
 
-
 class WorkRequestsListView(View):
     def get(self, request):
         user = request.user
@@ -434,8 +433,6 @@ class WorkRequestsListView(View):
             user_orgs = user.organizations.all()
             if user_orgs.exists():
                 user_org = user_orgs.first() 
-
-                
                 assigned_employer_ids = EmployerRecruiterOrgLink.objects.filter(
                     recruiter_org=user_org
                 ).values_list("employer_org_id", flat=True)
@@ -445,14 +442,49 @@ class WorkRequestsListView(View):
                 work_requests = WorkRequests.objects.none()
         else:
             work_requests = WorkRequests.objects.none()
-            
-        employers = Organization.objects.filter(type='employer')
-        
+
+        # Attach recruiter_org to each work request
+        for wr in work_requests:
+            recruiter_link = EmployerRecruiterOrgLink.objects.filter(employer_org=wr.employer).first()
+            wr.recruiter_org = recruiter_link.recruiter_org if recruiter_link else None
+
+        print(work_requests, "work_requests")
         context = {
             "work_requests": work_requests,
-            "employers": employers
-            }
+            "employers": Organization.objects.filter(type='employer'),
+            "recruiter": Organization.objects.filter(type='recruiter'),
+        }
         return render(request, "recruiting/work_requests/list.html", context)
+
+
+class DeleteAssignedOrganizationView(View):
+    def post(self, request, employer_id, recruiter_org_id):
+        employer = get_object_or_404(Organization, pk=employer_id)
+        recruiter_org = get_object_or_404(Organization, pk=recruiter_org_id)
+
+        # Delete the assignment link between employer and recruiter organization
+        EmployerRecruiterOrgLink.objects.filter(
+            employer_org=employer,
+            recruiter_org=recruiter_org
+        ).delete()
+        messages.success(self.request, _('employerRecruiterDeletedSuccessfully'))
+        return redirect('recruiting_web:employer_detail', pk=employer.id)
+
+
+
+class DeleteEmployerOrganizationFromRecruiterView(View):
+    def post(self, request, recruiter_org_id, employer_org_id):
+        recruiter_org = get_object_or_404(Organization, pk=recruiter_org_id, type='recruiter')
+        employer_org = get_object_or_404(Organization, pk=employer_org_id)
+
+        # Delete the link between recruiter and employer
+        EmployerRecruiterOrgLink.objects.filter(
+            recruiter_org=recruiter_org,
+            employer_org=employer_org
+        ).delete()
+        messages.success(self.request, _('employerRecruiterDeletedSuccessfully'))
+
+        return redirect('recruiting_web:recruiter_org_detail', pk=recruiter_org.id)
 
 
 
@@ -1480,6 +1512,25 @@ class EmployerRecruiterOrgStatusListView(ListView):
             'user_updated_by__user'  # Optimizes access to user fields in template
         )
 
+class EmployerRecruiterOrgLinkDeleteView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        link = get_object_or_404(EmployerRecruiterOrgLink, pk=pk, deleted=False)
+
+        # Optional: Add permission logic here
+        if request.user.groups.filter(name='admin').exists():
+            link_str = str(link)
+            link.delete(user=request.user)
+            messages.success(request, _('Link "%(link_str)s" deleted successfully.') % {'link_str': link_str})
+
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'success'})
+
+            return redirect('recruiting_web:recruiter-status-list')  # Adjust to your list view name
+        else:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'forbidden'}, status=403)
+
+            return HttpResponseForbidden(_("You do not have permission to delete this link."))
 
 
 class SummaryViews(View):

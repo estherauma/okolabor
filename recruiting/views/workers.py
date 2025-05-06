@@ -1,7 +1,7 @@
 from django.contrib import messages
 import os
 from django.conf import settings
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponseRedirect,HttpResponseForbidden
 from django.contrib.auth.models import Group
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, render, redirect
@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.views import View
 from django.views.generic import CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from account.models import User, UserWorkExperience, UserJobExperience,UserJobExperienceDetails
 from common.views import BaseCreateView
@@ -109,7 +110,10 @@ class WorkerListView(View):
             worker.profile_completion_percentage = profile_completion
 
             latest_assignment = WorkAssignment.objects.filter(worker=worker).order_by('-assigned_date').first()
-            worker.latest_status = latest_assignment.status if latest_assignment else "No Assignment"
+            worker.latest_status = latest_assignment.status if latest_assignment else None
+            
+            print(f"Worker: {worker.id}, Status: {worker.latest_status}")
+
 
             for key, value in worker_details.items():
                 setattr(worker, key, value)
@@ -129,8 +133,7 @@ class WorkerListView(View):
                 'workers': worker_data,
                 'num_pages': paginator.num_pages
             })
-
-        # 🌐 Full Page Render
+        print("workers",page_obj)
         context = {
             'workers': page_obj,
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
@@ -140,6 +143,7 @@ class WorkerListView(View):
             'search_query': search_query,
             'paginator': paginator,
             'per_page': per_page,
+            'status_choices': WorkAssignment.STATUS_CHOICES,
         }
         return render(request, 'recruiting/workers/list.html', context)
 
@@ -193,6 +197,70 @@ class WorkerListView(View):
                 work_assignment.save()
 
         return JsonResponse({'success': 'Workers assigned successfully!'})
+    
+class WorkerEditView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        user = request.user
+        worker = get_object_or_404(User, pk=pk, groups__name='worker')
+
+        if user.groups.filter(name='admin').exists():
+            # Update User model fields
+            worker.first_name = request.POST.get('first_name')
+            worker.last_name = request.POST.get('last_name')
+            worker.email = request.POST.get('email')
+            worker.save()
+
+            # Update UserPreference fields
+            self.update_user_preference(worker, 'town', request.POST.get('town'))
+            self.update_user_preference(worker, 'workExperienceList', request.POST.get('work_experience'))
+            self.update_user_preference(worker, 'levelOfProficiency', request.POST.get('english_proficiency'))
+            self.update_user_preference(worker, 'locationPreference', request.POST.get('location_preference'))
+
+            # Optionally, update status (from WorkAssignment)
+            latest_status = request.POST.get('latest_status')
+            if latest_status:
+                assignment = WorkAssignment.objects.filter(worker=worker).order_by('-assigned_date').first()
+                if assignment:
+                    assignment.status = latest_status
+                    assignment.save()
+
+            messages.success(request, _('Worker "%(worker_name)s" EditedSuccessfully.') % {'worker_name': worker.first_name})
+            
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'success'})
+            return redirect('recruiting_web:workers')
+
+        else:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'forbidden'}, status=403)
+            return HttpResponseForbidden(_("YouDoNotHavePermissionToEditThisWorker."))
+
+    def update_user_preference(self, user, key, value):
+        if value:
+            UserPreference.objects.update_or_create(
+                user=user,
+                key=key,
+                defaults={'value': value}
+            )
+            
+class WorkerDeleteView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        user = request.user
+        worker = get_object_or_404(User, pk=pk, groups__name='worker')
+
+        if user.groups.filter(name='admin').exists():
+            worker_name = f"{worker.first_name} {worker.last_name}"
+            worker.delete(user=user)
+            messages.success(request, _('Worker "%(worker_name)s" DeletedSuccessfully.') % {'worker_name': worker_name})
+
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'success'})
+
+            return redirect('recruiting_web:workers')
+        else:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'forbidden'}, status=403)
+            return HttpResponseForbidden(_("youDoNotHavePermissionToDeleteThisWorker."))
 
     
 class AssignWorkerView(View):
