@@ -638,15 +638,15 @@ class UserAccountRecoveryReset(APIView):
                 email_helper = EmailHelper()
                 email_helper.send_email(
                     to_emails=[user.email],
-                    subject='La contraseña de tu cuenta ha cambiado.',
+                    subject=_('passwordChangedEmailSubject'),
                     body={
-                        'correo_electrónico': user.email,
-                        'message': 'La contraseña de su cuenta ha cambiado. Si no inició esta solicitud, comuníquese con el soporte',
+                        _('passwordChangedEmailEmail'): user.email,
+                        _('passwordChangedEmailMessage'): _('passwordChangedEmailBody'),
                     }
                 )
                 return Response(
                     {
-                        'message': 'Password reset successfully.'
+                        _('passwordChangedEmailSuccessMessage'): _('passwordChangedEmailPasswordResetSuccessfully')
                     },
                     status.HTTP_200_OK
                 )
