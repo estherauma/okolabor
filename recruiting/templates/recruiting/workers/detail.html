@@ -1,5 +1,6 @@
 {% extends 'components/base.html' %}
 {% load i18n %}
+{% load custom_filters %}
 {% load static %}
 {% block styles %}
 <!-- SELECT2 CSS -->
@@ -120,7 +121,7 @@
      <div class="col-10">
       <div class="row">
        <a href="{% url 'recruiting_web:work_experience_details' pk=exp.id %}"><h5 class="green-color">{{exp.company}}</h5></a>
-       <div class="col-6" style="display: flex; align-items: center;">
+       <div class="col-4" style="display: flex; align-items: center;">
         <br/>
         <i class="side-menu__icon icon-location-pin" style="margin-right: 5px;">
         </i>
@@ -128,14 +129,62 @@
          {{exp.country}}
         </span>
        </div>
-       <div class="col-6" style="display: flex; align-items: center;">
+       <div class="col-4" style="display: flex; align-items: center;">
         <i class="side-menu__icon icon-calendar" style="margin-right: 5px;">
         </i>
         <span class="side-menu__label">
             {{ exp.start_date }} <br> - {{ exp.end_date }}
         </span>
        </div>
+       <div class="col-4">
+        <i 
+          class="fa fa-edit text-primary"
+          style="cursor: pointer; font-size: 20px;padding-left:10px;" 
+          data-bs-toggle="modal"
+          data-bs-target="#editExperienceModal{{ exp.id }}"
+          title="Edit">
+          </i>
+        <!-- Delete Button -->
+          <i 
+          class="fa fa-trash text-danger"
+          style="cursor: pointer; font-size: 20px;padding-left:10px;" 
+          data-bs-toggle="modal"
+          data-bs-target="#deleteExperienceModal{{ exp.id }}"
+          title="Delete">
+          </i>
+       </div>
       </div>
+
+      {% for exp in worker.work_experiences.all %}
+  <div class="modal fade" id="editExperienceModal{{ exp.id }}" tabindex="-1" aria-labelledby="editExperienceModalLabel{{ exp.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content shadow-lg border-0">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="editExperienceModalLabel{{ exp.id }}">
+            {% translate 'Edit Work Experience' %}
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <form method="POST" action="{% url 'recruiting_web:edit-role' exp.id %}">
+          {% csrf_token %}
+          <div class="modal-body p-4">
+            {{ experience_forms|get:exp.id }}
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              {% translate 'Cancel' %}
+            </button>
+            <button type="submit" class="btn btn-primary">
+              {% translate 'Save Changes' %}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+
     {% for job in job_experiences %}
             <div class="p-4 border rounded-lg bg-white shadow-sm mb-4">
                 <p class="text-gray-700 text-lg flex items-center gap-2">

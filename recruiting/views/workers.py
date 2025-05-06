@@ -319,6 +319,11 @@ class WorkerDetailsView(View):
                 "file_type": doc.file_type,
                 "description": doc.description
             })
+        experience_forms = {
+            experience.id: WorkExperienceCreateForm(instance=experience)
+            for 
+            experience in worker.work_experiences.all()
+        }
 
         static_content = StaticContent()
         document_labels = static_content.get_document_labels()
@@ -360,7 +365,8 @@ class WorkerDetailsView(View):
             'physical_activities_label': physical_activities_label,
             'work_environment_label': work_environment_label,
             'language_options': language_options,
-            'language_label': language_label
+            'language_label': language_label,
+            'experience_forms': experience_forms
         }
         return render(request, 'recruiting/workers/detail.html', context)
 

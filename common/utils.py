@@ -3,7 +3,6 @@ from content.models import AggregatedContent
 
 class StaticContent:
     def __init__(self):
-        # raw_lang = get_language().strip().lower()
         raw_lang = (get_language() or 'es-MX').strip().lower()
         self.language = 'es-MX' if raw_lang == 'es-mx' else 'en'
         self.content = {}

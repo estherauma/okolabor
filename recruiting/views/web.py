@@ -766,7 +766,8 @@ class WorkRequestDetailView(View):
 
         role_forms = {
             role.id: WorkRequestRoleForm(instance=role)
-            for role in work_request.roles.all()
+            for 
+            role in work_request.roles.all()
         }
         
         context = {
