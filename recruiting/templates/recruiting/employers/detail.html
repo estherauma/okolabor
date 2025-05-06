@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load static %}
 {% block styles %}
+{% load user_role_tags %}
 <!-- SELECT2 CSS -->
 <link href="{% static 'assets/plugins/select2/select2.min.css' %}" rel="stylesheet"/>
 <!-- DATA TABLE CSS -->
@@ -142,7 +143,7 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="5" class="text-center">noWorkRequestsAvailable.</td>
+                <td colspan="5" class="text-center">{% translate 'noWorkRequestsAvailable'%}.</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -156,18 +157,23 @@
     <div class="col-12 mt-4">
       <div class="card">
         <div class="card-body">
-          <h3>assignedRecruiters</h3>
+          <h3>{% translate 'assignedRecruiters'%}</h3>
             <div class="table-responsive">
                 <table class="table text-nowrap border-bottom" id="assigned-orgs-table">
                     <thead>
                         <tr>
                             
-                            <th class="theading-color">Name</th>
-                            <th class="theading-color">Email</th>
-                            <th class="theading-color">Address</th>
-                            <th class="theading-color">Country</th>
-                            <th class="theading-color">Phone</th>
-                            <th class="theading-color">Recruiters</th>
+                            <th class="theading-color">{% translate 'Name'%}</th>
+                            <th class="theading-color">{% translate 'Email'%}</th>
+                            <th class="theading-color">{% translate 'Address'%}</th>
+                            <th class="theading-color">{% translate 'Country'%}</th>
+                            <th class="theading-color">{% translate 'Phone'%}</th>
+                            <th class="theading-color">{% translate 'Recruiters'%}</th>
+                            {% if request.user|has_group:"admin" %}
+                                <th class="theading-color">
+                                    {% translate "actions" %}
+                                </th>
+                            {% endif %}
                         </tr>
                     </thead>
                     <tbody>
@@ -191,10 +197,22 @@
                                     {% comment %} {{org.recruiters}} {% endcomment %}
                                 </ul>
                             </td>
+                            {% if request.user|has_group:"admin" %}
+                                <td>
+                                <i
+                                    class="fa fa-trash text-danger"
+                                    style="cursor: pointer;"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal{{ org.id }}"
+                                    title="Delete">
+                                </i>
+                                
+                                </td>
+                            {% endif %}
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="7" class="text-center">noOrganizationsAssigned.</td>
+                            <td colspan="7" class="text-center">{% translate 'noOrganizationsAssigned'%}.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -204,6 +222,32 @@
       </div>
     </div>
 </div>
+
+{% for org in assigned_organizations %}
+  {% if org.id %}
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal{{ org.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ org.id }}" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form method="POST" action="{% url 'recruiting_web:delete_assigned_org' employer.id org.id %}">
+            {% csrf_token %}
+            <div class="modal-header">
+              <h5 class="modal-title" id="deleteModalLabel{{ org.id }}">{% translate "Confirm Delete" %}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              {% translate 'areYouSureYouWantToDelete' %} <strong>{{ org.name }}</strong>?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
+              <button type="submit" class="btn btn-danger">{% translate 'Delete' %}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endfor %}
 
 {% endblock body %}
 
