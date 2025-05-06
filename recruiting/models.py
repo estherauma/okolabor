@@ -321,6 +321,8 @@ class EmployerRecruiterOrgLink(AuditableModel):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     user_updated_by = models.ForeignKey(EmployerContact, on_delete=models.SET_NULL, null=True, blank=True)
 
+    objects = SoftDeleteManager()
+    all_objects = models.Manager()
     class Meta:
         unique_together = ('employer_org', 'recruiter_org')
         

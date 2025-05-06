@@ -7,7 +7,7 @@ class Command(BaseCommand):
     help = 'Export CMS additionalText labels to .po files for English and Spanish'
 
     def handle(self, *args, **options):
-        aggregated = AggregatedContent.objects.first()
+        aggregated = AggregatedContent.objects.latest('created_at')
         if not aggregated:
             self.stdout.write(self.style.ERROR('No AggregatedContent found'))
             return
@@ -22,12 +22,13 @@ class Command(BaseCommand):
         for lang_code, pages in content.items():
             if lang_code not in translations:
                 continue 
-
+            
             for page_key, page_data in pages.items():
-                if not page_key.startswith('rweb-'):
+                if not page_key.startswith('rweb'):
                     continue
-
-                additional_text = page_data.get('additionalText', [])
+                
+                additional_text = page_data.get('additional_text', [])
+            
                 for item in additional_text:
                     key = item.get('key')
                     value = item.get('value')
@@ -51,7 +52,6 @@ class Command(BaseCommand):
 
         po = polib.pofile(po_path)
         updated_keys = []
-
         for key, value in translations.items():
             entry = po.find(key)
             if entry:
@@ -63,4 +63,3 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS(f'Updated {len(updated_keys)} keys in {po_path}'))
         else:
             self.stdout.write(self.style.WARNING(f'No matching keys found in {po_path}. No changes made.'))
-
