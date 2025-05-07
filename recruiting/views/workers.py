@@ -890,7 +890,7 @@ class DeleteWorkExperienceView(View):
         work_experience = get_object_or_404(UserWorkExperience, pk=work_experience_id,deleted=False)
         user = work_experience.user
 
-        job_experiences = UserJobExperience.objects.filter(work_experience=work_experience)
+        job_experiences = UserJobExperience.objects.filter(work_experience=work_experience,deleted=False)
 
         for job in job_experiences:
             UserJobExperienceDetails.objects.filter(job_experience=job).delete()
@@ -905,7 +905,7 @@ class DeleteWorkExperienceView(View):
 
             job.delete()
 
-        work_experience.delete()
+        work_experience.delete(user=request.user)
 
         messages.success(request, "workExperienceDeletedSuccessfully.")
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
