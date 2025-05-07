@@ -27,6 +27,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 from collections import defaultdict
 from django.db.models import Count
+from django.template.loader import render_to_string
 import os
 from recruiting.utils import get_worker_preferences, calculate_profile_completion
 from account.models import User
@@ -543,7 +544,6 @@ class WorkRequestDeleteView(LoginRequiredMixin, View):
 
 class AddWorkersWorkRequests(View):
     def get(self, request, pk, role_id):
-        print(role_id, "role id")
         work_assign_form = WorkerAssignmentForm()
         form = FilterWorkExperienceForm()
         filter_form = AdvancedFilterForm()
@@ -572,8 +572,6 @@ class AddWorkersWorkRequests(View):
         workers = User.objects.filter(
             groups__name='worker'
         ).distinct().order_by('-created_at')
-
-        print(workers, "workers")
 
         if search_query:
             workers = workers.filter(
@@ -694,7 +692,6 @@ class AddWorkersWorkRequests(View):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({'workers': worker_data, 'num_pages': paginator.num_pages})
         
-        print(work_requests,"work_requests")
 
         context = {
             'workers': page_obj,  # All workers (not role-specific)
@@ -818,6 +815,7 @@ class ShowWorkerDetails(View):
 class WorkRequestDetailView(View):
     def get(self, request, pk):
         work_request = get_object_or_404(WorkRequests, pk=pk)
+        
 
         grouped_counts = WorkAssignment.objects.filter(
             work_request=work_request,
@@ -842,10 +840,18 @@ class WorkRequestDetailView(View):
             elif status == 'confirmed':
                 total_confirmed_count += count
 
+        roles_qs = work_request.roles.filter(deleted_at__isnull=True)
+
+        role_forms = {
+            role.id: WorkRequestRoleForm(instance=role)
+            for role in roles_qs
+        }
+
         
         context = {
             'workrequest': work_request,
-            'roles': work_request.roles.all(),
+            'roles': roles_qs,
+            'role_forms': role_forms,
             'worker_summary': worker_summary,
             'total_shortlist_count': total_shortlist_count,
             'total_offersent_count': total_offersent_count,
@@ -880,6 +886,25 @@ class WorkRequestRoleCreateView(CreateView):
             'recruiting_web:workrequest_detail',
             kwargs={'pk': self.object.work_request.pk}
         )
+    
+class EditRoleView(View):
+    def post(self, request, pk):
+        role = get_object_or_404(Role, pk=pk)
+        form = WorkRequestRoleForm(request.POST, instance=role)
+        if form.is_valid():       
+            form.save()
+            messages.success(request, 'Role updated successfully.')
+            return redirect('recruiting_web:workrequest_detail', pk=role.work_request.pk)
+        else:
+            return redirect('recruiting_web:workrequest_detail', pk=role.work_request.pk)
+        
+class DeleteRoleView(View):
+    def post(self, request, pk):
+        role = get_object_or_404(Role, pk=pk)
+        work_request_pk = role.work_request.pk 
+        role.delete(user=request.user)
+        messages.success(request, 'Role deleted successfully.')
+        return redirect('recruiting_web:workrequest_detail', pk=work_request_pk)
 
 class RecruiterListView(LoginRequiredMixin, View):
     def get(self, request):
@@ -889,7 +914,6 @@ class RecruiterListView(LoginRequiredMixin, View):
         recruiters = User.objects.filter(groups__name='recruiter').prefetch_related('employerrecruiter_set__employer')
         employers = Organization.objects.all()
 
-        print(recruiters,"recruiters")
 
         recruiter_data = []
         for recruiter in recruiters:
@@ -1330,7 +1354,6 @@ class AssignEmployerContactView(View):
             position = data.get("position", "")
             is_primary = data.get("is_primary")
             
-            print(employer_id, name, email, phone, position, is_primary)
 
             if not employer_id:
                 messages.error(request, "employerIDIsRequired.")
@@ -1534,7 +1557,6 @@ class EmployerRecruiterOrgLinkDeleteView(LoginRequiredMixin, View):
 
 class SummaryViews(View):
     def get(self, request, pk, role_id):
-        print(role_id, "role id")
         work_assign_form = WorkerAssignmentForm()
         form = FilterWorkExperienceForm()
         filter_form = AdvancedFilterForm()

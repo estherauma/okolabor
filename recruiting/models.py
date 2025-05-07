@@ -72,6 +72,9 @@ class Role(AuditableModel):
         related_name='roles'
     )
 
+    objects = SoftDeleteManager()  # Only active (non-deleted)
+    all_objects = models.Manager()
+
     def __str__(self):
         return f'{self.title}'
     
