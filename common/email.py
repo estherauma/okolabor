@@ -21,7 +21,6 @@ class EmailHelper:
             plain_message = strip_tags(html_message)
 
             send_mail(subject, plain_message, from_email, to_emails, html_message=html_message)
-            print(f"Email sent to {to_emails}")
             return True  # Email sent successfully
         except Exception as e:
             # Handle the exception and log or display an error message
