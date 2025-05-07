@@ -117,12 +117,16 @@ class UserPreference(AuditableModel):
     value = models.CharField(max_length=256, null=False, blank=False)
     kind = models.CharField(
         max_length=256, null=False, default='preference', blank=False)
+    
+    objects = SoftDeleteManager()  # Filters out deleted
+    all_objects = models.Manager()
 
     def __str__(self):
         return f'{self.user.curp} - {self.key}'
 
     class Meta:
         db_table = 'account_user_preferences'
+        unique_together = ('user', 'key', 'kind')
 
 
 class UserWorkExperience(AuditableModel):

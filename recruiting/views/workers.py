@@ -406,6 +406,8 @@ class WorkerDetailsView(View):
         language_options = static_content.get_english_proficiency_options()
         language_label = static_content.get_label_for_field("englishProficiency")
         
+        print(preferences,"preferences")
+        
         context = {
             'worker': worker,
             'preferences': preference_data,
@@ -431,6 +433,55 @@ class WorkerDetailsView(View):
             'language_label': language_label
         }
         return render(request, 'recruiting/workers/detail.html', context)
+class EditPreferenceView(View):
+    def post(self, request, *args, **kwargs):
+        worker_id = kwargs.get("worker_id")  # ✅ Gets the user ID from the URL
+        key = kwargs.get("key")              # ✅ Gets the preference key from the URL
+        user = get_object_or_404(User, id=worker_id)  # ✅ Validates the user exists
+        value = request.POST.get("value")             # ✅ Gets the submitted value
+
+        if value:
+            UserPreference.objects.update_or_create(
+                user=user,
+                key=key,
+                kind="preference",
+                defaults={"value": value},             # ✅ Updates or creates the preference
+            )
+            messages.success(request, _("User preference updated successfully."))  # ✅ Feedback
+
+        return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))  # ✅ Redirect
+
+
+
+class DeletePreferenceView(LoginRequiredMixin, View):
+    def post(self, request, worker_id, key):
+        user = request.user
+        target_user = get_object_or_404(User, id=worker_id)
+
+        # Use filter to catch duplicates safely
+        preferences = UserPreference.all_objects.filter(
+            user=target_user, key=key, kind="preference", deleted=False
+        )
+
+        if not preferences.exists():
+            messages.error(request, _("Preference with key '%(key)s' not found.") % {'key': key})
+            return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": target_user.pk}))
+
+        if user.groups.filter(name='admin').exists():
+            for pref in preferences:
+                pref.delete(user=user)
+            messages.success(request, _('Preference "%(key)s" deleted successfully.') % {'key': key})
+
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'success'})
+
+            return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": target_user.pk}))
+        else:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'forbidden'}, status=403)
+
+            return HttpResponseForbidden(_("You do not have permission to delete this preference."))
+
 
 class GetRolesForWorkRequestView(View):
     def get(self, request, work_request_id):

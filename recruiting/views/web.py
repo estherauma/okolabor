@@ -448,7 +448,6 @@ class WorkRequestsListView(View):
             recruiter_link = EmployerRecruiterOrgLink.objects.filter(employer_org=wr.employer).first()
             wr.recruiter_org = recruiter_link.recruiter_org if recruiter_link else None
 
-        print(work_requests, "work_requests")
         context = {
             "work_requests": work_requests,
             "employers": Organization.objects.filter(type='employer'),

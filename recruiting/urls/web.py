@@ -11,7 +11,7 @@ from recruiting.views.web import (
     OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView,AssignRecruiterView,SendRecruiterEmailView,AcceptRecruiterView,RejectRecruiterView,RemoveWorkerFromAssignmentView,UpdateStatusView,ContactWorkRequestsView,AssignEmployerContactView,AddWorkersWorkRequests,ShowWorkerDetails,AddToShortlistView,UpdateWorkerStatusView,CancelOfferView,RecruiterListViewInAdmin,AssignEmployersToRecruiterOrgView,SummaryViews,RecruiterDetailView,GetRolesView,CopyWorkersView,EmployerDeleteView,EmployerEditView,RecruiterDeleteView,RecruiterEditView,update_employer_recruiter_status,EmployerRecruiterOrgStatusListView,WorkRequestEditView,WorkRequestDeleteView,EmployerRecruiterOrgLinkDeleteView,DeleteAssignedOrganizationView,DeleteEmployerOrganizationFromRecruiterView
 )
 from recruiting.views.workers import (
-     WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,WorkerEditView,WorkerDeleteView
+     WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,WorkerEditView,WorkerDeleteView,EditPreferenceView,DeletePreferenceView
 )
 from recruiting.views.workers import (
      CreateWorkExperienceView, WorkExperienceDetailsView,ExportWorkerDetailsView,UploadDocumentsView,UploadLanguageProficiencyView,UploadUserPreferenceView
@@ -136,6 +136,8 @@ urlpatterns = [
     path('workers/<str:pk>/',
          WorkerDetailsView.as_view(),
          name='worker_detail'),
+    path('edit-preference/<str:worker_id>/<str:key>/', EditPreferenceView.as_view(), name='edit_preference'),
+    path('delete-preference/<str:worker_id>/<str:key>/',DeletePreferenceView.as_view(),name='delete_preference'),
     path('workers/<pk>/workexperience/create/',
          CreateWorkExperienceView.as_view(),
          name='worker_experience_create'),
