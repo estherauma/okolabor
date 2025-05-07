@@ -382,8 +382,8 @@ class VerifyOTP(APIView):
                 # TODO: Figure out how to send localized notifications
                 UserNotification.objects.create(
                     user=user,
-                    title='Verificación de cuenta',
-                    message='Su cuenta ha sido verificada exitosamente',
+                    title=_('otpVerifiedNotificationTitle'),
+                    message=_('otpVerifiedNotificationMessage'),
                 )
                 return Response({"status": resp}, status=status.HTTP_200_OK)
             else:
@@ -601,7 +601,7 @@ class UserAccountRecovery(APIView):
                 email_helper = EmailHelper()
                 email_helper.send_email(
                     to_emails=[user.email],
-                    subject='Restablece tu contraseña de okolabor',
+                    subject=_('passwordResetTemplateSubject'),
                     body={
                         _('passwordResetTemplateEmail'): user.email,
                         _('passwordResetTemplateToken'): reset_code,

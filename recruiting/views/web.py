@@ -1696,4 +1696,3 @@ class SummaryViews(View):
         }
 
         return render(request, 'recruiting/work_requests/summaryList/summarylist.html', context)
-
