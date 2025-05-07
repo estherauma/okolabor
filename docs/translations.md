@@ -39,3 +39,6 @@ run:
     ```
     python manage.py compilemessages
     ```
+
+
+# Connecting the cms to the translation service

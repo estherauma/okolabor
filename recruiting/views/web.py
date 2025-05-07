@@ -130,6 +130,11 @@ class EmployerListView(View):
                 'address': employer.address,
                 'country': employer.country,
                 'phone': employer.phone,
+                'website': employer.website,
+                'city': employer.city,
+                'state': employer.state,
+                'zipcode': employer.zip_code,
+                'description': employer.description,
                 'recruiters': recruiter_org_names  
             })
 
@@ -150,11 +155,13 @@ class EmployerListView(View):
 class EmployerDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         user = request.user
-        employer = get_object_or_404(Organization, pk=pk, type='employer')
+        employer = get_object_or_404(Organization, pk=pk, type='employer', deleted=False)
+
 
         if user.groups.filter(name='admin').exists():
             employer_name = employer.name
-            employer.delete()
+            employer.delete(user=user)
+            
             messages.success(request, _('Employer "%(employer_name)s" DeletedSuccessfully.') % {'employer_name': employer_name})
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
@@ -232,6 +239,11 @@ class RecruiterListViewInAdmin(View):
                 'country': recruiter.country,
                 'phone': recruiter.phone,
                 'type': recruiter.type,
+                'website': recruiter.website,
+                'city': recruiter.city,
+                'state': recruiter.state,
+                'zip_code': recruiter.zip_code,
+                'description': recruiter.description,
                 'employers': assigned_employers
             })
 
@@ -248,11 +260,11 @@ class RecruiterListViewInAdmin(View):
 class RecruiterDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         user = request.user
-        recruiter = get_object_or_404(Organization, pk=pk, type='recruiter')
+        recruiter = get_object_or_404(Organization, pk=pk, type='recruiter',deleted=False)
 
         if user.groups.filter(name='admin').exists():
             recruiter_name = recruiter.name
-            recruiter.delete()
+            recruiter.delete(user=user)
             messages.success(request, _('Recruiter "%(recruiter_name)s" deletedSuccessfully.') % {'recruiter_name': recruiter_name})
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
@@ -409,7 +421,6 @@ class RecruiterDetailView(View):
         }
         return render(request, 'recruiting/recruiters_list/workrequest_detail.html', context)
 
-
 class WorkRequestsListView(View):
     def get(self, request):
         user = request.user
@@ -423,8 +434,6 @@ class WorkRequestsListView(View):
             user_orgs = user.organizations.all()
             if user_orgs.exists():
                 user_org = user_orgs.first() 
-
-                
                 assigned_employer_ids = EmployerRecruiterOrgLink.objects.filter(
                     recruiter_org=user_org
                 ).values_list("employer_org_id", flat=True)
@@ -435,8 +444,48 @@ class WorkRequestsListView(View):
         else:
             work_requests = WorkRequests.objects.none()
 
-        context = {"work_requests": work_requests}
+        # Attach recruiter_org to each work request
+        for wr in work_requests:
+            recruiter_link = EmployerRecruiterOrgLink.objects.filter(employer_org=wr.employer).first()
+            wr.recruiter_org = recruiter_link.recruiter_org if recruiter_link else None
+
+        print(work_requests, "work_requests")
+        context = {
+            "work_requests": work_requests,
+            "employers": Organization.objects.filter(type='employer'),
+            "recruiter": Organization.objects.filter(type='recruiter'),
+        }
         return render(request, "recruiting/work_requests/list.html", context)
+
+
+class DeleteAssignedOrganizationView(View):
+    def post(self, request, employer_id, recruiter_org_id):
+        employer = get_object_or_404(Organization, pk=employer_id)
+        recruiter_org = get_object_or_404(Organization, pk=recruiter_org_id)
+
+        # Delete the assignment link between employer and recruiter organization
+        EmployerRecruiterOrgLink.objects.filter(
+            employer_org=employer,
+            recruiter_org=recruiter_org
+        ).delete()
+        messages.success(self.request, _('employerRecruiterDeletedSuccessfully'))
+        return redirect('recruiting_web:employer_detail', pk=employer.id)
+
+
+
+class DeleteEmployerOrganizationFromRecruiterView(View):
+    def post(self, request, recruiter_org_id, employer_org_id):
+        recruiter_org = get_object_or_404(Organization, pk=recruiter_org_id, type='recruiter')
+        employer_org = get_object_or_404(Organization, pk=employer_org_id)
+
+        # Delete the link between recruiter and employer
+        EmployerRecruiterOrgLink.objects.filter(
+            recruiter_org=recruiter_org,
+            employer_org=employer_org
+        ).delete()
+        messages.success(self.request, _('employerRecruiterDeletedSuccessfully'))
+
+        return redirect('recruiting_web:recruiter_org_detail', pk=recruiter_org.id)
 
 
 
@@ -461,10 +510,41 @@ class WorkRequestCreateView(CreateView):
             kwargs={'pk': self.object.pk}
         )
 
+class WorkRequestEditView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        work_request = get_object_or_404(WorkRequests, pk=pk)
+        form = WorkRequestForm(request.POST, instance=work_request)
+        if form.is_valid():
+            form.save()
+            messages.success(request, _('WorkRequestEditedSuccessfully'))
+            return redirect('recruiting_web:workrequest_detail', pk=work_request.pk)
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field}: {error}')
+            return redirect('recruiting_web:workrequest_list')
+        
+class WorkRequestDeleteView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        user = request.user
+        work_request = get_object_or_404(WorkRequests, pk=pk,deleted=False)
+
+        if user.groups.filter(name='admin').exists():
+            work_request_name = work_request.name
+            work_request.delete(user=user)
+            messages.success(request, _('WorkRequest "%(work_request_name)s" Deleted Successfully.') % {'work_request_name': work_request_name})
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'success'})
+            return redirect('recruiting_web:workrequest_list')
+        else:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'forbidden'}, status=403)
+            return HttpResponseForbidden(_("You do not have permission to delete this work request."))
+
+
 
 class AddWorkersWorkRequests(View):
     def get(self, request, pk, role_id):
-        print(role_id, "role id")
         work_assign_form = WorkerAssignmentForm()
         form = FilterWorkExperienceForm()
         filter_form = AdvancedFilterForm()
@@ -493,8 +573,6 @@ class AddWorkersWorkRequests(View):
         workers = User.objects.filter(
             groups__name='worker'
         ).distinct().order_by('-created_at')
-
-        print(workers, "workers")
 
         if search_query:
             workers = workers.filter(
@@ -615,7 +693,6 @@ class AddWorkersWorkRequests(View):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({'workers': worker_data, 'num_pages': paginator.num_pages})
         
-        print(work_requests,"work_requests")
 
         context = {
             'workers': page_obj,  # All workers (not role-specific)
@@ -764,15 +841,18 @@ class WorkRequestDetailView(View):
             elif status == 'confirmed':
                 total_confirmed_count += count
 
+        roles_qs = work_request.roles.filter(deleted_at__isnull=True)
+
         role_forms = {
             role.id: WorkRequestRoleForm(instance=role)
             for 
             role in work_request.roles.all()
         }
+
         
         context = {
             'workrequest': work_request,
-            'roles': work_request.roles.all(),
+            'roles': roles_qs,
             'role_forms': role_forms,
             'worker_summary': worker_summary,
             'total_shortlist_count': total_shortlist_count,
@@ -824,7 +904,7 @@ class DeleteRoleView(View):
     def post(self, request, pk):
         role = get_object_or_404(Role, pk=pk)
         work_request_pk = role.work_request.pk 
-        role.delete()
+        role.delete(user=request.user)
         messages.success(request, 'Role deleted successfully.')
         return redirect('recruiting_web:workrequest_detail', pk=work_request_pk)
 
@@ -836,7 +916,6 @@ class RecruiterListView(LoginRequiredMixin, View):
         recruiters = User.objects.filter(groups__name='recruiter').prefetch_related('employerrecruiter_set__employer')
         employers = Organization.objects.all()
 
-        print(recruiters,"recruiters")
 
         recruiter_data = []
         for recruiter in recruiters:
@@ -1277,7 +1356,6 @@ class AssignEmployerContactView(View):
             position = data.get("position", "")
             is_primary = data.get("is_primary")
             
-            print(employer_id, name, email, phone, position, is_primary)
 
             if not employer_id:
                 messages.error(request, "employerIDIsRequired.")
@@ -1458,11 +1536,29 @@ class EmployerRecruiterOrgStatusListView(ListView):
             'user_updated_by__user'  # Optimizes access to user fields in template
         )
 
+class EmployerRecruiterOrgLinkDeleteView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        link = get_object_or_404(EmployerRecruiterOrgLink, pk=pk, deleted=False)
+
+        # Optional: Add permission logic here
+        if request.user.groups.filter(name='admin').exists():
+            link_str = str(link)
+            link.delete(user=request.user)
+            messages.success(request, _('Link "%(link_str)s" deleted successfully.') % {'link_str': link_str})
+
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'success'})
+
+            return redirect('recruiting_web:recruiter-status-list')  # Adjust to your list view name
+        else:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'forbidden'}, status=403)
+
+            return HttpResponseForbidden(_("You do not have permission to delete this link."))
 
 
 class SummaryViews(View):
     def get(self, request, pk, role_id):
-        print(role_id, "role id")
         work_assign_form = WorkerAssignmentForm()
         form = FilterWorkExperienceForm()
         filter_form = AdvancedFilterForm()
@@ -1601,4 +1697,3 @@ class SummaryViews(View):
         }
 
         return render(request, 'recruiting/work_requests/summaryList/summarylist.html', context)
-

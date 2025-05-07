@@ -3,11 +3,11 @@ from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
-from common.models import AuditableModel, BaseModel
+from common.models import AuditableModel, BaseModel,SoftDeleteManager
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
-class UserManager(BaseUserManager):
+class UserManager(SoftDeleteManager,BaseUserManager):
     use_in_migrations = True
 
     def _create_user(self, email, password, **extra_fields):
@@ -34,8 +34,6 @@ class UserManager(BaseUserManager):
             raise ValueError('Superuser must have is_superuser=True.')
 
         return self._create_user(email, password, **extra_fields)
-
-
 class LanguageChoices(models.TextChoices):
     EN = 'en', 'English'
     ES_MX = 'es-MX', 'Español (Mexico)'
@@ -87,6 +85,7 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
     USERNAME_FIELD = 'curp'
 
     objects = UserManager()
+    all_objects = models.Manager()
 
     @property
     def is_admin(self):

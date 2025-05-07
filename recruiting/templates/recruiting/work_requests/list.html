@@ -1,7 +1,7 @@
 {% extends 'components/base.html' %}
 {% load i18n %}
 {% load static %}  <!-- Load the static template tag library -->
-
+{% load user_role_tags %}
 {% block styles %}
 <!-- SELECT2 CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -103,6 +103,11 @@
                     <th class="wd-25p border-bottom-0 theading-color">
                         {% translate "closing" %}
                     </th>
+                    {% if request.user|has_group:"admin" %}
+                        <th class="wd-25p border-bottom-0 theading-color">
+                            {% translate "actions" %}
+                        </th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -142,6 +147,24 @@
                     <td class="tbody">
                         {% translate item.status %}
                     </td>
+                    {% if request.user|has_group:"admin" %}
+                        <td>
+                        <i
+                            class="fa fa-trash text-danger"
+                            style="cursor: pointer;"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteModal{{ item.id }}"
+                            title="Delete">
+                        </i>
+                        <i
+                            class="fa fa-edit text-primary"
+                            style="cursor: pointer;"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editModal{{ item.id }}"
+                            title="Edit">
+                        </i>
+                        </td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>
@@ -151,6 +174,86 @@
   </div>
  </div>
 </div>
+<!-- Modals outside the table -->
+{% for item in work_requests %}
+  {% if item.id %}
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal{{ item.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ item.id }}" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form method="POST" >
+            {% csrf_token %}
+            <div class="modal-header">
+              <h5 class="modal-title" id="deleteModalLabel{{ item.id }}">{% translate "Confirm Delete" %}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              {% translate 'Are you sure you want to delete' %} <strong>{{ item.name }}</strong>?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
+              <button type="submit" class="btn btn-danger">{% translate 'Delete' %}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editModal{{ item.id }}" tabindex="-1" aria-labelledby="editModalLabel{{ item.id }}" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form method="POST" action="{% url 'recruiting_web:workrequest_edit' item.id %}">
+            {% csrf_token %}
+            <div class="modal-header">
+              <h5 class="modal-title" id="editModalLabel{{ item.id }}">{% translate "Edit Work Request" %}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="name{{ item.id }}" class="form-label">{% translate "Name" %}</label>
+                <input type="text" class="form-control" id="name{{ item.id }}" name="name" value="{{ item.name }}">
+              </div>
+              <div class="mb-3">
+                <label for="start_date{{ item.id }}" class="form-label">{% translate "Start Date" %}</label>
+                <input type="date" class="form-control" id="start_date{{ item.id }}" name="start_date" value="{{ item.start_date|date:'Y-m-d' }}">
+              </div>
+              <div class="mb-3">
+                <label for="end_date{{ item.id }}" class="form-label">{% translate "End Date" %}</label>
+                <input type="date" class="form-control" id="end_date{{ item.id }}" name="end_date" value="{{ item.end_date|date:'Y-m-d' }}">
+              </div>
+              <div class="mb-3">
+                <label for="required_workers{{ item.id }}" class="form-label">{% translate "Required Workers" %}</label>
+                <input type="number" class="form-control" id="required_workers{{ item.id }}" name="required_workers" value="{{ item.required_workers }}">
+              </div>
+              <div class="mb-3">
+                <label for="employer{{ item.id }}" class="form-label">{% translate "Employer" %}</label>
+                <select class="form-control" id="employer{{ item.id }}" name="employer">
+                  {% for employer in employers %}
+                    <option value="{{ employer.id }}" {% if item.employer.id == employer.id %}selected{% endif %}>{{ employer.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="status{{ item.id }}" class="form-label">{% translate "Status" %}</label>
+                <select class="form-control" id="status{{ item.id }}" name="status">
+                  {% for choice in item.STATUS_CHOICES %}
+                    <option value="{{ choice.0 }}" {% if item.status == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
+              <button type="submit" class="btn btn-primary">{% translate 'Save' %}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endfor %}
+
 {% endblock body %}
 
 {% block scripts %}

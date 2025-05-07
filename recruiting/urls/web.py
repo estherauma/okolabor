@@ -8,10 +8,10 @@ from recruiting.views.web import (
     RoleHoursCreateView, RoleHousingCreateView, RoleMealsCreateView,
     RoleQualificationsCreateView, RoleWagesCreateView, WorkRequestCreateView,
     WorkRequestDetailView, WorkRequestRoleCreateView, WorkRequestsListView,
-    OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView,AssignRecruiterView,SendRecruiterEmailView,AcceptRecruiterView,RejectRecruiterView,RemoveWorkerFromAssignmentView,UpdateStatusView,ContactWorkRequestsView,AssignEmployerContactView,AddWorkersWorkRequests,ShowWorkerDetails,AddToShortlistView,UpdateWorkerStatusView,CancelOfferView,RecruiterListViewInAdmin,AssignEmployersToRecruiterOrgView,SummaryViews,RecruiterDetailView,GetRolesView,CopyWorkersView,EmployerDeleteView,EmployerEditView,RecruiterDeleteView,RecruiterEditView,update_employer_recruiter_status,EmployerRecruiterOrgStatusListView,EditRoleView,DeleteRoleView
+    OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView,AssignRecruiterView,SendRecruiterEmailView,AcceptRecruiterView,RejectRecruiterView,RemoveWorkerFromAssignmentView,UpdateStatusView,ContactWorkRequestsView,AssignEmployerContactView,AddWorkersWorkRequests,ShowWorkerDetails,AddToShortlistView,UpdateWorkerStatusView,CancelOfferView,RecruiterListViewInAdmin,AssignEmployersToRecruiterOrgView,SummaryViews,RecruiterDetailView,GetRolesView,CopyWorkersView,EmployerDeleteView,EmployerEditView,RecruiterDeleteView,RecruiterEditView,update_employer_recruiter_status,EmployerRecruiterOrgStatusListView,WorkRequestEditView,WorkRequestDeleteView,EmployerRecruiterOrgLinkDeleteView,DeleteAssignedOrganizationView,DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView
 )
 from recruiting.views.workers import (
-     WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,EditWorkExperienceView,DeleteWorkExperienceView
+     WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,EditWorkExperienceView,DeleteWorkExperienceView,WorkerEditView,WorkerDeleteView
 )
 from recruiting.views.workers import (
      CreateWorkExperienceView, WorkExperienceDetailsView,ExportWorkerDetailsView,UploadDocumentsView,UploadLanguageProficiencyView,UploadUserPreferenceView
@@ -42,6 +42,13 @@ urlpatterns = [
     path('work-requests/create/',
          WorkRequestCreateView.as_view(),
          name='workrequest_create'),
+     path('workrequest/edit/<str:pk>/', 
+         WorkRequestEditView.as_view(),
+         name='workrequest_edit'),
+
+    path('workrequest/delete/<str:pk>/',
+         WorkRequestDeleteView.as_view(), 
+         name='workrequest_delete'),
     
     path('summary/<str:pk>/<str:role_id>/', 
          SummaryViews.as_view(), 
@@ -130,6 +137,9 @@ urlpatterns = [
     path('workers/',
          WorkerListView.as_view(),
          name='workers'),
+    # urls.py
+    path('worker/edit/<str:pk>/', WorkerEditView.as_view(), name='edit_worker'),
+    path('worker/delete/<str:pk>/', WorkerDeleteView.as_view(), name='worker_delete'),
     path('assign-worker/', AssignWorkerView.as_view(), name='assign_worker'),
     path('get-worker-details/', GetWorkerDetailsView.as_view(), name='get_worker_details'),
     path('workers/<str:pk>/',
@@ -144,11 +154,17 @@ urlpatterns = [
          name='work_experience_details'),
     path("assign-recruiter/", AssignRecruiterView.as_view(), name="assign_recruiter"),
     path('assign-employers-to-recruiter/', AssignEmployersToRecruiterOrgView.as_view(), name='assign_employers_to_recruiter_org'),
+    path('employer/<str:employer_id>/assigned-org/<str:recruiter_org_id>/delete/',DeleteAssignedOrganizationView.as_view(),name='delete_assigned_org'),
+    
+    path(
+    'recruiter/<str:recruiter_org_id>/employer-org/<str:employer_org_id>/delete/',DeleteEmployerOrganizationFromRecruiterView.as_view(),name='delete_employer_org_from_recruiter'),
+    
     path('update-employer-recruiter-status/', update_employer_recruiter_status, name='update-employer-recruiter-status'),
     path("send-recruiter-email/", SendRecruiterEmailView.as_view(), name="send_recruiter_email"),
     path("accept-recruiter/<str:employer_id>/<str:recruiter_id>/", AcceptRecruiterView.as_view(), name="accept_recruiter"),
     path("reject-recruiter/<str:employer_id>/<str:recruiter_id>/", RejectRecruiterView.as_view(), name="reject_recruiter"),
     path('recruiter-status-list/', EmployerRecruiterOrgStatusListView.as_view(), name='recruiter-status-list'),
+    path('employer-recruiter-link/delete/<str:pk>/', EmployerRecruiterOrgLinkDeleteView.as_view(), name='employer_recruiter_link_delete'),
 
     path('recruiters/', RecruiterListView.as_view(), name='recruiter_list'),
     path('recruiter/',

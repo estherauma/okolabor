@@ -1,14 +1,26 @@
 from django.utils.translation import get_language
+from django.apps import apps
 from content.models import AggregatedContent
 
 class StaticContent:
     def __init__(self):
         raw_lang = (get_language() or 'es-MX').strip().lower()
         self.language = 'es-MX' if raw_lang == 'es-mx' else 'en'
-        self.content = {}
-        aggregated = AggregatedContent.objects.first()
-        if aggregated:
-            self.content = aggregated.content.get(self.language, {})
+        self._content = None  # Lazy-loaded
+
+    @property
+    def content(self):
+        if self._content is None:
+            self._content = {}
+            if apps.ready:
+                try:
+                    aggregated = AggregatedContent.objects.first()
+                    if aggregated:
+                        self._content = aggregated.content.get(self.language, {})
+                except Exception:
+                    # Optional: log the exception if necessary
+                    pass
+        return self._content
 
     def _normalize(self, value):
         return value.strip().lower().replace(" ", "_").replace("/", "").replace("-", "_")
@@ -101,4 +113,3 @@ class StaticContent:
             if q.get("key") == key:
                 return q.get("label") or key 
         return key 
-

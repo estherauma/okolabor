@@ -34,6 +34,8 @@
                                     <th class="theading-color">{% translate "Status" %}</th>
                                     <th class="theading-color">{% translate "updatedBy" %}</th>
                                     <th class="theading-color">{% translate "updatedAt" %}</th>
+                                    <th class="theading-color">{% translate "Actions" %}</th>
+
 
                                 </tr>
                             </thead>
@@ -50,6 +52,15 @@
 
                                     </td>
                                     <td>{{ link.updated_at|date:"Y-m-d H:i" }}</td>
+                                    <td>
+                                        <i
+                                            class="fa fa-trash text-danger"
+                                            style="cursor: pointer;"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal{{ link.id }}"
+                                            title="Delete">
+                                        </i>
+                                    </td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -64,6 +75,31 @@
             </div>
         </div>
     </div>
+{% for item in links %}
+    {% if item.id %}
+        <!-- Delete Modal for each item -->
+        <div class="modal fade" id="deleteModal{{ item.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ item.id }}" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" action="{% url 'recruiting_web:employer_recruiter_link_delete' item.id %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel{{ item.id }}">{% translate "Confirm Delete" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% translate 'Are you sure you want to delete' %} <strong>{{ item }}</strong>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
+                    <button type="submit" class="btn btn-danger">{% translate 'Delete' %}</button>
+                </div>
+                </form>
+            </div>
+            </div>
+        </div>
+    {% endif %}
+{% endfor %}
 
 {% endblock body %}
 
