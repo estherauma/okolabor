@@ -11,7 +11,7 @@ from recruiting.views.web import (
     OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView,AssignRecruiterView,SendRecruiterEmailView,AcceptRecruiterView,RejectRecruiterView,RemoveWorkerFromAssignmentView,UpdateStatusView,ContactWorkRequestsView,AssignEmployerContactView,AddWorkersWorkRequests,ShowWorkerDetails,AddToShortlistView,UpdateWorkerStatusView,CancelOfferView,RecruiterListViewInAdmin,AssignEmployersToRecruiterOrgView,SummaryViews,RecruiterDetailView,GetRolesView,CopyWorkersView,EmployerDeleteView,EmployerEditView,RecruiterDeleteView,RecruiterEditView,update_employer_recruiter_status,EmployerRecruiterOrgStatusListView,EditRoleView,DeleteRoleView
 )
 from recruiting.views.workers import (
-     WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView
+     WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,EditWorkExperienceView,DeleteWorkExperienceView
 )
 from recruiting.views.workers import (
      CreateWorkExperienceView, WorkExperienceDetailsView,ExportWorkerDetailsView,UploadDocumentsView,UploadLanguageProficiencyView,UploadUserPreferenceView
@@ -177,5 +177,6 @@ urlpatterns = [
     path('upload-documents/', UploadDocumentsView.as_view(), name='upload_documents'),
     path('upload-languages/', UploadLanguageProficiencyView.as_view(), name='upload_languages'),
     path('upload-preferences/', UploadUserPreferenceView.as_view(), name='upload_preferences'),
-
+    path('work_experience/edit/<str:pk>/', EditWorkExperienceView.as_view(), name='edit_work_experience'),
+    path('work_experience/delete/<str:pk>/', DeleteWorkExperienceView.as_view(), name='work_experience_delete'),
 ]

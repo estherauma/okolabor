@@ -702,4 +702,142 @@ class UploadUserPreferenceView(View):
 
         messages.success(request, _("userPreferencesSavedSuccessfully."))
         return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
+    
 
+
+class EditWorkExperienceView(View):
+    def post(self, request, pk):
+        work_experience = get_object_or_404(UserWorkExperience, pk=pk)
+        form = WorkExperienceCreateForm(request.POST, request.FILES, instance=work_experience)
+
+        if form.is_valid():
+            user = form.cleaned_data['user']
+
+            try:
+                job_experience = UserJobExperience.objects.filter(work_experience=work_experience).first()
+            except UserJobExperience.DoesNotExist:
+                messages.error(request, "relatedJobExperienceNotFound.")
+                return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
+
+            selected_sector = form.cleaned_data.get('type_sector', 'General')
+            sector_dict = dict(StaticContent().get_sector_choices())
+            readable_sector = sector_dict.get(selected_sector, selected_sector)
+
+            if job_experience.job_type != readable_sector:
+                job_experience.job_type = readable_sector
+                job_experience.save()
+
+            form.save()
+
+            uploaded_files = {
+                'visa': request.FILES.get('visa_file'),
+                'certificate': request.FILES.get('certificate_file'),
+                'explanation_video': request.FILES.get('video_file'),
+            }
+
+            for kind, uploaded_file in uploaded_files.items():
+                if uploaded_file:
+                    old_doc = UserDocuments.objects.filter(user=user, kind=kind).first()
+                    if old_doc:
+                        old_path = os.path.join(settings.MEDIA_ROOT, old_doc.path)
+                        if os.path.exists(old_path):
+                            os.remove(old_path)
+                        old_doc.delete()
+
+                    folder = 'certificates' if kind in ['visa', 'certificate'] else 'explanation'
+                    filename = uploaded_file.name
+                    relative_path = os.path.join('uploads', folder, filename)
+                    full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
+                    os.makedirs(os.path.dirname(full_path), exist_ok=True)
+
+                    with open(full_path, 'wb+') as destination:
+                        for chunk in uploaded_file.chunks():
+                            destination.write(chunk)
+
+                    doc = UserDocuments.objects.create(
+                        user=user,
+                        path=relative_path,
+                        kind=kind,
+                        description=f'{kind.title()} for job experience',
+                        file_type=uploaded_file.content_type
+                    )
+
+                    UserJobExperienceDetails.objects.update_or_create(
+                        job_experience=job_experience,
+                        kind=kind,
+                        defaults={'value': relative_path}
+                    )
+
+            description = form.cleaned_data.get('description')
+            if description:
+                UserJobExperienceDetails.objects.update_or_create(
+                    job_experience=job_experience,
+                    kind='description',
+                    defaults={'value': description, 'is_attachment': False}
+                )
+
+            conditional_fields = {
+                'animals': {
+                    'animal_types': 'animal_type',
+                    'animal_jobs': 'animal_task',
+                },
+                'crop_horticulture': {
+                    'crop_types': 'crop_type',
+                    'crop_jobs': 'crop_task',
+                },
+                'mechanics': {
+                    'mechanic_jobs': 'mechanic_task',
+                },
+                'worker_supervision': {
+                    'supervision_jobs': 'supervision_task',
+                },
+            }
+
+            fields_for_sector = conditional_fields.get(selected_sector, {})
+            for form_field, detail_kind in fields_for_sector.items():
+                values = form.cleaned_data.get(form_field)
+                if values:
+                    UserJobExperienceDetails.objects.filter(
+                        job_experience=job_experience,
+                        kind=detail_kind,
+                    ).delete()
+
+                    for val in values:
+                        UserJobExperienceDetails.objects.create(
+                            job_experience=job_experience,
+                            kind=detail_kind,
+                            value=val,
+                            is_attachment=False,
+                        )
+
+            messages.success(request, 'WorkExperienceUpdatedSuccessfully.')
+            return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
+
+        messages.error(request, 'ThereWereSomeErrorsInTheForm.')
+        return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': work_experience.user.pk}))
+
+class DeleteWorkExperienceView(View):
+    def post(self, request, *args, **kwargs):
+        work_experience_id = kwargs.get('pk')
+        work_experience = get_object_or_404(UserWorkExperience, pk=work_experience_id,deleted=False)
+        user = work_experience.user
+
+        job_experiences = UserJobExperience.objects.filter(work_experience=work_experience)
+
+        for job in job_experiences:
+            UserJobExperienceDetails.objects.filter(job_experience=job).delete()
+
+            doc_details = UserJobExperienceDetails.objects.filter(job_experience=job, is_attachment=True)
+            for detail in doc_details:
+                try:
+                    doc = UserDocuments.objects.get(user=user, path=detail.value)
+                    doc.delete()
+                except UserDocuments.DoesNotExist:
+                    pass
+
+            job.delete()
+
+        work_experience.delete()
+
+        messages.success(request, "workExperienceDeletedSuccessfully.")
+        return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))

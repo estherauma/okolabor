@@ -155,6 +155,32 @@
        </div>
       </div>
 
+      <div class="modal fade" id="deleteExperienceModal{{ exp.id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        
+        <div class="modal-header">
+          <h5 class="modal-title">Confirm Delete</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <div class="modal-body">
+          Are you sure you want to delete the experience <strong>{{ exp.company }}</strong>?
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          
+          <form method="POST" action="{% url 'recruiting_web:work_experience_delete' exp.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </form>
+        </div>
+  
+      </div>
+    </div>
+  </div>
+
       {% for exp in worker.work_experiences.all %}
   <div class="modal fade" id="editExperienceModal{{ exp.id }}" tabindex="-1" aria-labelledby="editExperienceModalLabel{{ exp.id }}" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -166,7 +192,7 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
-        <form method="POST" action="{% url 'recruiting_web:edit-role' exp.id %}" enctype="multipart/form-data">
+        <form method="POST" action="{% url 'recruiting_web:edit_work_experience' exp.id %}" enctype="multipart/form-data">
           {% csrf_token %}
           <div class="modal-body p-4">
             {% with form=experience_forms|get:exp.id %}
@@ -847,10 +873,8 @@
       }
     };
   
-    // For main add form (outside modals)
     initializeModalValidation(document);
   
-    // For each edit modal form
     const modals = document.querySelectorAll(".modal");
     modals.forEach((modal) => {
       modal.addEventListener("shown.bs.modal", () => {
