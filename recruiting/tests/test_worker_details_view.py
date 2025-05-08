@@ -21,10 +21,8 @@ class WorkerDetailsViewTest(TestCase):
     def test_worker_details_view_success(self):
         """Test WorkerDetailsView with a valid worker ID"""
         url = reverse("recruiting_web:worker_detail", kwargs={"pk": self.worker.id})  # ✅ Use curp
-        print(f"Testing URL: {url}")  # Debugging
 
         response = self.client.get(url)
-        print(f"Response Status Code: {response.status_code}")  # Debugging
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "recruiting/workers/detail.html")
