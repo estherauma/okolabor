@@ -96,7 +96,7 @@
             
                     <!-- Submit Button -->
                     <button class="btn light-green-button min-content-width mt-3" type="submit">
-                        {% translate "Apply Filters" %}
+                        {% translate "applyFilters" %}
                     </button>
                 </form>
             </div>
@@ -141,10 +141,10 @@
                                 {% translate "selectRows" %}
                             </button>
                             <ul aria-labelledby="dropdownMenuButton" class="dropdown-menu">
-                                <li><a class="dropdown-item" href="?page=1&search={{ request.GET.search }}&per_page=5">{% translate "5PerPage" %}</a></li>
-                                <li><a class="dropdown-item" href="?page=1&search={{ request.GET.search }}&per_page=10">{% translate "10PerPage" %}</a></li>
-                                <li><a class="dropdown-item" href="?page=1&search={{ request.GET.search }}&per_page=15">{% translate "15PerPage" %}</a></li>
-                                <li><a class="dropdown-item" href="?page=1&search={{ request.GET.search }}&per_page=20">{% translate "20PerPage" %}</a></li>
+                                <li><a class="dropdown-item" href="?page=1&search={{ request.GET.search }}&per_page=5">{% translate "perPage5" %}</a></li>
+                                <li><a class="dropdown-item" href="?page=1&search={{ request.GET.search }}&per_page=10">{% translate "perPage10" %}</a></li>
+                                <li><a class="dropdown-item" href="?page=1&search={{ request.GET.search }}&per_page=15">{% translate "perPage15" %}</a></li>
+                                <li><a class="dropdown-item" href="?page=1&search={{ request.GET.search }}&per_page=20">{% translate "perPage20" %}</a></li>
                             </ul>
                         </div>
                         <button class="btn dark-green-button ms-3" data-bs-toggle="modal" data-bs-target="#workerAssignmentModal" disabled>+{% translate "addTo" %}</button>
@@ -212,14 +212,14 @@
                                             style="cursor: pointer;"
                                             data-bs-toggle="modal"
                                             data-bs-target="#deleteModalWorker{{ worker.id }}"
-                                            title="Delete">
+                                            title={% translate "iconDelete"%}>
                                         </i>
                                         <i
                                             class="fa fa-edit text-primary"
                                             style="cursor: pointer;"
                                             data-bs-toggle="modal"
                                             data-bs-target="#editModal{{ worker.id }}"
-                                            title="Edit">
+                                            title={% translate "iconEdit"%}>
                                         </i>
                                         </td>
                                     {% endif %}
@@ -234,10 +234,10 @@
                         <span class="step-links">
                             {% if workers.has_previous %}
                                 <a href="?page={{ workers.previous_page_number }}&search={{ request.GET.search }}&per_page={{ request.GET.per_page }}">
-                                    <span style="font-weight: bold;">Previous</span>
+                                    <span style="font-weight: bold;">{% translate "previous"%}</span>
                                 </a>
                             {% else %}
-                                <span class="disabled"><span style="font-weight: bold;">Previous</span></span>
+                                <span class="disabled"><span style="font-weight: bold;">{% translate "previous"%}</span></span>
                             {% endif %}
 
                             {% for i in workers.paginator.page_range %}
@@ -250,10 +250,10 @@
 
                             {% if workers.has_next %}
                                 <a href="?page={{ workers.next_page_number }}&search={{ request.GET.search }}&per_page={{ request.GET.per_page }}">
-                                    <span style="font-weight: bold;">Next</span>
+                                    <span style="font-weight: bold;">{% translate "next"%}</span>
                                 </a>
                             {% else %}
-                                <span class="disabled"><span style="font-weight: bold;">Next</span></span>
+                                <span class="disabled"><span style="font-weight: bold;">{% translate "next"%}</span></span>
                             {% endif %}
                         </span>
                     </div>
@@ -270,7 +270,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="workerAssignmentModalLabel">{% translate "assignWorker" %}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'close' %}"></button>
             </div>
             <div class="modal-body">
                 <form id="assignWorkerForm" method="post" action="{% url 'recruiting_web:assign_worker' %}">
@@ -286,7 +286,7 @@
                     <div class="form-group">
                         <label for="modal_work_request">{% translate "workRequest" %}</label>
                         <select class="form-control" id="modal_work_request" name="work_request">
-                            <option value="">{% translate "Select a work request" %}</option>
+                            <option value="">{% translate "SelectAWorkRequest" %}</option>
                             {% for work_request in work_requests %}
                                 <option value="{{ work_request.id }}">{{ work_request.name }}</option>
                             {% endfor %}
@@ -294,14 +294,14 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="modal_role">{% translate "Role" %}</label>
+                        <label for="modal_role">{% translate "workersListRole" %}</label>
                         <select class="form-control" id="modal_role" name="role">
                             <option value="">{% translate "selectARole" %}</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="modal_status">{% translate "Status" %}</label>
+                        <label for="modal_status">{% translate "workersListstatus" %}</label>
                         <select class="form-control" id="modal_status" name="status">
                             {% for choice in status_choices %}
                                 <option value="{{ choice.0 }}" {% if choice.0 == worker.latest_status %}selected{% endif %}>
@@ -311,7 +311,7 @@
                         </select>
                         
                     </div>
-                    <button type="submit" class="btn btn-primary">{% translate "Assign" %}</button>
+                    <button type="submit" class="btn btn-primary">{% translate "workersListAssign" %}</button>
                 </form>
             </div>
         </div>
@@ -326,40 +326,40 @@
         <form method="POST" action="{% url 'recruiting_web:edit_worker' worker.id %}">
           {% csrf_token %}
           <div class="modal-header">
-            <h5 class="modal-title" id="editModalLabel{{ worker.id }}">{% translate "Edit Worker" %}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <h5 class="modal-title" id="editModalLabel{{ worker.id }}">{% translate "workersListEditWorker" %}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'workersListClose'%}"></button>
           </div>
           <div class="modal-body">
             <div class="mb-3">
-              <label for="first_name{{ worker.id }}" class="form-label">{% translate "First Name" %}</label>
+              <label for="first_name{{ worker.id }}" class="form-label">{% translate "workersListFirstName" %}</label>
               <input type="text" class="form-control" id="first_name{{ worker.id }}" name="first_name" value="{{ worker.first_name }}">
             </div>
             <div class="mb-3">
-              <label for="last_name{{ worker.id }}" class="form-label">{% translate "Last Name" %}</label>
+              <label for="last_name{{ worker.id }}" class="form-label">{% translate "workersListLastName" %}</label>
               <input type="text" class="form-control" id="last_name{{ worker.id }}" name="last_name" value="{{ worker.last_name }}">
             </div>
             <div class="mb-3">
-              <label for="email{{ worker.id }}" class="form-label">{% translate "Email" %}</label>
+              <label for="email{{ worker.id }}" class="form-label">{% translate "workersListEmail" %}</label>
               <input type="email" class="form-control" id="email{{ worker.id }}" name="email" value="{{ worker.email }}">
             </div>
             <div class="mb-3">
-              <label for="town{{ worker.id }}" class="form-label">{% translate "Town" %}</label>
+              <label for="town{{ worker.id }}" class="form-label">{% translate "workersListTown" %}</label>
               <input type="text" class="form-control" id="town{{ worker.id }}" name="town" value="{{ worker.town }}">
             </div>
             <div class="mb-3">
-              <label for="work_experience{{ worker.id }}" class="form-label">{% translate "Work Experience" %}</label>
+              <label for="work_experience{{ worker.id }}" class="form-label">{% translate "workersListWorkExperience" %}</label>
               <input type="text" class="form-control" id="work_experience{{ worker.id }}" name="work_experience" value="{{ worker.work_experience }}">
             </div>
             <div class="mb-3">
-              <label for="english_proficiency{{ worker.id }}" class="form-label">{% translate "English Proficiency" %}</label>
+              <label for="english_proficiency{{ worker.id }}" class="form-label">{% translate "workersListEnglishProficiency" %}</label>
               <input type="text" class="form-control" id="english_proficiency{{ worker.id }}" name="english_proficiency" value="{{ worker.english_proficiency }}">
             </div>
             <div class="mb-3">
-              <label for="location_preference{{ worker.id }}" class="form-label">{% translate "Location Preference" %}</label>
+              <label for="location_preference{{ worker.id }}" class="form-label">{% translate "workersListLocationPreference" %}</label>
               <input type="text" class="form-control" id="location_preference{{ worker.id }}" name="location_preference" value="{{ worker.location_preference }}">
             </div>
             <div class="mb-3">
-              <label for="latest_status{{ worker.id }}" class="form-label">{% translate "Latest Status" %}</label>
+              <label for="latest_status{{ worker.id }}" class="form-label">{% translate "workersListLatestStatus" %}</label>
               <select class="form-control" id="latest_status{{ worker.id }}" name="latest_status">
                 {% for choice in status_choices %}
                 <option value="{{ choice.0 }}" {% if choice.0|stringformat:"s" == worker.latest_status|stringformat:"s" %}selected{% endif %}>
@@ -371,8 +371,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
-            <button type="submit" class="btn btn-primary">{% translate 'Save' %}</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'workersListCancel' %}</button>
+            <button type="submit" class="btn btn-primary">{% translate 'workersListSave' %}</button>
           </div>
         </form>
       </div>
@@ -387,14 +387,14 @@
           {% csrf_token %}
           <div class="modal-header">
             <h5 class="modal-title" id="deleteModalWorkerLabel{{ worker.id }}">{% translate "confirmDelete" %}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'workersListClose'%}"></button>
           </div>
           <div class="modal-body">
             {% translate 'areYouSureYouWantToDelete'%} <strong>{{ worker.first_name }}{{worker.last_name}}</strong>?
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel'%}</button>
-            <button type="submit" class="btn btn-danger">{% translate 'Delete'%}</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'workersListCancel'%}</button>
+            <button type="submit" class="btn btn-danger">{% translate 'workersListDelete'%}</button>
           </div>
         </form>
       </div>
@@ -426,3 +426,22 @@
 <script src="{% static ''%}assets/js/get-roles.js"></script>
 <script src="{% static ''%}assets/js/dynamic_filter.js"></script>
 {% endblock scripts %}
+
+<script>
+    $(document).ready(function() {
+        $('#basic-datatable').DataTable({
+            responsive: true,
+            language: {
+                search: "{% translate 'search' %}",
+                lengthMenu: "{% blocktrans %}Show _MENU_ entries{% endblocktrans %}",
+                info: "{% blocktrans %}Showing _START_ to _END_ of _TOTAL_ entries{% endblocktrans %}",
+                infoEmpty: "{% translate 'noRecordsAvailable' %}",
+                paginate: {
+                    previous: "{% translate 'previous' %}",
+                    next: "{% translate 'next' %}"
+                }
+            }
+        });
+    });
+</script>
+
