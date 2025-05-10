@@ -196,7 +196,8 @@ class UserWorkExperienceView(APIView):
     )
     def get(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
-        experiences = UserWorkExperience.objects.filter(user=user)
+        experiences = UserWorkExperience.objects.filter(
+            user=user, deleted=False)
         serializer = UserWorkexperienceSerializer(experiences, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -240,7 +241,8 @@ class UserWorkExperienceDetailsView(APIView):
         tags=["User Work Experience"]
     )
     def get(self, request, user_id, experience_id):
-        experience = get_object_or_404(UserWorkExperience, pk=experience_id)
+        experience = get_object_or_404(
+            UserWorkExperience, pk=experience_id, deleted=False)
         serializer = UserWorkexperienceSerializer(experience)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -277,7 +279,8 @@ class UserDocumentsView(APIView):
     )
     def get(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
-        documents = user.documents.all()
+        documents = user.documents.filter(
+            deleted=False)
         serilizer = UserDocumentSerializer(documents, many=True)
         return Response(
             serilizer.data,
@@ -291,7 +294,8 @@ class UserDocumentDetailsView(APIView):
         tags=["User Documents"]
     )
     def get(self, request, document_id):
-        document = get_object_or_404(UserDocuments, pk=document_id)
+        document = get_object_or_404(
+            UserDocuments, pk=document_id, deleted=False)
         serilizer = UserDocumentSerializer(document)
         if document.kind == 'passport' and document.cloud_vision_match is False:
             check_passport_match()
@@ -406,10 +410,12 @@ class UserJobExperienceView(APIView):
         user = get_object_or_404(User, pk=user_id)
         
         # Filter by user and optionally by work_experience if provided
-        experiences = UserJobExperience.objects.filter(user=user)
+        experiences = UserJobExperience.objects.filter(
+            user=user, deleted=False)
         
         if work_experience_id:
-            experiences = experiences.filter(work_experience_id=work_experience_id)
+            experiences = experiences.filter(
+                work_experience_id=work_experience_id)
         
         serializer = UserJobExperienceSerializer(experiences, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -638,15 +644,15 @@ class UserAccountRecoveryReset(APIView):
                 email_helper = EmailHelper()
                 email_helper.send_email(
                     to_emails=[user.email],
-                    subject='La contraseña de tu cuenta ha cambiado.',
+                    subject=_('passwordChangedEmailSubject'),
                     body={
-                        'correo_electrónico': user.email,
-                        'message': 'La contraseña de su cuenta ha cambiado. Si no inició esta solicitud, comuníquese con el soporte',
+                        _('passwordChangedEmailEmail'): user.email,
+                        _('passwordChangedEmailMessage'): _('passwordChangedEmailBody'),
                     }
                 )
                 return Response(
                     {
-                        'message': 'Password reset successfully.'
+                        _('passwordChangedEmailSuccessMessage'): _('passwordChangedEmailPasswordResetSuccessfully')
                     },
                     status.HTTP_200_OK
                 )
