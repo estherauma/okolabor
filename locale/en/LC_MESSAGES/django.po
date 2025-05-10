@@ -281,6 +281,7 @@ msgstr ""
 #: recruiting/templates/recruiting/work_requests/detail.html:133
 #: recruiting/templates/recruiting/work_requests/list.html:194
 #: recruiting/templates/recruiting/work_requests/list.html:247
+#: recruiting/templates/recruiting/workers/detail.html:249
 #: recruiting/templates/recruiting/workers/list.html:374
 #: recruiting/templates/recruiting/workers/list.html:396
 msgid "Cancel"
@@ -668,6 +669,32 @@ msgstr "Your Email"
 #: account/views/api.py:613
 msgid "passwordResetTemplateToken"
 msgstr "Password Reset Token"
+
+#: account/views/api.py:647
+msgid "passwordChangedEmailSubject"
+msgstr "Your account password has changed."
+
+#: account/views/api.py:649
+msgid "passwordChangedEmailEmail"
+msgstr "Email"
+
+#: account/views/api.py:650
+msgid "passwordChangedEmailMessage"
+msgstr "Message"
+
+#: account/views/api.py:650
+msgid "passwordChangedEmailBody"
+msgstr ""
+"Your account password has been changed. If you did not initiate this "
+"request, please contact support."
+
+#: account/views/api.py:655
+msgid "passwordChangedEmailSuccessMessage"
+msgstr "Message"
+
+#: account/views/api.py:655
+msgid "passwordChangedEmailPasswordResetSuccessfully"
+msgstr "Password reset successfully."
 
 #: account/views/web.py:129
 msgid "addUserAllFieldsAreRequired."
@@ -1376,6 +1403,17 @@ msgstr ""
 msgid "areYouSureYouWantToDelete"
 msgstr ""
 
+#: recruiting/templates/recruiting/employers/detail.html:244
+#: recruiting/templates/recruiting/employers/list.html:224
+#: recruiting/templates/recruiting/recruiters_list/list.html:207
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:237
+#: recruiting/templates/recruiting/relationship/recruiter_status_list.html:95
+#: recruiting/templates/recruiting/work_requests/detail.html:771
+#: recruiting/templates/recruiting/work_requests/list.html:195
+#: recruiting/templates/recruiting/workers/list.html:397
+msgid "Delete"
+msgstr ""
+
 #: recruiting/templates/recruiting/employers/detail.html:296
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:289
 msgid "datatableSearch"
@@ -1950,7 +1988,7 @@ msgstr ""
 
 #: recruiting/templates/recruiting/work_requests/create_addworker.html:25
 #: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:24
-#: recruiting/templates/recruiting/workers/detail.html:28
+#: recruiting/templates/recruiting/workers/detail.html:29
 msgid "workerDetailsBack"
 msgstr ""
 
@@ -1989,8 +2027,6 @@ msgstr ""
 #: recruiting/templates/recruiting/work_requests/create_addworker.html:114
 #: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:116
 #: recruiting/templates/recruiting/workers/list.html:73
-msgid "addAnotherExperience"
-msgstr "Add Another Experience"
 
 #: recruiting/templates/recruiting/work_requests/create_addworker.html:119
 #: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:121
@@ -2599,60 +2635,60 @@ msgstr ""
 msgid "NoDraftWorkRequests"
 msgstr ""
 
-#: recruiting/templates/recruiting/workers/detail.html:19
+#: recruiting/templates/recruiting/workers/detail.html:20
 msgid "workerDetailsWorkerDetails"
 msgstr ""
 
-#: recruiting/templates/recruiting/workers/detail.html:36
+#: recruiting/templates/recruiting/workers/detail.html:37
 msgid "workerDetailsAB"
 msgstr ""
 
-#: recruiting/templates/recruiting/workers/detail.html:48
+#: recruiting/templates/recruiting/workers/detail.html:49
 #, python-format
 msgid "profile76%%Complete"
 msgstr ""
 
-#: recruiting/templates/recruiting/workers/detail.html:50
+#: recruiting/templates/recruiting/workers/detail.html:51
 msgid "workerDetailsEditProfile"
 msgstr ""
 
-#: recruiting/templates/recruiting/workers/detail.html:58
+#: recruiting/templates/recruiting/workers/detail.html:59
 msgid "workerDetailsAddToShortlist"
 msgstr ""
 
-#: recruiting/templates/recruiting/workers/detail.html:61
+#: recruiting/templates/recruiting/workers/detail.html:62
 msgid "workerDetailsSendOffer"
 msgstr ""
 
-#: recruiting/templates/recruiting/workers/detail.html:71
+#: recruiting/templates/recruiting/workers/detail.html:72
 msgid "workerDetailsContact"
 msgstr ""
 
-#: recruiting/templates/recruiting/workers/detail.html:74
+#: recruiting/templates/recruiting/workers/detail.html:75
 msgid "workerDetailsSendMessage"
 msgstr ""
 
-#: recruiting/templates/recruiting/workers/detail.html:79
+#: recruiting/templates/recruiting/workers/detail.html:80
 msgid "workerDetailsAddress"
 msgstr ""
 
-#: recruiting/templates/recruiting/workers/detail.html:89
+#: recruiting/templates/recruiting/workers/detail.html:90
 msgid "workerDetailsEmail"
 msgstr ""
 
-#: recruiting/templates/recruiting/workers/detail.html:93
+#: recruiting/templates/recruiting/workers/detail.html:94
 msgid "workerDetailsPhoneNumber"
 msgstr ""
 
-#: recruiting/templates/recruiting/workers/detail.html:97
+#: recruiting/templates/recruiting/workers/detail.html:98
 msgid "workerDetailsGender"
 msgstr ""
 
-#: recruiting/templates/recruiting/workers/detail.html:108
+#: recruiting/templates/recruiting/workers/detail.html:109
 msgid "workerDetailsWorkExperience"
 msgstr ""
 
-#: recruiting/templates/recruiting/workers/detail.html:111
+#: recruiting/templates/recruiting/workers/detail.html:112
 msgid "workerDetailsAddWorkExperience"
 msgstr ""
 
@@ -2671,6 +2707,11 @@ msgstr ""
 #: recruiting/templates/recruiting/workers/detail.html:199
 msgid "addInformation"
 msgstr ""
+
+#: recruiting/templates/recruiting/workers/detail.html:190
+msgid "addAnotherExperience"
+msgstr "Add Another Experience"
+
 
 #: recruiting/templates/recruiting/workers/list.html:99
 msgid "Apply Filters"
@@ -3024,15 +3065,15 @@ msgstr ""
 msgid "workerGroupDoesNotExist.PleaseCreateIt."
 msgstr ""
 
-#: recruiting/views/workers.py:685
+#: recruiting/views/workers.py:691
 msgid "documentsUploadedFor"
 msgstr ""
 
-#: recruiting/views/workers.py:728
+#: recruiting/views/workers.py:734
 msgid "languageProficiencyInformationSavedSuccessfully."
 msgstr ""
 
-#: recruiting/views/workers.py:765
+#: recruiting/views/workers.py:771
 msgid "userPreferencesSavedSuccessfully."
 msgstr ""
 
