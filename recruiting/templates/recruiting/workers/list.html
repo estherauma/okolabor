@@ -426,21 +426,3 @@
 <script src="{% static ''%}assets/js/get-roles.js"></script>
 <script src="{% static ''%}assets/js/dynamic_filter.js"></script>
 {% endblock scripts %}
-
-<script>
-    $(document).ready(function() {
-        $('#basic-datatable').DataTable({
-            responsive: true,
-            language: {
-                search: "{% translate 'workersListSearch' %}",
-                lengthMenu: "{% translate 'workersListShow _MENU_ entries' %}",
-                info: "{% translate 'workersListShowing _START_ to _END_ of _TOTAL_ entries' %}",
-                infoEmpty: "{% translate 'workersListNoRecordsAvailable' %}",
-                paginate: {
-                    previous: "{% translate 'workersListPrevious' %}",
-                    next: "{% translate 'workerListNext' %}"
-                }
-            }
-        });
-    });
-</script>
