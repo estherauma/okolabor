@@ -218,7 +218,7 @@ class UserAccountView(LoginRequiredMixin, View):
         form = UpdateAccountDetailsForm(request.POST, instance=request.user)
         if form.is_valid():
             user = form.save()
-            messages.success(request, _('YourAccountDetailsHaveBeenSuccessfullyUpdated!'))
+            messages.success(request, _('accountUpdateSuccess'))
             response = redirect('recruiter_account')
             if hasattr(user, 'language'):
                 response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user.language.lower())
