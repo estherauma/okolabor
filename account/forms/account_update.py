@@ -6,24 +6,26 @@ from django.contrib.auth.models import Group
 
 class UpdateAccountDetailsForm(forms.ModelForm):
     STATUS_CHOICES = [
-        (True, _("Active")),
-        (False, _("Inactive")),
+        (True, _("accountActive")),
+        (False, _("accountInactive")),
     ]
 
     is_active = forms.ChoiceField(
         choices=STATUS_CHOICES,
-        widget=forms.Select(attrs={'class': 'form-select'})
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        label=_("accountStatus"),
     )
 
     group = forms.ChoiceField(
         choices=[
-            ("recruiter", "Recruiter"),
-            ("recruiter_admin", "Recruiter Admin"),
-            ("employer", "Employer"),
-            ("employer_admin", "Employer Admin")
+            ("recruiter", _("accountRecruiter")),
+            ("recruiter_admin", _("accountRecruiterAdmin")),
+            ("employer", _("accountEmployer")),
+            ("employer_admin", _("accountEmployerAdmin"))
         ],
         required=True,
-        widget=forms.Select(attrs={'class': 'form-select'})
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        label=_("accountGroup"),
     )
 
 
@@ -31,11 +33,12 @@ class UpdateAccountDetailsForm(forms.ModelForm):
         model = User
         fields = ["curp", "first_name", "last_name", "email", "language", "is_active"]
         labels = {
-            "curp": _("CURP"),
-            "first_name": _("First Name"),
-            "last_name": _("Last Name"),
-            "email": _("Email"),
-            "is_active": _("Status"),
+            "curp": _("accountCURP"),
+            "first_name": _("accountFirstName"),
+            "last_name": _("accountLastName"),
+            "email": _("accountEmail"),
+            "language": _("accountLanguage"),
+            "is_active": _("accountStatus"),
         }
 
     def __init__(self, *args, **kwargs):
