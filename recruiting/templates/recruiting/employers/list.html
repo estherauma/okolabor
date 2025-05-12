@@ -40,7 +40,7 @@
     {% endif %}
     <a class="btn dark-green-button" href="{% url 'recruiting_web:employer_create' %}">
       <span><i class="fe fe-plus"></i></span>
-      {% translate "listAddNewEmployer" %}
+      {% translate "employersAddNewEmployer" %}
     </a>
   </div>
 </div>
@@ -55,9 +55,9 @@
         <form id="assignRecruiterForm">
           {% csrf_token %}
           <div class="mb-3">
-            <label for="recruiterSelect" class="form-label">{% translate "selectRecruiter" %}</label>
+            <label for="recruiterSelect" class="form-label">{% translate "employersSelectRecruiter" %}</label>
             <select id="recruiterSelect" class="form-control">
-              <option value="">{% translate "chooseRecruiter" %}</option>
+              <option value="">{% translate "employersChooseRecruiter" %}</option>
               {% for recruiter in recruiters %}
               <option value="{{ recruiter.id }}">{{ recruiter.name }}</option>
               {% endfor %}
@@ -82,12 +82,12 @@
             <thead>
               <tr>
                 <th></th>
-                <th class="theading-color">{% translate "companyName" %}</th>
-                <th class="theading-color">{% translate "contactName" %}</th>
-                <th class="theading-color">{% translate "manageUsersEmail" %}</th>
-                <th class="theading-color">{% translate "location" %}</th>
-                <th class="theading-color">{% translate "phoneNumber" %}</th>
-                <th class="theading-color">{% translate "assignedTo" %}</th>
+                <th class="theading-color">{% translate "employersCompanyName" %}</th>
+                <th class="theading-color">{% translate "employersContactName" %}</th>
+                <th class="theading-color">{% translate "employersEmail" %}</th>
+                <th class="theading-color">{% translate "employersLocation" %}</th>
+                <th class="theading-color">{% translate "employersPhoneNumber" %}</th>
+                <th class="theading-color">{% translate "employersAssignedTo" %}</th>
                 {% if request.user|has_group:"admin" %}
                   <th class="theading-color">{% translate "employersActions" %}</th>
                 {% endif %}
@@ -113,7 +113,7 @@
                           {{ recruiter }}{% if not forloop.last %}, {% endif %}
                       {% endfor %}
                   {% else %}
-                      No recruiters assigned
+                      {% translate "employersNoRecruitersAssigned"%}
                   {% endif %}
                 </td>
                 {% if request.user|has_group:"admin" %}
@@ -123,14 +123,14 @@
                       style="cursor: pointer;" 
                       data-bs-toggle="modal" 
                       data-bs-target="#deleteModal{{ employer.id }}" 
-                      title="Delete">
+                      title={% translate "employersDelete"%}>
                     </i>
                     <i 
                       class="fa fa-edit text-primary"
                       style="cursor: pointer;" 
                       data-bs-toggle="modal"
                       data-bs-target="#editModal{{ employer.id }}"
-                      title="Edit">
+                      title={% translate "employersEdit"%}>
                     </i>
 
                   </td>
@@ -147,18 +147,18 @@
               <ul class="pagination justify-content-center">
                 {% if employers.has_previous %}
                   <li class="page-item">
-                    <a class="page-link" href="?page=1&query={{ query }}" aria-label="First">
+                    <a class="page-link" href="?page=1&query={{ query }}" aria-label="{% translate 'employersFirst'%}">
                       <span aria-hidden="true">&laquo;</span>
                     </a>
                   </li>
                   <li class="page-item">
-                    <a class="page-link" href="?page={{ employers.previous_page_number }}&query={{ query }}" aria-label="Previous">
+                    <a class="page-link" href="?page={{ employers.previous_page_number }}&query={{ query }}" aria-label="{% translate 'employersPrevious'%}">
                       <span aria-hidden="true">&lsaquo;</span>
                     </a>
                   </li>
                 {% else %}
                   <li class="page-item disabled">
-                    <a class="page-link" href="#" aria-label="Previous">
+                    <a class="page-link" href="#" aria-label="{% translate 'employersPrevious'%}">
                       <span aria-hidden="true">&lsaquo;</span>
                     </a>
                   </li>
@@ -178,18 +178,18 @@
 
                 {% if employers.has_next %}
                   <li class="page-item">
-                    <a class="page-link" href="?page={{ employers.next_page_number }}&query={{ query }}" aria-label="Next">
+                    <a class="page-link" href="?page={{ employers.next_page_number }}&query={{ query }}" aria-label="{% translate 'employersNext'%}">
                       <span aria-hidden="true">&rsaquo;</span>
                     </a>
                   </li>
                   <li class="page-item">
-                    <a class="page-link" href="?page={{ employers.paginator.num_pages }}&query={{ query }}" aria-label="Last">
+                    <a class="page-link" href="?page={{ employers.paginator.num_pages }}&query={{ query }}" aria-label="{% translate 'employersLast'%}">
                       <span aria-hidden="true">&raquo;</span>
                     </a>
                   </li>
                 {% else %}
                   <li class="page-item disabled">
-                    <a class="page-link" href="#" aria-label="Next">
+                    <a class="page-link" href="#" aria-label="{% translate 'employersNext'%}">
                       <span aria-hidden="true">&rsaquo;</span>
                     </a>
                   </li>
@@ -213,11 +213,11 @@
           <form method="POST" action="{% url 'recruiting_web:employer_delete' employer.id %}">
             {% csrf_token %}
             <div class="modal-header">
-              <h5 class="modal-title" id="deleteModalLabel{{ employer.id }}">{% translate "confirmDelete" %}</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <h5 class="modal-title" id="deleteModalLabel{{ employer.id }}">{% translate "employersConfirmDelete" %}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'employersClose'%}"></button>
             </div>
             <div class="modal-body">
-              {% translate 'areYouSureYouWantToDelete'%} <strong>{{ employer.name }}</strong>?
+              {% translate 'employersAreYouSureYouWantToDelete'%} <strong>{{ employer.name }}</strong>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'employersCancel'%}</button>
@@ -239,7 +239,7 @@
           <form method="POST" action="{% url 'recruiting_web:employer_edit' employer.id %}">
             {% csrf_token %}
             <div class="modal-header">
-              <h5 class="modal-title" id="editModalLabel{{ employer.id }}">{% translate "editEmployer" %}</h5>
+              <h5 class="modal-title" id="editModalLabel{{ employer.id }}">{% translate "employersEditEmployer" %}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'employersClose'%}"></button>
             </div>
             <div class="modal-body">
@@ -317,31 +317,5 @@
 <script src="{% static ''%}assets/js/employer_search.js"></script>
 <script src="{% static ''%}assets/js/table-sorting.js"></script>
 <script src="{% static ''%}assets/js/assign_recruiter.js"></script>
-
-<script>
-  $(document).ready(function() {
-    if ($.fn.DataTable.isDataTable('#employers-list-datatable')) {
-      $('#employers-list-datatable').DataTable().destroy();
-    }
-
-    $('#employers-list-datatable').DataTable({
-      language: {
-        search: "{% trans 'employersSearch:' %}",
-        lengthMenu: "{% trans 'showMenuEntries' %}",
-        info: "{% trans 'showingEntries' %}",
-        infoEmpty: "{% trans 'noEntriesAvailable' %}",
-        zeroRecords: "{% trans 'noMatchingRecordsFound' %}",
-        paginate: {
-          first: "{% trans 'employersFirst' %}",
-          last: "{% trans 'employersLast' %}",
-          next: "{% trans 'employersNext' %}",
-          previous: "{% trans 'employersPrevious' %}"
-        },
-        emptyTable: "{% trans 'employersNoDataAvailableInTable' %}"
-      }
-    });
-  });
-</script>
-
-
 {% endblock scripts %}
+
