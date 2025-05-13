@@ -22,7 +22,7 @@ from recruiting.views.web import (
     update_employer_recruiter_status,EmployerRecruiterOrgStatusListView,
     WorkRequestEditView,WorkRequestDeleteView,
     EmployerRecruiterOrgLinkDeleteView,DeleteAssignedOrganizationView,
-    DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditRoleHoursView,DeleteRoleHoursView
+    DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditRoleHoursView,DeleteRoleHoursView,EditPreferenceView,DeletePreferenceView,
 )
 from recruiting.views.workers import (
      WorkerCreateView, WorkerDetailsView, WorkerListView,
