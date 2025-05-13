@@ -4,14 +4,14 @@
     <div class="card-body">
         <div class="d-flex justify-content-between align-items-center">
             <h3 class="card-title green-color fw-bold mb-1">
-                {% translate "Employers" %}
+                {% translate "manageUsersEmployersTableTitle" %}
             </h3>
             <div class="d-flex">
                 <button type="button" class="btn btn-green mt-3 me-2" id="assign-employer-organization-btn" data-bs-toggle="modal" data-bs-target="#assignEmployerOrganizationModal">
-                    {% translate "assignEmployeOrganization" %}
+                    {% translate "manageUsersEmployersTableAssignEmployeOrganization" %}
                 </button>
                 <button class="btn btn yellow-button btn-icon ms-auto p-1" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#inviteEmployeModal">
-                    +{% translate "newEmployer" %}
+                    +{% translate "manageUsersEmployersTableNewEmployer" %}
                 </button>
             </div>
         </div>
@@ -20,14 +20,14 @@
                 <thead>
                     <tr>
                         <th class="theading-color text-start"><input type="checkbox" id="select-all-employer-checkbox"></th>
-                        <th class="theading-color text-start">{% translate "curp" %}</th>
-                        <th class="theading-color text-start">{% translate "email" %}</th>
-                        <th class="theading-color text-start">{% translate "firstName" %}</th>
-                        <th class="theading-color text-start">{% translate "lastName" %}</th>
-                        <th class="theading-color text-start">{% translate "createdAt" %}</th>
-                        <th class="theading-color text-start">{% translate "activeStatus" %}</th>
-                        <th class="theading-color text-start">{% translate "group" %}</th>
-                        <th class="theading-color text-start">{% translate "actions" %}</th>
+                        <th class="theading-color text-start">{% translate "manageUsersEmployersTableCurp" %}</th>
+                        <th class="theading-color text-start">{% translate "manageUsersEmployersTableEmail" %}</th>
+                        <th class="theading-color text-start">{% translate "manageUsersEmployersTableFirstName" %}</th>
+                        <th class="theading-color text-start">{% translate "manageUsersEmployersTableLastName" %}</th>
+                        <th class="theading-color text-start">{% translate "manageUsersEmployersTableCreatedAt" %}</th>
+                        <th class="theading-color text-start">{% translate "manageUsersEmployersTableStatus" %}</th>
+                        <th class="theading-color text-start">{% translate "manageUsersEmployersTableGroup" %}</th>
+                        <th class="theading-color text-start">{% translate "manageUsersEmployersTableActions" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -76,4 +76,3 @@
 {% block scripts %}
     <script src="{% static ''%}assets/js/table-sorting.js"></script>
 {% endblock scripts %}
-
