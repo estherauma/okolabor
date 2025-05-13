@@ -27,6 +27,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 from collections import defaultdict
 from django.db.models import Count
+from datetime import date
 from django.template.loader import render_to_string
 import os
 from recruiting.utils import get_worker_preferences, calculate_profile_completion
@@ -51,7 +52,8 @@ from recruiting.forms import (
 )
 from theme.forms import (
     FilterWorkExperienceForm,
-    AdvancedFilterForm
+    AdvancedFilterForm,
+    DynamicWorkExperienceForm
 )
 from account.models import UserPreference
 from recruiting.models import (
@@ -546,8 +548,8 @@ class WorkRequestDeleteView(LoginRequiredMixin, View):
 class AddWorkersWorkRequests(View):
     def get(self, request, pk, role_id):
         work_assign_form = WorkerAssignmentForm()
-        form = FilterWorkExperienceForm()
-        filter_form = AdvancedFilterForm()
+        form = DynamicWorkExperienceForm(request.GET or None)
+        filter_form = AdvancedFilterForm(request.GET or None)
         search_query = request.GET.get('search', '')
         page_number = request.GET.get('page', 1)
         per_page = request.GET.get('per_page', 25)
@@ -580,6 +582,42 @@ class AddWorkersWorkRequests(View):
                 Q(last_name__icontains=search_query) |
                 Q(email__icontains=search_query)
             )
+        # 🔍 Experience Filters
+        type_sector = request.GET.get('type_sector')
+        dynamic_field_1 = request.GET.get('dynamic_field_1')
+        dynamic_field_2 = request.GET.get('dynamic_field_2')
+
+
+        if type_sector:
+            workers = workers.filter(
+                crop_experiences__job_type__iexact=type_sector
+            )
+
+        if dynamic_field_1 and dynamic_field_1.strip():
+            workers = workers.filter(
+                crop_experiences__type_details__iexact=dynamic_field_1
+            )
+
+        if dynamic_field_2 and dynamic_field_2.strip():
+            workers = workers.filter(
+                crop_experiences__job_experience_details__value__iexact=dynamic_field_2
+            )
+
+        # 🔍 Advanced Filter Form (from UserPreference model)
+        if filter_form.is_valid():
+            for field_name, value in filter_form.cleaned_data.items():
+                if value is not None and str(value).strip() != '':
+                    if field_name == 'availability' and isinstance(value, date):
+                        workers = workers.filter(
+                            userpreference__key='availability',
+                            userpreference__value__gte=value.strftime('%Y-%m-%d')
+                        )
+                    else:
+                        workers = workers.filter(
+                            userpreference__key=field_name,
+                            userpreference__value__iexact=value
+                        )
+        workers = workers.distinct()
 
         paginator = Paginator(workers, per_page)
         page_obj = paginator.get_page(page_number)
