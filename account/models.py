@@ -108,7 +108,7 @@ class LoginEvent(BaseModel):
         db_table = 'login_events'
 
     def __str__(self) -> str:
-        return f('{self.user.email}@{self.ip_address} logged in at {self.date_logged_in}')
+        return f'{self.user.email}@{self.ip_address} logged in at {self.date_logged_in}'
 
 
 class UserPreference(AuditableModel):
@@ -145,6 +145,10 @@ class UserWorkExperience(AuditableModel):
     supervisor_email = models.EmailField(null=True, blank=True)
     work_under_h2a_in_usa = models.CharField(
         blank=True, null=True, max_length=256, default='No')
+    
+    objects = SoftDeleteManager()
+    all_objects = models.Manager()
+    
 
     def __str__(self):
         return f'{self.user.curp} - {self.company}'
@@ -177,6 +181,9 @@ class UserDocuments(AuditableModel):
     cloud_vision_match = models.BooleanField(default=False)
     file_type = models.CharField(max_length=256, null=True, blank=True)
 
+    objects = SoftDeleteManager()
+    all_objects = models.Manager()
+
 
 class UserJobExperience(AuditableModel):
     user = models.ForeignKey(
@@ -187,6 +194,8 @@ class UserJobExperience(AuditableModel):
     job_type = models.CharField(max_length=256, null=False, blank=False)
     type_details = models.CharField(max_length=256, null=True, blank=True)
 
+    objects = SoftDeleteManager()
+    all_objects = models.Manager()
 
 
     def __str__(self):
@@ -208,6 +217,8 @@ class UserJobExperienceDetails(AuditableModel):
     value = models.CharField(max_length=256, null=False, blank=False)
     is_attachment = models.BooleanField(default=False)
 
+    objects = SoftDeleteManager()
+    all_objects = models.Manager()
 
     def __str__(self):
         return f'{self.job_experience.work_experience.company}'

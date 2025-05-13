@@ -1,5 +1,6 @@
 {% extends 'components/base.html' %}
 {% load i18n %}
+{% load custom_filters %}
 {% load static %}
 {% block styles %}
 <!-- SELECT2 CSS -->
@@ -137,23 +138,127 @@
        </div>
        <div class="col-4">
         <i 
-        class="fa fa-edit text-primary"
-        style="cursor: pointer; font-size: 20px;padding-left:10px;" 
-        data-bs-toggle="modal"
-        data-bs-target="#editExperinceModal{{ exp.id }}"
-        title="Edit">
-        </i>
-     <!-- Delete Button -->
-        <i 
-        class="fa fa-trash text-danger"
-        style="cursor: pointer; font-size: 20px;padding-left:10px;" 
-        data-bs-toggle="modal"
-        data-bs-target="#deleteExperinceModal{{ exp.id }}"
-        title="Delete">
-        </i>
+          class="fa fa-edit text-primary"
+          style="cursor: pointer; font-size: 20px;padding-left:10px;" 
+          data-bs-toggle="modal"
+          data-bs-target="#editExperienceModal{{ exp.id }}"
+          title="Edit">
+          </i>
+        <!-- Delete Button -->
+          <i 
+          class="fa fa-trash text-danger"
+          style="cursor: pointer; font-size: 20px;padding-left:10px;" 
+          data-bs-toggle="modal"
+          data-bs-target="#deleteExperienceModal{{ exp.id }}"
+          title="Delete">
+          </i>
+       </div>
       </div>
+
+      <div class="modal fade" id="deleteExperienceModal{{ exp.id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        
+        <div class="modal-header">
+          <h5 class="modal-title">Confirm Delete</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <div class="modal-body">
+          Are you sure you want to delete the experience <strong>{{ exp.company }}</strong>?
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          
+          <form method="POST" action="{% url 'recruiting_web:work_experience_delete' exp.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </form>
+        </div>
+  
       </div>
-      
+    </div>
+  </div>
+
+      {% for exp in worker.work_experiences.all %}
+  <div class="modal fade" id="editExperienceModal{{ exp.id }}" tabindex="-1" aria-labelledby="editExperienceModalLabel{{ exp.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content shadow-lg border-0">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="editExperienceModalLabel{{ exp.id }}">
+            {% translate 'EditWorkExperience' %}
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <form method="POST" action="{% url 'recruiting_web:edit_work_experience' exp.id %}" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="modal-body p-4">
+            {% with form=experience_forms|get:exp.id %}
+              {% for field in form %}
+                {% if field.name not in 'visa_type visa_file license_file video_file' %}
+                  <div class="form-group my-3" id="div_{{ field.id_for_label }}">
+                    <label>{{ field.label }}</label>
+                    <div class="input-group input-group-outline is_valid my-3">
+                      {{ field }}
+                      {% if field.errors %}
+                        <div class="text-danger small">{{ field.errors|join:", " }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+                {% endif %}
+              {% endfor %}
+        
+              <!-- Visa Type -->
+              <div class="form-group my-3" id="div_{{ form.visa_type.id_for_label }}">
+                <label>{{ form.visa_type.label }}</label>
+                <div class="input-group input-group-outline is_valid my-3">
+                  {{ form.visa_type }}
+                </div>
+              </div>
+        
+              <!-- Visa Document (file) -->
+              <div class="form-group my-3" id="div_{{ form.visa_file.id_for_label }}">
+                <label>{{ form.visa_file.label }}</label>
+                <div class="input-group input-group-outline is_valid my-3">
+                  {{ form.visa_file }}
+                </div>
+              </div>
+        
+              <!-- Certification (License file) -->
+              <div class="form-group my-3" id="div_{{ form.license_file.id_for_label }}">
+                <label>{{ form.license_file.label }}</label>
+                <div class="input-group input-group-outline is_valid my-3">
+                  {{ form.license_file }}
+                </div>
+              </div>
+        
+              <!-- Video File -->
+              <div class="form-group my-3" id="div_{{ form.video_file.id_for_label }}">
+                <label>{{ form.video_file.label }}</label>
+                <div class="input-group input-group-outline is_valid my-3">
+                  {{ form.video_file }}
+                </div>
+              </div>
+            {% endwith %}
+          </div>
+        
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              {% translate 'Cancel' %}
+            </button>
+            <button type="submit" class="btn btn-primary">
+              {% translate 'detailsSaveChanges' %}
+            </button>
+          </div>
+        </form>
+        
+      </div>
+    </div>
+  </div>
+{% endfor %}
+
     {% for job in job_experiences %}
             <div class="p-4 border rounded-lg bg-white shadow-sm mb-4">
                 <p class="text-gray-700 text-lg flex items-center gap-2">
@@ -163,7 +268,7 @@
                     📋 typeDetails - <span>{{ job.type_details|default:"No Type Details" }}</span>
                 </p>
             </div>
-        {% endfor %}
+    {% endfor %}
      </div>
     </div>
     <br/>
@@ -735,7 +840,97 @@
 }
 
 </script>
-
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const initializeModalValidation = (container) => {
+      const sectorField = container.querySelector("[id^='id_type_sector']");
+      const startDateInput = container.querySelector("[id^='id_start_date']");
+      const endDateInput = container.querySelector("[id^='id_end_date']");
+  
+      const toggleFields = () => {
+        const value = sectorField?.value?.trim();
+  
+        const show = (id) => {
+          const el = container.querySelector(`#div_${id}`);
+          if (el) el.style.display = "block";
+        };
+  
+        const hide = (id) => {
+          const el = container.querySelector(`#div_${id}`);
+          if (el) el.style.display = "none";
+        };
+  
+        const allFields = [
+          "id_animal_types",
+          "id_animal_jobs",
+          "id_crop_types",
+          "id_crop_jobs",
+          "id_mechanic_jobs",
+          "id_supervision_jobs",
+          "id_description"
+        ];
+        allFields.forEach(hide);
+  
+        if (value === "crop_and_horticulture") {
+          show("id_crop_types");
+          show("id_crop_jobs");
+          show("id_description");
+        } else if (
+          ["construction", "licensed_vehicle_operation", "other"].includes(value)
+        ) {
+          show("id_description");
+        } else if (value === "animals") {
+          show("id_animal_types");
+          show("id_animal_jobs");
+          show("id_description");
+        } else if (value === "mechanics") {
+          show("id_mechanic_jobs");
+          show("id_description");
+        } else if (value === "worker_supervision__management") {
+          show("id_supervision_jobs");
+          show("id_description");
+        }
+      };
+  
+      const validateDates = () => {
+        const errorMsgId = "date-error-msg";
+        const oldError = container.querySelector(`#${errorMsgId}`);
+        if (oldError) oldError.remove();
+  
+        const start = new Date(startDateInput?.value);
+        const end = new Date(endDateInput?.value);
+  
+        if (startDateInput?.value && endDateInput?.value && start > end) {
+          const error = document.createElement("div");
+          error.id = errorMsgId;
+          error.className = "text-danger mt-2";
+          error.innerText = "End date cannot be earlier than start date.";
+          endDateInput.parentElement.appendChild(error);
+        }
+      };
+  
+      if (sectorField) {
+        sectorField.addEventListener("change", toggleFields);
+        toggleFields();
+      }
+  
+      if (startDateInput && endDateInput) {
+        startDateInput.addEventListener("change", validateDates);
+        endDateInput.addEventListener("change", validateDates);
+      }
+    };
+  
+    initializeModalValidation(document);
+  
+    const modals = document.querySelectorAll(".modal");
+    modals.forEach((modal) => {
+      modal.addEventListener("shown.bs.modal", () => {
+        initializeModalValidation(modal);
+      });
+    });
+  });
+  </script>
+  
 
 
 

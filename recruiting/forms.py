@@ -819,3 +819,5 @@ class WorkExperienceCreateForm(forms.ModelForm):
             'supervisor_email': forms.EmailInput(attrs={'class': 'form-control'}),
             'visa_type': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+

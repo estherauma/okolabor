@@ -849,7 +849,8 @@ class WorkRequestDetailView(View):
         print(roles_qs, "roles_qs")
         role_forms = {
             role.id: WorkRequestRoleForm(instance=role)
-            for role in roles_qs
+            for 
+            role in work_request.roles.all()
         }
         hours_form = {
             role.id: RoleHoursForm(instance=role.hours)
