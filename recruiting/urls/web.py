@@ -250,4 +250,6 @@ urlpatterns = [
          name='edit_work_experience'),
     path('work_experience/delete/<str:pk>/', DeleteWorkExperienceView.as_view(),
          name='work_experience_delete'),
+    path('role/hours/<str:pk>/edit/', EditRoleHoursView.as_view(), name='edit-role-hours'),
+    path('role/hours/<str:pk>/delete/', DeleteRoleHoursView.as_view(), name='delete-role-hours'),
 ]
