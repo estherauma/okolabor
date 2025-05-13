@@ -22,7 +22,7 @@ from recruiting.views.web import (
     update_employer_recruiter_status,EmployerRecruiterOrgStatusListView,
     WorkRequestEditView,WorkRequestDeleteView,
     EmployerRecruiterOrgLinkDeleteView,DeleteAssignedOrganizationView,
-    DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditRoleHoursView,DeleteRoleHoursView,EditPreferenceView,DeletePreferenceView,
+    DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditRoleHoursView,DeleteRoleHoursView
 )
 from recruiting.views.workers import (
      WorkerCreateView, WorkerDetailsView, WorkerListView,
@@ -168,8 +168,6 @@ path('employers/',
     path('workers/<str:pk>/',
          WorkerDetailsView.as_view(),
          name='worker_detail'),
-    path('edit-preference/<str:worker_id>/<str:key>/', EditPreferenceView.as_view(), name='edit_preference'),
-    path('delete-preference/<str:worker_id>/<str:key>/',DeletePreferenceView.as_view(),name='delete_preference'),
     path('workers/<pk>/workexperience/create/',
          CreateWorkExperienceView.as_view(),
          name='worker_experience_create'),
