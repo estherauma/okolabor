@@ -18,7 +18,7 @@
     <div class="d-flex justify-content-between">
         <button class="btn green-color-workers">
             <i aria-hidden="true" class="fa fa-filter"></i>
-            {% translate "advancedFilter" %}
+            {% translate "workersListAdvancedFilter" %}
         </button>
         <button aria-controls="collapsewithbutton"
         aria-expanded="false"
@@ -33,11 +33,11 @@
         <div class="card offwhite-color card-body">
             <span class="d-flex align-items-center">
                 <h3 class="card-title green-color d-contents">
-                    {% translate "selectPrimaryJobExperience" %}
+                    {% translate "workersListSelectPrimaryJobExperience" %}
                 </h3>
                 <button class="btn btn-link green-color-workers" data-bs-placement="top" data-bs-toggle="tooltip" title="Fill in the fields to add job experience">
                     <i aria-hidden="true" class="fa fa-question-circle-o"></i>
-                    {% translate "what'sThis?" %}
+                    {% translate "workersListWhat'sThis?" %}
                 </button>
             </span>
     
@@ -60,7 +60,7 @@
                                 {% endfor %}
                                 <div class="col-auto">
                                     <button class="btn" type="button" onclick="removeForm(this)">
-                                        <span class="sign medium-font">{% translate "x" %}</span>
+                                        <span class="sign medium-font">{% translate "workersListX" %}</span>
                                     </button>
                                 </div>
                             </div>
@@ -70,14 +70,16 @@
                     <!-- Add Another Filter Button -->
                     <button class="btn light-green-button min-content-width mt-3" type="button" onclick="addAnotherExperience()">
                         <span><i class="fe fe-plus"></i></span>
-                        {% translate "workersAddAnotherExperience" %}
+
+                        {% translate "workersListAddAnotherExperience" %}
+
                     </button>
             
                     <!-- Additional Filters Section (Previously separate) -->
                     <div class="form-row align-items-center">
                         <span class="mt-5 ms-2 mb-3">
                             <h3 class="card-title green-color d-contents">
-                                {% translate "furtherFilters" %}
+                                {% translate "workersListFurtherFilters" %}
                             </h3>
                         </span>
                     </div>
@@ -96,7 +98,7 @@
             
                     <!-- Submit Button -->
                     <button class="btn light-green-button min-content-width mt-3" type="submit">
-                        {% translate "Apply Filters" %}
+                        {% translate "workersListApplyFilters" %}
                     </button>
                 </form>
             </div>
@@ -117,7 +119,7 @@
                         {% endfor %}
                         <div class="col-auto">
                             <button class="btn" type="button" onclick="removeForm(this)">
-                                <span class="sign medium-font">{% translate "x" %}</span>
+                                <span class="sign medium-font">{% translate "workersListX" %}</span>
                             </button>
                         </div>
                     </div>
@@ -134,27 +136,27 @@
                 <div class="col-md-11 col-sm-11 col-xs-12">
                     <div class="d-flex align-items-center justify-content-end">
                         <p class="theading-color show-text show-text">
-                            {% translate "showResults" %}
+                            {% translate "workersListShowResults" %}
                         </p>
                         <div class="dropdown ms-3">
                             <button aria-expanded="false" class="btn dropdown-toggle dropdown-btn" data-bs-toggle="dropdown" id="dropdownMenuButton" type="button">
-                                {% translate "selectRows" %}
+                                {% translate "workersListSelectRows" %}
                             </button>
                             <ul aria-labelledby="dropdownMenuButton" class="dropdown-menu">
-                                <li><a class="dropdown-item" href="?page=1&search={{ request.GET.search }}&per_page=5">{% translate "5PerPage" %}</a></li>
-                                <li><a class="dropdown-item" href="?page=1&search={{ request.GET.search }}&per_page=10">{% translate "10PerPage" %}</a></li>
-                                <li><a class="dropdown-item" href="?page=1&search={{ request.GET.search }}&per_page=15">{% translate "15PerPage" %}</a></li>
-                                <li><a class="dropdown-item" href="?page=1&search={{ request.GET.search }}&per_page=20">{% translate "20PerPage" %}</a></li>
+                                <li><a class="dropdown-item" href="?page=1&search={{ request.GET.search }}&per_page=5">{% translate "workersListPerPage5" %}</a></li>
+                                <li><a class="dropdown-item" href="?page=1&search={{ request.GET.search }}&per_page=10">{% translate "workersListPerPage10" %}</a></li>
+                                <li><a class="dropdown-item" href="?page=1&search={{ request.GET.search }}&per_page=15">{% translate "workersListPerPage15" %}</a></li>
+                                <li><a class="dropdown-item" href="?page=1&search={{ request.GET.search }}&per_page=20">{% translate "workersListPerPage20" %}</a></li>
                             </ul>
                         </div>
-                        <button class="btn dark-green-button ms-3" data-bs-toggle="modal" data-bs-target="#workerAssignmentModal" disabled>+{% translate "addTo" %}</button>
+                        <button class="btn dark-green-button ms-3" data-bs-toggle="modal" data-bs-target="#workerAssignmentModal" disabled>+{% translate "workersListAddTo" %}</button>
                         <a class="btn dark-green-button ms-3" href="{% url 'recruiting_web:recruiter_create_worker' %}">
                             <span><i class="fe fe-plus"></i></span>
-                            {% translate "addWorker" %}
+                            {% translate "workersListAddWorker" %}
                         </a>
                         <a class="btn dark-green-button ms-3" href="{% url 'recruiting_web:export-workers' %}">
                             <span><i class="fa fa-upload me-1"></i></span>
-                            {% translate "workersExportWorkers"%}
+                            {% translate "workersListExportWorkers"%}
                         </a>
                     </div>
                 </div>
@@ -165,17 +167,17 @@
                         <table class="table text-nowrap border-bottom" id="basic-datatable">
                             <thead>
                                 <tr>
-                                    <th class="theading-color">{% translate "checkbox" %}</th>
-                                    <th class="theading-color">{% translate "name" %}</th>
-                                    <th class="theading-color">{% translate "town" %}</th>
-                                    <th class="theading-color">{% translate "profileCompletion" %}</th>
-                                    <th class="theading-color">{% translate "experience" %}</th>
-                                    <th class="theading-color">{% translate "englishProficiency" %}</th>
-                                    <th class="theading-color">{% translate "locationPreference" %}</th>
-                                    <th class="theading-color">{% translate "offerStatus" %}</th>
+                                    <th class="theading-color">{% translate "workersListCheckbox" %}</th>
+                                    <th class="theading-color">{% translate "workersListName" %}</th>
+                                    <th class="theading-color">{% translate "workersListTown" %}</th>
+                                    <th class="theading-color">{% translate "workersListProfileCompletion" %}</th>
+                                    <th class="theading-color">{% translate "workersListExperience" %}</th>
+                                    <th class="theading-color">{% translate "workersListEnglishProficiency" %}</th>
+                                    <th class="theading-color">{% translate "workersListLocationPreference" %}</th>
+                                    <th class="theading-color">{% translate "workersListOfferStatus" %}</th>
                                     {% if request.user|has_group:"admin" %}
                                         <th class="theading-color">
-                                            {% translate "actions" %}
+                                            {% translate "workersListActions" %}
                                         </th>
                                     {% endif %}
                                     
@@ -212,14 +214,14 @@
                                             style="cursor: pointer;"
                                             data-bs-toggle="modal"
                                             data-bs-target="#deleteModalWorker{{ worker.id }}"
-                                            title="Delete">
+                                            title={% translate "workersListIconDelete"%}>
                                         </i>
                                         <i
                                             class="fa fa-edit text-primary"
                                             style="cursor: pointer;"
                                             data-bs-toggle="modal"
                                             data-bs-target="#editModal{{ worker.id }}"
-                                            title="Edit">
+                                            title={% translate "workersListIconEdit"%}>
                                         </i>
                                         </td>
                                     {% endif %}
@@ -234,10 +236,10 @@
                         <span class="step-links">
                             {% if workers.has_previous %}
                                 <a href="?page={{ workers.previous_page_number }}&search={{ request.GET.search }}&per_page={{ request.GET.per_page }}">
-                                    <span style="font-weight: bold;">Previous</span>
+                                    <span style="font-weight: bold;">{% translate "workersListPrevious"%}</span>
                                 </a>
                             {% else %}
-                                <span class="disabled"><span style="font-weight: bold;">Previous</span></span>
+                                <span class="disabled"><span style="font-weight: bold;">{% translate "workersListPrevious"%}</span></span>
                             {% endif %}
 
                             {% for i in workers.paginator.page_range %}
@@ -250,10 +252,10 @@
 
                             {% if workers.has_next %}
                                 <a href="?page={{ workers.next_page_number }}&search={{ request.GET.search }}&per_page={{ request.GET.per_page }}">
-                                    <span style="font-weight: bold;">Next</span>
+                                    <span style="font-weight: bold;">{% translate "workersListNext"%}</span>
                                 </a>
                             {% else %}
-                                <span class="disabled"><span style="font-weight: bold;">Next</span></span>
+                                <span class="disabled"><span style="font-weight: bold;">{% translate "workersListNext"%}</span></span>
                             {% endif %}
                         </span>
                     </div>
@@ -269,24 +271,24 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="workerAssignmentModalLabel">{% translate "assignWorker" %}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="workerAssignmentModalLabel">{% translate "workersListAssignWorker" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'workersListClose' %}"></button>
             </div>
             <div class="modal-body">
                 <form id="assignWorkerForm" method="post" action="{% url 'recruiting_web:assign_worker' %}">
                     {% csrf_token %}
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="modal_worker_name">{% translate "selectedWorkers" %}</label>
+                            <label for="modal_worker_name">{% translate "workersListSelectedWorkers" %}</label>
                             <input type="text" id="modal_worker_name" class="form-control" readonly>
                         </div>
                         <input type="hidden" id="modal_worker_id" name="worker_ids">
                     </div>
 
                     <div class="form-group">
-                        <label for="modal_work_request">{% translate "workRequest" %}</label>
+                        <label for="modal_work_request">{% translate "workersListWorkRequest" %}</label>
                         <select class="form-control" id="modal_work_request" name="work_request">
-                            <option value="">{% translate "Select a work request" %}</option>
+                            <option value="">{% translate "workersListSelectAWorkRequest" %}</option>
                             {% for work_request in work_requests %}
                                 <option value="{{ work_request.id }}">{{ work_request.name }}</option>
                             {% endfor %}
@@ -294,14 +296,14 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="modal_role">{% translate "Role" %}</label>
+                        <label for="modal_role">{% translate "workersListRole" %}</label>
                         <select class="form-control" id="modal_role" name="role">
-                            <option value="">{% translate "selectARole" %}</option>
+                            <option value="">{% translate "workersListSelectARole" %}</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="modal_status">{% translate "Status" %}</label>
+                        <label for="modal_status">{% translate "workersListStatus" %}</label>
                         <select class="form-control" id="modal_status" name="status">
                             {% for choice in status_choices %}
                                 <option value="{{ choice.0 }}" {% if choice.0 == worker.latest_status %}selected{% endif %}>
@@ -311,7 +313,7 @@
                         </select>
                         
                     </div>
-                    <button type="submit" class="btn btn-primary">{% translate "Assign" %}</button>
+                    <button type="submit" class="btn btn-primary">{% translate "workersListAssign" %}</button>
                 </form>
             </div>
         </div>
@@ -326,40 +328,40 @@
         <form method="POST" action="{% url 'recruiting_web:edit_worker' worker.id %}">
           {% csrf_token %}
           <div class="modal-header">
-            <h5 class="modal-title" id="editModalLabel{{ worker.id }}">{% translate "Edit Worker" %}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <h5 class="modal-title" id="editModalLabel{{ worker.id }}">{% translate "workersListEditWorker" %}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'workersListClose'%}"></button>
           </div>
           <div class="modal-body">
             <div class="mb-3">
-              <label for="first_name{{ worker.id }}" class="form-label">{% translate "First Name" %}</label>
+              <label for="first_name{{ worker.id }}" class="form-label">{% translate "workersListFirstName" %}</label>
               <input type="text" class="form-control" id="first_name{{ worker.id }}" name="first_name" value="{{ worker.first_name }}">
             </div>
             <div class="mb-3">
-              <label for="last_name{{ worker.id }}" class="form-label">{% translate "Last Name" %}</label>
+              <label for="last_name{{ worker.id }}" class="form-label">{% translate "workersListLastName" %}</label>
               <input type="text" class="form-control" id="last_name{{ worker.id }}" name="last_name" value="{{ worker.last_name }}">
             </div>
             <div class="mb-3">
-              <label for="email{{ worker.id }}" class="form-label">{% translate "Email" %}</label>
+              <label for="email{{ worker.id }}" class="form-label">{% translate "workersListEmail" %}</label>
               <input type="email" class="form-control" id="email{{ worker.id }}" name="email" value="{{ worker.email }}">
             </div>
             <div class="mb-3">
-              <label for="town{{ worker.id }}" class="form-label">{% translate "Town" %}</label>
+              <label for="town{{ worker.id }}" class="form-label">{% translate "workersListTown" %}</label>
               <input type="text" class="form-control" id="town{{ worker.id }}" name="town" value="{{ worker.town }}">
             </div>
             <div class="mb-3">
-              <label for="work_experience{{ worker.id }}" class="form-label">{% translate "Work Experience" %}</label>
+              <label for="work_experience{{ worker.id }}" class="form-label">{% translate "workersListWorkExperience" %}</label>
               <input type="text" class="form-control" id="work_experience{{ worker.id }}" name="work_experience" value="{{ worker.work_experience }}">
             </div>
             <div class="mb-3">
-              <label for="english_proficiency{{ worker.id }}" class="form-label">{% translate "English Proficiency" %}</label>
+              <label for="english_proficiency{{ worker.id }}" class="form-label">{% translate "workersListEnglishProficiency" %}</label>
               <input type="text" class="form-control" id="english_proficiency{{ worker.id }}" name="english_proficiency" value="{{ worker.english_proficiency }}">
             </div>
             <div class="mb-3">
-              <label for="location_preference{{ worker.id }}" class="form-label">{% translate "Location Preference" %}</label>
+              <label for="location_preference{{ worker.id }}" class="form-label">{% translate "workersListLocationPreference" %}</label>
               <input type="text" class="form-control" id="location_preference{{ worker.id }}" name="location_preference" value="{{ worker.location_preference }}">
             </div>
             <div class="mb-3">
-              <label for="latest_status{{ worker.id }}" class="form-label">{% translate "Latest Status" %}</label>
+              <label for="latest_status{{ worker.id }}" class="form-label">{% translate "workersListLatestStatus" %}</label>
               <select class="form-control" id="latest_status{{ worker.id }}" name="latest_status">
                 {% for choice in status_choices %}
                 <option value="{{ choice.0 }}" {% if choice.0|stringformat:"s" == worker.latest_status|stringformat:"s" %}selected{% endif %}>
@@ -371,8 +373,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
-            <button type="submit" class="btn btn-primary">{% translate 'Save' %}</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'workersListCancel' %}</button>
+            <button type="submit" class="btn btn-primary">{% translate 'workersListSave' %}</button>
           </div>
         </form>
       </div>
@@ -386,15 +388,15 @@
         <form method="POST" action="{% url 'recruiting_web:worker_delete' worker.id %}">
           {% csrf_token %}
           <div class="modal-header">
-            <h5 class="modal-title" id="deleteModalWorkerLabel{{ worker.id }}">{% translate "confirmDelete" %}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <h5 class="modal-title" id="deleteModalWorkerLabel{{ worker.id }}">{% translate "workerListConfirmDelete" %}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'workersListClose'%}"></button>
           </div>
           <div class="modal-body">
             {% translate 'areYouSureYouWantToDelete'%} <strong>{{ worker.first_name }}{{worker.last_name}}</strong>?
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel'%}</button>
-            <button type="submit" class="btn btn-danger">{% translate 'Delete'%}</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'workersListCancel'%}</button>
+            <button type="submit" class="btn btn-danger">{% translate 'workersListDelete'%}</button>
           </div>
         </form>
       </div>
