@@ -412,38 +412,6 @@
             </div>
 
 
-            <div class="modal fade" id="editPreferenceModal{{ key }}" tabindex="-1">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <form method="POST" action="{% url 'recruiting_web:edit_preference' worker_id=worker.id key=key %}">
-                    {% csrf_token %}
-                    <div class="modal-header">
-                        <h5 class="modal-title">{% translate 'Edit Preference' %}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div>
-                            {% for level in language_options %}
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="value" 
-                                           value="{{ level.value|lower }}" 
-                                           id="{{ level.value|lower }}" 
-                                           {% if level.value|lower == value|lower %}checked{% endif %}
-                                           onclick="toggleVideoUpload()">
-                                    <label class="form-check-label" for="{{ level.value|lower }}">{{ level.label }}</label>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
-                        <button type="submit" class="btn btn-primary">{% translate 'Save' %}</button>
-                    </div>
-                </form>
-                
-                </div>
-              </div>
-            </div>
         
             <!-- Delete Modal -->
             <div class="modal fade" id="deletePreferenceModal{{ key }}" tabindex="-1">

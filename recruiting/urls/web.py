@@ -8,7 +8,7 @@ from recruiting.views.web import (
     RoleHoursCreateView, RoleHousingCreateView, RoleMealsCreateView,
     RoleQualificationsCreateView, RoleWagesCreateView, WorkRequestCreateView,
     WorkRequestDetailView, WorkRequestRoleCreateView, WorkRequestsListView,
-    OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView,AssignRecruiterView,SendRecruiterEmailView,AcceptRecruiterView,RejectRecruiterView,RemoveWorkerFromAssignmentView,UpdateStatusView,ContactWorkRequestsView,AssignEmployerContactView,AddWorkersWorkRequests,ShowWorkerDetails,AddToShortlistView,UpdateWorkerStatusView,CancelOfferView,RecruiterListViewInAdmin,AssignEmployersToRecruiterOrgView,SummaryViews,RecruiterDetailView,GetRolesView,CopyWorkersView,EmployerDeleteView,EmployerEditView,RecruiterDeleteView,RecruiterEditView,update_employer_recruiter_status,EmployerRecruiterOrgStatusListView,WorkRequestEditView,WorkRequestDeleteView,EmployerRecruiterOrgLinkDeleteView,DeleteAssignedOrganizationView,DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView
+    OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView,AssignRecruiterView,SendRecruiterEmailView,AcceptRecruiterView,RejectRecruiterView,RemoveWorkerFromAssignmentView,UpdateStatusView,ContactWorkRequestsView,AssignEmployerContactView,AddWorkersWorkRequests,ShowWorkerDetails,AddToShortlistView,UpdateWorkerStatusView,CancelOfferView,RecruiterListViewInAdmin,AssignEmployersToRecruiterOrgView,SummaryViews,RecruiterDetailView,GetRolesView,CopyWorkersView,EmployerDeleteView,EmployerEditView,RecruiterDeleteView,RecruiterEditView,update_employer_recruiter_status,EmployerRecruiterOrgStatusListView,WorkRequestEditView,WorkRequestDeleteView,EmployerRecruiterOrgLinkDeleteView,DeleteAssignedOrganizationView,DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditRoleHoursView,DeleteRoleHoursView
 )
 from recruiting.views.workers import (
      WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,WorkerEditView,WorkerDeleteView,EditPreferenceView,DeletePreferenceView
@@ -195,5 +195,8 @@ urlpatterns = [
     path('upload-documents/', UploadDocumentsView.as_view(), name='upload_documents'),
     path('upload-languages/', UploadLanguageProficiencyView.as_view(), name='upload_languages'),
     path('upload-preferences/', UploadUserPreferenceView.as_view(), name='upload_preferences'),
+    path('role/hours/<str:pk>/edit/', EditRoleHoursView.as_view(), name='edit-role-hours'),
+    path('role/hours/<str:pk>/delete/', DeleteRoleHoursView.as_view(), name='delete-role-hours'),
+
 
 ]

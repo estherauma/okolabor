@@ -139,6 +139,77 @@
             </div>
 
         {% endfor %}
+        <!-- Edit Modal -->
+
+
+        {% for role in roles %}
+
+  <!-- Modal -->
+  <div class="modal fade" id="edithoursModal{{ role.id }}" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="POST" action="{% url 'recruiting_web:edit-role-hours' role.hours.id %}">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title">{% translate 'Edit Hours' %}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            {% with form=hours_form|get_item:role.id %}
+              {% if form %}
+                {% for field in form %}
+                  <div class="mb-3">
+                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                      <div class="text-danger">
+                        {{ field.errors }}
+                      </div>
+                    {% endif %}
+                  </div>
+                {% endfor %}
+              {% else %}
+                <p class="text-muted">No form available for this role.</p>
+              {% endif %}
+            {% endwith %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
+            <button type="submit" class="btn btn-primary">{% translate 'Save' %}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deletehoursModal{{ role.id }}" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="POST" action="{% url 'recruiting_web:delete-role-hours' role.hours.id %}">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title">{% translate 'Delete Hours' %}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <p>{% translate "Are you sure you want to delete the hours for this role?" %}</p>
+            <!-- Optional: display some context -->
+            <p><strong>{{ role.title }}</strong></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
+            <button type="submit" class="btn btn-danger">{% translate 'Delete' %}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+
+        
+          
 
         <!-- Delete Modal -->
     <div class="modal fade" id="deleteRoleModal{{ role.id }}" tabindex="-1" aria-hidden="true">
@@ -212,6 +283,19 @@
            <h6>
             {% translate "workRequestDetailsHours" %}
            </h6>
+           <i 
+           class="fa fa-edit text-primary me-2" 
+           data-bs-toggle="modal" 
+           data-bs-target="#edithoursModal{{ role.id }}"
+           style="cursor: pointer;" 
+           title="{% translate 'Edit' %}"></i>
+           <i 
+            class="fa fa-trash text-danger"
+            style="cursor: pointer; font-size: 20px;padding-left:10px;" 
+            data-bs-toggle="modal"
+            data-bs-target="#deletehoursModal{{ role.id }}"
+            title="Delete">
+            </i>
            <a class="btn btn-primary btn-sm" href="/work-requests/role/{{role.id}}/hours/create">
             {% translate "workRequestDetailsAddHours" %}
            </a>

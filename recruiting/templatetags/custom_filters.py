@@ -31,3 +31,7 @@ def next_12_months():
             "label": future.strftime("%B %Y"),
         })
     return months
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)

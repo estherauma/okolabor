@@ -115,6 +115,9 @@ class Hours(AuditableModel):
     friday_hours = models.CharField(max_length=50, blank=True, null=True)
     saturday_hours = models.CharField(max_length=50, blank=True, null=True)
     job_description = models.TextField()
+    
+    objects = SoftDeleteManager()  # Only active (non-deleted)
+    all_objects = models.Manager()
 
 
 class Wages(AuditableModel):
