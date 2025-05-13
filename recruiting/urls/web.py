@@ -39,7 +39,7 @@ from recruiting.views.workers import (
 
 app_name = 'recruiting_web'
 urlpatterns = [
-    path('employers/',
+path('employers/',
          EmployerListView.as_view(),
          name='employer_list'),
     path('employer/delete/<str:pk>/', 
