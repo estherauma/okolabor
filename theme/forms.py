@@ -298,6 +298,7 @@ class DynamicWorkExperienceForm(forms.Form):
         
 class AdvancedFilterForm(forms.Form):
     choices = [
+        ('', 'Please select...'),
         ('no_experience', 'No experience'),
         ('1_week', '1 week'),
         ('2_weeks', '2 weeks'),
@@ -318,11 +319,13 @@ class AdvancedFilterForm(forms.Form):
 
     english_proficiency = forms.ChoiceField(
         choices=[
+            ('', 'Please select...'),
             ('fluent', 'Fluent'),
             ('advanced', 'Advanced'),
             ('intermediate', 'Intermediate'),
             ('basic', 'Basic'),
         ],
+        required=False,
         widget=forms.Select(attrs={'class': 'form-control'}),
         label='English proficiency'
     )
@@ -339,6 +342,7 @@ class AdvancedFilterForm(forms.Form):
 
     location_preference = forms.ChoiceField(
         choices=[
+            ('', 'Please select...'),
             ('mexico', 'Mexico'),
             ('united_states', 'United States'),
             ('afghanistan', 'Afghanistan'),
@@ -349,6 +353,7 @@ class AdvancedFilterForm(forms.Form):
             ('angola', 'Angola'),
             ('anguilla', 'Anguilla'),
         ],
+        required=False,
         widget=forms.Select(attrs={
             'class': 'form-control',
             'placeholder': 'Location preference'
@@ -358,6 +363,7 @@ class AdvancedFilterForm(forms.Form):
 
     driver_license = forms.ChoiceField(
         choices=[
+            ('', 'Please select...'),
             ('united_states', 'United States'),
             ('mexico', 'Mexico'),
             ('afghanistan', 'Afghanistan'),
@@ -368,6 +374,7 @@ class AdvancedFilterForm(forms.Form):
             ('angola', 'Angola'),
             ('anguilla', 'Anguilla'),
         ],
+        required=False,
         widget=forms.Select(attrs={
             'class': 'form-control',
             'placeholder': 'Driver license'
@@ -377,10 +384,11 @@ class AdvancedFilterForm(forms.Form):
 
     lifting = forms.ChoiceField(
         choices=[
+            ('', 'Please select...'),
             ('yes', 'Yes'),
             ('no', 'No'),
         ],
-        required=True,
+        required=False,
         widget=forms.Select(attrs={
             'class': 'form-control',
             'placeholder': 'Able to lift 27kgs'
@@ -390,9 +398,11 @@ class AdvancedFilterForm(forms.Form):
 
     time_on_feet = forms.ChoiceField(
         choices=[
+            ('', 'Please select...'),
             ('yes', 'Yes'),
             ('no', 'No'),
         ],
+        required=False,
         widget=forms.Select(attrs={
             'class': 'form-control',
             'placeholder': 'Will spend time on feet'
@@ -402,9 +412,11 @@ class AdvancedFilterForm(forms.Form):
 
     weather = forms.ChoiceField(
         choices=[
+            ('', 'Please select...'),
             ('yes', 'Yes'),
             ('no', 'No'),
         ],
+        required=False,
         widget=forms.Select(attrs={
             'class': 'form-control',
             'placeholder': 'Will work in hot & cold?'
@@ -414,8 +426,10 @@ class AdvancedFilterForm(forms.Form):
 
     offer_status = forms.ChoiceField(
         choices=[
+            ('', 'Please select...'),
             ('pending', 'Pending'),
         ],
+        required=False,
         widget=forms.Select(attrs={
             'class': 'form-control',
             'placeholder': 'Offer status'
