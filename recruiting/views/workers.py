@@ -54,7 +54,6 @@ class WorkerListView(View):
             per_page = 25
 
         workers = User.objects.filter(groups__name='worker').order_by('-created_at')
-
         # 🔍 Search Filter
         if search_query:
             workers = workers.filter(
@@ -68,17 +67,18 @@ class WorkerListView(View):
         dynamic_field_1 = request.GET.get('dynamic_field_1')
         dynamic_field_2 = request.GET.get('dynamic_field_2')
 
+
         if type_sector:
             workers = workers.filter(
                 crop_experiences__job_type__iexact=type_sector
             )
 
-        if dynamic_field_1:
+        if dynamic_field_1 and dynamic_field_1.strip():
             workers = workers.filter(
                 crop_experiences__type_details__iexact=dynamic_field_1
             )
 
-        if dynamic_field_2:
+        if dynamic_field_2 and dynamic_field_2.strip():
             workers = workers.filter(
                 crop_experiences__job_experience_details__value__iexact=dynamic_field_2
             )
@@ -86,19 +86,18 @@ class WorkerListView(View):
         # 🔍 Advanced Filter Form (from UserPreference model)
         if filter_form.is_valid():
             for field_name, value in filter_form.cleaned_data.items():
-                if value:
+                if value is not None and str(value).strip() != '':
                     if field_name == 'availability' and isinstance(value, date):
                         workers = workers.filter(
-                    userpreference__key='availability',
-                    userpreference__value__gte=value.strftime('%Y-%m-%d')
-                )
-                else:
-                    workers = workers.filter(
-                    userpreference__key=field_name,
-                    userpreference__value__iexact=value
-                )
+                            userpreference__key='availability',
+                            userpreference__value__gte=value.strftime('%Y-%m-%d')
+                        )
+                    else:
+                        workers = workers.filter(
+                            userpreference__key=field_name,
+                            userpreference__value__iexact=value
+                        )
         workers = workers.distinct()
-
         paginator = Paginator(workers, per_page)
         page_obj = paginator.get_page(page_number)
 
@@ -111,8 +110,6 @@ class WorkerListView(View):
 
             latest_assignment = WorkAssignment.objects.filter(worker=worker).order_by('-assigned_date').first()
             worker.latest_status = latest_assignment.status if latest_assignment else None
-            
-            print(f"Worker: {worker.id}, Status: {worker.latest_status}")
 
 
             for key, value in worker_details.items():
@@ -133,7 +130,6 @@ class WorkerListView(View):
                 'workers': worker_data,
                 'num_pages': paginator.num_pages
             })
-        print("workers",page_obj)
         context = {
             'workers': page_obj,
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),

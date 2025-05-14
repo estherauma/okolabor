@@ -9,7 +9,24 @@ $(document).ready(function () {
                 "orderable": true
             }],
             "paging": false,
-            "info": false
+            "info": false,
+
+            "language": {
+                search: _('dataTableSearch'),
+                lengthMenu: _('dataTableLengthMenu'),
+                info: _('dataTableInfo'),
+                infoEmpty: _('dataTableInfoEmpty'),
+                infoFiltered: _('dataTableInfoFiltered'),
+                zeroRecords: _('dataTableZeroRecords'),
+                emptyTable: _('dataTableEmptyTable'),
+                paginate: {
+                  first: _('dataTablePaginateFirst'),
+                  last: _('dataTablePaginateLast'),
+                  next: _('dataTablePaginateNext'),
+                  previous: _('dataTablePaginatePrevious')
+                }
+
+            }
         });
 
         // Special setting for #workrequest-datatable
