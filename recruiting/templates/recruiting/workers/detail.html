@@ -142,7 +142,7 @@
           style="cursor: pointer; font-size: 20px;padding-left:10px;" 
           data-bs-toggle="modal"
           data-bs-target="#editExperienceModal{{ exp.id }}"
-          title="Edit">
+          title="{% translate 'workerDetailsEdit'%}">
           </i>
         <!-- Delete Button -->
           <i 
@@ -150,7 +150,7 @@
           style="cursor: pointer; font-size: 20px;padding-left:10px;" 
           data-bs-toggle="modal"
           data-bs-target="#deleteExperienceModal{{ exp.id }}"
-          title="Delete">
+          title="{% translate 'workerDetailsDelete'%}">
           </i>
        </div>
       </div>
@@ -160,20 +160,20 @@
         <div class="modal-content">
         
         <div class="modal-header">
-          <h5 class="modal-title">Confirm Delete</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title">{% translate "workerDetailsConfirmDelete"%}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'workerDetailsClose'%}"></button>
         </div>
         
         <div class="modal-body">
-          Are you sure you want to delete the experience <strong>{{ exp.company }}</strong>?
+          {% translate "workerDetailsAreYouSureYouWantToDeleteTheExperience?"%} <strong>{{ exp.company }}</strong>
         </div>
         
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "workerDetailsCancel"%}</button>
           
           <form method="POST" action="{% url 'recruiting_web:work_experience_delete' exp.id %}">
             {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Delete</button>
+            <button type="submit" class="btn btn-danger">{% translate "workerDetailsDelete"%}</button>
           </form>
         </div>
   
@@ -189,7 +189,7 @@
           <h5 class="modal-title" id="editExperienceModalLabel{{ exp.id }}">
             {% translate 'EditWorkExperience' %}
           </h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{% translate 'workerDetailsClose'%}"></button>
         </div>
 
         <form method="POST" action="{% url 'recruiting_web:edit_work_experience' exp.id %}" enctype="multipart/form-data">
@@ -246,10 +246,10 @@
         
           <div class="modal-footer bg-light">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-              {% translate 'Cancel' %}
+              {% translate 'workerDetailsCancel' %}
             </button>
             <button type="submit" class="btn btn-primary">
-              {% translate 'detailsSaveChanges' %}
+              {% translate 'workerDetailsSaveChanges' %}
             </button>
           </div>
         </form>
@@ -262,10 +262,10 @@
     {% for job in job_experiences %}
             <div class="p-4 border rounded-lg bg-white shadow-sm mb-4">
                 <p class="text-gray-700 text-lg flex items-center gap-2">
-                    🚜 JobType - <span>{{ job.job_type|default:"No Job Type" }}</span>
+                    🚜 {% translate "workerDetailsJobType"%} - <span>{{ job.job_type|default:"No Job Type" }}</span>
                 </p>
                 <p class="text-gray-700 text-lg flex items-center gap-2">
-                    📋 typeDetails - <span>{{ job.type_details|default:"No Type Details" }}</span>
+                    📋 {% translate "workerDetailsTypeDetails"%} - <span>{{ job.type_details|default:"No Type Details" }}</span>
                 </p>
             </div>
     {% endfor %}
@@ -412,8 +412,8 @@
                       {{ health_status_label }}
                   </label><br>
                   <div>
-                      <input type="radio" name="healthStatus" value="yes" onchange="toggleHealthConditionField()" class="me-2"> Yes
-                      <input type="radio" name="healthStatus" value="no" onchange="toggleHealthConditionField()" class="me-1"> No
+                      <input type="radio" name="healthStatus" value="yes" onchange="toggleHealthConditionField()" class="me-2"> {% translate "workerDetailsYes"%}
+                      <input type="radio" name="healthStatus" value="no" onchange="toggleHealthConditionField()" class="me-1"> {% translate "workerDetailsNo"%}
                   </div>
               </div>
               
@@ -883,12 +883,4 @@
     });
   });
   </script>
-  
-
-
-
-
-    
-
-
 {% endblock scripts %}
