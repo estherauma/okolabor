@@ -301,28 +301,5 @@
 <script src="{% static ''%}assets/js/employer_search.js"></script>
 <script src="{% static ''%}assets/js/table-sorting.js"></script>
 <script src="{% static ''%}assets/js/assign_recruiter.js"></script>
-<script>
-  $(document).ready(function () {
-    if (!$.fn.DataTable.isDataTable('#employers-list-datatable')) {
-      $('#employers-list-datatable').DataTable({
-        language: {
-          search: "{% trans 'recruiterListSearch:' %}",
-          lengthMenu: "{% trans 'recruiterListShow _MENU_ entries' %}",
-          info: "{% trans 'recruiterListShowing _START_ to _END_ of _TOTAL_ entries' %}",
-          infoEmpty: "{% trans 'recruiterListNoEntriesToShow' %}",
-          infoFiltered: "{% trans '(recruiterListFilteredFrom _MAX_ total entries)' %}",
-          paginate: {
-            first: "{% trans 'recruiterListFirst' %}",
-            last: "{% trans 'recruiterListLast' %}",
-            next: "{% trans 'recruiterListNext' %}",
-            previous: "{% trans 'recruiterListPrevious' %}"
-          },
-          zeroRecords: "{% trans 'recruiterListNoMatchingRecordsFound' %}",
-          emptyTable: "{% trans 'recruiterListNoDataAvailableInTable' %}",
-        }
-      });
-    }
-  });
-</script>
 
 {% endblock scripts %}
