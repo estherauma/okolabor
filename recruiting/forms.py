@@ -61,12 +61,12 @@ class WorkRequestForm(forms.ModelForm):
         ]
         
         labels = {
-            'name': _("createWorkRequestName"),
-            'start_date': _("createWorkRequestStartDate"),
-            'end_date': _("createWorkRequestEndDate"),
-            'required_workers': _("createWorkRequestRequiredWorkers"),
-            'employer': _("createWorkRequestEmployer"),
-            'status': _("createWorkRequestStatus"),
+            'name': _("createJobOrderName"),
+            'start_date': _("createJobOrderStartDate"),
+            'end_date': _("createJobOrderEndDate"),
+            'required_workers': _("createJobOrderRequiredWorkers"),
+            'employer': _("createJobOrderEmployer"),
+            'status': _("createJobOrderStatus"),
         }
 
         widgets = {
