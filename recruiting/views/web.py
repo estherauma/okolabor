@@ -311,7 +311,7 @@ class EmployerCreateView(CreateView):
     template_name = 'recruiting/employers/create.html'
 
     def form_valid(self, form):
-        messages.success(self.request, _('Employer created successfully'))
+        messages.success(self.request, _('addEmployerEmployerCreatedSuccessfully'))
         return super(EmployerCreateView, self).form_valid(form)
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
