@@ -23,7 +23,7 @@
     </button>
     <div class="dropdown">
       <button aria-expanded="false" class="btn dropdown-toggle dropdown-btn" data-bs-toggle="dropdown" id="dropdownMenuButton" type="button">
-        {% translate "assigned" %}
+        {% translate "employersAssigned" %}
       </button>
       <ul aria-labelledby="dropdownMenuButton" class="dropdown-menu">
         <li><a class="dropdown-item" href="#">{% translate "employersOption1" %}</a></li>
@@ -35,12 +35,12 @@
     {% if request.user|has_group:"admin" %}
       <div class="d-flex align-items-center gap-2">
         <button class="btn dark-green-button" data-bs-toggle="modal" data-bs-target="#assignRecruiterModal">
-          {% translate "assignRecruiter" %}
+          {% translate "employersAssignRecruiter" %}
         </button>
     {% endif %}
     <a class="btn dark-green-button" href="{% url 'recruiting_web:employer_create' %}">
       <span><i class="fe fe-plus"></i></span>
-      {% translate "listAddNewEmployer" %}
+      {% translate "employersAddNewEmployer" %}
     </a>
   </div>
 </div>
@@ -48,16 +48,16 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="assignRecruiterLabel">{% translate "assignRecruiter" %}</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h5 class="modal-title" id="assignRecruiterLabel">{% translate "employersAssignRecruiter" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'employersClose'%}"></button>
       </div>
       <div class="modal-body">
         <form id="assignRecruiterForm">
           {% csrf_token %}
           <div class="mb-3">
-            <label for="recruiterSelect" class="form-label">{% translate "selectRecruiter" %}</label>
+            <label for="recruiterSelect" class="form-label">{% translate "employersSelectRecruiter" %}</label>
             <select id="recruiterSelect" class="form-control">
-              <option value="">{% translate "chooseRecruiter" %}</option>
+              <option value="">{% translate "employersChooseRecruiter" %}</option>
               {% for recruiter in recruiters %}
               <option value="{{ recruiter.id }}">{{ recruiter.name }}</option>
               {% endfor %}
@@ -67,8 +67,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Cancel" %}</button>
-        <button type="button" class="btn btn-primary" id="assignRecruiterBtn">{% translate "Assign" %}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "employersCancel" %}</button>
+        <button type="button" class="btn btn-primary" id="assignRecruiterBtn">{% translate "employersAssign" %}</button>
       </div>
     </div>
   </div>
@@ -82,14 +82,14 @@
             <thead>
               <tr>
                 <th></th>
-                <th class="theading-color">{% translate "companyName" %}</th>
-                <th class="theading-color">{% translate "contactName" %}</th>
-                <th class="theading-color">{% translate "manageUsersEmail" %}</th>
-                <th class="theading-color">{% translate "location" %}</th>
-                <th class="theading-color">{% translate "phoneNumber" %}</th>
-                <th class="theading-color">{% translate "assignedTo" %}</th>
+                <th class="theading-color">{% translate "employersCompanyName" %}</th>
+                <th class="theading-color">{% translate "employersContactName" %}</th>
+                <th class="theading-color">{% translate "employersEmail" %}</th>
+                <th class="theading-color">{% translate "employersLocation" %}</th>
+                <th class="theading-color">{% translate "employersPhoneNumber" %}</th>
+                <th class="theading-color">{% translate "employersAssignedTo" %}</th>
                 {% if request.user|has_group:"admin" %}
-                  <th class="theading-color">{% translate "actions" %}</th>
+                  <th class="theading-color">{% translate "employersActions" %}</th>
                 {% endif %}
 
               </tr>
@@ -113,7 +113,7 @@
                           {{ recruiter }}{% if not forloop.last %}, {% endif %}
                       {% endfor %}
                   {% else %}
-                      No recruiters assigned
+                      {% translate "employersNoRecruitersAssigned"%}
                   {% endif %}
                 </td>
                 {% if request.user|has_group:"admin" %}
@@ -123,14 +123,14 @@
                       style="cursor: pointer;" 
                       data-bs-toggle="modal" 
                       data-bs-target="#deleteModal{{ employer.id }}" 
-                      title="Delete">
+                      title={% translate "employersDelete"%}>
                     </i>
                     <i 
                       class="fa fa-edit text-primary"
                       style="cursor: pointer;" 
                       data-bs-toggle="modal"
                       data-bs-target="#editModal{{ employer.id }}"
-                      title="Edit">
+                      title={% translate "employersEdit"%}>
                     </i>
 
                   </td>
@@ -147,18 +147,18 @@
               <ul class="pagination justify-content-center">
                 {% if employers.has_previous %}
                   <li class="page-item">
-                    <a class="page-link" href="?page=1&query={{ query }}" aria-label="First">
+                    <a class="page-link" href="?page=1&query={{ query }}" aria-label="{% translate 'employersFirst'%}">
                       <span aria-hidden="true">&laquo;</span>
                     </a>
                   </li>
                   <li class="page-item">
-                    <a class="page-link" href="?page={{ employers.previous_page_number }}&query={{ query }}" aria-label="Previous">
+                    <a class="page-link" href="?page={{ employers.previous_page_number }}&query={{ query }}" aria-label="{% translate 'employersPrevious'%}">
                       <span aria-hidden="true">&lsaquo;</span>
                     </a>
                   </li>
                 {% else %}
                   <li class="page-item disabled">
-                    <a class="page-link" href="#" aria-label="Previous">
+                    <a class="page-link" href="#" aria-label="{% translate 'employersPrevious'%}">
                       <span aria-hidden="true">&lsaquo;</span>
                     </a>
                   </li>
@@ -178,18 +178,18 @@
 
                 {% if employers.has_next %}
                   <li class="page-item">
-                    <a class="page-link" href="?page={{ employers.next_page_number }}&query={{ query }}" aria-label="Next">
+                    <a class="page-link" href="?page={{ employers.next_page_number }}&query={{ query }}" aria-label="{% translate 'employersNext'%}">
                       <span aria-hidden="true">&rsaquo;</span>
                     </a>
                   </li>
                   <li class="page-item">
-                    <a class="page-link" href="?page={{ employers.paginator.num_pages }}&query={{ query }}" aria-label="Last">
+                    <a class="page-link" href="?page={{ employers.paginator.num_pages }}&query={{ query }}" aria-label="{% translate 'employersLast'%}">
                       <span aria-hidden="true">&raquo;</span>
                     </a>
                   </li>
                 {% else %}
                   <li class="page-item disabled">
-                    <a class="page-link" href="#" aria-label="Next">
+                    <a class="page-link" href="#" aria-label="{% translate 'employersNext'%}">
                       <span aria-hidden="true">&rsaquo;</span>
                     </a>
                   </li>
@@ -213,15 +213,15 @@
           <form method="POST" action="{% url 'recruiting_web:employer_delete' employer.id %}">
             {% csrf_token %}
             <div class="modal-header">
-              <h5 class="modal-title" id="deleteModalLabel{{ employer.id }}">{% translate "confirmDelete" %}</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <h5 class="modal-title" id="deleteModalLabel{{ employer.id }}">{% translate "employersConfirmDelete" %}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'employersClose'%}"></button>
             </div>
             <div class="modal-body">
-              {% translate 'areYouSureYouWantToDelete'%} <strong>{{ employer.name }}</strong>?
+              {% translate 'employersAreYouSureYouWantToDelete'%} <strong>{{ employer.name }}</strong>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel'%}</button>
-              <button type="submit" class="btn btn-danger">{% translate 'Delete'%}</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'employersCancel'%}</button>
+              <button type="submit" class="btn btn-danger">{% translate 'employersDelete'%}</button>
             </div>
           </form>
         </div>
@@ -239,54 +239,54 @@
           <form method="POST" action="{% url 'recruiting_web:employer_edit' employer.id %}">
             {% csrf_token %}
             <div class="modal-header">
-              <h5 class="modal-title" id="editModalLabel{{ employer.id }}">{% translate "Edit Employer" %}</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <h5 class="modal-title" id="editModalLabel{{ employer.id }}">{% translate "employersEditEmployer" %}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'employersClose'%}"></button>
             </div>
             <div class="modal-body">
               <div class="mb-3">
-                <label for="name{{ employer.id }}" class="form-label">{% translate "Name" %}</label>
+                <label for="name{{ employer.id }}" class="form-label">{% translate "employersName" %}</label>
                 <input type="text" class="form-control" id="name{{ employer.id }}" name="name" value="{{ employer.name }}">
               </div>
               <div class="mb-3">
-                <label for="email{{ employer.id }}" class="form-label">{% translate "Email" %}</label>
+                <label for="email{{ employer.id }}" class="form-label">{% translate "employersEmail" %}</label>
                 <input type="email" class="form-control" id="email{{ employer.id }}" name="email" value="{{ employer.email }}">
               </div>
               <div class="mb-3">
-                <label for="phone{{ employer.id }}" class="form-label">{% translate "Phone" %}</label>
+                <label for="phone{{ employer.id }}" class="form-label">{% translate "employersPhone" %}</label>
                 <input type="text" class="form-control" id="phone{{ employer.id }}" name="phone" value="{{ employer.phone }}">
               </div>
               <div class="mb-3">
-                <label for="website{{ employer.id }}" class="form-label">{% translate "Website" %}</label>
+                <label for="website{{ employer.id }}" class="form-label">{% translate "employersWebsite" %}</label>
                 <input type="url" class="form-control" id="website{{ employer.id }}" name="website" value="{{ employer.website }}">
               </div>
               <div class="mb-3">
-                <label for="address{{ employer.id }}" class="form-label">{% translate "Address" %}</label>
+                <label for="address{{ employer.id }}" class="form-label">{% translate "employersAddress" %}</label>
                 <input type="text" class="form-control" id="address{{ employer.id }}" name="address" value="{{ employer.address }}">
               </div>
               <div class="mb-3">
-                <label for="city{{ employer.id }}" class="form-label">{% translate "City" %}</label>
+                <label for="city{{ employer.id }}" class="form-label">{% translate "employersCity" %}</label>
                 <input type="text" class="form-control" id="city{{ employer.id }}" name="city" value="{{ employer.city }}">
               </div>
               <div class="mb-3">
-                <label for="state{{ employer.id }}" class="form-label">{% translate "State" %}</label>
+                <label for="state{{ employer.id }}" class="form-label">{% translate "employersState" %}</label>
                 <input type="text" class="form-control" id="state{{ employer.id }}" name="state" value="{{ employer.state }}">
               </div>
               <div class="mb-3">
-                <label for="country{{ employer.id }}" class="form-label">{% translate "Country" %}</label>
+                <label for="country{{ employer.id }}" class="form-label">{% translate "employersCountry" %}</label>
                 <input type="text" class="form-control" id="country{{ employer.id }}" name="country" value="{{ employer.country }}">
               </div>
               <div class="mb-3">
-                <label for="zip_code{{ employer.id }}" class="form-label">{% translate "Zip Code" %}</label>
+                <label for="zip_code{{ employer.id }}" class="form-label">{% translate "employersZipCode" %}</label>
                 <input type="text" class="form-control" id="zip_code{{ employer.id }}" name="zip_code" value="{{ employer.zip_code }}">
               </div>
               <div class="mb-3">
-                <label for="description{{ employer.id }}" class="form-label">{% translate "Description" %}</label>
+                <label for="description{{ employer.id }}" class="form-label">{% translate "employersDescription" %}</label>
                 <textarea class="form-control" id="description{{ employer.id }}" name="description">{{ employer.description }}</textarea>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
-              <button type="submit" class="btn btn-primary">{% translate 'Save' %}</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'employersCancel' %}</button>
+              <button type="submit" class="btn btn-primary">{% translate 'employersSave' %}</button>
             </div>
           </form>
         </div>
@@ -317,6 +317,5 @@
 <script src="{% static ''%}assets/js/employer_search.js"></script>
 <script src="{% static ''%}assets/js/table-sorting.js"></script>
 <script src="{% static ''%}assets/js/assign_recruiter.js"></script>
-
-
 {% endblock scripts %}
+
