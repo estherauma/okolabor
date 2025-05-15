@@ -11,7 +11,7 @@ from recruiting.views.web import (
     OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,RemoveRecruiterFromEmployerView,AccessDeniedView,AssignRecruiterView,SendRecruiterEmailView,AcceptRecruiterView,RejectRecruiterView,RemoveWorkerFromAssignmentView,UpdateStatusView,ContactWorkRequestsView,AssignEmployerContactView,AddWorkersWorkRequests,ShowWorkerDetails,AddToShortlistView,UpdateWorkerStatusView,CancelOfferView,RecruiterListViewInAdmin,AssignEmployersToRecruiterOrgView,SummaryViews,RecruiterDetailView,GetRolesView,CopyWorkersView,EmployerDeleteView,EmployerEditView,RecruiterDeleteView,RecruiterEditView,update_employer_recruiter_status,EmployerRecruiterOrgStatusListView,WorkRequestEditView,WorkRequestDeleteView,EmployerRecruiterOrgLinkDeleteView,DeleteAssignedOrganizationView,DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView
 )
 from recruiting.views.workers import (
-     WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,EditWorkExperienceView,DeleteWorkExperienceView,WorkerEditView,WorkerDeleteView
+     WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,EditWorkExperienceView,DeleteWorkExperienceView,WorkerEditView,WorkerDeleteView,EditUserPreferenceView,EditLanguageProficiencyView,EditDocumentsView,DeleteAllWorkerInfoView
 )
 from recruiting.views.workers import (
      CreateWorkExperienceView, WorkExperienceDetailsView,ExportWorkerDetailsView,UploadDocumentsView,UploadLanguageProficiencyView,UploadUserPreferenceView
@@ -195,4 +195,15 @@ urlpatterns = [
     path('upload-preferences/', UploadUserPreferenceView.as_view(), name='upload_preferences'),
     path('work_experience/edit/<str:pk>/', EditWorkExperienceView.as_view(), name='edit_work_experience'),
     path('work_experience/delete/<str:pk>/', DeleteWorkExperienceView.as_view(), name='work_experience_delete'),
+    path('edit-preferences/<str:worker_id>/', EditUserPreferenceView.as_view(), name='edit_user_preferences'),
+    path(
+    "edit-language/<str:worker_id>/",
+    EditLanguageProficiencyView.as_view(),
+    name="edit_language_proficiency"
+     ),
+    path("edit-documents/<str:worker_id>/", EditDocumentsView.as_view(), name="edit_documents"),
+    path("delete-all-info/<str:worker_id>/", DeleteAllWorkerInfoView.as_view(), name="delete_all_worker_info"),
+
+
+
 ]
