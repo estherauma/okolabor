@@ -1,49 +1,50 @@
-
 {% extends 'components/base.html' %}
 {% load static %}
 {% load i18n %}
 {% block styles %}
 <!-- SELECT2 CSS -->
-<link href="{% static ''%}assets/plugins/select2/select2.min.css" rel="stylesheet"/>
-<link href="{% static ''%}assets/plugins/common/style.css" rel="stylesheet"/>
+<link href="{% static ''%}assets/plugins/select2/select2.min.css" rel="stylesheet" />
+<link href="{% static ''%}assets/plugins/common/style.css" rel="stylesheet" />
 <!-- DATA TABLE CSS -->
-<link href="{% static ''%}assets/plugins/datatable/css/dataTables.bootstrap5.css" rel="stylesheet"/>
-<link href="{% static ''%}assets/plugins/datatable/css/buttons.bootstrap5.min.css" rel="stylesheet"/>
-<link href="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.css" rel="stylesheet"/>
+<link href="{% static ''%}assets/plugins/datatable/css/dataTables.bootstrap5.css" rel="stylesheet" />
+<link href="{% static ''%}assets/plugins/datatable/css/buttons.bootstrap5.min.css" rel="stylesheet" />
+<link href="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.css" rel="stylesheet" />
 
 {% endblock styles %}
 {% block body %}
 <div class="page-header">
   <div>
-    <h1 class="page-title">{% translate "manageUsers" %}</h1>
+    <h1 class="page-title">{% translate "manageUsersTitle" %}</h1>
   </div>
 </div>
 
 <div class="row row-sm">
   <div class="col-lg-12">
-      <div class="card">
-          <div class="card-body">
-              <div class="card-pay">
-                  <ul class="tabs-menu nav">
-                    <li class=""><a href="#tab1" class="active" data-bs-toggle="tab">{% translate "Workers" %}</a></li>
-                    <li><a href="#tab2" data-bs-toggle="tab" class="">{% translate "recruiters" %}</a></li>
-                    <li><a href="#tab4" data-bs-toggle="tab" class="">{% translate "employerAdmins" %}</a></li>
-                  </ul>
-                  <div class="tab-content">
-                      <div class="tab-pane active show" id="tab1">
-                        {% include 'workers/workers_list.html' %}
-                      </div>
-                      <div class="tab-pane" id="tab2">
-                          {% include 'recruiter/recruiter_modals/recruiters_data.html' %}
-                      </div>
-                      
-                      <div class="tab-pane" id="tab4">
-                        {% include 'employers/employer_list.html' %}
-                      </div>
-                  </div>
-              </div>
+    <div class="card">
+      <div class="card-body">
+        <div class="card-pay">
+          <ul class="tabs-menu nav">
+            <li class="">
+              <a href="#tab1" class="active" data-bs-toggle="tab">{% translate "manageUsersWorkersTab" %}</a>
+            </li>
+            <li><a href="#tab2" data-bs-toggle="tab" class="">{% translate "managerUsersRecruiterTab" %}</a></li>
+            <li><a href="#tab4" data-bs-toggle="tab" class="">{% translate "manageUsersEmployerTab" %}</a></li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active show" id="tab1">
+              {% include 'workers/workers_list.html' %}
+            </div>
+            <div class="tab-pane" id="tab2">
+              {% include 'recruiter/recruiter_modals/recruiters_data.html' %}
+            </div>
+
+            <div class="tab-pane" id="tab4">
+              {% include 'employers/employer_list.html' %}
+            </div>
           </div>
+        </div>
       </div>
+    </div>
   </div>
 </div>
 {% include 'recruiter/recruiter_modals/add_user_modal.html' %}

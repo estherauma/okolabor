@@ -142,7 +142,7 @@
           style="cursor: pointer; font-size: 20px;padding-left:10px;" 
           data-bs-toggle="modal"
           data-bs-target="#editExperienceModal{{ exp.id }}"
-          title="Edit">
+          title="{% translate 'workerDetailsEdit'%}">
           </i>
         <!-- Delete Button -->
           <i 
@@ -150,7 +150,7 @@
           style="cursor: pointer; font-size: 20px;padding-left:10px;" 
           data-bs-toggle="modal"
           data-bs-target="#deleteExperienceModal{{ exp.id }}"
-          title="Delete">
+          title="{% translate 'workerDetailsDelete'%}">
           </i>
        </div>
       </div>
@@ -160,20 +160,20 @@
         <div class="modal-content">
         
         <div class="modal-header">
-          <h5 class="modal-title">Confirm Delete</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title">{% translate "workerDetailsConfirmDelete"%}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'workerDetailsClose'%}"></button>
         </div>
         
         <div class="modal-body">
-          Are you sure you want to delete the experience <strong>{{ exp.company }}</strong>?
+          {% translate "workerDetailsAreYouSureYouWantToDeleteTheExperience?"%} <strong>{{ exp.company }}</strong>
         </div>
         
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "workerDetailsCancel"%}</button>
           
           <form method="POST" action="{% url 'recruiting_web:work_experience_delete' exp.id %}">
             {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Delete</button>
+            <button type="submit" class="btn btn-danger">{% translate "workerDetailsDelete"%}</button>
           </form>
         </div>
   
@@ -189,7 +189,7 @@
           <h5 class="modal-title" id="editExperienceModalLabel{{ exp.id }}">
             {% translate 'EditWorkExperience' %}
           </h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{% translate 'workerDetailsClose'%}"></button>
         </div>
 
         <form method="POST" action="{% url 'recruiting_web:edit_work_experience' exp.id %}" enctype="multipart/form-data">
@@ -246,10 +246,10 @@
         
           <div class="modal-footer bg-light">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-              {% translate 'Cancel' %}
+              {% translate 'workerDetailsCancel' %}
             </button>
             <button type="submit" class="btn btn-primary">
-              {% translate 'detailsSaveChanges' %}
+              {% translate 'workerDetailsSaveChanges' %}
             </button>
           </div>
         </form>
@@ -262,10 +262,10 @@
     {% for job in job_experiences %}
             <div class="p-4 border rounded-lg bg-white shadow-sm mb-4">
                 <p class="text-gray-700 text-lg flex items-center gap-2">
-                    🚜 JobType - <span>{{ job.job_type|default:"No Job Type" }}</span>
+                    🚜 {% translate "workerDetailsJobType"%} - <span>{{ job.job_type|default:"No Job Type" }}</span>
                 </p>
                 <p class="text-gray-700 text-lg flex items-center gap-2">
-                    📋 typeDetails - <span>{{ job.type_details|default:"No Type Details" }}</span>
+                    📋 {% translate "workerDetailsTypeDetails"%} - <span>{{ job.type_details|default:"No Type Details" }}</span>
                 </p>
             </div>
     {% endfor %}
@@ -301,7 +301,7 @@
         <div>
             <button class="btn dark-green-button" data-bs-toggle="modal" data-bs-target="#infoModal">
               <span><i class="fe fe-plus"></i></span>
-                {% translate "addInformation" %}
+                {% translate "workerDetailsAddInformation" %}
             </button>
           {% if preferences %}
           <i 
@@ -324,18 +324,18 @@
         <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="infoModalLabel">addInformation</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <h5 class="modal-title" id="infoModalLabel">{% translate "workerDetailsAddInformation"%}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'workerDetailsClose'%}"></button>
           </div>
 
           <div class="modal-body">
-            <label for="infoType" class="form-label">selectType</label>
+            <label for="infoType" class="form-label">{% translate "workerDetailsSelectType"%}</label>
             <select id="infoType" class="form-select" onchange="handleInfoTypeChange()">
-              <option value="">-- Select --</option>
+              <option value="">{% translate "workerDetails--Select--"%}</option>
 
-              <option value="documents" data-action="{% url 'recruiting_web:upload_documents' %}">Documents</option>
-              <option value="languages" data-action="{% url 'recruiting_web:upload_languages' %}">Languages</option>
-              <option value="preferences" data-action="{% url 'recruiting_web:upload_preferences' %}">User Preferences</option>
+              <option value="documents" data-action="{% url 'recruiting_web:upload_documents' %}">{% translate "workerDetailsDocuments"%}</option>
+              <option value="languages" data-action="{% url 'recruiting_web:upload_languages' %}">{% translate "workerDetailsLanguages"%}</option>
+              <option value="preferences" data-action="{% url 'recruiting_web:upload_preferences' %}">{% translate "workerDetailsUserPreferences"%}</option>
             </select>
 
 
@@ -372,7 +372,7 @@
                 {% endfor %}
               </div>
               <div class="mt-2" id="videoUploadSection" style="display: none;">
-                  <label for="languageVideo" class="form-label mt-2">uploadLanguageVideo</label>
+                  <label for="languageVideo" class="form-label mt-2">{% translate "workerDetailsUploadLanguageVideo"%}</label>
                   <input type="file" class="form-control" id="languageVideo" name="language_video">
               </div>
             </div>
@@ -421,8 +421,8 @@
                       {{ health_status_label }}
                   </label><br>
                   <div>
-                      <input type="radio" name="healthStatus" value="yes" onchange="toggleHealthConditionField()" class="me-2"> Yes
-                      <input type="radio" name="healthStatus" value="no" onchange="toggleHealthConditionField()" class="me-1"> No
+                      <input type="radio" name="healthStatus" value="yes" onchange="toggleHealthConditionField()" class="me-2"> {% translate "workerDetailsYes"%}
+                      <input type="radio" name="healthStatus" value="no" onchange="toggleHealthConditionField()" class="me-1"> {% translate "workerDetailsNo"%}
                   </div>
               </div>
               
@@ -437,8 +437,8 @@
                       {{ suffered_injury_label }}
                   </label><br>
                   <div>
-                      <input type="radio" name="suffred_injury" value="yes" class="me-2"> Yes
-                      <input type="radio" name="suffred_injury" value="no" class="me-1"> No
+                      <input type="radio" name="suffred_injury" value="yes" class="me-2"> {% translate "workerDetailsYes"%}
+                      <input type="radio" name="suffred_injury" value="no" class="me-1"> {% translate "workerDetailsNo"%}
                   </div>
               </div>
               
@@ -448,8 +448,8 @@
                       {{ longer_period_of_time_label }}
                   </label><br>
                   <div>
-                      <input type="radio" name="longerPeriodOfTime" value="yes" class="me-2"> Yes
-                      <input type="radio" name="longerPeriodOfTime" value="no" class="me-1"> No
+                      <input type="radio" name="longerPeriodOfTime" value="yes" class="me-2"> {% translate "workerDetailsYes"%}
+                      <input type="radio" name="longerPeriodOfTime" value="no" class="me-1"> {% translate "workerDetailsNo"%}
                   </div>
               </div>
               
@@ -459,8 +459,8 @@
                       {{ consent_label }}
                   </label><br>
                   <div>
-                      <input type="radio" name="consent" value="yes" class="me-2"> Yes
-                      <input type="radio" name="consent" value="no" class="me-1"> No
+                      <input type="radio" name="consent" value="yes" class="me-2"> {% translate "workerDetailsYes"%}
+                      <input type="radio" name="consent" value="no" class="me-1"> {% translate "workerDetailsNo"%}
                   </div>
               </div>
               
@@ -478,15 +478,15 @@
                       {{ work_environment_label }}
                   </label><br>
                   <div>
-                      <input type="radio" name="workEnvironment" value="yes" class="me-2"> Yes
-                      <input type="radio" name="workEnvironment" value="no" class="me-1"> No
+                      <input type="radio" name="workEnvironment" value="yes" class="me-2"> {% translate "workerDetailsYes"%}
+                      <input type="radio" name="workEnvironment" value="no" class="me-1"> {% translate "workerDetailsNo"%}
                   </div>
               </div>
               </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "workerDetailsClose"%}</button>
+            <button type="submit" class="btn btn-primary">{% translate "workerDetailsSave"%}</button>
           </div>
         </div>
       </div>
@@ -746,8 +746,7 @@
         {% if key == "english_proficiency" and documents.english_proficiency %}
 
           <div class="col-12 mb-3">
-
-            <p class="gray-color">English Proficiency</p>
+            <p class="gray-color">{% translate "workerDetailsEnglishProficiency"%}</p>
             <div class="row">
               <div class="col-md-4 col-sm-6 mb-3">
                 {% with documents.english_proficiency.path as clean_path %}
@@ -772,7 +771,7 @@
                            data-src="{{ base_url }}{{ clean_path }}"
                        >
                            <source src="{{ base_url }}{{ clean_path }}" type="video/mp4">
-                           Your browser does not support the video tag.
+                           {% translate "workerDetailsYourBrowserDoesNotSupportTheVideoTag"%}
                        </video>
                       </div>
                     {% endif %}
@@ -785,7 +784,7 @@
 
         {% if key == "Passport" and documents.passport %}
           <div class="col-12 mb-3">
-            <p class="gray-color">Passport</p>
+            <p class="gray-color">{% translate "workerDetailsPassport"%}</p>
             <div class="row">
               <div class="col-md-4 col-sm-6 mb-3">
                 {% with documents.passport.path as clean_path %}
@@ -810,7 +809,7 @@
                            data-src="{{ base_url }}{{ clean_path }}"
                        >
                            <source src="{{ base_url }}{{ clean_path }}" type="video/mp4">
-                           Your browser does not support the video tag.
+                           {% translate "workerDetailsYourBrowserDoesNotSupportTheVideoTag"%}
                        </video>
                       </div>
                     {% endif %}
@@ -849,7 +848,7 @@
     {% for kind, docs in documents.items %}
       {% if kind != "passport" and kind != "english_proficiency" %}
         <div class="col-12 mb-3">
-          <p class="gray-color">{% translate kind %}</p>
+          <p class="gray-color">{% translate "workerDetailsKind" %}</p>
           <div class="row">
             {% for doc in docs %}
               <div class="col-md-4 col-sm-6 mb-3">
@@ -875,7 +874,7 @@
                            data-src="{{ base_url }}{{ clean_path }}"
                        >
                            <source src="{{ base_url }}{{ clean_path }}" type="video/mp4">
-                           Your browser does not support the video tag.
+                           {% translate "workerDetailsYourBrowserDoesNotSupportTheVideoTag"%}
                        </video>
                       </div>
                     {% endif %}
@@ -895,8 +894,8 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="mediaModalLabel">Media Viewer</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title" id="mediaModalLabel">{% translate "workerDetailsMediaViewer"%}</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="{% translate 'workerDetailsClose'%}">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -939,7 +938,7 @@
               } else if (type === 'video') {
                   mediaContent.innerHTML = `<video controls class="w-100">
                                               <source src="${src}" type="video/mp4">
-                                              Your browser does not support the video tag.
+                                              {% translate "workerDetailsYourBrowserDoesNotSupportTheVideoTag"%}
                                             </video>`;
               }
 
@@ -1010,7 +1009,7 @@
           const infoType = document.getElementById("infoType").value;
 
           if (!infoType) {
-              alert("pleaseSelectAnInformationType.");
+              alert("{% translate 'workerDetailsPleaseSelectAnInformationType.'%}");
               e.preventDefault();
               return;
           }
@@ -1019,7 +1018,7 @@
               const profilePictureInput = document.getElementById("profilePicture");
 
               if (!profilePictureInput || profilePictureInput.files.length === 0) {
-                  alert("pleaseUploadAProfilePictureItIsRequired.");
+                  alert("{% translate 'workerDetailsPleaseUploadAProfilePictureItIsRequired.'%}");
                   e.preventDefault();
                   return;
               }
@@ -1030,12 +1029,12 @@
               const videoInput = document.getElementById("languageVideo");
 
               if (!selectedLevel) {
-                  alert("pleaseSelectALanguagelevel.");
+                  alert("{% translate 'workerDetailsPleaseSelectALanguagelevel.'%}");
                   e.preventDefault();
                   return;
               }
               if (selectedLevel.value !== "none" && videoInput.files.length === 0) {
-                  alert("pleaseUploadAVideoForYourSelectedLanguageLevel.");
+                  alert("{% translate 'workerDetailsPleaseUploadAVideoForYourSelectedLanguageLevel.'%}");
                   e.preventDefault();
                   return;
               }
@@ -1116,7 +1115,7 @@
           const error = document.createElement("div");
           error.id = errorMsgId;
           error.className = "text-danger mt-2";
-          error.innerText = "End date cannot be earlier than start date.";
+          error.innerText = "{% translate 'workerDetailsEndDateCannotBeEarlierThanStartDate.'%}";
           endDateInput.parentElement.appendChild(error);
         }
       };
@@ -1142,12 +1141,4 @@
     });
   });
   </script>
-  
-
-
-
-
-    
-
-
 {% endblock scripts %}

@@ -1,13 +1,13 @@
 {% extends 'components/base.html' %}
 
 {% load i18n %}
-{% block title %} Employers {% endblock title %}
+{% block title %} {%translate "createJobOrderCreateJoborder"%}{% endblock title %}
 
 {% block body %}
 <div class="page-header">
  <div>
   <h1 class="page-title">
-   {% translate "createWorkRequestAddJobOrder" %}
+   {% translate "createJobOrderAddJobOrder" %}
   </h1>
  </div>
 </div>
@@ -30,7 +30,7 @@
      </div>
      {% endfor %}
      <button class="btn dark-green-button" type="submit">
-      {% translate "createWorkRequestSubmit" %}
+      {% translate "createJobOrderSubmit" %}
      </button>
     </form>
    </div>
