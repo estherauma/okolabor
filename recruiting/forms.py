@@ -609,25 +609,6 @@ class WorkerCreateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        static = StaticContent()
-        label_keys = {
-            'first_name': 'firstName',
-            'last_name': 'lastName',
-            'dob': 'dob',
-            'gender': 'gender',
-            'telephone': 'phone',
-            'address_line_1': 'addressLineOne',
-            'address_line_2': 'addressLineTwo',
-            'city': 'Town',
-            'curp': 'curp',
-            'email': 'email',
-            
-        }
-
-        for field_name, json_key in label_keys.items():
-            if field_name in self.fields:
-                self.fields[field_name].label = static.get_profile_step_one_label(json_key)
-
     class Meta:
         model = User
         fields = [
@@ -833,5 +814,3 @@ class WorkExperienceCreateForm(forms.ModelForm):
             'supervisor_email': forms.EmailInput(attrs={'class': 'form-control'}),
             'visa_type': forms.TextInput(attrs={'class': 'form-control'}),
         }
-
-
