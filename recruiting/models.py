@@ -37,10 +37,10 @@ class Organization(AuditableModel):
 
 class WorkRequests(AuditableModel):
     STATUS_CHOICES = (
-        ('Draft', _('createWorkRequestDraft')),
-        ('Requested', _('createWorkRequestRequested')),
-        ('Open', _('createWorkRequestOpen')),
-        ('Closed', _('createWorkRequestClosed')),
+        ('Draft', _('createJobOrderDraft')),
+        ('Requested', _('createJobOrderRequested')),
+        ('Open', _('createJobOrderOpen')),
+        ('Closed', _('createJobOrderClosed')),
     )
     
     name = models.CharField(max_length=255, null=False, blank=False)

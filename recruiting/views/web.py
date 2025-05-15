@@ -497,7 +497,7 @@ class WorkRequestCreateView(CreateView):
     template_name = 'recruiting/work_requests/create.html'
 
     def form_valid(self, form):
-        messages.success(self.request, _('jobOrderCreatedSuccessfully'))
+        messages.success(self.request, _('createJobOrderJobOrderCreatedSuccessfully'))
         return super(WorkRequestCreateView, self).form_valid(form)
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
