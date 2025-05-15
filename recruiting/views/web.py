@@ -21,6 +21,7 @@ from django.urls import reverse
 from django.core.mail import send_mail
 from django.conf import settings
 from django.utils.http import urlsafe_base64_decode
+from django.utils import timezone
 from django.utils.encoding import force_str
 from django.http import HttpResponseRedirect,HttpResponseForbidden
 from django.core.exceptions import ObjectDoesNotExist
@@ -856,6 +857,11 @@ class WorkRequestDetailView(View):
             role.id: RoleHoursForm(instance=role.hours)
             for role in roles_qs if hasattr(role, 'hours')
             }
+        wages_form = {
+            role.id: RoleWagesForm(instance=role.wages)
+            for role in roles_qs if hasattr(role, 'wages') and role.wages and role.wages.deleted_at is None 
+        }  
+
 
 
         
@@ -869,6 +875,8 @@ class WorkRequestDetailView(View):
             'total_confirmed_count': total_confirmed_count,
             'form': form,
             'hours_form': hours_form,
+            'wages_form': wages_form,
+
         }
         return render(request, 'recruiting/work_requests/detail.html', context)
 
@@ -1748,3 +1756,29 @@ class DeleteRoleHoursView(View):
             return redirect('recruiting_web:workrequest_detail', pk=work_request_id)
         else:
             return redirect('/')  # fallback
+
+class EditRoleWagesView(View):
+    def post(self, request, pk):
+        wages = get_object_or_404(Wages, pk=pk)
+        form = RoleWagesForm(request.POST, instance=wages)
+
+        work_request_id = request.POST.get('work_request_id', None)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Wages updated successfully.')
+        else:
+            messages.error(request, 'There was an error updating the wages.')
+
+        if work_request_id:
+            return redirect('recruiting_web:workrequest_detail', pk=work_request_id)
+        else:
+            return redirect('/')
+
+class DeleteRoleWagesView(View):
+    def post(self, request, pk):
+        wages = get_object_or_404(Wages, pk=pk)
+        wages.deleted_at = timezone.now()
+        wages.save()
+        messages.success(request, "Wages deleted successfully.")
+        return redirect('recruiting_web:workrequest_detail', pk=wages.role.work_request.pk)
