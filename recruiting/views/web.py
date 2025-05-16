@@ -933,7 +933,7 @@ class EditRoleView(View):
         form = WorkRequestRoleForm(request.POST, instance=role)
         if form.is_valid():       
             form.save()
-            messages.success(request, 'addRoleRoleUpdatedSuccessfully')
+            messages.success(request, _('addRoleRoleUpdatedSuccessfully'))
             return redirect('recruiting_web:workrequest_detail', pk=role.work_request.pk)
         else:
             return redirect('recruiting_web:workrequest_detail', pk=role.work_request.pk)
