@@ -1,0 +1,28 @@
+{% load i18n %}
+{% load static %}
+{% load custom_filters %}
+ <div class="modal fade" id="editHousingInformationModal{{ role.id }}" tabindex="-1" aria-labelledby="editRoleLocationModalLabel{{ role.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                    <form method="POST" action="{% url 'recruiting_web:housing_information_edit' role.housing_information.id %}">
+                    {% csrf_token %}
+
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editRoleLocationModalLabel{{ role.id }}">
+                        {% translate "Edit Housing Information for Role" %}: {{ role.name }}
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body p-3">
+                        {{ role_housing_information_forms|get_item:role.id }}
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
+                        <button type="submit" class="btn btn-primary">{% translate 'Save' %}</button>
+                    </div>
+                    </form>
+                </div>
+                </div>
+            </div>
