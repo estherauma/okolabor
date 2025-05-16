@@ -1,13 +1,13 @@
 {% extends 'components/base.html' %}
 {% load i18n %}
 
-{% block title %} Employers {% endblock title %}
+{% block title %} {% translate "addEmployerEmployers"%} {% endblock title %}
 
 {% block body %}
 <div class="page-header">
  <div>
   <h1 class="page-title">
-   {% translate "createEmployerAddEmployer" %}
+   {% translate "addEmployerAddEmployer" %}
   </h1>
  </div>
 </div>
@@ -30,7 +30,7 @@
      </div>
      {% endfor %}
      <button class="btn btn-primary" type="submit">
-      {% translate "createEmployerSubmit" %}
+      {% translate "addEmployerSubmit" %}
      </button>
     </form>
    </div>
