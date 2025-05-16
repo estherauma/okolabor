@@ -890,6 +890,13 @@ class WorkRequestDetailView(View):
             role.id: RoleEmploymentLocationForm(instance=role.employment_location)
             for role in work_request.roles.all() if hasattr(role, 'employment_location')
         }
+
+        role_housing_information_forms = {
+            role.id: RoleHousingInformationForm(instance=role.housing_information)
+            for role in work_request.roles.all() if hasattr(role, 'housing_information')
+        }
+
+        print(role_housing_information_forms,"role_housing_information_forms")
         context = {
             'workrequest': work_request,
             'roles': roles_qs,
@@ -898,7 +905,8 @@ class WorkRequestDetailView(View):
             'total_shortlist_count': total_shortlist_count,
             'total_offersent_count': total_offersent_count,
             'total_confirmed_count': total_confirmed_count,
-            'role_information_forms': role_information_forms
+            'role_information_forms': role_information_forms,
+            'role_housing_information_forms': role_housing_information_forms
         }
         return render(request, 'recruiting/work_requests/detail.html', context)
 
@@ -1761,4 +1769,28 @@ class DeleteEmploymentLocationView(View):
         except Exception as e:
             messages.error(request, f'ErrorDeletingEmploymentLocation: {str(e)}')
 
-       
+
+class EditHousingInformationView(View):
+    def post(self, request, pk):
+        housing = get_object_or_404(HousingInformation, pk=pk)
+        form = RoleHousingInformationForm(request.POST, instance=housing)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'HousingInformationUpdatedSuccessfully.')
+            return redirect('recruiting_web:workrequest_detail', pk=housing.role.work_request.pk)
+        else:
+            messages.error(request, 'ThereWasAnErrorUpdatingTheHousingInformation.')
+            return redirect('recruiting_web:workrequest_detail', pk=housing.role.work_request.pk)
+
+
+class DeleteHousingInformationView(View):
+    def post(self, request, pk):
+        housing = get_object_or_404(HousingInformation, pk=pk)
+        try:
+            work_request_pk = housing.role.work_request.pk  # Store before deleting
+            housing.delete()
+            messages.success(request, 'HousingInformationDeletedSuccessfully.')
+            return redirect('recruiting_web:workrequest_detail', pk=work_request_pk)
+        except Exception as e:
+            messages.error(request, f'ErrorDeletingHousingInformation: {str(e)}')
+            return redirect('recruiting_web:workrequest_detail', pk=housing.role.work_request.pk)
