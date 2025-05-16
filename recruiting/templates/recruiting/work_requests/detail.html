@@ -145,42 +145,63 @@
         {% for role in roles %}
 
   <!-- Modal -->
-  <div class="modal fade" id="edithoursModal{{ role.id }}" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <form method="POST" action="{% url 'recruiting_web:edit-role-hours' role.hours.id %}">
-          {% csrf_token %}
-          <div class="modal-header">
-            <h5 class="modal-title">{% translate 'Edit Hours' %}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body">
-            {% with form=hours_form|get_item:role.id %}
-              {% if form %}
+ <div class="modal fade" id="edithoursModal{{ role.id }}" tabindex="-1" aria-labelledby="editHoursLabel{{ role.id }}" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <form method="POST" action="{% url 'recruiting_web:edit-role-hours' role.hours.id %}">
+        {% csrf_token %}
+        
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="editHoursLabel{{ role.id }}">{% translate 'Edit Hours' %}</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <div class="modal-body px-4">
+          {% with form=hours_form|get_item:role.id %}
+            {% if form %}
+              <div class="d-flex flex-column">
                 {% for field in form %}
-                  <div class="mb-3">
-                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                    {{ field }}
+                  <div class="mb-3 w-100">
+                    {% if field.field.widget.input_type == "checkbox" %}
+                      <div class="form-check">
+                        {{ field }}
+                        <label class="form-check-label ms-2" for="{{ field.id_for_label }}">
+                          {{ field.label }}
+                        </label>
+                      </div>
+                    {% else %}
+                      <label for="{{ field.id_for_label }}" class="form-label fw-semibold">{{ field.label }}</label>
+                      {{ field }}
+                    {% endif %}
+
                     {% if field.errors %}
-                      <div class="text-danger">
+                      <div class="text-danger small mt-1">
                         {{ field.errors }}
                       </div>
                     {% endif %}
                   </div>
                 {% endfor %}
-              {% else %}
-                <p class="text-muted">No form available for this role.</p>
-              {% endif %}
-            {% endwith %}
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
-            <button type="submit" class="btn btn-primary">{% translate 'Save' %}</button>
-          </div>
-        </form>
-      </div>
+              </div>
+            {% else %}
+              <p class="text-muted">No form available for this role.</p>
+            {% endif %}
+          {% endwith %}
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            {% translate 'Cancel' %}
+          </button>
+          <button type="submit" class="btn btn-success">
+            {% translate 'Save' %}
+          </button>
+        </div>
+      </form>
     </div>
   </div>
+</div>
+
+  
 {% endfor %}
 
 <!-- Delete Modal -->
@@ -207,42 +228,62 @@
     </div>
   </div>
   
-  <div class="modal fade" id="editWagesModal{{ role.id }}" tabindex="-1">
-    <div class="modal-dialog">
+  <div class="modal fade" id="editWagesModal{{ role.id }}" tabindex="-1" aria-labelledby="editWagesLabel{{ role.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
         <form method="POST" action="{% url 'recruiting_web:edit-role-wages' role.wages.id %}">
           {% csrf_token %}
-          <div class="modal-header">
-            <h5 class="modal-title">{% translate 'Edit Wages' %}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+  
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="editWagesLabel{{ role.id }}">{% translate 'Edit Wages' %}</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
+  
+          <div class="modal-body px-4">
             {% with form=wages_form|get_item:role.id %}
               {% if form %}
-                {% for field in form %}
-                  <div class="mb-3">
-                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.errors %}
-                      <div class="text-danger">
-                        {{ field.errors }}
-                      </div>
-                    {% endif %}
-                  </div>
-                {% endfor %}
+                <div class="d-flex flex-column">
+                  {% for field in form %}
+                    <div class="mb-3 w-100">
+                      {% if field.field.widget.input_type == "checkbox" %}
+                        <div class="form-check">
+                          {{ field }}
+                          <label class="form-check-label ms-2" for="{{ field.id_for_label }}">
+                            {{ field.label }}
+                          </label>
+                        </div>
+                      {% else %}
+                        <label for="{{ field.id_for_label }}" class="form-label fw-semibold">{{ field.label }}</label>
+                        {{ field }}
+                      {% endif %}
+  
+                      {% if field.errors %}
+                        <div class="text-danger small mt-1">
+                          {{ field.errors }}
+                        </div>
+                      {% endif %}
+                    </div>
+                  {% endfor %}
+                </div>
               {% else %}
                 <p class="text-muted">No form available for this role.</p>
               {% endif %}
             {% endwith %}
           </div>
+  
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
-            <button type="submit" class="btn btn-primary">{% translate 'Save' %}</button>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+              {% translate 'Cancel' %}
+            </button>
+            <button type="submit" class="btn btn-success">
+              {% translate 'Save' %}
+            </button>
           </div>
         </form>
       </div>
     </div>
   </div>
+  
   
         
           
@@ -295,8 +336,94 @@
       </div>
     </div>
   </div>
+  <div class="modal fade" id="editQualificationModal{{ role.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content shadow">
+  
+        <form method="POST" action="{% url 'recruiting_web:edit-role-qualification' role.qualifications.id %}">
+          {% csrf_token %}
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title">{% translate 'Edit Qualification' %}</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+  
+          <div class="modal-body px-4">
+            {% with form=qualification_form|get_item:role.id %}
+              {% if form %}
+                <div class="d-flex flex-column gap-3">
+                  {% for field in form %}
+                    <div class="form-group">
+                      {% if field.field.widget.input_type == "checkbox" %}
+                        <div class="form-check d-flex align-items-center gap-2">
+                          {{ field }}
+                          <label class="form-check-label mb-0" for="{{ field.id_for_label }}">
+                            {{ field.label }}
+                          </label>
+                        </div>
+                        {% if field.help_text %}
+                          <small class="form-text text-muted ms-4">{{ field.help_text }}</small>
+                        {% endif %}
+                      {% else %}
+                        <label for="{{ field.id_for_label }}" class="form-label fw-semibold">{{ field.label }}</label>
+                        {{ field }}
+                      {% endif %}
+  
+                      {% if field.errors %}
+                        <div class="text-danger small mt-1">
+                          {{ field.errors }}
+                        </div>
+                      {% endif %}
+                    </div>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <p class="text-muted">No form available for this role.</p>
+              {% endif %}
+            {% endwith %}
+          </div>
+  
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
+            <button type="submit" class="btn btn-success">{% translate 'Save Changes' %}</button>
+          </div>
+        </form>
+  
+      </div>
+    </div>
+  </div>
+  
   
 
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteQualificationModal{{ role.id }}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Delete</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        Are you sure you want to delete the qualification for role <strong>{{ role.title }}</strong>?
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        
+        <form method="POST" action="{% url 'recruiting_web:delete-role-qualification' role.qualifications.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+  
 
         
       <div aria-labelledby="heading{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#rolesAccordion" id="collapse{{ forloop.counter }}">
@@ -544,6 +671,18 @@
            <h6>
             {% translate "workRequestDetailsQualifications" %}
            </h6>
+           <i 
+           class="fa fa-edit text-primary me-2" 
+           data-bs-toggle="modal" 
+           data-bs-target="#editQualificationModal{{ role.id }}"
+           style="cursor: pointer;" 
+           title="{% translate 'Edit' %}"></i>
+         <i 
+           class="fa fa-trash text-danger" 
+           style="cursor: pointer; font-size: 20px; padding-left: 10px;" 
+           data-bs-toggle="modal" 
+           data-bs-target="#deleteQualificationModal{{ role.id }}"
+           title="{% translate 'Delete' %}"></i>
            <a class="btn btn-primary btn-sm" href="/work-requests/role/{{role.id}}/qualifications/create">
             {% translate "workRequestDetailsAddQualifiations" %}
            </a>
