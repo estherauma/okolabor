@@ -140,6 +140,70 @@
 
         {% endfor %}
 
+           <!-- Edit Information Modal -->
+
+        {% for role in workrequest.roles.all %}
+  <div class="modal fade" id="editEmployementInformationModal{{ role.id }}" tabindex="-1" aria-labelledby="editRoleLocationModalLabel{{ role.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="POST" action="{% url 'recruiting_web:employment_location_edit' role.employment_location.id %}">
+          {% csrf_token %}
+
+          <div class="modal-header">
+            <h5 class="modal-title" id="editRoleLocationModalLabel{{ role.id }}">
+              {% translate "Edit Employment Location for Role" %}: {{ role.name }}
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+          <div class="modal-body p-3">
+            {{ role_information_forms|get_item:role.id }}
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
+            <button type="submit" class="btn btn-primary">{% translate 'Save' %}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+
+<!-- Delete Modal for EmploymentLocation -->
+
+{% if role.employment_location %}
+<div class="modal fade" id="deleteEmploymentInformationModal{{ role.id }}" tabindex="-1" aria-labelledby="deleteEmploymentInformationLabel{{ role.id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="{% url 'recruiting_web:employment_location_delete' role.employment_location.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="work_request_id" value="{{ workrequest.id }}">
+
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title" id="deleteEmploymentInformationLabel{{ role.id }}">
+            {% translate "Confirm Deletion" %}
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <p>{% translate "Are you sure you want to delete the employment location for this role?" %}</p>
+          <strong>{{ role.name }}</strong>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
+          <button type="submit" class="btn btn-danger">{% translate 'Delete' %}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+
+
         <!-- Delete Modal -->
     <div class="modal fade" id="deleteRoleModal{{ role.id }}" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -506,6 +570,19 @@
            <h6>
             {% translate "workRequestDetailsPlaceOfEmploymentInformation" %}
            </h6>
+           <i 
+           class="fa fa-edit text-primary me-2" 
+           data-bs-toggle="modal" 
+           data-bs-target="#editEmployementInformationModal{{ role.id }}"
+           style="cursor: pointer;" 
+           title="{% translate 'Edit' %}"></i>
+           <i 
+            class="fa fa-trash text-danger" 
+            data-bs-toggle="modal" 
+            data-bs-target="#deleteEmploymentInformationModal{{ role.id }}" 
+            style="cursor: pointer;" 
+            title="{% translate 'Delete' %}">
+            </i>
            <a class="btn btn-primary btn-sm" href="/work-requests/role/{{role.id}}/location/create">
             {% translate "workRequestDetailsAddLocation" %}
            </a>

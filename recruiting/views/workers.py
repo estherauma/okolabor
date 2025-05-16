@@ -406,7 +406,6 @@ class WorkerDetailsView(View):
         work_environment_label = static_content.get_label_for_preference_field_two("workEnvironment")
         language_options = static_content.get_english_proficiency_options()
         language_label = static_content.get_label_for_field("englishProficiency")
-        print(preference_data,"preference_data")
         context = {
             'worker': worker,
             'preferences': preference_data,
@@ -664,11 +663,9 @@ class UploadDocumentsView(View):
     def post(self, request, *args, **kwargs):
         worker_id = request.POST.get("worker_id")
         user = get_object_or_404(User, pk=worker_id)
-        print(self.upload_paths.items(),"just")
         for field_name, upload_dir in self.upload_paths.items():
             uploaded_file = request.FILES.get(field_name)
             if uploaded_file:
-                print(uploaded_file,"uploaded_file")
                 filename = uploaded_file.name
                 relative_path = os.path.join(upload_dir, filename)
                 full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
@@ -910,7 +907,6 @@ class DeleteWorkExperienceView(View):
 class EditUserPreferenceView(View):
     def get(self, request, *args, **kwargs):
         worker_id = kwargs.get("worker_id")
-        print(worker_id,"worker_id")
         user = get_object_or_404(User, id=worker_id)
         static_content = StaticContent()
 

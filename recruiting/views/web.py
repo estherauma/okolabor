@@ -48,7 +48,8 @@ from recruiting.forms import (
     TodoFilterForm,
     WorkRequestForm,
     WorkRequestRoleForm,
-    WorkerAssignmentForm
+    WorkerAssignmentForm,
+    RoleEmploymentLocationForm
 )
 from theme.forms import (
     FilterWorkExperienceForm,
@@ -451,7 +452,6 @@ class WorkRequestsListView(View):
             recruiter_link = EmployerRecruiterOrgLink.objects.filter(employer_org=wr.employer).first()
             wr.recruiter_org = recruiter_link.recruiter_org if recruiter_link else None
 
-        print(work_requests, "work_requests")
         context = {
             "work_requests": work_requests,
             "employers": Organization.objects.filter(type='employer'),
@@ -886,8 +886,10 @@ class WorkRequestDetailView(View):
             for 
             role in work_request.roles.all()
         }
-
-        
+        role_information_forms = {
+            role.id: RoleEmploymentLocationForm(instance=role.employment_location)
+            for role in work_request.roles.all() if hasattr(role, 'employment_location')
+        }
         context = {
             'workrequest': work_request,
             'roles': roles_qs,
@@ -896,6 +898,7 @@ class WorkRequestDetailView(View):
             'total_shortlist_count': total_shortlist_count,
             'total_offersent_count': total_offersent_count,
             'total_confirmed_count': total_confirmed_count,
+            'role_information_forms': role_information_forms
         }
         return render(request, 'recruiting/work_requests/detail.html', context)
 
@@ -1735,3 +1738,27 @@ class SummaryViews(View):
         }
 
         return render(request, 'recruiting/work_requests/summaryList/summarylist.html', context)
+    
+class EditEmploymentLocationView(View):
+    def post(self, request, pk):
+        location = get_object_or_404(EmploymentLocation, pk=pk)
+        form = RoleEmploymentLocationForm(request.POST, instance=location)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'EmploymentLocationUpdatedSuccessfully.')
+            return redirect('recruiting_web:workrequest_detail', pk=location.role.work_request.pk)
+        else:
+            messages.error(request, 'ThereWasAnErrorUpdatingTheEmploymentLocation.')
+
+
+class DeleteEmploymentLocationView(View):
+    def post(self, request, pk):
+        location = get_object_or_404(EmploymentLocation, pk=pk)
+        try:
+            location.delete()
+            messages.success(request, 'EmploymentLocationDeletedSuccessfully.')
+            return redirect('recruiting_web:workrequest_detail', pk=location.role.work_request.pk)
+        except Exception as e:
+            messages.error(request, f'ErrorDeletingEmploymentLocation: {str(e)}')
+
+       
