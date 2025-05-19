@@ -1019,8 +1019,7 @@ class RemoveRecruiterFromEmployerView(LoginRequiredMixin, View):
             messages.info(request, _("Recruiter {email} was already removed from {employer}.").format(email=recruiter.email, employer=employer.name))
 
         return redirect('recruiting_web:recruiter_list')
-
-            
+     
 
 class AccessDeniedView(View):
     def get(self, request):
