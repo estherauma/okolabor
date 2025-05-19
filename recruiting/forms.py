@@ -155,6 +155,7 @@ class WorkRequestRoleForm(forms.ModelForm):
         }
 
 
+
 class RoleHoursForm(forms.ModelForm):
     class Meta:
         model = Hours
