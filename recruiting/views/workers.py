@@ -406,7 +406,6 @@ class WorkerDetailsView(View):
         work_environment_label = static_content.get_label_for_preference_field_two("workEnvironment")
         language_options = static_content.get_english_proficiency_options()
         language_label = static_content.get_label_for_field("englishProficiency")
-        
         context = {
             'worker': worker,
             'preferences': preference_data,
@@ -433,6 +432,55 @@ class WorkerDetailsView(View):
             'experience_forms': experience_forms
         }
         return render(request, 'recruiting/workers/detail.html', context)
+class EditPreferenceView(View):
+    def post(self, request, *args, **kwargs):
+        worker_id = kwargs.get("worker_id")  # ✅ Gets the user ID from the URL
+        key = kwargs.get("key")              # ✅ Gets the preference key from the URL
+        user = get_object_or_404(User, id=worker_id)  # ✅ Validates the user exists
+        value = request.POST.get("value")             # ✅ Gets the submitted value
+
+        if value:
+            UserPreference.objects.update_or_create(
+                user=user,
+                key=key,
+                kind="preference",
+                defaults={"value": value},             # ✅ Updates or creates the preference
+            )
+            messages.success(request, _("User preference updated successfully."))  # ✅ Feedback
+
+        return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))  # ✅ Redirect
+
+
+
+class DeletePreferenceView(LoginRequiredMixin, View):
+    def post(self, request, worker_id, key):
+        user = request.user
+        target_user = get_object_or_404(User, id=worker_id)
+
+        # Use filter to catch duplicates safely
+        preferences = UserPreference.all_objects.filter(
+            user=target_user, key=key, kind="preference", deleted=False
+        )
+
+        if not preferences.exists():
+            messages.error(request, _("Preference with key '%(key)s' not found.") % {'key': key})
+            return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": target_user.pk}))
+
+        if user.groups.filter(name='admin').exists():
+            for pref in preferences:
+                pref.delete(user=user)
+            messages.success(request, _('Preference "%(key)s" deleted successfully.') % {'key': key})
+
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'success'})
+
+            return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": target_user.pk}))
+        else:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'forbidden'}, status=403)
+
+            return HttpResponseForbidden(_("You do not have permission to delete this preference."))
+
 
 class GetRolesForWorkRequestView(View):
     def get(self, request, work_request_id):
@@ -664,7 +712,6 @@ class UploadDocumentsView(View):
     def post(self, request, *args, **kwargs):
         worker_id = request.POST.get("worker_id")
         user = get_object_or_404(User, pk=worker_id)
-
         for field_name, upload_dir in self.upload_paths.items():
             uploaded_file = request.FILES.get(field_name)
             if uploaded_file:
@@ -904,4 +951,165 @@ class DeleteWorkExperienceView(View):
         work_experience.delete(user=request.user)
 
         messages.success(request, "workExperienceDeletedSuccessfully.")
+        return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
+    
+class EditUserPreferenceView(View):
+    def get(self, request, *args, **kwargs):
+        worker_id = kwargs.get("worker_id")
+        user = get_object_or_404(User, id=worker_id)
+        static_content = StaticContent()
+
+        preferences = {}
+        fields = {
+            "preferred_countries": static_content.get_label_for_preference_field("whereYouWantToWork"),
+            "work_sectors": static_content.get_label_for_preference_field("kindOfWork"),
+            "preferences_note": static_content.get_label_for_preference_field("tellUsMore"),
+            "availability_months": static_content.get_label_for_preference_field("availability"),
+            "healthStatus": static_content.get_label_for_preference_field_two("healthStatus"),
+            "healthCondition": static_content.get_label_for_preference_field_two("healthCondition"),
+            "suffred_injury": static_content.get_label_for_preference_field_two("suffred_injury"),
+            "longerPeriodOfTime": static_content.get_label_for_preference_field_two("longerPeriodOfTime"),
+            "consent": static_content.get_label_for_preference_field_two("consent"),
+            "physicalActivities": static_content.get_label_for_preference_field_two("physicalActivities"),
+            "workEnvironment": static_content.get_label_for_preference_field_two("workEnvironment"),
+        }
+
+        for field_name, label in fields.items():
+            preference = UserPreference.objects.filter(user=user, key=label, kind="preference").first()
+            if preference:
+                # split list values
+                preferences[field_name] = preference.value.split(", ") if "," in preference.value else preference.value
+
+        return render(request, "your_template.html", {
+            "preferences": preferences,
+            "worker_id": worker_id,
+            # add other context like preferred_countries_options, etc.
+        })
+
+    def post(self, request, *args, **kwargs):
+        worker_id = kwargs.get("worker_id")
+        user = get_object_or_404(User, id=worker_id)
+        static_content = StaticContent()
+
+        fields = {
+            "preferred_countries": static_content.get_label_for_preference_field("whereYouWantToWork"),
+            "work_sectors": static_content.get_label_for_preference_field("kindOfWork"),
+            "preferences_note": static_content.get_label_for_preference_field("tellUsMore"),
+            "availability_months": static_content.get_label_for_preference_field("availability"),
+            "healthStatus": static_content.get_label_for_preference_field_two("healthStatus"),
+            "healthCondition": static_content.get_label_for_preference_field_two("healthCondition"),
+            "suffred_injury": static_content.get_label_for_preference_field_two("suffred_injury"),
+            "longerPeriodOfTime": static_content.get_label_for_preference_field_two("longerPeriodOfTime"),
+            "consent": static_content.get_label_for_preference_field_two("consent"),
+            "physicalActivities": static_content.get_label_for_preference_field_two("physicalActivities"),
+            "workEnvironment": static_content.get_label_for_preference_field_two("workEnvironment"),
+        }
+
+        for field_name, key in fields.items():
+            raw_value = request.POST.getlist(field_name) if field_name in ["preferred_countries", "work_sectors", "availability_months"] else request.POST.get(field_name)
+            if raw_value:
+                value = ", ".join(raw_value) if isinstance(raw_value, list) else raw_value
+                obj, created = UserPreference.objects.get_or_create(user=user, key=key, kind="preference", defaults={"value": value})
+                if not created and obj.value != value:
+                    obj.value = value
+                    obj.save()
+
+        messages.success(request, _("userPreferencesUpdatedSuccessfully."))
+        return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
+
+
+class EditLanguageProficiencyView(View):
+    def post(self, request, *args, **kwargs):
+        worker_id = kwargs.get("worker_id") or request.POST.get("worker_id")
+        language_level = request.POST.get("language_level")
+        language_video = request.FILES.get("language_video")
+
+        if not worker_id or not language_level:
+            messages.error(request, "WorkerOrLanguageLevelIsMissing.")
+            return redirect("/")
+
+        user = get_object_or_404(User, id=worker_id)
+
+        # Update or create language level preference
+        UserPreference.objects.update_or_create(
+            user=user,
+            key="english_proficiency",
+            kind="language",
+            defaults={"value": language_level},
+        )
+
+        # Save video only if selected and uploaded
+        if language_level != "none" and language_video:
+            folder = "uploads/english_videos"
+            filename = language_video.name
+            relative_path = os.path.join(folder, filename)
+            full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
+
+            os.makedirs(os.path.dirname(full_path), exist_ok=True)
+
+            with open(full_path, "wb+") as destination:
+                for chunk in language_video.chunks():
+                    destination.write(chunk)
+
+            # Optionally, you might want to delete old videos here
+
+            UserDocuments.objects.create(
+                user=user,
+                path=relative_path,
+                kind="english_video",
+                description="English Language Proficiency Video",
+                file_type=language_video.content_type,
+            )
+
+        messages.success(request, _("languageProficiencyInformationSavedSuccessfully."))
+        return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
+    
+
+class EditDocumentsView(View):
+    upload_paths = {
+        'passport': 'uploads/passports',
+        'profile_picture': 'uploads/profiles',
+        'us_driving_license': 'uploads/driver_licenses',
+        'mexico_driving_license': 'uploads/driver_licenses',
+    }
+
+    def post(self, request, *args, **kwargs):
+        worker_id = kwargs.get("worker_id") or request.POST.get("worker_id")
+        user = get_object_or_404(User, pk=worker_id)
+
+        for field_name, upload_dir in self.upload_paths.items():
+            uploaded_file = request.FILES.get(field_name)
+            if uploaded_file:
+                filename = uploaded_file.name
+                relative_path = os.path.join(upload_dir, filename)
+                full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
+
+                os.makedirs(os.path.dirname(full_path), exist_ok=True)
+                with open(full_path, 'wb+') as destination:
+                    for chunk in uploaded_file.chunks():
+                        destination.write(chunk)
+
+                # Delete old file of the same kind if it exists
+                UserDocuments.objects.filter(user=user, kind=field_name).delete()
+
+                UserDocuments.objects.create(
+                    user=user,
+                    path=relative_path,
+                    kind=field_name,
+                    description=f'{field_name.replace("_", " ").title()} for user profile',
+                    file_type=uploaded_file.content_type
+                )
+
+        messages.success(request, _("Documents updated successfully."))
+        return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
+
+
+class DeleteAllWorkerInfoView(View):
+    def post(self, request, *args, **kwargs):
+        worker_id = kwargs.get("worker_id")
+        user = get_object_or_404(User, pk=worker_id)
+        UserPreference.objects.filter(user=user).delete()
+        UserDocuments.objects.filter(user=user).delete()
+
+        messages.success(request, _("All information related to the worker has been deleted."))
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
