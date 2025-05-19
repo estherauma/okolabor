@@ -173,17 +173,17 @@ class RoleHoursForm(forms.ModelForm):
             'job_description']
         
         labels = {
-            'role': _('roleAddHoursRole'),
-            'on_call': _('roleAddHoursOnCall'),
-            'estimate_weekly_hours': _('roleAddHoursEstimatedWeeklyHours'),
-            'sunday_hours': _('roleAddHoursSundayHours'),
-            'monday_hours': _('roleAddHoursMondayHours'),
-            'tuesday_hours': _('roleAddHoursTuesdayHours'),
-            'wednesday_hours': _('roleAddHoursWednesdayHours'),
-            'thursday_hours': _('roleAddHoursThursdayHours'),
-            'friday_hours': _('roleAddHoursFridayHours'),
-            'saturday_hours': _('roleAddHoursSaturdayHours'),
-            'job_description': _('roleAddHoursJobDescription'),
+            'role': _('roleHoursRole'),
+            'on_call': _('roleHoursOnCall'),
+            'estimate_weekly_hours': _('roleHoursEstimatedWeeklyHours'),
+            'sunday_hours': _('roleHoursSundayHours'),
+            'monday_hours': _('roleHoursMondayHours'),
+            'tuesday_hours': _('roleHoursTuesdayHours'),
+            'wednesday_hours': _('roleHoursWednesdayHours'),
+            'thursday_hours': _('roleHoursThursdayHours'),
+            'friday_hours': _('roleHoursFridayHours'),
+            'saturday_hours': _('roleHoursSaturdayHours'),
+            'job_description': _('roleHoursJobDescription'),
         }
         
         widgets = {
