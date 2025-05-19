@@ -1,0 +1,29 @@
+{% load i18n %}
+{% load static %}
+{% load custom_filters %}<div class="modal fade" id="deleteEmploymentInformationModal{{ role.id }}" tabindex="-1" aria-labelledby="deleteEmploymentInformationLabel{{ role.id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="{% url 'recruiting_web:employment_location_delete' role.employment_location.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="work_request_id" value="{{ workrequest.id }}">
+
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title" id="deleteEmploymentInformationLabel{{ role.id }}">
+            {% translate "Confirm Deletion" %}
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <p>{% translate "Are you sure you want to delete the employment location for this role?" %}</p>
+          <strong>{{ role.name }}</strong>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
+          <button type="submit" class="btn btn-danger">{% translate 'Delete' %}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
