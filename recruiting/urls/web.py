@@ -22,7 +22,7 @@ from recruiting.views.web import (
     update_employer_recruiter_status,EmployerRecruiterOrgStatusListView,
     WorkRequestEditView,WorkRequestDeleteView,
     EmployerRecruiterOrgLinkDeleteView,DeleteAssignedOrganizationView,
-    DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditEmploymentLocationView,DeleteEmploymentLocationView,EditHousingInformationView,DeleteHousingInformationView
+    DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditEmploymentLocationView,DeleteEmploymentLocationView,EditHousingInformationView,DeleteHousingInformationView,EditMealProvisionView,DeleteMealProvisionView
 )
 from recruiting.views.workers import (
      WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,EditWorkExperienceView,DeleteWorkExperienceView,WorkerEditView,WorkerDeleteView,EditUserPreferenceView,EditLanguageProficiencyView,EditDocumentsView,DeleteAllWorkerInfoView,WorkerEditView,WorkerDeleteView
@@ -264,7 +264,11 @@ urlpatterns = [
     path('employment-location/<str:pk>/edit/', EditEmploymentLocationView.as_view(), name='employment_location_edit'),
     path('employment-location/<str:pk>/delete/', DeleteEmploymentLocationView.as_view(), name='employment_location_delete'),
     path('housing-information/edit/<str:pk>/', EditHousingInformationView.as_view(), name='housing_information_edit'),
-    path('housing-information/delete/<str:pk>/', DeleteHousingInformationView.as_view(), name='housing_information_delete'),
+    path('housing-information/delete/<str:pk>/', DeleteHousingInformationView.as_view(), 
+    name='housing_information_delete'),
+    path('meal-provision/edit/<str:pk>/', EditMealProvisionView.as_view(), name='meal_provision_edit'),
+    path('meal-provision/delete/<str:pk>/', DeleteMealProvisionView.as_view(), name='meal_provision_delete'),
+
 
 
 

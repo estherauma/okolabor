@@ -896,7 +896,11 @@ class WorkRequestDetailView(View):
             for role in work_request.roles.all() if hasattr(role, 'housing_information')
         }
 
-        print(role_housing_information_forms,"role_housing_information_forms")
+        role_meal_provision_forms = {
+            role.id: RoleMealProvision(instance=role.meal_provision)
+            for role in work_request.roles.all() if hasattr(role, 'meal_provision')
+        }
+
         context = {
             'workrequest': work_request,
             'roles': roles_qs,
@@ -906,7 +910,8 @@ class WorkRequestDetailView(View):
             'total_offersent_count': total_offersent_count,
             'total_confirmed_count': total_confirmed_count,
             'role_information_forms': role_information_forms,
-            'role_housing_information_forms': role_housing_information_forms
+            'role_housing_information_forms': role_housing_information_forms,
+            'role_meal_provision_forms': role_meal_provision_forms
         }
         return render(request, 'recruiting/work_requests/detail.html', context)
 
@@ -1794,3 +1799,29 @@ class DeleteHousingInformationView(View):
         except Exception as e:
             messages.error(request, f'ErrorDeletingHousingInformation: {str(e)}')
             return redirect('recruiting_web:workrequest_detail', pk=housing.role.work_request.pk)
+        
+class EditMealProvisionView(View):
+    def post(self, request, pk):
+        meal_provision = get_object_or_404(MealProvision, pk=pk)
+        form = RoleMealProvision(request.POST, instance=meal_provision)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'MealProvisionUpdatedSuccessfully.')
+            return redirect('recruiting_web:workrequest_detail', pk=meal_provision.role.work_request.pk)
+        else:
+            messages.error(request, 'ThereWasAnErrorUpdatingTheMealProvision.')
+            return redirect('recruiting_web:workrequest_detail', pk=meal_provision.role.work_request.pk)
+        
+
+class DeleteMealProvisionView(View):
+    def post(self, request, pk):
+        meal_provision = get_object_or_404(MealProvision, pk=pk)
+        try:
+            work_request_pk = meal_provision.role.work_request.pk  # Store before deleting
+            meal_provision.delete()
+            messages.success(request, 'MealProvisionDeletedSuccessfully.')
+            return redirect('recruiting_web:workrequest_detail', pk=work_request_pk)
+        except Exception as e:
+            messages.error(request, f'ErrorDeletingMealProvision: {str(e)}')
+            return redirect('recruiting_web:workrequest_detail', pk=meal_provision.role.work_request.pk)

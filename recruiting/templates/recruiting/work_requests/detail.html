@@ -165,6 +165,18 @@
         {% include "recruiting/work_requests/delete_housing_information_modal.html" %}
         {% endif %}
 
+        <!-- Edit Housing Information Modal -->
+
+        {% for role in workrequest.roles.all %}
+        {% include "recruiting/work_requests/edit_mealprovision_modal.html" %}
+        {% endfor %}
+
+        <!-- Delete Modal for EmploymentLocation -->
+
+        {% if role.housing_information %}
+        {% include "recruiting/work_requests/delete_mealprovision_modal.html" %}
+        {% endif %}
+
         <!-- Delete Modal -->
     <div class="modal fade" id="deleteRoleModal{{ role.id }}" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -669,6 +681,22 @@
            <h6>
             {% translate "workRequestDetailsProvisionOfMeals" %}
            </h6>
+           <!-- Edit Button -->
+                <i 
+                class="fa fa-edit text-primary"
+                style="cursor: pointer; font-size: 20px;padding-left:10px;" 
+                data-bs-toggle="modal"
+                data-bs-target="#editMealProvisionModal{{ role.id }}"
+                title="Edit">
+                </i>
+             <!-- Delete Button -->
+                <i 
+                class="fa fa-trash text-danger"
+                style="cursor: pointer; font-size: 20px;padding-left:10px;" 
+                data-bs-toggle="modal"
+                data-bs-target="#deleteMealProvisionModal{{ role.id }}"
+                title="Delete">
+                </i>
            <a class="btn btn-primary btn-sm" href="/work-requests/role/{{role.id}}/meals/create">
             {% translate "workRequestDetailsAddMeals" %}
            </a>
