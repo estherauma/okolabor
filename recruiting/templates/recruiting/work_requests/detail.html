@@ -8,7 +8,7 @@
 <div class="page-header">
  <div>
   <h1 class="page-title">
-   {% translate "jobOrderDetailsJobOrders" %} / {{workrequest.name}}
+   {% translate "workRequestDetailsJobOrders" %} / {{workrequest.name}}
   </h1>
  </div>
 </div>
@@ -18,20 +18,20 @@
    <div class="card-header bg-primary">
     <div class="card-title">
      <h3 class="card-title text-white">
-      {% translate "jobOrderDetailsRequestOverview" %}
+      {% translate "workRequestDetailsRequestOverview" %}
      </h3>
     </div>
    </div>
    <div class="card-body">
     <h5>
      <strong>
-      {% translate "jobOrderDetailsEmployer" %}
+      {% translate "workRequestDetailsEmployer" %}
      </strong>
      {{workrequest.employer}}
     </h5>
     <h6>
      <strong>
-      {% translate "jobOrderDetailsRequirements" %}
+      {% translate "workRequestDetailsRequirements" %}
      </strong>
     </h6>
     <div class="table-responsive">
@@ -39,10 +39,10 @@
       <thead>
        <tr>
         <th>
-         {% translate "jobOrderDetailsJobTitle" %}
+         {% translate "workRequestDetailsJobTitle" %}
         </th>
         <th>
-         {% translate "jobOrderDetailsNumberOfWorkersRequired" %}
+         {% translate "workRequestDetailsNumberOfWorkersRequired" %}
         </th>
        </tr>
       </thead>
@@ -59,7 +59,7 @@
        {% empty %}
        <tr>
         <td colspan="2">
-         {% translate "jobOrderDetailsNoRolesAvailableForThisWorkRequest" %}
+         {% translate "workRequestDetailsNoRolesAvailableForThisWorkRequest" %}
         </td>
        </tr>
        {% endfor %}
@@ -73,12 +73,12 @@
    <div class="card-header bg-primary">
     <div class="card-title">
      <h3 class="card-title text-white">
-      {% translate "jobOrderDetailsRequestedWorkerCategories" %}
+      {% translate "workRequestDetailsRequestedWorkerCategories" %}
      </h3>
     </div>
     <div class="card-options">
      <a class="btn btn-light btn-sm" href="roles/create">
-      {% translate "jobOrderDetailsAddRole" %}
+      {% translate "workRequestDetailsAddRole" %}
      </a>
     </div>
    </div>
@@ -91,12 +91,12 @@
                     class="accordion-button collapsed d-flex align-items-center justify-content-between w-100"
                     data-bs-target="#collapse{{ forloop.counter }}" data-bs-toggle="collapse" type="button">
                 <div>
-                    {% translate "jobOrderDetailsJobTitle" %}
+                    {% translate "workRequestDetailsJobTitle" %}
                     <strong>{{ role.title }}</strong>
                 </div>
                 <a href="{% url 'recruiting_web:work_request_add_workers' pk=workrequest.id role_id=role.id %}">
                     <button class="btn btn-warning btn-sm ms-3">
-                        +{% translate "jobOrderDetailsAddWorkers" %}
+                        +{% translate "addWorkers" %}
                     </button>
                 </a>
                 <!-- Edit Button -->
@@ -105,7 +105,7 @@
                 style="cursor: pointer; font-size: 20px;padding-left:10px;" 
                 data-bs-toggle="modal"
                 data-bs-target="#editRoleModal{{ role.id }}"
-                title="{% translate 'jobOrderDetailsEdit'%}">
+                title="Edit">
                 </i>
              <!-- Delete Button -->
                 <i 
@@ -113,7 +113,7 @@
                 style="cursor: pointer; font-size: 20px;padding-left:10px;" 
                 data-bs-toggle="modal"
                 data-bs-target="#deleteRoleModal{{ role.id }}"
-                title="{% translate 'jobOrderDetailsDelete'%}">
+                title="Delete">
                 </i>
                 
         </h2>
@@ -130,8 +130,8 @@
                         </div>
 
                         <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'jobOrderDetailsCancel' %}</button>
-                        <button type="submit" class="btn btn-primary">{% translate 'jobOrderDetailsSave' %}</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
+                        <button type="submit" class="btn btn-primary">{% translate 'Save' %}</button>
                         </div>
                     </form>
                     </div>
@@ -144,145 +144,25 @@
         {% include "recruiting/work_requests/Edit_Hours.html" with role=role %}
     {% endfor %}
 
-  <!-- Modal -->
-  <div class="modal fade" id="edithoursModal{{ role.id }}" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <form method="POST" action="{% url 'recruiting_web:edit-role-hours' role.hours.id %}">
-          {% csrf_token %}
-          <div class="modal-header">
-            <h5 class="modal-title">{% translate 'Edit Hours' %}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body">
-            {% with form=hours_form|dict_get:role.id %}
-              {% if form %}
-                {% for field in form %}
-                  <div class="mb-3">
-                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.errors %}
-                      <div class="text-danger">
-                        {{ field.errors }}
-                      </div>
-                    {% endif %}
-                  </div>
-                {% endfor %}
-              {% else %}
-                <p class="text-muted">No form available for this role.</p>
-              {% endif %}
-            {% endwith %}
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
-            <button type="submit" class="btn btn-primary">{% translate 'Save' %}</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-{% endfor %}
-
 <!-- Delete Modal -->
     {% for role in workrequest.roles.all %}
 
     {% include "recruiting/work_requests/delete_hours.html" with role=role %}
   {% endfor %}
   
-<<<<<<< HEAD
 
   {% for role in roles %}
   {% include "recruiting/work_requests/edit_wages.html" with role=role %}
-=======
-  <div class="modal fade" id="editWagesModal{{ role.id }}" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <form method="POST" action="{% url 'recruiting_web:edit-role-wages' role.wages.id %}">
-          {% csrf_token %}
-          <div class="modal-header">
-            <h5 class="modal-title">{% translate 'Edit Wages' %}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body">
-            {% with form=wages_form|dict_get:role.id %}
-              {% if form %}
-                {% for field in form %}
-                  <div class="mb-3">
-                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.errors %}
-                      <div class="text-danger">
-                        {{ field.errors }}
-                      </div>
-                    {% endif %}
-                  </div>
-                {% endfor %}
-              {% else %}
-                <p class="text-muted">No form available for this role.</p>
-              {% endif %}
-            {% endwith %}
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
-            <button type="submit" class="btn btn-primary">{% translate 'Save' %}</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
->>>>>>> dev
   
   {% endfor %}
         
           
 
-        <!-- Edit Information Modal -->
-
-        {% for role in workrequest.roles.all %}
-           {% include "recruiting/work_requests/edit_employement_information_modal.html" %}
-        {% endfor %}
-
-        <!-- Delete Modal for EmploymentLocation -->
-
-        {% if role.employment_location %}
-        {% include "recruiting/work_requests/delete_employment_modal.html" %}
-        {% endif %}
-
-
-
         <!-- Delete Modal -->
-<<<<<<< HEAD
 
         {% for role in workrequest.roles.all %}
     {% include "recruiting/work_requests/delete_wages.html" with role=role %}
   {% endfor %}
-=======
-    <div class="modal fade" id="deleteRoleModal{{ role.id }}" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-        
-        <div class="modal-header">
-          <h5 class="modal-title">{% translate "jobOrderDetailsConfirmDelete"%}</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'jobOrderDetailsClose'%}"></button>
-        </div>
-        
-        <div class="modal-body">
-          {% translate "jobOrderDetailsAreYouSureYouWantToDeleteTheRole?"%}<strong>{{ role.title }}</strong>
-        </div>
-        
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "jobOrderDetailsCancel"%}</button>
-          
-          <form method="POST" action="{% url 'recruiting_web:delete_role' role.id %}">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger">{% translate "jobOrderDetailsDelete"%}</button>
-          </form>
-        </div>
-  
-      </div>
-    </div>
-  </div>
->>>>>>> dev
   
   <div class="modal fade" id="deleteWagesModal{{ role.id }}" tabindex="-1">
     <div class="modal-dialog">
@@ -329,7 +209,7 @@
          <div class="col">
           <div class="float-start">
            <h5 class="mb-0">
-            {% translate "jobOrderDetailsNumberOfWorkersRequired" %}
+            {% translate "workRequestDetailsNumberOfWorkersRequired1" %}
            </h5>
           </div>
          </div>
@@ -345,7 +225,7 @@
          <div class="col">
           <div class="float-start">
            <h5 class="mb-0">
-            {% translate "jobOrderDetailsUsdolNumber" %}
+            {% translate "workRequestDetailsUsdolNumber" %}
            </h5>
           </div>
          </div>
@@ -362,7 +242,7 @@
          <div class="col-12">
           <div class="d-flex justify-content-between align-items-center">
            <h6>
-            {% translate "joDetailsHoursHours" %}
+            {% translate "workRequestDetailsHours" %}
            </h6>
            <i 
            class="fa fa-edit text-primary me-2" 
@@ -378,7 +258,7 @@
             title="Delete">
             </i>
            <a class="btn btn-primary btn-sm" href="/work-requests/role/{{role.id}}/hours/create">
-            {% translate "joDetailsHoursAddHours" %}
+            {% translate "workRequestDetailsAddHours" %}
            </a>
           </div>
           <hr class="border-bottom border-3 border-dark"/>
@@ -386,74 +266,74 @@
           <div class="hours-details">
            <p>
             <strong>
-             {% translate "joDetailsHoursOnCall" %}:
+             {% translate "workRequestDetailsOnCall" %}
             </strong>
             {{ role.hours.on_call }}
            </p>
            <p>
             <strong>
-             {% translate "joDetailsHoursEstimatedWeeklyHours" %}:
+             {% translate "workRequestDetailsEstimatedWeeklyHours:" %}
             </strong>
             {{role.hours.estimate_weekly_hours }}
            </p>
            <p>
             <strong>
-             {% translate "joDetailsHoursSundayHours" %}:
+             {% translate "workRequestDetailsSundayHours:" %}
             </strong>
             {{ role.hours.sunday_hours }}
            </p>
            <p>
             <strong>
-             {% translate "joDetailsHoursMondayHours" %}:
+             {% translate "workRequestDetailsMondayHours:" %}
             </strong>
             {{ role.hours.monday_hours }}
            </p>
            <p>
             <strong>
-             {% translate "joDetailsHoursTuesdayHours" %}:
+             {% translate "workRequestDetailsTuesdayHours:" %}
             </strong>
             {{ role.hours.tuesday_hours }}
            </p>
            <p>
             <strong>
-             {% translate "joDetailsHoursWednesdayHours" %}:
+             {% translate "workRequestDetailsWednesdayHours:" %}
             </strong>
             {{ role.hours.wednesday_hours }}
            </p>
            <p>
             <strong>
-             {% translate "joDetailsHoursThursdayHours" %}:
+             {% translate "workRequestDetailsThursdayHours:" %}
             </strong>
             {{ role.hours.thursday_hours }}
            </p>
            <p>
             <strong>
-             {% translate "joDetailsHoursFridayHours" %}:
+             {% translate "workRequestDetailsFridayHours:" %}
             </strong>
             {{ role.hours.friday_hours }}
            </p>
            <p>
             <strong>
-             {% translate "joDetailsHoursSaturdayHours" %}:
+             {% translate "workRequestDetailsSaturdayHours:" %}
             </strong>
             {{ role.hours.saturday_hours }}
            </p>
            <p>
             <strong>
-             {% translate "joDetailsHoursJobDescription" %}:
+             {% translate "workRequestDetailsJobDescription:" %}
             </strong>
             {{ role.hours.job_description }}
            </p>
           </div>
           {% else %}
           <p>
-           {% translate "joDetailsHoursNoHoursInformationAvailableForThisRole" %}
+           {% translate "workRequestDetailsNoHoursInformationAvailableForThisRole." %}
           </p>
           {% endif %}
           <hr class="border-bottom border-dark"/>
           <div class="d-flex justify-content-between align-items-center mt-5">
            <h6>
-            {% translate "joDetailsWagesWages" %}
+            {% translate "workRequestDetailsWages" %}
            </h6>
            <i 
            class="fa fa-edit text-primary me-2" 
@@ -477,40 +357,40 @@
           <div class="wages-details">
            <p>
             <strong>
-             {% translate "joDetailsWagesWage" %}:
+             {% translate "workRequestDetailsWage:" %}
             </strong>
             ${{ role.wages.wage }}
            </p>
            <p>
             <strong>
-             {% translate "joDetailsWagesWageType" %}:
+             {% translate "workRequestDetailsWageType:" %}
             </strong>
             {{ role.wages.get_wage_type_display }}
            </p>
            {% if role.wages.piece_rate_offerings %}
            <p>
             <strong>
-             {% translate "joDetailsWagesPieceRateOfferings" %}:
+             {% translate "workRequestDetailsPieceRateOfferings:" %}
             </strong>
             ${{role.wages.piece_rate_offerings }}
            </p>
            <p>
             <strong>
-             {% translate "joDetailsWagesPieceRateOfferingsType" %}:
+             {% translate "workRequestDetailsPieceRateOfferingsType:" %}
             </strong>
             {{role.wages.get_piece_rate_offerings_type_display }}
            </p>
            {% endif %}
            <p>
             <strong>
-             {% translate "joDetailsWagesFrequencyOfPay" %}:
+             {% translate "workRequestDetailsFrequencyOfPay:" %}
             </strong>
             {{ role.wages.frequency_of_pay }}
            </p>
            {% if role.wages.details %}
            <p>
             <strong>
-             {% translate "joDetailsWagesDetails" %}:
+             {% translate "workRequestDetailsDetails:" %}
             </strong>
             {{ role.wages.details }}
            </p>
@@ -518,16 +398,16 @@
           </div>
           {% else %}
           <p>
-           {% translate "joDetailsWagesNoWagesInformationAvailableForThisRole" %}
+           {% translate "workRequestDetailsNoWagesInformationAvailableForThisRole." %}
           </p>
           {% endif %}
           <hr class="border-bottom border-dark"/>
           <div class="d-flex justify-content-between align-items-center">
            <h6>
-            {% translate "joDetailsDeductionsDeductions" %}
+            {% translate "workRequestDetailsDeductions" %}
            </h6>
            <a class="btn btn-primary btn-sm" href="/work-requests/role/{{role.id}}/deductions/create">
-            {% translate "joDetailsDeductionsAddDeductions" %}
+            {% translate "workRequestDetailsAddDeductions" %}
            </a>
           </div>
           <hr class="border-bottom border-3 border-dark"/>
@@ -536,10 +416,10 @@
             <thead>
              <tr>
               <th>
-               {% translate "joDetailsDeductionsDescription" %}
+               {% translate "workRequestDetailsDescription" %}
               </th>
               <th>
-               {% translate "joDetailsDeductionsDeductionAmount" %}
+               {% translate "workRequestDetailsDeductionAmount" %}
               </th>
              </tr>
             </thead>
@@ -556,7 +436,7 @@
              {% empty %}
              <tr>
               <td colspan="2">
-               {% translate "joDetailsDeductionsNoDeductionsFound" %}
+               {% translate "workRequestDetailsNoDeductionsFound." %}
               </td>
              </tr>
              {% endfor %}
@@ -566,7 +446,7 @@
           <hr class="border-bottom border-3"/>
           <div class="d-flex justify-content-between align-items-center">
            <h6>
-            {% translate "joDetailsQualificationsQualifications" %}
+            {% translate "workRequestDetailsQualifications" %}
            </h6>
            <i 
            class="fa fa-edit text-primary me-2" 
@@ -581,7 +461,7 @@
            data-bs-target="#deleteQualificationModal{{ role.id }}"
            title="{% translate 'Delete' %}"></i>
            <a class="btn btn-primary btn-sm" href="/work-requests/role/{{role.id}}/qualifications/create">
-            {% translate "joDetailsQualificationsAddQualifiations" %}
+            {% translate "workRequestDetailsAddQualifiations" %}
            </a>
           </div>
           <hr class="border-bottom border-3 border-dark"/>
@@ -589,98 +469,98 @@
           <ul>
            <li>
             <strong>
-             {% translate "joDetailsQualificationsMinimumEducationRequirement" %}:
+             {% translate "workRequestDetailsMinimumEducationRequirement:" %}
             </strong>
             {{ role.qualifications.minimum_education_requirement }}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsQualificationsExperienceRequired" %}:
+             {% translate "workRequestDetailsExperienceRequired:" %}
             </strong>
             {{ role.qualifications.experience_required }}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsQualificationsNumberOfMonthsExperienceRequired" %}:
+             {% translate "workRequestDetailsNumberOfMonthsExperienceRequired:" %}
             </strong>
             {{ role.qualifications.number_of_months_experience_required }}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsQualificationsTrainingRequired" %}:
+             {% translate "workRequestDetailsTrainingRequired" %}
             </strong>
             {{ role.qualifications.training_required }}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsQualificationsNumberOfMonthsTrainingRequired" %}:
+             {% translate "workRequestDetailsNumberOfMonthsTrainingRequired:" %}
             </strong>
             {{ role.qualifications.number_of_months_training_required }}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsQualificationsCertification/LicenseRequirements" %}:
+             {% translate "workRequestDetailsCertification/LicenseRequirements:" %}
             </strong>
-            {{ role.qualifications.certification_license_requirements|yesno:_("Yes,No") }}
+            {{ role.qualifications.certification_license_requirements|yesno:"Yes,No" }}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsQualificationsDrugScreen" %}:
+             {% translate "workRequestDetailsDrugScreen:" %}
             </strong>
-            {{ role.qualifications.drug_screen|yesno:_("Yes,No") }}
+            {{ role.qualifications.drug_screen|yesno:"Yes,No" }}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsQualificationsLiftingRequirements" %}:
+             {% translate "workRequestDetailsLiftingRequirements:" %}
             </strong>
             {{ role.qualifications.lifting_requirements }}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsQualificationsLiftingRequirementWeight" %}:
+             {% translate "workRequestDetailsLiftingRequirementWeight:" %}
             </strong>
-            {{ role.qualifications.lifting_requirement_weight }} {% translate "joDetailsQualificationslbs"%}
+            {{ role.qualifications.lifting_requirement_weight }} lbs
            </li>
            <li>
             <strong>
-             {% translate "joDetailsQualificationsExposureToTemperature" %}:
+             {% translate "workRequestDetailsExposureToTemperature:" %}
             </strong>
-            {{ role.qualifications.exposure_to_temperature|yesno:_("Yes,No") }}
+            {{ role.qualifications.exposure_to_temperature|yesno:"Yes,No" }}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsQualificationsExtensivePushingOrPulling" %}:
+             {% translate "workRequestDetailsExtensivePushingOrPulling:" %}
             </strong>
-            {{ role.qualifications.extensive_pushing_or_pulling|yesno:_("Yes,No") }}
+            {{ role.qualifications.extensive_pushing_or_pulling|yesno:"Yes,No" }}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsQualificationsExtensiveSittingOrWalking" %}:
+             {% translate "workRequestDetailsExtensiveSittingOrWalking:" %}
             </strong>
-            {{ role.qualifications.extensive_sitting_or_walking|yesno:_("Yes,No") }}
+            {{ role.qualifications.extensive_sitting_or_walking|yesno:"Yes,No" }}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsQualificationsFrequentStoopingOrBendingOver" %}:
+             {% translate "workRequestDetailsFrequentStoopingOrBendingOver:" %}
             </strong>
-            {{ role.qualifications.frequent_stooping_or_bending_over|yesno:_("Yes,No") }}
+            {{ role.qualifications.frequent_stooping_or_bending_over|yesno:"Yes,No" }}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsQualificationsRepetitiveMovements" %}:
+             {% translate "workRequestDetailsRepetitiveMovements:" %}
             </strong>
-            {{ role.qualifications.repetitive_movements|yesno:_("Yes,No")}}
+            {{ role.qualifications.repetitive_movements|yesno:"Yes,No" }}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsQualificationsSupportOfOtherEmployees" %}:
+             {% translate "workRequestDetailsSupportOfOtherEmployees:" %}
             </strong>
-            {{ role.qualifications.support_of_other_employees|yesno:_("Yes,No") }}
+            {{ role.qualifications.support_of_other_employees|yesno:"Yes,No" }}
            </li>
            {% if role.qualifications.other_qualifications %}
            <li>
             <strong>
-             {% translate "joDetailsQualificationsOtherQualifications" %}:
+             {% translate "workRequestDetailsOtherQualifications:" %}
             </strong>
             {{ role.qualifications.other_qualifications }}
            </li>
@@ -688,29 +568,16 @@
           </ul>
           {% else %}
           <p>
-           {% translate "joDetailsQualificationsNoQualificationsFoundForThisRole" %}
+           {% translate "workRequestDetailsNoQualificationsFoundForThisRole." %}
           </p>
           {% endif %}
           <hr class="border-bottom border-3"/>
           <div class="d-flex justify-content-between align-items-center">
            <h6>
-            {% translate "joDetailsPlaceOfEmploymentPlaceOfEmploymentInformation" %}
+            {% translate "workRequestDetailsPlaceOfEmploymentInformation" %}
            </h6>
-           <i 
-           class="fa fa-edit text-primary me-2" 
-           data-bs-toggle="modal" 
-           data-bs-target="#editEmployementInformationModal{{ role.id }}"
-           style="cursor: pointer;" 
-           title="{% translate 'Edit' %}"></i>
-           <i 
-            class="fa fa-trash text-danger" 
-            data-bs-toggle="modal" 
-            data-bs-target="#deleteEmploymentInformationModal{{ role.id }}" 
-            style="cursor: pointer;" 
-            title="{% translate 'Delete' %}">
-            </i>
            <a class="btn btn-primary btn-sm" href="/work-requests/role/{{role.id}}/location/create">
-            {% translate "joDetailsPlaceOfEmploymentAddLocation" %}
+            {% translate "workRequestDetailsAddLocation" %}
            </a>
           </div>
           <hr class="border-bottom border-3 border-dark"/>
@@ -718,54 +585,54 @@
           <ul>
            <li>
             <strong>
-             {% translate "joDetailsPlaceOfEmploymentAddress" %}:
+             {% translate "workRequestDetailsAddress:" %}
             </strong>
             {{role.employment_location.address}}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsPlaceOfEmploymentCity" %}:
+             {% translate "workRequestDetailsCity:" %}
             </strong>
             {{role.employment_location.city}}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsPlaceOfEmploymentCountry" %}:
+             {% translate "workRequestDetailsCountry:" %}
             </strong>
             {{role.employment_location.country}}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsPlaceOfEmploymentState" %}:
+             {% translate "workRequestDetailsState:" %}
             </strong>
             {{role.employment_location.state}}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsPlaceOfEmploymentPostalCode" %}:
+             {% translate "workRequestDetailsPostalCode:" %}
             </strong>
             {{role.employment_location.postal_code}}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsPlaceOfEmploymentAdditionalInformation" %}:
+             {% translate "workRequestDetailsAdditionalInformation:" %}
             </strong>
             {{role.employment_location.additional_information}}
            </li>
           </ul>
           {% else %}
           <p>
-           {% translate "joDetailsPlaceOfEmploymentNoEmploymentLocationInformationForThisRole" %}
+           {% translate "workRequestDetailsNoEmploymentLocationInformationForThisRole" %}
           </p>
           {% endif %}
           <hr class="border-bottom border-3"/>
           <!-- End of employment location informations -->
           <div class="d-flex justify-content-between align-items-center">
            <h6>
-            {% translate "joDetailsHousingInfoHousingInformation" %}
+            {% translate "workRequestDetailsHousingInformation" %}
            </h6>
            <a class="btn btn-primary btn-sm" href="/work-requests/role/{{role.id}}/housing/create">
-            {% translate "joDetailsHousingInfoAddHousing" %}
+            {% translate "workRequestDetailsAddHousing" %}
            </a>
           </div>
           <hr class="border-bottom border-3 border-dark"/>
@@ -773,60 +640,60 @@
           <ul>
            <li>
             <strong>
-             {% translate "joDetailsHousingInfoAddress" %}:
+             {% translate "workRequestDetailsAddress:" %}
             </strong>
             {{role.housing_information.address}}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsHousingInfoCity" %}:
+             {% translate "workRequestDetailsCity:" %}
             </strong>
             {{role.housing_information.city}}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsHousingInfoCountry" %}:
+             {% translate "workRequestDetailsCountry:" %}
             </strong>
             {{role.housing_information.county}}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsHousingInfoState" %}:
+             {% translate "workRequestDetailsState:" %}
             </strong>
             {{role.housing_information.state}}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsHousingInfoAddress" %}:
+             {% translate "workRequestDetailsAddress:" %}
             </strong>
             {{role.housing_information.postal_code}}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsHousingInfoHousingType" %}:
+             {% translate "workRequestDetailsHousingType:" %}
             </strong>
             {{role.housing_information.type_of_housing}}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsHousingInfoAdditionalInformation" %}:
+             {% translate "workRequestDetailsAdditionalInformation:" %}
             </strong>
             {{role.housing_information.additional_information}}
            </li>
           </ul>
           {% else %}
           <p>
-           {% translate "joDetailsHousingInfoNoHousingInformationForThisRole" %}
+           {% translate "workRequestDetailsNoHousingInformationForThisRole" %}
           </p>
           {% endif %}
           <hr class="border-bottom border-3"/>
           <!-- End of housing informations -->
           <div class="d-flex justify-content-between align-items-center">
            <h6>
-            {% translate "joDetailsMealsProvisionOfMeals" %}
+            {% translate "workRequestDetailsProvisionOfMeals" %}
            </h6>
            <a class="btn btn-primary btn-sm" href="/work-requests/role/{{role.id}}/meals/create">
-            {% translate "joDetailsMealsAddMeals" %}
+            {% translate "workRequestDetailsAddMeals" %}
            </a>
           </div>
           <hr class="border-bottom border-3 border-dark"/>
@@ -834,26 +701,26 @@
           <ul>
            <li>
             <strong>
-             {% translate "joDetailsMealsAreMealsProvided" %}:
+             {% translate "workRequestDetailsAreMealsProvided:" %}
             </strong>
-            {{ role.meal_provision|yesno:_("Yes,No") }}
+            {{ role.meal_provision|yesno:"Yes,No" }}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsMealsAmountChargedPerDay" %}:
+             {% translate "workRequestDetailsAmountChargedPerDay:" %}
             </strong>
             {{ role.meal_provision.meal_charge_amount }}
            </li>
            <li>
             <strong>
-             {% translate "joDetailsMealsAdditionalInformation" %}:
+             {% translate "workRequestDetailsAdditionalInformation:" %}
             </strong>
             {{ role.meal_provision.additional_info }}
            </li>
           </ul>
           {% else %}
           <p>
-           {% translate "joDetailsMealsNoMealInformationForThisRole" %}
+           {% translate "workRequestDetailsNoMealInformationForThisRole" %}
           </p>
           {% endif %}
          </div>
@@ -872,7 +739,7 @@
    <div class="card-header bg-primary">
     <div class="card-title">
      <h3 class="card-title text-white">
-      {% translate "jobOrderDetailsApproval" %}
+      {% translate "workRequestDetailsApproval" %}
      </h3>
     </div>
    </div>
@@ -884,13 +751,13 @@
   <div class="card">
     <div class="card-header bg-primary">
         <h3 class="card-title text-white">
-            {% translate "jobOrderDetailsWorkerInformation" %}
+            {% translate "workRequestDetailsWorkerInformation" %}
         </h3>
     </div>
     <div class="card-body">
         <div>
             <div class="d-flex justify-content-between">
-                <div><strong>{% translate "jobOrderDetailsShortlist" %}</strong></div>
+                <div><strong>{% translate "Shortlist" %}</strong></div>
                 <div><strong>{{ total_shortlist_count }}</strong></div>
             </div>
             <ul>
@@ -909,7 +776,7 @@
 
         <div>
             <div class="d-flex justify-content-between">
-                <div><strong>{% translate "jobOrderDetailsOfferSentPending" %}</strong></div>
+                <div><strong>{% translate "offerSent(pending)" %}</strong></div>
                 <div><strong>{{ total_offersent_count }}</strong></div>
             </div>
             <ul>
@@ -930,7 +797,7 @@
 
         <div>
             <div class="d-flex justify-content-between">
-                <div><strong>{% translate "jobOrderDetailsConfirmed" %}</strong></div>
+                <div><strong>{% translate "Confirmed" %}</strong></div>
                 <div><strong>{{ total_confirmed_count }}</strong></div>
             </div>
             <ul>
@@ -960,7 +827,7 @@
     <div class="card-header bg-primary">
         <div class="card-title">
             <h3 class="card-title text-white">
-                {% translate "jobOrderDetailsWorkerInformation" %}
+                {% translate "workAssignedWorkerInformation" %}
             </h3>
         </div>
     </div>
@@ -968,10 +835,10 @@
         <table class="table table-striped table-bordered" id="assignedWorkersTable">
             <thead>
                 <tr>
-                    <th scope="col">{%translate "jobOrderDetailsWorker"%}</th>
-                    <th scope="col">{%translate "jobOrderDetailsRole"%}</th>
-                    <th scope="col">{%translate "jobOrderDetailsStatus"%}</th>
-                    <th scope="col">{%translate "jobOrderDetailsDelete"%}</th>
+                    <th scope="col">{%translate "Worker"%}</th>
+                    <th scope="col">{%translate "Role"%}</th>
+                    <th scope="col">{%translate "Status"%}</th>
+                    <th scope="col">{%translate "Delete"%}</th>
                 </tr>
             </thead>
             <tbody>
@@ -981,14 +848,14 @@
                         <td>{{ assignment.role.title }}</td>
                         <td>{{ assignment.status }}</td>
                         <td class="text-muted text-center">
-                            <a href="{% url 'recruiting_web:remove_worker' assignment.worker_id %}" class="text-danger" title="{% translate 'jobOrderDetailsDelete' %}">
+                            <a href="{% url 'recruiting_web:remove_worker' assignment.worker_id %}" class="text-danger" title="{% translate 'delete' %}">
                                 <i class="fas fa-trash-alt"></i>
                             </a>
                         </td>
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="3" class="text-muted text-center">{%translate "jobOrderDetailsNoActiveWorkersFound" %}.</td>
+                        <td colspan="3" class="text-muted text-center">{%translate "noActiveWorkersFound" %}.</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -1003,3 +870,5 @@
 </div>
 
 {% endblock body %}
+
+
