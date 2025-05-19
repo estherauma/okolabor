@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-19 11:36+0300\n"
+"POT-Creation-Date: 2025-05-19 15:49+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -423,15 +423,15 @@ msgstr ""
 
 #: account/templates/recruiter/change_password.html:8
 msgid "changePasswordMyAccount"
-msgstr ""
+msgstr "Mi cuenta"
 
 #: account/templates/recruiter/change_password.html:17
-msgid "updatePassword"
-msgstr ""
+msgid "changePasswordUpdatepassword"
+msgstr "Actualizar contraseña"
 
 #: account/templates/recruiter/change_password.html:24
 msgid "changePasswordSaveChanges"
-msgstr ""
+msgstr "Guardar cambios"
 
 #: account/templates/recruiter/manage_users.html:17
 msgid "manageUsersTitle"
@@ -760,12 +760,12 @@ msgid "accountUpdateSuccess"
 msgstr "¡Los detalles de su cuenta se han actualizado exitosamente!"
 
 #: account/views/web.py:251
-msgid "YourPasswordHasBeenSuccessfullyUpdated!"
-msgstr ""
+msgid "changePasswordYourPasswordHasBeenSuccessfullyUpdated!"
+msgstr "¡Tu contraseña ha sido actualizada exitosamente!"
 
 #: account/views/web.py:256
-msgid "PleaseCorrectTheErrorsBelow."
-msgstr ""
+msgid "changePasswordPleaseCorrectTheErrorsBelow."
+msgstr "Por favor corrija el error a continuación."
 
 #: account/views/web.py:343
 msgid "WorkerUpdatedSuccessfully."
@@ -958,10 +958,6 @@ msgstr "Solicitud de trabajo"
 msgid "addRoleDescription"
 msgstr "Descripción"
 
-#: recruiting/forms.py:175
-msgid "roleAddHoursRole"
-msgstr ""
-
 #: recruiting/forms.py:176
 msgid "roleHoursRole"
 msgstr "Role"
@@ -1002,33 +998,29 @@ msgstr "Horario del viernes"
 msgid "roleHoursSaturdayHours"
 msgstr "Horario del sábado"
 
-#: recruiting/forms.py:237
-msgid "roleWagesRole"
-msgstr "Role"
-
-#: recruiting/forms.py:238
-msgid "roleWagesWage"
-msgstr "Salario"
-
-#: recruiting/forms.py:239
-msgid "roleWagesWageType"
-msgstr "Tipo de salario"
-
-#: recruiting/forms.py:240
-msgid "roleWagesPieceRateOfferings"
-msgstr "Tarifa por pieza de las ofertas"
-
-#: recruiting/forms.py:241
-msgid "roleWagesPieceRateOfferingsType"
-msgstr "Tarifa por pieza del tipo de oferta"
-
-#: recruiting/forms.py:242
-msgid "roleWagesFrequencyOfPay"
-msgstr "Frecuencia de pago"
-
 #: recruiting/forms.py:186
 msgid "roleHoursJobDescription"
 msgstr "Descripción del trabajo"
+
+#: recruiting/forms.py:238
+msgid "roleWagesRole"
+msgstr "Role"
+
+#: recruiting/forms.py:239
+msgid "roleWagesWage"
+msgstr "Salario"
+
+#: recruiting/forms.py:240
+msgid "roleWagesWageType"
+msgstr "Tipo de salario"
+
+#: recruiting/forms.py:241
+msgid "roleWagesPieceRateOfferings"
+msgstr "Tarifa por pieza de las ofertas"
+
+#: recruiting/forms.py:242
+msgid "roleWagesPieceRateOfferingsType"
+msgstr "Tarifa por pieza del tipo de oferta"
 
 #: recruiting/forms.py:243
 msgid "roleWagesFrequencyOfPay"
@@ -1574,27 +1566,6 @@ msgstr "Confirmar eliminación"
 msgid "employerDetailsAreYouSureYouWantToDelete"
 msgstr "¿Estás seguro de que quieres eliminar?"
 
-#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:229
-#: recruiting/templates/recruiting/relationship/recruiter_status_list.html:87
-#: recruiting/templates/recruiting/workers/detail.html:699
-msgid "Confirm Delete"
-msgstr ""
-
-#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:233
-#: recruiting/templates/recruiting/workers/list.html:395
-msgid "areYouSureYouWantToDelete"
-msgstr ""
-
-#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:237
-#: recruiting/templates/recruiting/relationship/recruiter_status_list.html:95
-#: recruiting/templates/recruiting/work_requests/delete_employment_modal.html:24
-#: recruiting/templates/recruiting/work_requests/detail.html:203
-#: recruiting/templates/recruiting/work_requests/detail.html:306
-#: recruiting/templates/recruiting/work_requests/detail.html:459
-#: recruiting/templates/recruiting/work_requests/detail.html:688
-msgid "Delete"
-msgstr ""
-
 #: recruiting/templates/recruiting/employers/detail.html:296
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:289
 msgid "datatableSearch"
@@ -2101,7 +2072,6 @@ msgid "assignedEmployers"
 msgstr ""
 
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:166
-#: recruiting/templates/recruiting/work_requests/list.html:214
 msgid "Name"
 msgstr ""
 
@@ -2114,7 +2084,6 @@ msgid "Country"
 msgstr ""
 
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:174
-#: recruiting/templates/recruiting/work_requests/list.html:108
 msgid "actions"
 msgstr "Comportamiento"
 
@@ -2124,14 +2093,18 @@ msgstr ""
 
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:229
 #: recruiting/templates/recruiting/relationship/recruiter_status_list.html:87
-#: recruiting/templates/recruiting/work_requests/list.html:187
+#: recruiting/templates/recruiting/workers/detail.html:699
+#, fuzzy
+#| msgid "employersConfirmDelete"
 msgid "Confirm Delete"
-msgstr ""
+msgstr "Confirmar eliminación"
 
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:233
 #: recruiting/templates/recruiting/workers/list.html:395
+#, fuzzy
+#| msgid "employersAreYouSureYouWantToDelete"
 msgid "areYouSureYouWantToDelete"
-msgstr ""
+msgstr "¿Estás seguro de que quieres eliminar?"
 
 #: recruiting/templates/recruiting/relationship/recruiter_status_list.html:19
 msgid "acceptRejectStatus"
@@ -2446,6 +2419,12 @@ msgstr "Añadir información de la vivienda"
 #: recruiting/templates/recruiting/work_requests/create_housing_info.html:33
 msgid "roleHousingInformationSubmit"
 msgstr "Entregar"
+
+#: recruiting/templates/recruiting/work_requests/create_meal_provision.html:4
+#, fuzzy
+#| msgid "roleMealProvisionRole"
+msgid "roleMealProvisionRoleMealprovision"
+msgstr "Provisión de comidas según roles"
 
 #: recruiting/templates/recruiting/work_requests/create_meal_provision.html:10
 msgid "roleMealProvisionAddMealProvisionInformation"
@@ -3750,7 +3729,7 @@ msgstr ""
 msgid "addRoleRoleCreatedSuccessfully"
 msgstr "Rol creado exitosamente"
 
-#: recruiting/views/web.py:955
+#: recruiting/views/web.py:961
 msgid "addRoleRoleUpdatedSuccessfully"
 msgstr "Rol actualizado exitosamente."
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-19 11:36+0300\n"
+"POT-Creation-Date: 2025-05-19 15:45+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -423,15 +423,15 @@ msgstr ""
 
 #: account/templates/recruiter/change_password.html:8
 msgid "changePasswordMyAccount"
-msgstr ""
+msgstr "My Account"
 
 #: account/templates/recruiter/change_password.html:17
-msgid "updatePassword"
-msgstr ""
+msgid "changePasswordUpdatepassword"
+msgstr "Update Password"
 
 #: account/templates/recruiter/change_password.html:24
 msgid "changePasswordSaveChanges"
-msgstr ""
+msgstr "Save Changes"
 
 #: account/templates/recruiter/manage_users.html:17
 msgid "manageUsersTitle"
@@ -759,12 +759,12 @@ msgid "accountUpdateSuccess"
 msgstr "Your account details have been successfully updated!"
 
 #: account/views/web.py:251
-msgid "YourPasswordHasBeenSuccessfullyUpdated!"
-msgstr ""
+msgid "changePasswordYourPasswordHasBeenSuccessfullyUpdated!"
+msgstr "Your password has been successfully updated!"
 
 #: account/views/web.py:256
-msgid "PleaseCorrectTheErrorsBelow."
-msgstr ""
+msgid "changePasswordPleaseCorrectTheErrorsBelow."
+msgstr "Please correct the error below."
 
 #: account/views/web.py:343
 msgid "WorkerUpdatedSuccessfully."
@@ -957,10 +957,6 @@ msgstr "Work Request"
 msgid "addRoleDescription"
 msgstr "Description"
 
-#: recruiting/forms.py:175
-msgid "roleAddHoursRole"
-msgstr ""
-
 #: recruiting/forms.py:176
 msgid "roleHoursRole"
 msgstr "Role"
@@ -1001,42 +997,29 @@ msgstr "Friday Hours"
 msgid "roleHoursSaturdayHours"
 msgstr "Saturday Hours"
 
-#: recruiting/forms.py:237
+#: recruiting/forms.py:186
+msgid "roleHoursJobDescription"
+msgstr "Job Description"
+
+#: recruiting/forms.py:238
 msgid "roleWagesRole"
 msgstr "Role"
 
-#: recruiting/forms.py:238
+#: recruiting/forms.py:239
 msgid "roleWagesWage"
 msgstr "Wage"
 
-#: recruiting/forms.py:239
+#: recruiting/forms.py:240
 msgid "roleWagesWageType"
 msgstr "Wage Type"
 
-#: recruiting/forms.py:240
+#: recruiting/forms.py:241
 msgid "roleWagesPieceRateOfferings"
 msgstr "Piece rate of offerings"
 
-#: recruiting/forms.py:241
+#: recruiting/forms.py:242
 msgid "roleWagesPieceRateOfferingsType"
 msgstr "Piece rate of offerings type"
-
-#: recruiting/forms.py:242
-msgid "roleWagesFrequencyOfPay"
-msgstr "Frequency of pay"
-
-#: recruiting/forms.py:186
-msgid "roleHoursJobDescription"
-msgstr "Job Description"
-
-
-#: recruiting/forms.py:242
-msgid "roleWagesFrequencyOfPay"
-msgstr "Frequency of pay"
-
-#: recruiting/forms.py:186
-msgid "roleHoursJobDescription"
-msgstr "Job Description"
 
 #: recruiting/forms.py:243
 msgid "roleWagesFrequencyOfPay"
@@ -1582,27 +1565,6 @@ msgstr "Confirm Delete"
 msgid "employerDetailsAreYouSureYouWantToDelete"
 msgstr "Are you sure you want to delete?"
 
-#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:229
-#: recruiting/templates/recruiting/relationship/recruiter_status_list.html:87
-#: recruiting/templates/recruiting/workers/detail.html:699
-msgid "Confirm Delete"
-msgstr ""
-
-#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:233
-#: recruiting/templates/recruiting/workers/list.html:395
-msgid "areYouSureYouWantToDelete"
-msgstr ""
-
-#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:237
-#: recruiting/templates/recruiting/relationship/recruiter_status_list.html:95
-#: recruiting/templates/recruiting/work_requests/delete_employment_modal.html:24
-#: recruiting/templates/recruiting/work_requests/detail.html:203
-#: recruiting/templates/recruiting/work_requests/detail.html:306
-#: recruiting/templates/recruiting/work_requests/detail.html:459
-#: recruiting/templates/recruiting/work_requests/detail.html:688
-msgid "Delete"
-msgstr ""
-
 #: recruiting/templates/recruiting/employers/detail.html:296
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:289
 msgid "datatableSearch"
@@ -2109,7 +2071,6 @@ msgid "assignedEmployers"
 msgstr ""
 
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:166
-#: recruiting/templates/recruiting/work_requests/list.html:214
 msgid "Name"
 msgstr ""
 
@@ -2122,7 +2083,6 @@ msgid "Country"
 msgstr ""
 
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:174
-#: recruiting/templates/recruiting/work_requests/list.html:108
 msgid "actions"
 msgstr "Actions"
 
@@ -2132,14 +2092,18 @@ msgstr ""
 
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:229
 #: recruiting/templates/recruiting/relationship/recruiter_status_list.html:87
-#: recruiting/templates/recruiting/work_requests/list.html:187
+#: recruiting/templates/recruiting/workers/detail.html:699
+#, fuzzy
+#| msgid "employersConfirmDelete"
 msgid "Confirm Delete"
-msgstr ""
+msgstr "Confirm delete"
 
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:233
 #: recruiting/templates/recruiting/workers/list.html:395
+#, fuzzy
+#| msgid "employersAreYouSureYouWantToDelete"
 msgid "areYouSureYouWantToDelete"
-msgstr ""
+msgstr "Are you sure you want to delete?"
 
 #: recruiting/templates/recruiting/relationship/recruiter_status_list.html:19
 msgid "acceptRejectStatus"
@@ -2454,6 +2418,12 @@ msgstr "Add housing information"
 #: recruiting/templates/recruiting/work_requests/create_housing_info.html:33
 msgid "roleHousingInformationSubmit"
 msgstr "Submit"
+
+#: recruiting/templates/recruiting/work_requests/create_meal_provision.html:4
+#, fuzzy
+#| msgid "roleMealProvisionRole"
+msgid "roleMealProvisionRoleMealprovision"
+msgstr "Role Meal Provision"
 
 #: recruiting/templates/recruiting/work_requests/create_meal_provision.html:10
 msgid "roleMealProvisionAddMealProvisionInformation"
@@ -3758,7 +3728,7 @@ msgstr ""
 msgid "addRoleRoleCreatedSuccessfully"
 msgstr "Role created successfully."
 
-#: recruiting/views/web.py:955
+#: recruiting/views/web.py:961
 msgid "addRoleRoleUpdatedSuccessfully"
 msgstr "Role updated successfully."
 

@@ -248,12 +248,12 @@ class UpdatePasswordView(LoginRequiredMixin, FormView):
         """Handle successful form submission."""
         form.save()
         update_session_auth_hash(self.request, form.user)  # Prevent logout after password change
-        messages.success(self.request, _('YourPasswordHasBeenSuccessfullyUpdated!'))
+        messages.success(self.request, _('changePasswordYourPasswordHasBeenSuccessfullyUpdated!'))
         return redirect(self.success_url)
 
     def form_invalid(self, form):
         """Handle form errors."""
-        messages.error(self.request, _('PleaseCorrectTheErrorsBelow.'))
+        messages.error(self.request, _('changePasswordPleaseCorrectTheErrorsBelow.'))
         return super().form_invalid(form)
 
 
