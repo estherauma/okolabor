@@ -10,9 +10,9 @@ User = get_user_model()
 
 class Organization(AuditableModel):
     TYPE_CHOICES = (
-        ('admin', 'Admin'),
-        ('employer', 'Employer'),
-        ('recruiter', 'Recruiter'),
+        ('admin', _('addEmployerAdmin')),
+        ('employer', _('addEmployerEmployer')),
+        ('recruiter', _('addEmployerRecruiter')),
     )
     name = models.CharField(max_length=255)
     email = models.EmailField(max_length=255)
@@ -23,7 +23,7 @@ class Organization(AuditableModel):
     state = models.CharField(max_length=255)
     country = models.CharField(max_length=255)
     zip_code = models.CharField(max_length=255)
-    description = models.TextField(help_text="Organization description.")
+    description = models.TextField(help_text=_("addEmployerOrganizationDescription"))
     is_active = models.BooleanField(default=True)
     is_verified = models.BooleanField(default=False)
     type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='recruiter')
@@ -37,10 +37,10 @@ class Organization(AuditableModel):
 
 class WorkRequests(AuditableModel):
     STATUS_CHOICES = (
-        ('Draft', _('createWorkRequestDraft')),
-        ('Requested', _('createWorkRequestRequested')),
-        ('Open', _('createWorkRequestOpen')),
-        ('Closed', _('createWorkRequestClosed')),
+        ('Draft', _('createJobOrderDraft')),
+        ('Requested', _('createJobOrderRequested')),
+        ('Open', _('createJobOrderOpen')),
+        ('Closed', _('createJobOrderClosed')),
     )
     
     name = models.CharField(max_length=255, null=False, blank=False)

@@ -33,5 +33,7 @@ def next_12_months():
     return months
 
 @register.filter
-def get_item(dictionary, key):
-    return dictionary.get(key)
+def dict_get(d, key):
+    if isinstance(d, dict):
+        return d.get(key, "")
+    return ""  # or return d if you want to fall back to raw string

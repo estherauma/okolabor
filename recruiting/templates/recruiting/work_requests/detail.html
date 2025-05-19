@@ -155,7 +155,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
-            {% with form=hours_form|get_item:role.id %}
+            {% with form=hours_form|dict_get:role.id %}
               {% if form %}
                 {% for field in form %}
                   <div class="mb-3">
@@ -217,7 +217,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
-            {% with form=wages_form|get_item:role.id %}
+            {% with form=wages_form|dict_get:role.id %}
               {% if form %}
                 {% for field in form %}
                   <div class="mb-3">
@@ -954,5 +954,3 @@
 </div>
 
 {% endblock body %}
-
-
