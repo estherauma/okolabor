@@ -737,11 +737,6 @@
     {% for key, value in preferences.items %}
       <div class="col-md-12 col-sm-6 mb-3" style="position: relative;">
         <p class="gray-color">{% translate key %}</p>
-        <p>
-          {% if key != "workplaces" and key != "Prefered_Employes" %}
-            {{ value|default:"-" }}
-          {% endif %}
-        </p>
 
         {% if key == "english_proficiency" and documents.english_proficiency %}
 
@@ -888,6 +883,8 @@
     {% endfor %}
   </div>
 </div>
+
+
 
 <!-- Modal -->
 <div class="modal fade" id="mediaModal" tabindex="-1" aria-labelledby="mediaModalLabel" aria-hidden="true">
