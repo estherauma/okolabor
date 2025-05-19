@@ -22,13 +22,10 @@ from recruiting.views.web import (
     update_employer_recruiter_status,EmployerRecruiterOrgStatusListView,
     WorkRequestEditView,WorkRequestDeleteView,
     EmployerRecruiterOrgLinkDeleteView,DeleteAssignedOrganizationView,
-    DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView
+    DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditRoleHoursView,DeleteRoleHoursView,EditRoleWagesView,DeleteRoleWagesView
 )
 from recruiting.views.workers import (
-     WorkerCreateView, WorkerDetailsView, WorkerListView,
-     AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,
-     EditWorkExperienceView,DeleteWorkExperienceView,
-     WorkerEditView,WorkerDeleteView
+     WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,EditWorkExperienceView,DeleteWorkExperienceView,WorkerEditView,WorkerDeleteView,EditUserPreferenceView,EditLanguageProficiencyView,EditDocumentsView,DeleteAllWorkerInfoView,WorkerEditView,WorkerDeleteView
 )
 from recruiting.views.workers import (
      CreateWorkExperienceView, WorkExperienceDetailsView,
@@ -231,6 +228,22 @@ urlpatterns = [
     path('remove-worker/<str:worker_id>/',
          RemoveWorkerFromAssignmentView.as_view(), name='remove_worker'),
     path('update-status/', UpdateStatusView.as_view(), name='update_status'),
+    path('contacts/<str:contact_id>/work-requests/', ContactWorkRequestsView.as_view(), name='contact_work_requests'),
+    path('assign-contact/', AssignEmployerContactView.as_view(), name='assign_employer_contact'),
+    path('export/workers/', ExportWorkerDetailsView.as_view(), name='export-workers'),
+    path('upload-documents/', UploadDocumentsView.as_view(), name='upload_documents'),
+    path('upload-languages/', UploadLanguageProficiencyView.as_view(), name='upload_languages'),
+    path('upload-preferences/', UploadUserPreferenceView.as_view(), name='upload_preferences'),
+    path('work_experience/edit/<str:pk>/', EditWorkExperienceView.as_view(), name='edit_work_experience'),
+    path('work_experience/delete/<str:pk>/', DeleteWorkExperienceView.as_view(), name='work_experience_delete'),
+    path('edit-preferences/<str:worker_id>/', EditUserPreferenceView.as_view(), name='edit_user_preferences'),
+    path(
+    "edit-language/<str:worker_id>/",
+    EditLanguageProficiencyView.as_view(),
+    name="edit_language_proficiency"
+     ),
+    path("edit-documents/<str:worker_id>/", EditDocumentsView.as_view(), name="edit_documents"),
+    path("delete-all-info/<str:worker_id>/", DeleteAllWorkerInfoView.as_view(), name="delete_all_worker_info"),
     path('contacts/<str:contact_id>/work-requests/',
          ContactWorkRequestsView.as_view(),
          name='contact_work_requests'),
@@ -248,4 +261,8 @@ urlpatterns = [
          name='edit_work_experience'),
     path('work_experience/delete/<str:pk>/', DeleteWorkExperienceView.as_view(),
          name='work_experience_delete'),
+    path('role/hours/<str:pk>/edit/', EditRoleHoursView.as_view(), name='edit-role-hours'),
+    path('role/hours/<str:pk>/delete/', DeleteRoleHoursView.as_view(), name='delete-role-hours'),
+    path('role/wages/edit/<str:pk>/', EditRoleWagesView.as_view(), name='edit-role-wages'),
+    path('role/wages/delete/<str:pk>/', DeleteRoleWagesView.as_view(), name='delete-role-wages'),
 ]
