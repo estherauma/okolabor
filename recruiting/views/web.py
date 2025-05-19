@@ -1060,7 +1060,7 @@ class RoleHoursCreateView(RoleDataBaseView):
     template_name = 'recruiting/work_requests/create_hours.html'
 
     def form_valid(self, form):
-        messages.success(self.request, _('roleAddHoursRoleHoursSuccessfullyAdded'))
+        messages.success(self.request, _('roleHoursRoleHoursSuccessfullyAdded'))
         return super().form_valid(form)
 
 

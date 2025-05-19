@@ -1,13 +1,13 @@
 {% extends 'components/base.html' %}
 {% load i18n %}
 
-{% block title %} Employers {% endblock title %}
+{% block title %} {% translate "roleHoursEmployers"%}{% endblock title %}
 
 {% block body %}
 <div class="page-header mt-30">
  <div>
   <h1 class="page-title">
-   {% translate "roleAddHoursAddWorkHours" %}
+   {% translate "roleHoursAddWorkHours" %}
   </h1>
  </div>
 </div>
@@ -30,7 +30,7 @@
      </div>
      {% endfor %}
      <button class="btn dark-green-button" type="submit">
-      {% translate "roleAddHoursSubmit" %}
+      {% translate "roleHoursSubmit" %}
      </button>
     </form>
    </div>
