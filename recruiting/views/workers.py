@@ -54,7 +54,6 @@ class WorkerListView(View):
             per_page = 25
 
         workers = User.objects.filter(groups__name='worker').order_by('-created_at')
-
         # 🔍 Search Filter
         if search_query:
             workers = workers.filter(
@@ -68,17 +67,18 @@ class WorkerListView(View):
         dynamic_field_1 = request.GET.get('dynamic_field_1')
         dynamic_field_2 = request.GET.get('dynamic_field_2')
 
+
         if type_sector:
             workers = workers.filter(
                 crop_experiences__job_type__iexact=type_sector
             )
 
-        if dynamic_field_1:
+        if dynamic_field_1 and dynamic_field_1.strip():
             workers = workers.filter(
                 crop_experiences__type_details__iexact=dynamic_field_1
             )
 
-        if dynamic_field_2:
+        if dynamic_field_2 and dynamic_field_2.strip():
             workers = workers.filter(
                 crop_experiences__job_experience_details__value__iexact=dynamic_field_2
             )
@@ -86,19 +86,18 @@ class WorkerListView(View):
         # 🔍 Advanced Filter Form (from UserPreference model)
         if filter_form.is_valid():
             for field_name, value in filter_form.cleaned_data.items():
-                if value:
+                if value is not None and str(value).strip() != '':
                     if field_name == 'availability' and isinstance(value, date):
                         workers = workers.filter(
-                    userpreference__key='availability',
-                    userpreference__value__gte=value.strftime('%Y-%m-%d')
-                )
-                else:
-                    workers = workers.filter(
-                    userpreference__key=field_name,
-                    userpreference__value__iexact=value
-                )
+                            userpreference__key='availability',
+                            userpreference__value__gte=value.strftime('%Y-%m-%d')
+                        )
+                    else:
+                        workers = workers.filter(
+                            userpreference__key=field_name,
+                            userpreference__value__iexact=value
+                        )
         workers = workers.distinct()
-
         paginator = Paginator(workers, per_page)
         page_obj = paginator.get_page(page_number)
 
@@ -111,8 +110,6 @@ class WorkerListView(View):
 
             latest_assignment = WorkAssignment.objects.filter(worker=worker).order_by('-assigned_date').first()
             worker.latest_status = latest_assignment.status if latest_assignment else None
-            
-            print(f"Worker: {worker.id}, Status: {worker.latest_status}")
 
 
             for key, value in worker_details.items():
@@ -133,7 +130,6 @@ class WorkerListView(View):
                 'workers': worker_data,
                 'num_pages': paginator.num_pages
             })
-        print("workers",page_obj)
         context = {
             'workers': page_obj,
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
@@ -325,10 +321,10 @@ class WorkerCreateView(CreateView):
             worker_group = Group.objects.get(name='worker')
             worker.groups.add(worker_group)
         except Group.DoesNotExist:
-            messages.error(self.request,_("workerGroupDoesNotExist.PleaseCreateIt."))
+            messages.error(self.request,_("addWorkerWorkerGroupDoesNotExistPleaseCreateIt"))
             return super().form_invalid(form)
 
-        messages.success(self.request, _('workerCreatedSuccessfully.'))
+        messages.success(self.request, _('addWorkerWorkerCreatedSuccessfully'))
         worker.save()
 
         return super(WorkerCreateView, self).form_valid(form)
@@ -410,9 +406,6 @@ class WorkerDetailsView(View):
         work_environment_label = static_content.get_label_for_preference_field_two("workEnvironment")
         language_options = static_content.get_english_proficiency_options()
         language_label = static_content.get_label_for_field("englishProficiency")
-        
-        print(preferences,"preferences")
-        
         context = {
             'worker': worker,
             'preferences': preference_data,
@@ -719,7 +712,6 @@ class UploadDocumentsView(View):
     def post(self, request, *args, **kwargs):
         worker_id = request.POST.get("worker_id")
         user = get_object_or_404(User, pk=worker_id)
-
         for field_name, upload_dir in self.upload_paths.items():
             uploaded_file = request.FILES.get(field_name)
             if uploaded_file:
@@ -959,4 +951,165 @@ class DeleteWorkExperienceView(View):
         work_experience.delete(user=request.user)
 
         messages.success(request, "workExperienceDeletedSuccessfully.")
+        return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
+    
+class EditUserPreferenceView(View):
+    def get(self, request, *args, **kwargs):
+        worker_id = kwargs.get("worker_id")
+        user = get_object_or_404(User, id=worker_id)
+        static_content = StaticContent()
+
+        preferences = {}
+        fields = {
+            "preferred_countries": static_content.get_label_for_preference_field("whereYouWantToWork"),
+            "work_sectors": static_content.get_label_for_preference_field("kindOfWork"),
+            "preferences_note": static_content.get_label_for_preference_field("tellUsMore"),
+            "availability_months": static_content.get_label_for_preference_field("availability"),
+            "healthStatus": static_content.get_label_for_preference_field_two("healthStatus"),
+            "healthCondition": static_content.get_label_for_preference_field_two("healthCondition"),
+            "suffred_injury": static_content.get_label_for_preference_field_two("suffred_injury"),
+            "longerPeriodOfTime": static_content.get_label_for_preference_field_two("longerPeriodOfTime"),
+            "consent": static_content.get_label_for_preference_field_two("consent"),
+            "physicalActivities": static_content.get_label_for_preference_field_two("physicalActivities"),
+            "workEnvironment": static_content.get_label_for_preference_field_two("workEnvironment"),
+        }
+
+        for field_name, label in fields.items():
+            preference = UserPreference.objects.filter(user=user, key=label, kind="preference").first()
+            if preference:
+                # split list values
+                preferences[field_name] = preference.value.split(", ") if "," in preference.value else preference.value
+
+        return render(request, "your_template.html", {
+            "preferences": preferences,
+            "worker_id": worker_id,
+            # add other context like preferred_countries_options, etc.
+        })
+
+    def post(self, request, *args, **kwargs):
+        worker_id = kwargs.get("worker_id")
+        user = get_object_or_404(User, id=worker_id)
+        static_content = StaticContent()
+
+        fields = {
+            "preferred_countries": static_content.get_label_for_preference_field("whereYouWantToWork"),
+            "work_sectors": static_content.get_label_for_preference_field("kindOfWork"),
+            "preferences_note": static_content.get_label_for_preference_field("tellUsMore"),
+            "availability_months": static_content.get_label_for_preference_field("availability"),
+            "healthStatus": static_content.get_label_for_preference_field_two("healthStatus"),
+            "healthCondition": static_content.get_label_for_preference_field_two("healthCondition"),
+            "suffred_injury": static_content.get_label_for_preference_field_two("suffred_injury"),
+            "longerPeriodOfTime": static_content.get_label_for_preference_field_two("longerPeriodOfTime"),
+            "consent": static_content.get_label_for_preference_field_two("consent"),
+            "physicalActivities": static_content.get_label_for_preference_field_two("physicalActivities"),
+            "workEnvironment": static_content.get_label_for_preference_field_two("workEnvironment"),
+        }
+
+        for field_name, key in fields.items():
+            raw_value = request.POST.getlist(field_name) if field_name in ["preferred_countries", "work_sectors", "availability_months"] else request.POST.get(field_name)
+            if raw_value:
+                value = ", ".join(raw_value) if isinstance(raw_value, list) else raw_value
+                obj, created = UserPreference.objects.get_or_create(user=user, key=key, kind="preference", defaults={"value": value})
+                if not created and obj.value != value:
+                    obj.value = value
+                    obj.save()
+
+        messages.success(request, _("userPreferencesUpdatedSuccessfully."))
+        return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
+
+
+class EditLanguageProficiencyView(View):
+    def post(self, request, *args, **kwargs):
+        worker_id = kwargs.get("worker_id") or request.POST.get("worker_id")
+        language_level = request.POST.get("language_level")
+        language_video = request.FILES.get("language_video")
+
+        if not worker_id or not language_level:
+            messages.error(request, "WorkerOrLanguageLevelIsMissing.")
+            return redirect("/")
+
+        user = get_object_or_404(User, id=worker_id)
+
+        # Update or create language level preference
+        UserPreference.objects.update_or_create(
+            user=user,
+            key="english_proficiency",
+            kind="language",
+            defaults={"value": language_level},
+        )
+
+        # Save video only if selected and uploaded
+        if language_level != "none" and language_video:
+            folder = "uploads/english_videos"
+            filename = language_video.name
+            relative_path = os.path.join(folder, filename)
+            full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
+
+            os.makedirs(os.path.dirname(full_path), exist_ok=True)
+
+            with open(full_path, "wb+") as destination:
+                for chunk in language_video.chunks():
+                    destination.write(chunk)
+
+            # Optionally, you might want to delete old videos here
+
+            UserDocuments.objects.create(
+                user=user,
+                path=relative_path,
+                kind="english_video",
+                description="English Language Proficiency Video",
+                file_type=language_video.content_type,
+            )
+
+        messages.success(request, _("languageProficiencyInformationSavedSuccessfully."))
+        return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
+    
+
+class EditDocumentsView(View):
+    upload_paths = {
+        'passport': 'uploads/passports',
+        'profile_picture': 'uploads/profiles',
+        'us_driving_license': 'uploads/driver_licenses',
+        'mexico_driving_license': 'uploads/driver_licenses',
+    }
+
+    def post(self, request, *args, **kwargs):
+        worker_id = kwargs.get("worker_id") or request.POST.get("worker_id")
+        user = get_object_or_404(User, pk=worker_id)
+
+        for field_name, upload_dir in self.upload_paths.items():
+            uploaded_file = request.FILES.get(field_name)
+            if uploaded_file:
+                filename = uploaded_file.name
+                relative_path = os.path.join(upload_dir, filename)
+                full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
+
+                os.makedirs(os.path.dirname(full_path), exist_ok=True)
+                with open(full_path, 'wb+') as destination:
+                    for chunk in uploaded_file.chunks():
+                        destination.write(chunk)
+
+                # Delete old file of the same kind if it exists
+                UserDocuments.objects.filter(user=user, kind=field_name).delete()
+
+                UserDocuments.objects.create(
+                    user=user,
+                    path=relative_path,
+                    kind=field_name,
+                    description=f'{field_name.replace("_", " ").title()} for user profile',
+                    file_type=uploaded_file.content_type
+                )
+
+        messages.success(request, _("Documents updated successfully."))
+        return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
+
+
+class DeleteAllWorkerInfoView(View):
+    def post(self, request, *args, **kwargs):
+        worker_id = kwargs.get("worker_id")
+        user = get_object_or_404(User, pk=worker_id)
+        UserPreference.objects.filter(user=user).delete()
+        UserDocuments.objects.filter(user=user).delete()
+
+        messages.success(request, _("All information related to the worker has been deleted."))
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))

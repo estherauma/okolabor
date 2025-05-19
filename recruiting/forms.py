@@ -21,17 +21,17 @@ class EmployerForm(forms.ModelForm):
                   ]
 
         labels = {
-            'name': _('createEmployerName'),
-            'email': _('createEmployerEmail'),
-            'phone': _('createEmployerTelephone'),
-            'website': _('createEmployerWebsite'),
-            'address': _('createEmployerAddress'),
-            'city': _('createEmployerCity'),
-            'state': _('createEmployerState'),
-            'country': _('createEmployerCountry'),
-            'zip_code': _('createEmployerZipCode'),
-            'description': _('createEmployerDescription'),
-            'type': _('OrganizationType'),
+            'name': _('addEmployerName'),
+            'email': _('addEmployerEmail'),
+            'phone': _('addEmployerTelephone'),
+            'website': _('addEmployerWebsite'),
+            'address': _('addEmployerAddress'),
+            'city': _('addEmployerCity'),
+            'state': _('addEmployerState'),
+            'country': _('addEmployerCountry'),
+            'zip_code': _('addEmployerZipCode'),
+            'description': _('addEmployerDescription'),
+            'type': _('addEmployerOrganizationType'),
         }
 
         widgets = {
@@ -61,12 +61,12 @@ class WorkRequestForm(forms.ModelForm):
         ]
         
         labels = {
-            'name': _("createWorkRequestName"),
-            'start_date': _("createWorkRequestStartDate"),
-            'end_date': _("createWorkRequestEndDate"),
-            'required_workers': _("createWorkRequestRequiredWorkers"),
-            'employer': _("createWorkRequestEmployer"),
-            'status': _("createWorkRequestStatus"),
+            'name': _("createJobOrderName"),
+            'start_date': _("createJobOrderStartDate"),
+            'end_date': _("createJobOrderEndDate"),
+            'required_workers': _("createJobOrderRequiredWorkers"),
+            'employer': _("createJobOrderEmployer"),
+            'status': _("createJobOrderStatus"),
         }
 
         widgets = {
@@ -597,43 +597,39 @@ class OkoMessageCreateForm(forms.ModelForm):
 
 class WorkerCreateForm(forms.ModelForm):
     gender_choices = [
-        ('M', _('Male')),
-        ('F', _('Female')),
+        ('M', _('addWorkerMale')),
+        ('F', _('addWorkerFemale')),
     ]
 
     gender = forms.ChoiceField(
         choices=gender_choices,
         widget=forms.Select(attrs={'class': 'form-control'}),
-        label=_("gender")
+        label=_("addWorkerGender")
     )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        static = StaticContent()
-        label_keys = {
-            'first_name': 'firstName',
-            'last_name': 'lastName',
-            'dob': 'dob',
-            'gender': 'gender',
-            'telephone': 'phone',
-            'address_line_1': 'addressLineOne',
-            'address_line_2': 'addressLineTwo',
-            'city': 'Town',
-            'curp': 'curp',
-            'email': 'email',
-        }
-
-        for field_name, json_key in label_keys.items():
-            if field_name in self.fields:
-                self.fields[field_name].label = static.get_profile_step_one_label(json_key)
 
     class Meta:
         model = User
         fields = [
             'email', 'curp', 'first_name', 'last_name', 'dob', 'gender',
             'telephone', 'address_line_1', 'address_line_2', 'city'
+            
         ]
+        
+        labels = {
+            'email':_('addWorkerEmail'),
+            'curp': _('addWorkerCurp'), 
+            'first_name': _('addWorkerFirstName'),
+            'last_name': _('addWorkerLastName'), 
+            'dob': _('addWorkerDateOfBirth'), 
+            'gender': _('addWorkerGender'),
+            'telephone': _('addWorkerTelephone'), 
+            'address_line_1': _('addWorkerAddressLine1'), 
+            'address_line_2': _('addWorkerAddressLine2'), 
+            'city': _('addWorkerCity')
+        }
         widgets = {
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'curp': forms.TextInput(attrs={'class': 'form-control'}),
@@ -819,5 +815,3 @@ class WorkExperienceCreateForm(forms.ModelForm):
             'supervisor_email': forms.EmailInput(attrs={'class': 'form-control'}),
             'visa_type': forms.TextInput(attrs={'class': 'form-control'}),
         }
-
-

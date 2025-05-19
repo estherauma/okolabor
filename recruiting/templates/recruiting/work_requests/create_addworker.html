@@ -64,42 +64,57 @@
                     {% translate "what'sThis?" %}
                 </button>
             </span>
-            <form method="post">
-                {% csrf_token %}
-                <div class="row align-items-center">
-                    {% for field in form %}
-                    <div class="col">
-                        <div class="form-group">
-                            <label class="form-label gray-color text" for="{{ field.id_for_label }}">
-                                {% translate field.label %}
-                            </label>
-                            {{ field }}
+              <div id="form-container">
+                <!-- Combined Filter Form -->
+                <form method="get" id="filter-form">
+                    <!-- Dynamic Filter Inputs -->
+                    <div id="filter-inputs-container">
+                        <div class="job-experience-form">
+                            <div class="row align-items-center">
+                                {% for field in form %}
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-label gray-color text" for="{{ field.id_for_label }}">
+                                            {% translate field.label %}
+                                        </label>
+                                        {{ field }}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                                <div class="col-auto">
+                                    <button class="btn" type="button" onclick="removeForm(this)">
+                                        <span class="sign medium-font">{% translate "x" %}</span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    {% endfor %}
-                    <div class="col-auto">
-                        <button class="btn" type="button">
-                            <span class="sign medium-font">{% translate "x" %}</span>
-                        </button>
+            
+                    <!-- Add Another Filter Button -->
+                    <button class="btn light-green-button min-content-width mt-3" type="button" onclick="addAnotherExperience()">
+                        <span><i class="fe fe-plus"></i></span>
+                        {% translate "addAnotherExperience" %}
+                    </button>
+            
+                    <!-- Additional Filters Section (Previously separate) -->
+                    <div class="form-row align-items-center">
+                        <span class="mt-5 ms-2 mb-3">
+                            <h3 class="card-title green-color d-contents">
+                                {% translate "furtherFilters" %}
+                            </h3>
+                        </span>
                     </div>
-                </div>
-            </form>
-            <span class="d-flex align-items-center mt-3 mb-3">
-                <h3 class="card-title green-color">
-                    {% translate "otherExperience" %}
-                </h3>
-            </span>
-            <form method="post">
-                {% csrf_token %}
-                <div class="row align-items-center">
-                    {% for field in form %}
-                    <div class="col">
-                        <div class="form-group">
-                            <label class="form-label gray-color text" for="{{ field.id_for_label }}">
-                                {% translate field.label %}
-                            </label>
-                            {{ field }}
+                    <div class="row align-items-center">
+                        {% for field in filter_form %}
+                        <div class="col-md-4 col-sm-6 col-xs-6">
+                            <div class="form-group">
+                                <label class="form-label gray-color" for="{{ field.id_for_label }}">
+                                    {% translate field.label %}
+                                </label>
+                                {{ field }}
+                            </div>
                         </div>
+                        {% endfor %}
                     </div>
                     {% endfor %}
                     <div class="col-auto">
@@ -111,6 +126,7 @@
             </form>
             <a class="btn light-green-button min-content-width" href="{% url 'recruiting_web:workrequest_create' %}">
                 <span><i class="fe fe-plus"></i></span>
+
                 {% translate "addAnotherExperiences1" %}
             </a>
             <div class="form-row align-items-center">
@@ -119,22 +135,31 @@
                         {% translate "furtherFilters" %}
                     </h3>
                 </span>
+
             </div>
-            <form method="post">
-                {% csrf_token %}
-                <div class="row align-items-center">
-                    {% for field in filter_form %}
-                    <div class="col-md-4 col-sm-6 col-xs-6">
-                        <div class="form-group">
-                            <label class="form-label gray-color" for="{{ field.id_for_label }}">
-                                {% translate field.label %}
-                            </label>
-                            {{ field }}
+            
+            <!-- Hidden template for dynamic form cloning -->
+            <div id="form-template" style="display: none;">
+                <div class="job-experience-form">
+                    <div class="row align-items-center">
+                        {% for field in form %}
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="form-label gray-color text" for="{{ field.id_for_label }}">
+                                    {% translate field.label %}
+                                </label>
+                                {{ field }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <div class="col-auto">
+                            <button class="btn" type="button" onclick="removeForm(this)">
+                                <span class="sign medium-font">{% translate "x" %}</span>
+                            </button>
                         </div>
                     </div>
-                    {% endfor %}
                 </div>
-            </form>
+            </div>
         </div>
     </div>
     <div class="row row-sm">
@@ -201,6 +226,7 @@
 <script src="{% static ''%}assets/js/table-sorting.js"></script>
 <script src="{% static ''%}assets/js/worker-tabs.js"></script>
 <script src="{% static ''%}assets/js/add-shortlist.js"></script>
+<script src="{% static ''%}assets/js/dynamic_filter.js"></script>
 
 
 {% endblock scripts %}
