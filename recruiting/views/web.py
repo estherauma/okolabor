@@ -856,7 +856,7 @@ class WorkRequestDetailView(View):
     def get(self, request, pk):
         work_request = get_object_or_404(WorkRequests, pk=pk)
         
-        form  = RoleHoursForm
+        form_data  = RoleHoursForm
         grouped_counts = WorkAssignment.objects.filter(
             work_request=work_request,
             status__in=['assigned', 'offersent', 'confirmed']
@@ -892,7 +892,6 @@ class WorkRequestDetailView(View):
             for 
             role in work_request.roles.all()
         }
-<<<<<<< HEAD
         role_information_forms = {
             role.id: RoleEmploymentLocationForm(instance=role.employment_location)
             for role in work_request.roles.all() if hasattr(role, 'employment_location')
@@ -907,7 +906,6 @@ class WorkRequestDetailView(View):
             role.id: RoleMealProvision(instance=role.meal_provision)
             for role in work_request.roles.all() if hasattr(role, 'meal_provision')
         }
-=======
         hours_form = {
             role.id: RoleHoursForm(instance=role.hours)
             for role in roles_qs if hasattr(role, 'hours')
@@ -918,7 +916,6 @@ class WorkRequestDetailView(View):
         }  
 
 
->>>>>>> origin/dev
 
         context = {
             'workrequest': work_request,
@@ -928,16 +925,13 @@ class WorkRequestDetailView(View):
             'total_shortlist_count': total_shortlist_count,
             'total_offersent_count': total_offersent_count,
             'total_confirmed_count': total_confirmed_count,
-<<<<<<< HEAD
             'role_information_forms': role_information_forms,
             'role_housing_information_forms': role_housing_information_forms,
-            'role_meal_provision_forms': role_meal_provision_forms
-=======
-            'form': form,
+            'role_meal_provision_forms': role_meal_provision_forms,
+            'form': form_data,
             'hours_form': hours_form,
             'wages_form': wages_form,
 
->>>>>>> origin/dev
         }
         return render(request, 'recruiting/work_requests/detail.html', context)
 
