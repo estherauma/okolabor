@@ -247,6 +247,20 @@
         
           
 
+        <!-- Edit Information Modal -->
+
+        {% for role in workrequest.roles.all %}
+           {% include "recruiting/work_requests/edit_employement_information_modal.html" %}
+        {% endfor %}
+
+        <!-- Delete Modal for EmploymentLocation -->
+
+        {% if role.employment_location %}
+        {% include "recruiting/work_requests/delete_employment_modal.html" %}
+        {% endif %}
+
+
+
         <!-- Delete Modal -->
     <div class="modal fade" id="deleteRoleModal{{ role.id }}" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -660,6 +674,19 @@
            <h6>
             {% translate "joDetailsPlaceOfEmploymentPlaceOfEmploymentInformation" %}
            </h6>
+           <i 
+           class="fa fa-edit text-primary me-2" 
+           data-bs-toggle="modal" 
+           data-bs-target="#editEmployementInformationModal{{ role.id }}"
+           style="cursor: pointer;" 
+           title="{% translate 'Edit' %}"></i>
+           <i 
+            class="fa fa-trash text-danger" 
+            data-bs-toggle="modal" 
+            data-bs-target="#deleteEmploymentInformationModal{{ role.id }}" 
+            style="cursor: pointer;" 
+            title="{% translate 'Delete' %}">
+            </i>
            <a class="btn btn-primary btn-sm" href="/work-requests/role/{{role.id}}/location/create">
             {% translate "joDetailsPlaceOfEmploymentAddLocation" %}
            </a>
