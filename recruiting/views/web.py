@@ -451,7 +451,6 @@ class WorkRequestsListView(View):
             recruiter_link = EmployerRecruiterOrgLink.objects.filter(employer_org=wr.employer).first()
             wr.recruiter_org = recruiter_link.recruiter_org if recruiter_link else None
 
-        print(work_requests, "work_requests")
         context = {
             "work_requests": work_requests,
             "employers": Organization.objects.filter(type='employer'),
@@ -855,7 +854,7 @@ class WorkRequestDetailView(View):
     def get(self, request, pk):
         work_request = get_object_or_404(WorkRequests, pk=pk)
         
-
+        form  = RoleHoursForm
         grouped_counts = WorkAssignment.objects.filter(
             work_request=work_request,
             status__in=['assigned', 'offersent', 'confirmed']
@@ -879,13 +878,23 @@ class WorkRequestDetailView(View):
             elif status == 'confirmed':
                 total_confirmed_count += count
 
-        roles_qs = work_request.roles.filter(deleted_at__isnull=True)
+        roles_qs_raw = work_request.roles.filter(
+                deleted_at__isnull=True,
+            )
+        print(roles_qs_raw, "roles_qs_raw")
+        roles_qs = [role for role in roles_qs_raw if hasattr(role, 'hours') and role.hours.deleted_at is None]
 
+        print(roles_qs, "roles_qs")
         role_forms = {
             role.id: WorkRequestRoleForm(instance=role)
             for 
             role in work_request.roles.all()
         }
+        hours_form = {
+            role.id: RoleHoursForm(instance=role.hours)
+            for role in roles_qs if hasattr(role, 'hours')
+            }
+
 
         
         context = {
@@ -896,6 +905,8 @@ class WorkRequestDetailView(View):
             'total_shortlist_count': total_shortlist_count,
             'total_offersent_count': total_offersent_count,
             'total_confirmed_count': total_confirmed_count,
+            'form': form,
+            'hours_form': hours_form,
         }
         return render(request, 'recruiting/work_requests/detail.html', context)
 
@@ -1735,3 +1746,43 @@ class SummaryViews(View):
         }
 
         return render(request, 'recruiting/work_requests/summaryList/summarylist.html', context)
+
+
+class EditRoleHoursView(View):
+    def post(self, request, pk):
+        hours = get_object_or_404(Hours, pk=pk)
+        form = RoleHoursForm(request.POST, instance=hours)
+
+        # Get the work_request_id from the form
+        work_request_id = request.POST.get('work_request_id', None)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Hours updated successfully.')
+        else:
+            messages.error(request, 'There was an error updating the hours.')
+
+        # Redirect to the work request detail page
+        if work_request_id:
+            return redirect('recruiting_web:workrequest_detail', pk=work_request_id)
+        else:
+            return redirect('/')  # fallback if something goes wrong
+
+class DeleteRoleHoursView(View):
+    def post(self, request, pk):
+        hours = get_object_or_404(Hours, pk=pk)
+
+        # Get the work_request_id from the form
+        work_request_id = request.POST.get('work_request_id', None)
+
+        try:
+            hours.delete()
+            messages.success(request, 'Hours deleted successfully.')
+        except Exception as e:
+            messages.error(request, f'Error deleting hours: {str(e)}')
+
+        # Redirect to the work request detail page
+        if work_request_id:
+            return redirect('recruiting_web:workrequest_detail', pk=work_request_id)
+        else:
+            return redirect('/')  # fallback

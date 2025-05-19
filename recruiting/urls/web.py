@@ -22,7 +22,7 @@ from recruiting.views.web import (
     update_employer_recruiter_status,EmployerRecruiterOrgStatusListView,
     WorkRequestEditView,WorkRequestDeleteView,
     EmployerRecruiterOrgLinkDeleteView,DeleteAssignedOrganizationView,
-    DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView
+    DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditRoleHoursView,DeleteRoleHoursView
 )
 from recruiting.views.workers import (
      WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,EditWorkExperienceView,DeleteWorkExperienceView,WorkerEditView,WorkerDeleteView,EditUserPreferenceView,EditLanguageProficiencyView,EditDocumentsView,DeleteAllWorkerInfoView,WorkerEditView,WorkerDeleteView
@@ -36,7 +36,7 @@ from recruiting.views.workers import (
 
 app_name = 'recruiting_web'
 urlpatterns = [
-    path('employers/',
+path('employers/',
          EmployerListView.as_view(),
          name='employer_list'),
     path('employer/delete/<str:pk>/', 
@@ -261,7 +261,6 @@ urlpatterns = [
          name='edit_work_experience'),
     path('work_experience/delete/<str:pk>/', DeleteWorkExperienceView.as_view(),
          name='work_experience_delete'),
-
-
-
+    path('role/hours/<str:pk>/edit/', EditRoleHoursView.as_view(), name='edit-role-hours'),
+    path('role/hours/<str:pk>/delete/', DeleteRoleHoursView.as_view(), name='delete-role-hours'),
 ]
