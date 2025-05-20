@@ -1,0 +1,34 @@
+{% load i18n %}
+{% load static %}
+{% load custom_filters %}
+
+<div class="modal fade" id="editMealProvisionModal{{ role.id }}" tabindex="-1" aria-labelledby="editMealProvisionLabel{{ role.id }}" aria-hidden="true">
+  <div class="modal-dialog modal-md modal-dialog-centered">
+    <div class="modal-content shadow-sm border-0">
+      <form method="POST" action="{% url 'recruiting_web:meal_provision_edit' role.meal_provision.id %}">
+        {% csrf_token %}
+        <div class="modal-header bg-primary text-white rounded-top">
+          <h5 class="modal-title" id="editMealProvisionLabel{{ role.id }}">
+            {% translate "Edit Meal Provision for Role" %}: {{ role.name }}
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body py-6 px-4">
+          <div class="container-fluid py-6">
+            {{ role_meal_provision_forms|get_item:role.id }}
+          </div>
+        </div>
+
+        <div class="modal-footer bg-light rounded-bottom">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            {% translate 'Cancel' %}
+          </button>
+          <button type="submit" class="btn btn-success">
+            {% translate 'Save Changes' %}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
