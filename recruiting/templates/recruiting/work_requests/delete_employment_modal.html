@@ -1,6 +1,7 @@
 {% load i18n %}
 {% load static %}
-{% load custom_filters %}<div class="modal fade" id="deleteEmploymentInformationModal{{ role.id }}" tabindex="-1" aria-labelledby="deleteEmploymentInformationLabel{{ role.id }}" aria-hidden="true">
+{% load custom_filters %}
+<div class="modal fade" id="deleteEmploymentInformationModal{{ role.id }}" tabindex="-1" aria-labelledby="deleteEmploymentInformationLabel{{ role.id }}" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <form method="POST" action="{% url 'recruiting_web:employment_location_delete' role.employment_location.id %}">

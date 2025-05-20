@@ -1,0 +1,25 @@
+{% load i18n %}
+{% load static %}
+{% load custom_filters %}
+<div class="modal fade" id="deletehoursModal{{ role.id }}" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="POST" >
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title">{% translate 'Delete Hours' %}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <p>{% translate "Are you sure you want to delete the hours for this role?" %}</p>
+            <!-- Optional: display some context -->
+            <p><strong>{{ role.title }}</strong></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
+            <button type="submit" class="btn btn-danger">{% translate 'Delete' %}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
