@@ -22,8 +22,9 @@ from recruiting.views.web import (
     update_employer_recruiter_status,EmployerRecruiterOrgStatusListView,
     WorkRequestEditView,WorkRequestDeleteView,
     EmployerRecruiterOrgLinkDeleteView,DeleteAssignedOrganizationView,
+    DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditEmploymentLocationView,DeleteEmploymentLocationView,EditHousingInformationView,DeleteHousingInformationView,EditMealProvisionView,DeleteMealProvisionView,
     DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditEmploymentLocationView,DeleteEmploymentLocationView,
-    DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditRoleHoursView,DeleteRoleHoursView,EditRoleWagesView,DeleteRoleWagesView
+    DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditRoleHoursView,DeleteRoleHoursView,EditRoleWagesView,DeleteRoleWagesView,EditRoleQualificationView,DeleteQualificationView
 )
 from recruiting.views.workers import (
      WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,EditWorkExperienceView,DeleteWorkExperienceView,WorkerEditView,WorkerDeleteView,EditUserPreferenceView,EditLanguageProficiencyView,EditDocumentsView,DeleteAllWorkerInfoView,WorkerEditView,WorkerDeleteView
@@ -264,8 +265,19 @@ urlpatterns = [
          name='work_experience_delete'),
     path('employment-location/<str:pk>/edit/', EditEmploymentLocationView.as_view(), name='employment_location_edit'),
     path('employment-location/<str:pk>/delete/', DeleteEmploymentLocationView.as_view(), name='employment_location_delete'),
+    path('housing-information/edit/<str:pk>/', EditHousingInformationView.as_view(), name='housing_information_edit'),
+    path('housing-information/delete/<str:pk>/', DeleteHousingInformationView.as_view(), 
+    name='housing_information_delete'),
+    path('meal-provision/edit/<str:pk>/', EditMealProvisionView.as_view(), name='meal_provision_edit'),
+    path('meal-provision/delete/<str:pk>/', DeleteMealProvisionView.as_view(), name='meal_provision_delete'),
     path('role/hours/<str:pk>/edit/', EditRoleHoursView.as_view(), name='edit-role-hours'),
     path('role/hours/<str:pk>/delete/', DeleteRoleHoursView.as_view(), name='delete-role-hours'),
     path('role/wages/edit/<str:pk>/', EditRoleWagesView.as_view(), name='edit-role-wages'),
     path('role/wages/delete/<str:pk>/', DeleteRoleWagesView.as_view(), name='delete-role-wages'),
+
+ 
+     path('qualification/<str:pk>/edit/', EditRoleQualificationView.as_view(), name='edit-role-qualification'),
+     path('qualification/<str:pk>/delete/', DeleteQualificationView.as_view(), name='delete-role-qualification'),
+
+
 ]
