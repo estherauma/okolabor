@@ -28,7 +28,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 from collections import defaultdict
 from django.db.models import Count
-from datetime import date
 from django.template.loader import render_to_string
 import os
 from recruiting.utils import get_worker_preferences, calculate_profile_completion
@@ -54,8 +53,7 @@ from recruiting.forms import (
 )
 from theme.forms import (
     FilterWorkExperienceForm,
-    AdvancedFilterForm,
-    DynamicWorkExperienceForm
+    AdvancedFilterForm
 )
 from account.models import UserPreference
 from recruiting.models import (
@@ -549,8 +547,8 @@ class WorkRequestDeleteView(LoginRequiredMixin, View):
 class AddWorkersWorkRequests(View):
     def get(self, request, pk, role_id):
         work_assign_form = WorkerAssignmentForm()
-        form = DynamicWorkExperienceForm(request.GET or None)
-        filter_form = AdvancedFilterForm(request.GET or None)
+        form = FilterWorkExperienceForm()
+        filter_form = AdvancedFilterForm()
         search_query = request.GET.get('search', '')
         page_number = request.GET.get('page', 1)
         per_page = request.GET.get('per_page', 25)
@@ -583,42 +581,6 @@ class AddWorkersWorkRequests(View):
                 Q(last_name__icontains=search_query) |
                 Q(email__icontains=search_query)
             )
-        # 🔍 Experience Filters
-        type_sector = request.GET.get('type_sector')
-        dynamic_field_1 = request.GET.get('dynamic_field_1')
-        dynamic_field_2 = request.GET.get('dynamic_field_2')
-
-
-        if type_sector:
-            workers = workers.filter(
-                crop_experiences__job_type__iexact=type_sector
-            )
-
-        if dynamic_field_1 and dynamic_field_1.strip():
-            workers = workers.filter(
-                crop_experiences__type_details__iexact=dynamic_field_1
-            )
-
-        if dynamic_field_2 and dynamic_field_2.strip():
-            workers = workers.filter(
-                crop_experiences__job_experience_details__value__iexact=dynamic_field_2
-            )
-
-        # 🔍 Advanced Filter Form (from UserPreference model)
-        if filter_form.is_valid():
-            for field_name, value in filter_form.cleaned_data.items():
-                if value is not None and str(value).strip() != '':
-                    if field_name == 'availability' and isinstance(value, date):
-                        workers = workers.filter(
-                            userpreference__key='availability',
-                            userpreference__value__gte=value.strftime('%Y-%m-%d')
-                        )
-                    else:
-                        workers = workers.filter(
-                            userpreference__key=field_name,
-                            userpreference__value__iexact=value
-                        )
-        workers = workers.distinct()
 
         paginator = Paginator(workers, per_page)
         page_obj = paginator.get_page(page_number)
@@ -914,6 +876,13 @@ class WorkRequestDetailView(View):
             role.id: RoleWagesForm(instance=role.wages)
             for role in roles_qs if hasattr(role, 'wages') and role.wages and role.wages.deleted_at is None 
         }  
+        qualification_forms = {
+            role.id: RoleQualificationForm(instance=role.qualifications)
+            for role in roles_qs
+            if hasattr(role, 'qualifications') and role.qualifications and role.qualifications.deleted_at is None
+        }
+        print(qualification_forms,"qualificat")
+                    
 
 
 
@@ -931,6 +900,7 @@ class WorkRequestDetailView(View):
             'form': form_data,
             'hours_form': hours_form,
             'wages_form': wages_form,
+            'qualification_form':qualification_forms
 
         }
         return render(request, 'recruiting/work_requests/detail.html', context)
@@ -1910,3 +1880,27 @@ class DeleteRoleWagesView(View):
         wages.save()
         messages.success(request, "Wages deleted successfully.")
         return redirect('recruiting_web:workrequest_detail', pk=wages.role.work_request.pk)
+class EditRoleQualificationView(View):
+    def post(self, request, pk):
+        qualification = get_object_or_404(Qualification, pk=pk)
+        form = RoleQualificationForm(request.POST, instance=qualification)
+
+        work_request_id = request.POST.get('work_request_id', None)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Qualification updated successfully.')
+            return redirect('recruiting_web:workrequest_detail', pk=qualification.role.work_request.pk) 
+        else:
+            messages.error(request, 'There was an error updating the qualification.')
+
+        
+
+
+class DeleteQualificationView(View):
+    def post(self, request, pk):
+        qualification = get_object_or_404(Qualification, pk=pk)
+        qualification.delete()
+
+        messages.success(request, "Qualification deleted successfully.")
+        return redirect('recruiting_web:workrequest_detail', pk=qualification.role.work_request.pk)

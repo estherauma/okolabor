@@ -107,7 +107,7 @@
                 data-bs-target="#editRoleModal{{ role.id }}"
                 title="{% translate 'jobOrderDetailsEdit'%}">
                 </i>
-             <!-- Delete Button --> 
+             <!-- Delete Button -->
                 <i 
                 class="fa fa-trash text-danger"
                 style="cursor: pointer; font-size: 20px;padding-left:10px;" 
@@ -283,6 +283,20 @@
         {% if role.housing_information %}
         {% include "recruiting/work_requests/delete_mealprovision_modal.html" %}
         {% endif %}
+
+        {% for role in roles %}
+            {% include "recruiting/work_requests/edit_qualifications.html" with role=role %}
+
+        {% endfor %}
+        
+        
+
+
+        <!-- Delete Modal -->
+        {% for role in workrequest.roles.all %}
+            {% include "recruiting/work_requests/delete_qualifications.html" with role=role %}
+        {% endfor %}
+
 
         <!-- Delete Modal -->
     <div class="modal fade" id="deleteRoleModal{{ role.id }}" tabindex="-1" aria-hidden="true">
@@ -579,8 +593,20 @@
           <hr class="border-bottom border-3"/>
           <div class="d-flex justify-content-between align-items-center">
            <h6>
-            {% translate "joDetailsQualificationsQualifications" %}
+            {% translate "workRequestDetailsQualifications" %}
            </h6>
+           <i 
+           class="fa fa-edit text-primary me-2" 
+           data-bs-toggle="modal" 
+           data-bs-target="#editQualificationModal{{ role.id }}"
+           style="cursor: pointer;" 
+           title="{% translate 'Edit' %}"></i>
+         <i 
+           class="fa fa-trash text-danger" 
+           style="cursor: pointer; font-size: 20px; padding-left: 10px;" 
+           data-bs-toggle="modal" 
+           data-bs-target="#deleteQualificationModal{{ role.id }}"
+           title="{% translate 'Delete' %}"></i>
            <a class="btn btn-primary btn-sm" href="/work-requests/role/{{role.id}}/qualifications/create">
             {% translate "joDetailsQualificationsAddQualifiations" %}
            </a>
