@@ -11,22 +11,22 @@ $(document).ready(function () {
             "paging": false,
             "info": false,
 
-            "language": {
-                search: _('dataTableSearch'),
-                lengthMenu: _('dataTableLengthMenu'),
-                info: _('dataTableInfo'),
-                infoEmpty: _('dataTableInfoEmpty'),
-                infoFiltered: _('dataTableInfoFiltered'),
-                zeroRecords: _('dataTableZeroRecords'),
-                emptyTable: _('dataTableEmptyTable'),
-                paginate: {
-                  first: _('dataTablePaginateFirst'),
-                  last: _('dataTablePaginateLast'),
-                  next: _('dataTablePaginateNext'),
-                  previous: _('dataTablePaginatePrevious')
-                }
+            // "language": {
+            //     search: _('dataTableSearch'),
+            //     lengthMenu: _('dataTableLengthMenu'),
+            //     info: _('dataTableInfo'),
+            //     infoEmpty: _('dataTableInfoEmpty'),
+            //     infoFiltered: _('dataTableInfoFiltered'),
+            //     zeroRecords: _('dataTableZeroRecords'),
+            //     emptyTable: _('dataTableEmptyTable'),
+            //     paginate: {
+            //       first: _('dataTablePaginateFirst'),
+            //       last: _('dataTablePaginateLast'),
+            //       next: _('dataTablePaginateNext'),
+            //       previous: _('dataTablePaginatePrevious')
+            //     }
 
-            }
+            // }
         });
 
         // Special setting for #workrequest-datatable
