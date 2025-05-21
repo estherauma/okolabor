@@ -1,8 +1,5 @@
 {% load i18n %}
 <div class="d-flex align-items-center justify-content-between mb-2">
-    <button class="setting-btn all-workers-setting-btn">
-        <i aria-hidden="true" class="fa fa-cog"></i>
-    </button>
     <div>
         <button class="btn dark-green-button ms-3" id="addToShortlistBtn" disabled>
             +{% translate "addToShortlist" %}
@@ -16,26 +13,16 @@
 
 <!-- Table and other content for All Workers -->
 <div class="table-responsive">
+    
     <table class="table text-nowrap border-bottom" id="basic-datatable">
-        <thead>
-            <tr>
-                <th class="theading-color">{% translate "checkbox" %}</th>
-                <th class="theading-color">{% translate "name" %}</th>
-                <th class="theading-color">{% translate "town" %}</th>
-                <th class="theading-color">{% translate "profileCompletion" %}</th>
-                <th class="theading-color">{% translate "experience" %}</th>
-                <th class="theading-color">{% translate "englishProficiency" %}</th>
-                <th class="theading-color">{% translate "locationPreference" %}</th>
-                <th class="theading-color">{% translate "Status" %}</th>
-            </tr>
-        </thead>
+        {% include 'recruiting/work_requests/table_header.html' %}
         <tbody>
             {% for worker in workers %}
             <tr class="text-center">
                 <td>
                     <input type="checkbox" class="worker-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.first_name }} {{ worker.last_name }}">
                 </td>
-                <td>
+                <td class="col-name">
                     {% if worker.first_name and worker.last_name %}
                         <a href="{{ worker.id }}">
                             {{ worker.first_name }} {{ worker.last_name }}
@@ -46,12 +33,12 @@
                         </a>
                     {% endif %}
                 </td>
-                <td>{{ worker.town|default:"Not Provided" }}</td>
-                <td>{{ worker.profile_completion_percentage|default:0 }}%</td>
-                <td>{{ worker.work_experience|default:"Not Provided" }}</td>
-                <td>{{ worker.english_proficiency|default:"Not Provided" }}</td>
-                <td>{{ worker.location_preference|default:"Not Provided" }}</td>
-                <td>{{ worker.latest_status }}</td>
+                <td class="col-town">{{ worker.town|default:"Not Provided" }}</td>
+                <td class="col-profile">{{ worker.profile_completion_percentage|default:0 }}%</td>
+                <td class="col-experience">{{ worker.work_experience|default:"Not Provided" }}</td>
+                <td class="col-english">{{ worker.english_proficiency|default:"Not Provided" }}</td>
+                <td class="col-location">{{ worker.location_preference|default:"Not Provided" }}</td>
+                <td class="col-status">{{ worker.latest_status }}</td>
             </tr>
             {% endfor %}
         </tbody>

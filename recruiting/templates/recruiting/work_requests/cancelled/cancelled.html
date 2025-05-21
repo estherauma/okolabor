@@ -1,6 +1,9 @@
 {% load i18n %}
 <div class="tab-pane" id="tab4">
     <div class="table-responsive">
+        <button class="setting-btn all-workers-setting-btn" data-bs-toggle="modal" data-bs-target="#columnCancelledSettingsModal">
+          <i aria-hidden="true" class="fa fa-cog"></i>
+      </button>
         <table class="table text-nowrap border-bottom" id="confirmed-table">
             <thead>
                 <tr>
@@ -30,4 +33,51 @@
             </tbody>
         </table>
     </div>
+            <!-- Column Settings Modal -->
+<div class="modal fade" id="columnCancelledSettingsModal" tabindex="-1" aria-labelledby="columnSettingsModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="columnSettingsModalLabel">{% translate "Choose Columns to Display" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'Close' %}"></button>
+      </div>
+      <div class="modal-body">
+        <form id="column-settings-form">
+          <div class="form-check">
+            <input class="form-check-input column-toggle" type="checkbox" data-column="col-name" id="col-name" checked>
+            <label class="form-check-label" for="col-name">{% translate "name" %}</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input column-toggle" type="checkbox" data-column="col-town" id="col-town" checked>
+            <label class="form-check-label" for="col-town">{% translate "town" %}</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input column-toggle" type="checkbox" data-column="col-profile" id="col-profile" checked>
+            <label class="form-check-label" for="col-profile">{% translate "profileCompletion" %}</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input column-toggle" type="checkbox" data-column="col-experience" id="col-experience" checked>
+            <label class="form-check-label" for="col-experience">{% translate "experience" %}</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input column-toggle" type="checkbox" data-column="col-english" id="col-english" checked>
+            <label class="form-check-label" for="col-english">{% translate "englishProficiency" %}</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input column-toggle" type="checkbox" data-column="col-location" id="col-location" checked>
+            <label class="form-check-label" for="col-location">{% translate "locationPreference" %}</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input column-toggle" type="checkbox" data-column="col-status" id="col-status" checked>
+            <label class="form-check-label" for="col-status">{% translate "Status" %}</label>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Close" %}</button>
+        <button type="button" class="btn btn-primary" id="apply-column-settings">{% translate "Apply" %}</button>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
