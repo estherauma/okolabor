@@ -385,8 +385,8 @@ class AdvancedFilterForm(forms.Form):
     lifting = forms.ChoiceField(
         choices=[
             ('', _('filterSectionPleaseSelect...')),
-            ('yes', 'Yes'),
-            ('no', 'No'),
+            ('yes', _('filterSectionYes')),
+            ('no', _('filterSectionNo')),
         ],
         required=False,
         widget=forms.Select(attrs={
@@ -399,8 +399,8 @@ class AdvancedFilterForm(forms.Form):
     time_on_feet = forms.ChoiceField(
         choices=[
             ('',  _('filterSectionPleaseSelect...')),
-            ('yes',  'Yes'),
-            ('no', 'No'),
+            ('yes',  _('filterSectionYes')),
+            ('no', _('filterSectionNo')),
         ],
         required=False,
         widget=forms.Select(attrs={
@@ -413,8 +413,8 @@ class AdvancedFilterForm(forms.Form):
     weather = forms.ChoiceField(
         choices=[
             ('', _('filterSectionPleaseSelect...')),
-            ('yes', 'Yes'),
-            ('no', 'No'),
+            ('yes', _('filterSectionYes')),
+            ('no', _('filterSectionNo')),
         ],
         required=False,
         widget=forms.Select(attrs={
