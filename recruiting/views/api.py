@@ -88,19 +88,6 @@ class WorkRequestRoleDetailView(RetrieveUpdateDestroyAPIView):
         pass
 
 
-# class RoleAPIListView(ListCreateAPIView):
-#     queryset = Role.objects.all()
-#     serializer_class = RoleSerializer
-#     permission_classes = (IsAuthenticated,)
-
-#     @swagger_auto_schema(
-#         operation_summary='Retrieve all roles',
-#         tags=['Roles']
-#     )
-#     def get(self, request, *args, **kwargs):
-#         serializer = self.get_serializer(self.get_queryset(), many=True)
-#         return Response(serializer.data, status=status.HTTP_200_OK)
-
 class RoleAPIListView(ListCreateAPIView):
     serializer_class = RoleSerializer
     permission_classes = (IsAuthenticated,)
