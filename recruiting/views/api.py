@@ -88,13 +88,33 @@ class WorkRequestRoleDetailView(RetrieveUpdateDestroyAPIView):
         pass
 
 
+# class RoleAPIListView(ListCreateAPIView):
+#     queryset = Role.objects.all()
+#     serializer_class = RoleSerializer
+#     permission_classes = (IsAuthenticated,)
+
+#     @swagger_auto_schema(
+#         operation_summary='Retrieve all roles',
+#         tags=['Roles']
+#     )
+#     def get(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(self.get_queryset(), many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+
 class RoleAPIListView(ListCreateAPIView):
-    queryset = Role.objects.all()
     serializer_class = RoleSerializer
     permission_classes = (IsAuthenticated,)
 
+    def get_queryset(self):
+        # Return only roles where an offer has been sent to the current user
+        return Role.objects.filter(
+            assignments__worker=self.request.user,
+            assignments__status='offersent'  # Ensure this matches your model's status choice
+        ).distinct()
+    
+
     @swagger_auto_schema(
-        operation_summary='Retrieve all roles',
+        operation_summary='Retrieve roles with offers sent to the user',
         tags=['Roles']
     )
     def get(self, request, *args, **kwargs):
