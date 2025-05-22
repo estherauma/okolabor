@@ -16,7 +16,7 @@
 <div class="container-fluid" style="position: relative; height: auto">
     <div class="row">
         <div class="page-header custom-page-header d-flex flex-column">
-            <h1 class="page-title">{% translate "recruiters" %}</h1>
+            <h1 class="page-title">{% translate "recruiterAdminListRecruiters" %}</h1>
         </div>
     </div>
     
@@ -29,9 +29,9 @@
                         <table class="table text-nowrap border-bottom" id="basic-datatable">
                             <thead>
                                 <tr>
-                                    <th class="theading-color">{% translate "Select" %}</th>
-                                    <th class="theading-color">{% translate "recruiterName" %}</th>
-                                    <th class="theading-color">{% translate "Status" %}</th>
+                                    <th class="theading-color">{% translate "recruiterAdminListSelect" %}</th>
+                                    <th class="theading-color">{% translate "recruiterAdminListRecruiterName" %}</th>
+                                    <th class="theading-color">{% translate "recruiterAdminListStatus" %}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -56,22 +56,22 @@
             </div>
         </div>
     </div>
-    <button type="button" class="btn position-absolute top-0 end-0 m-3 btn-green" id="assign-button" disabled> + {% translate "Assign" %}</button>
+    <button type="button" class="btn position-absolute top-0 end-0 m-3 btn-green" id="assign-button" disabled> + {% translate "recruiterAdminListAssign" %}</button>
 
     <!-- Modal -->
     <div class="modal fade" id="assignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="assignModalLabel">{% translate "Assign Recruiter" %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="assignModalLabel">{% translate "recruiterAdminListAssignRecruiter" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'recruiterAdminListClose'%}"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Selected Recruiter: <span id="selected-recruiter-name" class="fw-bold"></span></p>
+                    <p>{% translate "recruiterAdminListSelectRecruiter"%}: <span id="selected-recruiter-name" class="fw-bold"></span></p>
                     <form id="assign-form" method="post">
                         {% csrf_token %}
                         <div class="mb-3">
-                            <label for="employer-select" class="form-label">{% translate "Select Employer" %}</label>
+                            <label for="employer-select" class="form-label">{% translate "recruiterAdminListSelectEmployer" %}</label>
                             <select class="form-select" id="employer-select">
                                 {% for employer in employers %}
                                     <option value="{{ employer.id }}">{{ employer.name }}</option>
@@ -79,13 +79,13 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="action-select" class="form-label">{% translate "Select Action" %}</label>
+                            <label for="action-select" class="form-label">{% translate "recruiterAdminListSelectAction" %}</label>
                             <select class="form-select" id="action-select">
-                                <option value="assign">{% translate "Assign" %}</option>
-                                <option value="remove">{% translate "Remove" %}</option>
+                                <option value="assign">{% translate "recruiterAdminListAssign" %}</option>
+                                <option value="remove">{% translate "recruiterAdminListRemove" %}</option>
                             </select>
                         </div>
-                        <button type="button" class="btn btn-primary" id="submit-button">{% translate "Submit" %}</button>
+                        <button type="button" class="btn btn-primary" id="submit-button">{% translate "recruiterAdminListSubmit" %}</button>
                     </form>
                 </div>
             </div>
