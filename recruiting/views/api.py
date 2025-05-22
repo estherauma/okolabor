@@ -89,12 +89,19 @@ class WorkRequestRoleDetailView(RetrieveUpdateDestroyAPIView):
 
 
 class RoleAPIListView(ListCreateAPIView):
-    queryset = Role.objects.all()
     serializer_class = RoleSerializer
     permission_classes = (IsAuthenticated,)
 
+    def get_queryset(self):
+        
+        return Role.objects.filter(
+            assignments__worker=self.request.user,
+            assignments__status='offersent'
+        ).distinct()
+    
+
     @swagger_auto_schema(
-        operation_summary='Retrieve all roles',
+        operation_summary='Retrieve roles with offers sent to the user',
         tags=['Roles']
     )
     def get(self, request, *args, **kwargs):
