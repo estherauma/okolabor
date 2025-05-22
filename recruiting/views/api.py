@@ -93,10 +93,10 @@ class RoleAPIListView(ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        # Return only roles where an offer has been sent to the current user
+        
         return Role.objects.filter(
             assignments__worker=self.request.user,
-            assignments__status='offersent'  # Ensure this matches your model's status choice
+            assignments__status='offersent'
         ).distinct()
     
 
