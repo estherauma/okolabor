@@ -147,7 +147,6 @@ class Wages(AuditableModel):
             ('Monthly', _('roleWagesMonthly')),
         ]
     )
-
     frequency_of_pay = models.CharField(max_length=50)
     details = models.CharField(max_length=100, null=True)
 
