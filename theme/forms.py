@@ -213,60 +213,60 @@ class FilterWorkExperienceForm(forms.Form):
 
 class DynamicWorkExperienceForm(forms.Form):
     SECTOR_CHOICES = [
-        ('Animals', _('Animals')),
-        ('Construction', _('Construction')),
-        ('Crop and Horticulture', _('Crop and Horticulture')),
-        ('Licensed Vehicle Operation', _('Licensed Vehicle Operation')),
-        ('Mechanics', _('Mechanics')),
-        ('Worker Supervision/Management', _('Worker Supervision/Management')),
-        ('Other', _('Other')),
+        ('Animals', _('filterSectionAnimals')),
+        ('Construction', _('filterSectionConstruction')),
+        ('Crop and Horticulture', _('filterSectionCropAndHorticulture')),
+        ('Licensed Vehicle Operation', _('filterSectionLicensedVehicleOperation')),
+        ('Mechanics', _('filterSectionMechanics')),
+        ('Worker Supervision/Management', _('filterSectionWorkerSupervision/Management')),
+        ('Other', _('filterSectionOther')),
     ]
 
     TYPE_SPECIFIC_OPTIONS = {
         'Animals': {
-            'second_label': _('Animal Type'),
+            'second_label': _('filterSectionAnimalType'),
             'second_choices': [
-                ('Asses', _('Asses')),
-                ('Bees', _('Bees')),
-                ('Buffalo', _('Buffalo')),
+                ('Asses', _('filterSectionAsses')),
+                ('Bees', _('filterSectionBees')),
+                ('Buffalo', _('filterSectionBuffalo')),
             ],
-            'third_label': _('Tasks'),
+            'third_label': _('filterSectionTasks'),
             'third_choices': [
-                ('Breeding', _('Breeding')),
-                ('Caring', _('Caring')),
-                ('Packaging', _('Packaging')),
+                ('Breeding', _('filterSectionBreeding')),
+                ('Caring', _('filterSectionCaring')),
+                ('Packaging', _('filterSectionPackaging')),
             ]
         },
         'Crop and Horticulture': {
-            'second_label': _('Crop Type'),
+            'second_label': _('filterSectionCropType'),
             'second_choices': [
-                ('Avocados', _('Avocados')),
-                ('Bananas', _('Bananas')),
-                ('Brazil nuts', _('Brazil nuts')),
+                ('Avocados', _('filterSectionAvocados')),
+                ('Bananas', _('filterSectionBananas')),
+                ('Brazil nuts', _('filterSectionBrazilNuts')),
             ],
-            'third_label': _('Tasks'),
+            'third_label': _('filterSectionTasks'),
             'third_choices': [
-                ('Cultivating', _('Cultivating')),
-                ('Grading and sorting', _('Grading and sorting')),
-                ('Harvesting', _('Harvesting')),
-                ('Other', _('Other')),
+                ('Cultivating', _('filterSectionCultivating')),
+                ('Grading and sorting', _('filterSectionGradingAndSorting')),
+                ('Harvesting', _('filterSectionHarvesting')),
+                ('Other', _('filterSectionOther')),
             ]
         },
         'Mechanics': {
-            'second_label': _('Tasks'),
+            'second_label': _('filterSectionTasks'),
             'second_choices': [
-                ('Car', _('Car')),
-                ('Agricultural Equipment/Machinery', _('Agricultural Equipment/Machinery')),
+                ('Car', _('filterSectionCar')),
+                ('Agricultural Equipment/Machinery', _('filterSectionAgriculturalEquipment/Machinery')),
             ],
             'third_label': None,
             'third_choices': None
         },
         'Worker Supervision/Management': {
-            'second_label': _('Tasks'),
+            'second_label': _('filterSectionTasks'),
             'second_choices': [
-                ('Animals', _('Animals')),
-                ('Crop and Horticulture', _('Crop and Horticulture')),
-                ('Other', _('Other')),
+                ('Animals', _('filterSectionAnimals')),
+                ('Crop and Horticulture', _('filterSectionCropAndHorticulture')),
+                ('Other', _('filterSectionOther')),
             ],
             'third_label': None,
             'third_choices': None
@@ -276,7 +276,7 @@ class DynamicWorkExperienceForm(forms.Form):
 
     type_sector = forms.ChoiceField(
         choices=SECTOR_CHOICES,
-        label=_("Type / Sector"),
+        label=_("filterSectionType/Sector"),
         widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_type_sector'}),
     )
 
@@ -319,30 +319,30 @@ class AdvancedFilterForm(forms.Form):
 
     english_proficiency = forms.ChoiceField(
         choices=[
-            ('', 'Please select...'),
-            ('fluent', 'Fluent'),
-            ('advanced', 'Advanced'),
-            ('intermediate', 'Intermediate'),
-            ('basic', 'Basic'),
+            ('', _('filterSectionPleaseSelect...')),
+            ('fluent', _('filterSectionFluent')),
+            ('advanced', _('filterSectionAdvanced')),
+            ('intermediate', _('filterSectionIntermediate')),
+            ('basic', _('filterSectionBasic')),
         ],
         required=False,
         widget=forms.Select(attrs={'class': 'form-control'}),
-        label='English proficiency'
+        label=_('filterSectionEnglishProficiency')
     )
 
     availability = forms.DateField(
         required=False,
         widget=forms.DateInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Select availability',
+            'placeholder': _('filterSectionSelectAvilability'),
             'type': 'date'  
         }),
-        label='Availability'
+        label=_('filterSectionAvailability')
     )
 
     location_preference = forms.ChoiceField(
         choices=[
-            ('', 'Please select...'),
+            ('', _('filterSectionPleaseSelect...')),
             ('mexico', 'Mexico'),
             ('united_states', 'United States'),
             ('afghanistan', 'Afghanistan'),
@@ -356,14 +356,14 @@ class AdvancedFilterForm(forms.Form):
         required=False,
         widget=forms.Select(attrs={
             'class': 'form-control',
-            'placeholder': 'Location preference'
+            'placeholder': _('filterSectionLocationPreference')
         }),
-        label='Location preference'
+        label=_('filterSectionLocationPreference')
     )
 
     driver_license = forms.ChoiceField(
         choices=[
-            ('', 'Please select...'),
+            ('', _('filterSectionPleaseSelect...')),
             ('united_states', 'United States'),
             ('mexico', 'Mexico'),
             ('afghanistan', 'Afghanistan'),
@@ -377,64 +377,64 @@ class AdvancedFilterForm(forms.Form):
         required=False,
         widget=forms.Select(attrs={
             'class': 'form-control',
-            'placeholder': 'Driver license'
+            'placeholder': _('filterSectionDriverLicense')
         }),
-        label='Driver license'
+        label=_('filterSectionDriverLicense')
     )
 
     lifting = forms.ChoiceField(
         choices=[
-            ('', 'Please select...'),
-            ('yes', 'Yes'),
-            ('no', 'No'),
+            ('', _('filterSectionPleaseSelect...')),
+            ('yes', _('filterSectionYes')),
+            ('no', _('filterSectionNo')),
         ],
         required=False,
         widget=forms.Select(attrs={
             'class': 'form-control',
-            'placeholder': 'Able to lift 27kgs'
+            'placeholder': _('filterSectionAbleToLift27kgs?')
         }),
-        label='Able to lift 27kgs?'
+        label=_('filterSectionAbleToLift27kgs?')
     )
 
     time_on_feet = forms.ChoiceField(
         choices=[
-            ('', 'Please select...'),
-            ('yes', 'Yes'),
-            ('no', 'No'),
+            ('',  _('filterSectionPleaseSelect...')),
+            ('yes',  _('filterSectionYes')),
+            ('no', _('filterSectionNo')),
         ],
         required=False,
         widget=forms.Select(attrs={
             'class': 'form-control',
-            'placeholder': 'Will spend time on feet'
+            'placeholder': _('filterSectionWillSpendTimeOnFeet?')
         }),
-        label='Will spend time on feet?'
+        label=_('filterSectionWillSpendTimeOnFeet?')
     )
 
     weather = forms.ChoiceField(
         choices=[
-            ('', 'Please select...'),
-            ('yes', 'Yes'),
-            ('no', 'No'),
+            ('', _('filterSectionPleaseSelect...')),
+            ('yes', _('filterSectionYes')),
+            ('no', _('filterSectionNo')),
         ],
         required=False,
         widget=forms.Select(attrs={
             'class': 'form-control',
-            'placeholder': 'Will work in hot & cold?'
+            'placeholder': _('filterSectionWillWorkInHot&Cold?')
         }),
-        label='Will work in hot & cold?'
+        label=_('filterSectionWillWorkInHot&Cold?')
     )
 
     offer_status = forms.ChoiceField(
         choices=[
-            ('', 'Please select...'),
-            ('pending', 'Pending'),
+            ('', _('filterSectionPleaseSelect...')),
+            ('pending', _('filterSectionPending')),
         ],
         required=False,
         widget=forms.Select(attrs={
             'class': 'form-control',
-            'placeholder': 'Offer status'
+            'placeholder': _('filterSectionOfferStatus')
         }),
-        label='Offer status'
+        label=_('filterSectionOfferStatus')
     )
 
     # 👇👇 These fields are moved to the bottom 👇👇
