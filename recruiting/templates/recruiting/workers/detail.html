@@ -55,14 +55,24 @@
   </span>
  </div>
  <div>
-  <button class="btn dark-green-button">
-   {% translate "workerDetailsAddToShortlist" %}
-  </button>
+  
+  {% if worker %}
+      <button class="btn dark-green-button ms-3 open-shortlist-modal"
+      data-bs-toggle="modal"
+      data-bs-target="#workerShortlistModal{{ worker.id }}"
+      data-worker-id="{{ worker.id }}">
+    +{% translate "workerDetailsAddToShortlist" %}
+    </button>
+
+  {% endif %}
+
   <button class="btn dark-green-button ms-3">
    {% translate "workerDetailsSendOffer" %}
   </button>
  </div>
 </div>
+{% include "recruiting/workers/add_shortlist_modal.html" %}
+
 <div class="row">
  <div class="col-xl-6 col-md-12">
   <div class="card">
@@ -911,6 +921,7 @@
 {% endblock body %}
 
 {% block scripts %}
+
 <script>
   document.addEventListener("DOMContentLoaded", function () {
       blockPastMonthsInPicker();

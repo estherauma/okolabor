@@ -1,21 +1,38 @@
-document.getElementById('modal_work_request').addEventListener('change', function() {
-    const workRequestId = this.value;
-    const roleSelect = document.getElementById('modal_role');
+$(document).ready(function () {
+    // Fix for select2 inside bootstrap modal
+    $.fn.modal.Constructor.prototype._enforceFocus = function() {};
 
-    // Clear previous options
-    roleSelect.innerHTML = '<option value="">{% translate "selectARole" %}</option>';
+    const workRequestSelect = $('#modal_work_request');
+    workRequestSelect.select2({
+        placeholder: "Search for work requests...",
+        width: '100%',
+        allowClear: true,
+        minimumResultsForSearch: 0
+    });
 
-    if (workRequestId) {
-        fetch(`/workers/get-roles-for-work-request/${workRequestId}/`)
-            .then(response => response.json())
-            .then(data => {
-                data.roles.forEach(role => {
-                    const option = document.createElement('option');
-                    option.value = role.id;
-                    option.textContent = role.title;
-                    roleSelect.appendChild(option);
+    workRequestSelect.on('change', function() {
+        const workRequestId = $(this).val();
+        const roleSelect = document.getElementById('modal_role');
+
+        if (workRequestId) {
+            fetch(`/workers/get-roles-for-work-request/${workRequestId}/`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    data.roles.forEach(role => {
+                        const option = document.createElement('option');
+                        option.value = role.id;
+                        option.textContent = role.title;
+                        roleSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching roles:', error);
                 });
-            });
-    }
+        }
+    });
 });
-
