@@ -249,8 +249,8 @@ class OkoMessage(AuditableModel):
     recipient_type = models.CharField(
         max_length=50,
         choices=[
-            ('Work Order', 'Work Order'),
-            ('Email', 'Email')
+            ('Work Order', _('createMessageWorkOrder')),
+            ('Email', _('createMessageEmail'))
         ]
     )
     job_order = models.ForeignKey(
@@ -260,10 +260,10 @@ class OkoMessage(AuditableModel):
     include_recipients = models.CharField(
         max_length=255,
         choices=[
-            ('All', 'All'),
-            ('Confirmed', 'Confirmed'),
-            ('Pending', 'Pending'),
-            ('Shortlist', 'Shortlist'),
+            ('All', _('createMessageAll')),
+            ('Confirmed', _('createMessageConfirmed')),
+            ('Pending', _('createMessagePending')),
+            ('Shortlist', _('createMessageShortlist')),
         ]
     )
     subject = models.CharField(max_length=255)
