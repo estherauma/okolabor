@@ -37,6 +37,8 @@ function handleTypeSectorChange(event) {
 
     const type = typeSelector.value;
 
+    // TODO: This section will be translated once the export script is updated to
+    // properly update strings in the djangojs.po files for all languages.
     const fieldData = {
         "Animals": {
             field1Label: "Animal Type",
