@@ -10,8 +10,8 @@
     {% csrf_token %}
 
     <div class="modal-header bg-primary text-white">
-      <h5 class="modal-title" id="editWagesLabel{{ role.id }}">{% translate 'Edit Wages' %}</h5>
-      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      <h5 class="modal-title" id="editWagesLabel{{ role.id }}">{% translate 'joDetailsWagesEditWages' %}</h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{% translate 'joDetailsWagesClose'%}"></button>
     </div>
 
     <div class="modal-body px-4">
@@ -41,7 +41,7 @@
             {% endfor %}
           </div>
         {% else %}
-          <p class="text-muted">No form available for this role.</p>
+          <p class="text-muted">{% translate "joDetailsWagesNoFormAvailableForThisRole"%}</p>
         {% endif %}
       {% endwith %}
     </div>
@@ -51,12 +51,12 @@
         {% translate 'Cancel' %}
       </button>
       <button type="submit" class="btn btn-success">
-        {% translate 'Save' %}
+        {% translate 'joDetailsWagesSave' %}
       </button>
     </div>
   </form>
 {% else %}
-  <p class="text-muted">No wages associated with this role yet.</p>
+  <p class="text-muted">{% translate "joDetailsWagesNowagesAssociatedWithThisRoleYet"%}</p>
 {% endif %}
 
       </div>
