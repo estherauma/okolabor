@@ -1,0 +1,66 @@
+{% load i18n %}
+{% load static %}
+{% load custom_filters %}
+
+{% if deduction %}
+<!-- Edit Deduction Modal -->
+<div class="modal fade" id="editDeductionModal{{ deduction.id }}" tabindex="-1" aria-labelledby="editDeductionModalLabel{{ deduction.id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="editDeductionForm{{ deduction.id }}" method="POST" action="{% url 'recruiting_web:edit_deduction' deduction.id %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="button" class="btn btn-primary" onclick="submitEditDeductionForm({{ deduction.id }})">Save</button>
+    </form>
+    
+    </div>
+  </div>
+</div>
+<script>
+  function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (const cookie of cookies) {
+              const trimmed = cookie.trim();
+              if (trimmed.startsWith(name + '=')) {
+                  cookieValue = decodeURIComponent(trimmed.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+  
+  function submitEditDeductionForm(deductionId) {
+      const form = document.getElementById(editDeductionForm${deductionId});
+      const url = form.action;
+      const formData = new FormData(form);
+      const csrftoken = getCookie('csrftoken');
+  
+      fetch(url, {
+          method: 'POST',
+          headers: {
+              'X-CSRFToken': csrftoken,
+          },
+          body: formData,
+          credentials: 'same-origin'  // ✅ very important for CSRF protection
+      })
+      .then(response => {
+          if (response.ok) {
+              location.reload();  // Or close modal
+          } else {
+              return response.text().then(text => {
+                  console.error("Form failed", text);
+                  alert("Submission failed. See console for details.");
+              });
+          }
+      })
+      .catch(err => {
+          console.error("Fetch error", err);
+      });
+  }
+  </script>
+  
+
+{% endif %}
