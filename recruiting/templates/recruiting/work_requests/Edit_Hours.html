@@ -8,8 +8,8 @@
           {% csrf_token %}
           
           <div class="modal-header bg-primary text-white">
-            <h5 class="modal-title" id="editHoursLabel{{ role.id }}">{% translate 'Edit Hours' %}</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            <h5 class="modal-title" id="editHoursLabel{{ role.id }}">{% translate 'joDetailsHoursEditHours' %}</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{% translate 'joDetailsHoursClose'%}"></button>
           </div>
           
           <div class="modal-body px-4">
@@ -39,7 +39,7 @@
                   {% endfor %}
                 </div>
               {% else %}
-                <p class="text-muted">No form available for this role.</p>
+                <p class="text-muted">{% translate "joDetailsHoursNoFormAvailableForThisRole"%}</p>
               {% endif %}
             {% endwith %}
           </div>
@@ -49,7 +49,7 @@
               {% translate 'Cancel' %}
             </button>
             <button type="submit" class="btn btn-success">
-              {% translate 'Save' %}
+              {% translate 'joDetailsHoursSave' %}
             </button>
           </div>
         </form>

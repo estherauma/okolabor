@@ -1826,9 +1826,9 @@ class EditRoleHoursView(View):
 
         if form.is_valid():
             form.save()
-            messages.success(request, 'Hours updated successfully.')
+            messages.success(request, _('joDetailsHoursHoursUpdatedSuccessfully'))
         else:
-            messages.error(request, 'There was an error updating the hours.')
+            messages.error(request, _('joDetailsHoursThereWasAnErrorUpdatingTheHours'))
 
         # Redirect to the work request detail page
         if work_request_id:

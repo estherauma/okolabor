@@ -5,6 +5,7 @@
 <div class="modal fade" id="editMealProvisionModal{{ role.id }}" tabindex="-1" aria-labelledby="editMealProvisionLabel{{ role.id }}" aria-hidden="true">
   <div class="modal-dialog modal-md modal-dialog-centered">
     <div class="modal-content shadow-sm border-0">
+      {% if role.meal_provision and role.meal_provision.id %}
       <form method="POST" action="{% url 'recruiting_web:meal_provision_edit' role.meal_provision.id %}">
         {% csrf_token %}
         <div class="modal-header bg-primary text-white rounded-top">
@@ -29,6 +30,9 @@
           </button>
         </div>
       </form>
+      {% else %}
+      <p class="text-muted">No meal provision information available for this role.</p>
+      {% endif %}
     </div>
   </div>
 </div>
