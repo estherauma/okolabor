@@ -1915,32 +1915,27 @@ class DeleteQualificationView(View):
 class DeleteDeductionView(View):
     def post(self, request, pk):
         deduction = get_object_or_404(Deduction, pk=pk)
-        work_request_id = deduction.role.work_request.pk
-
-        deduction.delete()
-        messages.success(request, 'Deduction deleted successfully.')
-
-        return redirect('recruiting_web:workrequest_detail', pk=work_request_id)
+        try:
+            deduction.delete()
+            messages.success(request, 'DeductionDeletedSuccessfully.')
+            return redirect('recruiting_web:workrequest_detail', pk=deduction.role.work_request.pk)
+        except Exception as e:
+            messages.error(request, f'ErrorDeletingDeduction: {str(e)}')
 
 
 class DeductionEditView(View):
     def post(self, request, deduction_id):
         deduction = get_object_or_404(Deduction, id=deduction_id)
 
-        # Use only the POST data, assuming you're passing field names manually
         data = {
             'role': request.POST.get('role'),
             'description': request.POST.get('description'),
             'deduction_amount': request.POST.get('deduction_amount'),
         }
-        print(data,"data")
-
-        # Pass data to the form for validation and saving
         form = RoleDeductionForm(data, instance=deduction)
-
         if form.is_valid():
             form.save()
+            messages.success(request, "Deduction updated successfully.")
             return redirect('recruiting_web:workrequest_detail', pk=deduction.role.work_request.pk)
         else:
-            # Optional: You might want to send error messages
             return redirect('recruiting_web:workrequest_detail', pk=deduction.role.work_request.pk)

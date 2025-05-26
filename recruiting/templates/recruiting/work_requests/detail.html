@@ -512,8 +512,8 @@
            <h6>
             {% translate "joDetailsDeductionsDeductions" %}
            </h6>
-           <a class="btn btn-primary btn-sm" href="/work-requests/role/{{role.id}}/deductions/create">
-            {% translate "joDetailsDeductionsAddDeductions" %}
+           <a class="btn btn-success btn-sm" href="/work-requests/role/{{role.id}}/deductions/create">
+            <i class="fa fa-plus me-1"></i>{% translate "joDetailsDeductionsAddDeductions" %}
            </a>
           </div>
           <hr class="border-bottom border-3 border-dark"/>
@@ -538,19 +538,19 @@
                   <td>{{ deduction.description }}</td>
                   <td>${{ deduction.deduction_amount }}</td>
                   <td>
-                    <!-- Edit button triggers modal -->
-                    <i class="fa fa-edit text-primary me-2"
+                       <button class="btn btn-sm btn-icon btn-outline-primary"
                        data-bs-toggle="modal"
                        data-bs-target="#editDeductionModal{{ deduction.id }}"
-                       style="cursor: pointer;"
-                       title="{% translate 'Edit' %}"></i>
+                       title="{% translate 'Edit' %}">
+                        <i class="fa fa-edit"></i>
+                      </button>
         
-                    <!-- Delete button (similar setup) -->
-                    <i class="fa fa-trash text-danger"
-                       data-bs-toggle="modal"
-                       data-bs-target="#deleteDeductionModal{{ deduction.id }}"
-                       style="cursor: pointer;"
-                       title="{% translate 'Delete' %}"></i>
+                      <button class="btn btn-sm btn-icon btn-outline-danger"
+                      data-bs-toggle="modal"
+                      data-bs-target="#deleteDeductionModal{{ deduction.id }}"
+                      title="{% translate 'Delete' %}">
+                      <i class="fa fa-trash-alt"></i>
+                    </button>
                   </td>
                 </tr>
         

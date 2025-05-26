@@ -1,23 +1,80 @@
 {% load i18n %}
 {% load static %}
 {% load custom_filters %}
-<div class="modal fade" id="deleteDeductionModal{{ deduction.id }}" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <form method="POST" action="{% url 'recruiting_web:delete_deduction' deduction.id %}">
-          {% csrf_token %}
-          <div class="modal-header">
-            <h5 class="modal-title">{% translate "Confirm Delete" %}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body">
-            <p>{% translate "Are you sure you want to delete this deduction?" %}</p>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-danger">{% translate "Delete" %}</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Cancel" %}</button>
-          </div>
-        </form>
+
+<div class="modal fade" id="deleteDeductionModal{{ deduction.id }}" tabindex="-1" aria-labelledby="deleteDeductionModalLabel{{ deduction.id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <!-- Use form tag only if needed for styling, not for submission -->
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="deleteDeductionModalLabel{{ deduction.id }}">
+          {% translate "Confirm Deletion" %}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <p>{% translate "Are you sure you want to delete the employment location for this role?" %}</p>
+        <strong>{{ deduction.role.title }}</strong>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
+        <button type="button" class="btn btn-danger" onclick="submitDeleteDeductionForm('{{ deduction.id }}')">{% translate 'Delete' %}</button>
       </div>
     </div>
   </div>
+</div>
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+  
+    function submitDeleteDeductionForm(deductionId) {
+      console.log("Deleting deduction:", deductionId);
+  
+      const url = `/deductions/${deductionId}/delete/`;  // Replace with correct URL pattern if needed
+      const csrftoken = getCookie('csrftoken');
+  
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': csrftoken
+        },
+        credentials: 'same-origin'
+      })
+      .then(response => {
+        if (response.ok) {
+          // Close the modal
+          const modal = bootstrap.Modal.getInstance(document.getElementById(`deleteDeductionModal${deductionId}`));
+          if (modal) {
+            modal.hide();
+          }
+  
+          // Refresh page or remove row
+          location.reload();
+        } else {
+          return response.text().then(text => {
+            console.error("Delete failed:", text);
+            alert("Error deleting deduction. See console for details.");
+          });
+        }
+      })
+      .catch(err => {
+        console.error("Fetch error:", err);
+        alert("An error occurred. Please try again.");
+      });
+    }
+  </script>
+  
