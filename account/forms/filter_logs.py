@@ -1,17 +1,18 @@
 from django import forms
 from account.models import *
+from django.utils.translation import gettext_lazy as _
 
 class UserLogsFilterForm(forms.Form):
     
     date_filter_type = forms.ChoiceField(
         choices=[
-            ('today', 'Today'),
-            ('last_7_days', 'Last 7 Days'),
-            ('this_month', 'This Month')
+            ('today', _('userLogsToday')),
+            ('last_7_days', _('userLogsLast7Days')),
+            ('this_month', _('userLogsThisMonth'))
         ],
         required=False,
         widget=forms.Select(attrs={'class': 'form-control d-inline w-auto'}),
-        label="Filter by date"
+        label=_("userLogsFilterByDate")
     )
     
 
