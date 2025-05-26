@@ -7,60 +7,115 @@
 <div class="modal fade" id="editDeductionModal{{ deduction.id }}" tabindex="-1" aria-labelledby="editDeductionModalLabel{{ deduction.id }}" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form id="editDeductionForm{{ deduction.id }}" method="POST" action="{% url 'recruiting_web:edit_deduction' deduction.id %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="button" class="btn btn-primary" onclick="submitEditDeductionForm({{ deduction.id }})">Save</button>
-    </form>
-    
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="editDeductionModalLabel{{ deduction.id }}">
+          {% trans "Edit Deduction" %}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+      </div>
+
+      <div class="modal-body">
+        <form id="editDeductionForm{{ deduction.id }}" method="POST" action="{% url 'recruiting_web:edit_deduction' deduction.id %}">
+            {% csrf_token %}
+            
+            <!-- Role field (readonly using hidden input technique) -->
+            <div class="mb-3">
+              <label for="id_role{{ deduction.id }}" class="form-label">{% trans "roleDeductionsRole" %}</label>
+              <select id="id_role{{ deduction.id }}" class="form-control" disabled>
+                {% for role in roles %}
+                  <option value="{{ role.id }}" name="role" {% if role.id == deduction.role.id %}selected{% endif %}>
+                    {{ role.title }}
+                  </option>
+                {% endfor %}
+              </select>
+              <!-- Hidden input to include actual value in submission -->
+              <input type="hidden" name="role" value="{{ deduction.role.id }}">
+            </div>
+          
+            <!-- Description field -->
+            <div class="mb-3">
+              <label for="id_description{{ deduction.id }}" class="form-label">{% trans "roleDeductionsDescription" %}</label>
+              <textarea id="id_description{{ deduction.id }}" name="description" class="form-control" required rows="5">{{ deduction.description }}</textarea>
+            </div>
+          
+            <!-- Deduction Amount field -->
+            <div class="mb-3">
+              <label for="id_deduction_amount{{ deduction.id }}" class="form-label">{% trans "roleDeductionsDeductionAmount" %}</label>
+              <input type="number" id="id_deduction_amount{{ deduction.id }}" name="deduction_amount" class="form-control" step="0.01" required value="{{ deduction.deduction_amount }}">
+            </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+        <button type="button" class="btn btn-primary" onclick="submitEditDeductionForm('{{ deduction.id }}')">
+          {% trans "Save changes" %}
+        </button>
+      </div>
+
     </div>
   </div>
 </div>
+
+<!-- JavaScript to handle form submission -->
 <script>
   function getCookie(name) {
       let cookieValue = null;
       if (document.cookie && document.cookie !== '') {
           const cookies = document.cookie.split(';');
-          for (const cookie of cookies) {
-              const trimmed = cookie.trim();
-              if (trimmed.startsWith(name + '=')) {
-                  cookieValue = decodeURIComponent(trimmed.substring(name.length + 1));
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                   break;
               }
           }
       }
       return cookieValue;
   }
-  
-  function submitEditDeductionForm(deductionId) {
-      const form = document.getElementById(editDeductionForm${deductionId});
-      const url = form.action;
-      const formData = new FormData(form);
-      const csrftoken = getCookie('csrftoken');
-  
-      fetch(url, {
-          method: 'POST',
-          headers: {
-              'X-CSRFToken': csrftoken,
-          },
-          body: formData,
-          credentials: 'same-origin'  // ✅ very important for CSRF protection
-      })
-      .then(response => {
-          if (response.ok) {
-              location.reload();  // Or close modal
-          } else {
-              return response.text().then(text => {
-                  console.error("Form failed", text);
-                  alert("Submission failed. See console for details.");
-              });
-          }
-      })
-      .catch(err => {
-          console.error("Fetch error", err);
-      });
-  }
-  </script>
-  
 
+  function submitEditDeductionForm(deductionId) {
+    const form = document.getElementById(`editDeductionForm${deductionId}`);
+    const url = form.action;
+    const csrftoken = getCookie('csrftoken');
+
+    const description = document.getElementById('id_description' + deductionId).value;
+    const deduction_amount = document.getElementById('id_deduction_amount' + deductionId).value;
+    const role = document.getElementById('id_role' + deductionId).value;
+
+    const formData = new FormData();
+    formData.append('description', description);
+    formData.append('deduction_amount', deduction_amount);
+    formData.append('role', role);
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        body: formData,
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if (response.ok) {
+            const modal = bootstrap.Modal.getInstance(document.getElementById(`editDeductionModal${deductionId}`));
+            if (modal) {
+                modal.hide();
+            }
+            location.reload();
+        } else {
+            return response.text().then(text => {
+                console.error("Form submission failed:", text);
+                alert("Error submitting form. See console for details.");
+            });
+        }
+    })
+    .catch(err => {
+        console.error("Fetch error:", err);
+        alert("An error occurred. Please try again.");
+    });
+}
+
+</script>
 {% endif %}

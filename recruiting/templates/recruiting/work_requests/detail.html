@@ -527,12 +527,14 @@
               <th>
                {% translate "joDetailsDeductionsDeductionAmount" %}
               </th>
+              <th>
+                {% translate "Actions" %}
+               </th>
              </tr>
             </thead>
             <tbody>
               {% for deduction in role_deductions|get_item:role.id %}
                 <tr>
-                  <td>{{ deduction.id }}</td>
                   <td>{{ deduction.description }}</td>
                   <td>${{ deduction.deduction_amount }}</td>
                   <td>
