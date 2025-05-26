@@ -1,0 +1,83 @@
+
+{% load static %}
+{% load i18n %}
+{% load user_role_tags %}
+
+<div class="modal fade" id="workerShortlistModal{{ worker.id }}" tabindex="-1" aria-labelledby="workerShortlistModalLabel{{ worker.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="workerShortlistModalLabel{{ worker.id }}">
+                    {% translate "workersListAssignWorker" %}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'workersListClose' %}"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'recruiting_web:assign_worker' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="worker_ids" value="{{ worker.id }}">
+
+                    <!-- Work Request Dropdown -->
+                    <div class="form-group">
+                        <label for="modal_work_request_{{ worker.id }}">{% translate "workersListWorkRequest" %}</label>
+                        <select class="form-control" id="modal_work_request_{{ worker.id }}" name="work_request" required>
+                            <option value="">{% translate "workersListSelectAWorkRequest" %}</option>
+                            {% for work_request in work_requests %}
+                                <option value="{{ work_request.id }}">{{ work_request.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Role Dropdown -->
+                    <div class="form-group mt-3">
+                        <label for="modal_role_{{ worker.id }}">{% translate "workersListRole" %}</label>
+                        <select class="form-control" id="modal_role_{{ worker.id }}" name="role">
+                            <option value="">{% translate "workersListSelectARole" %}</option>
+                        </select>
+                    </div>
+                    <input type="hidden" id="modal_status" name="status" value="assigned">
+
+                    <!-- Submit Button -->
+                    <div class="form-group text-end mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            {% translate "workersListAssign" %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const workRequestSelect = document.getElementById('modal_work_request_{{ worker.id }}');
+    const roleSelect = document.getElementById('modal_role_{{ worker.id }}');
+
+    workRequestSelect.addEventListener('change', function() {
+        const workRequestId = this.value;
+        if (workRequestId) {
+            fetch(`/workers/get-roles-for-work-request/${workRequestId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    // Clear existing options
+                    roleSelect.innerHTML = '<option value="">{% translate "workersListSelectARole" %}</option>';
+
+                    // Add new options
+                    data.roles.forEach(role => {
+                        const option = document.createElement('option');
+                        option.value = role.id;
+                        option.textContent = role.title;
+                        roleSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching roles:', error));
+        } else {
+            // Clear the roles dropdown if no work request is selected
+            roleSelect.innerHTML = '<option value="">{% translate "workersListSelectARole" %}</option>';
+        }
+    });
+});
+</script>
+{% endblock scripts %}
