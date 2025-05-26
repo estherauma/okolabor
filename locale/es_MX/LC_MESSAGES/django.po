@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-26 13:13+0300\n"
+"POT-Creation-Date: 2025-05-26 14:19+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -931,7 +931,6 @@ msgstr ""
 #: recruiting/forms.py:108
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:116
 #: recruiting/templates/recruiting/relationship/recruiter_status_list.html:34
-#: recruiting/templates/recruiting/work_requests/allworkers/allworkers.html:29
 #: recruiting/templates/recruiting/work_requests/shortlist/shortlist.html:37
 msgid "Status"
 msgstr ""
@@ -2215,16 +2214,51 @@ msgid "joDetailsHoursSave"
 msgstr "Ahorrar"
 
 #: recruiting/templates/recruiting/work_requests/allworkers/allworkers.html:8
-msgid "addToShortlist"
-msgstr ""
+msgid "workRequestAddWorkerAddToShortlist"
+msgstr "Añadir a la lista de favoritos"
 
 #: recruiting/templates/recruiting/work_requests/allworkers/allworkers.html:22
-#: recruiting/templates/recruiting/work_requests/offersent/offersent.html:22
-#: recruiting/templates/recruiting/work_requests/shortlist/shortlist.html:29
-msgid "checkbox"
-msgstr ""
+msgid "workRequestAddWorkerCheckbox"
+msgstr "Caja"
 
 #: recruiting/templates/recruiting/work_requests/allworkers/allworkers.html:23
+msgid "workRequestAddWorkerName"
+msgstr "Nombre"
+
+#: recruiting/templates/recruiting/work_requests/allworkers/allworkers.html:24
+msgid "workRequestAddWorkerTown"
+msgstr "Ciudad"
+
+#: recruiting/templates/recruiting/work_requests/allworkers/allworkers.html:25
+msgid "workRequestAddWorkerProfileCompletion"
+msgstr "Completar perfil"
+
+#: recruiting/templates/recruiting/work_requests/allworkers/allworkers.html:26
+msgid "workRequestAddWorkerExperience"
+msgstr "Experiencia"
+
+#: recruiting/templates/recruiting/work_requests/allworkers/allworkers.html:27
+msgid "workRequestAddWorkerEnglishProficiency"
+msgstr "Dominio del inglés"
+
+#: recruiting/templates/recruiting/work_requests/allworkers/allworkers.html:28
+msgid "workRequestAddWorkerLocationPreference"
+msgstr "Preferencia de ubicación"
+
+#: recruiting/templates/recruiting/work_requests/allworkers/allworkers.html:29
+msgid "workRequestAddWorkerStatus"
+msgstr "Estado"
+
+#: recruiting/templates/recruiting/work_requests/allworkers/allworkers.html:65
+#: recruiting/templates/recruiting/work_requests/allworkers/allworkers.html:68
+msgid "workRequestAddWorkerPrevious"
+msgstr "Previo"
+
+#: recruiting/templates/recruiting/work_requests/allworkers/allworkers.html:81
+#: recruiting/templates/recruiting/work_requests/allworkers/allworkers.html:84
+msgid "workRequestAddWorkerNext"
+msgstr "Próximo"
+
 #: recruiting/templates/recruiting/work_requests/cancelled/cancelled.html:7
 #: recruiting/templates/recruiting/work_requests/confirmed/confirmed.html:21
 #: recruiting/templates/recruiting/work_requests/offersent/offersent.html:23
@@ -2232,7 +2266,6 @@ msgstr ""
 msgid "name"
 msgstr ""
 
-#: recruiting/templates/recruiting/work_requests/allworkers/allworkers.html:24
 #: recruiting/templates/recruiting/work_requests/cancelled/cancelled.html:9
 #: recruiting/templates/recruiting/work_requests/confirmed/confirmed.html:23
 #: recruiting/templates/recruiting/work_requests/offersent/offersent.html:25
@@ -2240,7 +2273,6 @@ msgstr ""
 msgid "town"
 msgstr ""
 
-#: recruiting/templates/recruiting/work_requests/allworkers/allworkers.html:25
 #: recruiting/templates/recruiting/work_requests/cancelled/cancelled.html:10
 #: recruiting/templates/recruiting/work_requests/confirmed/confirmed.html:24
 #: recruiting/templates/recruiting/work_requests/offersent/offersent.html:26
@@ -2248,7 +2280,6 @@ msgstr ""
 msgid "profileCompletion"
 msgstr ""
 
-#: recruiting/templates/recruiting/work_requests/allworkers/allworkers.html:26
 #: recruiting/templates/recruiting/work_requests/cancelled/cancelled.html:11
 #: recruiting/templates/recruiting/work_requests/confirmed/confirmed.html:25
 #: recruiting/templates/recruiting/work_requests/offersent/offersent.html:27
@@ -2256,7 +2287,6 @@ msgstr ""
 msgid "experience"
 msgstr ""
 
-#: recruiting/templates/recruiting/work_requests/allworkers/allworkers.html:27
 #: recruiting/templates/recruiting/work_requests/cancelled/cancelled.html:12
 #: recruiting/templates/recruiting/work_requests/confirmed/confirmed.html:26
 #: recruiting/templates/recruiting/work_requests/offersent/offersent.html:28
@@ -2264,7 +2294,6 @@ msgstr ""
 msgid "englishProficiency"
 msgstr ""
 
-#: recruiting/templates/recruiting/work_requests/allworkers/allworkers.html:28
 #: recruiting/templates/recruiting/work_requests/cancelled/cancelled.html:13
 #: recruiting/templates/recruiting/work_requests/confirmed/confirmed.html:27
 #: recruiting/templates/recruiting/work_requests/offersent/offersent.html:29
@@ -2321,7 +2350,6 @@ msgid "Select a role"
 msgstr ""
 
 #: recruiting/templates/recruiting/work_requests/confirmed/confirmed.html:79
-#: recruiting/templates/recruiting/work_requests/create_addworker.html:33
 #: recruiting/templates/recruiting/work_requests/offersent/offersent.html:83
 #: recruiting/templates/recruiting/work_requests/shortlist/shortlist.html:88
 #: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:31
@@ -2341,25 +2369,44 @@ msgid "createJobOrderSubmit"
 msgstr "Entregar"
 
 #: recruiting/templates/recruiting/work_requests/create_addworker.html:25
-#: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:24
-#: recruiting/templates/recruiting/workers/detail.html:29
-msgid "workerDetailsBack"
+msgid "workRequestAddWorkerBack"
 msgstr "Atrás"
 
+#: recruiting/templates/recruiting/work_requests/create_addworker.html:33
+msgid "workRequestAddWorkerAddWorkers"
+msgstr "Agregar trabajadores"
+
+#: recruiting/templates/recruiting/work_requests/create_addworker.html:38
+#: recruiting/templates/recruiting/work_requests/create_addworker.html:172
+msgid "workRequestAddWorkerShortlist"
+msgstr "Lista corta"
+
+#: recruiting/templates/recruiting/work_requests/create_addworker.html:39
+#: recruiting/templates/recruiting/work_requests/create_addworker.html:173
+msgid "workRequestAddWorkerOfferSent"
+msgstr "Oferta enviada"
+
+#: recruiting/templates/recruiting/work_requests/create_addworker.html:40
+#: recruiting/templates/recruiting/work_requests/create_addworker.html:174
+msgid "workRequestAddWorkerConfirmed"
+msgstr "Confirmado"
+
+#: recruiting/templates/recruiting/work_requests/create_addworker.html:41
+#: recruiting/templates/recruiting/work_requests/create_addworker.html:175
+msgid "workRequestAddWorkerCancelled"
+msgstr "Cancelado"
+
 #: recruiting/templates/recruiting/work_requests/create_addworker.html:50
-#: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:51
-msgid "advancedFilter"
-msgstr ""
+msgid "workRequestAddWorkerAdvancedFilter"
+msgstr "Filtro avanzado"
 
 #: recruiting/templates/recruiting/work_requests/create_addworker.html:60
-#: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:62
-msgid "selectPrimaryJobExperience"
+msgid "workRequestAddWorkerSelectPrimaryJobExperience"
 msgstr "Seleccione su experiencia laboral principal"
 
 #: recruiting/templates/recruiting/work_requests/create_addworker.html:64
-#: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:66
-msgid "what'sThis?"
-msgstr ""
+msgid "workRequestAddWorkerwhat'sThis"
+msgstr "¿Qué es esto?"
 
 #: recruiting/templates/recruiting/work_requests/create_addworker.html:86
 #: recruiting/templates/recruiting/work_requests/create_addworker.html:122
@@ -2370,40 +2417,18 @@ msgid "x"
 msgstr ""
 
 #: recruiting/templates/recruiting/work_requests/create_addworker.html:96
-msgid "addAnotherExperience"
-msgstr ""
+#: recruiting/templates/recruiting/work_requests/create_addworker.html:130
+msgid "workRequestAddWorkerAddAnotherExperience"
+msgstr "Añade otra experiencia"
 
 #: recruiting/templates/recruiting/work_requests/create_addworker.html:103
 #: recruiting/templates/recruiting/work_requests/create_addworker.html:135
-#: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:123
-msgid "furtherFilters"
-msgstr ""
-
-#: recruiting/templates/recruiting/work_requests/create_addworker.html:130
-msgid "addAnotherExperiences1"
-msgstr ""
+msgid "workRequestAddWorkerFurtherFilters"
+msgstr "Más filtros"
 
 #: recruiting/templates/recruiting/work_requests/create_addworker.html:171
-msgid "allWorkers"
-msgstr ""
-
-#: recruiting/templates/recruiting/work_requests/create_addworker.html:172
-#: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:153
-msgid "shortlist"
-msgstr ""
-
-#: recruiting/templates/recruiting/work_requests/create_addworker.html:173
-msgid "offerSent"
-msgstr ""
-
-#: recruiting/templates/recruiting/work_requests/create_addworker.html:174
-#: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:163
-msgid "confirmed"
-msgstr ""
-
-#: recruiting/templates/recruiting/work_requests/create_addworker.html:175
-msgid "cancelled"
-msgstr ""
+msgid "workRequestAddWorkerAllWorkers"
+msgstr "Todos los trabajadores"
 
 #: recruiting/templates/recruiting/work_requests/create_deductions.html:4
 msgid "roleDeductionsRoleDeductions"
@@ -3152,8 +3177,30 @@ msgstr "Empleador"
 msgid "cancelOffer"
 msgstr ""
 
+#: recruiting/templates/recruiting/work_requests/offersent/offersent.html:22
+#: recruiting/templates/recruiting/work_requests/shortlist/shortlist.html:29
+msgid "checkbox"
+msgstr ""
+
 #: recruiting/templates/recruiting/work_requests/shortlist/shortlist.html:20
 msgid "sendOffer"
+msgstr ""
+
+#: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:24
+#: recruiting/templates/recruiting/workers/detail.html:29
+msgid "workerDetailsBack"
+msgstr "Atrás"
+
+#: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:51
+msgid "advancedFilter"
+msgstr ""
+
+#: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:62
+msgid "selectPrimaryJobExperience"
+msgstr "Seleccione su experiencia laboral principal"
+
+#: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:66
+msgid "what'sThis?"
 msgstr ""
 
 #: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:91
@@ -3164,8 +3211,20 @@ msgstr ""
 msgid "addAnotherExperiences"
 msgstr ""
 
+#: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:123
+msgid "furtherFilters"
+msgstr ""
+
+#: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:153
+msgid "shortlist"
+msgstr ""
+
 #: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:158
 msgid "offersent"
+msgstr ""
+
+#: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:163
+msgid "confirmed"
 msgstr ""
 
 #: recruiting/templates/recruiting/work_requests/workrequest_details.html:20

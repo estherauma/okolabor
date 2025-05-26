@@ -22,7 +22,7 @@
                 <a class="white-color" href="{% url 'recruiting_web:workrequest_detail' pk=work_request.pk %}">
                     <i class="mdi mdi-arrow-left white-color fs-5"></i>
                     <span class="white-color">
-                        {% translate "workerDetailsBack" %}
+                        {% translate "workRequestAddWorkerBack" %}
                     </span>
                 </a>
                 
@@ -30,15 +30,15 @@
 
             <!-- Header Section -->
             <div class="container text-center mt-3">
-                <h3>{% translate "addWorkers" %}: {{ role.title }}</h3>
+                <h3>{% translate "workRequestAddWorkerAddWorkers" %}: {{ role.title }}</h3>
                 <select class="form-select w-auto mx-auto mt-2">
                     <option selected>{{role.title}}</option>
                 </select>
                 <div class="mt-2">
-                    <span class="badge bg-success">Shortlist: {{ shortlisted_count }}</span>
-                    <span class="badge bg-warning">Offer Sent: {{ offersent_count }}</span>
-                    <span class="badge bg-primary">Confirmed: {{ confirmed_count }}</span>
-                    <span class="badge bg-danger">Cancelled: {{ cancelled_count }}</span>
+                    <span class="badge bg-success">{% translate "workRequestAddWorkerShortlist"%}: {{ shortlisted_count }}</span>
+                    <span class="badge bg-warning">{% translate "workRequestAddWorkerOfferSent"%}: {{ offersent_count }}</span>
+                    <span class="badge bg-primary">{% translate "workRequestAddWorkerConfirmed"%}: {{ confirmed_count }}</span>
+                    <span class="badge bg-danger">{% translate "workRequestAddWorkerCancelled"%}: {{ cancelled_count }}</span>
                 </div>
             </div>
         </div>
@@ -47,7 +47,7 @@
     <div class="d-flex justify-content-between">
         <button class="btn green-color-workers">
             <i aria-hidden="true" class="fa fa-filter"></i>
-            {% translate "advancedFilter" %}
+            {% translate "workRequestAddWorkerAdvancedFilter" %}
         </button>
         <button aria-controls="collapsewithbutton" aria-expanded="false" class="btn green-color-workers collapsed toggle-sign" data-bs-target="#collapseCard" data-bs-toggle="collapse" type="button">
             <span class="sign medium-font">+</span>
@@ -57,11 +57,11 @@
         <div class="card offwhite-color card-body">
             <span class="d-flex align-items-center">
                 <h3 class="card-title green-color d-contents">
-                    {% translate "selectPrimaryJobExperience" %}
+                    {% translate "workRequestAddWorkerSelectPrimaryJobExperience" %}
                 </h3>
                 <button class="btn btn-link green-color-workers" data-bs-placement="top" data-bs-toggle="tooltip" title="Fill in the fields to add job experience">
                     <i aria-hidden="true" class="fa fa-question-circle-o"></i>
-                    {% translate "what'sThis?" %}
+                    {% translate "workRequestAddWorkerwhat'sThis" %}
                 </button>
             </span>
               <div id="form-container">
@@ -93,14 +93,14 @@
                     <!-- Add Another Filter Button -->
                     <button class="btn light-green-button min-content-width mt-3" type="button" onclick="addAnotherExperience()">
                         <span><i class="fe fe-plus"></i></span>
-                        {% translate "addAnotherExperience" %}
+                        {% translate "workRequestAddWorkerAddAnotherExperience" %}
                     </button>
             
                     <!-- Additional Filters Section (Previously separate) -->
                     <div class="form-row align-items-center">
                         <span class="mt-5 ms-2 mb-3">
                             <h3 class="card-title green-color d-contents">
-                                {% translate "furtherFilters" %}
+                                {% translate "workRequestAddWorkerFurtherFilters" %}
                             </h3>
                         </span>
                     </div>
@@ -127,12 +127,12 @@
             <a class="btn light-green-button min-content-width" href="{% url 'recruiting_web:workrequest_create' %}">
                 <span><i class="fe fe-plus"></i></span>
 
-                {% translate "addAnotherExperiences1" %}
+                {% translate "workRequestAddWorkerAddAnotherExperience" %}
             </a>
             <div class="form-row align-items-center">
                 <span class="mt-5 ms-2 mb-3">
                     <h3 class="card-title green-color d-contents">
-                        {% translate "furtherFilters" %}
+                        {% translate "workRequestAddWorkerFurtherFilters" %}
                     </h3>
                 </span>
 
@@ -168,11 +168,11 @@
                 <div class="card-body">
                     <div class="card-workers">
                         <ul class="tabs-menu nav">
-                            <li class=""><a href="#tab1" class="active" data-bs-toggle="tab">{% translate "allWorkers" %}</a></li>
-                            <li><a href="#tab2" data-bs-toggle="tab" class="">{% translate "shortlist" %}</a></li>
-                            <li><a href="#tab3" data-bs-toggle="tab" class="">{% translate "offerSent" %}</a></li>
-                            <li><a href="#tab4" data-bs-toggle="tab" class="">{% translate "confirmed" %}</a></li>
-                            <li><a href="#tab5" data-bs-toggle="tab" class="">{% translate "cancelled" %}</a></li>
+                            <li class=""><a href="#tab1" class="active" data-bs-toggle="tab">{% translate "workRequestAddWorkerAllWorkers" %}</a></li>
+                            <li><a href="#tab2" data-bs-toggle="tab" class="">{% translate "workRequestAddWorkerShortlist" %}</a></li>
+                            <li><a href="#tab3" data-bs-toggle="tab" class="">{% translate "workRequestAddWorkerOfferSent" %}</a></li>
+                            <li><a href="#tab4" data-bs-toggle="tab" class="">{% translate "workRequestAddWorkerConfirmed" %}</a></li>
+                            <li><a href="#tab5" data-bs-toggle="tab" class="">{% translate "workRequestAddWorkerCancelled" %}</a></li>
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane active show" id="tab1">
