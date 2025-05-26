@@ -32,3 +32,15 @@ document.addEventListener("DOMContentLoaded", function() {
    
     updateAssignButtonState();
 });
+
+$(document).ready(function () {
+    // Fix for select2 inside bootstrap modal
+    $.fn.modal.Constructor.prototype._enforceFocus = function() {};
+
+    $('#modal_work_request').select2({
+        placeholder: "{{ _('workersListSelectAWorkRequest') }}",
+        width: '100%',
+        allowClear: true,
+        minimumResultsForSearch: 0
+    });
+});

@@ -130,11 +130,68 @@
     
             
     </div>
+
+    <div class="modal fade" id="columnSettingsModal" tabindex="-1" aria-labelledby="columnSettingsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="columnSettingsModalLabel">{% translate "Select Columns to Display" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'Close' %}"></button>
+      </div>
+      <div class="modal-body">
+        <form id="column-settings-form">
+          <div class="form-check">
+            <input class="form-check-input column-toggle" type="checkbox" value="1" checked id="col-name">
+            <label class="form-check-label" for="col-name">{% translate "workersListName" %}</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input column-toggle" type="checkbox" value="2" checked id="col-town">
+            <label class="form-check-label" for="col-town">{% translate "workersListTown" %}</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input column-toggle" type="checkbox" value="3" checked id="col-profile">
+            <label class="form-check-label" for="col-profile">{% translate "workersListProfileCompletion" %}</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input column-toggle" type="checkbox" value="4" checked id="col-experience">
+            <label class="form-check-label" for="col-experience">{% translate "workersListExperience" %}</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input column-toggle" type="checkbox" value="5" checked id="col-english">
+            <label class="form-check-label" for="col-english">{% translate "workersListEnglishProficiency" %}</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input column-toggle" type="checkbox" value="6" checked id="col-location">
+            <label class="form-check-label" for="col-location">{% translate "workersListLocationPreference" %}</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input column-toggle" type="checkbox" value="7" checked id="col-offer">
+            <label class="form-check-label" for="col-offer">{% translate "workersListOfferStatus" %}</label>
+          </div>
+          {% if request.user|has_group:"admin" %}
+          <div class="form-check">
+            <input class="form-check-input column-toggle" type="checkbox" value="8" checked id="col-actions">
+            <label class="form-check-label" for="col-actions">{% translate "workersListActions" %}</label>
+          </div>
+          {% endif %}
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Close" %}</button>
+        <button type="button" class="btn btn-primary" id="apply-column-settings">{% translate "Apply" %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
     <div class="row row-sm">
         <div class="col-lg-12">
             <div class="row mb-2">
                 <div class="col-md-11 col-sm-11 col-xs-12">
                     <div class="d-flex align-items-center justify-content-end">
+                         <button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnSettingsModal">
+                            <i aria-hidden="true" class="fa fa-cog"></i>
+                        </button>
                         <p class="theading-color show-text show-text">
                             {% translate "workersListShowResults" %}
                         </p>
@@ -154,10 +211,7 @@
                             <span><i class="fe fe-plus"></i></span>
                             {% translate "workersListAddWorker" %}
                         </a>
-                        <a class="btn dark-green-button ms-3" href="{% url 'recruiting_web:export-workers' %}">
-                            <span><i class="fa fa-upload me-1"></i></span>
-                            {% translate "workersListExportWorkers"%}
-                        </a>
+                        
                     </div>
                 </div>
             </div>
@@ -168,15 +222,15 @@
                             <thead>
                                 <tr>
                                     <th class="theading-color">{% translate "workersListCheckbox" %}</th>
-                                    <th class="theading-color">{% translate "workersListName" %}</th>
-                                    <th class="theading-color">{% translate "workersListTown" %}</th>
-                                    <th class="theading-color">{% translate "workersListProfileCompletion" %}</th>
-                                    <th class="theading-color">{% translate "workersListExperience" %}</th>
-                                    <th class="theading-color">{% translate "workersListEnglishProficiency" %}</th>
-                                    <th class="theading-color">{% translate "workersListLocationPreference" %}</th>
-                                    <th class="theading-color">{% translate "workersListOfferStatus" %}</th>
+                                    <th class="col-name">{% translate "workersListName" %}</th>
+                                    <th class="col-town">{% translate "workersListTown" %}</th>
+                                    <th class="col-profile">{% translate "workersListProfileCompletion" %}</th>
+                                    <th class="col-experience">{% translate "workersListExperience" %}</th>
+                                    <th class="col-english">{% translate "workersListEnglishProficiency" %}</th>
+                                    <th class="col-location">{% translate "workersListLocationPreference" %}</th>
+                                    <th class="col-offer">{% translate "workersListOfferStatus" %}</th>
                                     {% if request.user|has_group:"admin" %}
-                                        <th class="theading-color">
+                                        <th class="col-actions">
                                             {% translate "workersListActions" %}
                                         </th>
                                     {% endif %}
@@ -190,7 +244,7 @@
                                     <td>
                                         <input type="checkbox" class="worker-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.first_name }} {{ worker.last_name }}">
                                     </td>
-                                    <td>
+                                    <td class="col-name">
                                         {% if worker.first_name and worker.last_name %}
                                             <a href="{{ worker.id }}">
                                                 {{ worker.first_name }} {{ worker.last_name }}
@@ -201,14 +255,14 @@
                                             </a>
                                         {% endif %}
                                     </td>
-                                    <td>{{ worker.town|default:"Not Provided" }}</td>
-                                    <td>{{ worker.profile_completion_percentage|default:0 }}</td>
-                                    <td>{{ worker.work_experience|default:"Not Provided" }}</td>
-                                    <td>{{ worker.english_proficiency|default:"Not Provided" }}</td>
-                                    <td>{{ worker.location_preference|default:"Not Provided" }}</td>
-                                    <td>{{ worker.latest_status }}</td>
+                                    <td class="col-town">{{ worker.town|default:"Not Provided" }}</td>
+                                    <td class="col-profile">{{ worker.profile_completion_percentage|default:0 }}</td>
+                                    <td class="col-experience">{{ worker.work_experience|default:"Not Provided" }}</td>
+                                    <td class="col-english">{{ worker.english_proficiency|default:"Not Provided" }}</td>
+                                    <td class="col-location">{{ worker.location_preference|default:"Not Provided" }}</td>
+                                    <td class="col-offer">{{ worker.latest_status }}</td>
                                     {% if request.user|has_group:"admin" %}
-                                        <td>
+                                        <td class="col-actions">
                                         <i
                                             class="fa fa-trash text-danger"
                                             style="cursor: pointer;"
@@ -427,4 +481,29 @@
 <script src="{% static ''%}assets/js/worker-assignment.js"></script>
 <script src="{% static ''%}assets/js/get-roles.js"></script>
 <script src="{% static ''%}assets/js/dynamic_filter.js"></script>
+<script>
+    document.getElementById('apply-column-settings').addEventListener('click', function () {
+        document.querySelectorAll('.column-toggle').forEach(function (checkbox) {
+            const colIndex = checkbox.value;
+            const isVisible = checkbox.checked;
+
+            const columnClass = [
+                'col-name',
+                'col-town',
+                'col-profile',
+                'col-experience',
+                'col-english',
+                'col-location',
+                'col-offer',
+                'col-actions'
+            ][colIndex - 1];
+            document.querySelectorAll(`.${columnClass}`).forEach(el => {
+                el.style.display = isVisible ? '' : 'none';
+            });
+        });
+        var modal = bootstrap.Modal.getInstance(document.getElementById('columnSettingsModal'));
+        modal.hide();
+    });
+</script>
+
 {% endblock scripts %}

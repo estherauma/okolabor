@@ -845,10 +845,8 @@ class WorkRequestDetailView(View):
         roles_qs_raw = work_request.roles.filter(
                 deleted_at__isnull=True,
             )
-        print(roles_qs_raw, "roles_qs_raw")
         roles_qs = [role for role in roles_qs_raw if hasattr(role, 'hours') and role.hours.deleted_at is None]
 
-        print(roles_qs, "roles_qs")
         role_forms = {
             role.id: WorkRequestRoleForm(instance=role)
             for 
@@ -881,9 +879,6 @@ class WorkRequestDetailView(View):
             for role in roles_qs
             if hasattr(role, 'qualifications') and role.qualifications and role.qualifications.deleted_at is None
         }
-        print(qualification_forms,"qualificat")
-                    
-
 
 
         context = {

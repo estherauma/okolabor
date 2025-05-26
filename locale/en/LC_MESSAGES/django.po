@@ -70,56 +70,71 @@ msgstr "Email"
 msgid "accountLanguage"
 msgstr "Language"
 
+#: account/forms/filter_logs.py:9
+msgid "userLogsToday"
+msgstr "Today"
+
+#: account/forms/filter_logs.py:10
+msgid "userLogsLast7Days"
+msgstr "Last 7 Days"
+
+#: account/forms/filter_logs.py:11
+msgid "userLogsThisMonth"
+msgstr "This Month"
+
+#: account/forms/filter_logs.py:15
+msgid "userLogsFilterByDate"
+msgstr "Filter By Date"
+
 #: account/templates/activity_log.html:6
-#: theme/templates/components/layouts/vertical/app-sidebar.html:61
-msgid "userLogs"
+msgid "userLogsUserLogs"
 msgstr "User Logs"
 
 #: account/templates/activity_log.html:16
-msgid "searchUserLogs"
-msgstr ""
+msgid "userLogsSearchUserLogs"
+msgstr "Search User Logs"
 
 #: account/templates/activity_log.html:26
-msgid "users"
-msgstr ""
+msgid "userLogsUsers"
+msgstr "Users"
 
 #: account/templates/activity_log.html:31
 #: account/templates/activity_log.html:53
 #: account/templates/activity_log.html:75
-msgid "option1"
-msgstr ""
+msgid "userLogsOption1"
+msgstr "Option 1"
 
 #: account/templates/activity_log.html:36
 #: account/templates/activity_log.html:58
 #: account/templates/activity_log.html:80
-msgid "option2"
-msgstr ""
+msgid "userLogsOption2"
+msgstr "Option 2"
 
 #: account/templates/activity_log.html:41
 #: account/templates/activity_log.html:63
 #: account/templates/activity_log.html:85
-msgid "option3"
-msgstr ""
+msgid "userLogsOption3"
+msgstr "Option 3"
 
 #: account/templates/activity_log.html:48
-msgid "days"
-msgstr ""
+msgid "userLogsDays"
+msgstr "Days"
 
 #: account/templates/activity_log.html:70
-msgid "actionType"
-msgstr ""
+msgid "userLogsActionType"
+msgstr "Action Type"
 
 #: account/templates/activity_log.html:100
-msgid "latest"
-msgstr ""
+msgid "userLogsLatest"
+msgstr "Latest"
 
 #: account/templates/activity_log.html:104
-msgid "timestamp"
-msgstr ""
+msgid "userLogsTimestamp"
+msgstr "Timestamp"
 
 #: account/templates/activity_log.html:107
-msgid "action"
-msgstr ""
+msgid "userLogsAction"
+msgstr "Action"
 
 #: account/templates/employers/assign-employer-organization-modal.html:9
 #: account/templates/recruiter/recruiter_modals/assign-organization-modal.html:9
@@ -1417,6 +1432,30 @@ msgstr "Employer provided"
 msgid "roleHousingInformationRentalOrPublic"
 msgstr "Rental or public"
 
+#: recruiting/models.py:253
+msgid "createMessageWorkOrder"
+msgstr "Work Order"
+
+#: recruiting/models.py:254
+msgid "createMessageEmail"
+msgstr "Email"
+
+#: recruiting/models.py:264
+msgid "createMessageAll"
+msgstr "All"
+
+#: recruiting/models.py:265
+msgid "createMessageConfirmed"
+msgstr "Confirmed"
+
+#: recruiting/models.py:266
+msgid "createMessagePending"
+msgstr "Pending"
+
+#: recruiting/models.py:267
+msgid "createMessageShortlist"
+msgstr "Shortlist"
+
 #: recruiting/templates/recruiting/access_denied.html:5
 #: recruiting/templates/recruiting/access_denied.html:8
 msgid "accessDenied"
@@ -1784,8 +1823,8 @@ msgstr "New Message"
 
 #: recruiting/templates/recruiting/messages/create.html:23
 msgid ""
-"createMessageThenAShortNotificationMessageGoesHereWithActionButtonsBelow."
-msgstr ""
+"createMessageThenAShortNotificationMessageGoesHereWithActionButtonsBelow"
+msgstr "Then short notification goes here with a button below."
 
 #: recruiting/templates/recruiting/messages/create.html:40
 msgid "createMessageCancel"
@@ -4614,7 +4653,7 @@ msgstr ""
 msgid "planting"
 msgstr ""
 
-#: theme/forms.py:191 theme/forms.py:249
+#: theme/forms.py:191
 msgid "Cultivating"
 msgstr ""
 
@@ -4622,7 +4661,7 @@ msgstr ""
 msgid "cultivating"
 msgstr ""
 
-#: theme/forms.py:192 theme/forms.py:251
+#: theme/forms.py:192
 msgid "Harvesting"
 msgstr ""
 
@@ -4630,7 +4669,7 @@ msgstr ""
 msgid "harvesting"
 msgstr ""
 
-#: theme/forms.py:193 theme/forms.py:237
+#: theme/forms.py:193
 msgid "Packaging"
 msgstr ""
 
@@ -4638,7 +4677,7 @@ msgstr ""
 msgid "packaging"
 msgstr ""
 
-#: theme/forms.py:194 theme/forms.py:250
+#: theme/forms.py:194
 msgid "Grading and sorting"
 msgstr ""
 
@@ -4646,7 +4685,7 @@ msgstr ""
 msgid "gradingAndSorting"
 msgstr ""
 
-#: theme/forms.py:195 theme/forms.py:222 theme/forms.py:252 theme/forms.py:269
+#: theme/forms.py:195
 msgid "Other"
 msgstr ""
 
@@ -4683,84 +4722,173 @@ msgid "minimumExperience"
 msgstr ""
 
 #: theme/forms.py:216 theme/forms.py:267
-msgid "Animals"
-msgstr ""
+msgid "filterSectionAnimals"
+msgstr "Animals"
 
 #: theme/forms.py:217
-msgid "Construction"
-msgstr ""
+msgid "filterSectionConstruction"
+msgstr "Construction"
 
 #: theme/forms.py:218 theme/forms.py:268
-msgid "Crop and Horticulture"
-msgstr ""
+msgid "filterSectionCropAndHorticulture"
+msgstr "Crop and Horticulture"
 
 #: theme/forms.py:219
-msgid "Licensed Vehicle Operation"
-msgstr ""
+msgid "filterSectionLicensedVehicleOperation"
+msgstr "Licensed vehicle operation"
 
 #: theme/forms.py:220
-msgid "Mechanics"
-msgstr ""
+msgid "filterSectionMechanics"
+msgstr "Mechanics"
 
 #: theme/forms.py:221
-msgid "Worker Supervision/Management"
-msgstr ""
+msgid "filterSectionWorkerSupervision/Management"
+msgstr "Worker supervision/management"
+
+#: theme/forms.py:222 theme/forms.py:252 theme/forms.py:269
+msgid "filterSectionOther"
+msgstr "Other"
 
 #: theme/forms.py:227
-msgid "Animal Type"
-msgstr ""
+msgid "filterSectionAnimalType"
+msgstr "Animal Type"
 
 #: theme/forms.py:229
-msgid "Asses"
-msgstr ""
+msgid "filterSectionAsses"
+msgstr "Asses"
 
 #: theme/forms.py:230
-msgid "Bees"
-msgstr ""
+msgid "filterSectionBees"
+msgstr "Bees"
 
 #: theme/forms.py:231
-msgid "Buffalo"
-msgstr ""
+msgid "filterSectionBuffalo"
+msgstr "Buffalo"
 
 #: theme/forms.py:233 theme/forms.py:247 theme/forms.py:256 theme/forms.py:265
-msgid "Tasks"
-msgstr ""
+msgid "filterSectionTasks"
+msgstr "Tasks"
 
 #: theme/forms.py:235
-msgid "Breeding"
-msgstr ""
+msgid "filterSectionBreeding"
+msgstr "Breeding"
 
 #: theme/forms.py:236
-msgid "Caring"
-msgstr ""
+msgid "filterSectionCaring"
+msgstr "Caring"
+
+#: theme/forms.py:237
+msgid "filterSectionPackaging"
+msgstr "Packaging"
 
 #: theme/forms.py:241
-msgid "Crop Type"
-msgstr ""
+msgid "filterSectionCropType"
+msgstr "Crop Type"
 
 #: theme/forms.py:243
-msgid "Avocados"
-msgstr ""
+msgid "filterSectionAvocados"
+msgstr "Avocados"
 
 #: theme/forms.py:244
-msgid "Bananas"
-msgstr ""
+msgid "filterSectionBananas"
+msgstr "Bananas"
 
 #: theme/forms.py:245
-msgid "Brazil nuts"
-msgstr ""
+msgid "filterSectionBrazilNuts"
+msgstr "Brazil nuts"
+
+#: theme/forms.py:249
+msgid "filterSectionCultivating"
+msgstr "Cultivating"
+
+#: theme/forms.py:250
+msgid "filterSectionGradingAndSorting"
+msgstr "Grading and sorting"
+
+#: theme/forms.py:251
+msgid "filterSectionHarvesting"
+msgstr "Harvesting"
 
 #: theme/forms.py:258
-msgid "Car"
-msgstr ""
+msgid "filterSectionCar"
+msgstr "Car"
 
 #: theme/forms.py:259
-msgid "Agricultural Equipment/Machinery"
-msgstr ""
+msgid "filterSectionAgriculturalEquipment/Machinery"
+msgstr "Agricultural equipment/machinery"
 
 #: theme/forms.py:279
-msgid "Type / Sector"
-msgstr ""
+msgid "filterSectionType/Sector"
+msgstr "Type/Sector"
+
+#: theme/forms.py:322 theme/forms.py:345 theme/forms.py:366 theme/forms.py:387
+#: theme/forms.py:401 theme/forms.py:415 theme/forms.py:429
+msgid "filterSectionPleaseSelect..."
+msgstr "Please select..."
+
+#: theme/forms.py:323
+msgid "filterSectionFluent"
+msgstr "Fluent"
+
+#: theme/forms.py:324
+msgid "filterSectionAdvanced"
+msgstr "Advanced"
+
+#: theme/forms.py:325
+msgid "filterSectionIntermediate"
+msgstr "Intermediate"
+
+#: theme/forms.py:326
+msgid "filterSectionBasic"
+msgstr "Basic"
+
+#: theme/forms.py:330
+msgid "filterSectionEnglishProficiency"
+msgstr "English Proficiency"
+
+#: theme/forms.py:337
+msgid "filterSectionSelectAvilability"
+msgstr "Select availability"
+
+#: theme/forms.py:340
+msgid "filterSectionAvailability"
+msgstr "Availability"
+
+#: theme/forms.py:359 theme/forms.py:361
+msgid "filterSectionLocationPreference"
+msgstr "Location preference"
+
+#: theme/forms.py:380 theme/forms.py:382
+msgid "filterSectionDriverLicense"
+msgstr "Driver License"
+
+#: theme/forms.py:388 theme/forms.py:402 theme/forms.py:416
+msgid "filterSectionYes"
+msgstr "Yes"
+
+#: theme/forms.py:389 theme/forms.py:403 theme/forms.py:417
+msgid "filterSectionNo"
+msgstr "No"
+
+#: theme/forms.py:394 theme/forms.py:396
+msgid "filterSectionAbleToLift27kgs?"
+msgstr "Able to lift 27kgs?"
+
+#: theme/forms.py:408 theme/forms.py:410
+msgid "filterSectionWillSpendTimeOnFeet?"
+msgstr "Will spend time on feet?"
+
+#: theme/forms.py:422 theme/forms.py:424
+msgid "filterSectionWillWorkInHot&Cold?"
+msgstr "Will work in hot and cold?"
+
+#: theme/forms.py:430
+msgid "filterSectionPending"
+msgstr "Pending"
+
+#: theme/forms.py:435 theme/forms.py:437
+msgid "filterSectionOfferStatus"
+msgstr "Offer Status"
 
 #: theme/templates/components/footer.html:9
 msgid "footerCopyright©"
@@ -4801,6 +4929,10 @@ msgstr "Job Orders"
 #: theme/templates/components/layouts/vertical/app-sidebar.html:52
 msgid "recruitersList"
 msgstr "Recruiters List"
+
+#: theme/templates/components/layouts/vertical/app-sidebar.html:61
+msgid "userLogs"
+msgstr "User Logs"
 
 #: theme/templates/components/layouts/vertical/app-sidebar.html:68
 msgid "sideBarManageUsers"

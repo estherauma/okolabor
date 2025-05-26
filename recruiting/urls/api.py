@@ -1,7 +1,7 @@
 from django.urls import path
 
 from recruiting.views.api import (
-    EmployerAPIListView, RoleAPIListView, WorkRequestRoleDetailView, WorkRequestsAPIListView
+    EmployerAPIListView, RoleAPIListView, WorkRequestRoleDetailView, WorkRequestsAPIListView,AcceptRoleAPIView,RejectRoleAPIView
 )
 
 
@@ -14,4 +14,6 @@ urlpatterns = [
     path('roles/', RoleAPIListView.as_view(), name='role_list'),
     path('role/<pk>/details/',
          WorkRequestRoleDetailView.as_view(), name='role_details'),
+    path('roles/<str:role_id>/accept', AcceptRoleAPIView.as_view(), name='role-accept'),
+    path('roles/<str:role_id>/reject', RejectRoleAPIView.as_view(), name='role-reject'),
 ]
