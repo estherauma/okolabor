@@ -8,7 +8,7 @@ $(document).ready(function () {
                 "targets": '_all',
                 "orderable": true
             }],
-            "paging": false,
+            "paging": true,
             "info": false,
 
             // "language": {
@@ -31,6 +31,17 @@ $(document).ready(function () {
 
         // Special setting for #workrequest-datatable
         $('#workrequest-datatable, #employers-list-datatable, #logstable').DataTable({
+            "ordering": true,
+            "order": [],
+            "columnDefs": [{
+                "targets": '_all',
+                "orderable": true
+            }],
+            "paging": true,   
+            "info": true
+        });
+
+         $('#basic-datatable-workers').DataTable({
             "ordering": true,
             "order": [],
             "columnDefs": [{

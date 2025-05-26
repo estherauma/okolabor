@@ -14,21 +14,31 @@
 {% endblock styles %}
 
 {% block body %}
-<div class="container-fluid" style="position: relative; height: auto">
-    <div class="d-flex justify-content-between">
-        <button class="btn green-color-workers">
-            <i aria-hidden="true" class="fa fa-filter"></i>
-            {% translate "workersListAdvancedFilter" %}
-        </button>
-        <button aria-controls="collapsewithbutton"
-        aria-expanded="false"
-        class="btn green-color-workers collapsed toggle-sign"
-        data-bs-target="#collapseCard"
-        data-bs-toggle="collapse"
-        type="button">
-        <i class="bi bi-caret-down-fill fs-4"></i> 
-        </button>
-    </div>
+        <div class="container-fluid" style="position: relative; height: auto">
+            <div
+            style="background-color: #d4edda; cursor: pointer; border-radius: 0.5rem; padding: 1rem;"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapseCard"
+            aria-expanded="false"
+            aria-controls="collapseCard"
+        >
+            <div class="d-flex justify-content-between align-items-center">
+                <button
+                    class="btn green-color-workers"
+                    style="pointer-events: none;"
+                >
+                    <i class="fa fa-filter" aria-hidden="true"></i>
+                    {% translate "workersListAdvancedFilter" %}
+                </button>
+                <button
+                    class="btn green-color-workers toggle-sign collapsed"
+                    type="button"
+                    style="pointer-events: none;"
+                >
+                    <i class="bi bi-caret-down-fill fs-4"></i>
+                </button>
+            </div>
+        </div>
     <div class="collapse" id="collapseCard">
         <div class="card offwhite-color card-body">
             <span class="d-flex align-items-center">
@@ -192,7 +202,7 @@
                          <button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnSettingsModal">
                             <i aria-hidden="true" class="fa fa-cog"></i>
                         </button>
-                        <p class="theading-color show-text show-text">
+                        {% comment %} <p class="theading-color show-text show-text">
                             {% translate "workersListShowResults" %}
                         </p>
                         <div class="dropdown ms-3">
@@ -205,7 +215,7 @@
                                 <li><a class="dropdown-item" href="?page=1&search={{ request.GET.search }}&per_page=15">{% translate "workersListPerPage15" %}</a></li>
                                 <li><a class="dropdown-item" href="?page=1&search={{ request.GET.search }}&per_page=20">{% translate "workersListPerPage20" %}</a></li>
                             </ul>
-                        </div>
+                        </div> {% endcomment %}
                         <button class="btn dark-green-button ms-3" data-bs-toggle="modal" data-bs-target="#workerAssignmentModal" disabled>+{% translate "workersListAddTo" %}</button>
                         <a class="btn dark-green-button ms-3" href="{% url 'recruiting_web:recruiter_create_worker' %}">
                             <span><i class="fe fe-plus"></i></span>
@@ -221,7 +231,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table text-nowrap border-bottom" id="basic-datatable">
+                        <table class="table text-nowrap border-bottom" id="basic-datatable-workers">
                             <thead>
                                 <tr>
                                     <th class="theading-color">{% translate "workersListCheckbox" %}</th>
@@ -289,7 +299,7 @@
                         
                         
                     </div>
-                    <div class="pagination">
+                    {% comment %} <div class="pagination">
                         <span class="step-links">
                             {% if workers.has_previous %}
                                 <a href="?page={{ workers.previous_page_number }}&search={{ request.GET.search }}&per_page={{ request.GET.per_page }}">
@@ -315,7 +325,7 @@
                                 <span class="disabled"><span style="font-weight: bold;">{% translate "workersListNext"%}</span></span>
                             {% endif %}
                         </span>
-                    </div>
+                    </div> {% endcomment %}
                 </div>
             </div>
         </div>
