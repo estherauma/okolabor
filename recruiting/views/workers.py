@@ -262,40 +262,54 @@ class WorkerDeleteView(LoginRequiredMixin, View):
 class AssignWorkerView(View):
     def post(self, request):
         try:
-            worker_ids_str = request.POST.get("worker_ids")  
-            work_request_id = request.POST.get("work_request") 
-            role_id = request.POST.get("role") 
+            worker_ids_str = request.POST.get("worker_ids")
+            work_request_id = request.POST.get("work_request")
+            role_id = request.POST.get("role")
             status = request.POST.get("status", "Assigned")
 
             if not worker_ids_str or not work_request_id or not role_id:
-                messages.error(request, _("missingDataPleaseSelectWorkersWorkRequestAndRole"))
+                messages.error(request, _("Missing data. Please select workers, work request, and role."))
                 return JsonResponse({"success": False, "message": "Missing data"}, status=400)
 
-            worker_ids = worker_ids_str.split(",") 
+            worker_ids = worker_ids_str.split(",")
             work_request = get_object_or_404(WorkRequests, id=work_request_id)
             role = get_object_or_404(Role, id=role_id)
+
+            already_assigned_workers = []
+            newly_assigned_workers = []
 
             for worker_id in worker_ids:
                 worker = get_object_or_404(User, id=worker_id)
 
-                work_assignment, created = WorkAssignment.objects.get_or_create(
-                    worker=worker,
-                    role=role,
-                    defaults={'status': status, 'work_request': work_request}
+                existing_assignment = WorkAssignment.objects.filter(worker=worker, role=role).first()
+                if existing_assignment:
+                    already_assigned_workers.append(worker.get_full_name() or worker.username)
+                else:
+                    WorkAssignment.objects.create(
+                        worker=worker,
+                        role=role,
+                        work_request=work_request,
+                        status=status
+                    )
+                    newly_assigned_workers.append(worker.get_full_name() or worker.username)
+
+            if already_assigned_workers:
+                messages.warning(
+                    request,
+                    _("The following workers were already assigned: ") + ", ".join(already_assigned_workers)
                 )
 
-                if not created:
-                    work_assignment.status = status
-                    work_assignment.work_request = work_request
-                    work_assignment.save()
+            if newly_assigned_workers:
+                messages.success(
+                    request,
+                    _("The following workers have been successfully assigned: ") + ", ".join(newly_assigned_workers)
+                )
 
-            messages.success(request, _("workersAssignedSuccessfully!"))
             return redirect("recruiting_web:workers")
 
         except Exception as e:
             messages.error(request, f"Error: {str(e)}")
             return JsonResponse({"success": False, "message": str(e)}, status=400)
-
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -407,6 +421,7 @@ class WorkerDetailsView(View):
         language_options = static_content.get_english_proficiency_options()
         language_label = static_content.get_label_for_field("englishProficiency")
         context = {
+            'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
             'worker': worker,
             'preferences': preference_data,
             'workplaces': workplaces,
@@ -432,6 +447,7 @@ class WorkerDetailsView(View):
             'experience_forms': experience_forms
         }
         return render(request, 'recruiting/workers/detail.html', context)
+    
 class EditPreferenceView(View):
     def post(self, request, *args, **kwargs):
         worker_id = kwargs.get("worker_id")  # ✅ Gets the user ID from the URL
