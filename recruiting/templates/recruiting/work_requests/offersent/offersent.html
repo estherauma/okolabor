@@ -3,21 +3,25 @@
 {% load static %}
 <div class="tab-pane" id="tab3">
     <div class="table-responsive">
-        <div class="d-flex justify-content-end my-2">
+        <div class="d-flex justify-content-between mb-2">
+          <div>
             <button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnOfferSentSettingsModal">
-                <i aria-hidden="true" class="fa fa-cog"></i>
+                <i aria-hidden="true" class="fa fa-cog" style="color: #9A9898"></i>
             </button>
-          {% if request.user|has_group:"admin" or request.user|has_group:"recruiter_admin" or request.user|has_group:"recruiter" %}
-            <button class="btn btn-secondary ms-2" id="assignWorkRequestOfferBtn" style="display: none;">
-                <i class="fa fa-tasks me-1"></i>
-                {% translate "assignWorkRequest" %}
-            </button>
-              <button class="btn btn-warning" id="copyOfferBtn">
-                  <i class="fa fa-copy me-1"></i>
-                  {% translate "copyWorkers" %}
+          </div>
+          <div>
+            {% if request.user|has_group:"admin" or request.user|has_group:"recruiter_admin" or request.user|has_group:"recruiter" %}
+              <button class="btn dark-green-button ms-2" id="assignWorkRequestOfferBtn" style="display: none;">
+                  <i class="fa fa-tasks me-1"></i>
+                  {% translate "assignWorkRequest" %}
               </button>
-          {% endif %}
-            <button id="cancel-offer-btn" class="btn btn-danger">{% translate "cancelOffer"%}</button>
+                <button class="btn dark-green-button ms-3 ml-2" id="copyOfferBtn">
+                    <i class="fa fa-copy me-1"></i>
+                    {% translate "copyWorkers" %}
+                </button>
+            {% endif %}
+              <button id="cancel-offer-btn" class="btn dark-green-button ms-3">{% translate "cancelOffer"%}</button>
+          </div>
         </div>
 
 
@@ -71,7 +75,7 @@
     </div>
   </div>
 </div>
-        <table class="table text-nowrap border-bottom" id="offer-sent-table">
+        <table class="table text-nowrap border-bottom" id="basic-datatable">
             <thead>
             <tr>
                 <th class="theading-color">{% translate "workersListCheckbox" %}</th>

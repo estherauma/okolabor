@@ -2,17 +2,17 @@
 {% load user_role_tags %}
 {% load static %}
 <div class="tab-pane" id="tab2">
-  <div class="d-flex align-items-end justify-content-between mt-2 mb-2">
+  <div class="d-flex align-items-end justify-content-between mb-2">
        <button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnShortListSettingsModal">
-        <i aria-hidden="true" class="fa fa-cog"></i>
+        <i aria-hidden="true" class="fa fa-cog" style="color: #9A9898"></i>
     </button>
       <div>
         {% if request.user|has_group:"admin" or request.user|has_group:"recruiter_admin" or request.user|has_group:"recruiter" %}
-          <button class="btn btn-secondary ms-2" id="assignWorkRequestBtn" style="display: none;">
+          <button class="btn dark-green-button ms-2" id="assignWorkRequestBtn" style="display: none;">
             <i class="fa fa-tasks me-1"></i>
             {% translate "assignWorkRequest" %}
         </button>
-          <button class="btn btn-warning" id="copyBtn">
+          <button class="btn dark-green-button" id="copyBtn">
               <i class="fa fa-copy me-1"></i>
               {% translate "copyWorkers" %}
           </button>
