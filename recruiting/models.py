@@ -158,6 +158,9 @@ class Deduction(AuditableModel):
     )
     description = models.TextField()
     deduction_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    objects = SoftDeleteManager()
+    all_objects = models.Manager()
 
 
 class Qualification(AuditableModel):
