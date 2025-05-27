@@ -8,7 +8,7 @@ $(document).ready(function () {
                 "targets": '_all',
                 "orderable": true
             }],
-            "paging": false,
+            "paging": true,
             "info": false,
 
             // "language": {
