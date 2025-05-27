@@ -15,11 +15,15 @@
   
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          
+
+          {% if role.qualifications and role.qualifications.pk %}
           <form method="POST" action="{% url 'recruiting_web:delete-role-qualification' role.qualifications.pk %}">
             {% csrf_token %}
             <button type="submit" class="btn btn-danger">Delete</button>
           </form>
+          {% else %}
+          <p class="text-muted">No qualifications to delete.</p>
+          {% endif %}
         </div>
   
       </div>

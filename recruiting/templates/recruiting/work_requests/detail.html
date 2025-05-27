@@ -149,7 +149,7 @@
         <form method="POST" action="{% url 'recruiting_web:edit-role-hours' role.hours.id %}">
           {% csrf_token %}
           <div class="modal-header">
-            <h5 class="modal-title">{% translate 'Edit Hours' %}</h5>
+            <h5 class="modal-title">{% translate 'joDetailsHoursEditHours' %}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
@@ -167,13 +167,13 @@
                   </div>
                 {% endfor %}
               {% else %}
-                <p class="text-muted">No form available for this role.</p>
+                <p class="text-muted">{% translate "joDetailsHoursNoFormAvailableForThisRole"%}</p>
               {% endif %}
             {% endwith %}
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
-            <button type="submit" class="btn btn-primary">{% translate 'Save' %}</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'joDetailsHoursCancel' %}</button>
+            <button type="submit" class="btn btn-primary">{% translate 'joDetailsHoursSave' %}</button>
           </div>
         </form>
       </div>
@@ -208,36 +208,41 @@
   <div class="modal fade" id="editWagesModal{{ role.id }}" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
-        <form method="POST" action="{% url 'recruiting_web:edit-role-wages' role.wages.id %}">
-          {% csrf_token %}
-          <div class="modal-header">
-            <h5 class="modal-title">{% translate 'Edit Wages' %}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body">
-            {% with form=wages_form|dict_get:role.id %}
-              {% if form %}
-                {% for field in form %}
-                  <div class="mb-3">
-                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.errors %}
-                      <div class="text-danger">
-                        {{ field.errors }}
-                      </div>
-                    {% endif %}
-                  </div>
-                {% endfor %}
-              {% else %}
-                <p class="text-muted">No form available for this role.</p>
+        {% if role.wages and role.wages.id %}
+  <form method="POST" action="{% url 'recruiting_web:edit-role-wages' role.wages.id %}">
+    {% csrf_token %}
+    <div class="modal-header">
+      <h5 class="modal-title">{% translate 'joDetailsWagesEditWagesEditWages' %}</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+    <div class="modal-body">
+      {% with form=wages_form|dict_get:role.id %}
+        {% if form %}
+          {% for field in form %}
+            <div class="mb-3">
+              <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+              {{ field }}
+              {% if field.errors %}
+                <div class="text-danger">
+                  {{ field.errors }}
+                </div>
               {% endif %}
-            {% endwith %}
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
-            <button type="submit" class="btn btn-primary">{% translate 'Save' %}</button>
-          </div>
-        </form>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p class="text-muted">{% translate "joDetailsWagesNoFormAvailableForThisRole"%}</p>
+        {% endif %}
+      {% endwith %}
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'joDetailsWagesCancel' %}</button>
+      <button type="submit" class="btn btn-primary">{% translate 'joDetailsWagesSave' %}</button>
+    </div>
+  </form>
+{% else %}
+  <p class="text-muted">{% translate "joDetailsWagesNowagesAssociatedWithThisRoleYet"%}</p>
+{% endif %}
+
       </div>
     </div>
   </div>
@@ -326,6 +331,7 @@
   <div class="modal fade" id="deleteWagesModal{{ role.id }}" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
+        {% if role.wages and role.wages.id %}
         <form method="POST" action="{% url 'recruiting_web:delete-role-wages' role.wages.id %}">
           {% csrf_token %}
           <div class="modal-header">
@@ -341,6 +347,9 @@
             <button type="submit" class="btn btn-danger">{% translate 'Delete' %}</button>
           </div>
         </form>
+        {% else %}
+        <p class="text-muted">{% translate 'No wages to delete.' %}</p>
+        {% endif %}
       </div>
     </div>
   </div>

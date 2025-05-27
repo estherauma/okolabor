@@ -4,7 +4,7 @@
 <div class="modal fade" id="editQualificationModal{{ role.id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content shadow">
-  
+        {% if role.qualifications and role.qualifications.id %}
         <form method="POST" action="{% url 'recruiting_web:edit-role-qualification' role.qualifications.id %}">
           {% csrf_token %}
           <div class="modal-header bg-primary text-white">
@@ -52,7 +52,9 @@
             <button type="submit" class="btn btn-success">{% translate 'Save Changes' %}</button>
           </div>
         </form>
-  
+        {% else %}
+      <p class="text-muted">No qualification information to edit.</p>
+      {% endif %}
       </div>
     </div>
   </div>

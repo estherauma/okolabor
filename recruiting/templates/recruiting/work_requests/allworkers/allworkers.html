@@ -16,7 +16,7 @@
     </button>
     <div>
         <button class="btn dark-green-button ms-3" id="addToShortlistBtn" disabled>
-            +{% translate "addToShortlist" %}
+            +{% translate "workRequestAddWorkerAddToShortlist" %}
         </button>
     </div>
 </div>
@@ -81,14 +81,14 @@
     <table class="table text-nowrap border-bottom" id="basic-datatable">
         <thead>
             <tr>
-                <th class="theading-color">{% translate "workersListCheckbox" %}</th>
-                <th class="col-name">{% translate "workersListName" %}</th>
-                <th class="col-town">{% translate "workersListTown" %}</th>
-                <th class="col-profile">{% translate "workersListProfileCompletion" %}</th>
-                <th class="col-experience">{% translate "workersListExperience" %}</th>
-                <th class="col-english">{% translate "workersListEnglishProficiency" %}</th>
-                <th class="col-location">{% translate "workersListLocationPreference" %}</th>
-                <th class="col-offer">{% translate "workersListOfferStatus" %}</th>
+                <th class="theading-color">{% translate "workRequestAddWorkerCheckbox" %}</th>
+                <th class="theading-color">{% translate "workRequestAddWorkerName" %}</th>
+                <th class="theading-color">{% translate "workRequestAddWorkerTown" %}</th>
+                <th class="theading-color">{% translate "workRequestAddWorkerProfileCompletion" %}</th>
+                <th class="theading-color">{% translate "workRequestAddWorkerExperience" %}</th>
+                <th class="theading-color">{% translate "workRequestAddWorkerEnglishProficiency" %}</th>
+                <th class="theading-color">{% translate "workRequestAddWorkerLocationPreference" %}</th>
+                <th class="theading-color">{% translate "workRequestAddWorkerStatus" %}</th>
             </tr>
         </thead>
         <tbody>
@@ -124,10 +124,10 @@
     <span class="step-links">
         {% if workers.has_previous %}
             <a href="?page={{ workers.previous_page_number }}&search={{ request.GET.search }}&per_page={{ request.GET.per_page }}">
-                <span style="font-weight: bold;">Previous</span>
+                <span style="font-weight: bold;">{% translate "workRequestAddWorkerPrevious"%}</span>
             </a>
         {% else %}
-            <span class="disabled"><span style="font-weight: bold;">Previous</span></span>
+            <span class="disabled"><span style="font-weight: bold;">{% translate "workRequestAddWorkerPrevious"%}</span></span>
         {% endif %}
 
         {% for i in workers.paginator.page_range %}
@@ -140,10 +140,10 @@
 
         {% if workers.has_next %}
             <a href="?page={{ workers.next_page_number }}&search={{ request.GET.search }}&per_page={{ request.GET.per_page }}">
-                <span style="font-weight: bold;">Next</span>
+                <span style="font-weight: bold;">{% translate "workRequestAddWorkerNext"%}</span>
             </a>
         {% else %}
-            <span class="disabled"><span style="font-weight: bold;">Next</span></span>
+            <span class="disabled"><span style="font-weight: bold;">{% translate "workRequestAddWorkerNext"%}</span></span>
         {% endif %}
     </span>
 </div>
