@@ -16,7 +16,7 @@
 {% block body %}
         <div class="container-fluid" style="position: relative; height: auto">
             <div
-            style="background-color:#EFEFD8; cursor: pointer; border-radius: 0.5rem;"
+            style="background-color:#D9D9D9; cursor: pointer; border-radius: 0.5rem;"
             data-bs-toggle="collapse"
             data-bs-target="#collapseCard"
             aria-expanded="false"
@@ -443,39 +443,69 @@
 <script src="{% static ''%}assets/js/get-roles.js"></script>
 <script src="{% static ''%}assets/js/dynamic_filter.js"></script>
 <script>
-    document.getElementById('apply-column-settings').addEventListener('click', function () {
-        document.querySelectorAll('.column-toggle').forEach(function (checkbox) {
-            const colIndex = checkbox.value;
-            const isVisible = checkbox.checked;
-
-            const columnClass = [
-                'col-name',
-                'col-town',
-                'col-profile',
-                'col-experience',
-                'col-english',
-                'col-location',
-                'col-offer',
-                'col-actions'
-            ][colIndex - 1];
-            document.querySelectorAll(`.${columnClass}`).forEach(el => {
-                el.style.display = isVisible ? '' : 'none';
-            });
-        });
-        var modal = bootstrap.Modal.getInstance(document.getElementById('columnSettingsModal'));
-        modal.hide();
+    function applyColumnVisibilityFromStorage(table) {
+    const savedSettings = JSON.parse(localStorage.getItem('columnVisibilitySettings')) || {};
+    const columnClasses = [
+        'col-name',
+        'col-town',
+        'col-profile',
+        'col-experience',
+        'col-english',
+        'col-location',
+        'col-offer',
+        'col-actions'
+    ];
+    columnClasses.forEach((columnClass, index) => {
+        const isVisible = savedSettings[columnClass] !== false;
+        table.column(index + 1).visible(isVisible);
+        const checkbox = document.querySelector(`.column-toggle[value="${index + 1}"]`);
+        if (checkbox) {
+            checkbox.checked = isVisible;
+        }
     });
+}
+document.addEventListener('DOMContentLoaded', () => {
+    const table = $('#basic-datatable-workers').DataTable();
+    applyColumnVisibilityFromStorage(table);
+    const applyBtn = document.getElementById('apply-column-settings');
+    if (applyBtn) {
+        applyBtn.addEventListener('click', function () {
+            const savedSettings = {};
+            document.querySelectorAll('.column-toggle').forEach(function (checkbox) {
+                const colIndex = parseInt(checkbox.value);
+                const isVisible = checkbox.checked;
+                const columnClass = [
+                    'col-name',
+                    'col-town',
+                    'col-profile',
+                    'col-experience',
+                    'col-english',
+                    'col-location',
+                    'col-offer',
+                    'col-actions'
+                ][colIndex - 1];
+                savedSettings[columnClass] = isVisible;
+                table.column(colIndex).visible(isVisible);
+            });
+            localStorage.setItem('columnVisibilitySettings', JSON.stringify(savedSettings));
+            const modalEl = document.getElementById('columnSettingsModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            modal?.hide();
+        });
+    }
+});
 </script>
 <script>
 $(document).ready(function () {
     const table = $('#basic-datatable-workers').DataTable();
     const settingsBtn = `
-         <button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnSettingsModal">
-        <i aria-hidden="true" class="fa fa-cog"></i>
-         </button>
+        <button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnSettingsModal">
+            <i class="fa fa-cog" aria-hidden="true"></i>
+        </button>
     `;
-    $('#basic-datatable-workers_length').addClass('d-flex align-items-center ms-6').append(settingsBtn);
+    const lengthContainer = $('#basic-datatable-workers_length');
+    lengthContainer.addClass('d-flex align-items-center');
+    lengthContainer.prepend(settingsBtn);
 });
 </script>
-
 {% endblock scripts %}

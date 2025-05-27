@@ -42,15 +42,18 @@ $(document).ready(function () {
         });
 
          $('#basic-datatable-workers').DataTable({
-            "ordering": true,
-            "order": [],
-            "columnDefs": [{
-                "targets": '_all',
-                "orderable": true
-            }],
-            "paging": true,   
-            "info": true
-        });
+                "ordering": true,
+                "order": [], // No initial ordering
+                "columnDefs": [
+                    {
+                        "targets": '_all', // All other columns
+                        "orderable": true
+                    }
+                ],
+                "paging": true,
+                "info": true
+            });
+
 
         // if (!$.fn.DataTable.isDataTable('#logs-table')) {
         //     $('#logs-table').DataTable({
