@@ -24,7 +24,7 @@ from recruiting.views.web import (
     EmployerRecruiterOrgLinkDeleteView,DeleteAssignedOrganizationView,
     DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditEmploymentLocationView,DeleteEmploymentLocationView,EditHousingInformationView,DeleteHousingInformationView,EditMealProvisionView,DeleteMealProvisionView,
     DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditEmploymentLocationView,DeleteEmploymentLocationView,
-    DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditRoleHoursView,DeleteRoleHoursView,EditRoleWagesView,DeleteRoleWagesView,EditRoleQualificationView,DeleteQualificationView
+    DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditRoleHoursView,DeleteRoleHoursView,EditRoleWagesView,DeleteRoleWagesView,EditRoleQualificationView,DeleteQualificationView,DeductionEditView,DeleteDeductionView
 )
 from recruiting.views.workers import (
      WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,EditWorkExperienceView,DeleteWorkExperienceView,WorkerEditView,WorkerDeleteView,EditUserPreferenceView,EditLanguageProficiencyView,EditDocumentsView,DeleteAllWorkerInfoView,WorkerEditView,WorkerDeleteView
@@ -275,6 +275,8 @@ urlpatterns = [
     path('role/wages/edit/<str:pk>/', EditRoleWagesView.as_view(), name='edit-role-wages'),
     path('role/wages/delete/<str:pk>/', DeleteRoleWagesView.as_view(), name='delete-role-wages'),
 
+    path('deductions/<str:deduction_id>/edit/', DeductionEditView.as_view(), name='edit_deduction'),
+    path('deductions/<str:pk>/delete/', DeleteDeductionView.as_view(), name='delete_deduction'),
  
      path('qualification/<str:pk>/edit/', EditRoleQualificationView.as_view(), name='edit-role-qualification'),
      path('qualification/<str:pk>/delete/', DeleteQualificationView.as_view(), name='delete-role-qualification'),
