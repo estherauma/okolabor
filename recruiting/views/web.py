@@ -1742,10 +1742,10 @@ class EditEmploymentLocationView(View):
         form = RoleEmploymentLocationForm(request.POST, instance=location)
         if form.is_valid():
             form.save()
-            messages.success(request, 'EmploymentLocationUpdatedSuccessfully.')
+            messages.success(request, _('roleEmploymentLocationEmploymentLocationUpdatedSuccessfully'))
             return redirect('recruiting_web:workrequest_detail', pk=location.role.work_request.pk)
         else:
-            messages.error(request, 'ThereWasAnErrorUpdatingTheEmploymentLocation.')
+            messages.error(request, _('roleEmploymentLocationThereWasAnErrorUpdatingTheEmploymentLocation'))
 
 
 class DeleteEmploymentLocationView(View):
@@ -1765,10 +1765,10 @@ class EditHousingInformationView(View):
         form = RoleHousingInformationForm(request.POST, instance=housing)
         if form.is_valid():
             form.save()
-            messages.success(request, 'HousingInformationUpdatedSuccessfully.')
+            messages.success(request, _('joDetailsHousingInfoHousingInformationUpdatedSuccessfully'))
             return redirect('recruiting_web:workrequest_detail', pk=housing.role.work_request.pk)
         else:
-            messages.error(request, 'ThereWasAnErrorUpdatingTheHousingInformation.')
+            messages.error(request, _('joDetailsHousingInfoThereWasAnErrorUpdatingTheHousingInformation'))
             return redirect('recruiting_web:workrequest_detail', pk=housing.role.work_request.pk)
 
 
@@ -1791,10 +1791,10 @@ class EditMealProvisionView(View):
 
         if form.is_valid():
             form.save()
-            messages.success(request, 'MealProvisionUpdatedSuccessfully.')
+            messages.success(request, _('joDetailsMealsMealProvisionUpdatedSuccessfully'))
             return redirect('recruiting_web:workrequest_detail', pk=meal_provision.role.work_request.pk)
         else:
-            messages.error(request, 'ThereWasAnErrorUpdatingTheMealProvision.')
+            messages.error(request, _('joDetailsMealsThereWasAnErrorUpdatingTheMealProvision'))
             return redirect('recruiting_web:workrequest_detail', pk=meal_provision.role.work_request.pk)
         
 
@@ -1859,9 +1859,9 @@ class EditRoleWagesView(View):
 
         if form.is_valid():
             form.save()
-            messages.success(request, 'Wages updated successfully.')
+            messages.success(request, _('joDetailsWagesWagesUpdatedSuccessfully'))
         else:
-            messages.error(request, 'There was an error updating the wages.')
+            messages.error(request, _('joDetailsWagesThereWasAnErrorUpdatingTheWages'))
 
         if work_request_id:
             return redirect('recruiting_web:workrequest_detail', pk=work_request_id)
@@ -1884,10 +1884,10 @@ class EditRoleQualificationView(View):
 
         if form.is_valid():
             form.save()
-            messages.success(request, 'Qualification updated successfully.')
+            messages.success(request, _('joDetailsQualificationsQualificationUpdatedSuccessfully'))
             return redirect('recruiting_web:workrequest_detail', pk=qualification.role.work_request.pk) 
         else:
-            messages.error(request, 'There was an error updating the qualification.')
+            messages.error(request, _('joDetailsQualificationsThereWasAnErrorUpdatingTheQualification'))
 
         
 
