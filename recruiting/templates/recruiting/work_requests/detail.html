@@ -88,10 +88,10 @@
      <div class="accordion-item">
         <h2 class="accordion-header" id="heading{{ forloop.counter }}">
             <button aria-controls="collapse{{ forloop.counter }}" aria-expanded="false" 
-                    class="accordion-button collapsed d-flex align-items-center justify-content-between w-100"
-                    data-bs-target="#collapse{{ forloop.counter }}" data-bs-toggle="collapse" type="button">
+                    class="accordion-button collapsed d-flex align-items-center justify-content-between w-100 text-white"
+                    data-bs-target="#collapse{{ forloop.counter }}" data-bs-toggle="collapse" type="button" style="background-color: #7DBF96;">
                 <div>
-                    {% translate "jobOrderDetailsJobTitle" %}
+                    {% translate "jobOrderDetailsJobTitle" %}:
                     <strong>{{ role.title }}</strong>
                 </div>
                 <a href="{% url 'recruiting_web:work_request_add_workers' pk=workrequest.id role_id=role.id %}">
@@ -100,7 +100,7 @@
                     </button>
                 </a>
                 <!-- Edit Button -->
-                  <button class="btn btn-sm btn-icon btn-outline-primary ms-2"
+                  <button class="btn btn-sm btn-icon btn-outline-success ms-2"
                           data-bs-toggle="modal"
                           data-bs-target="#editRoleModal{{ role.id }}"
                           title="{% translate 'jobOrderDetailsEdit' %}">
@@ -122,6 +122,10 @@
                     <div class="modal-content">
                     <form method="POST" action="{% url 'recruiting_web:edit-role' role.id %}">
                         {% csrf_token %}
+                        <div class="modal-header" style="background-color: #7DBF96;">
+                          <h5 class="modal-title text-white">{% translate 'joDetailsHoursEditHours' %}</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
 
                         <div class="modal-body p-3">
                         {{ role_forms|get:role.id }}
@@ -148,8 +152,8 @@
       <div class="modal-content">
         <form method="POST" action="{% url 'recruiting_web:edit-role-hours' role.hours.id %}">
           {% csrf_token %}
-          <div class="modal-header">
-            <h5 class="modal-title">{% translate 'joDetailsHoursEditHours' %}</h5>
+          <div class="modal-header" style="background-color: #7DBF96;">
+            <h5 class="modal-title text-white">{% translate 'joDetailsHoursEditHours' %}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
@@ -187,8 +191,8 @@
       <div class="modal-content">
         <form method="POST" >
           {% csrf_token %}
-          <div class="modal-header">
-            <h5 class="modal-title">{% translate 'Delete Hours' %}</h5>
+          <div class="modal-header" style="background-color: #7DBF96;">
+            <h5 class="modal-title text-white">{% translate 'Delete Hours' %}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
@@ -211,8 +215,8 @@
         {% if role.wages and role.wages.id %}
   <form method="POST" action="{% url 'recruiting_web:edit-role-wages' role.wages.id %}">
     {% csrf_token %}
-    <div class="modal-header">
-      <h5 class="modal-title">{% translate 'joDetailsWagesEditWagesEditWages' %}</h5>
+    <div class="modal-header" style="background-color: #7DBF96;" >
+      <h5 class="modal-title text-white">{% translate 'joDetailsWagesEditWagesEditWages' %}</h5>
       <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
     </div>
     <div class="modal-body">
@@ -306,8 +310,8 @@
         <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
         
-        <div class="modal-header">
-          <h5 class="modal-title">{% translate "jobOrderDetailsConfirmDelete"%}</h5>
+        <div class="modal-header" style="background-color: #7DBF96;">
+          <h5 class="modal-title text-white">{% translate "jobOrderDetailsConfirmDelete"%}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'jobOrderDetailsClose'%}"></button>
         </div>
         
@@ -334,8 +338,8 @@
         {% if role.wages and role.wages.id %}
         <form method="POST" action="{% url 'recruiting_web:delete-role-wages' role.wages.id %}">
           {% csrf_token %}
-          <div class="modal-header">
-            <h5 class="modal-title">{% translate 'Delete Wages' %}</h5>
+          <div class="modal-header" style="background-color: #7DBF96;">
+            <h5 class="modal-title text-white">{% translate 'Delete Wages' %}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
@@ -408,7 +412,7 @@
                 </a>
 
                 <!-- Edit Icon -->
-                <button class="btn btn-sm btn-icon btn-outline-primary"
+                <button class="btn btn-sm btn-icon btn-outline-success"
                     data-bs-toggle="modal"
                     data-bs-target="#edithoursModal{{ role.id }}"
                     title="{% translate 'Edit' %}">
@@ -467,7 +471,7 @@
             </a>
 
             <!-- Edit Icon -->
-            <button class="btn btn-sm btn-icon btn-outline-primary"
+            <button class="btn btn-sm btn-icon btn-outline-success"
                     data-bs-toggle="modal"
                     data-bs-target="#editWagesModal{{ role.id }}"
                     title="{% translate 'Edit' %}">
@@ -521,8 +525,8 @@
            <h6>
             {% translate "joDetailsDeductionsDeductions" %}
            </h6>
-           <a class="btn btn-primary btn-sm" href="/work-requests/role/{{role.id}}/deductions/create">
-            {% translate "joDetailsDeductionsAddDeductions" %}
+           <a class="btn btn-success btn-sm" href="/work-requests/role/{{role.id}}/deductions/create">
+            <i class="fa fa-plus me-1"></i>{% translate "joDetailsDeductionsAddDeductions" %}
            </a>
           </div>
           <hr class="border-bottom border-3 border-dark"/>
@@ -570,7 +574,7 @@
                 </a>
 
                 <!-- Edit Icon -->
-                <button class="btn btn-sm btn-icon btn-outline-primary"
+                <button class="btn btn-sm btn-icon btn-outline-success"
                         data-bs-toggle="modal"
                         data-bs-target="#editQualificationModal{{ role.id }}"
                         title="{% translate 'Edit' %}">
@@ -634,7 +638,7 @@
             </a>
 
             <!-- Edit Button -->
-            <button class="btn btn-sm btn-icon btn-outline-primary"
+            <button class="btn btn-sm btn-icon btn-outline-success"
                     data-bs-toggle="modal"
                     data-bs-target="#editEmployementInformationModal{{ role.id }}"
                     title="{% translate 'Edit' %}">
@@ -689,7 +693,7 @@
               </a>
 
               <!-- Edit Button -->
-              <button class="btn btn-sm btn-icon btn-outline-primary"
+              <button class="btn btn-sm btn-icon btn-outline-success"
                       data-bs-toggle="modal"
                       data-bs-target="#editHousingInformationModal{{ role.id }}"
                       title="{% translate 'Edit' %}">
@@ -770,7 +774,7 @@
             </a>
 
             <!-- Edit Button -->
-            <button class="btn btn-sm btn-icon btn-outline-primary"
+            <button class="btn btn-sm btn-icon btn-outline-success"
                     data-bs-toggle="modal"
                     data-bs-target="#editMealProvisionModal{{ role.id }}"
                     title="{% translate 'Edit' %}">

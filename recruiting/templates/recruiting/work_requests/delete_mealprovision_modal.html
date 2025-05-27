@@ -8,8 +8,8 @@
         {% csrf_token %}
         <input type="hidden" name="work_request_id" value="{{ workrequest.id }}">
 
-        <div class="modal-header bg-danger text-white">
-          <h5 class="modal-title" id="deleteMealProvisionLabel{{ role.id }}">
+        <div class="modal-header" style="background-color: #7DBF96;">
+          <h5 class="modal-title text-white" id="deleteMealProvisionLabel{{ role.id }}">
             {% translate "Confirm Deletion" %}
           </h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
