@@ -815,7 +815,6 @@ class ShowWorkerDetails(View):
         view = WorkerDetailsView()
         return view.get(request, pk)
 
-
 class WorkRequestDetailView(View):
     def get(self, request, pk):
         work_request = get_object_or_404(WorkRequests, pk=pk)
@@ -848,6 +847,7 @@ class WorkRequestDetailView(View):
                 deleted_at__isnull=True,
             )
         roles_qs = [role for role in roles_qs_raw if hasattr(role, 'hours') and role.hours.deleted_at is None]
+        print(roles_qs,"roles_qs")
 
         role_forms = {
             role.id: WorkRequestRoleForm(instance=role)
@@ -881,8 +881,21 @@ class WorkRequestDetailView(View):
             for role in roles_qs
             if hasattr(role, 'qualifications') and role.qualifications and role.qualifications.deleted_at is None
         }
+        
+        role_deductions = {
+            role.id: role.deductions.filter()
+            for role in roles_qs
+        }
+        
+        deduction_forms = {}
+        for role in roles_qs:
+            deductions = role.deductions.filter()
+            for deduction in deductions:
+                deduction_forms[deduction.id] = RoleDeductionForm(instance=deduction)
 
-
+                    
+    
+        
         context = {
             'workrequest': work_request,
             'roles': roles_qs,
@@ -897,13 +910,12 @@ class WorkRequestDetailView(View):
             'form': form_data,
             'hours_form': hours_form,
             'wages_form': wages_form,
-            'qualification_form':qualification_forms
+            'qualification_form':qualification_forms,
+            'role_deductions': role_deductions,
+            'deduction_forms': deduction_forms,
 
         }
         return render(request, 'recruiting/work_requests/detail.html', context)
-
-    
-
 class WorkRequestRoleCreateView(CreateView):
     model = Role
     form_class = WorkRequestRoleForm
@@ -1901,3 +1913,31 @@ class DeleteQualificationView(View):
 
         messages.success(request, "Qualification deleted successfully.")
         return redirect('recruiting_web:workrequest_detail', pk=qualification.role.work_request.pk)
+
+class DeleteDeductionView(View):
+    def post(self, request, pk):
+        deduction = get_object_or_404(Deduction, pk=pk)
+        try:
+            deduction.delete()
+            messages.success(request, 'DeductionDeletedSuccessfully.')
+            return redirect('recruiting_web:workrequest_detail', pk=deduction.role.work_request.pk)
+        except Exception as e:
+            messages.error(request, f'ErrorDeletingDeduction: {str(e)}')
+
+
+class DeductionEditView(View):
+    def post(self, request, deduction_id):
+        deduction = get_object_or_404(Deduction, id=deduction_id)
+
+        data = {
+            'role': request.POST.get('role'),
+            'description': request.POST.get('description'),
+            'deduction_amount': request.POST.get('deduction_amount'),
+        }
+        form = RoleDeductionForm(data, instance=deduction)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Deduction updated successfully.")
+            return redirect('recruiting_web:workrequest_detail', pk=deduction.role.work_request.pk)
+        else:
+            return redirect('recruiting_web:workrequest_detail', pk=deduction.role.work_request.pk)
