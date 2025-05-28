@@ -333,8 +333,8 @@ class UserDocumentDetailsView(APIView):
         document = get_object_or_404(
             UserDocuments, pk=document_id, deleted=False)
         serilizer = UserDocumentSerializer(document)
-        if document.kind == 'passport' and document.cloud_vision_match is False:
-            check_passport_match()
+        # if document.kind == 'passport' and document.cloud_vision_match is False:
+        #     check_passport_match()
         return Response(
             serilizer.data,
             status=status.HTTP_200_OK
