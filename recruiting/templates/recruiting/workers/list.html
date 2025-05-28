@@ -14,21 +14,31 @@
 {% endblock styles %}
 
 {% block body %}
-<div class="container-fluid" style="position: relative; height: auto">
-    <div class="d-flex justify-content-between">
-        <button class="btn green-color-workers">
-            <i aria-hidden="true" class="fa fa-filter"></i>
-            {% translate "workersListAdvancedFilter" %}
-        </button>
-        <button aria-controls="collapsewithbutton"
-        aria-expanded="false"
-        class="btn green-color-workers collapsed toggle-sign"
-        data-bs-target="#collapseCard"
-        data-bs-toggle="collapse"
-        type="button">
-        <i class="bi bi-caret-down-fill fs-4"></i> 
-        </button>
-    </div>
+        <div class="container-fluid" style="position: relative; height: auto">
+            <div
+            style="background-color:#D9D9D9; cursor: pointer; border-radius: 0.5rem;"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapseCard"
+            aria-expanded="false"
+            aria-controls="collapseCard"
+        >
+            <div class="d-flex justify-content-between align-items-center my-2">
+                <button
+                    class="btn green-color-workers"
+                    style="pointer-events: none;"
+                >
+                    <i class="fa fa-filter" aria-hidden="true"></i>
+                    {% translate "workersListAdvancedFilter" %}
+                </button>
+                <button
+                    class="btn green-color-workers toggle-sign collapsed"
+                    type="button"
+                    style="pointer-events: none;"
+                >
+                    <i class="bi bi-caret-down-fill fs-4"></i>
+                </button>
+            </div>
+        </div>
     <div class="collapse" id="collapseCard">
         <div class="card offwhite-color card-body">
             <span class="d-flex align-items-center">
@@ -124,14 +134,11 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            
-    </div>
-    
-            
-    </div>
+            </div>  
+    </div>    
+</div>
 
-    <div class="modal fade" id="columnSettingsModal" tabindex="-1" aria-labelledby="columnSettingsModalLabel" aria-hidden="true">
+<div class="modal fade" id="columnSettingsModal" tabindex="-1" aria-labelledby="columnSettingsModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
@@ -187,41 +194,23 @@
     <div class="row row-sm">
         <div class="col-lg-12">
             <div class="row mb-2">
-                <div class="col-md-11 col-sm-11 col-xs-12">
+                <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="d-flex align-items-center justify-content-end">
-                         <button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnSettingsModal">
-                            <i aria-hidden="true" class="fa fa-cog"></i>
-                        </button>
-                        <p class="theading-color show-text show-text">
-                            {% translate "workersListShowResults" %}
-                        </p>
-                        <div class="dropdown ms-3">
-                            <button aria-expanded="false" class="btn dropdown-toggle dropdown-btn" data-bs-toggle="dropdown" id="dropdownMenuButton" type="button">
-                                {% translate "workersListSelectRows" %}
-                            </button>
-                            <ul aria-labelledby="dropdownMenuButton" class="dropdown-menu">
-                                <li><a class="dropdown-item" href="?page=1&search={{ request.GET.search }}&per_page=5">{% translate "workersListPerPage5" %}</a></li>
-                                <li><a class="dropdown-item" href="?page=1&search={{ request.GET.search }}&per_page=10">{% translate "workersListPerPage10" %}</a></li>
-                                <li><a class="dropdown-item" href="?page=1&search={{ request.GET.search }}&per_page=15">{% translate "workersListPerPage15" %}</a></li>
-                                <li><a class="dropdown-item" href="?page=1&search={{ request.GET.search }}&per_page=20">{% translate "workersListPerPage20" %}</a></li>
-                            </ul>
-                        </div>
                         <button class="btn dark-green-button ms-3" data-bs-toggle="modal" data-bs-target="#workerAssignmentModal" disabled>+{% translate "workersListAddTo" %}</button>
                         <a class="btn dark-green-button ms-3" href="{% url 'recruiting_web:recruiter_create_worker' %}">
                             <span><i class="fe fe-plus"></i></span>
                             {% translate "workersListAddWorker" %}
                         </a>
-                        
                     </div>
                 </div>
             </div>
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table text-nowrap border-bottom" id="basic-datatable">
-                            <thead>
+                        <table class="table text-nowrap border-bottom" id="basic-datatable-workers">
+                            <thead style="background-color: #7DBF96;">
                                 <tr>
-                                    <th class="theading-color">{% translate "workersListCheckbox" %}</th>
+                                    <th class="col-namee">{% translate "workersListCheckbox" %}</th>
                                     <th class="col-name">{% translate "workersListName" %}</th>
                                     <th class="col-town">{% translate "workersListTown" %}</th>
                                     <th class="col-profile">{% translate "workersListProfileCompletion" %}</th>
@@ -285,33 +274,6 @@
                         </table>
                         
                         
-                    </div>
-                    <div class="pagination">
-                        <span class="step-links">
-                            {% if workers.has_previous %}
-                                <a href="?page={{ workers.previous_page_number }}&search={{ request.GET.search }}&per_page={{ request.GET.per_page }}">
-                                    <span style="font-weight: bold;">{% translate "workersListPrevious"%}</span>
-                                </a>
-                            {% else %}
-                                <span class="disabled"><span style="font-weight: bold;">{% translate "workersListPrevious"%}</span></span>
-                            {% endif %}
-
-                            {% for i in workers.paginator.page_range %}
-                                {% if workers.number == i %}
-                                    <span class="current">{{ i }}</span>
-                                {% elif i > workers.number|add:'-3' and i < workers.number|add:'3' %}
-                                    <a href="?page={{ i }}&search={{ request.GET.search }}&per_page={{ request.GET.per_page }}">{{ i }}</a>
-                                {% endif %}
-                            {% endfor %}
-
-                            {% if workers.has_next %}
-                                <a href="?page={{ workers.next_page_number }}&search={{ request.GET.search }}&per_page={{ request.GET.per_page }}">
-                                    <span style="font-weight: bold;">{% translate "workersListNext"%}</span>
-                                </a>
-                            {% else %}
-                                <span class="disabled"><span style="font-weight: bold;">{% translate "workersListNext"%}</span></span>
-                            {% endif %}
-                        </span>
                     </div>
                 </div>
             </div>
@@ -420,8 +382,7 @@
                 {% for choice in status_choices %}
                 <option value="{{ choice.0 }}" {% if choice.0|stringformat:"s" == worker.latest_status|stringformat:"s" %}selected{% endif %}>
                     {{ choice.1 }}
-                  </option>
-                  
+                </option>
                 {% endfor %}
               </select>
             </div>
@@ -482,28 +443,69 @@
 <script src="{% static ''%}assets/js/get-roles.js"></script>
 <script src="{% static ''%}assets/js/dynamic_filter.js"></script>
 <script>
-    document.getElementById('apply-column-settings').addEventListener('click', function () {
-        document.querySelectorAll('.column-toggle').forEach(function (checkbox) {
-            const colIndex = checkbox.value;
-            const isVisible = checkbox.checked;
-
-            const columnClass = [
-                'col-name',
-                'col-town',
-                'col-profile',
-                'col-experience',
-                'col-english',
-                'col-location',
-                'col-offer',
-                'col-actions'
-            ][colIndex - 1];
-            document.querySelectorAll(`.${columnClass}`).forEach(el => {
-                el.style.display = isVisible ? '' : 'none';
-            });
-        });
-        var modal = bootstrap.Modal.getInstance(document.getElementById('columnSettingsModal'));
-        modal.hide();
+    function applyColumnVisibilityFromStorage(table) {
+    const savedSettings = JSON.parse(localStorage.getItem('columnVisibilitySettings')) || {};
+    const columnClasses = [
+        'col-name',
+        'col-town',
+        'col-profile',
+        'col-experience',
+        'col-english',
+        'col-location',
+        'col-offer',
+        'col-actions'
+    ];
+    columnClasses.forEach((columnClass, index) => {
+        const isVisible = savedSettings[columnClass] !== false;
+        table.column(index + 1).visible(isVisible);
+        const checkbox = document.querySelector(`.column-toggle[value="${index + 1}"]`);
+        if (checkbox) {
+            checkbox.checked = isVisible;
+        }
     });
+}
+document.addEventListener('DOMContentLoaded', () => {
+    const table = $('#basic-datatable-workers').DataTable();
+    applyColumnVisibilityFromStorage(table);
+    const applyBtn = document.getElementById('apply-column-settings');
+    if (applyBtn) {
+        applyBtn.addEventListener('click', function () {
+            const savedSettings = {};
+            document.querySelectorAll('.column-toggle').forEach(function (checkbox) {
+                const colIndex = parseInt(checkbox.value);
+                const isVisible = checkbox.checked;
+                const columnClass = [
+                    'col-name',
+                    'col-town',
+                    'col-profile',
+                    'col-experience',
+                    'col-english',
+                    'col-location',
+                    'col-offer',
+                    'col-actions'
+                ][colIndex - 1];
+                savedSettings[columnClass] = isVisible;
+                table.column(colIndex).visible(isVisible);
+            });
+            localStorage.setItem('columnVisibilitySettings', JSON.stringify(savedSettings));
+            const modalEl = document.getElementById('columnSettingsModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            modal?.hide();
+        });
+    }
+});
 </script>
-
+<script>
+$(document).ready(function () {
+    const table = $('#basic-datatable-workers').DataTable();
+    const settingsBtn = `
+        <button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnSettingsModal">
+            <i class="fa fa-cog" aria-hidden="true"></i>
+        </button>
+    `;
+    const lengthContainer = $('#basic-datatable-workers_length');
+    lengthContainer.addClass('d-flex align-items-center');
+    lengthContainer.prepend(settingsBtn);
+});
+</script>
 {% endblock scripts %}

@@ -22,7 +22,7 @@
                 <a class="white-color" href="{% url 'recruiting_web:workrequest_detail' pk=work_request.pk %}">
                     <i class="mdi mdi-arrow-left white-color fs-5"></i>
                     <span class="white-color">
-                        {% translate "workerDetailsBack" %}
+                        {% translate "workRequestAddWorkerBack" %}
                     </span>
                 </a>
                 
@@ -30,15 +30,15 @@
 
             <!-- Header Section -->
             <div class="container text-center mt-3">
-                <h3 class="text-white">{% translate "addWorkers" %}: {{ work_request.name }}</h3>
+                <h3>{% translate "workRequestAddWorkerAddWorkers" %}: {{ work_request.name }}</h3>
                 <select class="form-select w-auto mx-auto mt-2">
                     <option selected>{{role.title}}</option>
                 </select>
                 <div class="mt-2">
-                    <span class="text-white me-2 bolder-text">{% translate "workRequestAddWorkerShortlist"%}: {{ shortlisted_count }}</span>
-                    <span class="text-white me-2 bolder-text">{% translate "workRequestAddWorkerOfferSent"%}: {{ offersent_count }}</span>
-                    <span class="text-white me-2 bolder-text">{% translate "workRequestAddWorkerConfirmed"%}: {{ confirmed_count }}</span>
-                    <span class="text-white me-2 bolder-text">{% translate "workRequestAddWorkerCancelled"%}: {{ cancelled_count }}</span>
+                    <span class="badge bg-success">{% translate "workRequestAddWorkerShortlist"%}: {{ shortlisted_count }}</span>
+                    <span class="badge bg-warning">{% translate "workRequestAddWorkerOfferSent"%}: {{ offersent_count }}</span>
+                    <span class="badge bg-primary">{% translate "workRequestAddWorkerConfirmed"%}: {{ confirmed_count }}</span>
+                    <span class="badge bg-danger">{% translate "workRequestAddWorkerCancelled"%}: {{ cancelled_count }}</span>
                 </div>
             </div>
         </div>
@@ -65,11 +65,11 @@
         <div class="card offwhite-color card-body">
             <span class="d-flex align-items-center">
                 <h3 class="card-title green-color d-contents">
-                    {% translate "selectPrimaryJobExperience" %}
+                    {% translate "workRequestAddWorkerSelectPrimaryJobExperience" %}
                 </h3>
                 <button class="btn btn-link green-color-workers" data-bs-placement="top" data-bs-toggle="tooltip" title="Fill in the fields to add job experience">
                     <i aria-hidden="true" class="fa fa-question-circle-o"></i>
-                    {% translate "what'sThis?" %}
+                    {% translate "workRequestAddWorkerwhat'sThis" %}
                 </button>
             </span>
               <div id="form-container">
@@ -101,14 +101,14 @@
                     <!-- Add Another Filter Button -->
                     <button class="btn light-green-button min-content-width mt-3" type="button" onclick="addAnotherExperience()">
                         <span><i class="fe fe-plus"></i></span>
-                        {% translate "addAnotherExperience" %}
+                        {% translate "workRequestAddWorkerAddAnotherExperience" %}
                     </button>
             
                     <!-- Additional Filters Section (Previously separate) -->
                     <div class="form-row align-items-center">
                         <span class="mt-5 ms-2 mb-3">
                             <h3 class="card-title green-color d-contents">
-                                {% translate "furtherFilters" %}
+                                {% translate "workRequestAddWorkerFurtherFilters" %}
                             </h3>
                         </span>
                     </div>
@@ -135,12 +135,12 @@
             <a class="btn light-green-button min-content-width" href="{% url 'recruiting_web:workrequest_create' %}">
                 <span><i class="fe fe-plus"></i></span>
 
-                {% translate "addAnotherExperiences1" %}
+                {% translate "workRequestAddWorkerAddAnotherExperience" %}
             </a>
             <div class="form-row align-items-center">
                 <span class="mt-5 ms-2 mb-3">
                     <h3 class="card-title green-color d-contents">
-                        {% translate "furtherFilters" %}
+                        {% translate "workRequestAddWorkerFurtherFilters" %}
                     </h3>
                 </span>
 

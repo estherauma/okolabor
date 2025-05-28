@@ -4,25 +4,30 @@
  <div class="modal fade" id="editEmployementInformationModal{{ role.id }}" tabindex="-1" aria-labelledby="editRoleLocationModalLabel{{ role.id }}" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-        <form method="POST" action="{% url 'recruiting_web:employment_location_edit' role.employment_location.id %}">
-          {% csrf_token %}
+        {% if role.employment_location and role.employment_location.id %}
+          <form method="POST" action="{% url 'recruiting_web:employment_location_edit' role.employment_location.id %}">
+            {% csrf_token %}
 
-          <div class="modal-header">
-            <h5 class="modal-title" id="editRoleLocationModalLabel{{ role.id }}">
-              {% translate "Edit Employment Location for Role" %}: {{ role.name }}
-            </h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
+            <div class="modal-header">
+              <h5 class="modal-title" id="editRoleLocationModalLabel{{ role.id }}">
+                {% translate "Edit Employment Location for Role" %}: {{ role.name }}
+              </h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
 
-          <div class="modal-body p-3">
-            {{ role_information_forms|get_item:role.id }}
-          </div>
+            <div class="modal-body p-3">
+              {{ role_information_forms|get_item:role.id }}
+            </div>
 
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
-            <button type="submit" class="btn btn-primary">{% translate 'Save' %}</button>
-          </div>
-        </form>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
+              <button type="submit" class="btn btn-primary">{% translate 'Save' %}</button>
+            </div>
+          </form>
+      {% else %}
+        <p class="text-muted">No employment location set for this role yet.</p>
+      {% endif %}
+
       </div>
     </div>
   </div>
