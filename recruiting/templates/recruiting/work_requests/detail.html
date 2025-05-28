@@ -132,8 +132,8 @@
                         </div>
 
                         <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'jobOrderDetailsCancel' %}</button>
-                        <button type="submit" class="btn btn-primary">{% translate 'jobOrderDetailsSave' %}</button>
+                        <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'jobOrderDetailsCancel' %}</button>
+                        <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>{% translate 'jobOrderDetailsSave' %}</button>
                         </div>
                     </form>
                     </div>
@@ -176,8 +176,8 @@
             {% endwith %}
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'joDetailsHoursCancel' %}</button>
-            <button type="submit" class="btn btn-primary">{% translate 'joDetailsHoursSave' %}</button>
+            <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'joDetailsHoursCancel' %}</button>
+            <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>{% translate 'joDetailsHoursSave' %}</button>
           </div>
         </form>
       </div>
@@ -201,8 +201,8 @@
             <p><strong>{{ role.title }}</strong></p>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'joDetailsHoursDeleteCancel' %}</button>
-            <button type="submit" class="btn btn-danger">{% translate 'joDetailsHoursDelete' %}</button>
+            <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'joDetailsHoursDeleteCancel' %}</button>
+            <button type="submit" class="btn" style='background-color:#F95406; color:white'>{% translate 'joDetailsHoursDelete' %}</button>
           </div>
         </form>
       </div>
@@ -239,8 +239,8 @@
       {% endwith %}
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'joDetailsWagesCancel' %}</button>
-      <button type="submit" class="btn btn-primary">{% translate 'joDetailsWagesSave' %}</button>
+      <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'joDetailsWagesCancel' %}</button>
+      <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>{% translate 'joDetailsWagesSave' %}</button>
     </div>
   </form>
 {% else %}
@@ -320,11 +320,11 @@
         </div>
         
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "jobOrderDetailsCancel"%}</button>
+          <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate "jobOrderDetailsCancel"%}</button>
           
           <form method="POST" action="{% url 'recruiting_web:delete_role' role.id %}">
             {% csrf_token %}
-            <button type="submit" class="btn btn-danger">{% translate "jobOrderDetailsDelete"%}</button>
+            <button type="submit" class="btn" style='background-color:#F95406; color:white'>{% translate "jobOrderDetailsDelete"%}</button>
           </form>
         </div>
   
@@ -347,8 +347,8 @@
           </div>
           <div class="modal-footer">
             <input type="hidden" name="work_request_id" value="{{ workrequest.id }}">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'joDetailsWagesDeleteCancel' %}</button>
-            <button type="submit" class="btn btn-danger">{% translate 'joDetailsWagesDelete' %}</button>
+            <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'joDetailsWagesDeleteCancel' %}</button>
+            <button type="submit" class="btn" style='background-color:#F95406; color:white'>{% translate 'joDetailsWagesDelete' %}</button>
           </div>
         </form>
         {% else %}
