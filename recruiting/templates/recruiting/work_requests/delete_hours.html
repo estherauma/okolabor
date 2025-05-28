@@ -6,18 +6,18 @@
       <div class="modal-content">
         <form method="POST" >
           {% csrf_token %}
-          <div class="modal-header">
-            <h5 class="modal-title">{% translate 'Delete Hours' %}</h5>
+          <div class="modal-header" style="background-color: #7DBF96;">
+            <h5 class="modal-title text-white">{% translate 'joDetailsHoursDeleteHours' %}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
-            <p>{% translate "Are you sure you want to delete the hours for this role?" %}</p>
+            <p>{% translate "joDetailsHoursAreYouSureYouWantToDeleteTheHoursForThisRole" %}</p>
             <!-- Optional: display some context -->
             <p><strong>{{ role.title }}</strong></p>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
-            <button type="submit" class="btn btn-danger">{% translate 'Delete' %}</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'joDetailsHoursDeleteCancel' %}</button>
+            <button type="submit" class="btn btn-danger">{% translate 'joDetailsHoursDelete' %}</button>
           </div>
         </form>
       </div>
