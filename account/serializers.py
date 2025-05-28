@@ -114,9 +114,15 @@ class UserWorkexperienceSerializer(serializers.ModelSerializer):
 
 
 class UserDocumentSerializer(serializers.ModelSerializer):
+    work_experience_id = serializers.SerializerMethodField()
+
     class Meta:
         model = UserDocuments
         exclude = ['cloud_vision_response']
+
+    def get_work_experience_id(self, obj):
+        doc_to_experience = self.context.get('doc_to_experience', {})
+        return doc_to_experience.get(obj.id)
 
 
 class OTPGenerateSerializer(serializers.Serializer):

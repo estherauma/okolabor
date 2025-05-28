@@ -22,14 +22,7 @@
       <i aria-hidden="true" class="fa fa-cog"></i>
     </button>
     <div class="dropdown">
-      <button aria-expanded="false" class="btn dropdown-toggle dropdown-btn" data-bs-toggle="dropdown" id="dropdownMenuButton" type="button">
-        {% translate "employersAssigned" %}
-      </button>
-      <ul aria-labelledby="dropdownMenuButton" class="dropdown-menu">
-        <li><a class="dropdown-item" href="#">{% translate "employersOption1" %}</a></li>
-        <li><a class="dropdown-item" href="#">{% translate "employersOption2" %}</a></li>
-        <li><a class="dropdown-item" href="#">{% translate "employersOption3" %}</a></li>
-      </ul>
+
     </div>
   </div>
     {% if request.user|has_group:"admin" %}
@@ -102,7 +95,7 @@
                   <a href="/employers/{{ employer.id }}" class="text-decoration-none text-dark">
                       {{ employer.name }}
                   </a>
-              </td>
+                </td>
                 <td>{{ employer.email}}</td>
                 <td>{{ employer.address}}</td>
                 <td>{{ employer.country }}</td>
@@ -318,4 +311,3 @@
 <script src="{% static ''%}assets/js/table-sorting.js"></script>
 <script src="{% static ''%}assets/js/assign_recruiter.js"></script>
 {% endblock scripts %}
-

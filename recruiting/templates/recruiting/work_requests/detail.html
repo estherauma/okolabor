@@ -540,25 +540,41 @@
               <th>
                {% translate "joDetailsDeductionsDeductionAmount" %}
               </th>
+              <th>
+                {% translate "Actions" %}
+               </th>
              </tr>
             </thead>
             <tbody>
-             {% for deduction in role.deductions.all %}
-             <tr>
-              <td>
-               {{ deduction.description }}
-              </td>
-              <td>
-               ${{ deduction.deduction_amount }}
-              </td>
-             </tr>
-             {% empty %}
-             <tr>
-              <td colspan="2">
-               {% translate "joDetailsDeductionsNoDeductionsFound" %}
-              </td>
-             </tr>
-             {% endfor %}
+              {% for deduction in role_deductions|get_item:role.id %}
+                <tr>
+                  <td>{{ deduction.description }}</td>
+                  <td>${{ deduction.deduction_amount }}</td>
+                  <td>
+                       <button class="btn btn-sm btn-icon btn-outline-primary"
+                       data-bs-toggle="modal"
+                       data-bs-target="#editDeductionModal{{ deduction.id }}"
+                       title="{% translate 'Edit' %}">
+                        <i class="fa fa-edit"></i>
+                      </button>
+        
+                      <button class="btn btn-sm btn-icon btn-outline-danger"
+                      data-bs-toggle="modal"
+                      data-bs-target="#deleteDeductionModal{{ deduction.id }}"
+                      title="{% translate 'Delete' %}">
+                      <i class="fa fa-trash-alt"></i>
+                    </button>
+                  </td>
+                </tr>
+        
+                <!-- Include Edit Modal, passing the form for this deduction -->
+                {% include "recruiting/work_requests/edit_deduction_modal.html" with form=deduction_forms|get_item:deduction.id deduction=deduction %}
+                {% include "recruiting/work_requests/delete_deduction_modal.html" with deduction=deduction %}
+              {% empty %}
+                <tr>
+                  <td colspan="4">No deductions found.</td>
+                </tr>
+              {% endfor %}
             </tbody>
            </table>
           </div>
