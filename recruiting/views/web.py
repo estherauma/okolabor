@@ -1442,6 +1442,7 @@ class AssignEmployerContactView(View):
         return JsonResponse({'error': 'GET not allowed.'}, status=405)
 
 
+
 @method_decorator(csrf_exempt, name='dispatch')
 class AssignEmployersToRecruiterOrgView(View):
     def post(self, request, *args, **kwargs):
@@ -1451,20 +1452,34 @@ class AssignEmployersToRecruiterOrgView(View):
             recruiter_org_id = data.get('recruiter_org_id')
 
             if not employer_ids or not recruiter_org_id:
-                msg = _('missingEmployerIDsorRecruiterOrganizationID.')
+                msg = _('Missing employer IDs or recruiter organization ID.')
                 messages.error(request, msg)
                 return JsonResponse({'success': False, 'message': msg})
 
             recruiter_org = get_object_or_404(Organization, id=recruiter_org_id, type='recruiter')
             recruiters = User.objects.filter(organizations=recruiter_org)
 
+            already_assigned = []
+            successfully_assigned = []
+
             for employer_id in employer_ids:
                 employer_org = get_object_or_404(Organization, id=employer_id, type='employer')
 
-                EmployerRecruiterOrgLink.objects.get_or_create(
+                link_exists = EmployerRecruiterOrgLink.objects.filter(
+                    employer_org=employer_org,
+                    recruiter_org=recruiter_org
+                ).exists()
+
+                if link_exists:
+                    already_assigned.append(employer_org.name)
+                    continue
+
+                # Create new link
+                link_obj, created = EmployerRecruiterOrgLink.objects.get_or_create(
                     employer_org=employer_org,
                     recruiter_org=recruiter_org
                 )
+                successfully_assigned.append(employer_org.name)
 
                 for recruiter in recruiters:
                     EmployerRecruiter.objects.get_or_create(employer=employer_org, recruiter=recruiter)
@@ -1480,43 +1495,57 @@ class AssignEmployersToRecruiterOrgView(View):
                             accept_url = f"{protocol}://{domain}/update-employer-recruiter-status/?action=accept&employer_org_id={employer_org.id}&recruiter_org_id={recruiter_org.id}&primary_contact_id={primary_contact.id}"
                             reject_url = f"{protocol}://{domain}/update-employer-recruiter-status/?action=reject&employer_org_id={employer_org.id}&recruiter_org_id={recruiter_org.id}&primary_contact_id={primary_contact.id}"
                             message = f"""
-                        Hi {primary_contact.name},
+                                        Hi {primary_contact.name},
 
-                        Your organization '{employer_org.name}' has been assigned a new recruiter organization: '{recruiter_org.name}'.
+                                        Your organization '{employer_org.name}' has been assigned a new recruiter organization: '{recruiter_org.name}'.
 
-                        You can accept or reject the assignment:
+                                        You can accept or reject the assignment:
 
-                        - Accept: <a href="{accept_url}">Accept</a>
-                        - Reject: <a href="{reject_url}">Reject</a>
+                                        - Accept: {accept_url}
+                                        - Reject: {reject_url}
 
-                        Please click one of the links to confirm your action.
+                                        Please click one of the links to confirm your action.
 
-                        Best regards,  
-                        Your Team
-                        """
+                                        Best regards,  
+                                        Your Team
+                                    """
                             send_mail(
                                 subject,
                                 message,
-                                'prasanth.s@krify.com',  
+                                settings.EMAIL_HOST_USER,
                                 [primary_contact.email],
                                 fail_silently=False
                             )
                 except EmployerContact.DoesNotExist:
                     print(f"No primary contact found for employer: {employer_org.name}")
 
-            msg = _('EmployersAssignedSuccessfully.')
-            messages.success(request, msg)
-            return JsonResponse({'success': True, 'message': msg})
+            # Build response message
+            msg_parts = []
+
+            if successfully_assigned:
+                msg_parts.append(f"Successfully assigned: {', '.join(successfully_assigned)}.")
+
+            if already_assigned:
+                msg_parts.append(f"Already assigned: {', '.join(already_assigned)}.")
+
+            final_msg = " ".join(msg_parts) or "No changes were made."
+
+            messages.success(request, final_msg)
+            return JsonResponse({
+                'success': True,
+                'message': final_msg,
+                'assigned': successfully_assigned,
+                'already_assigned': already_assigned
+            })
 
         except json.JSONDecodeError:
-            msg = _('invalidJSONData.')
+            msg = _('Invalid JSON data.')
             messages.error(request, msg)
             return JsonResponse({'success': False, 'message': msg})
 
         except Exception as e:
-            messages.error(request, str(e))
+            # messages.error(request, str(e))
             return JsonResponse({'success': False, 'message': str(e)})
-
 
 def update_employer_recruiter_status(request):
     action = request.GET.get('action')
