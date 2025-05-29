@@ -43,8 +43,8 @@
 <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="statusModalLabel">{% translate "jobOrderListUpdateStatus" %}</h5>
+            <div class="modal-header" style="background-color: #7DBF96;">
+                <h5 class="modal-title text-white" id="statusModalLabel">{% translate "jobOrderListUpdateStatus" %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'jobOrderListClose'%}"></button>
             </div>
             <div class="modal-body">
@@ -57,8 +57,8 @@
                 </select>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "jobOrderListClose" %}</button>
-                <button type="button" class="btn btn-primary" id="saveStatusBtn">{% translate "jobOrderListSave" %}</button>
+                <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate "jobOrderListClose" %}</button>
+                <button type="button" class="btn" id="saveStatusBtn" style='background-color:#7DBF96; color:white'>{% translate "jobOrderListSave" %}</button>
             </div>
         </div>
     </div>
@@ -176,16 +176,16 @@
         <div class="modal-content">
           <form method="POST" >
             {% csrf_token %}
-            <div class="modal-header">
-              <h5 class="modal-title" id="deleteModalLabel{{ item.id }}">{% translate "jobOrderListConfirmDelete" %}</h5>
+            <div class="modal-header" style="background-color: #7DBF96;">
+              <h5 class="modal-title text-white" id="deleteModalLabel{{ item.id }}">{% translate "jobOrderListConfirmDelete" %}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'jobOrderListClose'%}"></button>
             </div>
             <div class="modal-body">
               {% translate 'jobOrderListAreYouSureYouWantToDelete' %} <strong>{{ item.name }}</strong>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'jobOrderListCancel' %}</button>
-              <button type="submit" class="btn btn-danger">{% translate 'jobOrderListDelete' %}</button>
+              <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'jobOrderListCancel' %}</button>
+              <button type="submit" class="btn" style='background-color:#F95406; color:white'>{% translate 'jobOrderListDelete' %}</button>
             </div>
           </form>
         </div>
@@ -198,8 +198,8 @@
         <div class="modal-content">
           <form method="POST" action="{% url 'recruiting_web:workrequest_edit' item.id %}">
             {% csrf_token %}
-            <div class="modal-header">
-              <h5 class="modal-title" id="editModalLabel{{ item.id }}">{% translate "jobOrderListEditWorkRequest" %}</h5>
+            <div class="modal-header" style="background-color: #7DBF96;">
+              <h5 class="modal-title text-white" id="editModalLabel{{ item.id }}">{% translate "jobOrderListEditWorkRequest" %}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'jobOrderListClose'%}"></button>
             </div>
             <div class="modal-body">
@@ -237,8 +237,8 @@
                 </div>
               </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'jobOrderListCancel' %}</button>
-              <button type="submit" class="btn btn-primary">{% translate 'jobOrderListSave' %}</button>
+              <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'jobOrderListCancel' %}</button>
+              <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>{% translate 'jobOrderListSave' %}</button>
             </div>
           </form>
         </div>
