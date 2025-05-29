@@ -279,13 +279,17 @@ class UserDocumentsView(APIView):
     )
     def get(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
-        documents = user.documents.filter(
-            deleted=False)
-        serilizer = UserDocumentSerializer(documents, many=True)
-        return Response(
-            serilizer.data,
-            status=status.HTTP_200_OK
+
+        # Get user documents (not deleted)
+        documents = user.documents.filter(deleted=False)
+
+        # Serialize with context
+        serializer = UserDocumentSerializer(
+            documents,
+            many=True,
         )
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class UserDocumentDetailsView(APIView):
@@ -297,8 +301,8 @@ class UserDocumentDetailsView(APIView):
         document = get_object_or_404(
             UserDocuments, pk=document_id, deleted=False)
         serilizer = UserDocumentSerializer(document)
-        if document.kind == 'passport' and document.cloud_vision_match is False:
-            check_passport_match()
+        # if document.kind == 'passport' and document.cloud_vision_match is False:
+        #     check_passport_match()
         return Response(
             serilizer.data,
             status=status.HTTP_200_OK

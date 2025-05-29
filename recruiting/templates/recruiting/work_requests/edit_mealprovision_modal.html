@@ -5,13 +5,14 @@
 <div class="modal fade" id="editMealProvisionModal{{ role.id }}" tabindex="-1" aria-labelledby="editMealProvisionLabel{{ role.id }}" aria-hidden="true">
   <div class="modal-dialog modal-md modal-dialog-centered">
     <div class="modal-content shadow-sm border-0">
+      {% if role.meal_provision and role.meal_provision.id %}
       <form method="POST" action="{% url 'recruiting_web:meal_provision_edit' role.meal_provision.id %}">
         {% csrf_token %}
-        <div class="modal-header bg-primary text-white rounded-top">
-          <h5 class="modal-title" id="editMealProvisionLabel{{ role.id }}">
-            {% translate "Edit Meal Provision for Role" %}: {{ role.name }}
+        <div class="modal-header" style="background-color: #7DBF96;">
+          <h5 class="modal-title text-white" id="editMealProvisionLabel{{ role.id }}">
+            {% translate "joDetailsMealsEditMealProvisionForRole" %}: {{ role.name }}
           </h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{% translate 'joDetailsMealsClose'%}"></button>
         </div>
 
         <div class="modal-body py-6 px-4">
@@ -21,14 +22,17 @@
         </div>
 
         <div class="modal-footer bg-light rounded-bottom">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-            {% translate 'Cancel' %}
+          <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>
+            {% translate 'joDetailsMealsCancel' %}
           </button>
-          <button type="submit" class="btn btn-success">
-            {% translate 'Save Changes' %}
+          <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>
+            {% translate 'joDetailsMealsSaveChanges' %}
           </button>
         </div>
       </form>
+      {% else %}
+      <p class="text-muted">{% translate "joDetailsMealsNoMealProvisionInformationAvailableForThisRole"%}</p>
+      {% endif %}
     </div>
   </div>
 </div>

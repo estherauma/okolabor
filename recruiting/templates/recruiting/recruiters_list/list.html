@@ -17,14 +17,7 @@
 <div class="parent-btn-grp">
   <div class="employers-list-flex">
     <div class="dropdown">
-      <button aria-expanded="false" class="btn dropdown-toggle dropdown-btn" data-bs-toggle="dropdown" id="dropdownMenuButton" type="button">
-        {% translate "recruiterListAssigned" %}
-      </button>
-      <ul aria-labelledby="dropdownMenuButton" class="dropdown-menu">
-        <li><a class="dropdown-item" href="#">{% translate "recruiterListOption1" %}</a></li>
-        <li><a class="dropdown-item" href="#">{% translate "recruiterListOption2" %}</a></li>
-        <li><a class="dropdown-item" href="#">{% translate "recruiterListOption3" %}</a></li>
-      </ul>
+     
     </div>
   </div>
   <div class="d-flex align-items-center gap-2">
@@ -236,16 +229,16 @@
         <div class="modal-content">
           <form method="POST" action="{% url 'recruiting_web:recruiter_delete' recruiter.id %}">
             {% csrf_token %}
-            <div class="modal-header">
-              <h5 class="modal-title" id="deleteModalRecruiterLabel{{ recruiter.id }}">{% translate "recruiterListConfirmDelete" %}</h5>
+            <div class="modal-header" style="background-color: #7DBF96;">
+              <h5 class="modal-title text-white" id="deleteModalRecruiterLabel{{ recruiter.id }}">{% translate "recruiterListConfirmDelete" %}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'recruiterListClose'%}"></button>
             </div>
             <div class="modal-body">
               {% translate 'recruiterListAreYouSureYouWantToDelete'%} <strong>{{ recruiter.name }}</strong>?
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'recruiterListCancel'%}</button>
-              <button type="submit" class="btn btn-danger">{% translate 'recruiterListDelete'%}</button>
+              <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'recruiterListCancel'%}</button>
+              <button type="submit" class="btn" style='background-color:#F95406; color: white'>{% translate 'recruiterListDelete'%}</button>
             </div>
           </form>
         </div>
@@ -262,8 +255,8 @@
         <div class="modal-content">
           <form method="POST" action="{% url 'recruiting_web:recruiter_edit' recruiter.id %}">
             {% csrf_token %}
-            <div class="modal-header">
-              <h5 class="modal-title" id="editRecruiterModalLabel{{ recruiter.id }}">{% translate "recruiterListEditRecruiter" %}</h5>
+            <div class="modal-header" style="background-color: #7DBF96;">
+              <h5 class="modal-title text-white" id="editRecruiterModalLabel{{ recruiter.id }}">{% translate "recruiterListEditRecruiter" %}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'recruiterListClose'%}"></button>
             </div>
             <div class="modal-body">
@@ -309,8 +302,8 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'recruiterListCancel' %}</button>
-              <button type="submit" class="btn btn-primary">{% translate 'recruiterListSave' %}</button>
+              <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'recruiterListCancel' %}</button>
+              <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>{% translate 'recruiterListSave' %}</button>
             </div>
           </form>
         </div>

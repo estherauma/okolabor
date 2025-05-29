@@ -19,14 +19,7 @@
 <div class="parent-btn-grp">
   <div class="employers-list-flex">
     <div class="dropdown">
-      <button aria-expanded="false" class="btn dropdown-toggle dropdown-btn" data-bs-toggle="dropdown" id="dropdownMenuButton" type="button">
-        {% translate "employersAssigned" %}
-      </button>
-      <ul aria-labelledby="dropdownMenuButton" class="dropdown-menu">
-        <li><a class="dropdown-item" href="#">{% translate "employersOption1" %}</a></li>
-        <li><a class="dropdown-item" href="#">{% translate "employersOption2" %}</a></li>
-        <li><a class="dropdown-item" href="#">{% translate "employersOption3" %}</a></li>
-      </ul>
+
     </div>
   </div>
     {% if request.user|has_group:"admin" %}
@@ -258,16 +251,16 @@
         <div class="modal-content">
           <form method="POST" action="{% url 'recruiting_web:employer_delete' employer.id %}">
             {% csrf_token %}
-            <div class="modal-header">
-              <h5 class="modal-title" id="deleteModalLabel{{ employer.id }}">{% translate "employersConfirmDelete" %}</h5>
+            <div class="modal-header" style="background-color: #7DBF96;">
+              <h5 class="modal-title text-white" id="deleteModalLabel{{ employer.id }}">{% translate "employersConfirmDelete" %}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'employersClose'%}"></button>
             </div>
             <div class="modal-body">
               {% translate 'employersAreYouSureYouWantToDelete'%} <strong>{{ employer.name }}</strong>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'employersCancel'%}</button>
-              <button type="submit" class="btn btn-danger">{% translate 'employersDelete'%}</button>
+              <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'employersCancel'%}</button>
+              <button type="submit" class="btn" style='background-color:#F95406; color: white'>{% translate 'employersDelete'%}</button>
             </div>
           </form>
         </div>
@@ -284,8 +277,8 @@
         <div class="modal-content">
           <form method="POST" action="{% url 'recruiting_web:employer_edit' employer.id %}">
             {% csrf_token %}
-            <div class="modal-header">
-              <h5 class="modal-title" id="editModalLabel{{ employer.id }}">{% translate "employersEditEmployer" %}</h5>
+            <div class="modal-header" style="background-color: #7DBF96;">
+              <h5 class="modal-title text-white" id="editModalLabel{{ employer.id }}">{% translate "employersEditEmployer" %}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'employersClose'%}"></button>
             </div>
             <div class="modal-body">
@@ -331,8 +324,8 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'employersCancel' %}</button>
-              <button type="submit" class="btn btn-primary">{% translate 'employersSave' %}</button>
+              <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'employersCancel' %}</button>
+              <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>{% translate 'employersSave' %}</button>
             </div>
           </form>
         </div>
@@ -438,4 +431,3 @@ $(document).ready(function () {
 </script>
 
 {% endblock scripts %}
-
