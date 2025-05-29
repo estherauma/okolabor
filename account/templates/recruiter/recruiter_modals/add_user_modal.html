@@ -15,17 +15,17 @@
           class="modal-title w-100 text-center fw-bold modal-title-custom"
           id="inviteUserModalLabel"
         >
-        {% translate "addUserInviteUser"%}
+        {% translate "recruiterAdminListInviteUser"%}
         </h5>
       </div>
       <div class="modal-body text-start">
         <p class="mb-4 modal-subtitle-custom">
-          {% translate "addUserThenAShortNotificationMessageGoesHereWithActionButtonsBelow." %}
+          {% translate "recruiterAdminListThenAShortNotificationMessageGoesHereWithActionButtonsBelow" %}
         </p>
         <form method="POST">
           {% csrf_token %}
           <div class="mb-3">
-            <label for="curp" class="form-label modal-labels-custom">{% translate "addUserCURP"%}</label>
+            <label for="curp" class="form-label modal-labels-custom">{% translate "recruiterAdminListCURP"%}</label>
             <input
               type="text"
               class="form-control"
@@ -39,7 +39,7 @@
             <label
               for="firstName"
               class="form-label modal-labels-custom"
-              >{% translate "addUserFirstName"%}</label
+              >{% translate "recruiterAdminListFirstName"%}</label
             >
             <input
               type="text"
@@ -53,7 +53,7 @@
             <label
               for="lastName"
               class="form-label modal-labels-custom"
-              >{% translate "addUserLastName"%}</label
+              >{% translate "recruiterAdminListLastName"%}</label
             >
             <input
               type="text"
@@ -67,7 +67,7 @@
             <label
               for="email"
               class="form-label modal-labels-custom"
-              >{% translate "addUserEmail"%}</label
+              >{% translate "recruiterAdminListEmail"%}</label
             >
             <input
               type="email"
@@ -78,11 +78,11 @@
             />
           </div>
           <div class="mb-3">
-            <label for="role" class="form-label modal-labels-custom">{% translate "addUserRole" %}</label>
+            <label for="role" class="form-label modal-labels-custom">{% translate "recruiterAdminListRole" %}</label>
             <select class="form-select" id="role" name="role" required>
-              <option value="" disabled selected>{% translate "addUserSelectRole" %}</option>
-              <option value="recruiter">{% translate "addUserRecruiter" %}</option>
-              <option value="recruiter_admin">{% translate "addUserRecruiterAdmin" %}</option>
+              <option value="" disabled selected>{% translate "recruiterAdminListSelectRole" %}</option>
+              <option value="recruiter">{% translate "recruiterAdminListRecruiter" %}</option>
+              <option value="recruiter_admin">{% translate "recruiterAdminListRecruiterAdmin" %}</option>
             </select>
           </div>
           
@@ -92,13 +92,13 @@
               class="btn grey-button modal-buttons-custom"
               data-bs-dismiss="modal"
             >
-            {% translate "addUserCancel"%}
+            {% translate "recruiterAdminListCancel"%}
             </button>
             <button
               type="submit"
               class="btn light-green-button modal-buttons-custom"
             >
-            {% translate "addUserSendInvite"%}
+            {% translate "recruiterAdminListSendInvite"%}
             </button>
           </div>
         </form>

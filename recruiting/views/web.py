@@ -775,7 +775,7 @@ class UpdateWorkerStatusView(View):
     def post(self, request, *args, **kwargs):
         worker_ids = request.POST.getlist('worker_ids[]')
         WorkAssignment.objects.filter(worker_id__in=worker_ids, status='assigned').update(status='offersent')
-        messages.success(request, _("offerSentSuccessfully."))
+        messages.success(request, _("workRequestAddWorkerOfferSentSuccessfully"))
         return JsonResponse({'status':'success','success': 'True', 'message': 'Offer sent successfully.'})
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -802,10 +802,10 @@ class AddToShortlistView(View):
 
         if added_any:
             messages.success(request, "workersAddedToShortlistSuccessfully.")
-            return JsonResponse({'success': True, 'message': _("workersAddedToShortlistSuccessfully.")})
+            return JsonResponse({'success': True, 'message': _("workRequestAddWorkerWorkersAddedToShortlistSuccessfully")})
         else:
             messages.warning(request, "someWorkersAreAlreadyShortlisted.")
-            return JsonResponse({'success': False, 'message': _("someWorkersAreAlreadyShortlisted.")})
+            return JsonResponse({'success': False, 'message': _("workRequestAddWorkerSomeWorkersAreAlreadyShortlisted")})
 
 
 class ShowWorkerDetails(View):
