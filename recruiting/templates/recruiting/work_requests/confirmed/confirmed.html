@@ -70,7 +70,12 @@
     </div>
   </div>
 </div>
-        <table class="table text-nowrap border-bottom" id="confirmed-table">
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+        <table class="table text-nowrap border-bottom " id="basic-datatable-confirmed">
              <thead>
             <tr>
                 <th class="theading-color">{% translate "workersListCheckbox" %}</th>
@@ -111,6 +116,12 @@
             </tbody>
         </table>
     </div>
+
+  </div>
+</div>
+</div>
+</div>
+
 </div>
 
 <!-- Copy Modal -->
@@ -147,7 +158,31 @@
     </div>
   </div>
 
+
 {% block scripts %}
+  <!-- Include jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Include DataTables CSS and JS -->
+ <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+  <!-- Your custom scripts -->
   <script src="{% static 'assets/js/copy-confirmed-workers.js' %}"></script>
   <script src="{% static 'assets/js/tablecolumns_hiding.js' %}"></script>
-{% endblock scripts %}
+
+  <script>
+    $(document).ready(function () {
+      $.fn.dataTable.ext.errMode = 'none';
+
+        const table = $('#basic-datatable-confirmed').DataTable();
+        const settingsBtn =
+            '<button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnShortListSettingsModal">' +
+                '<i class="fa fa-cog" aria-hidden="true" style="color: #9A9898;margin-top:-13px"></i>' +
+            '</button>';
+        const lengthContainer = $('#basic-datatable-confirmed_length');
+        lengthContainer.addClass('d-flex align-items-center');
+        lengthContainer.prepend(settingsBtn);
+    });
+  </script>
+{% endblock %}
