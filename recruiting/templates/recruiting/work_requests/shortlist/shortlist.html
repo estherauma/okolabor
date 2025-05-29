@@ -11,7 +11,7 @@
           <button class="btn btn-secondary ms-2" id="assignWorkRequestBtn" style="display: none;">
             <i class="fa fa-tasks me-1"></i>
             {% translate "assignWorkRequest" %}
-        </button>
+          </button>
           <button class="btn btn-warning" id="copyBtn">
               <i class="fa fa-copy me-1"></i>
               {% translate "copyWorkers" %}
@@ -68,8 +68,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="display: none;">{% translate "Close" %}</button>
-        <button type="button" class="btn btn-primary" id="apply-column-settings" style="display: none;">{% translate "Apply" %}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Close" %}</button>
+        <button type="button" class="btn btn-primary" id="apply-column-settings">{% translate "Apply" %}</button>
       </div>
     </div>
   </div>
@@ -77,9 +77,9 @@
 
   <div class="table-responsive">
       <table class="table text-nowrap border-bottom" id="basic-datatable">
-          <thead>
+          <thead style="background-color: #7DBF96;">
             <tr>
-                <th class="theading-color">{% translate "workersListCheckbox" %}</th>
+                <th>{% translate "workersListCheckbox" %}</th>
                 <th class="col-name">{% translate "workersListName" %}</th>
                 <th class="col-town">{% translate "workersListTown" %}</th>
                 <th class="col-profile">{% translate "workersListProfileCompletion" %}</th>
@@ -88,7 +88,7 @@
                 <th class="col-location">{% translate "workersListLocationPreference" %}</th>
                 <th class="col-offer">{% translate "workersListOfferStatus" %}</th>
             </tr>
-        </thead>
+          </thead>
           <tbody>
               {% for worker in shortlisted_workers %}
                   <tr class="text-center">
@@ -96,16 +96,16 @@
                           <input type="checkbox" class="worker-shortlist-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.firstname }} {{ worker.lastname }}">
                       </td>
                       <td class="col-name">
-                    {% if worker.first_name and worker.last_name %}
-                        <a href="{{ worker.id }}">
-                            {{ worker.first_name }} {{ worker.last_name }}
-                        </a>
-                    {% else %}
-                        <a href="{{ worker.id }}">
-                            {{ worker.email }}
-                        </a>
-                    {% endif %}
-                </td>
+                          {% if worker.first_name and worker.last_name %}
+                              <a href="{{ worker.id }}">
+                                  {{ worker.first_name }} {{ worker.last_name }}
+                              </a>
+                          {% else %}
+                              <a href="{{ worker.id }}">
+                                  {{ worker.email }}
+                              </a>
+                          {% endif %}
+                      </td>
                 <td class="col-town">{{ worker.town|default:"Not Provided" }}</td>
                 <td class="col-profile">{{ worker.profile_completion_percentage|default:0 }}%</td>
                 <td class="col-experience">{{ worker.work_experience|default:"Not Provided" }}</td>

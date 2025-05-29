@@ -71,45 +71,58 @@
     </div>
 </div>
 
+<div class="modal fade" id="jobRequestColumnSettingsModal" tabindex="-1" aria-labelledby="jobRequestColumnSettingsLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="jobRequestColumnSettingsLabel">{% translate "Select Columns to Display" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'Close' %}"></button>
+      </div>
+      <div class="modal-body">
+        <form id="job-request-column-settings-form">
+          <div class="form-check"><input class="form-check-input job-request-column-toggle" type="checkbox" value="1" checked id="col-worker-request"><label class="form-check-label" for="col-worker-request">{% translate "jobOrderListWorkerRequest" %}</label></div>
+          <div class="form-check"><input class="form-check-input job-request-column-toggle" type="checkbox" value="2" checked id="col-deadline"><label class="form-check-label" for="col-deadline">{% translate "jobOrderListDeadline" %}</label></div>
+          <div class="form-check"><input class="form-check-input job-request-column-toggle" type="checkbox" value="3" checked id="col-start-date"><label class="form-check-label" for="col-start-date">{% translate "jobOrderListStartDate" %}</label></div>
+          <div class="form-check"><input class="form-check-input job-request-column-toggle" type="checkbox" value="4" checked id="col-status"><label class="form-check-label" for="col-status">{% translate "jobOrderListStatus" %}</label></div>
+          <div class="form-check"><input class="form-check-input job-request-column-toggle" type="checkbox" value="5" checked id="col-workers"><label class="form-check-label" for="col-workers">{% translate "jobOrderListWorkers" %}</label></div>
+          <div class="form-check"><input class="form-check-input job-request-column-toggle" type="checkbox" value="6" checked id="col-company"><label class="form-check-label" for="col-company">{% translate "jobOrderListCompany" %}</label></div>
+          <div class="form-check"><input class="form-check-input job-request-column-toggle" type="checkbox" value="7" checked id="col-closing"><label class="form-check-label" for="col-closing">{% translate "jobOrderListClosing" %}</label></div>
+          {% if request.user|has_group:"admin" %}
+          <div class="form-check"><input class="form-check-input job-request-column-toggle" type="checkbox" value="8" checked id="col-actions"><label class="form-check-label" for="col-actions">{% translate "jobOrderListActions" %}</label></div>
+          {% endif %}
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Close" %}</button>
+        <button type="button" class="btn btn-primary" id="apply-job-request-column-settings">{% translate "Apply" %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <div class="row row-sm">
  <div class="col-lg-12">
   <div class="card">
    <div class="card-body">
     <div class="table-responsive">
         <table class="table text-nowrap border-bottom" id="workrequest-datatable">
-            <thead>
-                <tr>
-                    <th class="wd-5p border-bottom-0 theading-color">
-                        <!-- <input type="checkbox" id="select-all"> -->
-                    </th>
-                    <th class="wd-15p border-bottom-0 theading-color" style="color: black;">
-                        {% translate "jobOrderListWorkerRequest" %}
-                    </th>
-                    <th class="wd-15p border-bottom-0 theading-color">
-                        {% translate "jobOrderListDeadline" %}
-                    </th>
-                    <th class="wd-15p border-bottom-0 theading-color">
-                        {% translate "jobOrderListStartDate" %}
-                    </th>
-                    <th class="wd-20p border-bottom-0 theading-color" style="width: 21%;">
-                        {% translate "jobOrderListStatus" %}
-                    </th>
-                    <th class="wd-15p border-bottom-0 theading-color">
-                        {% translate "jobOrderListWorkers" %}
-                    </th>
-                    <th class="wd-10p border-bottom-0 theading-color">
-                        {% translate "jobOrderListCompany" %}
-                    </th>
-                    <th class="wd-25p border-bottom-0 theading-color">
-                        {% translate "jobOrderListClosing" %}
-                    </th>
-                    {% if request.user|has_group:"admin" %}
-                        <th class="wd-25p border-bottom-0 theading-color">
-                            {% translate "jobOrderListActions" %}
-                        </th>
-                    {% endif %}
-                </tr>
-            </thead>
+          <thead style="background-color: #7DBF96;">
+          <tr>
+            <th class="col-checkbox "></th>
+            <th class="col-worker-request ">{% translate "jobOrderListWorkerRequest" %}</th>
+            <th class="col-deadline ">{% translate "jobOrderListDeadline" %}</th>
+            <th class="col-start-date">{% translate "jobOrderListStartDate" %}</th>
+            <th class="col-status">{% translate "jobOrderListStatus" %}</th>
+            <th class="col-workers">{% translate "jobOrderListWorkers" %}</th>
+            <th class="col-company">{% translate "jobOrderListCompany" %}</th>
+            <th class="col-closing">{% translate "jobOrderListClosing" %}</th>
+            {% if request.user|has_group:"admin" %}
+            <th class="col-actions">{% translate "jobOrderListActions" %}</th>
+            {% endif %}
+          </tr>
+          </thead>
+
             <tbody>
                 {% for item in work_requests %}
                 <tr>
@@ -275,4 +288,73 @@
 <script src="{% static 'assets/js/table-data.js' %}"></script>
 <script src="{% static 'assets/js/table-sorting.js' %}"></script>
 <script src="{% static 'assets/js/change-workrequest-status.js' %}"></script>
+<script>
+function applyJobRequestColumnVisibilityFromStorage(table) {
+    $.fn.dataTable.ext.errMode = 'none';
+    const savedSettings = JSON.parse(localStorage.getItem('jobRequestColumnVisibilitySettings')) || {};
+    const columnClasses = [
+        'col-worker-request',
+        'col-deadline',
+        'col-start-date',
+        'col-status',
+        'col-workers',
+        'col-company',
+        'col-closing',
+        'col-actions'
+    ];
+    columnClasses.forEach((columnClass, index) => {
+        const isVisible = savedSettings[columnClass] !== false;
+        table.column(index + 1).visible(isVisible);
+        const checkbox = document.querySelector(`.job-request-column-toggle[value="${index + 1}"]`);
+        if (checkbox) {
+            checkbox.checked = isVisible;
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const jobRequestTable = $('#workrequest-datatable').DataTable();
+    applyJobRequestColumnVisibilityFromStorage(jobRequestTable);
+
+    const applyBtn = document.getElementById('apply-job-request-column-settings');
+    if (applyBtn) {
+        applyBtn.addEventListener('click', function () {
+            const savedSettings = {};
+            document.querySelectorAll('.job-request-column-toggle').forEach(function (checkbox) {
+                const colIndex = parseInt(checkbox.value);
+                const isVisible = checkbox.checked;
+                const columnClass = [
+                    'col-worker-request',
+                    'col-deadline',
+                    'col-start-date',
+                    'col-status',
+                    'col-workers',
+                    'col-company',
+                    'col-closing',
+                    'col-actions'
+                ][colIndex - 1];
+                savedSettings[columnClass] = isVisible;
+                jobRequestTable.column(colIndex).visible(isVisible);
+            });
+            localStorage.setItem('jobRequestColumnVisibilitySettings', JSON.stringify(savedSettings));
+            const modalEl = document.getElementById('jobRequestColumnSettingsModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            modal?.hide();
+        });
+    }
+});
+</script>
+<script>
+$(document).ready(function () {
+    const table = $('#workrequest-datatable').DataTable();
+    const settingsBtn = `
+        <button class="setting-btn" data-bs-toggle="modal" data-bs-target="#jobRequestColumnSettingsModal">
+            <i class="fa fa-cog" aria-hidden="true"></i>
+        </button>
+    `;
+    const lengthContainer = $('#workrequest-datatable_length');
+    lengthContainer.addClass('d-flex align-items-center');
+    lengthContainer.prepend(settingsBtn);
+});
+</script>
 {% endblock scripts %}

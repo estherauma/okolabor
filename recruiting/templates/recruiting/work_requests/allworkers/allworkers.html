@@ -65,8 +65,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="display: none;">{% translate "Close" %}</button>
-        <button type="button" class="btn btn-primary" id="apply-column-settings" style="display: none;">{% translate "Apply" %}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Close" %}</button>
+        <button type="button" class="btn btn-primary" id="apply-column-settings">{% translate "Apply" %}</button>
       </div>
     </div>
   </div>
@@ -79,9 +79,9 @@
 <!-- Table and other content for All Workers -->
 <div class="table-responsive">
     <table class="table text-nowrap border-bottom" id="basic-datatable">
-        <thead>
+        <thead style="background-color: #7DBF96;">
             <tr>
-                <th class="theading-color">{% translate "workersListCheckbox" %}</th>
+                <th class="">{% translate "workersListCheckbox" %}</th>
                 <th class="col-name">{% translate "workersListName" %}</th>
                 <th class="col-town">{% translate "workersListTown" %}</th>
                 <th class="col-profile">{% translate "workersListProfileCompletion" %}</th>
@@ -120,33 +120,6 @@
     </table>
 </div>
 
-<div class="pagination">
-    <span class="step-links">
-        {% if workers.has_previous %}
-            <a href="?page={{ workers.previous_page_number }}&search={{ request.GET.search }}&per_page={{ request.GET.per_page }}">
-                <span style="font-weight: bold;">Previous</span>
-            </a>
-        {% else %}
-            <span class="disabled"><span style="font-weight: bold;">Previous</span></span>
-        {% endif %}
-
-        {% for i in workers.paginator.page_range %}
-            {% if workers.number == i %}
-                <span class="current">{{ i }}</span>
-            {% elif i > workers.number|add:'-3' and i < workers.number|add:'3' %}
-                <a href="?page={{ i }}&search={{ request.GET.search }}&per_page={{ request.GET.per_page }}">{{ i }}</a>
-            {% endif %}
-        {% endfor %}
-
-        {% if workers.has_next %}
-            <a href="?page={{ workers.next_page_number }}&search={{ request.GET.search }}&per_page={{ request.GET.per_page }}">
-                <span style="font-weight: bold;">Next</span>
-            </a>
-        {% else %}
-            <span class="disabled"><span style="font-weight: bold;">Next</span></span>
-        {% endif %}
-    </span>
-</div>
 {% block scripts %}
  <script src="{% static 'assets/js/tablecolumns_hiding.js' %}"></script>
 {% endblock scripts %}
