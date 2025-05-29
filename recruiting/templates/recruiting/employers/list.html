@@ -406,7 +406,7 @@ function applyEmployerColumnVisibilityFromStorage(table) {
                     'col-actions'
                 ][colIndex - 1];
                 savedSettings[columnClass] = isVisible;
-                employerTable.column(colIndex).visible(isVisible);
+                table.column(colIndex).visible(isVisible);
             });
             localStorage.setItem('employerColumnVisibilitySettings', JSON.stringify(savedSettings));
             const modalEl = document.getElementById('employerColumnSettingsModal');
