@@ -180,6 +180,7 @@ class UserDocuments(AuditableModel):
     cloud_vision_response = models.TextField(null=True, blank=True)
     cloud_vision_match = models.BooleanField(default=False)
     file_type = models.CharField(max_length=256, null=True, blank=True)
+    work_experience_id = models.CharField(max_length=256, null=True, blank=True)
 
     objects = SoftDeleteManager()
     all_objects = models.Manager()
@@ -281,4 +282,3 @@ class Log(models.Model):
         obj_display = str(self.content_object) if self.content_object else self.object_id
         user_name = self.user.get_full_name() or self.user.first_name if self.user else "Anonymous"
         return f"{self.action} on {model_name} [{obj_display}] by {user_name}"
-

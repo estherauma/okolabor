@@ -5,3 +5,4 @@ class UploadFileSerializer(serializers.Serializer):
     file_content = serializers.FileField(required=True)
     entity_type = serializers.CharField(max_length=255, required=True)
     description = serializers.CharField(max_length=255, required=False)
+    work_experience_id = serializers.CharField(max_length=255, required=False)

@@ -38,27 +38,27 @@ def process_file_upload(self, user_id, entity_type, description, file_name, file
     
     # passport verification for with cloud vision 
     # passport verification for with cloud vision 
-    if entity_type == 'passport':
-        logger.info(f'Running cloud vision for : {document.path}')
-        cloud_response = detect_text_in_image(document.path)
-        document.cloud_vision_response = cloud_response
+    # if entity_type == 'passport':
+    #     logger.info(f'Running cloud vision for : {document.path}')
+    #     cloud_response = detect_text_in_image(document.path)
+    #     document.cloud_vision_response = cloud_response
 
-        user_details = extract_current_details(user_id)
-        logger.info(f'User details: {user_details}')
-        details_match = check_details_match(user_details, cloud_response)
-        document.cloud_vision_match = details_match
-        document.save()
+    #     user_details = extract_current_details(user_id)
+    #     logger.info(f'User details: {user_details}')
+    #     details_match = check_details_match(user_details, cloud_response)
+    #     document.cloud_vision_match = details_match
+    #     document.save()
         
-        if details_match:
-            message = _('passportVerifiedNotificationBody')
-        else:
-            message = _('passportNotVerifiedNotificationBody')
+    #     if details_match:
+    #         message = _('passportVerifiedNotificationBody')
+    #     else:
+    #         message = _('passportNotVerifiedNotificationBody')
 
-        UserNotification.objects.create(
-            user=document.user,
-            title=_('passportVerifiedNotificationTitle'),
-            message=message
-        )
+    #     UserNotification.objects.create(
+    #         user=document.user,
+    #         title=_('passportVerifiedNotificationTitle'),
+    #         message=message
+    #     )
 
     return {
         'document_id': document.id,

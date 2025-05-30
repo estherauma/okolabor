@@ -683,6 +683,7 @@ class AddWorkersWorkRequests(View):
         offersent_count = len(offersent_workers_data)
         confirmed_count = len(confirmed_workers_data)
         cancelled_count = len(cancelled_workers_data)
+        workers_count = len(page_obj)
 
         # Store the state in the session
         request.session[session_key] = {
@@ -714,6 +715,7 @@ class AddWorkersWorkRequests(View):
             'offersent_count': offersent_count,
             'confirmed_count': confirmed_count,
             'cancelled_count': cancelled_count,
+            'workers_count': workers_count,
         }
         return render(request, 'recruiting/work_requests/create_addworker.html', context)
 
@@ -956,7 +958,7 @@ class DeleteRoleView(View):
         role = get_object_or_404(Role, pk=pk)
         work_request_pk = role.work_request.pk 
         role.delete(user=request.user)
-        messages.success(request, 'Role deleted successfully.')
+        messages.success(request, _('addRoleRoleDeletedSuccessfully'))
         return redirect('recruiting_web:workrequest_detail', pk=work_request_pk)
 
 class RecruiterListView(LoginRequiredMixin, View):
@@ -1783,10 +1785,10 @@ class EditEmploymentLocationView(View):
         form = RoleEmploymentLocationForm(request.POST, instance=location)
         if form.is_valid():
             form.save()
-            messages.success(request, 'EmploymentLocationUpdatedSuccessfully.')
+            messages.success(request, _('roleEmploymentLocationEmploymentLocationUpdatedSuccessfully'))
             return redirect('recruiting_web:workrequest_detail', pk=location.role.work_request.pk)
         else:
-            messages.error(request, 'ThereWasAnErrorUpdatingTheEmploymentLocation.')
+            messages.error(request, _('roleEmploymentLocationThereWasAnErrorUpdatingTheEmploymentLocation'))
 
 
 class DeleteEmploymentLocationView(View):
@@ -1794,10 +1796,10 @@ class DeleteEmploymentLocationView(View):
         location = get_object_or_404(EmploymentLocation, pk=pk)
         try:
             location.delete()
-            messages.success(request, 'EmploymentLocationDeletedSuccessfully.')
+            messages.success(request, _('roleEmploymentLocationEmploymentLocationDeletedSuccessfully'))
             return redirect('recruiting_web:workrequest_detail', pk=location.role.work_request.pk)
         except Exception as e:
-            messages.error(request, f'ErrorDeletingEmploymentLocation: {str(e)}')
+            messages.error(request, _('roleEmploymentLocationErrorDeletingEmploymentLocation: %(error)s') % {'error': str(e)})
 
 
 class EditHousingInformationView(View):
@@ -1806,10 +1808,10 @@ class EditHousingInformationView(View):
         form = RoleHousingInformationForm(request.POST, instance=housing)
         if form.is_valid():
             form.save()
-            messages.success(request, 'HousingInformationUpdatedSuccessfully.')
+            messages.success(request, _('joDetailsHousingInfoHousingInformationUpdatedSuccessfully'))
             return redirect('recruiting_web:workrequest_detail', pk=housing.role.work_request.pk)
         else:
-            messages.error(request, 'ThereWasAnErrorUpdatingTheHousingInformation.')
+            messages.error(request, _('joDetailsHousingInfoThereWasAnErrorUpdatingTheHousingInformation'))
             return redirect('recruiting_web:workrequest_detail', pk=housing.role.work_request.pk)
 
 
@@ -1819,10 +1821,10 @@ class DeleteHousingInformationView(View):
         try:
             work_request_pk = housing.role.work_request.pk  # Store before deleting
             housing.delete()
-            messages.success(request, 'HousingInformationDeletedSuccessfully.')
+            messages.success(request, _('joDetailsHousingInfoHousingInformationDeletedSuccessfully'))
             return redirect('recruiting_web:workrequest_detail', pk=work_request_pk)
         except Exception as e:
-            messages.error(request, f'ErrorDeletingHousingInformation: {str(e)}')
+            messages.error(request, _('joDetailsHousingInfoErrorDeletingHousingInformation: %(error)s') % {'error': str(e)})
             return redirect('recruiting_web:workrequest_detail', pk=housing.role.work_request.pk)
         
 class EditMealProvisionView(View):
@@ -1832,10 +1834,10 @@ class EditMealProvisionView(View):
 
         if form.is_valid():
             form.save()
-            messages.success(request, 'MealProvisionUpdatedSuccessfully.')
+            messages.success(request, _('joDetailsMealsMealProvisionUpdatedSuccessfully'))
             return redirect('recruiting_web:workrequest_detail', pk=meal_provision.role.work_request.pk)
         else:
-            messages.error(request, 'ThereWasAnErrorUpdatingTheMealProvision.')
+            messages.error(request, _('joDetailsMealsThereWasAnErrorUpdatingTheMealProvision'))
             return redirect('recruiting_web:workrequest_detail', pk=meal_provision.role.work_request.pk)
         
 
@@ -1845,10 +1847,10 @@ class DeleteMealProvisionView(View):
         try:
             work_request_pk = meal_provision.role.work_request.pk  # Store before deleting
             meal_provision.delete()
-            messages.success(request, 'MealProvisionDeletedSuccessfully.')
+            messages.success(request, _('joDetailsMealsMealProvisionDeletedSuccessfully'))
             return redirect('recruiting_web:workrequest_detail', pk=work_request_pk)
         except Exception as e:
-            messages.error(request, f'ErrorDeletingMealProvision: {str(e)}')
+            messages.error(request, _('joDetailsMealsErrorDeletingMealProvision: %(error)s') % {'error': str(e)})
             return redirect('recruiting_web:workrequest_detail', pk=meal_provision.role.work_request.pk)
 
 
@@ -1881,9 +1883,9 @@ class DeleteRoleHoursView(View):
 
         try:
             hours.delete()
-            messages.success(request, 'Hours deleted successfully.')
+            messages.success(request, _('joDetailsHoursHoursDeletedSuccessfully'))
         except Exception as e:
-            messages.error(request, f'Error deleting hours: {str(e)}')
+            messages.error(request, _('joDetailsHoursErrorDeletingHours: %(error)s')% {'error': str(e)})
 
         # Redirect to the work request detail page
         if work_request_id:
@@ -1900,9 +1902,9 @@ class EditRoleWagesView(View):
 
         if form.is_valid():
             form.save()
-            messages.success(request, 'Wages updated successfully.')
+            messages.success(request, _('joDetailsWagesWagesUpdatedSuccessfully'))
         else:
-            messages.error(request, 'There was an error updating the wages.')
+            messages.error(request, _('joDetailsWagesThereWasAnErrorUpdatingTheWages'))
 
         if work_request_id:
             return redirect('recruiting_web:workrequest_detail', pk=work_request_id)
@@ -1914,7 +1916,7 @@ class DeleteRoleWagesView(View):
         wages = get_object_or_404(Wages, pk=pk)
         wages.deleted_at = timezone.now()
         wages.save()
-        messages.success(request, "Wages deleted successfully.")
+        messages.success(request, _("joDetailsWagesWagesDeletedSuccessfully"))
         return redirect('recruiting_web:workrequest_detail', pk=wages.role.work_request.pk)
 class EditRoleQualificationView(View):
     def post(self, request, pk):
@@ -1925,10 +1927,10 @@ class EditRoleQualificationView(View):
 
         if form.is_valid():
             form.save()
-            messages.success(request, 'Qualification updated successfully.')
+            messages.success(request, _('joDetailsQualificationsQualificationUpdatedSuccessfully'))
             return redirect('recruiting_web:workrequest_detail', pk=qualification.role.work_request.pk) 
         else:
-            messages.error(request, 'There was an error updating the qualification.')
+            messages.error(request, _('joDetailsQualificationsThereWasAnErrorUpdatingTheQualification'))
 
         
 
@@ -1938,7 +1940,7 @@ class DeleteQualificationView(View):
         qualification = get_object_or_404(Qualification, pk=pk)
         qualification.delete()
 
-        messages.success(request, "Qualification deleted successfully.")
+        messages.success(request, _("joDetailsQualificationsQualificationDeletedSuccessfully"))
         return redirect('recruiting_web:workrequest_detail', pk=qualification.role.work_request.pk)
 
 class DeleteDeductionView(View):

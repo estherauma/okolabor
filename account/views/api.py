@@ -283,42 +283,10 @@ class UserDocumentsView(APIView):
         # Get user documents (not deleted)
         documents = user.documents.filter(deleted=False)
 
-        # Get all UserWorkExperience IDs for the user
-        work_experience_ids = UserWorkExperience.objects.filter(
-            user=user
-        ).values_list('id', flat=True)
-
-        # Get all UserJobExperience for those work_experience_ids
-        job_experiences = UserJobExperience.objects.filter(
-            work_experience_id__in=work_experience_ids,
-            deleted=False
-        )
-
-        # Get all UserJobExperienceDetails linked to those job_experiences
-        job_experience_details = UserJobExperienceDetails.objects.filter(
-            job_experience__in=job_experiences,
-            deleted=False
-        )
-
-        # Build a mapping: document.id -> work_experience_id
-        doc_to_experience = {}
-
-        # Build a lookup of path -> work_experience_id (for faster search)
-        path_to_experience = {}
-
-        for detail in job_experience_details:
-            if detail.is_attachment:
-                path_to_experience[detail.value] = detail.job_experience.work_experience_id
-
-        for document in documents:
-            work_experience_id = path_to_experience.get(document.path)
-            doc_to_experience[document.id] = work_experience_id
-
         # Serialize with context
         serializer = UserDocumentSerializer(
             documents,
             many=True,
-            context={'doc_to_experience': doc_to_experience}
         )
 
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -333,8 +301,8 @@ class UserDocumentDetailsView(APIView):
         document = get_object_or_404(
             UserDocuments, pk=document_id, deleted=False)
         serilizer = UserDocumentSerializer(document)
-        if document.kind == 'passport' and document.cloud_vision_match is False:
-            check_passport_match()
+        # if document.kind == 'passport' and document.cloud_vision_match is False:
+        #     check_passport_match()
         return Response(
             serilizer.data,
             status=status.HTTP_200_OK

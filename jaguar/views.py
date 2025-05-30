@@ -77,6 +77,7 @@ class UploadFileView(APIView):
     def post(self, request):
         serializer = UploadFileSerializer(data=request.data)
         if serializer.is_valid():
+            work_experience_id = request.data.get('work_experience_id')
             entity_type = request.data['entity_type']
             upload_dir = self.upload_paths.get(entity_type)
 
@@ -96,7 +97,8 @@ class UploadFileView(APIView):
                 path=full_path,
                 kind=entity_type,
                 description=request.data.get('description', ''),
-                file_type=file_extension
+                file_type=file_extension,
+                work_experience_id = work_experience_id
             )
 
             # Encode file content to pass to Celery (base64)
@@ -118,7 +120,8 @@ class UploadFileView(APIView):
                 'task_id': task.id,
                 'file_location': full_path,
                 'file_type': file_extension,  # Include file_type in the response
-                'status_check': f"/api/files/upload-status/{task.id}/"
+                'status_check': f"/api/files/upload-status/{task.id}/",
+                'work_experience_id': work_experience_id
             }, status=status.HTTP_202_ACCEPTED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
