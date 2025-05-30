@@ -444,7 +444,7 @@ class WorkRequestsListView(View):
             else:
                 work_requests = WorkRequests.objects.none()
         else:
-            work_requests = WorkRequests.objects.none()
+            work_requests = WorkRequests.objects.none() 
 
         # Attach recruiter_org to each work request
         for wr in work_requests:
