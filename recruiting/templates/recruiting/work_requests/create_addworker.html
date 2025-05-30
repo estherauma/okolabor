@@ -97,6 +97,7 @@
                     </button>
             
                     <!-- Additional Filters Section (Previously separate) -->
+                    <!-- Dynamic Random Filters -->
                     <div class="form-row align-items-center">
                         <span class="mt-5 ms-2 mb-3">
                             <h3 class="card-title green-color d-contents">
@@ -104,22 +105,43 @@
                             </h3>
                         </span>
                     </div>
-                    <div class="row align-items-center">
-                        {% for field in filter_form %}
+
+                <div id="dynamic-random-filters">
+                    <div class="row align-items-center filter-row">
                         <div class="col-md-4 col-sm-6 col-xs-6">
                             <div class="form-group">
-                                <label class="form-label gray-color" for="{{ field.id_for_label }}">
-                                    {% translate field.label %}
+                                <label class="form-label gray-color">
+                                    {% translate "Select Filter" %}
                                 </label>
-                                {{ field }}
+                                <select class="form-control" name="random_filter">
+                                    <option value="">{% translate "Choose a filter" %}</option>
+                                    <option value="preferred_country">{% translate "Preferred Country" %}</option>
+                                    <option value="work_sector">{% translate "Work Sector" %}</option>
+                                    <option value="language">{% translate "Language" %}</option>
+                                    <option value="availability">{% translate "Availability" %}</option>
+                                </select>
                             </div>
                         </div>
-                        {% endfor %}
+                        <div class="col-auto">
+                            <button class="btn btn-danger" type="button" onclick="removeFilterRow(this)">
+                                &times;
+                            </button>
+                        </div>
                     </div>
-                    
-                    <button class="btn light-green-button min-content-width mt-3" type="submit">
+                </div>
+
+                <!-- Add / Clear Buttons -->
+                <div class="mt-3">
+                    <button class="btn light-green-button me-2" type="button" onclick="addRandomFilter()">
+                        <i class="fe fe-plus"></i> {% translate "Add Another Filter" %}
+                    </button>
+                    <button class="btn light-green-button" type="button" onclick="clearAllFilters()">
+                        {% translate "Clear Filters" %}
+                    </button>
+                    <button class="btn light-green-button min-content-width ms-3" type="submit">
                         {% translate "workersListApplyFilters" %}
                     </button>
+                    </div>
                 </div>
             </form>
             
@@ -212,6 +234,79 @@
 <script src="{% static ''%}assets/js/worker-tabs.js"></script>
 <script src="{% static ''%}assets/js/add-shortlist.js"></script>
 <script src="{% static ''%}assets/js/dynamic_filter.js"></script>
+<script>
+function addRandomFilter() {
+    const container = document.getElementById("dynamic-random-filters");
+
+    const row = document.createElement("div");
+    row.classList.add("row", "align-items-center", "filter-row", "mb-2");
+
+    const uniqueId = Date.now();  // unique ID for inputs
+
+    row.innerHTML = `
+        <div class="col-md-4 col-sm-6 col-xs-6">
+            <div class="form-group">
+                <label class="form-label gray-color">
+                    {% translate "Select Filter" %}
+                </label>
+                <select class="form-control" name="random_filter" onchange="handleFilterChange(this, ${uniqueId})">
+                    <option value="">{% translate "Choose a filter" %}</option>
+                    <option value="preferred_country">{% translate "Preferred Country" %}</option>
+                    <option value="work_sector">{% translate "Work Sector" %}</option>
+                    <option value="language">{% translate "Language" %}</option>
+                    <option value="availability">{% translate "Availability" %}</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6" id="extra-fields-${uniqueId}"></div>
+        <div class="col-auto mt-3">
+            <button class="btn btn-danger btn-sm py-1 px-2 mt-2" type="button" onclick="removeFilterRow(this)">
+                &times;
+            </button>
+        </div>
+    `;
+
+    container.appendChild(row);
+}
+
+function handleFilterChange(selectEl, uniqueId) {
+    const extraFieldsContainer = document.getElementById(`extra-fields-${uniqueId}`);
+    const selectedValue = selectEl.value;
+
+    if (selectedValue === "availability") {
+        extraFieldsContainer.innerHTML = `
+            <div class="row">
+                <div class="col">
+                    <label class="form-label gray-color">{% translate "Availability From" %}</label>
+                    <input type="date" class="form-control" name="availability_from_${uniqueId}" />
+                </div>
+                <div class="col">
+                    <label class="form-label gray-color">{% translate "Availability To" %}</label>
+                    <input type="date" class="form-control" name="availability_to_${uniqueId}" />
+                </div>
+            </div>
+        `;
+    } else {
+        extraFieldsContainer.innerHTML = "";
+    }
+}
+
+function removeFilterRow(button) {
+    const row = button.closest(".filter-row");
+    if (row) row.remove();
+}
+
+function clearAllFilters() {
+    const container = document.getElementById("dynamic-random-filters");
+    container.innerHTML = '';
+    addRandomFilter();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    clearAllFilters();
+});
+</script>
+
 
 
 {% endblock scripts %}
