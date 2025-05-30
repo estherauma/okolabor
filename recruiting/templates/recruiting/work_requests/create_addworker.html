@@ -290,18 +290,15 @@ function handleFilterChange(selectEl, uniqueId) {
         extraFieldsContainer.innerHTML = "";
     }
 }
-
 function removeFilterRow(button) {
     const row = button.closest(".filter-row");
     if (row) row.remove();
 }
-
 function clearAllFilters() {
     const container = document.getElementById("dynamic-random-filters");
     container.innerHTML = '';
     addRandomFilter();
 }
-
 document.addEventListener("DOMContentLoaded", () => {
     clearAllFilters();
 });
