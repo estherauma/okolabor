@@ -117,26 +117,11 @@
                         {% endfor %}
                     </div>
                     
-                    <div class="col-auto">
-                        <button class="btn" type="button">
-                            <span class="sign medium-font">{% translate "x" %}</span>
-                        </button>
-                    </div>
+                    <button class="btn light-green-button min-content-width mt-3" type="submit">
+                        {% translate "workersListApplyFilters" %}
+                    </button>
                 </div>
             </form>
-            <a class="btn light-green-button min-content-width" href="{% url 'recruiting_web:workrequest_create' %}">
-                <span><i class="fe fe-plus"></i></span>
-
-                {% translate "workRequestAddWorkerAddAnotherExperience" %}
-            </a>
-            <div class="form-row align-items-center">
-                <span class="mt-5 ms-2 mb-3">
-                    <h3 class="card-title green-color d-contents">
-                        {% translate "workRequestAddWorkerFurtherFilters" %}
-                    </h3>
-                </span>
-
-            </div>
             
             <!-- Hidden template for dynamic form cloning -->
             <div id="form-template" style="display: none;">
