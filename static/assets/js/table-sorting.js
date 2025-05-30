@@ -41,7 +41,7 @@ $(document).ready(function () {
             "info": true
         });
 
-         $('#basic-datatable-workers').DataTable({
+         $('#basic-datatable-workers,#basic-datatable-allworkers').DataTable({
                 "ordering": true,
                 "order": [], // No initial ordering
                 "columnDefs": [

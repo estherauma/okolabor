@@ -2,22 +2,25 @@
 {% load user_role_tags %}
 {% load static %}
 <div class="tab-pane" id="tab4">
-    <div class="table-responsive">
-          <button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnConfirmedSettingsModal">
-            <i aria-hidden="true" class="fa fa-cog"></i>
-        </button>
-        {% if request.user|has_group:"admin" or request.user|has_group:"recruiter_admin" or request.user|has_group:"recruiter" %}
-        <div class="d-flex justify-content-end my-2">
-            <button class="btn btn-secondary ms-2" id="assignWorkRequestConfirmBtn" style="display: none;">
-                <i class="fa fa-tasks me-1"></i>
-                {% translate "assignWorkRequest" %}
-            </button>
-              <button class="btn btn-warning" id="copyConfirmBtn">
-                  <i class="fa fa-copy me-1"></i>
-                  {% translate "copyWorkers" %}
-              </button>
-        </div>
-        {% endif %}
+    
+
+        <div class="d-flex align-items-center justify-content-end mb-2">
+            
+           <div>
+            {% if request.user|has_group:"admin" or request.user|has_group:"recruiter_admin" or request.user|has_group:"recruiter" %}
+            <div class="d-flex justify-content-end">
+                <button class="btn dark-green-button ms-2" id="assignWorkRequestConfirmBtn" style="display: none;">
+                    <i class="fa fa-tasks me-1"></i>
+                    {% translate "assignWorkRequest" %}
+                </button>
+                  <button class="btn dark-green-button" id="copyConfirmBtn">
+                      <i class="fa fa-copy me-1"></i>
+                      {% translate "copyWorkers" %}
+                  </button>
+            </div>
+            {% endif %}
+           </div>
+       </div>
 
 
 <div class="modal fade" id="columnConfirmedSettingsModal" tabindex="-1" aria-labelledby="columnConfirmedSettingsModalLabel" aria-hidden="true">
@@ -70,7 +73,12 @@
     </div>
   </div>
 </div>
-        <table class="table text-nowrap border-bottom" id="confirmed-table">
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+        <table class="table text-nowrap border-bottom " id="basic-datatable-confirmed">
              <thead style="background-color: #7DBF96;">
             <tr>
                 <th class="">{% translate "workersListCheckbox" %}</th>
@@ -111,6 +119,12 @@
             </tbody>
         </table>
     </div>
+
+  </div>
+</div>
+</div>
+</div>
+
 </div>
 
 <!-- Copy Modal -->
@@ -147,7 +161,31 @@
     </div>
   </div>
 
+
 {% block scripts %}
+  <!-- Include jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Include DataTables CSS and JS -->
+ <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+  <!-- Your custom scripts -->
   <script src="{% static 'assets/js/copy-confirmed-workers.js' %}"></script>
   <script src="{% static 'assets/js/tablecolumns_hiding.js' %}"></script>
-{% endblock scripts %}
+
+  <script>
+    $(document).ready(function () {
+      $.fn.dataTable.ext.errMode = 'none';
+
+        const table = $('#basic-datatable-confirmed').DataTable();
+        const settingsBtn =
+            '<button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnShortListSettingsModal">' +
+                '<i class="fa fa-cog" aria-hidden="true" style="color: #9A9898;margin-top:-13px"></i>' +
+            '</button>';
+        const lengthContainer = $('#basic-datatable-confirmed_length');
+        lengthContainer.addClass('d-flex align-items-center');
+        lengthContainer.prepend(settingsBtn);
+    });
+  </script>
+{% endblock %}
