@@ -49,11 +49,13 @@ from recruiting.forms import (
     WorkRequestForm,
     WorkRequestRoleForm,
     WorkerAssignmentForm,
-    RoleEmploymentLocationForm
+    RoleEmploymentLocationForm,
+    
 )
 from theme.forms import (
     FilterWorkExperienceForm,
-    AdvancedFilterForm
+    AdvancedFilterForm,
+    DynamicWorkExperienceForm
 )
 from account.models import UserPreference
 from recruiting.models import (
@@ -547,8 +549,8 @@ class WorkRequestDeleteView(LoginRequiredMixin, View):
 class AddWorkersWorkRequests(View):
     def get(self, request, pk, role_id):
         work_assign_form = WorkerAssignmentForm()
-        form = FilterWorkExperienceForm()
-        filter_form = AdvancedFilterForm()
+        form = DynamicWorkExperienceForm(request.GET or None)
+        filter_form = AdvancedFilterForm(request.GET or None)
         search_query = request.GET.get('search', '')
         page_number = request.GET.get('page', 1)
         per_page = request.GET.get('per_page', 25)
