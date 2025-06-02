@@ -15,6 +15,7 @@ urlpatterns = [
     path('edit-employer/<str:curp>/', edit_employer_view, name='edit_employer'),
     path('edit-worker/<str:curp>/', edit_worker, name='edit_worker'),
     path('organization/<str:organization_id>/edit/', edit_organization, name='edit_organization'),
+    path('assign-organization/', assign_organization, name='assign_organization'),
     path('logs/', LogListView.as_view(), name='view_logs'),
     path('logs/<str:pk>/', LogDetailView.as_view(), name='log_detail'),
 

@@ -439,32 +439,29 @@ def edit_organization(request, organization_id):
 def assign_organization(request):
     org_id = request.POST.get("organization_id")
     selected_users = request.POST.get("selected_users")
-   
-
+    
     try:
         selected_users = json.loads(selected_users or "[]")
     except json.JSONDecodeError:
-        messages.error(request, _("invalidUserSelection."))
         return JsonResponse({"success": False, "error": _("Invalid user selection.")})
 
     if not org_id or not selected_users:
-        messages.error(request, _("pleaseSelectUsersAndanOrganization."))
-        return JsonResponse({"success": False, "error": _("pleaseSelectUsersAndAnOrganization.")})
+        return JsonResponse({"success": False, "error": _("Please select users and an organization.")})
 
     org = get_object_or_404(Organization, id=org_id)
     users = User.objects.filter(id__in=selected_users)
 
     if not users.exists():
-        messages.error(request, _("noValidUsersSelected."))
-        return JsonResponse({"success": False, "error": _("noalidUsersSelected.")})
+        return JsonResponse({"success": False, "error": _("No valid users selected.")})
 
     try:
-        users.update(organization=org)
-        messages.success(request, _("organizationAssignedSuccessfullyToSelectedUsers."))
-        return JsonResponse({"success": True, "message": _("organizationAssignedSuccessfullyToSelectedUsers.")})
+        for user in users:
+            user.organizations.add(org)  # Use `.set([org])` if you want to **replace** all existing organizations
+        messages.success(request, _("Organization assigned successfully to selected users."))
+        return JsonResponse({"success": True, "message": _("Organization assigned successfully to selected users.")})
     except Exception as e:
-        messages.error(request, _("failedToAssignOrganization: ") + str(e))
-        return JsonResponse({"success": False, "error": _("failedToAssignOrganization: ") + str(e)})
+        return JsonResponse({"success": False, "error": f"Failed to assign organization: {str(e)}"})
+
 
 
 
