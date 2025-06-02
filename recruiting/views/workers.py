@@ -45,15 +45,10 @@ class WorkerListView(View):
         form = DynamicWorkExperienceForm(request.GET or None)
         filter_form = AdvancedFilterForm(request.GET or None)
         search_query = request.GET.get('search', '')
-        page_number = request.GET.get('page', 1)
-        per_page = request.GET.get('per_page', 25)
-
-        try:
-            per_page = int(per_page)
-        except ValueError:
-            per_page = 25
 
         workers = User.objects.filter(groups__name='worker').order_by('-created_at')
+        print(len(workers), "length")
+
         # 🔍 Search Filter
         if search_query:
             workers = workers.filter(
@@ -66,7 +61,6 @@ class WorkerListView(View):
         type_sector = request.GET.get('type_sector')
         dynamic_field_1 = request.GET.get('dynamic_field_1')
         dynamic_field_2 = request.GET.get('dynamic_field_2')
-
 
         if type_sector:
             workers = workers.filter(
@@ -97,12 +91,12 @@ class WorkerListView(View):
                             userpreference__key=field_name,
                             userpreference__value__iexact=value
                         )
+
         workers = workers.distinct()
-        paginator = Paginator(workers, per_page)
-        page_obj = paginator.get_page(page_number)
+        print(len(workers), "length after filter")
 
         worker_data = []
-        for worker in page_obj:
+        for worker in workers:
             profile_completion = self.calculate_profile_completion(worker)
             worker_details = self.get_worker_preferences(worker)
 
@@ -110,7 +104,6 @@ class WorkerListView(View):
 
             latest_assignment = WorkAssignment.objects.filter(worker=worker).order_by('-assigned_date').first()
             worker.latest_status = latest_assignment.status if latest_assignment else None
-
 
             for key, value in worker_details.items():
                 setattr(worker, key, value)
@@ -128,17 +121,16 @@ class WorkerListView(View):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({
                 'workers': worker_data,
-                'num_pages': paginator.num_pages
+                'num_pages': 1  # or len(worker_data) if needed
             })
+
         context = {
-            'workers': page_obj,
+            'workers': workers,
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
             'form': form,
             'work_assign_form': work_assign_form,
             'filter_form': filter_form,
             'search_query': search_query,
-            'paginator': paginator,
-            'per_page': per_page,
             'status_choices': WorkAssignment.STATUS_CHOICES,
         }
         return render(request, 'recruiting/workers/list.html', context)

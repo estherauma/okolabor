@@ -101,6 +101,7 @@ class UserListView(LoginRequiredMixin, View):
 
         combined_employer = employer + employer_admin
 
+        print(len(workers_list), 'workers_list')
 
         context = {
             'users': combined_users, 
