@@ -897,7 +897,7 @@ class WorkRequestDetailView(View):
 
                     
     
-        
+        print(roles_qs,"roles_qsssss")
         context = {
             'workrequest': work_request,
             'roles': roles_qs,

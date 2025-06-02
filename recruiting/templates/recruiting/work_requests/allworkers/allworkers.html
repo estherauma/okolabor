@@ -75,11 +75,6 @@
 <input type="hidden" id="roleId" value="{{ role.id }}">
 
 <!-- Table and other content for All Workers -->
-<<<<<<< HEAD
-<div class="table-responsive">
-    <table class="table text-nowrap border-bottom" id="basic-datatable">
-        <thead style="background-color: #7DBF96;">
-=======
 <div class="row">
   <div class="col-12">
     <div class="card">
@@ -87,8 +82,7 @@
         <div class="table-responsive">
 
     <table class="table text-nowrap border-bottom table-width" id="basic-datatable">
-        <thead>
->>>>>>> dev
+        <thead style="background-color: #7DBF96;">
             <tr>
                 <th class="">{% translate "workRequestAddWorkerCheckbox" %}</th>
                 <th class="col-name">{% translate "workRequestAddWorkerName" %}</th>
@@ -152,7 +146,7 @@
 
         const table = $('#basic-datatable').DataTable();
         const settingsBtn =
-            '<button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnShortListSettingsModal">' +
+            '<button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnSettingsModal">' +
                 '<i class="fa fa-cog" aria-hidden="true" style="color: #9A9898;margin-top:-13px"></i>' +
             '</button>';
         const lengthContainer = $('#basic-datatable_length');
