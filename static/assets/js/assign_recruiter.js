@@ -10,7 +10,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (employerId) selectedEmployers.push(employerId);
             });
 
+            console.log("Selected Employers:", selectedEmployers);
+
             const recruiterOrgId = recruiterSelect.value;
+            console.log("Selected Recruiter Org ID:", recruiterOrgId);
 
             if (selectedEmployers.length === 0) {
                 alert("Please select at least one employer.");
@@ -42,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (data.success) {
                     location.reload();
                 } else {
-                    alert("Error: " + data.error);
+                    alert("Error: " +  (data.message || "Something went wrong."));
                 }
             })
             .catch(error => {
