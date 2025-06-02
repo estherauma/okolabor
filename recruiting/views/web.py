@@ -685,6 +685,7 @@ class AddWorkersWorkRequests(View):
         offersent_count = len(offersent_workers_data)
         confirmed_count = len(confirmed_workers_data)
         cancelled_count = len(cancelled_workers_data)
+        workers_count = len(page_obj)
 
         # Store the state in the session
         request.session[session_key] = {
@@ -716,6 +717,7 @@ class AddWorkersWorkRequests(View):
             'offersent_count': offersent_count,
             'confirmed_count': confirmed_count,
             'cancelled_count': cancelled_count,
+            'workers_count': workers_count,
         }
         return render(request, 'recruiting/work_requests/create_addworker.html', context)
 
