@@ -4,12 +4,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const sendOfferBtn = document.getElementById('sendOfferBtn');
     if (sendOfferBtn) {
         sendOfferBtn.addEventListener('click', function() {
-            console.log("sendOfferBtn clicked");
             const workerCheckboxes = document.querySelectorAll('.worker-shortlist-checkbox:checked');
             const workerIds = Array.from(workerCheckboxes).map(checkbox => checkbox.value);
-
-            console.log(workerCheckboxes, "workerCheckboxes");
-            console.log(workerIds,"workerIds");
 
             if (workerIds.length === 0) {
                 alert("{% translate 'Please select at least one worker.' %}");

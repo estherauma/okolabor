@@ -57,7 +57,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     workRequestSelect.addEventListener('change', function() {
         const workRequestId = this.value;
-        console.log('Selected Work Request ID:', workRequestId);
         if (workRequestId) {
             fetch(`/workers/get-roles-for-work-request/${workRequestId}/`)
                 .then(response => response.json())
