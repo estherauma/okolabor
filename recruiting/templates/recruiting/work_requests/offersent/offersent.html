@@ -92,7 +92,7 @@
             <tbody>
                 {% for worker in offersent_workers %}
                       <td class="text-center">
-                          <input type="checkbox" class="worker-shortlist-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.firstname }} {{ worker.lastname }}">
+                          <input type="checkbox" class="worker-offer-checkbox" name="worker-offer-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.firstname }} {{ worker.lastname }}">
                       </td>
                       <td class="col-name">
                     {% if worker.first_name and worker.last_name %}
