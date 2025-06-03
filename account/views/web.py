@@ -98,10 +98,7 @@ class UserListView(LoginRequiredMixin, View):
             ra['group'] = 'employer_admin'
 
         combined_users = recruiters + recruiter_admins
-
         combined_employer = employer + employer_admin
-
-        print(len(workers_list), 'workers_list')
 
         context = {
             'users': combined_users, 
@@ -124,8 +121,6 @@ class UserListView(LoginRequiredMixin, View):
         curp = request.POST.get('curp')
         role = request.POST.get('role')
 
-        
-
         if not all([first_name, last_name, user_email, curp, role]):
             messages.error(request, _("addUserAllFieldsAreRequired."))
             return redirect('manage_users')
@@ -138,12 +133,10 @@ class UserListView(LoginRequiredMixin, View):
             is_active=True
         )
 
-        # Assign the correct role (group)
         if role in ['recruiter', 'recruiter_admin','employer', 'employer_admin']:
             group, created = Group.objects.get_or_create(name=role)
             user.groups.add(group)
 
-        # Invite email logic
         token = PasswordResetTokenGenerator().make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         current_site = get_current_site(request)
@@ -278,7 +271,6 @@ def edit_user_view(request, curp):
             user.is_active = form.cleaned_data["is_active"]
             user.save()
 
-            # Update group
             group_name = form.cleaned_data.get("group")
             if group_name:
                 user.groups.clear()
@@ -308,7 +300,6 @@ def edit_employer_view(request, curp):
             user.is_active = form.cleaned_data["is_active"]
             user.save()
 
-            # Update group
             group_name = form.cleaned_data.get("group")
             if group_name:
                 user.groups.clear()
@@ -358,7 +349,6 @@ class WorkerModalCreateView(View):
                 messages.error(request, _("WorkerGroupDoesNotExistPleaseCreateIt."))
                 return redirect('manage_users')
                 
-
             messages.success(request, _("workerCreatedSuccessfully."))
             return redirect('manage_users')
         else:
@@ -391,7 +381,6 @@ class OrganizationCreateView(UserPassesTestMixin, CreateView):
     template_name = 'organization/create_organization.html'
 
     def test_func(self):
-       
         return self.request.user.is_superuser
 
     def form_valid(self, form):
@@ -443,63 +432,28 @@ def assign_organization(request):
     try:
         selected_users = json.loads(selected_users or "[]")
     except json.JSONDecodeError:
-        return JsonResponse({"success": False, "error": _("Invalid user selection.")})
+        messages.error(request, _("invalidUserSelection."))
+        return JsonResponse({"success": False, "error": _("invalidUserSelection")})
 
     if not org_id or not selected_users:
-        return JsonResponse({"success": False, "error": _("Please select users and an organization.")})
+        messages.error(request, _("pleaseSelectUsersAndanOrganization."))
+        return JsonResponse({"success": False, "error": _("pleaseSelectUsersAndAnOrganization.")})
 
     org = get_object_or_404(Organization, id=org_id)
     users = User.objects.filter(id__in=selected_users)
 
     if not users.exists():
-        return JsonResponse({"success": False, "error": _("No valid users selected.")})
+        messages.error(request, _("noValidUsersSelected."))
+        return JsonResponse({"success": False, "error": _("noValidUsersSelected.")})
 
     try:
         for user in users:
-            user.organizations.add(org)  # Use `.set([org])` if you want to **replace** all existing organizations
+            user.organizations.add(org)
         messages.success(request, _("Organization assigned successfully to selected users."))
         return JsonResponse({"success": True, "message": _("Organization assigned successfully to selected users.")})
     except Exception as e:
-        return JsonResponse({"success": False, "error": f"Failed to assign organization: {str(e)}"})
-
-
-
-
-# class LogListView(LoginRequiredMixin, ListView):
-#     model = Log
-#     template_name = 'userlogs/logs.html'
-#     context_object_name = 'logs'
-
-#     def get_queryset(self):
-#         user = self.request.user
-#         base_query = Log.objects.all()
-#         orgs = user.organizations.all()
-
-#         if user.groups.filter(name='recruiter_admin').exists():
-#             base_query = base_query.filter(
-#                 Q(user__organizations__in=orgs, user__groups__name='recruiter') |
-#                 Q(user=user)
-#             ).distinct()
-#             print(base_query,'base_query')
-
-#         elif user.groups.filter(name='employer_admin').exists():
-#             base_query = base_query.filter(
-#                 Q(user__organizations__in=orgs, user__groups__name='employer') |
-#                 Q(user=user)
-#             ).distinct()
-
-#         elif user.groups.filter(name='recruiter').exists():
-#             base_query = base_query.filter(user=user)
-
-#         elif user.groups.filter(name='employer').exists():
-#             base_query = base_query.filter(user=user)
-
-#         elif not user.groups.filter(name='admin').exists():
-#             base_query = base_query.filter(user=user)
-
-#         return base_query.exclude(
-#             content_type__model__in=['session', 'logentry']
-#         ).order_by('-timestamp')
+        messages.error(request, _("failedToAssignOrganization: ") + str(e))
+        return JsonResponse({"success": False, "error": _("failedToAssignOrganization: ") + str(e)})
 
 class LogListView(LoginRequiredMixin, ListView):
     model = Log

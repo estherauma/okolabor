@@ -9,12 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const employerId = checkbox.closest("tr").dataset.id;
                 if (employerId) selectedEmployers.push(employerId);
             });
-
-            console.log("Selected Employers:", selectedEmployers);
-
             const recruiterOrgId = recruiterSelect.value;
-            console.log("Selected Recruiter Org ID:", recruiterOrgId);
-
             if (selectedEmployers.length === 0) {
                 alert("Please select at least one employer.");
                 return;
@@ -25,7 +20,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // Show global loader
             $("#global-loader").fadeIn("slow");
             document.body.style.overflow = 'hidden';
 
