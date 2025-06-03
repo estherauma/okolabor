@@ -783,6 +783,37 @@ class UpdateWorkerStatusView(View):
         return JsonResponse({'status':'success','success': 'True', 'message': 'Offer sent successfully.'})
 
 @method_decorator(csrf_exempt, name='dispatch')
+class OfferSendWorkerView(View):
+    def post(self, request, *args, **kwargs):
+        worker_id = request.POST.get('worker_ids')
+        work_request_id = request.POST.get('work_request')
+        role_id = request.POST.get('role')
+        status = request.POST.get('status', 'assigned')
+        
+        assignment = WorkAssignment.objects.filter(
+            worker_id=worker_id,
+            work_request_id=work_request_id,
+            role_id=role_id,
+            status='assigned'
+        ).first()
+
+        if assignment:
+            assignment.status = 'offersent'
+            assignment.save()
+        else:
+            WorkAssignment.objects.create(
+                worker_id=worker_id,
+                work_request_id=work_request_id,
+                role_id=role_id,
+                status='offersent'
+            )
+
+        messages.success(request, _("OfferSentSuccessfully."))
+        return redirect('recruiting_web:worker_detail', pk=worker_id)
+
+
+
+@method_decorator(csrf_exempt, name='dispatch')
 class CancelOfferView(View):
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
