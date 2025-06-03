@@ -274,8 +274,7 @@ function addRandomFilter() {
     const row = document.createElement("div");
     row.classList.add("row", "align-items-center", "filter-row", "mb-2");
 
-    const uniqueId = Date.now();  // unique ID for inputs
-
+    const uniqueId = Date.now();
     row.innerHTML = `
         <div class="col-md-4 col-sm-6 col-xs-6">
             <div class="form-group">
@@ -398,6 +397,7 @@ function handleFilterChange(selectEl, uniqueId) {
         case "exclude_physical_limitations":
         case "profile":
         case "passport":
+        case "language_proficiency":
         case "us_driving_license":
         case "mx_us_driving_license":
             html = `
@@ -417,7 +417,6 @@ function handleFilterChange(selectEl, uniqueId) {
 
     extraFieldsContainer.innerHTML = html;
 }
-
 
 function removeFilterRow(button) {
     const row = button.closest(".filter-row");
