@@ -61,6 +61,7 @@
                               {% include 'workers/workers_list.html' %}
                           </div>
                         {% endif %}
+                        
 
                         {% if request.user|has_group:"admin" or request.user|has_group:"recruiter_admin" %}
                           <div class="tab-pane {% if request.user|has_group:'recruiter_admin' and not request.user|has_group:'admin' %}active show{% endif %}" id="tab2">
