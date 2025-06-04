@@ -573,11 +573,11 @@ class AddWorkersWorkRequests(View):
                 Q(email__icontains=search_query)
             )
 
-        paginator = Paginator(workers, per_page)
-        page_obj = paginator.get_page(page_number)
+        
+        all_workers = workers.distinct()
 
         worker_data = []
-        for worker in page_obj:
+        for worker in all_workers:
             profile_completion = calculate_profile_completion(worker)
             worker_details = get_worker_preferences(worker)
 
@@ -673,7 +673,7 @@ class AddWorkersWorkRequests(View):
         offersent_count = len(offersent_workers_data)
         confirmed_count = len(confirmed_workers_data)
         cancelled_count = len(cancelled_workers_data)
-        workers_count = len(page_obj)
+        workers_count = len(all_workers)
 
         request.session[session_key] = {
             'search_query': search_query,
@@ -681,18 +681,13 @@ class AddWorkersWorkRequests(View):
             'per_page': per_page,
         }
 
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({'workers': worker_data, 'num_pages': paginator.num_pages})
-        
-
         context = {
-            'workers': page_obj,
+            'workers': all_workers,
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
             'form': form,
             'work_assign_form': work_assign_form,
             'filter_form': filter_form,
             'search_query': search_query,
-            'paginator': paginator,
             'per_page': per_page,
             'role': role,
             'work_request': work_request,

@@ -47,7 +47,6 @@ class WorkerListView(View):
         search_query = request.GET.get('search', '')
 
         workers = User.objects.filter(groups__name='worker').order_by('-created_at')
-        print(len(workers), "length")
 
         # 🔍 Search Filter
         if search_query:
