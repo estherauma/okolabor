@@ -114,15 +114,19 @@ class WorkerAssignmentForm(forms.ModelForm):
         }
 
 
-
 class WorkRequestRoleForm(forms.ModelForm):
+    work_type = forms.ChoiceField(
+        choices=[],
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
     class Meta:
         model = Role
         fields = [
             'title', 'usdol_case_number', 'work_type',
             'number_of_required_workers', 'work_request', 'description'
         ]
-        
+
         labels = {
             'title': _('addRoleTitle'),
             'usdol_case_number': _('addRoleUsdolCaseNumber'),
@@ -130,29 +134,25 @@ class WorkRequestRoleForm(forms.ModelForm):
             'number_of_required_workers': _('addRoleNumberOfRequiredWorkers'),
             'work_request': _('addRoleWorkRequest'),
             'description': _('addRoleDescription'),
-        }  
+        }
 
         widgets = {
-            'title': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
-            'usdol_case_number': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
-            'work_type': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
-            'number_of_required_workers': forms.NumberInput(attrs={
-                'class': 'form-control',
-            }),
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'usdol_case_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'number_of_required_workers': forms.NumberInput(attrs={'class': 'form-control'}),
             'work_request': forms.Select(attrs={
                 'class': 'form-control',
                 'readonly': True
             }),
-            'description': forms.Textarea(attrs={
-                'class': 'form-control',
-            }),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        content_service = StaticContent()
+        self.fields['work_type'].choices = content_service.get_sector_choices()
+        print(self.fields['work_type'].choices,"self.fields['work_type'].choices")
+
 
 
 

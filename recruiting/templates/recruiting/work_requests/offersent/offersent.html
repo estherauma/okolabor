@@ -65,8 +65,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="display: none;">{% translate "Close" %}</button>
-        <button type="button" class="btn btn-primary" id="apply-column-settings" style="display: none;">{% translate "Apply" %}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Close" %}</button>
+        <button type="button" class="btn btn-primary" id="apply-column-settings">{% translate "Apply" %}</button>
       </div>
     </div>
   </div>
@@ -77,9 +77,9 @@
       <div class="card-body">
         <div class="table-responsive">
         <table class="table text-nowrap border-bottom " id="basic-datatable-offersent">
-            <thead>
+            <thead style="background-color: #7DBF96;">
             <tr>
-                <th class="theading-color">{% translate "workersListCheckbox" %}</th>
+                <th class="">{% translate "workersListCheckbox" %}</th>
                 <th class="col-name">{% translate "workersListName" %}</th>
                 <th class="col-town">{% translate "workersListTown" %}</th>
                 <th class="col-profile">{% translate "workersListProfileCompletion" %}</th>
@@ -92,7 +92,7 @@
             <tbody>
                 {% for worker in offersent_workers %}
                       <td class="text-center">
-                          <input type="checkbox" class="worker-shortlist-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.firstname }} {{ worker.lastname }}">
+                          <input type="checkbox" class="worker-offer-checkbox" name="worker-offer-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.firstname }} {{ worker.lastname }}">
                       </td>
                       <td class="col-name">
                     {% if worker.first_name and worker.last_name %}
@@ -179,7 +179,7 @@
 
         const table = $('#basic-datatable-offersent').DataTable();
         const settingsBtn =
-            '<button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnShortListSettingsModal">' +
+            '<button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnOfferSentSettingsModal">' +
                 '<i class="fa fa-cog" aria-hidden="true" style="color: #9A9898;margin-top:-13px"></i>' +
             '</button>';
         const lengthContainer = $('#basic-datatable-offersent_length');
