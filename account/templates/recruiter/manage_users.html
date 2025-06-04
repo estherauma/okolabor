@@ -10,6 +10,7 @@
 <link href="{% static ''%}assets/plugins/datatable/css/dataTables.bootstrap5.css" rel="stylesheet" />
 <link href="{% static ''%}assets/plugins/datatable/css/buttons.bootstrap5.min.css" rel="stylesheet" />
 <link href="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.css" rel="stylesheet" />
+<link href="{% static 'assets/css/workers.css' %}" rel="stylesheet"/>
 
 {% endblock styles %}
 {% block body %}
@@ -19,66 +20,67 @@
   </div>
 </div>
 
-<div class="row row-sm">
-  <div class="col-lg-12">
-    <div class="card">
-      <div class="card-body">
-        <div class="card-pay">
-          <ul class="tabs-menu nav">
 
-            {% if request.user|has_group:"admin" %}
-                <li>
-                    <a href="#tab1" class="active" data-bs-toggle="tab">
-                        {% translate "manageUsersWorkersTab" %}
-                    </a>
-                </li>
-            {% endif %}
-        
-            {% if request.user|has_group:"admin" or request.user|has_group:"recruiter_admin" %}
-                <li>
-                    <a href="#tab2" data-bs-toggle="tab" class="{% if request.user|has_group:'recruiter_admin' %}active{% endif %}">
-                        {% translate "managerUsersRecruiterTab" %}
-                    </a>
-                </li>
-            {% endif %}
-        
-            {% if request.user|has_group:"admin" or request.user|has_group:"employer_admin" %}
-                <li>
-                    <a href="#tab4" data-bs-toggle="tab" class="{% if request.user|has_group:'employer_admin' %}active{% endif %}">
-                        {% translate "manageUsersEmployerTab" %}
-                    </a>
-                </li>
-            {% endif %}
-        
-        </ul>
-        
-          <div class="tab-content">
+    <div class="row row-sm">
+        <div class="col-lg-12">
+            <div class="card soft-card">
+                <div class="card-body">
+                  <ul class="nav soft-tabs" role="tablist">
+                      {% if request.user|has_group:"admin" %}
+                          <li>
+                              <a href="#tab1" class="nav-link active" data-bs-toggle="tab">
+                                  {% translate "manageUsersWorkersTab" %}
+                              </a>
+                          </li>
+                      {% endif %}
 
-            {% if request.user|has_group:"admin" %}
-            <div class="tab-pane active show" id="tab1">
-                {% include 'workers/workers_list.html' %}
+                      {% if request.user|has_group:"admin" or request.user|has_group:"recruiter_admin" %}
+                          <li>
+                              <a href="#tab2" data-bs-toggle="tab" class="nav-link {% if request.user|has_group:'recruiter_admin' %}active{% endif %}">
+                                  {% translate "managerUsersRecruiterTab" %}
+                              </a>
+                          </li>
+                      {% endif %}
+
+                      {% if request.user|has_group:"admin" or request.user|has_group:"employer_admin" %}
+                          <li>
+                              <a href="#tab4" data-bs-toggle="tab" class="nav-link {% if request.user|has_group:'employer_admin' %}active{% endif %}">
+                                  {% translate "manageUsersEmployerTab" %}
+                              </a>
+                          </li>
+                      {% endif %}
+
+
+                  
+                  </ul>
+                  <div class="tab-content pt-4">
+                        
+
+                        {% if request.user|has_group:"admin" %}
+                          <div class="tab-pane active show" id="tab1">
+                              {% include 'workers/workers_list.html' %}
+                          </div>
+                        {% endif %}
+
+                        {% if request.user|has_group:"admin" or request.user|has_group:"recruiter_admin" %}
+                          <div class="tab-pane {% if request.user|has_group:'recruiter_admin' and not request.user|has_group:'admin' %}active show{% endif %}" id="tab2">
+                              {% include 'recruiter/recruiter_modals/recruiters_data.html' %}
+                          </div>
+                        {% endif %}
+                      
+                        {% if request.user|has_group:"admin" or request.user|has_group:"employer_admin" %}
+                          <div class="tab-pane {% if request.user|has_group:'employer_admin' and not request.user|has_group:'admin' %}active show{% endif %}" id="tab4">
+                              {% include 'employers/employer_list.html' %}
+                          </div>
+                        {% endif %}
+
+                        
+                    </div>
+
+                </div>
             </div>
-            {% endif %}
-        
-            {% if request.user|has_group:"admin" or request.user|has_group:"recruiter_admin" %}
-            <div class="tab-pane {% if request.user|has_group:'recruiter_admin' and not request.user|has_group:'admin' %}active show{% endif %}" id="tab2">
-                {% include 'recruiter/recruiter_modals/recruiters_data.html' %}
-            </div>
-            {% endif %}
-        
-            {% if request.user|has_group:"admin" or request.user|has_group:"employer_admin" %}
-            <div class="tab-pane {% if request.user|has_group:'employer_admin' and not request.user|has_group:'admin' %}active show{% endif %}" id="tab4">
-                {% include 'employers/employer_list.html' %}
-            </div>
-            {% endif %}
-        
-          </div>
-      
         </div>
-      </div>
     </div>
-  </div>
-</div>
 {% include 'recruiter/recruiter_modals/add_user_modal.html' %}
 {% include 'recruiter/recruiter_modals/confirmation_modal.html' %}
 {% include 'workers/worker_modals/worker_confirmation_modal.html'%}
