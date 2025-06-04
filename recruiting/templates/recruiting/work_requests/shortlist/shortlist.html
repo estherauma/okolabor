@@ -2,17 +2,14 @@
 {% load user_role_tags %}
 {% load static %}
 <div class="tab-pane" id="tab2">
-  <div class="d-flex align-items-end justify-content-between mt-2 mb-2">
-       <button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnShortListSettingsModal">
-        <i aria-hidden="true" class="fa fa-cog"></i>
-    </button>
+  <div class="d-flex align-items-end justify-content-end mb-2">
       <div>
         {% if request.user|has_group:"admin" or request.user|has_group:"recruiter_admin" or request.user|has_group:"recruiter" %}
-          <button class="btn btn-secondary ms-2" id="assignWorkRequestBtn" style="display: none;">
+          <button class="btn dark-green-button ms-2" id="assignWorkRequestBtn" style="display: none;">
             <i class="fa fa-tasks me-1"></i>
             {% translate "workRequestAddWorkerShortlistAssignWorkRequest" %}
         </button>
-          <button class="btn btn-warning" id="copyBtn">
+          <button class="btn dark-green-button" id="copyBtn">
               <i class="fa fa-copy me-1"></i>
               {% translate "workRequestAddWorkerShortlistCopyWorkers" %}
           </button>
@@ -68,18 +65,22 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="display: none;">{% translate "Close" %}</button>
-        <button type="button" class="btn btn-primary" id="apply-column-settings" style="display: none;">{% translate "Apply" %}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Close" %}</button>
+        <button type="button" class="btn btn-primary" id="apply-column-settings">{% translate "Apply" %}</button>
       </div>
     </div>
   </div>
 </div>
 
-  <div class="table-responsive">
-      <table class="table text-nowrap border-bottom" id="basic-datatable">
-          <thead>
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+      <table class="table text-nowrap border-bottom" id="basic-datatable-shortlist">
+          <thead style="background-color: #7DBF96;">
             <tr>
-                <th class="theading-color">{% translate "workersListCheckbox" %}</th>
+                <th>{% translate "workersListCheckbox" %}</th>
                 <th class="col-name">{% translate "workersListName" %}</th>
                 <th class="col-town">{% translate "workersListTown" %}</th>
                 <th class="col-profile">{% translate "workersListProfileCompletion" %}</th>
@@ -88,7 +89,7 @@
                 <th class="col-location">{% translate "workersListLocationPreference" %}</th>
                 <th class="col-offer">{% translate "workersListOfferStatus" %}</th>
             </tr>
-        </thead>
+          </thead>
           <tbody>
               {% for worker in shortlisted_workers %}
                   <tr class="text-center">
@@ -96,16 +97,16 @@
                           <input type="checkbox" class="worker-shortlist-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.firstname }} {{ worker.lastname }}">
                       </td>
                       <td class="col-name">
-                    {% if worker.first_name and worker.last_name %}
-                        <a href="{{ worker.id }}">
-                            {{ worker.first_name }} {{ worker.last_name }}
-                        </a>
-                    {% else %}
-                        <a href="{{ worker.id }}">
-                            {{ worker.email }}
-                        </a>
-                    {% endif %}
-                </td>
+                          {% if worker.first_name and worker.last_name %}
+                              <a href="{{ worker.id }}">
+                                  {{ worker.first_name }} {{ worker.last_name }}
+                              </a>
+                          {% else %}
+                              <a href="{{ worker.id }}">
+                                  {{ worker.email }}
+                              </a>
+                          {% endif %}
+                      </td>
                 <td class="col-town">{{ worker.town|default:"Not Provided" }}</td>
                 <td class="col-profile">{{ worker.profile_completion_percentage|default:0 }}%</td>
                 <td class="col-experience">{{ worker.work_experience|default:"Not Provided" }}</td>
@@ -117,6 +118,10 @@
           </tbody>
       </table>
   </div>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
 
 <!-- Copy Modal -->
@@ -153,9 +158,33 @@
   </div>
 </div>
 
+
 <!-- Scripts -->
 {% block scripts %}
+  <!-- Include jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Include DataTables CSS and JS -->
+ <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+  <!-- Your custom scripts -->
   <script src="{% static 'assets/js/send-offer.js' %}"></script>
   <script src="{% static 'assets/js/copy-shortlist-workers.js' %}"></script>
   <script src="{% static 'assets/js/tablecolumns_hiding.js' %}"></script>
+
+  <script>
+    $(document).ready(function () {
+      $.fn.dataTable.ext.errMode = 'none';
+
+        const table = $('#basic-datatable-shortlist').DataTable();
+        const settingsBtn =
+            '<button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnShortListSettingsModal">' +
+                '<i class="fa fa-cog" aria-hidden="true" style="color: #9A9898;margin-top:-13px"></i>' +
+            '</button>';
+        const lengthContainer = $('#basic-datatable-shortlist_length');
+        lengthContainer.addClass('d-flex align-items-center');
+        lengthContainer.prepend(settingsBtn);
+    });
+  </script>
 {% endblock %}

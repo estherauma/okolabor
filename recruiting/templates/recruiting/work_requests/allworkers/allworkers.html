@@ -10,10 +10,8 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 <link href="{% static 'assets/css/workers.css' %}" rel="stylesheet"/>
 {% endblock styles %}
-<div class="d-flex align-items-center justify-content-between mb-2">
-   <button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnSettingsModal">
-        <i aria-hidden="true" class="fa fa-cog"></i>
-    </button>
+<div class="d-flex align-items-center justify-content-end mb-2">
+   
     <div>
         <button class="btn dark-green-button ms-3" id="addToShortlistBtn" disabled>
             +{% translate "workRequestAddWorkerAddToShortlist" %}
@@ -65,8 +63,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="display: none;">{% translate "Close" %}</button>
-        <button type="button" class="btn btn-primary" id="apply-column-settings" style="display: none;">{% translate "Apply" %}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Close" %}</button>
+        <button type="button" class="btn btn-primary" id="apply-column-settings">{% translate "Apply" %}</button>
       </div>
     </div>
   </div>
@@ -77,18 +75,23 @@
 <input type="hidden" id="roleId" value="{{ role.id }}">
 
 <!-- Table and other content for All Workers -->
-<div class="table-responsive">
-    <table class="table text-nowrap border-bottom" id="basic-datatable">
-        <thead>
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+
+    <table class="table text-nowrap border-bottom table-width" id="basic-datatable">
+        <thead style="background-color: #7DBF96;">
             <tr>
-                <th class="theading-color">{% translate "workRequestAddWorkerCheckbox" %}</th>
-                <th class="theading-color">{% translate "workRequestAddWorkerName" %}</th>
-                <th class="theading-color">{% translate "workRequestAddWorkerTown" %}</th>
-                <th class="theading-color">{% translate "workRequestAddWorkerProfileCompletion" %}</th>
-                <th class="theading-color">{% translate "workRequestAddWorkerExperience" %}</th>
-                <th class="theading-color">{% translate "workRequestAddWorkerEnglishProficiency" %}</th>
-                <th class="theading-color">{% translate "workRequestAddWorkerLocationPreference" %}</th>
-                <th class="theading-color">{% translate "workRequestAddWorkerStatus" %}</th>
+                <th class="">{% translate "workRequestAddWorkerCheckbox" %}</th>
+                <th class="col-name">{% translate "workRequestAddWorkerName" %}</th>
+                <th class="col-town">{% translate "workersLworkRequestAddWorkerTownistTown" %}</th>
+                <th class="col-profile">{% translate "workRequestAddWorkerProfileCompletion" %}</th>
+                <th class="col-experience">{% translate "workRequestAddWorkerExperience" %}</th>
+                <th class="col-english">{% translate "workRequestAddWorkerEnglishProficiency" %}</th>
+                <th class="col-location">{% translate "workRequestAddWorkerLocationPreference" %}</th>
+                <th class="col-offer">{% translate "workRequestAddWorkerStatus" %}</th>
             </tr>
         </thead>
         <tbody>
@@ -119,34 +122,38 @@
         </tbody>
     </table>
 </div>
-
-<div class="pagination">
-    <span class="step-links">
-        {% if workers.has_previous %}
-            <a href="?page={{ workers.previous_page_number }}&search={{ request.GET.search }}&per_page={{ request.GET.per_page }}">
-                <span style="font-weight: bold;">{% translate "workRequestAddWorkerPrevious"%}</span>
-            </a>
-        {% else %}
-            <span class="disabled"><span style="font-weight: bold;">{% translate "workRequestAddWorkerPrevious"%}</span></span>
-        {% endif %}
-
-        {% for i in workers.paginator.page_range %}
-            {% if workers.number == i %}
-                <span class="current">{{ i }}</span>
-            {% elif i > workers.number|add:'-3' and i < workers.number|add:'3' %}
-                <a href="?page={{ i }}&search={{ request.GET.search }}&per_page={{ request.GET.per_page }}">{{ i }}</a>
-            {% endif %}
-        {% endfor %}
-
-        {% if workers.has_next %}
-            <a href="?page={{ workers.next_page_number }}&search={{ request.GET.search }}&per_page={{ request.GET.per_page }}">
-                <span style="font-weight: bold;">{% translate "workRequestAddWorkerNext"%}</span>
-            </a>
-        {% else %}
-            <span class="disabled"><span style="font-weight: bold;">{% translate "workRequestAddWorkerNext"%}</span></span>
-        {% endif %}
-    </span>
 </div>
+      </div>
+    </div>
+  </div>
+
+
+<!-- Scripts -->
 {% block scripts %}
- <script src="{% static 'assets/js/tablecolumns_hiding.js' %}"></script>
-{% endblock scripts %}
+  <!-- Include jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Include DataTables CSS and JS -->
+ <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+  <!-- Your custom scripts -->
+  <script src="{% static 'assets/js/send-offer.js' %}"></script>
+  <script src="{% static 'assets/js/copy-shortlist-workers.js' %}"></script>
+  <script src="{% static 'assets/js/tablecolumns_hiding.js' %}"></script>
+
+  <script>
+    $(document).ready(function () {
+      $.fn.dataTable.ext.errMode = 'none';
+
+        const table = $('#basic-datatable').DataTable();
+        const settingsBtn =
+            '<button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnSettingsModal">' +
+                '<i class="fa fa-cog" aria-hidden="true" style="color: #9A9898;margin-top:-13px"></i>' +
+            '</button>';
+        const lengthContainer = $('#basic-datatable_length');
+        lengthContainer.addClass('d-flex align-items-center');
+        lengthContainer.prepend(settingsBtn);
+    });
+  </script>
+{% endblock %}

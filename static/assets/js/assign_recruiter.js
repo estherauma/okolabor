@@ -9,9 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const employerId = checkbox.closest("tr").dataset.id;
                 if (employerId) selectedEmployers.push(employerId);
             });
-
             const recruiterOrgId = recruiterSelect.value;
-
             if (selectedEmployers.length === 0) {
                 alert("Please select at least one employer.");
                 return;
@@ -22,7 +20,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // Show global loader
             $("#global-loader").fadeIn("slow");
             document.body.style.overflow = 'hidden';
 
@@ -42,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (data.success) {
                     location.reload();
                 } else {
-                    alert("Error: " + data.error);
+                    alert("Error: " +  (data.message || "Something went wrong."));
                 }
             })
             .catch(error => {

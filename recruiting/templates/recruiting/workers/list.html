@@ -279,7 +279,7 @@
             </div>
         </div>
     </div>
-    <button class="btn btn-success mb-2" style="margin-left: 1500px; font-weight: bolder; border-radius: 50%; width: 50px; height: 50px; padding: 0;">+</button>
+    
 </div>
 
 
@@ -443,7 +443,8 @@
 <script src="{% static ''%}assets/js/get-roles.js"></script>
 <script src="{% static ''%}assets/js/dynamic_filter.js"></script>
 <script>
-    function applyColumnVisibilityFromStorage(table) {
+function applyColumnVisibilityFromStorage(table) {
+    $.fn.dataTable.ext.errMode = 'none';
     const savedSettings = JSON.parse(localStorage.getItem('columnVisibilitySettings')) || {};
     const columnClasses = [
         'col-name',
@@ -464,9 +465,20 @@
         }
     });
 }
+
 document.addEventListener('DOMContentLoaded', () => {
-    const table = $('#basic-datatable-workers').DataTable();
+    const tableId = '#basic-datatable-workers';
+
+    // Destroy any existing DataTable instance before re-initializing
+    if ($.fn.DataTable.isDataTable(tableId)) {
+        $(tableId).DataTable().clear().destroy();
+    }
+
+    const table = $(tableId).DataTable({
+    });
+
     applyColumnVisibilityFromStorage(table);
+
     const applyBtn = document.getElementById('apply-column-settings');
     if (applyBtn) {
         applyBtn.addEventListener('click', function () {
@@ -495,6 +507,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 </script>
+
+
 <script>
 $(document).ready(function () {
     const table = $('#basic-datatable-workers').DataTable();

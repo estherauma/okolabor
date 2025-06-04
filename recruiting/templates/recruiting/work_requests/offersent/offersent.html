@@ -65,16 +65,21 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="display: none;">{% translate "Close" %}</button>
-        <button type="button" class="btn btn-primary" id="apply-column-settings" style="display: none;">{% translate "Apply" %}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Close" %}</button>
+        <button type="button" class="btn btn-primary" id="apply-column-settings">{% translate "Apply" %}</button>
       </div>
     </div>
   </div>
 </div>
-        <table class="table text-nowrap border-bottom" id="offer-sent-table">
-            <thead>
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+        <table class="table text-nowrap border-bottom " id="basic-datatable-offersent">
+            <thead style="background-color: #7DBF96;">
             <tr>
-                <th class="theading-color">{% translate "workersListCheckbox" %}</th>
+                <th class="">{% translate "workersListCheckbox" %}</th>
                 <th class="col-name">{% translate "workersListName" %}</th>
                 <th class="col-town">{% translate "workersListTown" %}</th>
                 <th class="col-profile">{% translate "workersListProfileCompletion" %}</th>
@@ -86,8 +91,8 @@
         </thead>
             <tbody>
                 {% for worker in offersent_workers %}
-                      <td>
-                          <input type="checkbox" class="worker-shortlist-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.firstname }} {{ worker.lastname }}">
+                      <td class="text-center">
+                          <input type="checkbox" class="worker-offer-checkbox" name="worker-offer-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.firstname }} {{ worker.lastname }}">
                       </td>
                       <td class="col-name">
                     {% if worker.first_name and worker.last_name %}
@@ -110,7 +115,10 @@
                 {% endfor %}
             </tbody>
         </table>
-        
+      </div>
+    </div>
+  </div>
+</div>
     </div>
 </div>
 
@@ -149,9 +157,34 @@
     </div>
   </div>
   
-{% block scripts %}
-    <script src="{% static 'assets/js/cancel-offer.js' %}"></script>
-    <script src="{% static 'assets/js/copy-offer-workers.js' %}"></script>
-    <script src="{% static 'assets/js/tablecolumns_hiding.js' %}"></script>
 
-{% endblock scripts %}
+
+<!-- Scripts -->
+{% block scripts %}
+  <!-- Include jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Include DataTables CSS and JS -->
+ <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+  <!-- Your custom scripts -->
+  <script src="{% static 'assets/js/cancel-offer.js' %}"></script>
+  <script src="{% static 'assets/js/copy-offer-workers.js' %}"></script>
+  <script src="{% static 'assets/js/tablecolumns_hiding.js' %}"></script>
+
+  <script>
+    $(document).ready(function () {
+      $.fn.dataTable.ext.errMode = 'none';
+
+        const table = $('#basic-datatable-offersent').DataTable();
+        const settingsBtn =
+            '<button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnOfferSentSettingsModal">' +
+                '<i class="fa fa-cog" aria-hidden="true" style="color: #9A9898;margin-top:-13px"></i>' +
+            '</button>';
+        const lengthContainer = $('#basic-datatable-offersent_length');
+        lengthContainer.addClass('d-flex align-items-center');
+        lengthContainer.prepend(settingsBtn);
+    });
+  </script>
+{% endblock %}
