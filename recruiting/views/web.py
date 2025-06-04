@@ -539,8 +539,11 @@ class WorkRequestDeleteView(LoginRequiredMixin, View):
 
 class AddWorkersWorkRequests(View):
     def get(self, request, pk, role_id):
+        type_sector_value = request.GET.get('type_sector')
         work_assign_form = WorkerAssignmentForm()
-        form = DynamicWorkExperienceForm(request.GET or None)
+        if type_sector_value:
+            type_sector_value = type_sector_value.replace('_', ' ').title()
+        form = DynamicWorkExperienceForm(initial={'type_sector': type_sector_value})
         filter_form = AdvancedFilterForm(request.GET or None)
         search_query = request.GET.get('search', '')
         page_number = request.GET.get('page', 1)
@@ -861,7 +864,6 @@ class WorkRequestDetailView(View):
                 deleted_at__isnull=True,
             )
         roles_qs = [role for role in roles_qs_raw if hasattr(role, 'hours') and role.hours.deleted_at is None]
-        print(roles_qs,"roles_qs")
 
         role_forms = {
             role.id: WorkRequestRoleForm(instance=role)
@@ -907,9 +909,6 @@ class WorkRequestDetailView(View):
             for deduction in deductions:
                 deduction_forms[deduction.id] = RoleDeductionForm(instance=deduction)
 
-                    
-    
-        
         context = {
             'workrequest': work_request,
             'roles': roles_qs,
