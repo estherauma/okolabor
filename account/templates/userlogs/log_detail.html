@@ -15,7 +15,7 @@
 {% block body %}
 <div class="page-header">
   <div>
-    <h1 class="page-title">{% translate "userDetailsLog" %}</h1>
+    <h1 class="page-title">{% translate "userLogsUserDetailsLog" %}</h1>
   </div>
 </div>
 
@@ -24,22 +24,22 @@
     <div class="card">
       <div class="card-body">
         <div class="container mt-4">
-          <h2 class="mb-3">{% translate "userDetails" %}</h2>
+          <h2 class="mb-3">{% translate "userLogsUserDetails" %}</h2>
 
-          <p><strong>{% translate "User" %}:</strong> {{ log.user.email }}</p>
-          <p><strong>{% translate "Action" %}:</strong> {{ log.action }}</p>
-          <p><strong>{% translate "Timestamp" %}:</strong> {{ log.timestamp|date:"d M Y, g:i a" }}</p>
-          <p><strong>{% translate "Entity" %}:</strong> {{ log.content_type.model }}</p>
+          <p><strong>{% translate "userLogsDetailsUser" %}:</strong> {{ log.user.email }}</p>
+          <p><strong>{% translate "userLogsDetailsAction" %}:</strong> {{ log.action }}</p>
+          <p><strong>{% translate "userLogsDetailsTimestamp" %}:</strong> {{ log.timestamp|date:"d M Y, g:i a" }}</p>
+          <p><strong>{% translate "userLogsDetailsEntity" %}:</strong> {{ log.content_type.model }}</p>
 
           {% if log.data_before %}
             <div class="mt-4">
-              <h4> {% translate "beforeChanges" %} </h4>
+              <h4> {% translate "userLogsDetailsBeforeChanges" %} </h4>
               <div class="table-responsive">
                 <table class="table table-bordered table-striped">
                   <thead class="table-dark">
                     <tr>
-                      <th class="text-white">{% translate "Field" %} </th>
-                      <th class="text-white">{% translate "Value" %} </th>
+                      <th class="text-white">{% translate "userLogsDetailsField" %} </th>
+                      <th class="text-white">{% translate "userLogsDetailsValue" %} </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -57,13 +57,13 @@
 
           {% if log.data_after %}
             <div class="mt-4">
-              <h4> {% translate "afterChanges" %}</h4>
+              <h4> {% translate "userLogsDetailsAfterChanges" %}</h4>
               <div class="table-responsive">
                 <table class="table table-bordered table-striped">
                   <thead class="table-dark">
                     <tr>
-                      <th class="text-white">{% translate "Field"%}</th>
-                      <th class="text-white">{% translate "Value" %} </th>
+                      <th class="text-white">{% translate "userLogsDetailsField"%}</th>
+                      <th class="text-white">{% translate "userLogsDetailsValue" %} </th>
                     </tr>
                   </thead>
                   <tbody>
