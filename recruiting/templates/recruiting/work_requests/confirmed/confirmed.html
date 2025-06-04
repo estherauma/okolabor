@@ -121,8 +121,8 @@
               data-url="{% url 'recruiting_web:copy_workers' %}"
               data-get-roles-url="{% url 'recruiting_web:get_roles' %}"
               data-csrf="{{ csrf_token }}">
-          <div class="modal-header">
-            <h5 class="modal-title" id="copyModalLabel">{% translate "workRequestAddWorkerConfirmedCopyWorkersToAnotherWorkRequest" %}</h5>
+          <div class="modal-header" style="background-color: #7DBF96;">
+            <h5 class="modal-title text-white" id="copyModalLabel">{% translate "workRequestAddWorkerConfirmedCopyWorkersToAnotherWorkRequest" %}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'workRequestAddWorkerConfirmedClose'%}"></button>
           </div>
           <div class="modal-body">
@@ -140,7 +140,7 @@
             <input type="hidden" name="status" value="assigned">
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-success" id="copySubmitBtn">{% translate "workRequestAddWorkerConfirmedAddWorkers" %}</button>
+            <button type="submit" class="btn" id="copySubmitBtn" style='background-color:#7DBF96; color:white'>{% translate "workRequestAddWorkerConfirmedAddWorkers" %}</button>
           </div>
         </form>
       </div>
