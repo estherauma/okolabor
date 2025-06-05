@@ -11,6 +11,10 @@ from recruiting.models import (
 from django.core.exceptions import ValidationError
 from account.models import (UserWorkExperience)
 from common.utils import StaticContent
+import os
+import json
+from django.utils.translation import get_language
+from django.conf import settings
 
 class EmployerForm(forms.ModelForm):
     class Meta:
@@ -438,7 +442,7 @@ class RoleEmploymentLocationForm(forms.ModelForm):
             'role', 'address', 'city', 'county', 'state',
             'postal_code', 'additional_info', 'role'
         ]
-        
+
         labels = {
             'role': _('roleEmploymentLocationRole'),
             'address': _('roleEmploymentLocationAddress'),
@@ -448,7 +452,7 @@ class RoleEmploymentLocationForm(forms.ModelForm):
             'postal_code': _('roleEmploymentLocationPostalCode'),
             'additional_info': _('roleEmploymentLocationAdditionalInfo'),
         }
-        
+
         widgets = {
             'role': forms.Select(attrs={
                 'class': 'form-control',
@@ -458,9 +462,6 @@ class RoleEmploymentLocationForm(forms.ModelForm):
                 'class': 'form-control',
             }),
             'city': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
-            'county': forms.TextInput(attrs={
                 'class': 'form-control',
             }),
             'state': forms.TextInput(attrs={
@@ -473,6 +474,33 @@ class RoleEmploymentLocationForm(forms.ModelForm):
                 'class': 'form-control',
             }),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Load countries.json
+        file_path = os.path.join(settings.BASE_DIR, 'recruiting','countries.json')
+        with open(file_path, 'r', encoding='utf-8') as f:
+            countries = json.load(f)
+        lang = get_language()
+        lang_key = 'en'
+        if lang.lower() in ['es', 'es-mx']:
+            lang_key = 'es-MX'
+
+        # Build choices list
+        country_choices = [('', 'SelectCountry')]  # Default empty
+        for country in countries:
+            if country.get('enabled'):
+                label = f"{country.get(lang_key)}"
+                value = country.get('code')
+                country_choices.append((value, label))
+
+        # Override county field as ChoiceField
+        self.fields['county'] = forms.ChoiceField(
+            choices=country_choices,
+            label=self.fields['county'].label,
+            widget=forms.Select(attrs={'class': 'form-control'})
+        )
 
 
 class RoleHousingInformationForm(forms.ModelForm):
