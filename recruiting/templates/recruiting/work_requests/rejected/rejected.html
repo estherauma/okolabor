@@ -1,0 +1,132 @@
+{% load i18n %}
+{% load user_role_tags %}
+{% load static %}
+
+<div class="tab-pane" id="tab6">
+<div class="modal fade" id="columnRejectedSettingsModal" tabindex="-1" aria-labelledby="columnRejectedSettingsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="columnRejectedSettingsModalLabel">{% translate "Select Columns to Display" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'Close' %}"></button>
+      </div>
+      <div class="modal-body">
+        <form id="column-settings-form">
+          <div class="form-check">
+            <input class="form-check-input column-toggle" type="checkbox" value="1" checked id="col-name">
+            <label class="form-check-label" for="col-name">{% translate "workersListName" %}</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input column-toggle" type="checkbox" value="2" checked id="col-town">
+            <label class="form-check-label" for="col-town">{% translate "workersListTown" %}</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input column-toggle" type="checkbox" value="3" checked id="col-profile">
+            <label class="form-check-label" for="col-profile">{% translate "workersListProfileCompletion" %}</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input column-toggle" type="checkbox" value="4" checked id="col-experience">
+            <label class="form-check-label" for="col-experience">{% translate "workersListExperience" %}</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input column-toggle" type="checkbox" value="5" checked id="col-english">
+            <label class="form-check-label" for="col-english">{% translate "workersListEnglishProficiency" %}</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input column-toggle" type="checkbox" value="6" checked id="col-location">
+            <label class="form-check-label" for="col-location">{% translate "workersListLocationPreference" %}</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input column-toggle" type="checkbox" value="7" checked id="col-offer">
+            <label class="form-check-label" for="col-offer">{% translate "workersListOfferStatus" %}</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input column-toggle" type="checkbox" value="8" checked id="col-actions">
+            <label class="form-check-label" for="col-actions">{% translate "workersListActions" %}</label>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="display: none;">{% translate "Close" %}</button>
+        <button type="button" class="btn btn-primary" id="apply-column-settings" style="display: none;">{% translate "Apply" %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+ <div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+        <table class="table text-nowrap border-bottom " id="basic-datatable-rejected">
+             <thead style="background-color: #7DBF96;">
+            <tr>
+                <th class="">{% translate "workersListCheckbox" %}</th>
+                <th class="col-name">{% translate "workersListName" %}</th>
+                <th class="col-town">{% translate "workersListTown" %}</th>
+                <th class="col-profile">{% translate "workersListProfileCompletion" %}</th>
+                <th class="col-experience">{% translate "workersListExperience" %}</th>
+                <th class="col-english">{% translate "workersListEnglishProficiency" %}</th>
+                <th class="col-location">{% translate "workersListLocationPreference" %}</th>
+                <th class="col-offer">{% translate "workersListOfferStatus" %}</th>
+            </tr>
+        </thead>
+            <tbody>
+                {% for worker in rejected_workers %}
+                    <tr class="text-center">
+                          <td>
+                          <input type="checkbox" class="worker-shortlist-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.firstname }} {{ worker.lastname }}">
+                      </td>
+                      <td class="col-name">
+                    {% if worker.first_name and worker.last_name %}
+                        <a href="{{ worker.id }}">
+                            {{ worker.first_name }} {{ worker.last_name }}
+                              </a>
+                          {% else %}
+                              <a href="{{ worker.id }}">
+                                  {{ worker.email }}
+                              </a>
+                    {% endif %}
+                      </td>
+                      <td class="col-town">{{ worker.town|default:"Not Provided" }}</td>
+                      <td class="col-profile">{{ worker.profile_completion_percentage|default:0 }}%</td>
+                      <td class="col-experience">{{ worker.work_experience|default:"Not Provided" }}</td>
+                      <td class="col-english">{{ worker.english_proficiency|default:"Not Provided" }}</td>
+                      <td class="col-location">{{ worker.location_preference|default:"Not Provided" }}</td>
+                      <td class="col-offer">{{ worker.latest_status }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+  </div>
+</div>
+</div>
+</div>
+
+{% block scripts %}
+  <!-- Include jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Include DataTables CSS and JS -->
+ <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+  <script src="{% static 'assets/js/tablecolumns_hiding.js' %}"></script>
+
+  <script>
+    $(document).ready(function () {
+      $.fn.dataTable.ext.errMode = 'none';
+
+        const table = $('#basic-datatable-rejected').DataTable();
+        const settingsBtn =
+            '<button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnConfirmedSettingsModal">' +
+                '<i class="fa fa-cog" aria-hidden="true" style="color: #9A9898;margin-top:-13px"></i>' +
+            '</button>';
+        const lengthContainer = $('#basic-datatable-rejected_length');
+        lengthContainer.addClass('d-flex align-items-center');
+        lengthContainer.prepend(settingsBtn);
+    });
+  </script>
+{% endblock %}
