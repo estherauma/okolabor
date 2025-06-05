@@ -94,7 +94,7 @@
                     {% translate "jobOrderDetailsJobTitle" %}:
                     <strong>{{ role.title }}</strong>
                 </div>
-                <a href="{% url 'recruiting_web:work_request_add_workers' pk=workrequest.id role_id=role.id %}">
+                <a href="{% url 'recruiting_web:work_request_add_workers' pk=workrequest.id role_id=role.id %}?type_sector={{ role.work_type }}">
                     <button class="btn btn-success btn-sm ms-3">
                         +{% translate "jobOrderDetailsAddWorkers" %}
                     </button>
@@ -581,7 +581,7 @@
           <hr class="border-bottom border-3"/>
           <div class="d-flex justify-content-between align-items-center">
            <h6>
-            {% translate "workRequestDetailsQualifications" %}
+            {% translate "joDetails1QualificationsQualifications" %}
            </h6>
           <div class="d-flex align-items-center gap-2">
                 <!-- Add Qualification Button -->

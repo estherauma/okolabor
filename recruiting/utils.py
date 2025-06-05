@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from recruiting.models import WorkRequests, Role
 from content.models import AggregatedContent
 from django.utils.translation import get_language
+from datetime import date
 
 
 ONBOARDING_STEPS = [
@@ -101,5 +102,16 @@ def get_sector_choices():
     except Exception as e:
         print("[get_sector_choices] Error:", e)
         return []
+    
+def calculate_total_experience(user):
+    experiences = user.work_experiences.all()
+    total_days = 0
+    for exp in experiences:
+        if not exp.start_date:
+            continue
+        end_date = exp.end_date if exp.end_date else (date.today() if exp.currently_working else None)
+        if end_date:
+            total_days += (end_date - exp.start_date).days
+    return round(total_days / 365, 2)
 
 
