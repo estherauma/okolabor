@@ -66,12 +66,20 @@
 
   {% endif %}
 
-  <button class="btn dark-green-button ms-3">
+  {% if worker %}
+    <button class="btn dark-green-button ms-3 open-offersent-modal"
+    data-bs-toggle="modal"
+    data-bs-target="#workerSentOfferModal{{ worker.id }}"
+    data-worker-id="{{ worker.id }}">
    {% translate "workerDetailsSendOffer" %}
   </button>
+  {% endif %}
+
  </div>
 </div>
 {% include "recruiting/workers/add_shortlist_modal.html" %}
+{% include "recruiting/workers/offer_sent_modal.html" %}
+
 
 <div class="row">
  <div class="col-xl-6 col-md-12">

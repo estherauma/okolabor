@@ -5,13 +5,13 @@
         <form id="assignOrganizationForm">
             {% csrf_token %}
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="assignOrgLabel">{% translate "assignOrganization" %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'Close' %}"></button>
+                <div class="modal-header" style="background-color: #7DBF96;">
+                    <h5 class="modal-title text-white" id="assignOrgLabel">{% translate "recruiterAdminListAssignOrganization" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'recruiterAdminListOrgClose' %}"></button>
                 </div>
                 <div class="modal-body">
                     <select class="form-select" name="organization_id" required>
-                        <option value="">{% translate "Select Organization" %}</option>
+                        <option value="">{% translate "recruiterAdminListSelectOrganization" %}</option>
                         {% for org in recruiter_organizations %}
                             <option value="{{ org.id }}">{{ org.name }}</option>
                         {% endfor %}
@@ -20,7 +20,7 @@
                     <input type="hidden" name="selected_users" id="selectedUsersInput">
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">{% translate "Assign" %}</button>
+                    <button type="submit" class="btn btn-success">{% translate "recruiterAdminListOrgAssign" %}</button>
                 </div>
             </div>
         </form>
