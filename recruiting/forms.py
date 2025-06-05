@@ -251,23 +251,41 @@ class RoleWagesForm(forms.ModelForm):
             }),
             'wage': forms.NumberInput(attrs={
                 'class': 'form-control',
+                'placeholder': '$'
             }),
             'wage_type': forms.Select(attrs={
                 'class': 'form-control',
             }),
             'piece_rate_offerings': forms.NumberInput(attrs={
                 'class': 'form-control',
+                'placeholder': '$'
             }),
             'piece_rate_offerings_type': forms.Select(attrs={
                 'class': 'form-control',
             }),
-            'frequency_of_pay': forms.TextInput(attrs={
+            'frequency_of_pay': forms.Select(attrs={
                 'class': 'form-control',
+                'placeholder': 'select frequency'
             }),
             'details': forms.TextInput(attrs={
                 'class': 'form-control',
+                'placeholder': 'start typing'
             }),
         }
+        
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+
+            # Required fields
+            self.fields['role'].required = True
+            self.fields['wage'].required = True
+            self.fields['wage_type'].required = True
+            self.fields['frequency_of_pay'].required = True
+
+            # Optional fields
+            self.fields['details'].required = False
+            self.fields['piece_rate_offerings'].required = False
+            self.fields['piece_rate_offerings_type'].required = False
 
 
 class RoleDeductionForm(forms.ModelForm):
