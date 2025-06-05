@@ -556,15 +556,15 @@ class TodoFilterForm(forms.Form):
 
 class OkoMessageFilterForm(forms.Form):
     status = forms.ChoiceField(
-        label=_("status"),
+        label=_("messagesStatus"),
         choices=[
-            ('inbox', _('inbox')),
-            ('sent', _('sent'))   
+            ('inbox', _('messagesInbox')),
+            ('sent', _('messagesSent'))   
         ],
         widget=forms.Select(attrs={'class': 'form-control d-inline w-auto'})
     )
     date = forms.DateField(
-        label=_("date"), 
+        label=_("messagesDate"), 
         widget=forms.DateInput(attrs={
             'class': 'form-control d-inline w-auto', 'type': 'date'})
     )
