@@ -11,10 +11,10 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
-            <p>{% translate "joDetailsHoursAreYouSureYouWantToDeleteTheHoursForThisRole" %}</p>
-            <!-- Optional: display some context -->
-            <p><strong>{{ role.title }}</strong></p>
-          </div>
+            <p>
+              {% translate 'joDetailsHoursAreYouSureYouWantToDeleteThisEntry'%}
+            </p>
+          </div>   
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'joDetailsHoursDeleteCancel' %}</button>
             <button type="submit" class="btn btn-danger">{% translate 'joDetailsHoursDelete' %}</button>

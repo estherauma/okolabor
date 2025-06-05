@@ -1,40 +1,64 @@
 {% extends 'components/base.html' %}
 {% load i18n %}
 
-{% block title %} {% translate "roleHousingInformationRoleHousingInformation"%} {% endblock title %}
+{% block title %}
+  {% translate "roleHousingInformationRoleHousingInformation" %}
+{% endblock title %}
 
 {% block body %}
 <div class="page-header mt-30">
- <div>
-  <h1 class="page-title">
-   {% translate "roleHousingInformationAddHousingInformation" %}
-  </h1>
- </div>
-</div>
-<div class="row">
- <div class="col-md-9 col-xs-12">
-  <div class="card my-4 mb-4 offwhite-background">
-   <div class="card-body">
-    <form method="post">
-     {% csrf_token %}
-                    {% for field in form %}
-     <div class="col">
-      <div class="form-group my-3">
-       <label>
-        {{field.label}}
-       </label>
-       <div class="input-group input-group-outline is_valid my-3">
-        {{ field }}
-       </div>
-      </div>
-     </div>
-     {% endfor %}
-     <button class="btn dark-green-button" type="submit">
-      {% translate "roleHousingInformationSubmit" %}
-     </button>
-    </form>
-   </div>
+  <div>
+    <h1 class="page-title">
+      {% translate "roleHousingInformationAddHousingInformation" %}
+    </h1>
   </div>
- </div>
+</div>
+
+<div class="row">
+  <div class="col-md-9 col-xs-12">
+    <div class="card my-4 mb-4 offwhite-background">
+      <div class="card-body">
+        <form method="post">
+          {% csrf_token %}
+
+          <!-- First Part: 6 Fields -->
+          <div class="row">
+            {% for field in form.visible_fields %}
+              {% if field.name in "role county state city address postal_code" %}
+                <div class="col-md-6">
+                  <div class="form-group my-3">
+                    <label>{{ field.label }}</label>
+                    <div class="input-group input-group-outline is_valid my-1">
+                      {{ field }}
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          <!-- Second Part: type_of_housing, additional_info -->
+          <div class="row">
+            {% for field in form.visible_fields %}
+              {% if field.name in "type_of_housing additional_info" %}
+                <div class="col-md-12">
+                  <div class="form-group my-3">
+                    <label>{{ field.label }}</label>
+                    <div class="input-group input-group-outline is_valid my-1">
+                      {{ field }}
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          <button class="btn dark-green-button" type="submit">
+            {% translate "roleHousingInformationSubmit" %}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

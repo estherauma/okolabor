@@ -7,51 +7,51 @@
       <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">{% translate "EditRecruiter" %}</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title">{% translate "editRecuiterEditRecruiter" %}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'editRecruiterClose'%}"></button>
         </div>
         <div class="modal-body">
           <div class="mb-3">
-            <label for="edit_recruiter_curp" class="form-label">{% translate "editUserCURP" %}</label>
+            <label for="edit_recruiter_curp" class="form-label">{% translate "editRecruiterCURP" %}</label>
             <input type="text" class="form-control" id="edit_recruiter_curp" name="curp" readonly>
           </div>
           <div class="mb-3">
-            <label for="edit_recruiter_first_name" class="form-label">{% translate "editUserFirstName" %}</label>
+            <label for="edit_recruiter_first_name" class="form-label">{% translate "editRecruiterFirstName" %}</label>
             <input type="text" class="form-control" id="edit_recruiter_first_name" name="first_name" required>
           </div>
           <div class="mb-3">
-            <label for="edit_recruiter_last_name" class="form-label">{% translate "editUserLastName" %}</label>
+            <label for="edit_recruiter_last_name" class="form-label">{% translate "editRecruiterLastName" %}</label>
             <input type="text" class="form-control" id="edit_recruiter_last_name" name="last_name" required>
           </div>
           <div class="mb-3">
-            <label for="edit_recruiter_email" class="form-label">{% translate "editUserEmail" %}</label>
+            <label for="edit_recruiter_email" class="form-label">{% translate "editRecruiterEmail" %}</label>
             <input type="email" class="form-control" id="edit_recruiter_email" name="email" readonly>
           </div>
 
           <div class="mb-3">
-            <label for="edit_recruiter_language" class="form-label">{% translate "Language" %}</label>
+            <label for="edit_recruiter_language" class="form-label">{% translate "editRecruiterLanguage" %}</label>
             <input type="text" class="form-control" id="edit_recruiter_language" name="language" required>
           </div>
           
           <div class="mb-3">
-            <label for="edit_recruiter_is_active" class="form-label">{% translate "editUserIsActive" %}</label>
+            <label for="edit_recruiter_is_active" class="form-label">{% translate "editRecruiterIsActive" %}</label>
             <select class="form-select" id="edit_recruiter_is_active" name="is_active" required>
-              <option value="True">Active</option>
-              <option value="False">Inactive</option>
+              <option value="True">{% translate "editRecruiterActive"%}</option>
+              <option value="False">{% translate "editRecruiterInactive"%}</option>
             </select>
           </div>
           <div class="mb-3">
-            <label for="edit_recruiter_group" class="form-label">{% translate "editUserGroup" %}</label>
+            <label for="edit_recruiter_group" class="form-label">{% translate "editRecruiterGroup" %}</label>
             <select class="form-select" id="edit_recruiter_group" name="group" required>
-                <option value="recruiter">{% translate "Recruiter" %}</option>
-                <option value="recruiter_admin">{% translate "Recruiter Admin" %}</option>
+                <option value="recruiter">{% translate "editRecruiterRecruiter" %}</option>
+                <option value="recruiter_admin">{% translate "editRecruiterRecruiterAdmin" %}</option>
             </select>
         </div>
         
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Cancel" %}</button>
-          <button type="submit" class="btn btn-success">{% translate "Save" %}</button>
+          <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate "editRecruiterCancel" %}</button>
+          <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>{% translate "editRecruiterSave" %}</button>
         </div>
       </div>
     </form>

@@ -5,36 +5,188 @@
 
 {% block body %}
 <div class="page-header mt-30">
- <div>
-  <h1 class="page-title">
-   {% translate "roleQualificationAddQualificationRequirements" %}
-  </h1>
- </div>
-</div>
-<div class="row">
- <div class="col-md-9 col-xs-12">
-  <div class="card my-4 mb-4 offwhite-background">
-   <div class="card-body">
-    <form method="post">
-     {% csrf_token %}
-                    {% for field in form %}
-     <div class="col">
-      <div class="form-group my-3">
-       <label>
-        {{field.label}}
-       </label>
-       <div class="input-group input-group-outline is_valid my-3">
-        {{ field }}
-       </div>
-      </div>
-     </div>
-     {% endfor %}
-     <button class="btn dark-green-button" type="submit">
-      {% translate "roleQualificationSubmit" %}
-     </button>
-    </form>
-   </div>
+  <div>
+    <h1 class="page-title">
+      {% translate "roleQualificationAddQualificationRequirements" %}
+    </h1>
   </div>
- </div>
+</div>
+
+<div class="row">
+  <div class="col-md-9 col-xs-12">
+    <div class="card my-4 mb-4 offwhite-background">
+      <div class="card-body">
+        <form method="post">
+          {% csrf_token %}
+
+          {# Role (read-only) #}
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group my-3">
+                <label>{{ form.role.label }}</label>
+                <div class="input-group input-group-outline is_valid my-3">
+                  {{ form.role }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {# Experience Required + Months #}
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group my-3">
+                <label>{{ form.experience_required.label }}</label>
+                <div class="input-group input-group-outline is_valid my-3">
+                  {{ form.experience_required }}
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group my-3">
+                <label>{{ form.number_of_months_experience_required.label }}</label>
+                <div class="input-group input-group-outline is_valid my-3">
+                  {{ form.number_of_months_experience_required }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {# Training Required + Months #}
+          <div class="row">
+           <div class="col-md-6">
+            <div class="form-group my-3">
+                <label>{{ form.training_required.label }}</label>
+                <div style="display: flex; gap: 12px; margin-top: 8px;">
+                {% for radio in form.training_required %}
+                    <label style="
+                    background-color:#fff;
+                    padding: 8px 12px;
+                    border-radius: 4px;
+                    border: 2px solid ##eaedf1;
+                    min-width: 120px;
+                    display: flex;
+                    height:40px;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+                    ">
+                    {{ radio.tag }}
+                    <span style="margin-left:22px;">{{ radio.choice_label }}</span>
+                    </label>
+                {% endfor %}
+                </div>
+            </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group my-3">
+                <label>{{ form.number_of_months_training_required.label }}</label>
+                <div class="input-group input-group-outline is_valid my-3">
+                  {{ form.number_of_months_training_required }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {# Certification + Drug Screen #}
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-check my-3">
+                {{ form.certification_license_requirements }}
+                <label class="form-check-label">{{ form.certification_license_requirements.label }}</label>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-check my-3">
+                {{ form.drug_screen }}
+                <label class="form-check-label">{{ form.drug_screen.label }}</label>
+              </div>
+            </div>
+          </div>
+
+          {# Lifting Requirements + Weight #}
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-check my-3">
+                {{ form.lifting_requirements }}
+                <label class="form-check-label">{{ form.lifting_requirements.label }}</label>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group my-3">
+                <label>{{ form.lifting_requirement_weight.label }}</label>
+                <div class="input-group input-group-outline is_valid my-3">
+                  {{ form.lifting_requirement_weight }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {# Side-by-side checkbox group layout for physical requirements #}
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-check my-3">
+                {{ form.exposure_to_temperature }}
+                <label class="form-check-label">{{ form.exposure_to_temperature.label }}</label>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-check my-3">
+                {{ form.extensive_pushing_or_pulling }}
+                <label class="form-check-label">{{ form.extensive_pushing_or_pulling.label }}</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-check my-3">
+                {{ form.extensive_sitting_or_walking }}
+                <label class="form-check-label">{{ form.extensive_sitting_or_walking.label }}</label>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-check my-3">
+                {{ form.frequent_stooping_or_bending_over }}
+                <label class="form-check-label">{{ form.frequent_stooping_or_bending_over.label }}</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-check my-3">
+                {{ form.repetitive_movements }}
+                <label class="form-check-label">{{ form.repetitive_movements.label }}</label>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-check my-3">
+                {{ form.support_of_other_employees }}
+                <label class="form-check-label">{{ form.support_of_other_employees.label }}</label>
+              </div>
+            </div>
+          </div>
+
+          {# Other Qualifications Textarea (full width) #}
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group my-3">
+                <label>{{ form.other_qualifications.label }}</label>
+                <div class="input-group input-group-outline is_valid my-3">
+                  {{ form.other_qualifications }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn dark-green-button mt-3" type="submit">
+            {% translate "roleQualificationSubmit" %}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
