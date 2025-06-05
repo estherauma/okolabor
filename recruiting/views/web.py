@@ -536,7 +536,6 @@ class WorkRequestDeleteView(LoginRequiredMixin, View):
             return HttpResponseForbidden(_("You do not have permission to delete this work request."))
 
 
-
 class AddWorkersWorkRequests(View):
     def get(self, request, pk, role_id):
         type_sector_value = request.GET.get('type_sector')
@@ -608,6 +607,7 @@ class AddWorkersWorkRequests(View):
         offersent_workers = get_shortlisted_workers(status='offersent', role_id=role_id)
         confirmed_workers = get_shortlisted_workers(status='confirmed', role_id=role_id)
         cancel_workers = get_shortlisted_workers(status='cancelled', role_id=role_id)
+        rejected_workers = get_shortlisted_workers(status='rejected', role_id=role_id)
 
         shortlisted_workers_data = []
         for assignment in shortlisted_workers:
@@ -671,11 +671,30 @@ class AddWorkersWorkRequests(View):
                     'status': assignment.status,
                     **worker_details
                 })
+        
+        rejected_workers_data = []
+        unique_rejected_workers = set()
+        for assignment in rejected_workers:
+            worker = assignment.worker
+            if worker.id not in unique_rejected_workers:
+                unique_rejected_workers.add(worker.id)
+                profile_completion = calculate_profile_completion(worker)
+                worker_details = get_worker_preferences(worker)
+                rejected_workers_data.append({
+                    'id': worker.id,
+                    'firstname': worker.first_name,
+                    'lastname': worker.last_name,
+                    'email': worker.email,
+                    'profile_completion': profile_completion,
+                    'status': assignment.status,
+                    **worker_details
+                })
 
         shortlisted_count = len(shortlisted_workers_data)
         offersent_count = len(offersent_workers_data)
         confirmed_count = len(confirmed_workers_data)
         cancelled_count = len(cancelled_workers_data)
+        rejected_count = len(rejected_workers_data)
         workers_count = len(all_workers)
 
         request.session[session_key] = {
@@ -698,10 +717,12 @@ class AddWorkersWorkRequests(View):
             'offersent_workers': offersent_workers_data,
             'confirmed_workers': confirmed_workers_data,
             'cancelled_workers': cancelled_workers_data,
+            'rejected_workers': rejected_workers_data,
             'shortlisted_count': shortlisted_count,
             'offersent_count': offersent_count,
             'confirmed_count': confirmed_count,
             'cancelled_count': cancelled_count,
+            'rejected_count': rejected_count,
             'workers_count': workers_count,
         }
         return render(request, 'recruiting/work_requests/create_addworker.html', context)
