@@ -295,12 +295,13 @@ class RoleWagesForm(forms.ModelForm):
 class RoleDeductionForm(forms.ModelForm):
     class Meta:
         model = Deduction
-        fields = ['role', 'description', 'deduction_amount']
+        fields = ['role', 'description', 'deduction_amount','frequency_of_pay']
         
         labels = {
             'role': _('roleDeductionsRole'),
             'description': _('roleDeductionsDescription'),
             'deduction_amount': _('roleDeductionsDeductionAmount'),
+            'frequency_of_pay': _('roleDeductionsFrequencyOfPay'),
         }
 
         widgets = {
@@ -312,6 +313,9 @@ class RoleDeductionForm(forms.ModelForm):
                 'class': 'form-control',
             }),
             'deduction_amount': forms.NumberInput(attrs={
+                'class': 'form-control',
+            }),
+            'frequency_of_pay': forms.Select(attrs={
                 'class': 'form-control',
             }),
         }
