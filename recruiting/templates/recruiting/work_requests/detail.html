@@ -198,7 +198,6 @@
           <div class="modal-body">
             <p>{% translate "joDetailsHoursAreYouSureYouWantToDeleteTheHoursForThisRole" %}</p>
             <!-- Optional: display some context -->
-            <p><strong>{{ role.title }}</strong></p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'joDetailsHoursDeleteCancel' %}</button>
@@ -316,8 +315,11 @@
         </div>
         
         <div class="modal-body">
-          {% translate "jobOrderDetailsAreYouSureYouWantToDeleteTheRole?"%}<strong>{{ role.title }}</strong>
+          {% blocktrans with role_title=role.title %}
+            Are you sure you want to delete the role <strong>{{ role_title }}</strong>?
+          {% endblocktrans %}
         </div>
+        
         
         <div class="modal-footer">
           <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate "jobOrderDetailsCancel"%}</button>
@@ -551,7 +553,7 @@
                   <td>{{ deduction.description }}</td>
                   <td>${{ deduction.deduction_amount }}</td>
                   <td>
-                       <button class="btn btn-sm btn-icon btn-outline-primary"
+                       <button class="btn btn-sm btn-icon btn-outline-success"
                        data-bs-toggle="modal"
                        data-bs-target="#editDeductionModal{{ deduction.id }}"
                        title="{% translate 'Edit' %}">
@@ -581,7 +583,7 @@
           <hr class="border-bottom border-3"/>
           <div class="d-flex justify-content-between align-items-center">
            <h6>
-            {% translate "workRequestDetailsQualifications" %}
+            {% translate "joDetails1QualificationsQualifications" %}
            </h6>
           <div class="d-flex align-items-center gap-2">
                 <!-- Add Qualification Button -->

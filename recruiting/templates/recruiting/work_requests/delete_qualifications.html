@@ -10,8 +10,13 @@
         </div>
   
         <div class="modal-body">
-          {% translate "joDetailsQualificationsAreYouSureYouWantToDeleteQualificationForTheRole"%} <strong>{{ role.title }}</strong>
+          <p>
+            {% blocktrans with role_title=role.title %}
+              Are you sure you want to delete qualification information for the role <strong>{{ role_title }}</strong>?
+            {% endblocktrans %}
+          </p>
         </div>
+        
   
         <div class="modal-footer">
           <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate "joDetailsQualificationsDeleteCancel"%}</button>

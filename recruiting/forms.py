@@ -314,6 +314,17 @@ class RoleDeductionForm(forms.ModelForm):
 
 
 class RoleQualificationForm(forms.ModelForm):
+    YES_NO_CHOICES = [
+        (True, _('Yes')),
+        (False, _('No')),
+    ]
+
+    training_required = forms.ChoiceField(
+        choices=YES_NO_CHOICES,
+        widget=forms.RadioSelect(attrs={'class': 'form-check-input'}),  # Use RadioSelect here
+        label=_('roleQualificationTrainingRequired'),
+        required=False
+    )
     class Meta:
         model = Qualification
         fields = [
@@ -412,6 +423,12 @@ class RoleQualificationForm(forms.ModelForm):
                 'class': 'form-control',
             }),
         }
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            # Set all fields except 'role' to not required
+            for field_name in self.fields:
+                if field_name != 'role':
+                    self.fields[field_name].required = False
 
 
 class RoleEmploymentLocationForm(forms.ModelForm):
@@ -557,15 +574,15 @@ class TodoFilterForm(forms.Form):
 
 class OkoMessageFilterForm(forms.Form):
     status = forms.ChoiceField(
-        label=_("status"),
+        label=_("messagesStatus"),
         choices=[
-            ('inbox', _('inbox')),
-            ('sent', _('sent'))   
+            ('inbox', _('messagesInbox')),
+            ('sent', _('messagesSent'))   
         ],
         widget=forms.Select(attrs={'class': 'form-control d-inline w-auto'})
     )
     date = forms.DateField(
-        label=_("date"), 
+        label=_("messagesDate"), 
         widget=forms.DateInput(attrs={
             'class': 'form-control d-inline w-auto', 'type': 'date'})
     )
