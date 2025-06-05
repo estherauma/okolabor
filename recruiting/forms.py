@@ -532,9 +532,11 @@ class RoleMealProvision(forms.ModelForm):
             }),
             'meal_charge_amount': forms.NumberInput(attrs={
                 'class': 'form-control',
+                'placeholder': 'Charge amount per day'
             }),
-            'additional_info': forms.Textarea(attrs={
+            'additional_info': forms.TextInput(attrs={
                 'class': 'form-control',
+                'placeholder': 'start typing'
             }),
         }
 
