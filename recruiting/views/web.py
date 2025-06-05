@@ -552,12 +552,13 @@ class AddWorkersWorkRequests(View):
         try:
             per_page = int(per_page)
         except ValueError:
-            per_page = 4
+            per_page = 4  # Fallback default
 
         work_request = get_object_or_404(WorkRequests, pk=pk)
         role = get_object_or_404(Role, pk=role_id)
         work_requests = WorkRequests.objects.filter(status='Open').prefetch_related('roles')
 
+        # Retrieve the state from the session
         session_key = f'role_{role_id}_state'
         if session_key in request.session:
             state = request.session[session_key]
@@ -565,22 +566,42 @@ class AddWorkersWorkRequests(View):
             page_number = state.get('page_number', 1)
             per_page = state.get('per_page', 25)
 
+        # Get all workers (not filtered by role)
         workers = User.objects.filter(
             groups__name='worker'
         ).distinct().order_by('-created_at')
-
+        print(workers.count(),"workers1")
         if search_query:
             workers = workers.filter(
                 Q(first_name__icontains=search_query) |
                 Q(last_name__icontains=search_query) |
                 Q(email__icontains=search_query)
             )
+        params = request.GET
+        print(params,"params")
+        type_sector = request.GET.get('type_sector')
+        if type_sector:
+            workers = workers.filter(
+                crop_experiences__job_type__iexact=type_sector
+            )
+        print(workers.count(),"workers222")
+        min_exp = next((int(v) for k, v in params.items() if k.startswith("years_of_experience_min_") and v), None)
+        max_exp = next((int(v) for k, v in params.items() if k.startswith("years_of_experience_max_") and v), None)
+        if min_exp is not None or max_exp is not None:
+            filtered = []
+            for w in workers:
+                years = calculate_total_experience(w)
+                if ((min_exp is None or years >= min_exp) and
+                    (max_exp is None or years <= max_exp)):
+                    filtered.append(w)
+            workers = filtered
 
-        
-        all_workers = workers.distinct()
+        print(len(workers), "workers23333")
+        paginator = Paginator(workers, per_page)
+        page_obj = paginator.get_page(page_number)
 
         worker_data = []
-        for worker in all_workers:
+        for worker in page_obj:
             profile_completion = calculate_profile_completion(worker)
             worker_details = get_worker_preferences(worker)
 
@@ -604,6 +625,7 @@ class AddWorkersWorkRequests(View):
                 **worker_details
             })
 
+        # Retrieve shortlisted workers based on status and role
         shortlisted_workers = get_shortlisted_workers(status='assigned', role_id=role_id)
         offersent_workers = get_shortlisted_workers(status='offersent', role_id=role_id)
         confirmed_workers = get_shortlisted_workers(status='confirmed', role_id=role_id)
@@ -676,21 +698,27 @@ class AddWorkersWorkRequests(View):
         offersent_count = len(offersent_workers_data)
         confirmed_count = len(confirmed_workers_data)
         cancelled_count = len(cancelled_workers_data)
-        workers_count = len(all_workers)
+        workers_count = len(page_obj)
 
+        # Store the state in the session
         request.session[session_key] = {
             'search_query': search_query,
             'page_number': page_number,
             'per_page': per_page,
         }
 
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'workers': worker_data, 'num_pages': paginator.num_pages})
+        
+
         context = {
-            'workers': all_workers,
+            'workers': page_obj,  # All workers (not role-specific)
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
             'form': form,
             'work_assign_form': work_assign_form,
             'filter_form': filter_form,
             'search_query': search_query,
+            'paginator': paginator,
             'per_page': per_page,
             'role': role,
             'work_request': work_request,
