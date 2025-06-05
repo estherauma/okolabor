@@ -591,7 +591,7 @@ class RoleMealProvision(forms.ModelForm):
                 'class': 'form-control',
                 'placeholder': 'Charge amount per day'
             }),
-            'additional_info': forms.TextInput(attrs={
+            'additional_info': forms.Textarea(attrs={
                 'class': 'form-control',
                 'placeholder': 'start typing'
             }),
