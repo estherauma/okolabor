@@ -820,10 +820,10 @@ class AddToShortlistView(View):
         added_any, already_assigned = add_workers_to_shortlist(worker_ids, work_request_id, role_id)
 
         if added_any:
-            messages.success(request, "workersAddedToShortlistSuccessfully.")
+            messages.success(request, "workRequestAddWorkerWorkersAddedToShortlistSuccessfully.")
             return JsonResponse({'success': True, 'message': _("workRequestAddWorkerWorkersAddedToShortlistSuccessfully")})
         else:
-            messages.warning(request, "someWorkersAreAlreadyShortlisted.")
+            messages.warning(request, "workRequestAddWorkerSomeWorkersAreAlreadyShortlisted.")
             return JsonResponse({'success': False, 'message': _("workRequestAddWorkerSomeWorkersAreAlreadyShortlisted")})
 
 
