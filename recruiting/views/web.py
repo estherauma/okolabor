@@ -310,9 +310,15 @@ class EmployerCreateView(CreateView):
     form_class = EmployerForm
     template_name = 'recruiting/employers/create.html'
 
+    def get_initial(self):
+        initial = super().get_initial()
+        type_value = self.request.GET.get('type', 'recruiter')  # default to 'recruiter'
+        initial['type'] = type_value
+        return initial
+
     def form_valid(self, form):
         messages.success(self.request, _('addEmployerEmployerCreatedSuccessfully'))
-        return super(EmployerCreateView, self).form_valid(form)
+        return super().form_valid(form)
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
         for field, errors in form.errors.items():
@@ -321,10 +327,8 @@ class EmployerCreateView(CreateView):
         return super().form_invalid(form)
 
     def get_success_url(self):
-        return reverse(
-            'recruiting_web:employer_detail',
-            kwargs={'pk': self.object.pk}
-        )
+        return reverse('recruiting_web:employer_detail', kwargs={'pk': self.object.pk})
+
 class EmployerDetailView(View):
     def get(self, request, pk):
         user = request.user

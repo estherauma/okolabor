@@ -15,20 +15,25 @@
  <div class="col-12">
   <div class="card my-4">
    <div class="card-body">
-    <form method="post">
-     {% csrf_token %}
-                    {% for field in form %}
-     <div class="col">
+  <form method="post">
+  {% csrf_token %}
+
+  {% for field in form.visible_fields %}
+    <div class="col">
       <div class="form-group my-3">
-       <label>
-        {{field.label}}
-       </label>
-       <div class="input-group input-group-outline is_valid my-3">
-        {{ field }}
-       </div>
+        <label>{{ field.label }}</label>
+        <div class="input-group input-group-outline is_valid my-3">
+          {{ field }}
+        </div>
       </div>
-     </div>
-     {% endfor %}
+    </div>
+  {% endfor %}
+
+  {# Render hidden fields separately, without labels #}
+  {% for hidden in form.hidden_fields %}
+    {{ hidden }}
+  {% endfor %}
+
      <button class="btn btn-primary" type="submit">
       {% translate "addEmployerSubmit" %}
      </button>
