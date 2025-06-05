@@ -473,7 +473,7 @@ class RoleEmploymentLocationForm(forms.ModelForm):
         country_choices = [('', 'SelectCountry')]  # Default empty
         for country in countries:
             if country.get('enabled'):
-                label = f"{country.get(lang_key)} ({country.get('dial_code')})"
+                label = f"{country.get(lang_key)}"
                 value = country.get('code')
                 country_choices.append((value, label))
 
