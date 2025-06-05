@@ -160,8 +160,7 @@ class EmployerDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         user = request.user
         employer = get_object_or_404(Organization, pk=pk, type='employer', deleted=False)
-
-
+        
         if user.groups.filter(name='admin').exists():
             employer_name = employer.name
             employer.delete(user=user)
@@ -234,7 +233,6 @@ class RecruiterListViewInAdmin(View):
                 link.employer_org.name for link in assigned_links
             ))
             
-
             recruiters_data.append({
                 'id': recruiter.id,
                 'name': recruiter.name,
@@ -327,8 +325,6 @@ class EmployerCreateView(CreateView):
             'recruiting_web:employer_detail',
             kwargs={'pk': self.object.pk}
         )
-
-
 class EmployerDetailView(View):
     def get(self, request, pk):
         user = request.user
@@ -375,9 +371,7 @@ class EmployerDetailView(View):
             'work_requests': work_requests,
             'assigned_organizations': assigned_orgs_data
         }
-        return render(request, 'recruiting/employers/detail.html', context)
-    
-
+        return render(request, 'recruiting/employers/detail.html', context) 
 class RecruiterDetailView(View):
     def get(self, request, pk):
         user = request.user
@@ -446,9 +440,8 @@ class WorkRequestsListView(View):
             else:
                 work_requests = WorkRequests.objects.none()
         else:
-            work_requests = WorkRequests.objects.none()
+            work_requests = WorkRequests.objects.none() 
 
-        # Attach recruiter_org to each work request
         for wr in work_requests:
             recruiter_link = EmployerRecruiterOrgLink.objects.filter(employer_org=wr.employer).first()
             wr.recruiter_org = recruiter_link.recruiter_org if recruiter_link else None
@@ -466,7 +459,6 @@ class DeleteAssignedOrganizationView(View):
         employer = get_object_or_404(Organization, pk=employer_id)
         recruiter_org = get_object_or_404(Organization, pk=recruiter_org_id)
 
-        # Delete the assignment link between employer and recruiter organization
         EmployerRecruiterOrgLink.objects.filter(
             employer_org=employer,
             recruiter_org=recruiter_org
@@ -481,7 +473,6 @@ class DeleteEmployerOrganizationFromRecruiterView(View):
         recruiter_org = get_object_or_404(Organization, pk=recruiter_org_id, type='recruiter')
         employer_org = get_object_or_404(Organization, pk=employer_org_id)
 
-        # Delete the link between recruiter and employer
         EmployerRecruiterOrgLink.objects.filter(
             recruiter_org=recruiter_org,
             employer_org=employer_org
@@ -548,8 +539,11 @@ class WorkRequestDeleteView(LoginRequiredMixin, View):
 
 class AddWorkersWorkRequests(View):
     def get(self, request, pk, role_id):
+        type_sector_value = request.GET.get('type_sector')
         work_assign_form = WorkerAssignmentForm()
-        form = DynamicWorkExperienceForm(request.GET or None)
+        if type_sector_value:
+            type_sector_value = type_sector_value.replace('_', ' ').title()
+        form = DynamicWorkExperienceForm(initial={'type_sector': type_sector_value})
         filter_form = AdvancedFilterForm(request.GET or None)
         search_query = request.GET.get('search', '')
         page_number = request.GET.get('page', 1)
@@ -576,14 +570,33 @@ class AddWorkersWorkRequests(View):
         workers = User.objects.filter(
             groups__name='worker'
         ).distinct().order_by('-created_at')
-
+        print(workers.count(),"workers1")
         if search_query:
             workers = workers.filter(
                 Q(first_name__icontains=search_query) |
                 Q(last_name__icontains=search_query) |
                 Q(email__icontains=search_query)
             )
+        params = request.GET
+        print(params,"params")
+        type_sector = request.GET.get('type_sector')
+        if type_sector:
+            workers = workers.filter(
+                crop_experiences__job_type__iexact=type_sector
+            )
+        print(workers.count(),"workers222")
+        min_exp = next((int(v) for k, v in params.items() if k.startswith("years_of_experience_min_") and v), None)
+        max_exp = next((int(v) for k, v in params.items() if k.startswith("years_of_experience_max_") and v), None)
+        if min_exp is not None or max_exp is not None:
+            filtered = []
+            for w in workers:
+                years = calculate_total_experience(w)
+                if ((min_exp is None or years >= min_exp) and
+                    (max_exp is None or years <= max_exp)):
+                    filtered.append(w)
+            workers = filtered
 
+        print(len(workers), "workers23333")
         paginator = Paginator(workers, per_page)
         page_obj = paginator.get_page(page_number)
 
@@ -762,7 +775,6 @@ class GetRolesView(View):
             return JsonResponse({'error': 'Work request ID is required'}, status=400)
 
         try:
-            # Fetch the work request with related roles using prefetch_related
             work_request = WorkRequests.objects.filter(id=work_request_id).prefetch_related('roles').first()
             if not work_request:
                 return JsonResponse({'error': 'Work request not found'}, status=404)
@@ -779,7 +791,7 @@ class UpdateWorkerStatusView(View):
     def post(self, request, *args, **kwargs):
         worker_ids = request.POST.getlist('worker_ids[]')
         WorkAssignment.objects.filter(worker_id__in=worker_ids, status='assigned').update(status='offersent')
-        messages.success(request, _("offerSentSuccessfully."))
+        messages.success(request, _("workRequestAddWorkerOfferSentSuccessfully"))
         return JsonResponse({'status':'success','success': 'True', 'message': 'Offer sent successfully.'})
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -836,11 +848,11 @@ class AddToShortlistView(View):
         added_any, already_assigned = add_workers_to_shortlist(worker_ids, work_request_id, role_id)
 
         if added_any:
-            messages.success(request, "workersAddedToShortlistSuccessfully.")
-            return JsonResponse({'success': True, 'message': _("workersAddedToShortlistSuccessfully.")})
+            messages.success(request, "workRequestAddWorkerWorkersAddedToShortlistSuccessfully.")
+            return JsonResponse({'success': True, 'message': _("workRequestAddWorkerWorkersAddedToShortlistSuccessfully")})
         else:
-            messages.warning(request, "someWorkersAreAlreadyShortlisted.")
-            return JsonResponse({'success': False, 'message': _("someWorkersAreAlreadyShortlisted.")})
+            messages.warning(request, "workRequestAddWorkerSomeWorkersAreAlreadyShortlisted.")
+            return JsonResponse({'success': False, 'message': _("workRequestAddWorkerSomeWorkersAreAlreadyShortlisted")})
 
 
 class ShowWorkerDetails(View):
@@ -880,7 +892,6 @@ class WorkRequestDetailView(View):
                 deleted_at__isnull=True,
             )
         roles_qs = [role for role in roles_qs_raw if hasattr(role, 'hours') and role.hours.deleted_at is None]
-        print(roles_qs,"roles_qs")
 
         role_forms = {
             role.id: WorkRequestRoleForm(instance=role)
@@ -926,9 +937,6 @@ class WorkRequestDetailView(View):
             for deduction in deductions:
                 deduction_forms[deduction.id] = RoleDeductionForm(instance=deduction)
 
-                    
-    
-        
         context = {
             'workrequest': work_request,
             'roles': roles_qs,
@@ -1487,7 +1495,7 @@ class AssignEmployersToRecruiterOrgView(View):
             recruiter_org_id = data.get('recruiter_org_id')
 
             if not employer_ids or not recruiter_org_id:
-                msg = _('Missing employer IDs or recruiter organization ID.')
+                msg = _('missingEmployerIDsorRecruiterOrganizationID')
                 messages.error(request, msg)
                 return JsonResponse({'success': False, 'message': msg})
 
@@ -1554,7 +1562,6 @@ class AssignEmployersToRecruiterOrgView(View):
                 except EmployerContact.DoesNotExist:
                     print(f"No primary contact found for employer: {employer_org.name}")
 
-            # Build response message
             msg_parts = []
 
             if successfully_assigned:
@@ -1574,7 +1581,7 @@ class AssignEmployersToRecruiterOrgView(View):
             })
 
         except json.JSONDecodeError:
-            msg = _('Invalid JSON data.')
+            msg = _('invalidJSONData')
             messages.error(request, msg)
             return JsonResponse({'success': False, 'message': msg})
 
@@ -1600,7 +1607,6 @@ def update_employer_recruiter_status(request):
             employer_org=employer_org, recruiter_org=recruiter_org
         )
 
-        # ✅ Block re-use of the link
         if relation.status in ['accepted', 'rejected']:
             return JsonResponse({
                 'success': False,
@@ -1622,11 +1628,9 @@ def update_employer_recruiter_status(request):
         else:
             return JsonResponse({'success': False, 'message': 'Invalid action.'})
 
-        # Save status and updater
         relation.user_updated_by = primary_contact
         relation.save()
 
-        # Send confirmation email
         send_mail(subject, message, settings.EMAIL_HOST_USER, [primary_contact.email])
         messages.success(request, msg)
 
@@ -1647,14 +1651,13 @@ class EmployerRecruiterOrgStatusListView(ListView):
         ).select_related(
             'employer_org',
             'recruiter_org',
-            'user_updated_by__user'  # Optimizes access to user fields in template
+            'user_updated_by__user'
         )
 
 class EmployerRecruiterOrgLinkDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         link = get_object_or_404(EmployerRecruiterOrgLink, pk=pk, deleted=False)
 
-        # Optional: Add permission logic here
         if request.user.groups.filter(name='admin').exists():
             link_str = str(link)
             link.delete(user=request.user)
@@ -1663,7 +1666,7 @@ class EmployerRecruiterOrgLinkDeleteView(LoginRequiredMixin, View):
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
 
-            return redirect('recruiting_web:recruiter-status-list')  # Adjust to your list view name
+            return redirect('recruiting_web:recruiter-status-list')
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
@@ -1852,7 +1855,7 @@ class DeleteHousingInformationView(View):
     def post(self, request, pk):
         housing = get_object_or_404(HousingInformation, pk=pk)
         try:
-            work_request_pk = housing.role.work_request.pk  # Store before deleting
+            work_request_pk = housing.role.work_request.pk
             housing.delete()
             messages.success(request, _('joDetailsHousingInfoHousingInformationDeletedSuccessfully'))
             return redirect('recruiting_web:workrequest_detail', pk=work_request_pk)
@@ -1878,7 +1881,7 @@ class DeleteMealProvisionView(View):
     def post(self, request, pk):
         meal_provision = get_object_or_404(MealProvision, pk=pk)
         try:
-            work_request_pk = meal_provision.role.work_request.pk  # Store before deleting
+            work_request_pk = meal_provision.role.work_request.pk
             meal_provision.delete()
             messages.success(request, _('joDetailsMealsMealProvisionDeletedSuccessfully'))
             return redirect('recruiting_web:workrequest_detail', pk=work_request_pk)
@@ -1892,7 +1895,6 @@ class EditRoleHoursView(View):
         hours = get_object_or_404(Hours, pk=pk)
         form = RoleHoursForm(request.POST, instance=hours)
 
-        # Get the work_request_id from the form
         work_request_id = request.POST.get('work_request_id', None)
 
         if form.is_valid():
@@ -1901,17 +1903,14 @@ class EditRoleHoursView(View):
         else:
             messages.error(request, _('joDetailsHoursThereWasAnErrorUpdatingTheHours'))
 
-        # Redirect to the work request detail page
         if work_request_id:
             return redirect('recruiting_web:workrequest_detail', pk=work_request_id)
         else:
-            return redirect('/')  # fallback if something goes wrong
+            return redirect('/')
 
 class DeleteRoleHoursView(View):
     def post(self, request, pk):
         hours = get_object_or_404(Hours, pk=pk)
-
-        # Get the work_request_id from the form
         work_request_id = request.POST.get('work_request_id', None)
 
         try:
@@ -1920,12 +1919,10 @@ class DeleteRoleHoursView(View):
         except Exception as e:
             messages.error(request, _('joDetailsHoursErrorDeletingHours: %(error)s')% {'error': str(e)})
 
-        # Redirect to the work request detail page
         if work_request_id:
             return redirect('recruiting_web:workrequest_detail', pk=work_request_id)
         else:
-            return redirect('/')  # fallback
-
+            return redirect('/')
 class EditRoleWagesView(View):
     def post(self, request, pk):
         wages = get_object_or_404(Wages, pk=pk)
