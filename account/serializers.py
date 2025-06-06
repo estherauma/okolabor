@@ -5,6 +5,7 @@ from account.models import (
 )
 import re
 from common.twilio import OTPVerification
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class RegistrationSerializer(serializers.Serializer):
@@ -145,11 +146,30 @@ class OTPGenerateSerializer(serializers.Serializer):
     def start_otp_process(self):
         try:
             phone_number = self.validated_data['phone_number']
+            user_id = self.validated_data.get('user_id')
+
+            # Default locale
+            locale = 'es'
+
+            if user_id:
+                try:
+                    user = User.objects.get(id=user_id)
+                    user_language = user.language if user.language else locale
+                    # Normalize 'es-MX' to 'es'
+                    if user_language.lower() == 'es-mx':
+                        locale = 'es'
+                    else:
+                        locale = user_language
+                except ObjectDoesNotExist:
+                    # User not found, fallback to default locale
+                    pass
+
             otp_service = OTPVerification()
-            response = otp_service.send_otp(phone_number)
+            response = otp_service.send_otp(phone_number, locale=locale)
             return response
         except Exception as e:
             return {"error": f"An unexpected error occurred: {str(e)}"}
+
 
 
 class OTPVerifySerializer(serializers.Serializer):
