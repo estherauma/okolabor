@@ -1985,6 +1985,7 @@ class DeductionEditView(View):
             'role': request.POST.get('role'),
             'description': request.POST.get('description'),
             'deduction_amount': request.POST.get('deduction_amount'),
+            'frequency_of_pay': request.POST.get('frequency_of_pay'),
         }
         form = RoleDeductionForm(data, instance=deduction)
         if form.is_valid():

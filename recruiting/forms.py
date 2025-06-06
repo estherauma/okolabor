@@ -155,7 +155,6 @@ class WorkRequestRoleForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         content_service = StaticContent()
         self.fields['work_type'].choices = content_service.get_sector_choices()
-        print(self.fields['work_type'].choices,"self.fields['work_type'].choices")
 
 
 
