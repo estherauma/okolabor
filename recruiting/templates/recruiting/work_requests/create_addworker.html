@@ -48,7 +48,7 @@
     style="background-color:#D9D9D9; cursor: pointer; border-radius: 0.5rem;width: 102%;margin-left: -11px;margin-top:2%;"
     data-bs-toggle="collapse"
     data-bs-target="#collapseCard"
-    aria-expanded="false"
+    aria-expanded="true"
     aria-controls="collapseCard"
     >
         <div class="d-flex justify-content-between">
@@ -56,12 +56,12 @@
                 <i aria-hidden="true" class="fa fa-filter"></i>
                 {% translate "workRequestAddWorkerAdvancedFilter" %}
             </button>
-            <button aria-controls="collapsewithbutton" aria-expanded="false" class="btn green-color-workers collapsed toggle-sign" data-bs-target="#collapseCard" data-bs-toggle="collapse" type="button">
+            <button aria-controls="collapsewithbutton" aria-expanded="false" class="btn green-color-workers collapsed toggle-sign" data-bs-target="#collapseCard" data-bs-toggle="active" type="button">
                 <span class="sign medium-font">+</span>
             </button>
         </div>
     </div>
-    <div class="collapse" id="collapseCard">
+    <div class="collapse show" id="collapseCard">
         <div class="card offwhite-color card-body">
             <span class="d-flex align-items-center">
                 <h3 class="card-title green-color d-contents">
@@ -112,39 +112,58 @@
                             </h3>
                         </span>
                     </div>
-                    <div class="row align-items-center">
-                        {% for field in filter_form %}
+
+                <div id="dynamic-random-filters">
+                    <div class="row align-items-center filter-row">
                         <div class="col-md-4 col-sm-6 col-xs-6">
                             <div class="form-group">
-                                <label class="form-label gray-color" for="{{ field.id_for_label }}">
-                                    {% translate field.label %}
+                                <label class="form-label gray-color">
+                                    {% translate "Select Filter" %}
                                 </label>
-                                {{ field }}
+                                <select class="form-control" name="random_filter">
+                                    <option value="">{% translate "Choose a filter" %}</option>
+                                    <option value="years_of_experience">{% translate "Years of Experience" %}</option>
+                                    <option value="references">{% translate "References" %}</option>
+                                    <option value="availability">{% translate "Availability" %}</option>
+                                    <option value="h2a_experience">{% translate "H-2A Experience" %}</option>
+                                    <option value="h2b_experience">{% translate "H-2B Experience" %}</option>
+                                    <option value="work_pictures">{% translate "Relevant Work Pictures" %}</option>
+                                    <option value="exclude_physical_limitations">{% translate "Exclude Workers with Physical Labor Limitations" %}</option>
+                                    <option value="age">{% translate "Age" %}</option>
+                                    <option value="gender">{% translate "Gender" %}</option>
+                                    <option value="profile">{% translate "Profile" %}</option>
+                                    <option value="passport">{% translate "Passport" %}</option>
+                                    <option value="us_driving_license">{% translate "US Driving License" %}</option>
+                                    <option value="mx_us_driving_license">{% translate "US-Mexican Driving License" %}</option>
+                                    <option value="language_proficiency">{% translate "Language Proficiency" %}</option>
+                                    <option value="work_preference_location">{% translate "Work Preference Location" %}</option>
+                                    <option value="work_preference_type">{% translate "Work Preference Type" %}</option>
+
+                                </select>
                             </div>
                         </div>
-                        {% endfor %}
+                        <div class="col-auto">
+                            <button class="btn btn-danger" type="button" onclick="removeFilterRow(this)">
+                                &times;
+                            </button>
+                        </div>
                     </div>
-                    
-                    <div class="col-auto">
-                        <button class="btn" type="button">
-                            <span class="sign medium-font">{% translate "x" %}</span>
-                        </button>
+                </div>
+
+                <!-- Add / Clear Buttons -->
+                <div class="mt-3">
+                    <button class="btn light-green-button me-2" type="button" onclick="addRandomFilter()">
+                        <i class="fe fe-plus"></i> {% translate "Add Another Filter" %}
+                    </button>
+                    <button class="btn light-green-button" type="button" onclick="clearAllFilters()">
+                        {% translate "Clear Filters" %}
+                    </button>
+                    <button class="btn light-green-button min-content-width ms-3" type="submit">
+                        {% translate "workersListApplyFilters" %}
+                    </button>
                     </div>
                 </div>
             </form>
-            <a class="btn light-green-button min-content-width" href="{% url 'recruiting_web:workrequest_create' %}">
-                <span><i class="fe fe-plus"></i></span>
-
-                {% translate "workRequestAddWorkerAddAnotherExperience" %}
-            </a>
-            <div class="form-row align-items-center">
-                <span class="mt-5 ms-2 mb-3">
-                    <h3 class="card-title green-color d-contents">
-                        {% translate "workRequestAddWorkerFurtherFilters" %}
-                    </h3>
-                </span>
-
-            </div>
             
             <!-- Hidden template for dynamic form cloning -->
             <div id="form-template" style="display: none;">
@@ -197,6 +216,16 @@
                                 {% translate "workRequestAddWorkerConfirmed" %}<span> ({{ confirmed_count }})</span>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="#tab5" class="nav-link" data-bs-toggle="tab" role="tab">
+                                {% translate "workRequestAddWorkerCancelled" %}<span> ({{ cancelled_count }})</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#tab6" class="nav-link" data-bs-toggle="tab" role="tab">
+                                {% translate "workRequestAddWorkerRejected" %}<span> ({{ rejected_count }})</span>
+                            </a>
+                        </li>
                     </ul>
     
                     <div class="tab-content pt-4">
@@ -212,15 +241,18 @@
                         <div class="tab-pane fade" id="tab4" role="tabpanel">
                             {% include 'recruiting/work_requests/confirmed/confirmed.html' %}
                         </div>
+                        <div class="tab-pane fade" id="tab5" role="tabpanel">
+                            {% include 'recruiting/work_requests/cancelled/cancelled.html' %}
+                        </div>
+                        <div class="tab-pane fade" id="tab6" role="tabpanel">
+                            {% include 'recruiting/work_requests/rejected/rejected.html' %}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     
-    
-    
-    <button class="btn btn-success mb-2" style="margin-left: 1500px; font-weight: bolder; border-radius: 50%; width: 50px; height: 50px; padding: 0;">+</button>
 </div>
 
 
@@ -248,6 +280,171 @@
 <script src="{% static ''%}assets/js/worker-tabs.js"></script>
 <script src="{% static ''%}assets/js/add-shortlist.js"></script>
 <script src="{% static ''%}assets/js/dynamic_filter.js"></script>
+<script>
+function addRandomFilter() {
+    const container = document.getElementById("dynamic-random-filters");
+
+    const row = document.createElement("div");
+    row.classList.add("row", "align-items-center", "filter-row", "mb-2");
+
+    const uniqueId = Date.now();
+    row.innerHTML = `
+        <div class="col-md-4 col-sm-6 col-xs-6">
+            <div class="form-group">
+                <label class="form-label gray-color">
+                    {% translate "Select Filter" %}
+                </label>
+                <select class="form-control" name="random_filter" onchange="handleFilterChange(this, ${uniqueId})">
+                    <option value="">{% translate "Choose a filter" %}</option>
+                    <option value="years_of_experience">{% translate "Years of Experience" %}</option>
+                    <option value="references">{% translate "References" %}</option>
+                    <option value="availability">{% translate "Availability" %}</option>
+                    <option value="h2a_experience">{% translate "H-2A Experience" %}</option>
+                    <option value="h2b_experience">{% translate "H-2B Experience" %}</option>
+                    <option value="work_pictures">{% translate "Relevant Work Pictures" %}</option>
+                    <option value="exclude_physical_limitations">{% translate "Exclude Workers with Physical Labor Limitations" %}</option>
+                    <option value="age">{% translate "Age" %}</option>
+                    <option value="gender">{% translate "Gender" %}</option>
+                    <option value="profile">{% translate "Profile" %}</option>
+                    <option value="passport">{% translate "Passport" %}</option>
+                    <option value="us_driving_license">{% translate "US Driving License" %}</option>
+                    <option value="mx_us_driving_license">{% translate "US-Mexican Driving License" %}</option>
+                    <option value="language_proficiency">{% translate "Language Proficiency" %}</option>
+                    <option value="work_preference_location">{% translate "Work Preference Location" %}</option>
+                    <option value="work_preference_type">{% translate "Work Preference Type" %}</option>
+                </select>
+
+            </div>
+        </div>
+        <div class="col-md-6" id="extra-fields-${uniqueId}"></div>
+        <div class="col-auto mt-3">
+            <button class="btn btn-danger btn-sm py-1 px-2 mt-2" type="button" onclick="removeFilterRow(this)">
+                &times;
+            </button>
+        </div>
+    `;
+
+    container.appendChild(row);
+}
+
+function handleFilterChange(selectEl, uniqueId) {
+    const extraFieldsContainer = document.getElementById(`extra-fields-${uniqueId}`);
+    const selectedValue = selectEl.value;
+
+    let html = "";
+
+    switch (selectedValue) {
+        case "availability":
+            html = `
+                <div class="row">
+                    <div class="col">
+                        <label class="form-label gray-color">{% translate "Availability From" %}</label>
+                        <input type="date" class="form-control" name="availability_from_${uniqueId}" />
+                    </div>
+                    <div class="col">
+                        <label class="form-label gray-color">{% translate "Availability To" %}</label>
+                        <input type="date" class="form-control" name="availability_to_${uniqueId}" />
+                    </div>
+                </div>`;
+            break;
+
+        case "years_of_experience":
+        case "age":
+            html = `
+                <div class="row">
+                    <div class="col">
+                        <label class="form-label gray-color">{% translate "Min" %}</label>
+                        <input type="number" class="form-control" name="${selectedValue}_min_${uniqueId}" min="0" />
+                    </div>
+                    <div class="col">
+                        <label class="form-label gray-color">{% translate "Max" %}</label>
+                        <input type="number" class="form-control" name="${selectedValue}_max_${uniqueId}" min="0" />
+                    </div>
+                </div>`;
+            break;
+
+        case "gender":
+            html = `
+                <div class="form-group">
+                    <label class="form-label gray-color">{% translate "Select Gender" %}</label>
+                    <select class="form-control" name="gender_${uniqueId}">
+                        <option value="">{% translate "Select" %}</option>
+                        <option value="male">{% translate "Male" %}</option>
+                        <option value="female">{% translate "Female" %}</option>
+                    </select>
+                </div>`;
+            break;
+
+        case "work_preference_location":
+            html = `
+                <div class="form-group">
+                    <label class="form-label gray-color">{% translate "Select Work Preference Location" %}</label>
+                    <select class="form-control" name="work_preference_location_${uniqueId}">
+                        <option value="">{% translate "Select Country" %}</option>
+                        <option value="usa">USA</option>
+                        <option value="mexico">Mexico</option>
+                        <option value="canada">Canada</option>
+                        <option value="australia">Australia</option>
+                    </select>
+                </div>`;
+            break;
+
+        case "work_preference_type":
+            html = `
+                <div class="form-group">
+                    <label class="form-label gray-color">{% translate "Select Work Preference Type" %}</label>
+                    <select class="form-control" name="work_preference_type_${uniqueId}">
+                        <option value="">{% translate "Select Type" %}</option>
+                        <option value="farm">Farm Work</option>
+                        <option value="construction">Construction</option>
+                        <option value="hospitality">Hospitality</option>
+                        <option value="manufacturing">Manufacturing</option>
+                    </select>
+                </div>`;
+            break;
+
+        case "references":
+        case "h2a_experience":
+        case "h2b_experience":
+        case "work_pictures":
+        case "exclude_physical_limitations":
+        case "profile":
+        case "passport":
+        case "language_proficiency":
+        case "us_driving_license":
+        case "mx_us_driving_license":
+            html = `
+                <div class="form-group">
+                    <label class="form-label gray-color">{% translate "Has" %} ${selectEl.options[selectEl.selectedIndex].text}?</label>
+                    <select class="form-control" name="${selectedValue}_${uniqueId}">
+                        <option value="">{% translate "Select" %}</option>
+                        <option value="yes">{% translate "Yes" %}</option>
+                        <option value="no">{% translate "No" %}</option>
+                    </select>
+                </div>`;
+            break;
+
+        default:
+            html = "";
+    }
+
+    extraFieldsContainer.innerHTML = html;
+}
+
+function removeFilterRow(button) {
+    const row = button.closest(".filter-row");
+    if (row) row.remove();
+}
+function clearAllFilters() {
+    const container = document.getElementById("dynamic-random-filters");
+    container.innerHTML = '';
+    addRandomFilter();
+}
+document.addEventListener("DOMContentLoaded", () => {
+    clearAllFilters();
+});
+</script>
+
 
 
 {% endblock scripts %}

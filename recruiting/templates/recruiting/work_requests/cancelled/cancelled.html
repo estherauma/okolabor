@@ -1,11 +1,9 @@
 {% load i18n %}
 {% load user_role_tags %}
 {% load static %}
+<div class="tab-pane" id="tab5">
+    
 
-<div class="tab-pane" id="tab4">
-    <button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnCancelledSettingsModal">
-        <i aria-hidden="true" class="fa fa-cog"></i>
-    </button>
 <div class="modal fade" id="columnCancelledSettingsModal" tabindex="-1" aria-labelledby="columnCancelledSettingsModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable">
     <div class="modal-content">
@@ -50,56 +48,90 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="display: none;">{% translate "Close" %}</button>
-        <button type="button" class="btn btn-primary" id="apply-column-settings" style="display: none;">{% translate "Apply" %}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Close" %} </button>
+        <button type="button" class="btn btn-primary" id="apply-column-settings">{% translate "Apply" %}</button>
       </div>
     </div>
   </div>
 </div>
-    <div class="table-responsive">
-        <table class="table text-nowrap border-bottom" id="confirmed-table">
-            <thead>
-                <tr>
-                    <th class="theading-color">{% translate "workersListCheckbox" %}</th>
-                    <th class="col-name">{% translate "workersListName" %}</th>
-                    <th class="col-town">{% translate "workersListTown" %}</th>
-                    <th class="col-profile">{% translate "workersListProfileCompletion" %}</th>
-                    <th class="col-experience">{% translate "workersListExperience" %}</th>
-                    <th class="col-english">{% translate "workersListEnglishProficiency" %}</th>
-                    <th class="col-location">{% translate "workersListLocationPreference" %}</th>
-                    <th class="col-offer">{% translate "workersListOfferStatus" %}</th>
-                </tr>
-            </thead>
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+        <table class="table text-nowrap border-bottom " id="basic-datatable-cancelled">
+             <thead style="background-color: #7DBF96;">
+            <tr>
+                <th class="">{% translate "workersListCheckbox" %}</th>
+                <th class="col-name">{% translate "workersListName" %}</th>
+                <th class="col-town">{% translate "workersListTown" %}</th>
+                <th class="col-profile">{% translate "workersListProfileCompletion" %}</th>
+                <th class="col-experience">{% translate "workersListExperience" %}</th>
+                <th class="col-english">{% translate "workersListEnglishProficiency" %}</th>
+                <th class="col-location">{% translate "workersListLocationPreference" %}</th>
+                <th class="col-offer">{% translate "workersListOfferStatus" %}</th>
+            </tr>
+        </thead>
             <tbody>
                 {% for worker in cancelled_workers %}
                     <tr class="text-center">
-                        <td>
+                          <td>
                           <input type="checkbox" class="worker-shortlist-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.firstname }} {{ worker.lastname }}">
-                        </td>
+                      </td>
                       <td class="col-name">
                     {% if worker.first_name and worker.last_name %}
                         <a href="{{ worker.id }}">
                             {{ worker.first_name }} {{ worker.last_name }}
-                        </a>
-                    {% else %}
-                        <a href="{{ worker.id }}">
-                            {{ worker.email }}
-                        </a>
+                              </a>
+                          {% else %}
+                              <a href="{{ worker.id }}">
+                                  {{ worker.email }}
+                              </a>
                     {% endif %}
-                        </td>
-                        <td class="col-town">{{ worker.town|default:"Not Provided" }}</td>
-                        <td class="col-profile">{{ worker.profile_completion_percentage|default:0 }}%</td>
-                        <td class="col-experience">{{ worker.work_experience|default:"Not Provided" }}</td>
-                        <td class="col-english">{{ worker.english_proficiency|default:"Not Provided" }}</td>
-                        <td class="col-location">{{ worker.location_preference|default:"Not Provided" }}</td>
-                        <td class="col-offer">{{ worker.latest_status }}</td>
+                      </td>
+                      <td class="col-town">{{ worker.town|default:"Not Provided" }}</td>
+                      <td class="col-profile">{{ worker.profile_completion_percentage|default:0 }}%</td>
+                      <td class="col-experience">{{ worker.work_experience|default:"Not Provided" }}</td>
+                      <td class="col-english">{{ worker.english_proficiency|default:"Not Provided" }}</td>
+                      <td class="col-location">{{ worker.location_preference|default:"Not Provided" }}</td>
+                      <td class="col-offer">{{ worker.latest_status }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+
+  </div>
 </div>
-<!-- Scripts -->
+</div>
+</div>
+
+</div>
+
+
 {% block scripts %}
+  <!-- Include jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Include DataTables CSS and JS -->
+ <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+  <!-- Your custom scripts -->
   <script src="{% static 'assets/js/tablecolumns_hiding.js' %}"></script>
+
+  <script>
+    $(document).ready(function () {
+      $.fn.dataTable.ext.errMode = 'none';
+
+        const table = $('#basic-datatable-cancelled').DataTable();
+        const settingsBtn =
+            '<button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnConfirmedSettingsModal">' +
+                '<i class="fa fa-cog" aria-hidden="true" style="color: #9A9898;margin-top:-13px"></i>' +
+            '</button>';
+        const lengthContainer = $('#basic-datatable-cancelled_length');
+        lengthContainer.addClass('d-flex align-items-center');
+        lengthContainer.prepend(settingsBtn);
+    });
+  </script>
 {% endblock %}

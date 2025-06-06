@@ -63,8 +63,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="display: none;">{% translate "Close" %}</button>
-        <button type="button" class="btn btn-primary" id="apply-column-settings" style="display: none;">{% translate "Apply" %}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Close" %}</button>
+        <button type="button" class="btn btn-primary" id="apply-column-settings">{% translate "Apply" %}</button>
       </div>
     </div>
   </div>
@@ -82,16 +82,16 @@
         <div class="table-responsive">
 
     <table class="table text-nowrap border-bottom table-width" id="basic-datatable">
-        <thead>
+        <thead style="background-color: #7DBF96;">
             <tr>
-                <th class="theading-color">{% translate "workRequestAddWorkerCheckbox" %}</th>
-                <th class="theading-color">{% translate "workRequestAddWorkerName" %}</th>
-                <th class="theading-color">{% translate "workRequestAddWorkerTown" %}</th>
-                <th class="theading-color">{% translate "workRequestAddWorkerProfileCompletion" %}</th>
-                <th class="theading-color">{% translate "workRequestAddWorkerExperience" %}</th>
-                <th class="theading-color">{% translate "workRequestAddWorkerEnglishProficiency" %}</th>
-                <th class="theading-color">{% translate "workRequestAddWorkerLocationPreference" %}</th>
-                <th class="theading-color">{% translate "workRequestAddWorkerStatus" %}</th>
+                <th class="">{% translate "workRequestAddWorkerCheckbox" %}</th>
+                <th class="col-name">{% translate "workRequestAddWorkerName" %}</th>
+                <th class="col-town">{% translate "workersLworkRequestAddWorkerTownistTown" %}</th>
+                <th class="col-profile">{% translate "workRequestAddWorkerProfileCompletion" %}</th>
+                <th class="col-experience">{% translate "workRequestAddWorkerExperience" %}</th>
+                <th class="col-english">{% translate "workRequestAddWorkerEnglishProficiency" %}</th>
+                <th class="col-location">{% translate "workRequestAddWorkerLocationPreference" %}</th>
+                <th class="col-offer">{% translate "workRequestAddWorkerStatus" %}</th>
             </tr>
         </thead>
         <tbody>
@@ -148,7 +148,7 @@
 
         const table = $('#basic-datatable').DataTable();
         const settingsBtn =
-            '<button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnShortListSettingsModal">' +
+            '<button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnSettingsModal">' +
                 '<i class="fa fa-cog" aria-hidden="true" style="color: #9A9898;margin-top:-13px"></i>' +
             '</button>';
         const lengthContainer = $('#basic-datatable_length');

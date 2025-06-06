@@ -45,15 +45,9 @@ class WorkerListView(View):
         form = DynamicWorkExperienceForm(request.GET or None)
         filter_form = AdvancedFilterForm(request.GET or None)
         search_query = request.GET.get('search', '')
-        page_number = request.GET.get('page', 1)
-        per_page = request.GET.get('per_page', 25)
-
-        try:
-            per_page = int(per_page)
-        except ValueError:
-            per_page = 25
 
         workers = User.objects.filter(groups__name='worker').order_by('-created_at')
+
         # 🔍 Search Filter
         if search_query:
             workers = workers.filter(
@@ -66,7 +60,6 @@ class WorkerListView(View):
         type_sector = request.GET.get('type_sector')
         dynamic_field_1 = request.GET.get('dynamic_field_1')
         dynamic_field_2 = request.GET.get('dynamic_field_2')
-
 
         if type_sector:
             workers = workers.filter(
@@ -97,12 +90,12 @@ class WorkerListView(View):
                             userpreference__key=field_name,
                             userpreference__value__iexact=value
                         )
+
         workers = workers.distinct()
-        paginator = Paginator(workers, per_page)
-        page_obj = paginator.get_page(page_number)
+        print(len(workers), "length after filter")
 
         worker_data = []
-        for worker in page_obj:
+        for worker in workers:
             profile_completion = self.calculate_profile_completion(worker)
             worker_details = self.get_worker_preferences(worker)
 
@@ -110,7 +103,6 @@ class WorkerListView(View):
 
             latest_assignment = WorkAssignment.objects.filter(worker=worker).order_by('-assigned_date').first()
             worker.latest_status = latest_assignment.status if latest_assignment else None
-
 
             for key, value in worker_details.items():
                 setattr(worker, key, value)
@@ -128,17 +120,16 @@ class WorkerListView(View):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({
                 'workers': worker_data,
-                'num_pages': paginator.num_pages
+                'num_pages': 1  # or len(worker_data) if needed
             })
+
         context = {
-            'workers': page_obj,
+            'workers': workers,
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
             'form': form,
             'work_assign_form': work_assign_form,
             'filter_form': filter_form,
             'search_query': search_query,
-            'paginator': paginator,
-            'per_page': per_page,
             'status_choices': WorkAssignment.STATUS_CHOICES,
         }
         return render(request, 'recruiting/workers/list.html', context)
@@ -239,20 +230,38 @@ class WorkerEditView(LoginRequiredMixin, View):
                 defaults={'value': value}
             )
             
+import random
+import string
+from django.utils.crypto import get_random_string
+
 class WorkerDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         user = request.user
         worker = get_object_or_404(User, pk=pk, groups__name='worker')
 
         if user.groups.filter(name='admin').exists():
+            # Randomize identifiable fields
+            random_suffix = get_random_string(8)
+            worker.first_name = "Deleted"
+            worker.last_name = f"User{random_suffix}"
+            worker.email = f"deleted_{random_suffix}@example.com"
+            worker.curp = get_random_string(18, allowed_chars=string.ascii_uppercase + string.digits)
+            worker.tel = ''.join(random.choices(string.digits, k=10))
+
+            # Save anonymized worker data
+            worker.save()
+
+            # Soft delete
             worker_name = f"{worker.first_name} {worker.last_name}"
-            worker.delete(user=user)
+            worker.delete(user=user)  # Assuming this does a soft delete
+
             messages.success(request, _('Worker "%(worker_name)s" DeletedSuccessfully.') % {'worker_name': worker_name})
 
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
 
             return redirect('recruiting_web:workers')
+
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)

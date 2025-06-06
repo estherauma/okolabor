@@ -6,21 +6,20 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <!-- Use form tag only if needed for styling, not for submission -->
-      <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title" id="deleteDeductionModalLabel{{ deduction.id }}">
-          {% translate "Confirm Deletion" %}
+      <div class="modal-header" style="background-color: #7DBF96;">
+        <h5 class="modal-title text-white" id="deleteDeductionModalLabel{{ deduction.id }}">
+          {% translate "joDetailsDeductionsConfirmDeletion" %}
         </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{% translate 'joDetailsDeductionsClose'%}"></button>
       </div>
 
       <div class="modal-body">
-        <p>{% translate "Are you sure you want to delete the employment location for this role?" %}</p>
-        <strong>{{ deduction.role.title }}</strong>
+        <p>{% translate "joDetailsDeductionsAreYouSureYouWantToDeleteThisEntry" %}</p>
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
-        <button type="button" class="btn btn-danger" onclick="submitDeleteDeductionForm('{{ deduction.id }}')">{% translate 'Delete' %}</button>
+        <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'joDetailsDeductionsCancel' %}</button>
+        <button type="button" class="btn" onclick="submitDeleteDeductionForm('{{ deduction.id }}')" style='background-color:#F95406; color:white'>{% translate 'joDetailsDeductionsDelete' %}</button>
       </div>
     </div>
   </div>
