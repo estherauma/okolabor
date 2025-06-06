@@ -166,6 +166,15 @@ class Deduction(AuditableModel):
     )
     description = models.TextField()
     deduction_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    frequency_of_pay = models.CharField(
+        max_length=50,
+        choices=[
+            ('Hourly', _('roleWagesHourly')),
+            ('Daily', _('roleWagesDaily')),
+            ('Weekly', _('roleWagesWeekly')),
+            ('Monthly', _('roleWagesMonthly')),
+        ]
+        )
     
     objects = SoftDeleteManager()
     all_objects = models.Manager()

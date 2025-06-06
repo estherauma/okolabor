@@ -543,6 +543,9 @@
                {% translate "joDetailsDeductionsDeductionAmount" %}
               </th>
               <th>
+               {% translate "joDetailsDeductionFrequencyOfDeduction" %}
+              </th>
+              <th>
                 {% translate "Actions" %}
                </th>
              </tr>
@@ -552,6 +555,7 @@
                 <tr>
                   <td>{{ deduction.description }}</td>
                   <td>${{ deduction.deduction_amount }}</td>
+                  <td>{{ deduction.frequency_of_pay }}</td>
                   <td>
                        <button class="btn btn-sm btn-icon btn-outline-success"
                        data-bs-toggle="modal"

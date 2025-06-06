@@ -155,7 +155,6 @@ class WorkRequestRoleForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         content_service = StaticContent()
         self.fields['work_type'].choices = content_service.get_sector_choices()
-        print(self.fields['work_type'].choices,"self.fields['work_type'].choices")
 
 
 
@@ -295,12 +294,13 @@ class RoleWagesForm(forms.ModelForm):
 class RoleDeductionForm(forms.ModelForm):
     class Meta:
         model = Deduction
-        fields = ['role', 'description', 'deduction_amount']
+        fields = ['role', 'description', 'deduction_amount','frequency_of_pay']
         
         labels = {
             'role': _('roleDeductionsRole'),
             'description': _('roleDeductionsDescription'),
             'deduction_amount': _('roleDeductionsDeductionAmount'),
+            'frequency_of_pay': _('roleDeductionsFrequencyOfPay'),
         }
 
         widgets = {
@@ -312,6 +312,9 @@ class RoleDeductionForm(forms.ModelForm):
                 'class': 'form-control',
             }),
             'deduction_amount': forms.NumberInput(attrs={
+                'class': 'form-control',
+            }),
+            'frequency_of_pay': forms.Select(attrs={
                 'class': 'form-control',
             }),
         }

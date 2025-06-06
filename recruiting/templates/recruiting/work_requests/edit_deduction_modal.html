@@ -44,8 +44,29 @@
               <label for="id_deduction_amount{{ deduction.id }}" class="form-label">{% trans "roleDeductionsDeductionAmount" %}</label>
               <input type="number" id="id_deduction_amount{{ deduction.id }}" name="deduction_amount" class="form-control" step="0.01" required value="{{ deduction.deduction_amount }}">
             </div>
-        </form>
-      </div>
+
+            <div class="mb-3">
+              <label for="id_frequency_of_pay{{ deduction.id }}" class="form-label">
+                  {% trans "roleDeductionsFrequencyOfPay" %}
+                </label>
+                <select id="id_frequency_of_pay{{ deduction.id }}" name="frequency_of_pay" class="form-control" required>
+                  <option value="Hourly" {% if deduction.frequency_of_pay == "Hourly" %}selected{% endif %}>
+                    {% trans "roleWagesHourly" %}
+                  </option>
+                  <option value="Daily" {% if deduction.frequency_of_pay == "Daily" %}selected{% endif %}>
+                    {% trans "roleWagesDaily" %}
+                  </option>
+                  <option value="Weekly" {% if deduction.frequency_of_pay == "Weekly" %}selected{% endif %}>
+                    {% trans "roleWagesWeekly" %}
+                  </option>
+                  <option value="Monthly" {% if deduction.frequency_of_pay == "Monthly" %}selected{% endif %}>
+                    {% trans "roleWagesMonthly" %}
+                  </option>
+                </select>
+              </div>
+
+              </form>
+            </div>
 
       <div class="modal-footer">
         <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% trans "Close" %}</button>
@@ -82,11 +103,14 @@
 
     const description = document.getElementById('id_description' + deductionId).value;
     const deduction_amount = document.getElementById('id_deduction_amount' + deductionId).value;
+    const frequency_of_pay = document.getElementById('id_frequency_of_pay' + deductionId).value;
     const role = document.getElementById('id_role' + deductionId).value;
 
     const formData = new FormData();
     formData.append('description', description);
     formData.append('deduction_amount', deduction_amount);
+    formData.append('frequency_of_pay', frequency_of_pay);
+
     formData.append('role', role);
 
     fetch(url, {
