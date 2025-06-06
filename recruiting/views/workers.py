@@ -246,7 +246,7 @@ class WorkerDeleteView(LoginRequiredMixin, View):
             worker.last_name = f"User{random_suffix}"
             worker.email = f"deleted_{random_suffix}@example.com"
             worker.curp = get_random_string(18, allowed_chars=string.ascii_uppercase + string.digits)
-            worker.tel = ''.join(random.choices(string.digits, k=10))
+            worker.telelephone = ''.join(random.choices(string.digits, k=10))
 
             # Save anonymized worker data
             worker.save()
