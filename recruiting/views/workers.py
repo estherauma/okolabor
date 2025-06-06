@@ -230,20 +230,38 @@ class WorkerEditView(LoginRequiredMixin, View):
                 defaults={'value': value}
             )
             
+import random
+import string
+from django.utils.crypto import get_random_string
+
 class WorkerDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         user = request.user
         worker = get_object_or_404(User, pk=pk, groups__name='worker')
 
         if user.groups.filter(name='admin').exists():
+            # Randomize identifiable fields
+            random_suffix = get_random_string(8)
+            worker.first_name = "Deleted"
+            worker.last_name = f"User{random_suffix}"
+            worker.email = f"deleted_{random_suffix}@example.com"
+            worker.curp = get_random_string(18, allowed_chars=string.ascii_uppercase + string.digits)
+            worker.tel = ''.join(random.choices(string.digits, k=10))
+
+            # Save anonymized worker data
+            worker.save()
+
+            # Soft delete
             worker_name = f"{worker.first_name} {worker.last_name}"
-            worker.delete(user=user)
+            worker.delete(user=user)  # Assuming this does a soft delete
+
             messages.success(request, _('Worker "%(worker_name)s" DeletedSuccessfully.') % {'worker_name': worker_name})
 
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
 
             return redirect('recruiting_web:workers')
+
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
