@@ -12,27 +12,76 @@
  </div>
 </div>
 <div class="row">
- <div class="col-md-9 col-xs-12">
+ <div class="col-md-12 col-xs-12">
   <div class="card my-4 mb-4 offwhite-background">
    <div class="card-body">
-    <form method="post">
-     {% csrf_token %}
-                    {% for field in form %}
-     <div class="col">
-      <div class="form-group my-3">
-       <label>
-        {{field.label}}
-       </label>
-       <div class="input-group input-group-outline is_valid my-3">
-        {{ field }}
-       </div>
+   <form method="post">
+  {% csrf_token %}
+  <div class="row">
+    <!-- WAGE & WAGE TYPE -->
+    <div class="col-md-5 row">
+        <div class="col-md-7">
+        <div class="form-group">
+            <label>{{ form.wage.label }}</label>
+            {{ form.wage }}
+        </div>
+        </div>
+        <div class="col-md-4">
+        <div class="form-group">
+            <label>{{ form.wage_type.label }}</label>
+            {{ form.wage_type }}
+        </div>
+        </div>
+    </div>
+
+    <!-- PIECE RATE OFFERING & TYPE -->
+    <div class="col-md-6 row">
+        <div class="col-md-7">
+        <div class="form-group">
+            <label>{{ form.piece_rate_offerings.label }}</label>
+            {{ form.piece_rate_offerings }}
+        </div>
+        </div>
+        <div class="col-md-5">
+        <div class="form-group">
+            <label>{{ form.piece_rate_offerings_type.label }}</label>
+            {{ form.piece_rate_offerings_type }}
+        </div>
+        </div>
+    </div>
+
+    <!-- FREQUENCY OF PAY -->
+    <div class="col-md-8 row">
+        <div class="col-md-5">
+            <div class="form-group">
+                <label>{{ form.frequency_of_pay.label }}</label>
+                {{ form.frequency_of_pay }}
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="form-group">
+                <label>{{ form.role.label }}</label>
+                {{ form.role }}
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- DETAILS -->
+    <div class="col-md-12">
+      <div class="form-group">
+        <label>{{ form.details.label }}</label>
+        {{ form.details }}
       </div>
-     </div>
-     {% endfor %}
-     <button class="btn dark-green-button" type="submit">
-      {% translate "roleWagesSubmit" %}
-     </button>
-    </form>
+    </div>
+  </div>
+
+  <button type="submit" class="btn dark-green-button mt-3">
+    {% translate "roleWagesSubmit" %}
+  </button>
+</form>
+
    </div>
   </div>
  </div>
