@@ -28,10 +28,11 @@
           {% translate "employersAssignRecruiter" %}
         </button>
     {% endif %}
-    <a class="btn dark-green-button" href="{% url 'recruiting_web:employer_create' %}">
+    <a class="btn dark-green-button" href="{% url 'recruiting_web:employer_create' %}?type=employer">
       <span><i class="fe fe-plus"></i></span>
       {% translate "employersAddNewEmployer" %}
     </a>
+
   </div>
 </div>
 <div class="modal fade" id="assignRecruiterModal" tabindex="-1" aria-labelledby="assignRecruiterLabel" aria-hidden="true">
