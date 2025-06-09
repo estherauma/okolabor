@@ -56,6 +56,8 @@ class EmployerForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.fields['description'].required = False
+
         # Get initial 'type' value
         type_initial = self.initial.get('type', self.fields['type'].initial)
 
