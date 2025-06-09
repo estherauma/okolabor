@@ -326,7 +326,6 @@ def edit_worker(request, curp):
         user.last_name = request.POST.get('last_name')
         user.email = request.POST.get('email')
         user.is_active = request.POST.get('is_active')
-        user.language = request.POST.get('language')
         user.save()
 
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
