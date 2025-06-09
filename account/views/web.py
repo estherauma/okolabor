@@ -17,7 +17,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from django.views import View
 from django.views.generic.edit import FormView,CreateView
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponseForbidden
 from account.forms.account_update import UpdateAccountDetailsForm
 from account.forms.filter_logs import UserLogsFilterForm
 from django.utils import timezone
@@ -168,6 +168,40 @@ class UserListView(LoginRequiredMixin, View):
             messages.error(request, _("inviteEmailFailedToSendEmail."))
 
         return redirect('manage_users')
+    
+class RecruiterManageDeleteView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        user = request.user
+        recruiter_user = get_object_or_404(User, pk=pk, groups__name__in=['recruiter', 'recruiter_admin'], is_active=True)
+
+        if user.groups.filter(name='admin').exists():
+            recruiter_name = f"{recruiter_user.first_name} {recruiter_user.last_name}"
+            recruiter_user.delete()  # Directly deletes the user
+            messages.success(request, _('Recruiter "%(recruiter_name)s" deleted successfully.') % {'recruiter_name': recruiter_name})
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'success'})
+            return redirect('manage_users')
+        else:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'forbidden'}, status=403)
+            return HttpResponseForbidden(_("You do not have permission to delete this recruiter."))
+
+class EmployerManageDeleteView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        user = request.user
+        employer_user = get_object_or_404(User, pk=pk, groups__name__in=['employer', 'employer_admin'], is_active=True)
+
+        if user.groups.filter(name='admin').exists():
+            employer_name = f"{employer_user.first_name} {employer_user.last_name}"
+            employer_user.delete()
+            messages.success(request, _('Employer "%(employer_name)s" deleted successfully.') % {'employer_name': employer_name})
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'success'})
+            return redirect('manage_users')
+        else:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'forbidden'}, status=403)
+            return HttpResponseForbidden(_("You do not have permission to delete this employer."))
 
 
 class UserActivitLogView(LoginRequiredMixin, View):
