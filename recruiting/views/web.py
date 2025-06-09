@@ -13,6 +13,7 @@ from django.views.generic import CreateView,DeleteView,ListView
 from django.views.decorators.csrf import csrf_exempt,csrf_protect
 from django.views.decorators.http import require_POST
 import json
+from dateutil.relativedelta import relativedelta
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import Group
 from django.utils.http import urlsafe_base64_encode
@@ -30,7 +31,7 @@ from collections import defaultdict
 from django.db.models import Count
 from django.template.loader import render_to_string
 import os
-from recruiting.utils import get_worker_preferences, calculate_profile_completion
+from recruiting.utils import get_worker_preferences, calculate_profile_completion,calculate_total_experience
 from account.models import User
 from recruiting.utils import *
 from recruiting.views.workers import WorkerDetailsView
@@ -57,7 +58,7 @@ from theme.forms import (
     AdvancedFilterForm,
     DynamicWorkExperienceForm
 )
-from account.models import UserPreference
+from account.models import UserPreference,UserWorkExperience
 from recruiting.models import (
     Deduction,
     Organization,
@@ -585,6 +586,103 @@ class AddWorkersWorkRequests(View):
                 crop_experiences__job_type__iexact=type_sector
             )
         print(workers.count(),"workers222")
+
+        # Filter by US Driving License
+        us_license_filter = next((v for k, v in params.items() if k.startswith("us_driving_license_") and v), None)
+        if us_license_filter and us_license_filter.lower() == 'yes':
+            workers = workers.filter(documents__kind='us_driving_license')
+
+        # Filter by Mexico/US Driving License
+        mx_us_license_filter = next((v for k, v in params.items() if k.startswith("mx_us_driving_license_") and v), None)
+        if mx_us_license_filter and mx_us_license_filter.lower() == 'yes':
+            workers = workers.filter(
+                documents__kind='mexico_driving_license'
+            )
+
+
+        # Filter by Work Preference Type
+        work_type_filter = next((v for k, v in params.items() if k.startswith("work_preference_type_") and v), None)
+        if work_type_filter:
+            work_type_values = [v.strip().lower() for v in work_type_filter.split(',') if v.strip()]
+            workers = workers.filter(
+                userpreference__key='kindOfWork',
+                userpreference__value__in=[val.title() for val in work_type_values]  # Adjust casing as needed
+            )
+
+        # Filter by Work Preference Location (multiple comma-separated values)
+        work_location_filter = next((v for k, v in params.items() if k.startswith("work_preference_location_") and v), None)
+        if work_location_filter:
+            location_values = [loc.strip().lower() for loc in work_location_filter.split(',') if loc.strip()]
+            workers = workers.filter(
+                userpreference__key='whereYouWantToWork',
+                userpreference__value__in=[loc.title() for loc in location_values]  # match case (if needed)
+            )
+
+        # Filter by English Proficiency if marked 'yes'
+        language_proficiency_filter = next((v for k, v in params.items() if k.startswith("language_proficiency_") and v), None)
+        if language_proficiency_filter and language_proficiency_filter.lower() == 'yes':
+            workers = workers.filter(
+                userpreference__key='english_proficiency',
+                userpreference__value__iexact='fluent'
+            )
+
+        # Filter by Gender
+        gender_filter = next((v for k, v in params.items() if k.startswith("gender_") and v), None)
+        if gender_filter:
+            workers = workers.filter(gender__iexact=gender_filter)
+
+         # Filter by Availability
+        availability_from = next((v for k, v in params.items() if k.startswith("availability_from_") and v), None)
+        availability_to = next((v for k, v in params.items() if k.startswith("availability_to_") and v), None)
+        if availability_from or availability_to:
+            availability_filter = Q(userpreference__key='availability')
+            if availability_from:
+                try:
+                    availability_filter &= Q(userpreference__value__gte=availability_from)
+                except ValueError:
+                    pass
+
+            if availability_to:
+                try:
+                    availability_filter &= Q(userpreference__value__lte=availability_to)
+                except ValueError:
+                    pass
+
+            workers = workers.filter(availability_filter)
+
+        # Filter by Reference
+
+        references_filter = next((v for k, v in params.items() if k.startswith("references_") and v), None)
+        if references_filter and references_filter.lower() == 'yes':
+            referenced_user_ids = UserWorkExperience.objects.filter(
+                Q(supervisor_name__isnull=False) & ~Q(supervisor_name__exact='') |
+                Q(supervisor_tel__isnull=False) & ~Q(supervisor_tel__exact='') |
+                Q(supervisor_email__isnull=False) & ~Q(supervisor_email__exact='')
+            ).values_list('user_id', flat=True).distinct()
+
+            workers = workers.filter(id__in=referenced_user_ids)
+
+        # Filter by Age (from dob)
+
+        age_min = next((int(v) for k, v in params.items() if k.startswith("age_min_") and v), None)
+        age_max = next((int(v) for k, v in params.items() if k.startswith("age_max_") and v), None)
+        if age_min is not None or age_max is not None:
+            today = date.today()
+            min_dob = today - relativedelta(years=age_max) if age_max is not None else None
+            max_dob = today - relativedelta(years=age_min) if age_min is not None else None
+            dob_filter = Q()
+            if min_dob:
+                dob_filter &= Q(dob__gte=min_dob)
+            if max_dob:
+                dob_filter &= Q(dob__lte=max_dob)
+
+            workers = [w for w in workers if (
+                (w.dob is not None) and
+                (min_dob is None or w.dob >= min_dob) and
+                (max_dob is None or w.dob <= max_dob)
+            )]
+
+        # Filter by Experience
         min_exp = next((int(v) for k, v in params.items() if k.startswith("years_of_experience_min_") and v), None)
         max_exp = next((int(v) for k, v in params.items() if k.startswith("years_of_experience_max_") and v), None)
         if min_exp is not None or max_exp is not None:
