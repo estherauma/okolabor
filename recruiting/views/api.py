@@ -7,7 +7,7 @@ from recruiting.serializer import (
 )
 from rest_framework import status
 from rest_framework.generics import (
-    ListCreateAPIView, RetrieveUpdateDestroyAPIView
+    ListCreateAPIView, RetrieveUpdateDestroyAPIView,ListAPIView
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -89,24 +89,24 @@ class WorkRequestRoleDetailView(RetrieveUpdateDestroyAPIView):
         pass
 
 
-class RoleAPIListView(ListCreateAPIView):
+class RoleAPIListView(ListAPIView):
     serializer_class = RoleSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        
+        # Return roles with assignments confirmed or rejected for the current user
         return Role.objects.filter(
             assignments__worker=self.request.user,
-            assignments__status='offersent'
+            assignments__status__in=['confirmed', 'rejected','offersent','cancelled']
         ).distinct()
-    
 
     @swagger_auto_schema(
-        operation_summary='Retrieve roles with offers sent to the user',
+        operation_summary='Retrieve roles accepted or declined by the user, including accept status.',
         tags=['Roles']
     )
     def get(self, request, *args, **kwargs):
-        serializer = self.get_serializer(self.get_queryset(), many=True)
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class AcceptRoleAPIView(APIView):
