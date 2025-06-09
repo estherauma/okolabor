@@ -61,7 +61,7 @@ class UserListView(LoginRequiredMixin, View):
         ]
 
         workers_list = User.objects.filter(groups__name='worker').values(
-            'curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
+            'id','curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
         )
 
         
@@ -97,11 +97,11 @@ class UserListView(LoginRequiredMixin, View):
         for ra in employer_admin:
             ra['group'] = 'employer_admin'
 
-        combined_users = recruiters + recruiter_admins
+        combined_recruiter = recruiters + recruiter_admins
         combined_employer = employer + employer_admin
 
         context = {
-            'users': combined_users, 
+            'recruiters_list': combined_recruiter, 
             'language_choices': language_choices,
             'status_choices': status_choices,
             'workers': workers_list,

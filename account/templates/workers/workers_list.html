@@ -9,62 +9,96 @@
             <button class="btn btn yellow-button btn-icon ms-auto p-1" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#AddWorkerModal">
                 +{% translate "manageUsersWorkerTableNewWorker" %}
             </button>
-            
         </div>
+
         <div class="row">
             <div class="col-12">
-              
-                
-                  <div class="table-responsive">
-                    <div class="table-responsive">
-                      <table class="table text-nowrap border-bottom" id="workers-list-datatable">
-                          <thead>
-                              <tr>
-                                  <th class="theading-color text-start">{% translate "manageUsersWorkerTableCurp" %}</th>
-                                  <th class="theading-color text-start">{% translate "manageUsersWorkerTableEmail" %}</th>
-                                  <th class="theading-color text-start">{% translate "manageUsersWorkerTableFirstName" %}</th>
-                                  <th class="theading-color text-start">{% translate "manageUsersWorkerTableLastname" %}</th>
-                                  <th class="theading-color text-start">{% translate "manageUsersWorkerTableCreatedAt" %}</th>
-                                  <th class="theading-color text-start">{% translate "manageUsersWorkerTableStatus" %}</th>
-                                  <th class="theading-color text-start">{% translate "manageUsersWorkerTableActions" %}</th>
-                              </tr>
-                          </thead>
-                          <tbody>
-                              {% for user in workers %}
-                              <tr class="green-color text-start">
-                                  <td>{{ user.curp }}</td>
-                                  <td>{{ user.email }}</td>
-                                  <td>{{ user.first_name }}</td>
-                                  <td>{{ user.last_name }}</td>
-                                  <td>{{ user.created_at }}</td>
-                                  <td>{{ user.is_active|yesno:_("active,inactive") }}</td>
-                                  <td>
-                                      <!-- In your main template where you list users -->
-                                      <i
-                                          class="side-menu__icon icon icon-pencil fa fa-edit me-2 cursor-pointer edit-user-btn"
-                                          data-bs-toggle="modal"
-                                          data-bs-target="#editWorkerModal"
-                                          data-curp="{{ user.curp }}" 
-                                          data-email="{{ user.email }}" 
-                                          data-first-name="{{ user.first_name }}" 
-                                          data-last-name="{{ user.last_name }}"
-                                          data-is-active="{{ user.is_active|yesno:'True,False' }}" 
-                                      ></i>
-                                      <i class="side-menu__icon fa fa-trash-o cursor-pointer" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#confirmationModal"></i>
-          
-                                  </td>
-                              </tr>
-                              {% endfor %}
-                          </tbody>
-                      </table>
-                  </div>
-                  </div>
-                
-              
+                <div class="table-responsive">
+                    <table class="table text-nowrap border-bottom" id="workers-list-datatable">
+                        <thead>
+                            <tr>
+                                <th class="theading-color text-start">{% translate "manageUsersWorkerTableCurp" %}</th>
+                                <th class="theading-color text-start">{% translate "manageUsersWorkerTableEmail" %}</th>
+                                <th class="theading-color text-start">{% translate "manageUsersWorkerTableFirstName" %}</th>
+                                <th class="theading-color text-start">{% translate "manageUsersWorkerTableLastname" %}</th>
+                                <th class="theading-color text-start">{% translate "manageUsersWorkerTableCreatedAt" %}</th>
+                                <th class="theading-color text-start">{% translate "manageUsersWorkerTableStatus" %}</th>
+                                <th class="theading-color text-start">{% translate "manageUsersWorkerTableActions" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in workers %}
+                            <tr class="green-color text-start">
+                                <td>{{ user.curp }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.first_name }}</td>
+                                <td>{{ user.last_name }}</td>
+                                <td>{{ user.created_at }}</td>
+                                <td>{{ user.is_active|yesno:_("active,inactive") }}</td>
+                                <td>
+                                    <!-- Edit Icon -->
+                                    <i class="side-menu__icon icon icon-pencil fa fa-edit me-2 cursor-pointer edit-user-btn"
+                                       data-bs-toggle="modal"
+                                       data-bs-target="#editWorkerModal"
+                                       data-curp="{{ user.curp }}" 
+                                       data-email="{{ user.email }}" 
+                                       data-first-name="{{ user.first_name }}" 
+                                       data-last-name="{{ user.last_name }}"
+                                       data-is-active="{{ user.is_active|yesno:'True,False' }}">
+                                    </i>
+
+                                    <!-- Delete Icon only if user has ID -->
+                                    {% if user.id %}
+                                    <i class="fa fa-trash text-danger"
+                                       style="cursor: pointer;"
+                                       data-bs-toggle="modal"
+                                       data-bs-target="#deleteModalManageWorker{{ user.id }}"
+                                       title="{% translate 'workersListIconDelete' %}">
+                                    </i>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-          </div>
+        </div>
     </div>
 </div>
 
-{% include 'workers/worker_modals/worker_edit_user_modal.html'%}
-{% include 'workers/worker_modals/add_worker_modal.html'%}
+<!-- Delete Modals -->
+{% for user in workers %}
+    {% if user.id %}
+    <div class="modal fade" id="deleteModalManageWorker{{ user.id }}" tabindex="-1" aria-labelledby="deleteModalManageWorkerLabel{{ user.id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" action="{% url 'recruiting_web:worker_delete' user.id %}">
+                    {% csrf_token %}
+                    <div class="modal-header" style="background-color: #7DBF96;">
+                        <h5 class="modal-title text-white" id="deleteModalManageWorkerLabel{{ user.id }}">
+                            {% translate "workerListConfirmDelete" %}
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'workersListClose'%}"></button>
+                    </div>
+                    <div class="modal-body">
+                        {% translate 'areYouSureYouWantToDelete'%} <strong>{{ user.first_name }} {{ user.last_name }}</strong>?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn" data-bs-dismiss="modal" style="background-color:#9A9898; color:white;">
+                            {% translate 'workersListCancel' %}
+                        </button>
+                        <button type="submit" class="btn" style="background-color:#F95406; color:white;">
+                            {% translate 'workersListDelete' %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endfor %}
+
+<!-- Include Modals -->
+{% include 'workers/worker_modals/worker_edit_user_modal.html' %}
+{% include 'workers/worker_modals/add_worker_modal.html' %}

@@ -32,7 +32,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for user in users %}
+                    {% for user in recruiters_list %}
                     <tr class="green-color text-start">
                         <td style="padding-left:32px;">
                             <input type="checkbox" class="form-check-input recruiter-checkbox" value="{{ user.id }}">
@@ -63,6 +63,14 @@
 
                             <i class="side-menu__icon fa fa-trash-o cursor-pointer" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#confirmationModal"></i>
 
+                           <i 
+                                class="fa fa-trash text-danger" 
+                                style="cursor: pointer;" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#deleteModalManageRecruiter{{ user.id }}" 
+                                title={% translate "recruiterListDelete"%}>
+                            </i>
+
                         </td>
                     </tr>
                     {% endfor %}
@@ -71,6 +79,31 @@
         </div>
     </div>
 </div>
+{% for recruiter in recruiters_list %}
+  {% if recruiter.id %}
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModalManageRecruiter{{ recruiter.id }}" tabindex="-1" aria-labelledby="deleteModalManageRecruiterLabel{{ recruiter.id }}" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form method="POST" action="{% url 'recruiting_web:recruiter_delete' recruiter.id %}">
+            {% csrf_token %}
+            <div class="modal-header" style="background-color: #7DBF96;">
+              <h5 class="modal-title text-white" id="deleteModalManageRecruiterLabel{{ recruiter.id }}">{% translate "recruiterListConfirmDelete" %}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'recruiterListClose'%}"></button>
+            </div>
+            <div class="modal-body">
+              {% translate 'recruiterListAreYouSureYouWantToDelete'%} <strong>{{ recruiter.name }}</strong>?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'recruiterListCancel'%}</button>
+              <button type="submit" class="btn" style='background-color:#F95406; color: white'>{% translate 'recruiterListDelete'%}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endfor %}
 
 {% include 'recruiter/recruiter_modals/edit_recruiter_modal.html' %}
 {% include 'recruiter/recruiter_modals/assign-organization-modal.html' %}

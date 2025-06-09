@@ -122,6 +122,7 @@ class WorkerListView(View):
                 'workers': worker_data,
                 'num_pages': 1  # or len(worker_data) if needed
             })
+            
 
         context = {
             'workers': workers,
