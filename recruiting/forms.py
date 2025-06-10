@@ -736,7 +736,7 @@ class WorkerCreateForm(forms.ModelForm):
         }
         widgets = {
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
-            'curp': forms.TextInput(attrs={'class': 'form-control'}),
+            'curp': forms.TextInput(attrs={'class': 'form-control','required': True}),
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
             'dob': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),

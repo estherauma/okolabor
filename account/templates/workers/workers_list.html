@@ -17,6 +17,7 @@
                     <table class="table text-nowrap border-bottom" id="workers-list-datatable">
                         <thead>
                             <tr>
+                                <th class="theading-color text-start">{% translate "manageUsersWorkerTableCurp" %}</th>
                                 <th class="theading-color text-start">{% translate "manageUsersWorkerTableEmail" %}</th>
                                 <th class="theading-color text-start">{% translate "manageUsersWorkerTableFirstName" %}</th>
                                 <th class="theading-color text-start">{% translate "manageUsersWorkerTableLastname" %}</th>
@@ -28,6 +29,7 @@
                         <tbody>
                             {% for user in workers %}
                             <tr class="green-color text-start">
+                                <td>{{ user.curp }}</td>
                                 <td>{{ user.email }}</td>
                                 <td>{{ user.first_name }}</td>
                                 <td>{{ user.last_name }}</td>

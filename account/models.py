@@ -40,7 +40,7 @@ class LanguageChoices(models.TextChoices):
 
 class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
     email = models.EmailField('email address', unique=True)
-    curp = models.CharField('curp', max_length=18, unique=True)
+    curp = models.CharField('curp', max_length=18, blank=True, null=True, unique=True)
     first_name = models.CharField('first name', max_length=255, blank=True)
     last_name = models.CharField('last name', max_length=255, blank=True)
     middle_name = models.CharField('middle name', max_length=255, blank=True)
