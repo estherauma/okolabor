@@ -792,9 +792,8 @@ class UpdateWorkerStatusView(View):
         for item in worker_ids:
              UserNotification.objects.create(
                 user=User.objects.get(id=item),
-                title="Offer Sent",
-                category="offer",
-                message=f"You have received a new offer. Check your jobs section"
+                title=_("workRequestAddNotificationTitle"),
+                message=_("workRequestAddNotificationBody")
             )
         messages.success(request, _("workRequestAddWorkerOfferSentSuccessfully"))
         return JsonResponse({'status':'success','success': 'True', 'message': 'Offer sent successfully.'})
@@ -826,9 +825,8 @@ class OfferSendWorkerView(View):
             )
         UserNotification.objects.create(
                 user=User.objects.get(id=worker_id),
-                title="Offer Sent",
-                category="offer",
-                message=f"You have received a new offer. Check your jobs section"
+                title=_("workRequestAddNotificationTitle"),
+                message=_("workRequestAddNotificationBody")
             )
        
         messages.success(request, _("OfferSentSuccessfully."))

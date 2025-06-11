@@ -319,8 +319,8 @@ class AssignWorkerView(View):
                 if status == 'offersent':
                     # Create notification for the worker
                     worker.notifications.create(
-                        title="New offer sent",
-                        message=_("You have been assigned to a new work request.")
+                        title=_("workRequestAddNotificationTitle"),
+                        message=_("workRequestAddNotificationBody")
                     )
 
             return redirect("recruiting_web:workers")
