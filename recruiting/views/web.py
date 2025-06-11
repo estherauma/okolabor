@@ -824,15 +824,13 @@ class OfferSendWorkerView(View):
                 role_id=role_id,
                 status='offersent'
             )
-        # ✅ Send Notification to Worker
-        if assignment.worker:
-            UserNotification.objects.create(
-                user=assignment.worker,
+        UserNotification.objects.create(
+                user=User.objects.get(id=worker_id),
                 title="Offer Sent",
                 category="offer",
                 message=f"You have received a new offer. Check your jobs section"
             )
-        print('sending offer......')
+       
         messages.success(request, _("OfferSentSuccessfully."))
         return redirect('recruiting_web:worker_detail', pk=worker_id)
 

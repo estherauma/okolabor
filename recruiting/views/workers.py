@@ -275,8 +275,6 @@ class AssignWorkerView(View):
             work_request_id = request.POST.get("work_request")
             role_id = request.POST.get("role")
             status = request.POST.get("status", "Assigned")
-            print("🚀 ~ status:", status)
-
             if not worker_ids_str or not work_request_id or not role_id:
                 messages.error(request, _("Missing data. Please select workers, work request, and role."))
                 return JsonResponse({"success": False, "message": "Missing data"}, status=400)
@@ -301,10 +299,6 @@ class AssignWorkerView(View):
                         work_request=work_request,
                         status=status
                     )
-                    
-                    
-                    
-                    
                     newly_assigned_workers.append(worker.get_full_name() or worker.username)
 
             if already_assigned_workers:
@@ -341,9 +335,7 @@ class GetWorkerDetailsView(View):
     def post(self, request, *args, **kwargs):
         worker_ids = request.POST.getlist('worker_ids[]') 
         workers = User.objects.filter(id__in=worker_ids)
-
         workers_data = [{'id': worker.id, 'firstname': worker.first_name, 'lastname': worker.last_name, 'email': worker.email} for worker in workers]
-
         return JsonResponse({'workers': workers_data})
 
 
