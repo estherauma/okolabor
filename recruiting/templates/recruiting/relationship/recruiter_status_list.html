@@ -16,7 +16,7 @@
 <div class="container-fluid" style="position: relative; height: auto">
     <div class="row">
         <div class="page-header custom-page-header d-flex flex-column">
-            <h1 class="page-title">{% translate "acceptRejectStatus" %}</h1>
+            <h1 class="page-title">{% translate "recruiterStatusAcceptRejectStatus" %}</h1>
         </div>
     </div>
     
@@ -29,14 +29,12 @@
                         <table class="table text-nowrap border-bottom" id="basic-datatable">
                             <thead>
                                 <tr>
-                                    <th class="theading-color">{% translate "employerOrganization" %}</th>
-                                    <th class="theading-color">{% translate "recruiterOrganization" %}</th>
-                                    <th class="theading-color">{% translate "Status" %}</th>
-                                    <th class="theading-color">{% translate "updatedBy" %}</th>
-                                    <th class="theading-color">{% translate "updatedAt" %}</th>
-                                    <th class="theading-color">{% translate "Actions" %}</th>
-
-
+                                    <th class="theading-color">{% translate "recruiterStatusEmployerOrganization" %}</th>
+                                    <th class="theading-color">{% translate "recruiterStatusRecruiterOrganization" %}</th>
+                                    <th class="theading-color">{% translate "recruiterStatusStatus" %}</th>
+                                    <th class="theading-color">{% translate "recruiterStatusUpdatedBy" %}</th>
+                                    <th class="theading-color">{% translate "recruiterStatusUpdatedAt" %}</th>
+                                    <th class="theading-color">{% translate "recruiterStatusActions" %}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -58,13 +56,13 @@
                                             style="cursor: pointer;"
                                             data-bs-toggle="modal"
                                             data-bs-target="#deleteModal{{ link.id }}"
-                                            title="Delete">
+                                            title="{% translate 'recruiterStatusDelete'%}">
                                         </i>
                                     </td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="5">No assignments found.</td>
+                                    <td colspan="5">{% translate "recruiterStatusNoAssignmentsFound"%}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -84,15 +82,15 @@
                 <form method="POST" action="{% url 'recruiting_web:employer_recruiter_link_delete' item.id %}">
                 {% csrf_token %}
                 <div class="modal-header" style="background-color: #7DBF96;">
-                    <h5 class="modal-title text-white" id="deleteModalLabel{{ item.id }}">{% translate "Confirm Delete" %}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title text-white" id="deleteModalLabel{{ item.id }}">{% translate "recruiterStatusConfirmDelete" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'recruiterStatusClose'%}"></button>
                 </div>
                 <div class="modal-body">
-                    {% translate 'Are you sure you want to delete' %} <strong>{{ item }}</strong>?
+                    {% translate 'recruiterStatusAreYouSureYouWantToDelete' %} <strong>{{ item }}</strong>?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
-                    <button type="submit" class="btn btn-danger">{% translate 'Delete' %}</button>
+                    <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'recruiterStatusCancel' %}</button>
+                    <button type="submit" class="btn" style='background-color:#F95406; color:white'>{% translate 'recruiterStatusDelete' %}</button>
                 </div>
                 </form>
             </div>

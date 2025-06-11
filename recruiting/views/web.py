@@ -537,7 +537,6 @@ class WorkRequestDeleteView(LoginRequiredMixin, View):
             return HttpResponseForbidden(_("You do not have permission to delete this work request."))
 
 
-
 class AddWorkersWorkRequests(View):
     def get(self, request, pk, role_id):
         type_sector_value = request.GET.get('type_sector')
@@ -553,13 +552,12 @@ class AddWorkersWorkRequests(View):
         try:
             per_page = int(per_page)
         except ValueError:
-            per_page = 4  # Fallback default
+            per_page = 4
 
         work_request = get_object_or_404(WorkRequests, pk=pk)
         role = get_object_or_404(Role, pk=role_id)
         work_requests = WorkRequests.objects.filter(status='Open').prefetch_related('roles')
 
-        # Retrieve the state from the session
         session_key = f'role_{role_id}_state'
         if session_key in request.session:
             state = request.session[session_key]
@@ -567,7 +565,6 @@ class AddWorkersWorkRequests(View):
             page_number = state.get('page_number', 1)
             per_page = state.get('per_page', 25)
 
-        # Get all workers (not filtered by role)
         workers = User.objects.filter(
             groups__name='worker'
         ).distinct().order_by('-created_at')
@@ -719,8 +716,11 @@ class AddWorkersWorkRequests(View):
         paginator = Paginator(workers, per_page)
         page_obj = paginator.get_page(page_number)
 
+        
+        all_workers = workers.distinct()
+
         worker_data = []
-        for worker in page_obj:
+        for worker in all_workers:
             profile_completion = calculate_profile_completion(worker)
             worker_details = get_worker_preferences(worker)
             years_of_experience = calculate_total_experience(worker)
@@ -745,11 +745,11 @@ class AddWorkersWorkRequests(View):
                 **worker_details
             })
 
-        # Retrieve shortlisted workers based on status and role
         shortlisted_workers = get_shortlisted_workers(status='assigned', role_id=role_id)
         offersent_workers = get_shortlisted_workers(status='offersent', role_id=role_id)
         confirmed_workers = get_shortlisted_workers(status='confirmed', role_id=role_id)
         cancel_workers = get_shortlisted_workers(status='cancelled', role_id=role_id)
+        rejected_workers = get_shortlisted_workers(status='rejected', role_id=role_id)
 
         shortlisted_workers_data = []
         for assignment in shortlisted_workers:
@@ -813,32 +813,45 @@ class AddWorkersWorkRequests(View):
                     'status': assignment.status,
                     **worker_details
                 })
+        
+        rejected_workers_data = []
+        unique_rejected_workers = set()
+        for assignment in rejected_workers:
+            worker = assignment.worker
+            if worker.id not in unique_rejected_workers:
+                unique_rejected_workers.add(worker.id)
+                profile_completion = calculate_profile_completion(worker)
+                worker_details = get_worker_preferences(worker)
+                rejected_workers_data.append({
+                    'id': worker.id,
+                    'firstname': worker.first_name,
+                    'lastname': worker.last_name,
+                    'email': worker.email,
+                    'profile_completion': profile_completion,
+                    'status': assignment.status,
+                    **worker_details
+                })
 
         shortlisted_count = len(shortlisted_workers_data)
         offersent_count = len(offersent_workers_data)
         confirmed_count = len(confirmed_workers_data)
         cancelled_count = len(cancelled_workers_data)
-        workers_count = len(page_obj)
+        rejected_count = len(rejected_workers_data)
+        workers_count = len(all_workers)
 
-        # Store the state in the session
         request.session[session_key] = {
             'search_query': search_query,
             'page_number': page_number,
             'per_page': per_page,
         }
 
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({'workers': worker_data, 'num_pages': paginator.num_pages})
-        
-
         context = {
-            'workers': page_obj,  # All workers (not role-specific)
+            'workers': all_workers,
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
             'form': form,
             'work_assign_form': work_assign_form,
             'filter_form': filter_form,
             'search_query': search_query,
-            'paginator': paginator,
             'per_page': per_page,
             'role': role,
             'work_request': work_request,
@@ -846,10 +859,12 @@ class AddWorkersWorkRequests(View):
             'offersent_workers': offersent_workers_data,
             'confirmed_workers': confirmed_workers_data,
             'cancelled_workers': cancelled_workers_data,
+            'rejected_workers': rejected_workers_data,
             'shortlisted_count': shortlisted_count,
             'offersent_count': offersent_count,
             'confirmed_count': confirmed_count,
             'cancelled_count': cancelled_count,
+            'rejected_count': rejected_count,
             'workers_count': workers_count,
         }
         return render(request, 'recruiting/work_requests/create_addworker.html', context)
@@ -911,7 +926,7 @@ class UpdateWorkerStatusView(View):
     def post(self, request, *args, **kwargs):
         worker_ids = request.POST.getlist('worker_ids[]')
         WorkAssignment.objects.filter(worker_id__in=worker_ids, status='assigned').update(status='offersent')
-        messages.success(request, _("offerSentSuccessfully."))
+        messages.success(request, _("workRequestAddWorkerOfferSentSuccessfully"))
         return JsonResponse({'status':'success','success': 'True', 'message': 'Offer sent successfully.'})
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -968,11 +983,11 @@ class AddToShortlistView(View):
         added_any, already_assigned = add_workers_to_shortlist(worker_ids, work_request_id, role_id)
 
         if added_any:
-            messages.success(request, "workersAddedToShortlistSuccessfully.")
-            return JsonResponse({'success': True, 'message': _("workersAddedToShortlistSuccessfully.")})
+            messages.success(request, "workRequestAddWorkerWorkersAddedToShortlistSuccessfully.")
+            return JsonResponse({'success': True, 'message': _("workRequestAddWorkerWorkersAddedToShortlistSuccessfully")})
         else:
-            messages.warning(request, "someWorkersAreAlreadyShortlisted.")
-            return JsonResponse({'success': False, 'message': _("someWorkersAreAlreadyShortlisted.")})
+            messages.warning(request, "workRequestAddWorkerSomeWorkersAreAlreadyShortlisted.")
+            return JsonResponse({'success': False, 'message': _("workRequestAddWorkerSomeWorkersAreAlreadyShortlisted")})
 
 
 class ShowWorkerDetails(View):
