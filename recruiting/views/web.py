@@ -57,7 +57,7 @@ from theme.forms import (
     AdvancedFilterForm,
     DynamicWorkExperienceForm
 )
-from account.models import UserPreference
+from account.models import UserPreference,UserNotification
 from recruiting.models import (
     Deduction,
     Organization,
@@ -815,6 +815,15 @@ class OfferSendWorkerView(View):
                 work_request_id=work_request_id,
                 role_id=role_id,
                 status='offersent'
+            )
+        # ✅ Send Notification to Worker
+        if assignment.worker:
+            UserNotification.objects.create(
+                user=assignment.worker,
+                title="Offer Sent",
+                category="offer",
+                message=f"You have received a new offer for the role '{assignment.role.title}' in work request #{assignment.work_request.id}.",
+                status='unread'
             )
 
         messages.success(request, _("OfferSentSuccessfully."))
