@@ -788,6 +788,14 @@ class UpdateWorkerStatusView(View):
     def post(self, request, *args, **kwargs):
         worker_ids = request.POST.getlist('worker_ids[]')
         WorkAssignment.objects.filter(worker_id__in=worker_ids, status='assigned').update(status='offersent')
+        # Need to send an offer notification here for each user
+        for item in worker_ids:
+             UserNotification.objects.create(
+                user=User.objects.get(id=item),
+                title="Offer Sent",
+                category="offer",
+                message=f"You have received a new offer. Check your jobs section"
+            )
         messages.success(request, _("workRequestAddWorkerOfferSentSuccessfully"))
         return JsonResponse({'status':'success','success': 'True', 'message': 'Offer sent successfully.'})
 
@@ -822,10 +830,9 @@ class OfferSendWorkerView(View):
                 user=assignment.worker,
                 title="Offer Sent",
                 category="offer",
-                message=f"You have received a new offer for the role '{assignment.role.title}' in work request #{assignment.work_request.id}.",
-                status='unread'
+                message=f"You have received a new offer. Check your jobs section"
             )
-
+        print('sending offer......')
         messages.success(request, _("OfferSentSuccessfully."))
         return redirect('recruiting_web:worker_detail', pk=worker_id)
 
