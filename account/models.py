@@ -83,7 +83,7 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
         blank=True
     )
 
-    USERNAME_FIELD = 'curp'
+    USERNAME_FIELD = 'email'
 
     objects = UserManager()
     all_objects = models.Manager()
