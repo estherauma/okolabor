@@ -92,7 +92,6 @@ class WorkerListView(View):
                         )
 
         workers = workers.distinct()
-        print(len(workers), "length after filter")
 
         worker_data = []
         for worker in workers:
@@ -276,6 +275,7 @@ class AssignWorkerView(View):
             work_request_id = request.POST.get("work_request")
             role_id = request.POST.get("role")
             status = request.POST.get("status", "Assigned")
+            print("🚀 ~ status:", status)
 
             if not worker_ids_str or not work_request_id or not role_id:
                 messages.error(request, _("Missing data. Please select workers, work request, and role."))
@@ -301,6 +301,10 @@ class AssignWorkerView(View):
                         work_request=work_request,
                         status=status
                     )
+                    
+                    
+                    
+                    
                     newly_assigned_workers.append(worker.get_full_name() or worker.username)
 
             if already_assigned_workers:
@@ -314,6 +318,16 @@ class AssignWorkerView(View):
                     request,
                     _("The following workers have been successfully assigned: ") + ", ".join(newly_assigned_workers)
                 )
+                
+            # Need to create notifications here too for where status is offersent
+            for item in worker_ids:
+                worker = get_object_or_404(User, id=worker_id)
+                if status == 'offersent':
+                    # Create notification for the worker
+                    worker.notifications.create(
+                        title="New offer sent",
+                        message=_("You have been assigned to a new work request.")
+                    )
 
             return redirect("recruiting_web:workers")
 
