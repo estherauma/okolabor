@@ -19,10 +19,11 @@ from django.conf import settings
 class EmployerForm(forms.ModelForm):
     class Meta:
         model = Organization
-        fields = ['name', 'email', 'phone', 'website',
-                  'address', 'city', 'state', 'country',
-                  'zip_code', 'description', 'type'
-                  ]
+        fields = [
+            'name', 'email', 'phone', 'website',
+            'address', 'city', 'state', 'country',
+            'zip_code', 'description', 'type'
+        ]
 
         labels = {
             'name': _('addEmployerName'),
@@ -48,12 +49,35 @@ class EmployerForm(forms.ModelForm):
             'state': forms.TextInput(attrs={'class': 'form-control'}),
             'country': forms.TextInput(attrs={'class': 'form-control'}),
             'zip_code': forms.TextInput(attrs={'class': 'form-control'}),
-            'type': forms.Select(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'type': forms.Select(attrs={'class': 'form-control', 'disabled': 'disabled'}),
         }
 
     def __init__(self, *args, **kwargs):
-        super(EmployerForm, self).__init__(*args, **kwargs)
-        self.fields['type'].initial = 'recruiter'
+        super().__init__(*args, **kwargs)
+
+        self.fields['description'].required = False
+
+        # Get initial 'type' value
+        type_initial = self.initial.get('type', self.fields['type'].initial)
+
+        if type_initial:
+            self.fields['type'].initial = type_initial
+
+            # Add a hidden field to hold actual value since 'type' is disabled
+            self.fields['type_hidden'] = forms.CharField(
+                widget=forms.HiddenInput(),
+                initial=type_initial
+            )
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # Override disabled 'type' field with hidden input value
+        if 'type_hidden' in self.fields:
+            cleaned_data['type'] = cleaned_data.get('type_hidden')
+
+        return cleaned_data
 
 
 class WorkRequestForm(forms.ModelForm):
@@ -155,7 +179,6 @@ class WorkRequestRoleForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         content_service = StaticContent()
         self.fields['work_type'].choices = content_service.get_sector_choices()
-        print(self.fields['work_type'].choices,"self.fields['work_type'].choices")
 
 
 
@@ -295,12 +318,13 @@ class RoleWagesForm(forms.ModelForm):
 class RoleDeductionForm(forms.ModelForm):
     class Meta:
         model = Deduction
-        fields = ['role', 'description', 'deduction_amount']
+        fields = ['role', 'description', 'deduction_amount','frequency_of_pay']
         
         labels = {
             'role': _('roleDeductionsRole'),
             'description': _('roleDeductionsDescription'),
             'deduction_amount': _('roleDeductionsDeductionAmount'),
+            'frequency_of_pay': _('roleDeductionsFrequencyOfPay'),
         }
 
         widgets = {
@@ -312,6 +336,9 @@ class RoleDeductionForm(forms.ModelForm):
                 'class': 'form-control',
             }),
             'deduction_amount': forms.NumberInput(attrs={
+                'class': 'form-control',
+            }),
+            'frequency_of_pay': forms.Select(attrs={
                 'class': 'form-control',
             }),
         }

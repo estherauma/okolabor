@@ -229,6 +229,7 @@ class WorkerListView(View):
                 'workers': worker_data,
                 'num_pages': 1  # or len(worker_data) if needed
             })
+            
 
         context = {
             'workers': workers,
@@ -338,20 +339,38 @@ class WorkerEditView(LoginRequiredMixin, View):
                 defaults={'value': value}
             )
             
+import random
+import string
+from django.utils.crypto import get_random_string
+
 class WorkerDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         user = request.user
         worker = get_object_or_404(User, pk=pk, groups__name='worker')
 
         if user.groups.filter(name='admin').exists():
+            # Randomize identifiable fields
+            random_suffix = get_random_string(8)
+            worker.first_name = "Deleted"
+            worker.last_name = f"User{random_suffix}"
+            worker.email = f"deleted_{random_suffix}@example.com"
+            worker.curp = get_random_string(18, allowed_chars=string.ascii_uppercase + string.digits)
+            worker.telelephone = ''.join(random.choices(string.digits, k=10))
+
+            # Save anonymized worker data
+            worker.save()
+
+            # Soft delete
             worker_name = f"{worker.first_name} {worker.last_name}"
-            worker.delete(user=user)
+            worker.delete(user=user)  # Assuming this does a soft delete
+
             messages.success(request, _('Worker "%(worker_name)s" DeletedSuccessfully.') % {'worker_name': worker_name})
 
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
 
             return redirect('recruiting_web:workers')
+
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
@@ -365,7 +384,6 @@ class AssignWorkerView(View):
             work_request_id = request.POST.get("work_request")
             role_id = request.POST.get("role")
             status = request.POST.get("status", "Assigned")
-
             if not worker_ids_str or not work_request_id or not role_id:
                 messages.error(request, _("Missing data. Please select workers, work request, and role."))
                 return JsonResponse({"success": False, "message": "Missing data"}, status=400)
@@ -403,6 +421,16 @@ class AssignWorkerView(View):
                     request,
                     _("The following workers have been successfully assigned: ") + ", ".join(newly_assigned_workers)
                 )
+                
+            # Need to create notifications here too for where status is offersent
+            for item in worker_ids:
+                worker = get_object_or_404(User, id=worker_id)
+                if status == 'offersent':
+                    # Create notification for the worker
+                    worker.notifications.create(
+                        title=_("workRequestAddNotificationTitle"),
+                        message=_("workRequestAddNotificationBody")
+                    )
 
             return redirect("recruiting_web:workers")
 
@@ -416,9 +444,7 @@ class GetWorkerDetailsView(View):
     def post(self, request, *args, **kwargs):
         worker_ids = request.POST.getlist('worker_ids[]') 
         workers = User.objects.filter(id__in=worker_ids)
-
         workers_data = [{'id': worker.id, 'firstname': worker.first_name, 'lastname': worker.last_name, 'email': worker.email} for worker in workers]
-
         return JsonResponse({'workers': workers_data})
 
 

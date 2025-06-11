@@ -5,36 +5,66 @@
 
 {% block body %}
 <div class="page-header mt-30">
- <div>
-  <h1 class="page-title">
-   {% translate "roleDeductionsAddRoleDeductions" %}
-  </h1>
- </div>
-</div>
-<div class="row">
- <div class="col-md-9 col-xs-12">
-  <div class="card my-4 mb-4 offwhite-background">
-   <div class="card-body">
-    <form method="post">
-     {% csrf_token %}
-                    {% for field in form %}
-     <div class="col">
-      <div class="form-group my-3">
-       <label>
-        {{field.label}}
-       </label>
-       <div class="input-group input-group-outline is_valid my-3">
-        {{ field }}
-       </div>
-      </div>
-     </div>
-     {% endfor %}
-     <button class="btn dark-green-button" type="submit">
-      {% translate "roleDeductionsSubmit" %}
-     </button>
-    </form>
-   </div>
+  <div>
+    <h1 class="page-title">
+      {% translate "roleDeductionsAddRoleDeductions" %}
+    </h1>
   </div>
- </div>
+</div>
+
+<div class="row">
+  <div class="col-md-9 col-xs-12">
+    <div class="card my-4 mb-4 offwhite-background">
+      <div class="card-body">
+        <form method="post">
+          {% csrf_token %}
+
+            <div class="row">
+                <div class="col-md-4">
+                <label >
+                {{ form.role.label }}
+                </label>
+                {{ form.role }}
+            </div>
+            
+
+            <div class="col-md-3">
+                <label >
+                {{ form.deduction_amount.label }}
+                </label>
+                {{ form.deduction_amount }}
+            </div>
+            <div class="col-md-3">
+                <label >
+                {{ form.frequency_of_pay.label }}
+                </label>
+                {{ form.frequency_of_pay }}
+            </div>
+            </div>
+
+            <div class="row mt-3">
+            
+            <div class="col-md-6">
+                <label>
+                {{ form.description.label }}
+                </label>
+                {{ form.description }}
+            </div>
+
+            
+            </div>
+
+          
+
+          <div class="mt-4">
+            <button class="btn dark-green-button" type="submit">
+              {% translate "roleDeductionsSubmit" %}
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

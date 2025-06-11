@@ -7,10 +7,10 @@
                 {% translate "manageUsersEmployersTableTitle" %}
             </h3>
             <div class="d-flex">
-                <button type="button" class="btn btn-green mt-3 me-2" id="assign-employer-organization-btn" data-bs-toggle="modal" data-bs-target="#assignEmployerOrganizationModal">
+                <button type="button" class="btn dark-green-button ms-2" id="assign-employer-organization-btn" data-bs-toggle="modal" data-bs-target="#assignEmployerOrganizationModal">
                     {% translate "manageUsersEmployersTableAssignEmployeOrganization" %}
                 </button>
-                <button class="btn btn yellow-button btn-icon ms-auto p-1" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#inviteEmployeModal">
+                <button class="btn dark-green-button ms-2" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#inviteEmployeModal">
                     +{% translate "manageUsersEmployersTableNewEmployer" %}
                 </button>
             </div>
@@ -57,7 +57,13 @@
                                 data-employer-group="{{ user.group }}"
                                 >
                             </i>
-                            <i class="side-menu__icon fa fa-trash-o cursor-pointer" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#confirmationModal"></i>
+                            <i 
+                                class="fa fa-trash text-danger" 
+                                style="cursor: pointer;" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#deleteModalManageEmployer{{ user.id }}" 
+                                title={% translate "employerListDelete"%}>
+                            </i>
                         </td>
                     </tr>
                     {% endfor %}
@@ -66,6 +72,32 @@
         </div>
     </div>
 </div>
+
+{% for employer in employers_list %}
+  {% if employer.id %}
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModalManageEmployer{{ employer.id }}" tabindex="-1" aria-labelledby="deleteModalManageEmployerLabel{{ employer.id }}" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form method="POST" action="{% url 'employer_manage_delete' employer.id %}">
+            {% csrf_token %}
+            <div class="modal-header" style="background-color: #7DBF96;">
+              <h5 class="modal-title text-white" id="deleteModalManageEmployerLabel{{ employer.id }}">{% translate "employerListConfirmDelete" %}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'employerListClose'%}"></button>
+            </div>
+            <div class="modal-body">
+              {% translate 'employerListAreYouSureYouWantToDelete'%} <strong>{{ employer.first_name }} {{employer.last_name}}</strong>?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'employerListCancel'%}</button>
+              <button type="submit" class="btn" style='background-color:#F95406; color: white'>{% translate 'employerListDelete'%}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endfor %}
 
 {% include 'employers/edit_employer_modal.html' %}
 {% include 'employers/create_employer.html' %}

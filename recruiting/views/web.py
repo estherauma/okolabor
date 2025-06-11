@@ -58,7 +58,12 @@ from theme.forms import (
     AdvancedFilterForm,
     DynamicWorkExperienceForm
 )
-from account.models import UserPreference,UserWorkExperience
+
+from account.models import (
+  UserPreference,
+  UserWorkExperience,
+  UserNotification
+)
 from recruiting.models import (
     Deduction,
     Organization,
@@ -311,9 +316,15 @@ class EmployerCreateView(CreateView):
     form_class = EmployerForm
     template_name = 'recruiting/employers/create.html'
 
+    def get_initial(self):
+        initial = super().get_initial()
+        type_value = self.request.GET.get('type', 'recruiter')  # default to 'recruiter'
+        initial['type'] = type_value
+        return initial
+
     def form_valid(self, form):
         messages.success(self.request, _('addEmployerEmployerCreatedSuccessfully'))
-        return super(EmployerCreateView, self).form_valid(form)
+        return super().form_valid(form)
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
         for field, errors in form.errors.items():
@@ -322,10 +333,8 @@ class EmployerCreateView(CreateView):
         return super().form_invalid(form)
 
     def get_success_url(self):
-        return reverse(
-            'recruiting_web:employer_detail',
-            kwargs={'pk': self.object.pk}
-        )
+        return reverse('recruiting_web:employer_detail', kwargs={'pk': self.object.pk})
+
 class EmployerDetailView(View):
     def get(self, request, pk):
         user = request.user
@@ -926,6 +935,13 @@ class UpdateWorkerStatusView(View):
     def post(self, request, *args, **kwargs):
         worker_ids = request.POST.getlist('worker_ids[]')
         WorkAssignment.objects.filter(worker_id__in=worker_ids, status='assigned').update(status='offersent')
+        # Need to send an offer notification here for each user
+        for item in worker_ids:
+             UserNotification.objects.create(
+                user=User.objects.get(id=item),
+                title=_("workRequestAddNotificationTitle"),
+                message=_("workRequestAddNotificationBody")
+            )
         messages.success(request, _("workRequestAddWorkerOfferSentSuccessfully"))
         return JsonResponse({'status':'success','success': 'True', 'message': 'Offer sent successfully.'})
 
@@ -954,7 +970,12 @@ class OfferSendWorkerView(View):
                 role_id=role_id,
                 status='offersent'
             )
-
+        UserNotification.objects.create(
+                user=User.objects.get(id=worker_id),
+                title=_("workRequestAddNotificationTitle"),
+                message=_("workRequestAddNotificationBody")
+            )
+       
         messages.success(request, _("OfferSentSuccessfully."))
         return redirect('recruiting_web:worker_detail', pk=worker_id)
 
@@ -2127,6 +2148,7 @@ class DeductionEditView(View):
             'role': request.POST.get('role'),
             'description': request.POST.get('description'),
             'deduction_amount': request.POST.get('deduction_amount'),
+            'frequency_of_pay': request.POST.get('frequency_of_pay'),
         }
         form = RoleDeductionForm(data, instance=deduction)
         if form.is_valid():

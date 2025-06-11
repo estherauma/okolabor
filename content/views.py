@@ -8,6 +8,9 @@ import re
 from content.models import AggregatedContent
 from content.serializers import AggregatedContentSerializer
 from drf_yasg.utils import swagger_auto_schema
+import os
+import json
+from django.conf import settings
 
 
 class ContentAPI():
@@ -484,6 +487,14 @@ class ContentAPI():
             aggregated_data = sorted(aggregated_data, key=lambda x: x['label'] or '')
             return aggregated_data
 
+        def get_countries():
+            file_path = os.path.join(settings.BASE_DIR, 'recruiting','countries.json')
+            with open(file_path, 'r', encoding='utf-8') as f:
+                countries = json.load(f)
+                
+            return countries
+
+        
         for item in lang_content['data']:
             if item['custom_type'] == 'form_questions':
                 aggregation_response = aggregate_form_questions(item)
@@ -556,7 +567,8 @@ class ContentAPI():
                     'data': aggregation_response
                 }
                 aggregated_content[item['page_id']] = page_data
-
+            
+        aggregated_content['countries'] = get_countries()
         return aggregated_content
 
 
