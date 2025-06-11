@@ -571,7 +571,6 @@ class AddWorkersWorkRequests(View):
         workers = User.objects.filter(
             groups__name='worker'
         ).distinct().order_by('-created_at')
-        print(workers.count(),"workers1")
         if search_query:
             workers = workers.filter(
                 Q(first_name__icontains=search_query) |
@@ -579,13 +578,37 @@ class AddWorkersWorkRequests(View):
                 Q(email__icontains=search_query)
             )
         params = request.GET
-        print(params,"params")
         type_sector = request.GET.get('type_sector')
         if type_sector:
             workers = workers.filter(
                 crop_experiences__job_type__iexact=type_sector
             )
-        print(workers.count(),"workers222")
+
+        # Filter by Passport
+        passport_filter = next((v for k, v in params.items() if k.startswith("passport_") and v), None)
+        if passport_filter and passport_filter.lower() == 'yes':
+            workers = workers.filter(documents__kind__iexact='passport').distinct()
+
+
+        # Filter by H2A Experience
+        h2a_experience_filter = next((v for k, v in params.items() if k.startswith("h2a_experience_") and v), None)
+        if h2a_experience_filter and h2a_experience_filter.lower() == 'yes':
+            h2a_user_ids = UserWorkExperience.objects.filter(
+                visa_type__iexact="H-2A"
+            ).values_list('user_id', flat=True).distinct()
+            
+            workers = workers.filter(id__in=h2a_user_ids)
+
+        # Filter by H2B Experience
+        h2b_experience_filter = next((v for k, v in params.items() if k.startswith("h2b_experience_") and v), None)
+        if h2b_experience_filter and h2b_experience_filter.lower() == 'yes':
+            h2b_user_ids = UserWorkExperience.objects.filter(
+                visa_type__iexact="H-2B"
+            ).values_list('user_id', flat=True).distinct()
+
+            workers = workers.filter(id__in=h2b_user_ids)
+
+
 
         # Filter by US Driving License
         us_license_filter = next((v for k, v in params.items() if k.startswith("us_driving_license_") and v), None)
@@ -693,8 +716,6 @@ class AddWorkersWorkRequests(View):
                     (max_exp is None or years <= max_exp)):
                     filtered.append(w)
             workers = filtered
-
-        print(len(workers), "workers23333")
         paginator = Paginator(workers, per_page)
         page_obj = paginator.get_page(page_number)
 
@@ -702,7 +723,7 @@ class AddWorkersWorkRequests(View):
         for worker in page_obj:
             profile_completion = calculate_profile_completion(worker)
             worker_details = get_worker_preferences(worker)
-
+            years_of_experience = calculate_total_experience(worker)
             worker.profile_completion_percentage = profile_completion
             latest_assignment = WorkAssignment.objects.filter(
                 worker=worker,
@@ -720,6 +741,7 @@ class AddWorkersWorkRequests(View):
                 'lastname': worker.last_name,
                 'email': worker.email,
                 'profile_completion': profile_completion,
+                'years_of_experience': years_of_experience,
                 **worker_details
             })
 
