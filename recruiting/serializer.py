@@ -107,3 +107,7 @@ class RoleSerializer(serializers.ModelSerializer):
             return 'cancelled'
         return None
 
+class OrganizationSummarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Organization
+        fields = ['name', 'type', 'email']
