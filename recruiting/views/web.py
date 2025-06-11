@@ -57,7 +57,7 @@ from theme.forms import (
     AdvancedFilterForm,
     DynamicWorkExperienceForm
 )
-from account.models import UserPreference
+from account.models import UserPreference,UserNotification
 from recruiting.models import (
     Deduction,
     Organization,
@@ -788,6 +788,13 @@ class UpdateWorkerStatusView(View):
     def post(self, request, *args, **kwargs):
         worker_ids = request.POST.getlist('worker_ids[]')
         WorkAssignment.objects.filter(worker_id__in=worker_ids, status='assigned').update(status='offersent')
+        # Need to send an offer notification here for each user
+        for item in worker_ids:
+             UserNotification.objects.create(
+                user=User.objects.get(id=item),
+                title=_("workRequestAddNotificationTitle"),
+                message=_("workRequestAddNotificationBody")
+            )
         messages.success(request, _("workRequestAddWorkerOfferSentSuccessfully"))
         return JsonResponse({'status':'success','success': 'True', 'message': 'Offer sent successfully.'})
 
@@ -816,7 +823,12 @@ class OfferSendWorkerView(View):
                 role_id=role_id,
                 status='offersent'
             )
-
+        UserNotification.objects.create(
+                user=User.objects.get(id=worker_id),
+                title=_("workRequestAddNotificationTitle"),
+                message=_("workRequestAddNotificationBody")
+            )
+       
         messages.success(request, _("OfferSentSuccessfully."))
         return redirect('recruiting_web:worker_detail', pk=worker_id)
 
