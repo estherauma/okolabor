@@ -85,11 +85,13 @@ class EmployerListView(View):
         if user.groups.filter(name='admin').exists():
             employers_list = Organization.objects.filter(type='employer')
 
-        elif user.groups.filter(name='recruiter').exists():
+        elif user.groups.filter(name__in=['recruiter', 'recruiter_admin']).exists():
             recruiter_orgs = Organization.objects.filter(
                 type='recruiter',
                 recruiters=user
             ).distinct()
+            
+            print(recruiter_orgs,"recruiter_orgs")
 
             assigned_links = EmployerRecruiterOrgLink.objects.filter(
                 recruiter_org__in=recruiter_orgs
@@ -426,30 +428,35 @@ class RecruiterDetailView(View):
 class WorkRequestsListView(View):
     def get(self, request):
         user = request.user
+
         admin_group = Group.objects.get(name='admin')
         recruiter_group = Group.objects.get(name='recruiter')
+        recruiter_admin_group = Group.objects.get(name='recruiter_admin')
+        employer_group = Group.objects.get(name='employer')
+        employer_admin_group = Group.objects.get(name='employer_admin')
+
+        work_requests = WorkRequests.objects.none()
 
         if admin_group in user.groups.all():
             work_requests = WorkRequests.objects.all()
 
-        elif recruiter_group in user.groups.all():
+        elif recruiter_group in user.groups.all() or recruiter_admin_group in user.groups.all():
             user_orgs = user.organizations.all()
             if user_orgs.exists():
-                user_org = user_orgs.first() 
                 assigned_employer_ids = EmployerRecruiterOrgLink.objects.filter(
-                    recruiter_org=user_org
+                    recruiter_org__in=user_orgs
                 ).values_list("employer_org_id", flat=True)
-
                 work_requests = WorkRequests.objects.filter(employer_id__in=assigned_employer_ids)
-            else:
-                work_requests = WorkRequests.objects.none()
-        else:
-            work_requests = WorkRequests.objects.none() 
+
+        elif employer_group in user.groups.all() or employer_admin_group in user.groups.all():
+            user_orgs = user.organizations.all()
+            if user_orgs.exists():
+                work_requests = WorkRequests.objects.filter(employer__in=user_orgs)
 
         for wr in work_requests:
             recruiter_link = EmployerRecruiterOrgLink.objects.filter(employer_org=wr.employer).first()
             wr.recruiter_org = recruiter_link.recruiter_org if recruiter_link else None
-
+            
         context = {
             "work_requests": work_requests,
             "employers": Organization.objects.filter(type='employer'),
