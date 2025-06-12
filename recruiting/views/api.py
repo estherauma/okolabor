@@ -3,7 +3,7 @@ from drf_yasg.utils import swagger_auto_schema
 from recruiting.models import Organization, Role, WorkRequests, WorkAssignment
 from recruiting.serializer import (
     EmployerSerializer, RoleSerializer,
-    WRRoleSerializer, WorkRequestSerializer
+    WRRoleSerializer, WorkRequestSerializer,OrganizationSummarySerializer
 )
 from rest_framework import status
 from rest_framework.generics import (
@@ -152,3 +152,34 @@ class RejectRoleAPIView(APIView):
             return Response({"detail": "Role offer rejected."}, status=status.HTTP_200_OK)
         except WorkAssignment.DoesNotExist:
             return Response({"detail": "Offer not found or already processed."}, status=status.HTTP_404_NOT_FOUND)
+        
+class WorkerConfirmedOrganizationsAPIView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = OrganizationSummarySerializer
+
+    @swagger_auto_schema(
+        operation_summary='List confirmed employers and recruiters for the authenticated worker',
+        tags=['Worker - Confirmed Organizations']
+    )
+    def get(self, request, *args, **kwargs):
+        worker = request.user
+        
+        print(worker,"worker")
+
+        confirmed_assignments = WorkAssignment.objects.filter(
+            worker=worker,
+            status='confirmed',
+            work_request__employer__isnull=False
+        ).select_related('work_request__employer')
+        
+        print(confirmed_assignments,"confirmed_assignments")
+
+        # Use set to remove duplicates, then convert to list
+        organizations = list({
+            assignment.work_request.employer
+            for assignment in confirmed_assignments
+            if assignment.work_request and assignment.work_request.employer
+        })
+
+        serializer = self.get_serializer(organizations, many=True)
+        return Response(serializer.data)
