@@ -312,19 +312,29 @@ class EmployerCreateView(CreateView):
         type_value = self.request.GET.get('type', 'recruiter')  # default to 'recruiter'
         initial['type'] = type_value
         return initial
-    
+
     def form_valid(self, form):
         org = form.save(commit=False)
-        org.type = 'employer'
+
+        # Get the type from the GET param
+        org_type = self.request.GET.get('type', 'recruiter')
+        if org_type not in ['recruiter', 'employer']:
+            org_type = 'recruiter'  # fallback/default
+
+        org.type = org_type
         org.save()
 
         user = self.request.user
-        EmployerRecruiter.objects.get_or_create(
-            employer=org,
-            recruiter=user
-        )
 
-        if user.groups.filter(name__in=['recruiter', 'recruiter_admin']).exists():
+        # If creating an employer and user is recruiter or recruiter_admin, assign links
+        if org_type == 'employer' and user.groups.filter(name__in=['recruiter', 'recruiter_admin']).exists():
+            # Link user as employer recruiter
+            EmployerRecruiter.objects.get_or_create(
+                employer=org,
+                recruiter=user
+            )
+
+            # Also link recruiter orgs
             recruiter_orgs = Organization.objects.filter(type='recruiter', recruiters=user)
             for recruiter_org in recruiter_orgs:
                 RecruiterOrganizationEmployer.objects.get_or_create(
@@ -332,7 +342,7 @@ class EmployerCreateView(CreateView):
                     employer_organization=org
                 )
 
-        messages.success(self.request, _('Employer created successfully'))
+        messages.success(self.request, _('Organization created successfully'))
         self.object = org
         return redirect(self.get_success_url(org.pk))
 
@@ -341,9 +351,10 @@ class EmployerCreateView(CreateView):
             for error in errors:
                 messages.error(self.request, f'{field}: {error}')
         return super().form_invalid(form)
-    
+
     def get_success_url(self, pk):
         return reverse('recruiting_web:employer_detail', kwargs={'pk': pk})
+
 
 
 class EmployerDetailView(View):
