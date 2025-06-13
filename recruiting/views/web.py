@@ -13,6 +13,7 @@ from django.views.generic import CreateView,DeleteView,ListView
 from django.views.decorators.csrf import csrf_exempt,csrf_protect
 from django.views.decorators.http import require_POST
 import json
+from dateutil.relativedelta import relativedelta
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import Group
 from django.utils.http import urlsafe_base64_encode
@@ -30,7 +31,10 @@ from collections import defaultdict
 from django.db.models import Count
 from django.template.loader import render_to_string
 import os
-from recruiting.utils import get_worker_preferences, calculate_profile_completion
+from recruiting.utils import (
+    get_worker_preferences, calculate_profile_completion,
+    calculate_total_experience
+)
 from account.models import User
 from recruiting.utils import *
 from recruiting.views.workers import WorkerDetailsView
@@ -57,7 +61,12 @@ from theme.forms import (
     AdvancedFilterForm,
     DynamicWorkExperienceForm
 )
-from account.models import UserPreference
+
+from account.models import (
+  UserPreference,
+  UserWorkExperience,
+  UserNotification
+)
 from recruiting.models import (
     Deduction,
     Organization,
@@ -74,6 +83,7 @@ from recruiting.models import (
     WorkAssignment,
     EmployerContact,
     EmployerRecruiterOrgLink,
+    RecruiterOrganizationEmployer
 )
 
     
@@ -83,23 +93,22 @@ class EmployerListView(View):
         query = request.GET.get('query')
 
         if user.groups.filter(name='admin').exists():
-            employers_list = Organization.objects.filter(type='employer')
+            employers_list = Organization.objects.filter(type='employer').order_by('-created_at')
 
-        elif user.groups.filter(name='recruiter').exists():
-            recruiter_orgs = Organization.objects.filter(
-                type='recruiter',
-                recruiters=user
-            ).distinct()
+        elif user.groups.filter(name__in=['recruiter', 'recruiter_admin']).exists():
+            recruiter_orgs = Organization.objects.filter(type='recruiter', recruiters=user).order_by('-created_at')
 
-            assigned_links = EmployerRecruiterOrgLink.objects.filter(
-                recruiter_org__in=recruiter_orgs
-            )
+            recruiter_links_1 = EmployerRecruiterOrgLink.objects.filter(recruiter_org__in=recruiter_orgs)
+            employer_ids_1 = recruiter_links_1.values_list('employer_org__id', flat=True)
+            employers_1 = Organization.objects.filter(id__in=employer_ids_1, type='employer')
 
-            assigned_employer_ids = assigned_links.values_list('employer_org__id', flat=True)
-            employers_list = Organization.objects.filter(
-                id__in=assigned_employer_ids,
-                type='employer'
-            ).distinct()
+            recruiter_links_2 = RecruiterOrganizationEmployer.objects.filter(recruiter_organization__in=recruiter_orgs)
+            employer_ids_2 = recruiter_links_2.values_list('employer_organization__id', flat=True)
+            employers_2 = Organization.objects.filter(id__in=employer_ids_2, type='employer')
+
+            created_employers = Organization.objects.filter(type='employer', created_by=user)
+
+            employers_list = (employers_1 | employers_2 | created_employers).distinct()
 
         else:
             employers_list = Organization.objects.none()
@@ -113,19 +122,17 @@ class EmployerListView(View):
                 Q(phone__icontains=query)
             )
 
-        paginator = Paginator(employers_list, len(employers_list) if employers_list.exists() else 1)
-        page_number = request.GET.get('page')
-        employers = paginator.get_page(page_number)
-
-        recruiter_organizations = Organization.objects.filter(type='recruiter')
+        recruiter_organizations = Organization.objects.filter(type='recruiter').order_by('-created_at')
 
         employers_data = []
-        for employer in employers:
-            assigned_links = EmployerRecruiterOrgLink.objects.filter(employer_org=employer)
+        for employer in employers_list:
+            links_1 = EmployerRecruiterOrgLink.objects.filter(employer_org=employer)
+            recruiter_orgs_1 = set(link.recruiter_org.name for link in links_1)
 
-            recruiter_org_names = list(set(
-                link.recruiter_org.name for link in assigned_links
-            ))
+            links_2 = RecruiterOrganizationEmployer.objects.filter(employer_organization=employer)
+            recruiter_orgs_2 = set(link.recruiter_organization.name for link in links_2)
+
+            recruiter_org_names = list(recruiter_orgs_1.union(recruiter_orgs_2))
 
             employers_data.append({
                 'id': employer.id,
@@ -139,14 +146,11 @@ class EmployerListView(View):
                 'state': employer.state,
                 'zipcode': employer.zip_code,
                 'description': employer.description,
-                'recruiters': recruiter_org_names  
+                'recruiters': recruiter_org_names
             })
 
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({
-                'employers': employers_data,
-                'has_more': employers.has_next()
-            })
+            return JsonResponse({'employers': employers_data, 'has_more': False})
 
         context = {
             'employers': employers_data,
@@ -154,6 +158,9 @@ class EmployerListView(View):
             'recruiters': recruiter_organizations
         }
         return render(request, 'recruiting/employers/list.html', context)
+
+
+
 
         
 class EmployerDeleteView(LoginRequiredMixin, View):
@@ -208,10 +215,11 @@ class RecruiterListViewInAdmin(View):
         query = request.GET.get('query')
 
         if user.groups.filter(name='admin').exists():
-            recruiters_list = Organization.objects.filter(type='recruiter')
+            recruiters_list = Organization.objects.filter(type='recruiter').order_by('-created_at')
         else:
             recruiters_list = Organization.objects.none()
 
+        # Apply search filter if present
         if query:
             recruiters_list = recruiters_list.filter(
                 Q(name__icontains=query) |
@@ -222,9 +230,7 @@ class RecruiterListViewInAdmin(View):
                 Q(phone__icontains=query)
             )
 
-        paginator = Paginator(recruiters_list, len(recruiters_list)) 
-        page_number = request.GET.get('page')
-        recruiters = paginator.get_page(page_number)
+        recruiters = recruiters_list
 
         recruiters_data = []
         for recruiter in recruiters:
@@ -232,7 +238,7 @@ class RecruiterListViewInAdmin(View):
             assigned_employers = list(set(
                 link.employer_org.name for link in assigned_links
             ))
-            
+
             recruiters_data.append({
                 'id': recruiter.id,
                 'name': recruiter.name,
@@ -247,12 +253,6 @@ class RecruiterListViewInAdmin(View):
                 'zip_code': recruiter.zip_code,
                 'description': recruiter.description,
                 'employers': assigned_employers
-            })
-
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({
-                'recruiters': recruiters_data,
-                'has_more': recruiters.has_next()
             })
 
         context = {'recruiters': recruiters_data, 'query': query}
@@ -315,19 +315,39 @@ class EmployerCreateView(CreateView):
         type_value = self.request.GET.get('type', 'recruiter')  # default to 'recruiter'
         initial['type'] = type_value
         return initial
-
+    
     def form_valid(self, form):
-        messages.success(self.request, _('addEmployerEmployerCreatedSuccessfully'))
-        return super().form_valid(form)
+        org = form.save(commit=False)
+        org.type = 'employer'
+        org.save()
+
+        user = self.request.user
+        EmployerRecruiter.objects.get_or_create(
+            employer=org,
+            recruiter=user
+        )
+
+        if user.groups.filter(name__in=['recruiter', 'recruiter_admin']).exists():
+            recruiter_orgs = Organization.objects.filter(type='recruiter', recruiters=user)
+            for recruiter_org in recruiter_orgs:
+                RecruiterOrganizationEmployer.objects.get_or_create(
+                    recruiter_organization=recruiter_org,
+                    employer_organization=org
+                )
+
+        messages.success(self.request, _('Employer created successfully'))
+        self.object = org
+        return redirect(self.get_success_url(org.pk))
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
         for field, errors in form.errors.items():
             for error in errors:
                 messages.error(self.request, f'{field}: {error}')
         return super().form_invalid(form)
+    
+    def get_success_url(self, pk):
+        return reverse('recruiting_web:employer_detail', kwargs={'pk': pk})
 
-    def get_success_url(self):
-        return reverse('recruiting_web:employer_detail', kwargs={'pk': self.object.pk})
 
 class EmployerDetailView(View):
     def get(self, request, pk):
@@ -335,27 +355,32 @@ class EmployerDetailView(View):
         employer = get_object_or_404(Organization, pk=pk)
 
         work_requests = WorkRequests.objects.filter(employer=employer)
-
         in_progress_work_requests = work_requests.filter(status__in=['Open', 'Requested'])
         closed_work_requests = work_requests.filter(status='Closed')
         draft_work_requests = work_requests.filter(status='Draft')
 
         recruiters = EmployerRecruiter.objects.filter(employer=employer).select_related('recruiter')
-        contacts = employer.contacts.all()
+        recruiter_names_direct = set(
+            rec.recruiter.get_full_name()
+            for rec in recruiters
+            if user.groups.filter(name='admin').exists() or rec.recruiter == user
+        )
 
-        assigned_organizations = Organization.objects.filter(
-            assigned_employer_orgs__employer_org=employer
-        ).distinct()
+        assigned_links = EmployerRecruiterOrgLink.objects.filter(employer_org=employer)
+        recruiter_orgs = [link.recruiter_org for link in assigned_links]
 
         assigned_orgs_data = []
-        for org in assigned_organizations:
-            assigned_recruiters = EmployerRecruiter.objects.filter(employer=employer)
-            recruiter_names = list(set(
-                rec.recruiter.get_full_name()
-                for rec in assigned_recruiters
-                if user.groups.filter(name='admin').exists() or rec.recruiter == user
-            ))
-            
+        recruiter_names_org = set()
+
+        for org in recruiter_orgs:
+            org_recruiters = org.recruiters.all()
+            org_recruiter_names = [
+                r.get_full_name()
+                for r in org_recruiters
+                if user.groups.filter(name='admin').exists() or r == user
+            ]
+            recruiter_names_org.update(org_recruiter_names)
+
             assigned_orgs_data.append({
                 'id': org.id,
                 'name': org.name,
@@ -363,31 +388,39 @@ class EmployerDetailView(View):
                 'address': org.address,
                 'country': org.country,
                 'phone': org.phone,
-                'recruiters': recruiter_names
+                'recruiters': org_recruiter_names
             })
+
+        all_recruiter_names = list(recruiter_names_direct.union(recruiter_names_org))
+
         context = {
             'employer': employer,
             'in_progress_work_requests': in_progress_work_requests,
             'closed_work_requests': closed_work_requests,
             'draft_work_requests': draft_work_requests,
-            'recruiters': recruiters,
-            'contacts': contacts,
+            'recruiters': all_recruiter_names,
+            'contacts': employer.contacts.all(),
             'work_requests': work_requests,
             'assigned_organizations': assigned_orgs_data
         }
-        return render(request, 'recruiting/employers/detail.html', context) 
+        return render(request, 'recruiting/employers/detail.html', context)
+
 class RecruiterDetailView(View):
     def get(self, request, pk):
         user = request.user
         recruiter_org = get_object_or_404(Organization, pk=pk, type='recruiter')
 
-        assigned_links = EmployerRecruiterOrgLink.objects.filter(recruiter_org=recruiter_org)
-        employer_orgs = Organization.objects.filter(
-            id__in=assigned_links.values_list('employer_org__id', flat=True)
-        ).distinct()
+        org_link_employers = EmployerRecruiterOrgLink.objects.filter(recruiter_org=recruiter_org)
+        org_employer_ids = org_link_employers.values_list('employer_org_id', flat=True)
+
+        direct_employer_ids = EmployerRecruiter.objects.filter(
+            recruiter__in=recruiter_org.recruiters.all()
+        ).values_list('employer_id', flat=True)
+
+        all_employer_ids = set(org_employer_ids) | set(direct_employer_ids)
+        employer_orgs = Organization.objects.filter(id__in=all_employer_ids, type='employer').distinct()
 
         work_requests = WorkRequests.objects.filter(employer__in=employer_orgs)
-
         in_progress_work_requests = work_requests.filter(status__in=['Open', 'Requested'])
         closed_work_requests = work_requests.filter(status='Closed')
         draft_work_requests = work_requests.filter(status='Draft')
@@ -423,33 +456,39 @@ class RecruiterDetailView(View):
         }
         return render(request, 'recruiting/recruiters_list/workrequest_detail.html', context)
 
+
 class WorkRequestsListView(View):
     def get(self, request):
         user = request.user
+
         admin_group = Group.objects.get(name='admin')
         recruiter_group = Group.objects.get(name='recruiter')
+        recruiter_admin_group = Group.objects.get(name='recruiter_admin')
+        employer_group = Group.objects.get(name='employer')
+        employer_admin_group = Group.objects.get(name='employer_admin')
+
+        work_requests = WorkRequests.objects.none()
 
         if admin_group in user.groups.all():
             work_requests = WorkRequests.objects.all()
 
-        elif recruiter_group in user.groups.all():
+        elif recruiter_group in user.groups.all() or recruiter_admin_group in user.groups.all():
             user_orgs = user.organizations.all()
             if user_orgs.exists():
-                user_org = user_orgs.first() 
                 assigned_employer_ids = EmployerRecruiterOrgLink.objects.filter(
-                    recruiter_org=user_org
+                    recruiter_org__in=user_orgs
                 ).values_list("employer_org_id", flat=True)
-
                 work_requests = WorkRequests.objects.filter(employer_id__in=assigned_employer_ids)
-            else:
-                work_requests = WorkRequests.objects.none()
-        else:
-            work_requests = WorkRequests.objects.none() 
+
+        elif employer_group in user.groups.all() or employer_admin_group in user.groups.all():
+            user_orgs = user.organizations.all()
+            if user_orgs.exists():
+                work_requests = WorkRequests.objects.filter(employer__in=user_orgs)
 
         for wr in work_requests:
             recruiter_link = EmployerRecruiterOrgLink.objects.filter(employer_org=wr.employer).first()
             wr.recruiter_org = recruiter_link.recruiter_org if recruiter_link else None
-
+            
         context = {
             "work_requests": work_requests,
             "employers": Organization.objects.filter(type='employer'),
@@ -571,13 +610,153 @@ class AddWorkersWorkRequests(View):
         workers = User.objects.filter(
             groups__name='worker'
         ).distinct().order_by('-created_at')
-
         if search_query:
             workers = workers.filter(
                 Q(first_name__icontains=search_query) |
                 Q(last_name__icontains=search_query) |
                 Q(email__icontains=search_query)
             )
+        params = request.GET
+        type_sector = request.GET.get('type_sector')
+        if type_sector:
+            workers = workers.filter(
+                crop_experiences__job_type__iexact=type_sector
+            )
+
+        # Filter by Passport
+        passport_filter = next((v for k, v in params.items() if k.startswith("passport_") and v), None)
+        if passport_filter and passport_filter.lower() == 'yes':
+            workers = workers.filter(documents__kind__iexact='passport').distinct()
+
+
+        # Filter by H2A Experience
+        h2a_experience_filter = next((v for k, v in params.items() if k.startswith("h2a_experience_") and v), None)
+        if h2a_experience_filter and h2a_experience_filter.lower() == 'yes':
+            h2a_user_ids = UserWorkExperience.objects.filter(
+                visa_type__iexact="H-2A"
+            ).values_list('user_id', flat=True).distinct()
+            
+            workers = workers.filter(id__in=h2a_user_ids)
+
+        # Filter by H2B Experience
+        h2b_experience_filter = next((v for k, v in params.items() if k.startswith("h2b_experience_") and v), None)
+        if h2b_experience_filter and h2b_experience_filter.lower() == 'yes':
+            h2b_user_ids = UserWorkExperience.objects.filter(
+                visa_type__iexact="H-2B"
+            ).values_list('user_id', flat=True).distinct()
+
+            workers = workers.filter(id__in=h2b_user_ids)
+
+
+
+        # Filter by US Driving License
+        us_license_filter = next((v for k, v in params.items() if k.startswith("us_driving_license_") and v), None)
+        if us_license_filter and us_license_filter.lower() == 'yes':
+            workers = workers.filter(documents__kind='us_driving_license')
+
+        # Filter by Mexico/US Driving License
+        mx_us_license_filter = next((v for k, v in params.items() if k.startswith("mx_us_driving_license_") and v), None)
+        if mx_us_license_filter and mx_us_license_filter.lower() == 'yes':
+            workers = workers.filter(
+                documents__kind='mexico_driving_license'
+            )
+
+
+        # Filter by Work Preference Type
+        work_type_filter = next((v for k, v in params.items() if k.startswith("work_preference_type_") and v), None)
+        if work_type_filter:
+            work_type_values = [v.strip().lower() for v in work_type_filter.split(',') if v.strip()]
+            workers = workers.filter(
+                userpreference__key='kindOfWork',
+                userpreference__value__in=[val.title() for val in work_type_values]  # Adjust casing as needed
+            )
+
+        # Filter by Work Preference Location (multiple comma-separated values)
+        work_location_filter = next((v for k, v in params.items() if k.startswith("work_preference_location_") and v), None)
+        if work_location_filter:
+            location_values = [loc.strip().lower() for loc in work_location_filter.split(',') if loc.strip()]
+            workers = workers.filter(
+                userpreference__key='whereYouWantToWork',
+                userpreference__value__in=[loc.title() for loc in location_values]  # match case (if needed)
+            )
+
+        # Filter by English Proficiency if marked 'yes'
+        language_proficiency_filter = next((v for k, v in params.items() if k.startswith("language_proficiency_") and v), None)
+        if language_proficiency_filter and language_proficiency_filter.lower() == 'yes':
+            workers = workers.filter(
+                userpreference__key='english_proficiency',
+                userpreference__value__iexact='fluent'
+            )
+
+        # Filter by Gender
+        gender_filter = next((v for k, v in params.items() if k.startswith("gender_") and v), None)
+        if gender_filter:
+            workers = workers.filter(gender__iexact=gender_filter)
+
+         # Filter by Availability
+        availability_from = next((v for k, v in params.items() if k.startswith("availability_from_") and v), None)
+        availability_to = next((v for k, v in params.items() if k.startswith("availability_to_") and v), None)
+        if availability_from or availability_to:
+            availability_filter = Q(userpreference__key='availability')
+            if availability_from:
+                try:
+                    availability_filter &= Q(userpreference__value__gte=availability_from)
+                except ValueError:
+                    pass
+
+            if availability_to:
+                try:
+                    availability_filter &= Q(userpreference__value__lte=availability_to)
+                except ValueError:
+                    pass
+
+            workers = workers.filter(availability_filter)
+
+        # Filter by Reference
+
+        references_filter = next((v for k, v in params.items() if k.startswith("references_") and v), None)
+        if references_filter and references_filter.lower() == 'yes':
+            referenced_user_ids = UserWorkExperience.objects.filter(
+                Q(supervisor_name__isnull=False) & ~Q(supervisor_name__exact='') |
+                Q(supervisor_tel__isnull=False) & ~Q(supervisor_tel__exact='') |
+                Q(supervisor_email__isnull=False) & ~Q(supervisor_email__exact='')
+            ).values_list('user_id', flat=True).distinct()
+
+            workers = workers.filter(id__in=referenced_user_ids)
+
+        # Filter by Age (from dob)
+
+        age_min = next((int(v) for k, v in params.items() if k.startswith("age_min_") and v), None)
+        age_max = next((int(v) for k, v in params.items() if k.startswith("age_max_") and v), None)
+        if age_min is not None or age_max is not None:
+            today = date.today()
+            min_dob = today - relativedelta(years=age_max) if age_max is not None else None
+            max_dob = today - relativedelta(years=age_min) if age_min is not None else None
+            dob_filter = Q()
+            if min_dob:
+                dob_filter &= Q(dob__gte=min_dob)
+            if max_dob:
+                dob_filter &= Q(dob__lte=max_dob)
+
+            workers = [w for w in workers if (
+                (w.dob is not None) and
+                (min_dob is None or w.dob >= min_dob) and
+                (max_dob is None or w.dob <= max_dob)
+            )]
+
+        # Filter by Experience
+        min_exp = next((int(v) for k, v in params.items() if k.startswith("years_of_experience_min_") and v), None)
+        max_exp = next((int(v) for k, v in params.items() if k.startswith("years_of_experience_max_") and v), None)
+        if min_exp is not None or max_exp is not None:
+            filtered = []
+            for w in workers:
+                years = calculate_total_experience(w)
+                if ((min_exp is None or years >= min_exp) and
+                    (max_exp is None or years <= max_exp)):
+                    filtered.append(w)
+            workers = filtered
+        paginator = Paginator(workers, per_page)
+        page_obj = paginator.get_page(page_number)
 
         
         all_workers = workers.distinct()
@@ -586,7 +765,7 @@ class AddWorkersWorkRequests(View):
         for worker in all_workers:
             profile_completion = calculate_profile_completion(worker)
             worker_details = get_worker_preferences(worker)
-
+            years_of_experience = calculate_total_experience(worker)
             worker.profile_completion_percentage = profile_completion
             latest_assignment = WorkAssignment.objects.filter(
                 worker=worker,
@@ -604,6 +783,7 @@ class AddWorkersWorkRequests(View):
                 'lastname': worker.last_name,
                 'email': worker.email,
                 'profile_completion': profile_completion,
+                'years_of_experience': years_of_experience,
                 **worker_details
             })
 
@@ -788,6 +968,13 @@ class UpdateWorkerStatusView(View):
     def post(self, request, *args, **kwargs):
         worker_ids = request.POST.getlist('worker_ids[]')
         WorkAssignment.objects.filter(worker_id__in=worker_ids, status='assigned').update(status='offersent')
+        # Need to send an offer notification here for each user
+        for item in worker_ids:
+             UserNotification.objects.create(
+                user=User.objects.get(id=item),
+                title=_("workRequestAddNotificationTitle"),
+                message=_("workRequestAddNotificationBody")
+            )
         messages.success(request, _("workRequestAddWorkerOfferSentSuccessfully"))
         return JsonResponse({'status':'success','success': 'True', 'message': 'Offer sent successfully.'})
 
@@ -816,7 +1003,12 @@ class OfferSendWorkerView(View):
                 role_id=role_id,
                 status='offersent'
             )
-
+        UserNotification.objects.create(
+                user=User.objects.get(id=worker_id),
+                title=_("workRequestAddNotificationTitle"),
+                message=_("workRequestAddNotificationBody")
+            )
+       
         messages.success(request, _("OfferSentSuccessfully."))
         return redirect('recruiting_web:worker_detail', pk=worker_id)
 

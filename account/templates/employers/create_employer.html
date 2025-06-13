@@ -1,4 +1,5 @@
 {% load i18n %}
+
 <div
   class="modal fade"
   id="inviteEmployeModal"
@@ -7,31 +8,25 @@
   aria-hidden="true"
 >
   <div class="modal-dialog modal-dialog-centered">
-    <div
-      class="modal-content modal-bg"
-    >
+    <div class="modal-content modal-bg">
       <div class="modal-header" style="background-color: #7DBF96;">
-        <h5
-          class="modal-title text-white"
-          id="inviteEmployeModalLabel"
-        >
-        {% translate "employerAminListInviteUser"%}
+        <h5 class="modal-title text-white" id="inviteEmployeModalLabel">
+          {% translate "employerAminListInviteUser" %}
         </h5>
       </div>
       <div class="modal-body text-start">
         <p class="mb-4 modal-subtitle-custom">
           {% translate "employerAminListThenAShortNotificationMessageGoesHereWithActionButtonsBelow" %}
         </p>
+
         <form method="POST">
           {% csrf_token %}
          
 
           <div class="mb-3">
-            <label
-              for="firstName"
-              class="form-label modal-labels-custom"
-              >{% translate "employerAminListFirstName"%}</label
-            >
+            <label for="firstName" class="form-label modal-labels-custom">
+              {% translate "employerAminListFirstName" %}
+            </label>
             <input
               type="text"
               class="form-control"
@@ -40,12 +35,11 @@
               required
             />
           </div>
+
           <div class="mb-3">
-            <label
-              for="lastName"
-              class="form-label modal-labels-custom"
-              >{% translate "employerAminListLastName"%}</label
-            >
+            <label for="lastName" class="form-label modal-labels-custom">
+              {% translate "employerAminListLastName" %}
+            </label>
             <input
               type="text"
               class="form-control"
@@ -54,12 +48,11 @@
               required
             />
           </div>
+
           <div class="mb-3">
-            <label
-              for="email"
-              class="form-label modal-labels-custom"
-              >{% translate "employerAminListEmail"%}</label
-            >
+            <label for="email" class="form-label modal-labels-custom">
+              {% translate "employerAminListEmail" %}
+            </label>
             <input
               type="email"
               class="form-control"
@@ -68,30 +61,39 @@
               required
             />
           </div>
+
           <div class="mb-3">
-            <label for="role" class="form-label modal-labels-custom">{% translate "employerAminListRole" %}</label>
+            <label for="role" class="form-label modal-labels-custom">
+              {% translate "employerAminListRole" %}
+            </label>
             <select class="form-select" id="role" name="role" required>
-              <option value="" disabled selected>{% translate "employerAminListSelectRole" %}</option>
-              <option value="employer">{% translate "employerAminListEmployer" %}</option>
-              <option value="employer_admin">{% translate "employerAminListAdmin" %}</option>
+              <option value="" disabled selected>
+                {% translate "employerAminListSelectRole" %}
+              </option>
+              <option value="employer">
+                {% translate "employerAminListEmployer" %}
+              </option>
+              <option value="employer_admin">
+                {% translate "employerAminListAdmin" %}
+              </option>
             </select>
           </div>
-          
+
           <div class="d-flex justify-content-center gap-2 mt-4">
             <button
               type="button"
               class="btn"
               data-bs-dismiss="modal"
-              style='background-color:#9A9898; color:white'
+              style="background-color: #9A9898; color: white"
             >
-            {% translate "employerAminListCancel"%}
+              {% translate "employerAminListCancel" %}
             </button>
             <button
               type="submit"
-              class="btn" 
-              style='background-color:#7DBF96; color:white'
+              class="btn"
+              style="background-color: #7DBF96; color: white"
             >
-            {% translate "employerAminListSendInvite"%}
+              {% translate "employerAminListSendInvite" %}
             </button>
           </div>
         </form>

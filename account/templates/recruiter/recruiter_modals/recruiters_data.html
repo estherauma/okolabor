@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load static %}
+{% load user_role_tags %}
 <div class="card">
     <div class="card-body">
         <div class="d-flex justify-content-between align-items-center">
@@ -7,9 +8,11 @@
                 {% translate "manageUsersRecruitersTableTitle" %}
             </h3>
             <div class="d-flex">
+              {% if request.user|has_group:"admin" %}
                 <button type="button" class="btn dark-green-button ms-2" id="assign-organization-btn" data-bs-toggle="modal" data-bs-target="#assignOrganizationModal">
                      {% translate "manageUsersRecruitersTableAssignOrganization" %}
                 </button>
+              {% endif %}
                 <button class="btn dark-green-button ms-2" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#inviteUserModal">
                     {% translate "manageUsersRecruitersTableNewUser" %}
                 </button>

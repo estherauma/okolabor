@@ -46,13 +46,13 @@
 			</a>
 		</li>
 
-		{% if request.user|has_group:"recruiter_admin" %}
+		{% comment %} {% if request.user|has_group:"recruiter_admin" %}
 		<li>
 			<a class="side-menu__item" href="{% url 'recruiting_web:recruiter_list' %}"><i class="side-menu__icon mdi mdi-tune"></i>
 				<span class="side-menu__label">{% translate "recruitersList" %}</span>
 			</a>
 		</li>
-		{% endif %}
+		{% endif %} {% endcomment %}
 
 		<hr>
 

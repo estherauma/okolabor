@@ -22,7 +22,7 @@ class EmployerForm(forms.ModelForm):
         fields = [
             'name', 'email', 'phone', 'website',
             'address', 'city', 'state', 'country',
-            'zip_code', 'description', 'type'
+            'zip_code', 'description'
         ]
 
         labels = {
@@ -36,7 +36,6 @@ class EmployerForm(forms.ModelForm):
             'country': _('addEmployerCountry'),
             'zip_code': _('addEmployerZipCode'),
             'description': _('addEmployerDescription'),
-            'type': _('addEmployerOrganizationType'),
         }
 
         widgets = {
@@ -50,34 +49,12 @@ class EmployerForm(forms.ModelForm):
             'country': forms.TextInput(attrs={'class': 'form-control'}),
             'zip_code': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control'}),
-            'type': forms.Select(attrs={'class': 'form-control', 'disabled': 'disabled'}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
         self.fields['description'].required = False
 
-        # Get initial 'type' value
-        type_initial = self.initial.get('type', self.fields['type'].initial)
-
-        if type_initial:
-            self.fields['type'].initial = type_initial
-
-            # Add a hidden field to hold actual value since 'type' is disabled
-            self.fields['type_hidden'] = forms.CharField(
-                widget=forms.HiddenInput(),
-                initial=type_initial
-            )
-
-    def clean(self):
-        cleaned_data = super().clean()
-
-        # Override disabled 'type' field with hidden input value
-        if 'type_hidden' in self.fields:
-            cleaned_data['type'] = cleaned_data.get('type_hidden')
-
-        return cleaned_data
 
 
 class WorkRequestForm(forms.ModelForm):
