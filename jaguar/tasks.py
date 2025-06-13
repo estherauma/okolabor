@@ -104,12 +104,12 @@ def check_passport_match(instance, **kwargs):
 
     # Send notification if details match
     # When the details do not match, the notification would have been sent during initial upload
-    if details_match:
-        # Create passport verifed notification
-        # Your passsword has been verified
-        message = _('passportVerifiedNotificationBody')
-        UserNotification.objects.create(
-            user=instance.user,
-            title=_('passportVerifiedNotificationTitle'), message=message)
+    # if details_match:
+    #     # Create passport verifed notification
+    #     # Your passsword has been verified
+    #     message = _('passportVerifiedNotificationBody')
+    #     UserNotification.objects.create(
+    #         user=instance.user,
+    #         title=_('passportVerifiedNotificationTitle'), message=message)
 
     instance.save()
