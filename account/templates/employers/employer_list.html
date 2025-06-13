@@ -7,27 +7,26 @@
                 {% translate "manageUsersEmployersTableTitle" %}
             </h3>
             <div class="d-flex">
-                <button type="button" class="btn dark-green-button ms-2" id="assign-employer-organization-btn" data-bs-toggle="modal" data-bs-target="#assignEmployerOrganizationModal">
+                <button type="button" class="btn dark-green-button ms-2 mb-2" id="assign-employer-organization-btn" data-bs-toggle="modal" data-bs-target="#assignEmployerOrganizationModal">
                     {% translate "manageUsersEmployersTableAssignEmployeOrganization" %}
                 </button>
-                <button class="btn dark-green-button ms-2" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#inviteEmployeModal">
+                <button class="btn dark-green-button ms-2 mb-2" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#inviteEmployeModal">
                     +{% translate "manageUsersEmployersTableNewEmployer" %}
                 </button>
             </div>
         </div>
         <div class="table-responsive">
             <table class="table text-nowrap border-bottom" id="recruiters-datatable">
-                <thead>
+                <thead style="background-color: #7DBF96;">
                     <tr>
-                        <th class="theading-color text-start"><input type="checkbox" id="select-all-employer-checkbox"></th>
-                        <th class="theading-color text-start">{% translate "manageUsersEmployersTableCurp" %}</th>
-                        <th class="theading-color text-start">{% translate "manageUsersEmployersTableEmail" %}</th>
-                        <th class="theading-color text-start">{% translate "manageUsersEmployersTableFirstName" %}</th>
-                        <th class="theading-color text-start">{% translate "manageUsersEmployersTableLastName" %}</th>
-                        <th class="theading-color text-start">{% translate "manageUsersEmployersTableCreatedAt" %}</th>
-                        <th class="theading-color text-start">{% translate "manageUsersEmployersTableStatus" %}</th>
-                        <th class="theading-color text-start">{% translate "manageUsersEmployersTableGroup" %}</th>
-                        <th class="theading-color text-start">{% translate "manageUsersEmployersTableActions" %}</th>
+                        <th class="text-start"><input type="checkbox" id="select-all-employer-checkbox"></th>
+                        <th class="text-start">{% translate "manageUsersEmployersTableCurp" %}</th>
+                        <th class="text-start">{% translate "manageUsersEmployersTableEmail" %}</th>
+                        <th class="text-start">{% translate "manageUsersEmployersTableFirstName" %}</th>
+                        <th class="text-start">{% translate "manageUsersEmployersTableCreatedAt" %}</th>
+                        <th class="text-start">{% translate "manageUsersEmployersTableStatus" %}</th>
+                        <th class="text-start">{% translate "manageUsersEmployersTableGroup" %}</th>
+                        <th class="text-start">{% translate "manageUsersEmployersTableActions" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -38,8 +37,7 @@
                         </td>
                         <td>{{ user.curp }}</td>
                         <td>{{ user.email }}</td>
-                        <td>{{ user.first_name }}</td>
-                        <td>{{ user.last_name }}</td>
+                        <td>{{ user.first_name }} {{ user.last_name }}</td>
                         <td>{{ user.created_at }}</td>
                         <td>{{ user.is_active|yesno:_("active,inactive") }}</td>
                         <td>{{ user.group }}</td>
