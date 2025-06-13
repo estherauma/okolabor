@@ -31,7 +31,10 @@ from collections import defaultdict
 from django.db.models import Count
 from django.template.loader import render_to_string
 import os
-from recruiting.utils import get_worker_preferences, calculate_profile_completion,calculate_total_experience
+from recruiting.utils import (
+    get_worker_preferences, calculate_profile_completion,
+    calculate_total_experience
+)
 from account.models import User
 from recruiting.utils import *
 from recruiting.views.workers import WorkerDetailsView
@@ -90,10 +93,10 @@ class EmployerListView(View):
         query = request.GET.get('query')
 
         if user.groups.filter(name='admin').exists():
-            employers_list = Organization.objects.filter(type='employer')
+            employers_list = Organization.objects.filter(type='employer').order_by('-created_at')
 
         elif user.groups.filter(name__in=['recruiter', 'recruiter_admin']).exists():
-            recruiter_orgs = Organization.objects.filter(type='recruiter', recruiters=user)
+            recruiter_orgs = Organization.objects.filter(type='recruiter', recruiters=user).order_by('-created_at')
 
             recruiter_links_1 = EmployerRecruiterOrgLink.objects.filter(recruiter_org__in=recruiter_orgs)
             employer_ids_1 = recruiter_links_1.values_list('employer_org__id', flat=True)
@@ -119,7 +122,7 @@ class EmployerListView(View):
                 Q(phone__icontains=query)
             )
 
-        recruiter_organizations = Organization.objects.filter(type='recruiter')
+        recruiter_organizations = Organization.objects.filter(type='recruiter').order_by('-created_at')
 
         employers_data = []
         for employer in employers_list:
@@ -212,7 +215,7 @@ class RecruiterListViewInAdmin(View):
         query = request.GET.get('query')
 
         if user.groups.filter(name='admin').exists():
-            recruiters_list = Organization.objects.filter(type='recruiter')
+            recruiters_list = Organization.objects.filter(type='recruiter').order_by('-created_at')
         else:
             recruiters_list = Organization.objects.none()
 
