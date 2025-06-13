@@ -376,3 +376,22 @@ class EmployerRecruiterOrgLink(AuditableModel):
 
     def __str__(self):
         return f"{self.employer_org.name} → {self.recruiter_org.name} [{self.status}]"
+
+class RecruiterOrgInvitation(AuditableModel):
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+    )
+
+    employer_org = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="invitations", limit_choices_to={'type': 'employer'})
+    recruiter_org = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="received_invitations", limit_choices_to={'type': 'recruiter'})
+    employer_status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    recruiter_status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('employer_org', 'recruiter_org')
+
+    def is_fully_accepted(self):
+        return self.employer_status == 'accepted' and self.recruiter_status == 'accepted'
