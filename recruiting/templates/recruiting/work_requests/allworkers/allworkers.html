@@ -86,6 +86,7 @@
             <tr>
                 <th class="">{% translate "workRequestAddWorkerCheckbox" %}</th>
                 <th class="col-name">{% translate "workRequestAddWorkerName" %}</th>
+                <th class="col-email">{% translate "workRequestAddWorkerEmail" %}</th>
                 <th class="col-town">{% translate "workersLworkRequestAddWorkerTownistTown" %}</th>
                 <th class="col-profile">{% translate "workRequestAddWorkerProfileCompletion" %}</th>
                 <th class="col-experience">{% translate "workRequestAddWorkerExperience" %}</th>
@@ -101,16 +102,11 @@
                     <input type="checkbox" class="worker-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.first_name }} {{ worker.last_name }}">
                 </td>
                 <td class="col-name">
-                    {% if worker.first_name and worker.last_name %}
-                        <a href="{{ worker.id }}">
-                            {{ worker.first_name }} {{ worker.last_name }}
-                        </a>
-                    {% else %}
-                        <a href="{{ worker.id }}">
-                            {{ worker.email }}
-                        </a>
-                    {% endif %}
+                  <a href="{{ worker.id }}">
+                      {{ worker.first_name }} {{ worker.last_name }}
+                  </a>
                 </td>
+                <td class="col-email">{{ worker.email }}</td>
                 <td class="col-town">{{ worker.town|default:"Not Provided" }}</td>
                 <td class="col-profile">{{ worker.profile_completion_percentage|default:0 }}%</td>
                 <td class="col-experience">{{ worker.work_experience|default:"Not Provided" }}</td>
@@ -145,7 +141,6 @@
   <script>
     $(document).ready(function () {
       $.fn.dataTable.ext.errMode = 'none';
-
         const table = $('#basic-datatable').DataTable();
         const settingsBtn =
             '<button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnSettingsModal">' +
