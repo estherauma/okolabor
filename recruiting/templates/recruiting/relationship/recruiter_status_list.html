@@ -45,26 +45,17 @@
                                     <td>{{ link.employer_org.name }}</td>
                                     <td>{{ link.recruiter_org.name }}</td>
                                     <td>
-                                        <span class="badge 
-                                            {% if link.employer_status == 'accepted' %} bg-success 
-                                            {% elif link.employer_status == 'rejected' %} bg-danger 
-                                            {% else %} bg-warning {% endif %}">
+                                        <span>
                                             {{ link.employer_status|title }}
                                         </span>
                                     </td>
                                     <td>
-                                        <span class="badge 
-                                            {% if link.recruiter_status == 'accepted' %} bg-success 
-                                            {% elif link.recruiter_status == 'rejected' %} bg-danger 
-                                            {% else %} bg-warning {% endif %}">
+                                        <span >
                                             {{ link.recruiter_status|title }}
                                         </span>
                                     </td>
                                     <td>
-                                        <span class="badge 
-                                            {% if link.final_status == 'accepted' %} bg-success 
-                                            {% elif link.final_status == 'rejected' %} bg-danger 
-                                            {% else %} bg-warning {% endif %}">
+                                        <span >
                                             {{ link.final_status|title }}
                                         </span>
                                     </td>
