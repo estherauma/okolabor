@@ -1799,7 +1799,6 @@ class InvitationResponseView(View):
                 link.recruiter_status = action
 
             if link.is_fully_accepted() and link.final_status != 'accepted':
-                print("Both parties have accepted the invitation.")
                 link.final_status = 'accepted'
                 send_invitation_to_primary_contacts(employer_org, recruiter_org, request)
 
