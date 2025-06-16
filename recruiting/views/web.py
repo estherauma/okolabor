@@ -83,8 +83,7 @@ from recruiting.models import (
     WorkAssignment,
     EmployerContact,
     EmployerRecruiterOrgLink,
-    RecruiterOrganizationEmployer,
-    RecruiterOrgInvitation
+    RecruiterOrganizationEmployer
 )
 
     
@@ -1694,126 +1693,201 @@ class AssignEmployersToRecruiterOrgView(View):
             data = json.loads(request.body)
             employer_ids = data.get('employer_org_id')
             recruiter_org_id = data.get('recruiter_org_id')
-            
-            print(f"Received employer_ids: {employer_ids}, recruiter_org_id: {recruiter_org_id}")
 
             if not employer_ids or not recruiter_org_id:
-                return JsonResponse({'success': False, 'message': 'Missing employer or recruiter ID'})
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Missing employer or recruiter organization ID.'
+                })
 
-            recruiter_org = get_object_or_404(Organization, id=recruiter_org_id, type='recruiter')
-            print(f"Recruiter organization: {recruiter_org}")
+            recruiter_org = get_object_or_404(
+                Organization, id=recruiter_org_id, type='recruiter'
+            )
 
-            for employer_id in employer_ids:
-                employer_org = get_object_or_404(Organization, id=employer_id, type='employer')
-                print(f"Employer organization: {employer_org}")
+            already_assigned = []
+            newly_assigned = []
 
-                invitation, created = RecruiterOrgInvitation.objects.get_or_create(
+            for emp_id in employer_ids:
+                employer_org = get_object_or_404(
+                    Organization, id=emp_id, type='employer'
+                )
+
+                link, created = EmployerRecruiterOrgLink.objects.get_or_create(
                     employer_org=employer_org,
-                    recruiter_org=recruiter_org
+                    recruiter_org=recruiter_org,
+                    defaults={
+                        'employer_status': 'pending',
+                        'recruiter_status': 'pending',
+                        'final_status': 'pending'
+                    }
                 )
 
                 if created:
-                    
-                    print(f"Created new invitation for {employer_org.name} and {recruiter_org.name}")
-                    # Send invitation emails to recruiter and employer organizations
-                    send_invitation_email_to_org(employer_org, recruiter_org, request, role='employer')
-                    send_invitation_email_to_org(recruiter_org, employer_org, request, role='recruiter')
+                    newly_assigned.append(employer_org.name)
+                    send_invitation_email_to_org(
+                        employer_org, recruiter_org, request, role='employer'
+                    )
+                    send_invitation_email_to_org(
+                        recruiter_org, employer_org, request, role='recruiter'
+                    )
+                else:
+                    already_assigned.append(employer_org.name)
 
+            if newly_assigned:
+                messages.success(
+                    request,
+                    _("Invitations created, emails sent successfully, and employer(s) assigned to the recruiter organization.")
+                )
 
-            return JsonResponse({'success': True, 'message': 'Invitations sent'})
+            if already_assigned:
+                messages.warning(
+                    request,
+                    _("The following employers are already assigned: {}").format(', '.join(already_assigned))
+                )
+
+            return JsonResponse({
+                'success': True,
+                'newly_assigned': newly_assigned,
+                'already_assigned': already_assigned,
+                'message': "Processed employer assignment."
+            })
 
         except Exception as e:
-            return JsonResponse({'success': False, 'message': str(e)})
-
-
-def send_invitation_email_to_org(receiver_org, other_org, request, role):
-    protocol = 'https' if request.is_secure() else 'http'
-    domain = request.get_host()
-
-    accept_url = f"{protocol}://{domain}/invitation-response/?action=accept&receiver_org_id={receiver_org.id}&other_org_id={other_org.id}&role={role}"
-    reject_url = f"{protocol}://{domain}/invitation-response/?action=reject&receiver_org_id={receiver_org.id}&other_org_id={other_org.id}&role={role}"
-
-    subject = f"Invitation to collaborate with {other_org.name}"
-    message = f"""
-    Hi {receiver_org.name},
-
-    Your organization has received an invitation to collaborate with '{other_org.name}'.
-
-    ✅ Accept: {accept_url}  
-    ❌ Reject: {reject_url}
-
-    Regards,  
-    Your Team
-    """
-
-    if receiver_org.email:
-        send_mail(subject, message, settings.EMAIL_HOST_USER, [receiver_org.email])
+            return JsonResponse({
+                'success': False,
+                'message': str(e)
+            })
+            
+def get_response_status(receiver_org, other_org):
+    try:
+        link = EmployerRecruiterOrgLink.objects.get(
+            employer_org=receiver_org if receiver_org.type == 'employer' else other_org,
+            recruiter_org=receiver_org if receiver_org.type == 'recruiter' else other_org
+        )
+        return link.status
+    except EmployerRecruiterOrgLink.DoesNotExist:
+        return 'pending'
 
 
 
 class InvitationResponseView(View):
     def get(self, request):
-        action = request.GET.get('action')  # accept/reject
-        role = request.GET.get('role')      # employer/recruiter
+        action = request.GET.get('action')
+        role = request.GET.get('role')
         receiver_org_id = request.GET.get('receiver_org_id')
         other_org_id = request.GET.get('other_org_id')
 
         try:
-            receiver_org = Organization.objects.get(id=receiver_org_id)
-            other_org = Organization.objects.get(id=other_org_id)
+            receiver = get_object_or_404(Organization, id=receiver_org_id)
+            other = get_object_or_404(Organization, id=other_org_id)
 
             if role == 'employer':
-                invitation = RecruiterOrgInvitation.objects.get(employer_org=receiver_org, recruiter_org=other_org)
-                invitation.employer_status = action
+                employer_org = receiver
+                recruiter_org = other
             else:
-                invitation = RecruiterOrgInvitation.objects.get(employer_org=other_org, recruiter_org=receiver_org)
-                invitation.recruiter_status = action
+                employer_org = other
+                recruiter_org = receiver
 
-            invitation.save()
+            link, _ = EmployerRecruiterOrgLink.objects.get_or_create(
+                employer_org=employer_org,
+                recruiter_org=recruiter_org
+            )
 
-            # Both accepted?
-            if invitation.is_fully_accepted():
-                link, created = EmployerRecruiterOrgLink.objects.get_or_create(
-                    employer_org=invitation.employer_org,
-                    recruiter_org=invitation.recruiter_org
-                )
-                if created:
-                    send_invitation_to_primary_contacts(invitation.employer_org, invitation.recruiter_org, request)
+            if role == 'employer':
+                link.employer_status = action
+            else:
+                link.recruiter_status = action
 
+            if link.is_fully_accepted() and link.final_status != 'accepted':
+                print("Both parties have accepted the invitation.")
+                link.final_status = 'accepted'
+                send_invitation_to_primary_contacts(employer_org, recruiter_org, request)
+
+            elif action == 'rejected':
+                link.final_status = 'rejected'
+
+            link.save()
             return HttpResponse("Thank you for your response.")
 
         except Exception as e:
             return HttpResponse(f"Error: {str(e)}")
 
 
+def send_invitation_email_to_org(receiver_org, other_org, request, role):
+    """
+    Sends initial invitation email to the org's notification email
+    """
+    protocol = 'https' if request.is_secure() else 'http'
+    domain = request.get_host()
+
+    accept_url = (
+        f"{protocol}://{domain}/invitation-response/"
+        f"?action=accepted&receiver_org_id={receiver_org.id}"
+        f"&other_org_id={other_org.id}&role={role}"
+    )
+    reject_url = (
+        f"{protocol}://{domain}/invitation-response/"
+        f"?action=rejected&receiver_org_id={receiver_org.id}"
+        f"&other_org_id={other_org.id}&role={role}"
+    )
+
+    subject = f"Invitation to collaborate with {other_org.name}"
+    message = f"""
+Hi {receiver_org.name},
+
+Your organization has received an invitation to collaborate with '{other_org.name}'.
+
+✅ Accept: {accept_url}  
+❌ Reject: {reject_url}
+
+Regards,  
+Your Team
+    """.strip()
+
+    if receiver_org.email:
+        send_mail(
+            subject,
+            message,
+            settings.EMAIL_HOST_USER,
+            [receiver_org.email],
+            fail_silently=False
+        )
+
+
 def send_invitation_to_primary_contacts(employer_org, recruiter_org, request):
-    def send(org, other_org, role):
-        contacts = EmployerContact.objects.filter(employer=org, is_primary=True)
-        protocol = 'https' if request.is_secure() else 'http'
-        domain = request.get_host()
+    print(employer_org, recruiter_org, "employer_org, recruiter_org")
+    
+    protocol = 'https' if request.is_secure() else 'http'
+    domain = request.get_host()
 
-        for contact in contacts:
-            accept_url = f"{protocol}://{domain}/invitation-response/?action=accept&receiver_org_id={org.id}&other_org_id={other_org.id}&role={role}&primary=1"
-            reject_url = f"{protocol}://{domain}/invitation-response/?action=reject&receiver_org_id={org.id}&other_org_id={other_org.id}&role={role}&primary=1"
+    contacts = EmployerContact.objects.filter(employer=recruiter_org, is_primary=True)
+    print(contacts, "contacts")
+    
+    for contact in contacts:
+        accept_url = f"{protocol}://{domain}/invitation-response/?action=accept&receiver_org_id={employer_org.id}&other_org_id={recruiter_org.id}&role=recruiter"
+        reject_url = f"{protocol}://{domain}/invitation-response/?action=reject&receiver_org_id={employer_org.id}&other_org_id={recruiter_org.id}&role=recruiter"
 
-            subject = f"Invitation to collaborate with {other_org.name}"
-            message = f"""
-            Hi {contact.name},
+        subject = f"Collaboration Confirmed with {recruiter_org.name}"
+        message = f"""
+Hi {contact.name},
 
-            Your organization '{org.name}' has received a collaboration invitation from '{other_org.name}'.
+Your organization '{employer_org.name}' has successfully established a collaboration with '{recruiter_org.name}'.
 
-            ✅ Accept: {accept_url}  
-            ❌ Reject: {reject_url}
+✅ Accept: {accept_url}  
+❌ Reject: {reject_url}
 
-            Please respond at your earliest convenience.
+Regards,  
+Your Team
+        """
 
-            Regards,  
-            Your Team
-            """
-            send_mail(subject, message, settings.EMAIL_HOST_USER, [contact.email])
-
-    send(employer_org, recruiter_org, 'employer')
-    send(recruiter_org, employer_org, 'recruiter')
+        if contact.email:
+            send_mail(
+                subject,
+                message,
+                settings.EMAIL_HOST_USER,
+                [contact.email],
+                fail_silently=False
+            )
 
 
 
@@ -1876,7 +1950,7 @@ class EmployerRecruiterOrgStatusListView(ListView):
 
     def get_queryset(self):
         return EmployerRecruiterOrgLink.objects.filter(
-            status__in=['accepted', 'rejected', 'pending']
+            final_status__in=['accepted', 'rejected', 'pending']
         ).select_related(
             'employer_org',
             'recruiter_org',

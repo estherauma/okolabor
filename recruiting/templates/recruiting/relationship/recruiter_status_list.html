@@ -31,41 +31,63 @@
                                 <tr>
                                     <th class="theading-color">{% translate "recruiterStatusEmployerOrganization" %}</th>
                                     <th class="theading-color">{% translate "recruiterStatusRecruiterOrganization" %}</th>
-                                    <th class="theading-color">{% translate "recruiterStatusStatus" %}</th>
+                                    <th class="theading-color">{% translate "recruiterStatusEmployerStatus" %}</th>
+                                    <th class="theading-color">{% translate "recruiterStatusRecruiterStatus" %}</th>
+                                    <th class="theading-color">{% translate "recruiterStatusFinalStatus" %}</th>
                                     <th class="theading-color">{% translate "recruiterStatusUpdatedBy" %}</th>
                                     <th class="theading-color">{% translate "recruiterStatusUpdatedAt" %}</th>
                                     <th class="theading-color">{% translate "recruiterStatusActions" %}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                
-
                                 {% for link in links %}
                                 <tr class="text-center">
                                     <td>{{ link.employer_org.name }}</td>
                                     <td>{{ link.recruiter_org.name }}</td>
-                                    <td>{{ link.get_status_display }}</td>
                                     <td>
-                                        {{ link.user_updated_by.name }}
-
+                                        <span class="badge 
+                                            {% if link.employer_status == 'accepted' %} bg-success 
+                                            {% elif link.employer_status == 'rejected' %} bg-danger 
+                                            {% else %} bg-warning {% endif %}">
+                                            {{ link.employer_status|title }}
+                                        </span>
                                     </td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if link.recruiter_status == 'accepted' %} bg-success 
+                                            {% elif link.recruiter_status == 'rejected' %} bg-danger 
+                                            {% else %} bg-warning {% endif %}">
+                                            {{ link.recruiter_status|title }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if link.final_status == 'accepted' %} bg-success 
+                                            {% elif link.final_status == 'rejected' %} bg-danger 
+                                            {% else %} bg-warning {% endif %}">
+                                            {{ link.final_status|title }}
+                                        </span>
+                                    </td>
+                                    <td>{{ link.user_updated_by.name }}</td>
                                     <td>{{ link.updated_at|date:"Y-m-d H:i" }}</td>
                                     <td>
-                                        <i
-                                            class="fa fa-trash text-danger"
-                                            style="cursor: pointer;"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal{{ link.id }}"
-                                            title="{% translate 'recruiterStatusDelete'%}">
+                                        <i class="fa fa-trash text-danger"
+                                        style="cursor: pointer;"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteModal{{ link.id }}"
+                                        title="{% translate 'recruiterStatusDelete'%}">
                                         </i>
                                     </td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="5">{% translate "recruiterStatusNoAssignmentsFound"%}</td>
+                                    <td colspan="8" class="text-center">
+                                        {% translate "recruiterStatusNoAssignmentsFound" %}
+                                    </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
+
                         </table>
                     </div>
                     
