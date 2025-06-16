@@ -6,7 +6,7 @@
             <h3 class="card-title green-color fw-bold mb-1">
                 {% translate "manageUsersWorkerTableTitle" %}
             </h3>
-            <button class="btn btn yellow-button btn-icon ms-auto p-1" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#AddWorkerModal">
+            <button class="btn btn yellow-button btn-icon ms-auto p-1 mb-3" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#AddWorkerModal">
                 +{% translate "manageUsersWorkerTableNewWorker" %}
             </button>
         </div>
@@ -15,15 +15,14 @@
             <div class="col-12">
                 <div class="table-responsive">
                     <table class="table text-nowrap border-bottom" id="workers-list-datatable">
-                        <thead>
+                        <thead style="background-color: #7DBF96;">
                             <tr>
-                                <th class="theading-color text-start">{% translate "manageUsersWorkerTableCurp" %}</th>
-                                <th class="theading-color text-start">{% translate "manageUsersWorkerTableEmail" %}</th>
-                                <th class="theading-color text-start">{% translate "manageUsersWorkerTableFirstName" %}</th>
-                                <th class="theading-color text-start">{% translate "manageUsersWorkerTableLastname" %}</th>
-                                <th class="theading-color text-start">{% translate "manageUsersWorkerTableCreatedAt" %}</th>
-                                <th class="theading-color text-start">{% translate "manageUsersWorkerTableStatus" %}</th>
-                                <th class="theading-color text-start">{% translate "manageUsersWorkerTableActions" %}</th>
+                                <th class="text-start">{% translate "manageUsersWorkerTableCurp" %}</th>
+                                <th class="text-start">{% translate "manageUsersWorkerTableEmail" %}</th>
+                                <th class="text-start">{% translate "manageUsersWorkerTableFirstName" %}</th>
+                                <th class="text-start">{% translate "manageUsersWorkerTableCreatedAt" %}</th>
+                                <th class="text-start">{% translate "manageUsersWorkerTableStatus" %}</th>
+                                <th class="text-start">{% translate "manageUsersWorkerTableActions" %}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -31,8 +30,7 @@
                             <tr class="green-color text-start">
                                 <td>{{ user.curp }}</td>
                                 <td>{{ user.email }}</td>
-                                <td>{{ user.first_name }}</td>
-                                <td>{{ user.last_name }}</td>
+                                <td>{{ user.first_name }} {{ user.last_name }}</td>
                                 <td>{{ user.created_at }}</td>
                                 <td>{{ user.is_active|yesno:_("active,inactive") }}</td>
                                 <td>

@@ -11,31 +11,33 @@
       class="modal-content"
       style="border-radius: 8px"
     >
-      <div class="modal-header border-0">
+      <div class="modal-header" style="background-color: #7DBF96;">
         <h5
-          class="modal-title w-100 text-center fw-bold modal-title-custom"
+          class="modal-title text-white"
           id="confirmationModalLabel"
         >
-           {% translate "assignEmployer" %}
+           {% translate "manageUsersRecruitersAssignEmployer" %}
         </h5>
       </div>
       <div class="modal-body text-start">
         <p class="mb-4 modal-subtitle-custom text-center" >
-           {% translate "doYouWantToWorkWithNewEmployer" %}
+           {% translate "manageUsersRecruitersDoYouWantToWorkWithNewEmployer" %}
         </p>
           <div class="d-flex justify-content-center gap-2 mt-4">
             <button
               type="button"
-              class="btn grey-button modal-buttons-custom"
+              class="btn"
               data-bs-dismiss="modal"
+              style='background-color:#9A9898; color:white'
             >
-               {% translate "No" %}
+               {% translate "manageUsersRecruitersNo" %}
             </button>
             <button
               type="submit"
-              class="btn light-green-button modal-buttons-custom"
+              class="btn"
+              style='background-color:#7DBF96; color:white'
             >
-               {% translate "Yes" %}
+               {% translate "manageUsersRecruitersYes" %}
             </button>
           </div>
       </div>
