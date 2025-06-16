@@ -55,6 +55,11 @@ class AuditableModel(BaseModel):
 
         self.save(update_fields=['deleted', 'deleted_by', 'deleted_at'])  # explicitly save only updated fields
 
+    def hard_delete(self, *args, **kwargs):
+        """Hard delete — permanently removes the record"""
+        print(f'Hard deleting object: {self.pk}')
+        super().delete(*args, **kwargs)
+
 
 
 auditable_fields = [
