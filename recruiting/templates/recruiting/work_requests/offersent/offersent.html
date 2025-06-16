@@ -2,22 +2,22 @@
 {% load user_role_tags %}
 {% load static %}
 <div class="tab-pane" id="tab3">
-    <div class="table-responsive">
-        <div class="d-flex justify-content-end my-2">
-            <button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnOfferSentSettingsModal">
-                <i aria-hidden="true" class="fa fa-cog"></i>
-            </button>
-          {% if request.user|has_group:"admin" or request.user|has_group:"recruiter_admin" or request.user|has_group:"recruiter" %}
-            <button class="btn btn-secondary ms-2" id="assignWorkRequestOfferBtn" style="display: none;">
-                <i class="fa fa-tasks me-1"></i>
-                {% translate "workRequestAddWorkerOfferSentAssignWorkRequest" %}
-            </button>
-              <button class="btn btn-warning" id="copyOfferBtn">
-                  <i class="fa fa-copy me-1"></i>
-                  {% translate "workRequestAddWorkerOfferSentCopyWorkers" %}
+    
+        <div class="d-flex justify-content-end mb-2">
+          
+          <div>
+            {% if request.user|has_group:"admin" or request.user|has_group:"recruiter_admin" or request.user|has_group:"recruiter" %}
+              <button class="btn dark-green-button ms-2" id="assignWorkRequestOfferBtn" style="display: none;">
+                  <i class="fa fa-tasks me-1"></i>
+                  {% translate "assignWorkRequest" %}
               </button>
-          {% endif %}
-            <button id="cancel-offer-btn" class="btn btn-danger">{% translate "workRequestAddWorkerOfferSentCancelOffer"%}</button>
+                <button class="btn dark-green-button ms-3 ml-2" id="copyOfferBtn">
+                    <i class="fa fa-copy me-1"></i>
+                    {% translate "copyWorkers" %}
+                </button>
+            {% endif %}
+              <button id="cancel-offer-btn" class="btn dark-green-button ms-3">{% translate "cancelOffer"%}</button>
+          </div>
         </div>
 
 
@@ -131,26 +131,26 @@
               data-url="{% url 'recruiting_web:copy_workers' %}"
               data-get-roles-url="{% url 'recruiting_web:get_roles' %}"
               data-csrf="{{ csrf_token }}">
-          <div class="modal-header" style="background-color: #7DBF96;">
-            <h5 class="modal-title text-white" id="copyModalLabel">{% translate "workRequestAddWorkerCopyWorkersToAnotherWorkRequest" %}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'workRequestAddWorkerOfferSentClose'%}"></button>
+          <div class="modal-header">
+            <h5 class="modal-title" id="copyModalLabel">{% translate "copyWorkersToAnotherWorkRequest" %}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <label for="target_offer_work_request">{% translate "workRequestAddWorkerOfferSentSelectWorkRequest" %}:</label>
+            <label for="target_offer_work_request">{% translate "selectWorkRequest" %}:</label>
             <select name="work_request" id="target_offer_work_request" class="form-select" required>
-              <option value="" disabled selected>{% translate "workRequestAddWorkerOfferSentSelectAWorkRequest" %}</option>
+              <option value="" disabled selected>{% translate "Select a work request" %}</option>
               {% for wr in work_requests %}
                 <option value="{{ wr.id }}">{{ wr.name }}</option>
               {% endfor %}
             </select>
-            <label for="role_offer_id">{% translate "workRequestAddWorkerOfferSentSelectRole" %}:</label>
+            <label for="role_offer_id">{% translate "selectRole" %}:</label>
             <select name="role" id="role_offer_id" class="form-select" required>
-              <option value="" disabled selected>{% translate "workRequestAddWorkerOfferSentSelectARole" %}</option>
+              <option value="" disabled selected>{% translate "Select a role" %}</option>
             </select>
             <input type="hidden" name="status" value="assigned">
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn" id="copySubmitBtn" style='background-color:#7DBF96; color:white'>{% translate "workRequestAddWorkerOfferSentAddWorkers" %}</button>
+            <button type="submit" class="btn btn-success" id="copySubmitBtn">{% translate "addWorkers" %}</button>
           </div>
         </form>
       </div>

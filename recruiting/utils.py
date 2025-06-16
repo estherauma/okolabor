@@ -100,7 +100,6 @@ def get_sector_choices():
 
         return choices
     except Exception as e:
-        print("[get_sector_choices] Error:", e)
         return []
     
 def calculate_total_experience(user):

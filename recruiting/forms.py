@@ -19,10 +19,11 @@ from django.conf import settings
 class EmployerForm(forms.ModelForm):
     class Meta:
         model = Organization
-        fields = ['name', 'email', 'phone', 'website',
-                  'address', 'city', 'state', 'country',
-                  'zip_code', 'description', 'type'
-                  ]
+        fields = [
+            'name', 'email', 'phone', 'website',
+            'address', 'city', 'state', 'country',
+            'zip_code', 'description'
+        ]
 
         labels = {
             'name': _('addEmployerName'),
@@ -35,7 +36,6 @@ class EmployerForm(forms.ModelForm):
             'country': _('addEmployerCountry'),
             'zip_code': _('addEmployerZipCode'),
             'description': _('addEmployerDescription'),
-            'type': _('addEmployerOrganizationType'),
         }
 
         widgets = {
@@ -48,12 +48,13 @@ class EmployerForm(forms.ModelForm):
             'state': forms.TextInput(attrs={'class': 'form-control'}),
             'country': forms.TextInput(attrs={'class': 'form-control'}),
             'zip_code': forms.TextInput(attrs={'class': 'form-control'}),
-            'type': forms.Select(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
-        super(EmployerForm, self).__init__(*args, **kwargs)
-        self.fields['type'].initial = 'recruiter'
+        super().__init__(*args, **kwargs)
+        self.fields['description'].required = False
+
 
 
 class WorkRequestForm(forms.ModelForm):
