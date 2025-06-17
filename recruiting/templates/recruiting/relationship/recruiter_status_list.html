@@ -42,8 +42,8 @@
 
                                 {% for link in links %}
                                 <tr class="text-center">
-                                    <td>{{ link.employer_org.name }}</td>
-                                    <td>{{ link.recruiter_org.name }}</td>
+                                    <td> <a  href="{% url 'recruiting_web:employer_detail' link.employer_org.pk %}">{{ link.employer_org.name }}</a> </td>
+                                    <td> <a  href="{% url 'recruiting_web:recruiter_org_detail' link.recruiter_org.pk %}">{{ link.recruiter_org.name }}</a></td>
                                     <td>{{ link.get_status_display }}</td>
                                     <td>
                                         {{ link.user_updated_by.name }}
