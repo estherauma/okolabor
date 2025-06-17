@@ -155,45 +155,39 @@ class RejectRoleAPIView(APIView):
         
 class WorkerConfirmedOrganizationsAPIView(ListAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = EmployerRecruiterPairSerializer
+    serializer_class = OrganizationSummarySerializer  # Use the flat serializer
 
     @swagger_auto_schema(
-        operation_summary='List confirmed employer–recruiter pairs for the authenticated worker',
+        operation_summary='List confirmed employer–recruiter orgs for the authenticated worker',
         tags=['Worker - Confirmed Employer-Recruiter Pairs']
     )
     def get(self, request, *args, **kwargs):
         worker = request.user
 
-        # Fetch confirmed assignments
         confirmed_assignments = WorkAssignment.objects.filter(
             worker=worker,
             status='confirmed',
-            work_request__isnull=False
         ).select_related('work_request__employer')
+        
 
-        seen_pairs = set()
+        seen_org_ids = set()
         result = []
 
         for assignment in confirmed_assignments:
             employer = assignment.work_request.employer
-            if not employer:
-                continue
+            if employer and employer.id not in seen_org_ids:
+                seen_org_ids.add(employer.id)
+                result.append(employer)
 
-            # Get recruiters linked to this employer
-            recruiter_links = RecruiterOrganizationEmployer.objects.filter(
-                employer_organization=employer
-            ).select_related('recruiter_organization')
+            recruiter_links = EmployerRecruiterOrgLink.objects.filter(
+                employer_org=employer
+            ).select_related('recruiter_org')
 
             for link in recruiter_links:
-                recruiter = link.recruiter_organization
-                pair_key = (employer.id, recruiter.id)
-
-                if pair_key not in seen_pairs:
-                    seen_pairs.add(pair_key)
-                    result.append({
-                        'employer': employer,
-                        'recruiter': recruiter
-                    })
+                recruiter = link.recruiter_org
+                if recruiter and recruiter.id not in seen_org_ids:
+                    seen_org_ids.add(recruiter.id)
+                    result.append(recruiter)
 
         serializer = self.get_serializer(result, many=True)
         return Response(serializer.data)
