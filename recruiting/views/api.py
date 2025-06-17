@@ -1,9 +1,9 @@
 
 from drf_yasg.utils import swagger_auto_schema
-from recruiting.models import Organization, Role, WorkRequests, WorkAssignment
+from recruiting.models import Organization, Role, WorkRequests, WorkAssignment,EmployerRecruiterOrgLink,RecruiterOrganizationEmployer
 from recruiting.serializer import (
     EmployerSerializer, RoleSerializer,
-    WRRoleSerializer, WorkRequestSerializer,OrganizationSummarySerializer
+    WRRoleSerializer, WorkRequestSerializer,OrganizationSummarySerializer,EmployerRecruiterPairSerializer
 )
 from rest_framework import status
 from rest_framework.generics import (
@@ -155,31 +155,45 @@ class RejectRoleAPIView(APIView):
         
 class WorkerConfirmedOrganizationsAPIView(ListAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = OrganizationSummarySerializer
+    serializer_class = EmployerRecruiterPairSerializer
 
     @swagger_auto_schema(
-        operation_summary='List confirmed employers and recruiters for the authenticated worker',
-        tags=['Worker - Confirmed Organizations']
+        operation_summary='List confirmed employer–recruiter pairs for the authenticated worker',
+        tags=['Worker - Confirmed Employer-Recruiter Pairs']
     )
     def get(self, request, *args, **kwargs):
         worker = request.user
-        
-        print(worker,"worker")
 
+        # Fetch confirmed assignments
         confirmed_assignments = WorkAssignment.objects.filter(
             worker=worker,
             status='confirmed',
-            work_request__employer__isnull=False
+            work_request__isnull=False
         ).select_related('work_request__employer')
-        
-        print(confirmed_assignments,"confirmed_assignments")
 
-        # Use set to remove duplicates, then convert to list
-        organizations = list({
-            assignment.work_request.employer
-            for assignment in confirmed_assignments
-            if assignment.work_request and assignment.work_request.employer
-        })
+        seen_pairs = set()
+        result = []
 
-        serializer = self.get_serializer(organizations, many=True)
+        for assignment in confirmed_assignments:
+            employer = assignment.work_request.employer
+            if not employer:
+                continue
+
+            # Get recruiters linked to this employer
+            recruiter_links = RecruiterOrganizationEmployer.objects.filter(
+                employer_organization=employer
+            ).select_related('recruiter_organization')
+
+            for link in recruiter_links:
+                recruiter = link.recruiter_organization
+                pair_key = (employer.id, recruiter.id)
+
+                if pair_key not in seen_pairs:
+                    seen_pairs.add(pair_key)
+                    result.append({
+                        'employer': employer,
+                        'recruiter': recruiter
+                    })
+
+        serializer = self.get_serializer(result, many=True)
         return Response(serializer.data)
