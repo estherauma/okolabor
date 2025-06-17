@@ -153,7 +153,7 @@ class RejectRoleAPIView(APIView):
         except WorkAssignment.DoesNotExist:
             return Response({"detail": "Offer not found or already processed."}, status=status.HTTP_404_NOT_FOUND)
         
-class WorkerConfirmedRecruitersAPIView(ListAPIView):
+class WorkerConfirmedOrganizationsAPIView(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = OrganizationSummarySerializer
 
