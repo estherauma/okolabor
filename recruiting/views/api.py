@@ -163,23 +163,23 @@ class WorkerConfirmedOrganizationsAPIView(ListAPIView):
     )
     def get(self, request, *args, **kwargs):
         worker = request.user
-        
-        print(worker,"worker")
 
         confirmed_assignments = WorkAssignment.objects.filter(
             worker=worker,
             status='confirmed',
-            work_request__employer__isnull=False
-        ).select_related('work_request__employer')
-        
-        print(confirmed_assignments,"confirmed_assignments")
+            work_request__isnull=False
+        ).select_related('work_request__employer', 'work_request__recruiter')
 
-        # Use set to remove duplicates, then convert to list
-        organizations = list({
-            assignment.work_request.employer
-            for assignment in confirmed_assignments
-            if assignment.work_request and assignment.work_request.employer
-        })
+        # Collect both employer and recruiter organizations
+        organizations_set = set()
+        for assignment in confirmed_assignments:
+            work_request = assignment.work_request
+            if work_request:
+                if work_request.employer:
+                    organizations_set.add(work_request.employer)
+                if hasattr(work_request, 'recruiter') and work_request.recruiter:
+                    organizations_set.add(work_request.recruiter)
 
+        organizations = list(organizations_set)
         serializer = self.get_serializer(organizations, many=True)
         return Response(serializer.data)
