@@ -1,6 +1,6 @@
 
 from drf_yasg.utils import swagger_auto_schema
-from recruiting.models import Organization, Role, WorkRequests, WorkAssignment
+from recruiting.models import Organization, Role, WorkRequests, WorkAssignment,EmployerRecruiterOrgLink
 from recruiting.serializer import (
     EmployerSerializer, RoleSerializer,
     WRRoleSerializer, WorkRequestSerializer,OrganizationSummarySerializer
@@ -153,13 +153,13 @@ class RejectRoleAPIView(APIView):
         except WorkAssignment.DoesNotExist:
             return Response({"detail": "Offer not found or already processed."}, status=status.HTTP_404_NOT_FOUND)
         
-class WorkerConfirmedOrganizationsAPIView(ListAPIView):
+class WorkerConfirmedRecruitersAPIView(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = OrganizationSummarySerializer
 
     @swagger_auto_schema(
-        operation_summary='List confirmed employers and recruiters for the authenticated worker',
-        tags=['Worker - Confirmed Organizations']
+        operation_summary='List recruiter organizations (final_status=accepted) for the worker’s confirmed assignments',
+        tags=['Worker - Confirmed Recruiter Organizations']
     )
     def get(self, request, *args, **kwargs):
         worker = request.user
@@ -168,18 +168,23 @@ class WorkerConfirmedOrganizationsAPIView(ListAPIView):
             worker=worker,
             status='confirmed',
             work_request__isnull=False
-        ).select_related('work_request__employer', 'work_request__recruiter')
+        ).select_related('work_request__employer')
 
-        # Collect both employer and recruiter organizations
-        organizations_set = set()
+        recruiter_orgs_set = set()
+
         for assignment in confirmed_assignments:
-            work_request = assignment.work_request
-            if work_request:
-                if work_request.employer:
-                    organizations_set.add(work_request.employer)
-                if hasattr(work_request, 'recruiter') and work_request.recruiter:
-                    organizations_set.add(work_request.recruiter)
+            employer = assignment.work_request.employer
+            if employer:
+                recruiter_links = EmployerRecruiterOrgLink.objects.filter(
+                    employer_org=employer,
+                    final_status='accepted'
+                ).select_related('recruiter_org')
 
-        organizations = list(organizations_set)
-        serializer = self.get_serializer(organizations, many=True)
+                for link in recruiter_links:
+                    recruiter = link.recruiter_org
+                    if recruiter:
+                        recruiter_orgs_set.add(recruiter)
+
+        recruiter_orgs = list(recruiter_orgs_set)
+        serializer = self.get_serializer(recruiter_orgs, many=True)
         return Response(serializer.data)
