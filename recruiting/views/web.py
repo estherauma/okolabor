@@ -575,12 +575,15 @@ class WorkRequestEditView(LoginRequiredMixin, View):
 class WorkRequestDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         user = request.user
-        work_request = get_object_or_404(WorkRequests, pk=pk,deleted=False)
-
+        work_request = get_object_or_404(WorkRequests, pk=pk)
         if user.groups.filter(name='admin').exists():
             work_request_name = work_request.name
-            work_request.delete(user=user)
-            messages.success(request, _('WorkRequest "%(work_request_name)s" Deleted Successfully.') % {'work_request_name': work_request_name})
+            work_request.roles.all().delete()
+            work_request.hard_delete()
+            messages.success(
+                request,
+                _('WorkRequest "%(work_request_name)s" successfully deleted.') % {'work_request_name': work_request_name}
+            )
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
             return redirect('recruiting_web:workrequest_list')
@@ -588,6 +591,7 @@ class WorkRequestDeleteView(LoginRequiredMixin, View):
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
             return HttpResponseForbidden(_("You do not have permission to delete this work request."))
+
 
 
 class AddWorkersWorkRequests(View):
