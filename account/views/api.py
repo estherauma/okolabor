@@ -26,6 +26,7 @@ from common.email import EmailHelper
 from jaguar.tasks import check_passport_match
 from django.contrib.auth.models import Group
 from django.utils.translation import gettext as _
+from django.utils import translation
 from rest_framework.permissions import IsAuthenticated
 from common.email import EmailHelper
 
@@ -380,6 +381,7 @@ class VerifyOTP(APIView):
                 user.is_verified = True
                 user.is_active = True
                 user.save()
+                translation.activate(user.language)
                 # update user preferences with the phone number
                 phone_number = request.data.get('phone_number')
                 if phone_number:
