@@ -644,7 +644,7 @@
                     <input class="form-check-input" type="radio" name="language_level" value="{{ level.value|lower }}"
                            id="lang_{{ level.value|lower }}"
                            {% if preferences.language_level == level.value|lower %}checked{% endif %}
-                           onclick="toggleVideoUpload()">
+                           onclick="toggleEditLanguageVideoUpload()">
                     <label class="form-check-label" for="lang_{{ level.value|lower }}">{{ level.label }}</label>
                 </div>
             {% endfor %}
@@ -754,12 +754,13 @@
 {% endif %}
     {% for key, value in preferences.items %}
       <div class="col-md-12 col-sm-6 mb-3" style="position: relative;">
-        <p class="gray-color">{% translate key %}</p>
-
+        <p style="font-size: 1rem; font-weight: bold;">{% translate key %}</p>
+        <p class="gray-color">{% translate value %}</p>
         {% if key == "english_proficiency" and documents.english_proficiency %}
 
           <div class="col-12 mb-3">
             <p class="gray-color">{% translate "workerDetailsEnglishProficiency"%}</p>
+            <p class="gray-color">{{value}}</p>
             <div class="row">
               <div class="col-md-4 col-sm-6 mb-3">
                 {% with documents.english_proficiency.path as clean_path %}
@@ -861,13 +862,17 @@
     {% for kind, docs in documents.items %}
       {% if kind != "passport" and kind != "english_proficiency" %}
         <div class="col-12 mb-3">
-          <p class="gray-color">{% translate "workerDetailsKind" %}</p>
+          <div>
+          {% comment %} <p class="gray-color">{% translate "workerDetailsKind" %}</p> {% endcomment %}
+           <p style="font-size: 1rem; font-weight: bold;">{{kind}}</p>
+          </div>
           <div class="row">
             {% for doc in docs %}
               <div class="col-md-4 col-sm-6 mb-3">
                 {% with doc.path as clean_path %}
                   {% with clean_path|lower as filename %}
                     {% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename or ".gif" in filename %}
+                    {% comment %} <p>{{kind}}</p> {% endcomment %}
                       <img
                         src="{{ base_url }}{{ clean_path }}"
                         alt="{{ kind }}"
@@ -985,17 +990,28 @@
   }
 
    function toggleVideoUpload() {
-      const selectedLevel = document.querySelector('#editLanguageModal input[name="language_level"]:checked');
-      const videoUpload = document.querySelector('#editLanguageModal #videoUploadSection');
+    const selectedLevel = document.querySelector('input[name="language_level"]:checked');
+    const videoUpload = document.getElementById('videoUploadSection');
 
-      if (selectedLevel) {
-          if (selectedLevel.value === "none") {
-              videoUpload.style.display = "none";
-          } else {
-              videoUpload.style.display = "block";
-          }
-      }
-  }
+    if (selectedLevel) {
+        if (selectedLevel.value === "fluent") {
+            videoUpload.style.display = "block";
+        } else {
+            videoUpload.style.display = "none";
+        }
+    }
+}
+
+function toggleEditLanguageVideoUpload() {
+    const selectedLevel = document.querySelector('#editLanguageModal input[name="language_level"]:checked');
+    const videoUpload = document.querySelector('#editLanguageModal #videoUploadSection');
+
+    if (selectedLevel && selectedLevel.value === "fluent") {
+        videoUpload.style.display = "block";
+    } else {
+        videoUpload.style.display = "none";
+    }
+}
 
   document.addEventListener("DOMContentLoaded", function () {
       const modalElement = document.getElementById("editLanguageModal");
@@ -1003,7 +1019,7 @@
       // Ensure Bootstrap modal event works
       if (modalElement) {
           modalElement.addEventListener("shown.bs.modal", function () {
-              toggleVideoUpload();
+              toggleEditLanguageVideoUpload();
           });
       }
   });

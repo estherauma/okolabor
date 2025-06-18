@@ -545,6 +545,8 @@ class WorkerDetailsView(View):
         work_environment_label = static_content.get_label_for_preference_field_two("workEnvironment")
         language_options = static_content.get_english_proficiency_options()
         language_label = static_content.get_label_for_field("englishProficiency")
+        print(document_dict,"preference_data")
+        print(preference_data,"preference")
         context = {
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
             'worker': worker,
@@ -896,7 +898,7 @@ class UploadLanguageProficiencyView(View):
         )
 
         if language_level != "none" and language_video:
-            folder = "uploads/english_videos"
+            folder = "uploads/explanation"
             filename = language_video.name
             relative_path = os.path.join(folder, filename)
             full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
