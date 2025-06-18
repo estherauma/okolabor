@@ -1877,7 +1877,7 @@ class EmployerRecruiterOrgLinkDeleteView(LoginRequiredMixin, View):
 class SummaryViews(View):
     def get(self, request, pk, role_id):
         work_assign_form = WorkerAssignmentForm()
-        # form = FilterWorkExperienceForm()
+        form = FilterWorkExperienceForm()
         filter_form = AdvancedFilterForm()
 
         search_query = request.GET.get('search', '')
