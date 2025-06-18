@@ -79,10 +79,9 @@
             
                     <!-- Add Another Filter Button -->
                     <button class="btn light-green-button min-content-width mt-3" type="button" onclick="addAnotherExperience()">
-                        <span><i class="fe fe-plus"></i></span>
+                        
 
                         {% translate "workersListAddAnotherExperience" %}
-
                     </button>
             
                     <!-- Additional Filters Section (Previously separate) -->
@@ -229,9 +228,8 @@
             <div class="row mb-2">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="d-flex align-items-center justify-content-end">
-                        <button class="btn dark-green-button ms-3" data-bs-toggle="modal" data-bs-target="#workerAssignmentModal" disabled>+{% translate "workersListAddTo" %}</button>
+                        <button class="btn dark-green-button ms-3" data-bs-toggle="modal" data-bs-target="#workerAssignmentModal" disabled>{% translate "workersListAddTo" %}</button>
                         <a class="btn dark-green-button ms-3" href="{% url 'recruiting_web:recruiter_create_worker' %}">
-                            <span><i class="fe fe-plus"></i></span>
                             {% translate "workersListAddWorker" %}
                         </a>
                     </div>
