@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-18 05:22+0300\n"
+"POT-Creation-Date: 2025-06-18 05:52+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -303,32 +303,44 @@ msgstr "Group"
 msgid "manageUsersEmployersTableActions"
 msgstr "Actions"
 
-#: account/templates/employers/employer_list.html:42
-#: account/templates/recruiter/recruiter_modals/recruiters_data.html:45
-#: account/templates/workers/workers_list.html:35
-msgid "active,inactive"
-msgstr ""
+#: account/templates/employers/employer_list.html:44
+msgid "webCommonActive"
+msgstr "Active"
 
-#: account/templates/employers/employer_list.html:63
-#: account/templates/employers/employer_list.html:91
-msgid "employerListDelete"
-msgstr ""
+#: account/templates/employers/employer_list.html:46
+#, fuzzy
+#| msgid "accountInactive"
+msgid "webCommonInactive"
+msgstr "Inactive"
 
-#: account/templates/employers/employer_list.html:83
-msgid "employerListConfirmDelete"
-msgstr ""
+#: account/templates/employers/employer_list.html:69
+#: account/templates/employers/employer_list.html:97
+#, fuzzy
+#| msgid "employersDelete"
+msgid "webCommonDelete"
+msgstr "Delete"
 
-#: account/templates/employers/employer_list.html:84
-msgid "employerListClose"
-msgstr ""
+#: account/templates/employers/employer_list.html:89
+#: account/templates/workers/workers_list.html:83
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:233
+#, fuzzy
+#| msgid "employersConfirmDelete"
+msgid "webCommonConfirmDelete"
+msgstr "Are you sure you want to delete?"
 
-#: account/templates/employers/employer_list.html:87
+#: account/templates/employers/employer_list.html:90
+msgid "webCommonClose"
+msgstr "Close"
+
+#: account/templates/employers/employer_list.html:93
 msgid "employerListAreYouSureYouWantToDelete"
 msgstr ""
 
-#: account/templates/employers/employer_list.html:90
-msgid "employerListCancel"
-msgstr ""
+#: account/templates/employers/employer_list.html:96
+#, fuzzy
+#| msgid "webCommonClose"
+msgid "webCommonCancel"
+msgstr "Cancel"
 
 #: account/templates/invite_email.html:8
 msgid "inviteEmailDocument"
@@ -376,8 +388,10 @@ msgid "notificationsNew"
 msgstr ""
 
 #: account/templates/notifications.html:38
-msgid "See More"
-msgstr ""
+#, fuzzy
+#| msgid "employersDelete"
+msgid "webCommonSeeMore"
+msgstr "Delete"
 
 #: account/templates/notifications.html:57
 msgid "notificationsCategory"
@@ -611,6 +625,11 @@ msgstr "Group"
 #: account/templates/recruiter/recruiter_modals/recruiters_data.html:32
 msgid "manageUsersRecruitersTableActions"
 msgstr "Actions"
+
+#: account/templates/recruiter/recruiter_modals/recruiters_data.html:45
+#: account/templates/workers/workers_list.html:35
+msgid "active,inactive"
+msgstr ""
 
 #: account/templates/recruiter/recruiter_modals/recruiters_data.html:69
 #: account/templates/recruiter/recruiter_modals/recruiters_data.html:98
@@ -848,11 +867,6 @@ msgstr "Confirm Delete"
 #: recruiting/templates/recruiting/workers/offer_sent_modal.html:13
 msgid "workersListClose"
 msgstr "Close"
-
-#: account/templates/workers/workers_list.html:83
-#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:233
-msgid "areYouSureYouWantToDelete"
-msgstr ""
 
 #: account/templates/workers/workers_list.html:87
 #: recruiting/templates/recruiting/workers/list.html:424
@@ -5436,48 +5450,60 @@ msgid "cropType"
 msgstr "Crop Type"
 
 #: theme/forms.py:190
+#, fuzzy
+#| msgid "planting"
 msgid "Planting"
-msgstr ""
+msgstr "Planting"
 
 #: theme/forms.py:190
 msgid "planting"
 msgstr "Planting"
 
 #: theme/forms.py:191
+#, fuzzy
+#| msgid "cultivating"
 msgid "Cultivating"
-msgstr ""
+msgstr "Cultivating"
 
 #: theme/forms.py:191
 msgid "cultivating"
 msgstr "Cultivating"
 
 #: theme/forms.py:192
+#, fuzzy
+#| msgid "harvesting"
 msgid "Harvesting"
-msgstr ""
+msgstr "Harvesting"
 
 #: theme/forms.py:192
 msgid "harvesting"
 msgstr "Harvesting"
 
 #: theme/forms.py:193
+#, fuzzy
+#| msgid "packaging"
 msgid "Packaging"
-msgstr ""
+msgstr "Packaging"
 
 #: theme/forms.py:193
 msgid "packaging"
 msgstr "Packaging"
 
 #: theme/forms.py:194
+#, fuzzy
+#| msgid "gradingAndSorting"
 msgid "Grading and sorting"
-msgstr ""
+msgstr "Grading and sorting"
 
 #: theme/forms.py:194
 msgid "gradingAndSorting"
 msgstr "Grading and sorting"
 
 #: theme/forms.py:195
+#, fuzzy
+#| msgid "other"
 msgid "Other"
-msgstr ""
+msgstr "Other"
 
 #: theme/forms.py:195
 msgid "other"
@@ -5508,8 +5534,10 @@ msgid "5+years"
 msgstr "5+ years"
 
 #: theme/forms.py:210
+#, fuzzy
+#| msgid "noExperience"
 msgid "minimumExperience"
-msgstr ""
+msgstr "No experience"
 
 #: theme/forms.py:216 theme/forms.py:267
 msgid "filterSectionAnimals"
@@ -5950,46 +5978,6 @@ msgstr "Email"
 #: theme/templates/ltr/password_reset_form.html:25
 msgid "passwordResetFormSendResetLink"
 msgstr "Send a reset a link"
-
-#: theme/templates/users/users.html:6
-msgid "adminManageUsers"
-msgstr ""
-
-#: theme/templates/users/users.html:17
-msgid "adminExistingUsers"
-msgstr ""
-
-#: theme/templates/users/users.html:18
-msgid "adminNewUser"
-msgstr ""
-
-#: theme/templates/users/users.html:24 theme/templates/users/users.html:77
-msgid "adminUser"
-msgstr ""
-
-#: theme/templates/users/users.html:25
-msgid "adminLastAccessed"
-msgstr ""
-
-#: theme/templates/users/users.html:70
-msgid "adminPendingUsers"
-msgstr ""
-
-#: theme/templates/users/users.html:78
-msgid "adminInvited"
-msgstr ""
-
-#: theme/templates/users/users.html:99
-msgid "adminUnassignedEmployers"
-msgstr ""
-
-#: theme/templates/users/users.html:106
-msgid "adminEmployerName"
-msgstr ""
-
-#: theme/templates/users/users.html:107
-msgid "adminCreated"
-msgstr ""
 
 #: theme/views.py:39
 msgid "loginLogoutMessage"
