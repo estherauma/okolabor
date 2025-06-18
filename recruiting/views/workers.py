@@ -14,7 +14,7 @@ from django.db.models import Q
 from account.models import User, UserWorkExperience, UserJobExperience,UserJobExperienceDetails
 from common.views import BaseCreateView
 from recruiting.forms import WorkerCreateForm, WorkExperienceCreateForm,WorkerAssignmentForm
-from theme.forms import AdvancedFilterForm, FilterWorkExperienceForm,DynamicWorkExperienceForm
+from theme.forms import AdvancedFilterForm,DynamicWorkExperienceForm
 from account.models import UserPreference,UserDocuments
 from recruiting.models import WorkAssignment,WorkAssignment,WorkRequests,Role
 from django.views.decorators.csrf import csrf_exempt

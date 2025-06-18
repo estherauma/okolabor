@@ -2,6 +2,7 @@ import os
 import polib
 from django.core.management.base import BaseCommand
 from content.models import AggregatedContent
+from collections import defaultdict
 
 class Command(BaseCommand):
     help = 'Export CMS additionalText labels to .po files for English and Spanish'
@@ -51,6 +52,15 @@ class Command(BaseCommand):
             return
 
         po = polib.pofile(po_path)
+
+        # Detect duplicates
+        duplicates = self.find_duplicates(po)
+        if duplicates:
+            self.stdout.write(self.style.WARNING(f'Duplicate msgids found in {po_path}:'))
+            for msgid, entries in duplicates.items():
+                self.stdout.write(f'  "{msgid}" appears {len(entries)} times at lines: {[e.linenum for e in entries]}')
+            print('--------------------------------------------------')
+
         updated_keys = []
         for key, value in translations.items():
             entry = po.find(key)
@@ -63,3 +73,26 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS(f'Updated {len(updated_keys)} keys in {po_path}'))
         else:
             self.stdout.write(self.style.WARNING(f'No matching keys found in {po_path}. No changes made.'))
+            
+        print_keys_without_translation = self.print_keys_without_translation(po, language_code)
+
+    def find_duplicates(self, po):
+        msgid_map = defaultdict(list)
+        for entry in po:
+            msgid_map[entry.msgid].append(entry)
+        return {msgid: entries for msgid, entries in msgid_map.items() if len(entries) > 1}
+            # self.print_keys_without_translation(po, language_code)
+
+
+
+    def print_keys_without_translation(self, po, language_code):
+        untranslated_keys = [entry.msgid for entry in po if not entry.msgstr]
+        if untranslated_keys:
+            self.stdout.write(self.style.WARNING(f'The following {len(untranslated_keys)} keys are missing translations in {language_code}:'))
+            for key in untranslated_keys:
+                self.stdout.write(f'- {key}')
+            print('--------------------------------------------------')
+        else:
+            self.stdout.write(self.style.SUCCESS('All keys have translations.'))
+            
+    
