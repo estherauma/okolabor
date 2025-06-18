@@ -111,3 +111,7 @@ class OrganizationSummarySerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
         fields = ['name', 'type', 'email']
+
+class EmployerRecruiterPairSerializer(serializers.Serializer):
+    employer = OrganizationSummarySerializer()
+    recruiter = OrganizationSummarySerializer()

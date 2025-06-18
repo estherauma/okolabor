@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from account.models import (
-    User, UserJobExperience, UserDocuments, UserJobExperienceDetails, UserNotification, UserPreference,
-    UserReportedProblem, UserWorkExperience,LanguageChoices
+    User, UserJobExperience, UserDocuments, UserJobExperienceDetails,
+    UserNotification, UserPreference,
+    UserWorkExperience,LanguageChoices
 )
 import re
 from common.twilio import OTPVerification
@@ -246,11 +247,10 @@ class UserJobExperienceSerializer(serializers.ModelSerializer):
 
 
 
-class ReportAProblemSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserReportedProblem
-        fields = ['topic', 'description']
-        read_only_fields = ['id', 'user_id']
+class ReportAProblemSerializer(serializers.Serializer):
+    is_anonymous = serializers.BooleanField()
+    report_recipient = serializers.EmailField()
+    description = serializers.CharField()
 
 
 class UserNotificationSerializer(serializers.ModelSerializer):
