@@ -28,7 +28,7 @@ import json
 from datetime import date
 from recruiting.utils import get_sector_choices
 from common.utils import StaticContent
-from recruiting.utils import calculate_total_experience
+from recruiting.utils import calculate_total_experience,calculate_profile_completion
 
 
 ONBOARDING_STEPS = [
@@ -545,10 +545,14 @@ class WorkerDetailsView(View):
         work_environment_label = static_content.get_label_for_preference_field_two("workEnvironment")
         language_options = static_content.get_english_proficiency_options()
         language_label = static_content.get_label_for_field("englishProficiency")
+        
+        profile_completion = calculate_profile_completion(worker)
+
         context = {
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
             'worker': worker,
             'preferences': preference_data,
+            'profile_completion': profile_completion,
             'workplaces': workplaces,
             'preferred_employees': preferred_employees,
             'documents': document_dict,
