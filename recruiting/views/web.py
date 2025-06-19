@@ -96,37 +96,39 @@ class EmployerListView(View):
             employers_list = Organization.objects.filter(type='employer').order_by('-created_at')
 
         elif user.groups.filter(name__in=['recruiter', 'recruiter_admin']).exists():
+            
             recruiter_orgs = Organization.objects.filter(type='recruiter', recruiters=user).order_by('-created_at')
 
-            recruiter_links_1 = EmployerRecruiterOrgLink.objects.filter(recruiter_org__in=recruiter_orgs)
+            
+            recruiter_links_1 = EmployerRecruiterOrgLink.objects.filter(
+                recruiter_org__in=recruiter_orgs,
+                final_status='accepted'
+            )
             employer_ids_1 = recruiter_links_1.values_list('employer_org__id', flat=True)
             employers_1 = Organization.objects.filter(id__in=employer_ids_1, type='employer')
 
-            recruiter_links_2 = RecruiterOrganizationEmployer.objects.filter(recruiter_organization__in=recruiter_orgs)
+            recruiter_links_2 = RecruiterOrganizationEmployer.objects.filter(
+                recruiter_organization__in=recruiter_orgs
+            )
             employer_ids_2 = recruiter_links_2.values_list('employer_organization__id', flat=True)
             employers_2 = Organization.objects.filter(id__in=employer_ids_2, type='employer')
 
             created_employers = Organization.objects.filter(type='employer', created_by=user)
 
             employers_list = (employers_1 | employers_2 | created_employers).distinct()
+            
+            print(employers_1,"employers_1")
+            print(employers_2,"employers_2")
+            print(created_employers,"created_employers")
 
         else:
             employers_list = Organization.objects.none()
-
-        if query:
-            employers_list = employers_list.filter(
-                Q(name__icontains=query) |
-                Q(email__icontains=query) |
-                Q(address__icontains=query) |
-                Q(country__icontains=query) |
-                Q(phone__icontains=query)
-            )
 
         recruiter_organizations = Organization.objects.filter(type='recruiter').order_by('-created_at')
 
         employers_data = []
         for employer in employers_list:
-            links_1 = EmployerRecruiterOrgLink.objects.filter(employer_org=employer)
+            links_1 = EmployerRecruiterOrgLink.objects.filter(employer_org=employer, final_status='accepted')
             recruiter_orgs_1 = set(link.recruiter_org.name for link in links_1)
 
             links_2 = RecruiterOrganizationEmployer.objects.filter(employer_organization=employer)
@@ -149,19 +151,12 @@ class EmployerListView(View):
                 'recruiters': recruiter_org_names
             })
 
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({'employers': employers_data, 'has_more': False})
-
         context = {
             'employers': employers_data,
             'query': query,
             'recruiters': recruiter_organizations
         }
         return render(request, 'recruiting/employers/list.html', context)
-
-
-
-
         
 class EmployerDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
@@ -312,37 +307,39 @@ class EmployerCreateView(CreateView):
 
     def get_initial(self):
         initial = super().get_initial()
-        type_value = self.request.GET.get('type', 'recruiter')  # default to 'recruiter'
+        type_value = self.request.GET.get('type', 'recruiter')
         initial['type'] = type_value
         return initial
 
     def form_valid(self, form):
         org = form.save(commit=False)
 
-        # Get the type from the GET param
         org_type = self.request.GET.get('type', 'recruiter')
         if org_type not in ['recruiter', 'employer']:
-            org_type = 'recruiter'  # fallback/default
+            org_type = 'recruiter'
 
         org.type = org_type
+        org.created_by = self.request.user
         org.save()
 
         user = self.request.user
 
-        # If creating an employer and user is recruiter or recruiter_admin, assign links
         if org_type == 'employer' and user.groups.filter(name__in=['recruiter', 'recruiter_admin']).exists():
-            # Link user as employer recruiter
-            EmployerRecruiter.objects.get_or_create(
-                employer=org,
-                recruiter=user
-            )
-
-            # Also link recruiter orgs
             recruiter_orgs = Organization.objects.filter(type='recruiter', recruiters=user)
+
             for recruiter_org in recruiter_orgs:
                 RecruiterOrganizationEmployer.objects.get_or_create(
                     recruiter_organization=recruiter_org,
                     employer_organization=org
+                )
+                EmployerRecruiterOrgLink.objects.get_or_create(
+                    employer_org=org,
+                    recruiter_org=recruiter_org,
+                    defaults={
+                        'employer_status': 'accepted',
+                        'recruiter_status': 'accepted',
+                        'final_status': 'accepted'
+                    }
                 )
 
         messages.success(self.request, _('Organization created successfully'))
@@ -357,7 +354,6 @@ class EmployerCreateView(CreateView):
 
     def get_success_url(self, pk):
         return reverse('recruiting_web:employer_detail', kwargs={'pk': pk})
-
 
 
 class EmployerDetailView(View):
