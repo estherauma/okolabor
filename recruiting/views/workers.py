@@ -545,10 +545,20 @@ class WorkerDetailsView(View):
         work_environment_label = static_content.get_label_for_preference_field_two("workEnvironment")
         language_options = static_content.get_english_proficiency_options()
         language_label = static_content.get_label_for_field("englishProficiency")
+        
+        latest_assignment = WorkAssignment.objects.filter(
+            worker=worker
+        ).order_by('-assigned_date').first()
+
+        current_status = latest_assignment.status if latest_assignment else 'No Assignment'
+        
+        print(current_status,"current status")
+        
         context = {
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
             'worker': worker,
             'preferences': preference_data,
+            'current_status': current_status,
             'workplaces': workplaces,
             'preferred_employees': preferred_employees,
             'documents': document_dict,
