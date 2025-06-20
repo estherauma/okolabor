@@ -319,27 +319,6 @@ class EmployerRecruiter(AuditableModel):
     def __str__(self):
         return f"{self.recruiter.first_name} -> {self.employer.name}"
 
-class RecruiterOrganizationEmployer(AuditableModel):
-    recruiter_organization = models.ForeignKey(
-        Organization,
-        on_delete=models.CASCADE,
-        related_name='assigned_employers',
-        limit_choices_to={'type': 'recruiter'}
-    )
-    employer_organization = models.ForeignKey(
-        Organization,
-        on_delete=models.CASCADE,
-        related_name='assigned_recruiters',
-        limit_choices_to={'type': 'employer'}
-    )
-
-    class Meta:
-        unique_together = ('recruiter_organization', 'employer_organization')
-
-    def __str__(self):
-        return f"{self.recruiter_organization.name} -> {self.employer_organization.name}"
-
-
 class EmployerContact(AuditableModel):
     employer = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="contacts")
     name = models.CharField(max_length=255)

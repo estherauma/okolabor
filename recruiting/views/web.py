@@ -83,7 +83,6 @@ from recruiting.models import (
     WorkAssignment,
     EmployerContact,
     EmployerRecruiterOrgLink,
-    RecruiterOrganizationEmployer
 )
 
     
@@ -307,37 +306,35 @@ class EmployerCreateView(CreateView):
 
     def get_initial(self):
         initial = super().get_initial()
-        type_value = self.request.GET.get('type', 'recruiter')  # default to 'recruiter'
+        type_value = self.request.GET.get('type', 'recruiter')
         initial['type'] = type_value
         return initial
 
     def form_valid(self, form):
         org = form.save(commit=False)
 
-        # Get the type from the GET param
         org_type = self.request.GET.get('type', 'recruiter')
         if org_type not in ['recruiter', 'employer']:
-            org_type = 'recruiter'  # fallback/default
+            org_type = 'recruiter'
 
         org.type = org_type
+        org.created_by = self.request.user
         org.save()
 
         user = self.request.user
 
-        # If creating an employer and user is recruiter or recruiter_admin, assign links
         if org_type == 'employer' and user.groups.filter(name__in=['recruiter', 'recruiter_admin']).exists():
-            # Link user as employer recruiter
-            EmployerRecruiter.objects.get_or_create(
-                employer=org,
-                recruiter=user
-            )
-
-            # Also link recruiter orgs
             recruiter_orgs = Organization.objects.filter(type='recruiter', recruiters=user)
+
             for recruiter_org in recruiter_orgs:
-                RecruiterOrganizationEmployer.objects.get_or_create(
-                    recruiter_organization=recruiter_org,
-                    employer_organization=org
+                EmployerRecruiterOrgLink.objects.get_or_create(
+                    employer_org=org,
+                    recruiter_org=recruiter_org,
+                    defaults={
+                        'employer_status': 'accepted',
+                        'recruiter_status': 'accepted',
+                        'final_status': 'accepted'
+                    }
                 )
 
         messages.success(self.request, _('Organization created successfully'))
@@ -352,8 +349,6 @@ class EmployerCreateView(CreateView):
 
     def get_success_url(self, pk):
         return reverse('recruiting_web:employer_detail', kwargs={'pk': pk})
-
-
 
 class EmployerDetailView(View):
     def get(self, request, pk):
