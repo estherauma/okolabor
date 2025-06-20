@@ -61,7 +61,7 @@
       data-bs-toggle="modal"
       data-bs-target="#workerShortlistModal{{ worker.id }}"
       data-worker-id="{{ worker.id }}">
-    +{% translate "workerDetailsAddToShortlist" %}
+    {% translate "workerDetailsAddToShortlist" %}
     </button>
 
   {% endif %}
@@ -318,7 +318,6 @@
         </div>
         <div>
             <button class="btn dark-green-button" data-bs-toggle="modal" data-bs-target="#infoModal">
-              <span><i class="fe fe-plus"></i></span>
                 {% translate "workerDetailsAddInformation" %}
             </button>
           {% if preferences %}
