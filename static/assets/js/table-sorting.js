@@ -81,7 +81,7 @@ $(document).ready(function () {
             }],
             "paging": true,   
             "info": true,
-            "searching": false
+            "searching": true 
         });
     } else {
         console.error("DataTables library is not loaded.");

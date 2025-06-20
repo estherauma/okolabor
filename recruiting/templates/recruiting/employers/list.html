@@ -29,7 +29,6 @@
         </button>
     {% endif %}
     <a class="btn dark-green-button" href="{% url 'recruiting_web:employer_create' %}?type=employer">
-      <span><i class="fe fe-plus"></i></span>
       {% translate "employersAddNewEmployer" %}
     </a>
 
@@ -257,7 +256,7 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'employersClose'%}"></button>
             </div>
             <div class="modal-body">
-              {% translate 'employersAreYouSureYouWantToDelete'%} <strong>{{ employer.name }}</strong>
+              {% translate 'employersAreYouSureYouWantToDelete'%} <strong>{{ employer.name }}</strong>?
             </div>
             <div class="modal-footer">
               <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'employersCancel'%}</button>

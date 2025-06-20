@@ -79,10 +79,9 @@
             
                     <!-- Add Another Filter Button -->
                     <button class="btn light-green-button min-content-width mt-3" type="button" onclick="addAnotherExperience()">
-                        <span><i class="fe fe-plus"></i></span>
+                        
 
                         {% translate "workersListAddAnotherExperience" %}
-
                     </button>
             
                     <!-- Additional Filters Section (Previously separate) -->
@@ -229,9 +228,8 @@
             <div class="row mb-2">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="d-flex align-items-center justify-content-end">
-                        <button class="btn dark-green-button ms-3" data-bs-toggle="modal" data-bs-target="#workerAssignmentModal" disabled>+{% translate "workersListAddTo" %}</button>
+                        <button class="btn dark-green-button ms-3" data-bs-toggle="modal" data-bs-target="#workerAssignmentModal" disabled>{% translate "workersListAddTo" %}</button>
                         <a class="btn dark-green-button ms-3" href="{% url 'recruiting_web:recruiter_create_worker' %}">
-                            <span><i class="fe fe-plus"></i></span>
                             {% translate "workersListAddWorker" %}
                         </a>
                     </div>
@@ -245,6 +243,7 @@
                                 <tr>
                                     <th class="col-namee">{% translate "workersListCheckbox" %}</th>
                                     <th class="col-name">{% translate "workersListName" %}</th>
+                                    <th class="col-name">{% translate "workersListEmail" %}</th>
                                     <th class="col-town">{% translate "workersListTown" %}</th>
                                     <th class="col-profile">{% translate "workersListProfileCompletion" %}</th>
                                     <th class="col-experience">{% translate "workersListExperience" %}</th>
@@ -265,16 +264,17 @@
                                         <input type="checkbox" class="worker-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.first_name }} {{ worker.last_name }}">
                                     </td>
                                     <td class="col-name">
-                                        {% if worker.first_name and worker.last_name %}
+                                        {% comment %} {% if worker.first_name and worker.last_name %} {% endcomment %}
                                             <a href="{{ worker.id }}">
                                                 {{ worker.first_name }} {{ worker.last_name }}
                                             </a>
-                                        {% else %}
-                                            <a href="{{ worker.id }}">
+                                        {% comment %} {% else %} {% endcomment %}
+                                            {% comment %} <a href="{{ worker.id }}">
                                                 {{ worker.email }}
-                                            </a>
-                                        {% endif %}
+                                            </a> {% endcomment %}
+                                        {% comment %} {% endif %} {% endcomment %}
                                     </td>
+                                    <td class="col-townnn">{{ worker.email}}</td>
                                     <td class="col-town">{{ worker.town|default:"Not Provided" }}</td>
                                     <td class="col-profile">{{ worker.profile_completion_percentage|default:0 }}</td>
                                     <td class="col-experience">{{ worker.years_of_experience|default:"Not Provided" }}</td>
@@ -434,7 +434,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'workersListClose'%}"></button>
           </div>
           <div class="modal-body">
-            {% translate 'areYouSureYouWantToDelete'%} <strong>{{ worker.first_name }}{{worker.last_name}}</strong>?
+            {% translate 'workerListAreYouSureYouWantToDelete'%} <strong>{{ worker.first_name }}{{worker.last_name}}</strong>?
           </div>
           <div class="modal-footer">
             <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'workersListCancel'%}</button>
