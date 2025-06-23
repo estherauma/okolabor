@@ -17,12 +17,7 @@
             </a>
             <!-- Search and Profile Section -->
             <div class="d-flex align-items-center">
-				<div class="search-container">
-					<button id="searchToggle" class="btn">
-						<i class="fa fa-search user-icon" aria-hidden="true"></i>
-					</button>
-					<input id="searchBox" class="form-control d-none" placeholder="Search for anything..." type="search">
-			</div>
+				
             <!-- <div class="d-flex align-items-center"> -->
                 <div class="bell-icon-margins">
                     <a href="notifications/" id="alertIconLink">
@@ -55,7 +50,7 @@
                         <div class="dropdown-divider m-0"></div>
                         <a class="dropdown-item" href="{% url 'recruiter_account' %}">{% translate "mainHeaderMyAccount"%}</a>
                         <a class="dropdown-item" href="{% url 'update_password' %}">{% translate "mainHeaderUpdatePassword"%}</a>
-                        <a class="dropdown-item" href="{% url 'activity_log' %}">{% translate "mainHeaderUserLogs"%}</a>
+                        <a class="dropdown-item" href="{% url 'view_logs' %}">{% translate "mainHeaderUserLogs"%}</a>
                         <a class="dropdown-item" href="{% url 'manage_users' %}">{% translate "mainHeaderManageUsers"%}</a>
                         <a class="dropdown-item" href="{% url 'logout' %}">{% translate "mainHeaderLogOut"%}</a>
                     </div>
