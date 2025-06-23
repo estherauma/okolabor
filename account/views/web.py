@@ -47,10 +47,9 @@ from recruiting.forms import WorkerCreateForm,RecruiterAdminCreateForm,EmployerF
 
 
 class UserListView(LoginRequiredMixin, View):
-    def get(self, request):
-        
 
-        form = UpdateAccountDetailsForm() 
+    def get(self, request):
+        form = UpdateAccountDetailsForm()
         form_worker_class = WorkerCreateForm()
         form_recruiter_admin_class = RecruiterAdminCreateForm()
         language_choices = form.fields["language"].choices
@@ -61,47 +60,41 @@ class UserListView(LoginRequiredMixin, View):
         ]
 
         workers_list = User.objects.filter(groups__name='worker').values(
-            'id','curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
+            'id', 'curp', 'email', 'first_name', 'last_name',
+            'created_at', 'is_active', 'language'
         )
 
-        
-        recruiter_organizations = Organization.objects.filter(type='recruiter').values(
-            'id', 'name', 'email', 'phone', 'website', 'address', 'city', 'state', 'country', 'zip_code', 'type', 'is_active'
-        )
+        recruiter_organizations = Organization.objects.filter(type='recruiter').values()
+        employer_organizations = Organization.objects.filter(type='employer').values()
 
-        employer_organizations = Organization.objects.filter(type='employer').values(
-            'id', 'name', 'email', 'phone', 'website', 'address', 'city', 'state', 'country', 'zip_code', 'type', 'is_active'
-        )
+        is_admin = request.user.is_superuser
+        recruiters, recruiter_admins, employers, employer_admins = [], [], [], []
 
-        recruiters = list(User.objects.filter(groups__name='recruiter').values(
-            'id','curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
-        ))
-        for r in recruiters:
-            r['group'] = 'recruiter'
+        if is_admin:
+            recruiters = list(User.objects.filter(groups__name='recruiter').prefetch_related('organizations'))
+            recruiter_admins = list(User.objects.filter(groups__name='recruiter_admin').prefetch_related('organizations'))
+            employers = list(User.objects.filter(groups__name='employer').prefetch_related('organizations'))
+            employer_admins = list(User.objects.filter(groups__name='employer_admin').prefetch_related('organizations'))
+        else:
+            recruiters = list(User.objects.filter(groups__name='recruiter', created_by=request.user.id).prefetch_related('organizations'))
+            recruiter_admins = list(User.objects.filter(groups__name='recruiter_admin', id=request.user.id).prefetch_related('organizations'))
+            employers = list(User.objects.filter(groups__name='employer', created_by=request.user.id).prefetch_related('organizations'))
+            employer_admins = list(User.objects.filter(groups__name='employer_admin', id=request.user.id).prefetch_related('organizations'))
 
-        recruiter_admins = list(User.objects.filter(groups__name='recruiter_admin').values(
-            'id','curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
-        ))
-        for ra in recruiter_admins:
-            ra['group'] = 'recruiter_admin'
-
-        employer = list(User.objects.filter(groups__name='employer').values(
-            'id','curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
-        ))
-        for ra in employer:
-            ra['group'] = 'employer'
-
-        employer_admin = list(User.objects.filter(groups__name='employer_admin').values(
-            'id','curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
-        ))
-        for ra in employer_admin:
-            ra['group'] = 'employer_admin'
+        for user in recruiters:
+            user.group = 'recruiter'
+        for user in recruiter_admins:
+            user.group = 'recruiter_admin'
+        for user in employers:
+            user.group = 'employer'
+        for user in employer_admins:
+            user.group = 'employer_admin'
 
         combined_recruiter = recruiters + recruiter_admins
-        combined_employer = employer + employer_admin
+        combined_employer = employers + employer_admins
 
         context = {
-            'recruiters_list': combined_recruiter, 
+            'recruiters_list': combined_recruiter,
             'language_choices': language_choices,
             'status_choices': status_choices,
             'workers': workers_list,
@@ -110,8 +103,8 @@ class UserListView(LoginRequiredMixin, View):
             'employers_list': combined_employer,
             'recruiter_organizations': recruiter_organizations,
             'employer_organizations': employer_organizations,
-            
-            }
+        }
+
         return render(request, 'recruiter/manage_users.html', context)
 
     def post(self, request):
@@ -124,32 +117,35 @@ class UserListView(LoginRequiredMixin, View):
             messages.error(request, _("addUserAllFieldsAreRequired."))
             return redirect('manage_users')
 
-        user = User.objects.create(
+        user = User(
             first_name=first_name,
             last_name=last_name,
             email=user_email,
             is_active=True
         )
+        user.save()  # created_by is handled by AuditableModel
 
-        if role in ['recruiter', 'recruiter_admin','employer', 'employer_admin']:
-            group, created = Group.objects.get_or_create(name=role)
+        if role in ['recruiter', 'recruiter_admin', 'employer', 'employer_admin']:
+            group, _ = Group.objects.get_or_create(name=role)
             user.groups.add(group)
 
+            if request.user.groups.filter(name__in=['recruiter_admin', 'employer_admin']).exists():
+                orgs = request.user.organizations.all()
+                user.organizations.set(orgs)
+
+        # Send password reset link
         token = PasswordResetTokenGenerator().make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         current_site = get_current_site(request)
         site_url = f"{request.scheme}://{current_site.domain}"
         invite_link = f"{site_url}{reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})}"
 
-        email_subject = _("inviteEmailYou'reInvited!")
-        email_body = render_to_string(
-            'invite_email.html', 
-            {
-                'first_name': first_name,
-                'invite_link': invite_link,
-                'site_url': site_url
-            }
-        )
+        email_subject = _("You're invited!")
+        email_body = render_to_string('invite_email.html', {
+            'first_name': first_name,
+            'invite_link': invite_link,
+            'site_url': site_url
+        })
 
         email = EmailMessage(
             subject=email_subject,
@@ -158,15 +154,10 @@ class UserListView(LoginRequiredMixin, View):
             to=[user_email.strip()],
         )
         email.content_subtype = 'html'
-        email_sent = email.send()
+        email.send()
 
-        if email_sent:
-            messages.success(request, _("inviteEmailInvitationSentSuccessfully!"))
-        else:
-            messages.error(request, _("inviteEmailFailedToSendEmail."))
-
+        messages.success(request, _("Invitation sent successfully!"))
         return redirect('manage_users')
-    
 class RecruiterManageDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         user = request.user
