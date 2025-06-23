@@ -83,7 +83,6 @@ from recruiting.models import (
     WorkAssignment,
     EmployerContact,
     EmployerRecruiterOrgLink,
-    RecruiterOrganizationEmployer
 )
 
     
@@ -96,43 +95,29 @@ class EmployerListView(View):
             employers_list = Organization.objects.filter(type='employer').order_by('-created_at')
 
         elif user.groups.filter(name__in=['recruiter', 'recruiter_admin']).exists():
+            
             recruiter_orgs = Organization.objects.filter(type='recruiter', recruiters=user).order_by('-created_at')
 
-            recruiter_links_1 = EmployerRecruiterOrgLink.objects.filter(recruiter_org__in=recruiter_orgs)
-            employer_ids_1 = recruiter_links_1.values_list('employer_org__id', flat=True)
-            employers_1 = Organization.objects.filter(id__in=employer_ids_1, type='employer')
-
-            recruiter_links_2 = RecruiterOrganizationEmployer.objects.filter(recruiter_organization__in=recruiter_orgs)
-            employer_ids_2 = recruiter_links_2.values_list('employer_organization__id', flat=True)
-            employers_2 = Organization.objects.filter(id__in=employer_ids_2, type='employer')
+            recruiter_links = EmployerRecruiterOrgLink.objects.filter(
+                recruiter_org__in=recruiter_orgs,
+                final_status='accepted'
+            )
+            employer_ids = recruiter_links.values_list('employer_org__id', flat=True)
+            employers = Organization.objects.filter(id__in=employer_ids, type='employer')
 
             created_employers = Organization.objects.filter(type='employer', created_by=user)
 
-            employers_list = (employers_1 | employers_2 | created_employers).distinct()
+            employers_list = (employers | created_employers).distinct()
 
         else:
             employers_list = Organization.objects.none()
-
-        if query:
-            employers_list = employers_list.filter(
-                Q(name__icontains=query) |
-                Q(email__icontains=query) |
-                Q(address__icontains=query) |
-                Q(country__icontains=query) |
-                Q(phone__icontains=query)
-            )
 
         recruiter_organizations = Organization.objects.filter(type='recruiter').order_by('-created_at')
 
         employers_data = []
         for employer in employers_list:
-            links_1 = EmployerRecruiterOrgLink.objects.filter(employer_org=employer)
-            recruiter_orgs_1 = set(link.recruiter_org.name for link in links_1)
-
-            links_2 = RecruiterOrganizationEmployer.objects.filter(employer_organization=employer)
-            recruiter_orgs_2 = set(link.recruiter_organization.name for link in links_2)
-
-            recruiter_org_names = list(recruiter_orgs_1.union(recruiter_orgs_2))
+            links = EmployerRecruiterOrgLink.objects.filter(employer_org=employer, final_status='accepted')
+            recruiter_org_names = list(set(link.recruiter_org.name for link in links))
 
             employers_data.append({
                 'id': employer.id,
@@ -149,15 +134,13 @@ class EmployerListView(View):
                 'recruiters': recruiter_org_names
             })
 
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({'employers': employers_data, 'has_more': False})
-
         context = {
             'employers': employers_data,
             'query': query,
             'recruiters': recruiter_organizations
         }
         return render(request, 'recruiting/employers/list.html', context)
+
 
 
 
@@ -312,37 +295,44 @@ class EmployerCreateView(CreateView):
 
     def get_initial(self):
         initial = super().get_initial()
-        type_value = self.request.GET.get('type', 'recruiter')  # default to 'recruiter'
+        type_value = self.request.GET.get('type', 'recruiter')
         initial['type'] = type_value
         return initial
 
     def form_valid(self, form):
         org = form.save(commit=False)
 
-        # Get the type from the GET param
         org_type = self.request.GET.get('type', 'recruiter')
         if org_type not in ['recruiter', 'employer']:
-            org_type = 'recruiter'  # fallback/default
+            org_type = 'recruiter'
 
         org.type = org_type
+        org.created_by = self.request.user
         org.save()
 
         user = self.request.user
 
-        # If creating an employer and user is recruiter or recruiter_admin, assign links
         if org_type == 'employer' and user.groups.filter(name__in=['recruiter', 'recruiter_admin']).exists():
-            # Link user as employer recruiter
-            EmployerRecruiter.objects.get_or_create(
-                employer=org,
-                recruiter=user
-            )
-
-            # Also link recruiter orgs
             recruiter_orgs = Organization.objects.filter(type='recruiter', recruiters=user)
+
             for recruiter_org in recruiter_orgs:
-                RecruiterOrganizationEmployer.objects.get_or_create(
-                    recruiter_organization=recruiter_org,
-                    employer_organization=org
+                EmployerRecruiterOrgLink.objects.get_or_create(
+                    employer_org=org,
+                    recruiter_org=recruiter_org,
+                    defaults={
+                        'employer_status': 'accepted',
+                        'recruiter_status': 'accepted',
+                        'final_status': 'accepted'
+                    }
+                )
+                EmployerRecruiterOrgLink.objects.get_or_create(
+                    employer_org=org,
+                    recruiter_org=recruiter_org,
+                    defaults={
+                        'employer_status': 'accepted',
+                        'recruiter_status': 'accepted',
+                        'final_status': 'accepted'
+                    }
                 )
 
         messages.success(self.request, _('Organization created successfully'))
@@ -357,7 +347,6 @@ class EmployerCreateView(CreateView):
 
     def get_success_url(self, pk):
         return reverse('recruiting_web:employer_detail', kwargs={'pk': pk})
-
 
 
 class EmployerDetailView(View):
@@ -575,12 +564,15 @@ class WorkRequestEditView(LoginRequiredMixin, View):
 class WorkRequestDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         user = request.user
-        work_request = get_object_or_404(WorkRequests, pk=pk,deleted=False)
-
+        work_request = get_object_or_404(WorkRequests, pk=pk)
         if user.groups.filter(name='admin').exists():
             work_request_name = work_request.name
-            work_request.delete(user=user)
-            messages.success(request, _('WorkRequest "%(work_request_name)s" Deleted Successfully.') % {'work_request_name': work_request_name})
+            work_request.roles.all().delete()
+            work_request.hard_delete()
+            messages.success(
+                request,
+                _('WorkRequest "%(work_request_name)s" successfully deleted.') % {'work_request_name': work_request_name}
+            )
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
             return redirect('recruiting_web:workrequest_list')
@@ -588,6 +580,7 @@ class WorkRequestDeleteView(LoginRequiredMixin, View):
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
             return HttpResponseForbidden(_("You do not have permission to delete this work request."))
+
 
 
 class AddWorkersWorkRequests(View):
@@ -1695,99 +1688,201 @@ class AssignEmployersToRecruiterOrgView(View):
             recruiter_org_id = data.get('recruiter_org_id')
 
             if not employer_ids or not recruiter_org_id:
-                msg = _('missingEmployerIDsorRecruiterOrganizationID')
-                messages.error(request, msg)
-                return JsonResponse({'success': False, 'message': msg})
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Missing employer or recruiter organization ID.'
+                })
 
-            recruiter_org = get_object_or_404(Organization, id=recruiter_org_id, type='recruiter')
-            recruiters = User.objects.filter(organizations=recruiter_org)
+            recruiter_org = get_object_or_404(
+                Organization, id=recruiter_org_id, type='recruiter'
+            )
 
             already_assigned = []
-            successfully_assigned = []
+            newly_assigned = []
 
-            for employer_id in employer_ids:
-                employer_org = get_object_or_404(Organization, id=employer_id, type='employer')
-
-                link_exists = EmployerRecruiterOrgLink.objects.filter(
-                    employer_org=employer_org,
-                    recruiter_org=recruiter_org
-                ).exists()
-
-                if link_exists:
-                    already_assigned.append(employer_org.name)
-                    continue
-
-                # Create new link
-                link_obj, created = EmployerRecruiterOrgLink.objects.get_or_create(
-                    employer_org=employer_org,
-                    recruiter_org=recruiter_org
+            for emp_id in employer_ids:
+                employer_org = get_object_or_404(
+                    Organization, id=emp_id, type='employer'
                 )
-                successfully_assigned.append(employer_org.name)
 
-                for recruiter in recruiters:
-                    EmployerRecruiter.objects.get_or_create(employer=employer_org, recruiter=recruiter)
+                link, created = EmployerRecruiterOrgLink.objects.get_or_create(
+                    employer_org=employer_org,
+                    recruiter_org=recruiter_org,
+                    defaults={
+                        'employer_status': 'pending',
+                        'recruiter_status': 'pending',
+                        'final_status': 'pending'
+                    }
+                )
 
-                try:
-                    primary_contacts = EmployerContact.objects.filter(employer=recruiter_org, is_primary=True)
+                if created:
+                    newly_assigned.append(employer_org.name)
+                    send_invitation_email_to_org(
+                        employer_org, recruiter_org, request, role='employer'
+                    )
+                    send_invitation_email_to_org(
+                        recruiter_org, employer_org, request, role='recruiter'
+                    )
+                else:
+                    already_assigned.append(employer_org.name)
 
-                    if primary_contacts.exists():
-                        for primary_contact in primary_contacts:
-                            protocol = 'https' if request.is_secure() else 'http'
-                            domain = request.get_host()
-                            subject = "Recruiter Assignment Notification"
-                            accept_url = f"{protocol}://{domain}/update-employer-recruiter-status/?action=accept&employer_org_id={employer_org.id}&recruiter_org_id={recruiter_org.id}&primary_contact_id={primary_contact.id}"
-                            reject_url = f"{protocol}://{domain}/update-employer-recruiter-status/?action=reject&employer_org_id={employer_org.id}&recruiter_org_id={recruiter_org.id}&primary_contact_id={primary_contact.id}"
-                            message = f"""
-                                        Hi {primary_contact.name},
-
-                                        Your organization '{employer_org.name}' has been assigned a new recruiter organization: '{recruiter_org.name}'.
-
-                                        You can accept or reject the assignment:
-
-                                        - Accept: {accept_url}
-                                        - Reject: {reject_url}
-
-                                        Please click one of the links to confirm your action.
-
-                                        Best regards,  
-                                        Your Team
-                                    """
-                            send_mail(
-                                subject,
-                                message,
-                                settings.EMAIL_HOST_USER,
-                                [primary_contact.email],
-                                fail_silently=False
-                            )
-                except EmployerContact.DoesNotExist:
-                    print(f"No primary contact found for employer: {employer_org.name}")
-
-            msg_parts = []
-
-            if successfully_assigned:
-                msg_parts.append(f"Successfully assigned: {', '.join(successfully_assigned)}.")
+            if newly_assigned:
+                messages.success(
+                    request,
+                    _("Invitations created, emails sent successfully, and employer(s) assigned to the recruiter organization.")
+                )
 
             if already_assigned:
-                msg_parts.append(f"Already assigned: {', '.join(already_assigned)}.")
+                messages.warning(
+                    request,
+                    _("The following employers are already assigned: {}").format(', '.join(already_assigned))
+                )
 
-            final_msg = " ".join(msg_parts) or "No changes were made."
-
-            messages.success(request, final_msg)
             return JsonResponse({
                 'success': True,
-                'message': final_msg,
-                'assigned': successfully_assigned,
-                'already_assigned': already_assigned
+                'newly_assigned': newly_assigned,
+                'already_assigned': already_assigned,
+                'message': "Processed employer assignment."
             })
 
-        except json.JSONDecodeError:
-            msg = _('invalidJSONData')
-            messages.error(request, msg)
-            return JsonResponse({'success': False, 'message': msg})
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'message': str(e)
+            })
+            
+def get_response_status(receiver_org, other_org):
+    try:
+        link = EmployerRecruiterOrgLink.objects.get(
+            employer_org=receiver_org if receiver_org.type == 'employer' else other_org,
+            recruiter_org=receiver_org if receiver_org.type == 'recruiter' else other_org
+        )
+        return link.status
+    except EmployerRecruiterOrgLink.DoesNotExist:
+        return 'pending'
+
+
+
+class InvitationResponseView(View):
+    def get(self, request):
+        action = request.GET.get('action')
+        role = request.GET.get('role')
+        receiver_org_id = request.GET.get('receiver_org_id')
+        other_org_id = request.GET.get('other_org_id')
+
+        try:
+            receiver = get_object_or_404(Organization, id=receiver_org_id)
+            other = get_object_or_404(Organization, id=other_org_id)
+
+            if role == 'employer':
+                employer_org = receiver
+                recruiter_org = other
+            else:
+                employer_org = other
+                recruiter_org = receiver
+
+            link, _ = EmployerRecruiterOrgLink.objects.get_or_create(
+                employer_org=employer_org,
+                recruiter_org=recruiter_org
+            )
+
+            if role == 'employer':
+                link.employer_status = action
+            else:
+                link.recruiter_status = action
+
+            if link.is_fully_accepted() and link.final_status != 'accepted':
+                link.final_status = 'accepted'
+                send_invitation_to_primary_contacts(employer_org, recruiter_org, request)
+
+            elif action == 'rejected':
+                link.final_status = 'rejected'
+
+            link.save()
+            return HttpResponse("Thank you for your response.")
 
         except Exception as e:
-            # messages.error(request, str(e))
-            return JsonResponse({'success': False, 'message': str(e)})
+            return HttpResponse(f"Error: {str(e)}")
+
+
+def send_invitation_email_to_org(receiver_org, other_org, request, role):
+    """
+    Sends initial invitation email to the org's notification email
+    """
+    protocol = 'https' if request.is_secure() else 'http'
+    domain = request.get_host()
+
+    accept_url = (
+        f"{protocol}://{domain}/invitation-response/"
+        f"?action=accepted&receiver_org_id={receiver_org.id}"
+        f"&other_org_id={other_org.id}&role={role}"
+    )
+    reject_url = (
+        f"{protocol}://{domain}/invitation-response/"
+        f"?action=rejected&receiver_org_id={receiver_org.id}"
+        f"&other_org_id={other_org.id}&role={role}"
+    )
+
+    subject = f"Invitation to collaborate with {other_org.name}"
+    message = f"""
+Hi {receiver_org.name},
+
+Your organization has received an invitation to collaborate with '{other_org.name}'.
+
+✅ Accept: {accept_url}  
+❌ Reject: {reject_url}
+
+Regards,  
+Your Team
+    """.strip()
+
+    if receiver_org.email:
+        send_mail(
+            subject,
+            message,
+            settings.EMAIL_HOST_USER,
+            [receiver_org.email],
+            fail_silently=False
+        )
+
+
+def send_invitation_to_primary_contacts(employer_org, recruiter_org, request):
+    print(employer_org, recruiter_org, "employer_org, recruiter_org")
+    
+    protocol = 'https' if request.is_secure() else 'http'
+    domain = request.get_host()
+
+    contacts = EmployerContact.objects.filter(employer=recruiter_org, is_primary=True)
+    print(contacts, "contacts")
+    
+    for contact in contacts:
+        accept_url = f"{protocol}://{domain}/invitation-response/?action=accept&receiver_org_id={employer_org.id}&other_org_id={recruiter_org.id}&role=recruiter"
+        reject_url = f"{protocol}://{domain}/invitation-response/?action=reject&receiver_org_id={employer_org.id}&other_org_id={recruiter_org.id}&role=recruiter"
+
+        subject = f"Collaboration Confirmed with {recruiter_org.name}"
+        message = f"""
+Hi {contact.name},
+
+Your organization '{employer_org.name}' has successfully established a collaboration with '{recruiter_org.name}'.
+
+✅ Accept: {accept_url}  
+❌ Reject: {reject_url}
+
+Regards,  
+Your Team
+        """
+
+        if contact.email:
+            send_mail(
+                subject,
+                message,
+                settings.EMAIL_HOST_USER,
+                [contact.email],
+                fail_silently=False
+            )
+
+
+
 
 def update_employer_recruiter_status(request):
     action = request.GET.get('action')
@@ -1847,7 +1942,7 @@ class EmployerRecruiterOrgStatusListView(ListView):
 
     def get_queryset(self):
         return EmployerRecruiterOrgLink.objects.filter(
-            status__in=['accepted', 'rejected', 'pending']
+            final_status__in=['accepted', 'rejected', 'pending']
         ).select_related(
             'employer_org',
             'recruiter_org',

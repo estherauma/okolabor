@@ -101,12 +101,11 @@
     <div class="table-responsive">
         <table class="table text-nowrap border-bottom" id="workrequest-datatable">
           <thead style="background-color: #7DBF96;">
-          <tr>
+          <tr class="text-center">
             <th class="col-checkbox "></th>
             <th class="col-worker-request ">{% translate "jobOrderListWorkerRequest" %}</th>
             <th class="col-deadline ">{% translate "jobOrderListDeadline" %}</th>
             <th class="col-start-date">{% translate "jobOrderListStartDate" %}</th>
-            <th class="col-status">{% translate "jobOrderListStatus" %}</th>
             <th class="col-workers">{% translate "jobOrderListWorkers" %}</th>
             <th class="col-company">{% translate "jobOrderListCompany" %}</th>
             <th class="col-closing">{% translate "jobOrderListClosing" %}</th>
@@ -118,7 +117,7 @@
 
             <tbody>
                 {% for item in work_requests %}
-                <tr>
+                <tr class="text-center">
                     <td class="tbody">
                         <input type="checkbox" class="row-checkbox" data-id="{{ item.id }}">
                     </td>
@@ -133,15 +132,7 @@
                     <td class="tbody">
                         {{ item.start_date }}
                     </td>
-                    <td class="tbody">
-                        <div class="progress">
-                            <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="60" class="progress-bar" role="progressbar" style="width: 60%;">
-                            </div>
-                            <div class="progress-text">
-                                60%
-                            </div>
-                        </div>
-                    </td>
+                    
                     <td class="tbody">
                         {% translate "jobOrderListWorkers" %}
                     </td>
@@ -187,7 +178,7 @@
     <div class="modal fade" id="deleteModal{{ item.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ item.id }}" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <form method="POST">
+          <form method="POST" action="{% url 'recruiting_web:workrequest_delete' item.id %}">
             {% csrf_token %}
             <div class="modal-header" style="background-color: #7DBF96;">
               <h5 class="modal-title text-white" id="deleteModalLabel{{ item.id }}">{% translate "jobOrderListConfirmDelete" %}</h5>

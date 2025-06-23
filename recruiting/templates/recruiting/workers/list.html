@@ -264,11 +264,16 @@
                                         <input type="checkbox" class="worker-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.first_name }} {{ worker.last_name }}">
                                     </td>
                                     <td class="col-name">
+                                        
                                             <a href="{{ worker.id }}">
                                                 {{ worker.first_name }} {{ worker.last_name }}
                                             </a>
                                     </td>
-                                    <td class="col-townnn">{{ worker.email}}</td>
+                                    <td class="col-townnn">
+                                        <a href="{{ worker.id }}">
+                                            {{ worker.email}}
+                                         </a>
+                                        </td>
                                     <td class="col-town">{{ worker.town|default:"Not Provided" }}</td>
                                     <td class="col-profile">{{ worker.profile_completion_percentage|default:0 }}</td>
                                     <td class="col-experience">{{ worker.years_of_experience|default:"Not Provided" }}</td>
