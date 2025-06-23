@@ -20,7 +20,6 @@
                 <thead style="background-color: #7DBF96;">
                     <tr>
                         <th class="text-start"><input type="checkbox" id="select-all-employer-checkbox"></th>
-                        <th class="text-start">{% translate "manageUsersEmployersTableCurp" %}</th>
                         <th class="text-start">{% translate "manageUsersEmployersTableEmail" %}</th>
                         <th class="text-start">{% translate "manageUsersEmployersTableFirstName" %}</th>
                         <th class="text-start">{% translate "manageUsersEmployersTableCreatedAt" %}</th>
@@ -47,6 +46,11 @@
                           {% endif %}
                         </td>
                         <td>{{ user.group }}</td>
+                        <td>
+                            {% for org in user.organizations.all %}
+                                {{ org.name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </td> 
                         <td>
                             <i
                                 class="side-menu__icon icon icon-pencil me-2 cursor-pointer edit-employer-btn"

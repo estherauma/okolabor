@@ -43,7 +43,11 @@
                         <td>{{ user.created_at }}</td>
                         <td>{{ user.is_active|yesno:_("active,inactive") }}</td>
                         <td>{{ user.group }}</td>
-                        <td>{{ user.organization }}</td>     
+                        <td>
+                            {% for org in user.organizations.all %}
+                                {{ org.name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </td>   
                         <td>
                             <i
                                 class="side-menu__icon icon icon-pencil me-2 cursor-pointer edit-recruiter-btn"
