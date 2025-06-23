@@ -29,6 +29,7 @@ from datetime import date
 from recruiting.utils import get_sector_choices
 from common.utils import StaticContent
 from recruiting.utils import calculate_total_experience,calculate_profile_completion
+from common.logger import AppLogger
 
 
 ONBOARDING_STEPS = [
@@ -483,11 +484,14 @@ class WorkerCreateView(CreateView):
 
 class WorkerDetailsView(View):
     def get(self, request, pk):
+        logger = AppLogger(log_file='logs/debug.log')
         worker = get_object_or_404(User, pk=pk)
         base_url = request.build_absolute_uri('/')
         work_experience = UserWorkExperience.objects.filter(user=worker).first()
         preferences = UserPreference.objects.filter(user=worker)
+        logger.debug(preferences)
         preference_data = {pref.key: pref.value for pref in preferences}
+        # They should not be displayed to the user
         tracking_keys = [
             'profileStepOne',
             'workExperience',
@@ -505,12 +509,14 @@ class WorkerDetailsView(View):
             'workPreferences',
         ]
         
+        # remove keys from data sent.
         for key in tracking_keys:
             preference_data.pop(key, None)
-        workplaces = preference_data.get('workplaces', '').split(',') if 'workplaces' in preference_data else []
-        preferred_employees = preference_data.get('Prefered_Employes', '').split(',') if 'Prefered_Employes' in preference_data else []
         
-
+        
+    
+        
+    
         documents = UserDocuments.objects.filter(user=worker)
         document_dict = {}
         for doc in documents:
@@ -537,9 +543,9 @@ class WorkerDetailsView(View):
         preferences_note_label = static_content.get_label_for_preference_field("tellUsMore")
         availability_label = static_content.get_label_for_preference_field("availability")
         health_status_label = static_content.get_label_for_preference_field_two("healthStatus")
-        health_condition_label = static_content.get_label_for_preference_field_two("healthCondition")
-        suffered_injury_label = static_content.get_label_for_preference_field_two("suffred_injury")
-        longer_period_of_time_label = static_content.get_label_for_preference_field_two("longerPeriodOfTime")
+        health_condition_label = static_content.get_label_for_preference_field_two("HealthCondition")
+        suffered_injury_label = static_content.get_label_for_preference_field_two("sufferedInjury")
+        longer_period_of_time_label = static_content.get_label_for_preference_field_two("longerPeriodsOfTime")
         consent_label = static_content.get_label_for_preference_field_two("consent")
         physical_activities_label = static_content.get_label_for_preference_field_two("physicalActivities")
         work_environment_label = static_content.get_label_for_preference_field_two("workEnvironment")
@@ -560,8 +566,6 @@ class WorkerDetailsView(View):
             'preferences': preference_data,
             'profile_completion': profile_completion,
             'current_status': current_status,
-            'workplaces': workplaces,
-            'preferred_employees': preferred_employees,
             'documents': document_dict,
             'base_url': base_url,
             'document_labels': document_labels,

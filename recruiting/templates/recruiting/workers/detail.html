@@ -46,8 +46,8 @@
       </span>
     </span>
   </div>
-  <div>
 
+  <div>
     {% if worker %}
     <button class="btn dark-green-button ms-3 open-shortlist-modal" data-bs-toggle="modal"
       data-bs-target="#workerShortlistModal{{ worker.id }}" data-worker-id="{{ worker.id }}">
@@ -108,6 +108,7 @@
         </div>
       </div>
     </div>
+
     <div class="card">
       <div class="card-body">
         <div class="row">
@@ -324,21 +325,127 @@
       </div>
 
       <div class="card-body">
-        <!-- Optinally display buttons for editing user information -->
+        <!-- Optionally display buttons for editing user information -->
         {% if preferences %}
-          <div class="d-flex gap-2">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editDocumentsModal">
-              Edit Documents
-            </button>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editLanguageModal">
-              Edit Language
-            </button>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editPreferencesModal">
-              Edit Work Preferences
-            </button>
-          </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editDocumentsModal">
+            Edit Documents
+          </button>
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editLanguageModal">
+            Edit Language
+          </button>
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editPreferencesModal">
+            Edit Work Preferences
+          </button>
+        </div>
         {% endif %}
+      
+        <!-- Display user documents  -->
+        <div class="row">
+          <!-- Display profile picture -->
+          <div class="col-6"></div>
+          <!-- Display englis proficiency video -->
+          <div class="col-6"></div>
+          <!-- Display passport -->
+          <div class="col-6"></div>
+          <!-- Display US drivers licence -->
+          <div class="col-6"></div>
+          <!-- Display mexican drivers licence -->
+          <div class="col-6"></div>
+        </div>
+      
+        <!-- The rest of the questions that need to be displayed -->
+        <div class="row">
+          <div class="col-12">
+            <p class="gray-color mt-4">{{preferred_countries_label}}</p>
+            <div class="btn btn-outline-info">
+              {% if preferences.preferred_countries_label %}
+              {{ preferences.preferred_countries_label }}
+              {% endif %}
+            </div>
+          </div>
 
+          <div class="col-12">
+            <p class="gray-color mt-4">{{work_sectors_label}}</p>
+            <div class="btn btn-outline-info">
+              {% if preferences.work_sectors_label %}
+              {{ preferences.work_sectors_label }}
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="col-12">
+            <p class="gray-color mt-4">{{availability_label}}</p>
+            <div class="btn btn-outline-info">
+              {% if preferences.availability_label %}
+              {{ preferences.availability_label }}
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="col-12">
+            <p class="gray-color mt-4">{{health_status_label}}</p>
+            <div class="btn btn-outline-info">
+              {% if preferences.health_status_label %}
+              {{ preferences.health_status_label }}
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="col-12">
+            <p class="gray-color mt-4">{{health_condition_label}}</p>
+            <div class="btn btn-outline-info">
+              {% if preferences.health_condition_label %}
+              {{ preferences.health_condition_label }}
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="col-12">
+            <p class="gray-color mt-4">{{suffered_injury_label}}</p>
+            <div class="btn btn-outline-info">
+              {% if preferences.suffered_injury_label %}
+              {{ preferences.suffered_injury_label }}
+              {% endif %}
+            </div>
+          </div>
+
+           <div class="col-12">
+            <p class="gray-color mt-4">{{longer_period_of_time_label}}</p>
+            <div class="btn btn-outline-info">
+              {% if preferences.longer_period_of_time_label %}
+              {{ preferences.longer_period_of_time_label }}
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="col-12">
+            <p class="gray-color mt-4">{{consent_label}}</p>
+            <div class="btn btn-outline-info">
+              {% if preferences.consent_label %}
+              {{ preferences.consent_label }}
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="col-12">
+            <p class="gray-color mt-4">{{physical_activities_label}}</p>
+            <div class="btn btn-outline-info">
+              {% if preferences.physical_activities_label %}
+              {{ preferences.physical_activities_label }}
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="col-12">
+            <p class="gray-color mt-4">{{work_environment_label}}</p>
+            <div class="btn btn-outline-info">
+              {% if preferences.work_environment_label %}
+              {{ preferences.work_environment_label }}
+              {% endif %}
+            </div>
+          </div>
+        </div> 
       </div>
     </div>
 
