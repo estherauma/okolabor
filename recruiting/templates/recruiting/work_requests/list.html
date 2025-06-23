@@ -187,11 +187,7 @@
     <div class="modal fade" id="deleteModal{{ item.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ item.id }}" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-<<<<<<< HEAD
-          <form method="POST">
-=======
           <form method="POST" action="{% url 'recruiting_web:workrequest_delete' item.id %}">
->>>>>>> dev
             {% csrf_token %}
             <div class="modal-header" style="background-color: #7DBF96;">
               <h5 class="modal-title text-white" id="deleteModalLabel{{ item.id }}">{% translate "jobOrderListConfirmDelete" %}</h5>
