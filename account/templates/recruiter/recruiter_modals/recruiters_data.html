@@ -23,12 +23,12 @@
                 <thead style="background-color:#7DBF96;">
                     <tr>
                         <th class="text-start"><input type="checkbox" id="select-all-checkbox"></th>
-                        <th class="text-start">{% translate "manageUsersRecruitersTableCurp" %}</th>
                         <th class="text-start">{% translate "manageUsersRecruitersTableEmail" %}</th>
                         <th class="text-start">{% translate "manageUsersRecruitersTableFirstName" %}</th>
                         <th class="text-start">{% translate "manageUsersRecruitersTableCreatedAt" %}</th>
                         <th class="text-start">{% translate "manageUsersRecruitersTableActiveStatus" %}</th>
                         <th class="text-start">{% translate "manageUsersRecruitersTableGroup" %}</th>
+                        <th class="text-start">{% translate "manageUsersRecruitersTableRecruiter" %}</th>
                         <th class="theading-color text-start">{% translate "manageUsersRecruitersTableActions" %}</th>
                     </tr>
                 </thead>
@@ -43,7 +43,11 @@
                         <td>{{ user.created_at }}</td>
                         <td>{{ user.is_active|yesno:_("active,inactive") }}</td>
                         <td>{{ user.group }}</td>
-
+                        <td>
+                            {% for org in user.organizations.all %}
+                                {{ org.name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </td>   
                         <td>
                             <i
                                 class="side-menu__icon icon icon-pencil me-2 cursor-pointer edit-recruiter-btn"
