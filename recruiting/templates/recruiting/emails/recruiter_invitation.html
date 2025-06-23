@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invitation</title>
+</head>
+<body>
+    <p>Hi <strong>{{ receiver_org.name }}</strong>,</p>
+
+    <p>
+      Your organization has received an invitation to collaborate with
+      <strong>{{ other_org.name }}</strong>.
+    </p>
+
+    <p style="margin: 20px 0;">
+      <a href="{{ accept_url }}" style="padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 4px;">✅ Accept</a>
+      &nbsp;
+      <a href="{{ reject_url }}" style="padding: 10px 20px; background-color: #dc3545; color: white; text-decoration: none; border-radius: 4px;">❌ Reject</a>
+    </p>
+
+    <p>Regards,<br>Your Team</p>
+</body>
+</html>
