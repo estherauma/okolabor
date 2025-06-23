@@ -83,7 +83,6 @@ from recruiting.models import (
     WorkAssignment,
     EmployerContact,
     EmployerRecruiterOrgLink,
-    RecruiterOrganizationEmployer
 )
 
     
@@ -99,27 +98,16 @@ class EmployerListView(View):
             
             recruiter_orgs = Organization.objects.filter(type='recruiter', recruiters=user).order_by('-created_at')
 
-            
-            recruiter_links_1 = EmployerRecruiterOrgLink.objects.filter(
+            recruiter_links = EmployerRecruiterOrgLink.objects.filter(
                 recruiter_org__in=recruiter_orgs,
                 final_status='accepted'
             )
-            employer_ids_1 = recruiter_links_1.values_list('employer_org__id', flat=True)
-            employers_1 = Organization.objects.filter(id__in=employer_ids_1, type='employer')
-
-            recruiter_links_2 = RecruiterOrganizationEmployer.objects.filter(
-                recruiter_organization__in=recruiter_orgs
-            )
-            employer_ids_2 = recruiter_links_2.values_list('employer_organization__id', flat=True)
-            employers_2 = Organization.objects.filter(id__in=employer_ids_2, type='employer')
+            employer_ids = recruiter_links.values_list('employer_org__id', flat=True)
+            employers = Organization.objects.filter(id__in=employer_ids, type='employer')
 
             created_employers = Organization.objects.filter(type='employer', created_by=user)
 
-            employers_list = (employers_1 | employers_2 | created_employers).distinct()
-            
-            print(employers_1,"employers_1")
-            print(employers_2,"employers_2")
-            print(created_employers,"created_employers")
+            employers_list = (employers | created_employers).distinct()
 
         else:
             employers_list = Organization.objects.none()
@@ -128,13 +116,8 @@ class EmployerListView(View):
 
         employers_data = []
         for employer in employers_list:
-            links_1 = EmployerRecruiterOrgLink.objects.filter(employer_org=employer, final_status='accepted')
-            recruiter_orgs_1 = set(link.recruiter_org.name for link in links_1)
-
-            links_2 = RecruiterOrganizationEmployer.objects.filter(employer_organization=employer)
-            recruiter_orgs_2 = set(link.recruiter_organization.name for link in links_2)
-
-            recruiter_org_names = list(recruiter_orgs_1.union(recruiter_orgs_2))
+            links = EmployerRecruiterOrgLink.objects.filter(employer_org=employer, final_status='accepted')
+            recruiter_org_names = list(set(link.recruiter_org.name for link in links))
 
             employers_data.append({
                 'id': employer.id,
@@ -157,6 +140,11 @@ class EmployerListView(View):
             'recruiters': recruiter_organizations
         }
         return render(request, 'recruiting/employers/list.html', context)
+
+
+
+
+
         
 class EmployerDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
@@ -328,9 +316,14 @@ class EmployerCreateView(CreateView):
             recruiter_orgs = Organization.objects.filter(type='recruiter', recruiters=user)
 
             for recruiter_org in recruiter_orgs:
-                RecruiterOrganizationEmployer.objects.get_or_create(
-                    recruiter_organization=recruiter_org,
-                    employer_organization=org
+                EmployerRecruiterOrgLink.objects.get_or_create(
+                    employer_org=org,
+                    recruiter_org=recruiter_org,
+                    defaults={
+                        'employer_status': 'accepted',
+                        'recruiter_status': 'accepted',
+                        'final_status': 'accepted'
+                    }
                 )
                 EmployerRecruiterOrgLink.objects.get_or_create(
                     employer_org=org,
@@ -355,7 +348,10 @@ class EmployerCreateView(CreateView):
     def get_success_url(self, pk):
         return reverse('recruiting_web:employer_detail', kwargs={'pk': pk})
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> dev
 class EmployerDetailView(View):
     def get(self, request, pk):
         user = request.user
