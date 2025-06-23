@@ -13,6 +13,7 @@ from django.views.generic import CreateView,DeleteView,ListView
 from django.views.decorators.csrf import csrf_exempt,csrf_protect
 from django.views.decorators.http import require_POST
 import json
+from dateutil.relativedelta import relativedelta
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import Group
 from django.utils.http import urlsafe_base64_encode
@@ -30,7 +31,10 @@ from collections import defaultdict
 from django.db.models import Count
 from django.template.loader import render_to_string
 import os
-from recruiting.utils import get_worker_preferences, calculate_profile_completion
+from recruiting.utils import (
+    get_worker_preferences, calculate_profile_completion,
+    calculate_total_experience
+)
 from account.models import User
 from recruiting.utils import *
 from recruiting.views.workers import WorkerDetailsView
@@ -49,13 +53,20 @@ from recruiting.forms import (
     WorkRequestForm,
     WorkRequestRoleForm,
     WorkerAssignmentForm,
-    RoleEmploymentLocationForm
+    RoleEmploymentLocationForm,
+    
 )
 from theme.forms import (
     FilterWorkExperienceForm,
-    AdvancedFilterForm
+    AdvancedFilterForm,
+    DynamicWorkExperienceForm
 )
-from account.models import UserPreference
+
+from account.models import (
+  UserPreference,
+  UserWorkExperience,
+  UserNotification
+)
 from recruiting.models import (
     Deduction,
     Organization,
@@ -81,23 +92,21 @@ class EmployerListView(View):
         query = request.GET.get('query')
 
         if user.groups.filter(name='admin').exists():
-            employers_list = Organization.objects.filter(type='employer')
+            employers_list = Organization.objects.filter(type='employer').order_by('-created_at')
 
-        elif user.groups.filter(name='recruiter').exists():
-            recruiter_orgs = Organization.objects.filter(
-                type='recruiter',
-                recruiters=user
-            ).distinct()
+        elif user.groups.filter(name__in=['recruiter', 'recruiter_admin']).exists():
+            recruiter_orgs = Organization.objects.filter(type='recruiter', recruiters=user).order_by('-created_at')
 
-            assigned_links = EmployerRecruiterOrgLink.objects.filter(
-                recruiter_org__in=recruiter_orgs
+            recruiter_links = EmployerRecruiterOrgLink.objects.filter(
+                recruiter_org__in=recruiter_orgs,
+                final_status='accepted'
             )
+            employer_ids = recruiter_links.values_list('employer_org__id', flat=True)
+            employers = Organization.objects.filter(id__in=employer_ids, type='employer')
 
-            assigned_employer_ids = assigned_links.values_list('employer_org__id', flat=True)
-            employers_list = Organization.objects.filter(
-                id__in=assigned_employer_ids,
-                type='employer'
-            ).distinct()
+            created_employers = Organization.objects.filter(type='employer', created_by=user)
+
+            employers_list = (employers | created_employers).distinct()
 
         else:
             employers_list = Organization.objects.none()
@@ -111,19 +120,12 @@ class EmployerListView(View):
                 Q(phone__icontains=query)
             )
 
-        paginator = Paginator(employers_list, len(employers_list) if employers_list.exists() else 1)
-        page_number = request.GET.get('page')
-        employers = paginator.get_page(page_number)
-
-        recruiter_organizations = Organization.objects.filter(type='recruiter')
+        recruiter_organizations = Organization.objects.filter(type='recruiter').order_by('-created_at')
 
         employers_data = []
-        for employer in employers:
-            assigned_links = EmployerRecruiterOrgLink.objects.filter(employer_org=employer)
-
-            recruiter_org_names = list(set(
-                link.recruiter_org.name for link in assigned_links
-            ))
+        for employer in employers_list:
+            links = EmployerRecruiterOrgLink.objects.filter(employer_org=employer, final_status='accepted')
+            recruiter_org_names = list(set(link.recruiter_org.name for link in links))
 
             employers_data.append({
                 'id': employer.id,
@@ -137,14 +139,11 @@ class EmployerListView(View):
                 'state': employer.state,
                 'zipcode': employer.zip_code,
                 'description': employer.description,
-                'recruiters': recruiter_org_names  
+                'recruiters': recruiter_org_names
             })
 
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({
-                'employers': employers_data,
-                'has_more': employers.has_next()
-            })
+            return JsonResponse({'employers': employers_data, 'has_more': False})
 
         context = {
             'employers': employers_data,
@@ -153,13 +152,16 @@ class EmployerListView(View):
         }
         return render(request, 'recruiting/employers/list.html', context)
 
+
+
+
+
         
 class EmployerDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         user = request.user
         employer = get_object_or_404(Organization, pk=pk, type='employer', deleted=False)
-
-
+        
         if user.groups.filter(name='admin').exists():
             employer_name = employer.name
             employer.delete(user=user)
@@ -207,10 +209,11 @@ class RecruiterListViewInAdmin(View):
         query = request.GET.get('query')
 
         if user.groups.filter(name='admin').exists():
-            recruiters_list = Organization.objects.filter(type='recruiter')
+            recruiters_list = Organization.objects.filter(type='recruiter').order_by('-created_at')
         else:
             recruiters_list = Organization.objects.none()
 
+        # Apply search filter if present
         if query:
             recruiters_list = recruiters_list.filter(
                 Q(name__icontains=query) |
@@ -221,9 +224,7 @@ class RecruiterListViewInAdmin(View):
                 Q(phone__icontains=query)
             )
 
-        paginator = Paginator(recruiters_list, len(recruiters_list)) 
-        page_number = request.GET.get('page')
-        recruiters = paginator.get_page(page_number)
+        recruiters = recruiters_list
 
         recruiters_data = []
         for recruiter in recruiters:
@@ -231,7 +232,6 @@ class RecruiterListViewInAdmin(View):
             assigned_employers = list(set(
                 link.employer_org.name for link in assigned_links
             ))
-            
 
             recruiters_data.append({
                 'id': recruiter.id,
@@ -247,12 +247,6 @@ class RecruiterListViewInAdmin(View):
                 'zip_code': recruiter.zip_code,
                 'description': recruiter.description,
                 'employers': assigned_employers
-            })
-
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({
-                'recruiters': recruiters_data,
-                'has_more': recruiters.has_next()
             })
 
         context = {'recruiters': recruiters_data, 'query': query}
@@ -310,9 +304,42 @@ class EmployerCreateView(CreateView):
     form_class = EmployerForm
     template_name = 'recruiting/employers/create.html'
 
+    def get_initial(self):
+        initial = super().get_initial()
+        type_value = self.request.GET.get('type', 'recruiter')
+        initial['type'] = type_value
+        return initial
+
     def form_valid(self, form):
-        messages.success(self.request, _('addEmployerEmployerCreatedSuccessfully'))
-        return super(EmployerCreateView, self).form_valid(form)
+        org = form.save(commit=False)
+
+        org_type = self.request.GET.get('type', 'recruiter')
+        if org_type not in ['recruiter', 'employer']:
+            org_type = 'recruiter'
+
+        org.type = org_type
+        org.created_by = self.request.user
+        org.save()
+
+        user = self.request.user
+
+        if org_type == 'employer' and user.groups.filter(name__in=['recruiter', 'recruiter_admin']).exists():
+            recruiter_orgs = Organization.objects.filter(type='recruiter', recruiters=user)
+
+            for recruiter_org in recruiter_orgs:
+                EmployerRecruiterOrgLink.objects.get_or_create(
+                    employer_org=org,
+                    recruiter_org=recruiter_org,
+                    defaults={
+                        'employer_status': 'accepted',
+                        'recruiter_status': 'accepted',
+                        'final_status': 'accepted'
+                    }
+                )
+
+        messages.success(self.request, _('Organization created successfully'))
+        self.object = org
+        return redirect(self.get_success_url(org.pk))
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
         for field, errors in form.errors.items():
@@ -320,12 +347,8 @@ class EmployerCreateView(CreateView):
                 messages.error(self.request, f'{field}: {error}')
         return super().form_invalid(form)
 
-    def get_success_url(self):
-        return reverse(
-            'recruiting_web:employer_detail',
-            kwargs={'pk': self.object.pk}
-        )
-
+    def get_success_url(self, pk):
+        return reverse('recruiting_web:employer_detail', kwargs={'pk': pk})
 
 class EmployerDetailView(View):
     def get(self, request, pk):
@@ -333,27 +356,32 @@ class EmployerDetailView(View):
         employer = get_object_or_404(Organization, pk=pk)
 
         work_requests = WorkRequests.objects.filter(employer=employer)
-
         in_progress_work_requests = work_requests.filter(status__in=['Open', 'Requested'])
         closed_work_requests = work_requests.filter(status='Closed')
         draft_work_requests = work_requests.filter(status='Draft')
 
         recruiters = EmployerRecruiter.objects.filter(employer=employer).select_related('recruiter')
-        contacts = employer.contacts.all()
+        recruiter_names_direct = set(
+            rec.recruiter.get_full_name()
+            for rec in recruiters
+            if user.groups.filter(name='admin').exists() or rec.recruiter == user
+        )
 
-        assigned_organizations = Organization.objects.filter(
-            assigned_employer_orgs__employer_org=employer
-        ).distinct()
+        assigned_links = EmployerRecruiterOrgLink.objects.filter(employer_org=employer)
+        recruiter_orgs = [link.recruiter_org for link in assigned_links]
 
         assigned_orgs_data = []
-        for org in assigned_organizations:
-            assigned_recruiters = EmployerRecruiter.objects.filter(employer=employer)
-            recruiter_names = list(set(
-                rec.recruiter.get_full_name()
-                for rec in assigned_recruiters
-                if user.groups.filter(name='admin').exists() or rec.recruiter == user
-            ))
-            
+        recruiter_names_org = set()
+
+        for org in recruiter_orgs:
+            org_recruiters = org.recruiters.all()
+            org_recruiter_names = [
+                r.get_full_name()
+                for r in org_recruiters
+                if user.groups.filter(name='admin').exists() or r == user
+            ]
+            recruiter_names_org.update(org_recruiter_names)
+
             assigned_orgs_data.append({
                 'id': org.id,
                 'name': org.name,
@@ -361,33 +389,39 @@ class EmployerDetailView(View):
                 'address': org.address,
                 'country': org.country,
                 'phone': org.phone,
-                'recruiters': recruiter_names
+                'recruiters': org_recruiter_names
             })
+
+        all_recruiter_names = list(recruiter_names_direct.union(recruiter_names_org))
+
         context = {
             'employer': employer,
             'in_progress_work_requests': in_progress_work_requests,
             'closed_work_requests': closed_work_requests,
             'draft_work_requests': draft_work_requests,
-            'recruiters': recruiters,
-            'contacts': contacts,
+            'recruiters': all_recruiter_names,
+            'contacts': employer.contacts.all(),
             'work_requests': work_requests,
             'assigned_organizations': assigned_orgs_data
         }
         return render(request, 'recruiting/employers/detail.html', context)
-    
 
 class RecruiterDetailView(View):
     def get(self, request, pk):
         user = request.user
         recruiter_org = get_object_or_404(Organization, pk=pk, type='recruiter')
 
-        assigned_links = EmployerRecruiterOrgLink.objects.filter(recruiter_org=recruiter_org)
-        employer_orgs = Organization.objects.filter(
-            id__in=assigned_links.values_list('employer_org__id', flat=True)
-        ).distinct()
+        org_link_employers = EmployerRecruiterOrgLink.objects.filter(recruiter_org=recruiter_org)
+        org_employer_ids = org_link_employers.values_list('employer_org_id', flat=True)
+
+        direct_employer_ids = EmployerRecruiter.objects.filter(
+            recruiter__in=recruiter_org.recruiters.all()
+        ).values_list('employer_id', flat=True)
+
+        all_employer_ids = set(org_employer_ids) | set(direct_employer_ids)
+        employer_orgs = Organization.objects.filter(id__in=all_employer_ids, type='employer').distinct()
 
         work_requests = WorkRequests.objects.filter(employer__in=employer_orgs)
-
         in_progress_work_requests = work_requests.filter(status__in=['Open', 'Requested'])
         closed_work_requests = work_requests.filter(status='Closed')
         draft_work_requests = work_requests.filter(status='Draft')
@@ -423,34 +457,39 @@ class RecruiterDetailView(View):
         }
         return render(request, 'recruiting/recruiters_list/workrequest_detail.html', context)
 
+
 class WorkRequestsListView(View):
     def get(self, request):
         user = request.user
+
         admin_group = Group.objects.get(name='admin')
         recruiter_group = Group.objects.get(name='recruiter')
+        recruiter_admin_group = Group.objects.get(name='recruiter_admin')
+        employer_group = Group.objects.get(name='employer')
+        employer_admin_group = Group.objects.get(name='employer_admin')
+
+        work_requests = WorkRequests.objects.none()
 
         if admin_group in user.groups.all():
             work_requests = WorkRequests.objects.all()
 
-        elif recruiter_group in user.groups.all():
+        elif recruiter_group in user.groups.all() or recruiter_admin_group in user.groups.all():
             user_orgs = user.organizations.all()
             if user_orgs.exists():
-                user_org = user_orgs.first() 
                 assigned_employer_ids = EmployerRecruiterOrgLink.objects.filter(
-                    recruiter_org=user_org
+                    recruiter_org__in=user_orgs
                 ).values_list("employer_org_id", flat=True)
-
                 work_requests = WorkRequests.objects.filter(employer_id__in=assigned_employer_ids)
-            else:
-                work_requests = WorkRequests.objects.none()
-        else:
-            work_requests = WorkRequests.objects.none()
 
-        # Attach recruiter_org to each work request
+        elif employer_group in user.groups.all() or employer_admin_group in user.groups.all():
+            user_orgs = user.organizations.all()
+            if user_orgs.exists():
+                work_requests = WorkRequests.objects.filter(employer__in=user_orgs)
+
         for wr in work_requests:
             recruiter_link = EmployerRecruiterOrgLink.objects.filter(employer_org=wr.employer).first()
             wr.recruiter_org = recruiter_link.recruiter_org if recruiter_link else None
-
+            
         context = {
             "work_requests": work_requests,
             "employers": Organization.objects.filter(type='employer'),
@@ -464,7 +503,6 @@ class DeleteAssignedOrganizationView(View):
         employer = get_object_or_404(Organization, pk=employer_id)
         recruiter_org = get_object_or_404(Organization, pk=recruiter_org_id)
 
-        # Delete the assignment link between employer and recruiter organization
         EmployerRecruiterOrgLink.objects.filter(
             employer_org=employer,
             recruiter_org=recruiter_org
@@ -479,7 +517,6 @@ class DeleteEmployerOrganizationFromRecruiterView(View):
         recruiter_org = get_object_or_404(Organization, pk=recruiter_org_id, type='recruiter')
         employer_org = get_object_or_404(Organization, pk=employer_org_id)
 
-        # Delete the link between recruiter and employer
         EmployerRecruiterOrgLink.objects.filter(
             recruiter_org=recruiter_org,
             employer_org=employer_org
@@ -543,12 +580,14 @@ class WorkRequestDeleteView(LoginRequiredMixin, View):
             return HttpResponseForbidden(_("You do not have permission to delete this work request."))
 
 
-
 class AddWorkersWorkRequests(View):
     def get(self, request, pk, role_id):
+        type_sector_value = request.GET.get('type_sector')
         work_assign_form = WorkerAssignmentForm()
-        form = FilterWorkExperienceForm()
-        filter_form = AdvancedFilterForm()
+        if type_sector_value:
+            type_sector_value = type_sector_value.replace('_', ' ').title()
+        form = DynamicWorkExperienceForm(initial={'type_sector': type_sector_value})
+        filter_form = AdvancedFilterForm(request.GET or None)
         search_query = request.GET.get('search', '')
         page_number = request.GET.get('page', 1)
         per_page = request.GET.get('per_page', 25)
@@ -556,13 +595,12 @@ class AddWorkersWorkRequests(View):
         try:
             per_page = int(per_page)
         except ValueError:
-            per_page = 4  # Fallback default
+            per_page = 4
 
         work_request = get_object_or_404(WorkRequests, pk=pk)
         role = get_object_or_404(Role, pk=role_id)
         work_requests = WorkRequests.objects.filter(status='Open').prefetch_related('roles')
 
-        # Retrieve the state from the session
         session_key = f'role_{role_id}_state'
         if session_key in request.session:
             state = request.session[session_key]
@@ -570,26 +608,165 @@ class AddWorkersWorkRequests(View):
             page_number = state.get('page_number', 1)
             per_page = state.get('per_page', 25)
 
-        # Get all workers (not filtered by role)
         workers = User.objects.filter(
             groups__name='worker'
         ).distinct().order_by('-created_at')
-
         if search_query:
             workers = workers.filter(
                 Q(first_name__icontains=search_query) |
                 Q(last_name__icontains=search_query) |
                 Q(email__icontains=search_query)
             )
+        params = request.GET
+        type_sector = request.GET.get('type_sector')
+        if type_sector:
+            workers = workers.filter(
+                crop_experiences__job_type__iexact=type_sector
+            )
 
+        # Filter by Passport
+        passport_filter = next((v for k, v in params.items() if k.startswith("passport_") and v), None)
+        if passport_filter and passport_filter.lower() == 'yes':
+            workers = workers.filter(documents__kind__iexact='passport').distinct()
+
+
+        # Filter by H2A Experience
+        h2a_experience_filter = next((v for k, v in params.items() if k.startswith("h2a_experience_") and v), None)
+        if h2a_experience_filter and h2a_experience_filter.lower() == 'yes':
+            h2a_user_ids = UserWorkExperience.objects.filter(
+                visa_type__iexact="H-2A"
+            ).values_list('user_id', flat=True).distinct()
+            
+            workers = workers.filter(id__in=h2a_user_ids)
+
+        # Filter by H2B Experience
+        h2b_experience_filter = next((v for k, v in params.items() if k.startswith("h2b_experience_") and v), None)
+        if h2b_experience_filter and h2b_experience_filter.lower() == 'yes':
+            h2b_user_ids = UserWorkExperience.objects.filter(
+                visa_type__iexact="H-2B"
+            ).values_list('user_id', flat=True).distinct()
+
+            workers = workers.filter(id__in=h2b_user_ids)
+
+
+
+        # Filter by US Driving License
+        us_license_filter = next((v for k, v in params.items() if k.startswith("us_driving_license_") and v), None)
+        if us_license_filter and us_license_filter.lower() == 'yes':
+            workers = workers.filter(documents__kind='us_driving_license')
+
+        # Filter by Mexico/US Driving License
+        mx_us_license_filter = next((v for k, v in params.items() if k.startswith("mx_us_driving_license_") and v), None)
+        if mx_us_license_filter and mx_us_license_filter.lower() == 'yes':
+            workers = workers.filter(
+                documents__kind='mexico_driving_license'
+            )
+
+
+        # Filter by Work Preference Type
+        work_type_filter = next((v for k, v in params.items() if k.startswith("work_preference_type_") and v), None)
+        if work_type_filter:
+            work_type_values = [v.strip().lower() for v in work_type_filter.split(',') if v.strip()]
+            workers = workers.filter(
+                userpreference__key='kindOfWork',
+                userpreference__value__in=[val.title() for val in work_type_values]  # Adjust casing as needed
+            )
+
+        # Filter by Work Preference Location (multiple comma-separated values)
+        work_location_filter = next((v for k, v in params.items() if k.startswith("work_preference_location_") and v), None)
+        if work_location_filter:
+            location_values = [loc.strip().lower() for loc in work_location_filter.split(',') if loc.strip()]
+            workers = workers.filter(
+                userpreference__key='whereYouWantToWork',
+                userpreference__value__in=[loc.title() for loc in location_values]  # match case (if needed)
+            )
+
+        # Filter by English Proficiency if marked 'yes'
+        language_proficiency_filter = next((v for k, v in params.items() if k.startswith("language_proficiency_") and v), None)
+        if language_proficiency_filter and language_proficiency_filter.lower() == 'yes':
+            workers = workers.filter(
+                userpreference__key='english_proficiency',
+                userpreference__value__iexact='fluent'
+            )
+
+        # Filter by Gender
+        gender_filter = next((v for k, v in params.items() if k.startswith("gender_") and v), None)
+        if gender_filter:
+            workers = workers.filter(gender__iexact=gender_filter)
+
+         # Filter by Availability
+        availability_from = next((v for k, v in params.items() if k.startswith("availability_from_") and v), None)
+        availability_to = next((v for k, v in params.items() if k.startswith("availability_to_") and v), None)
+        if availability_from or availability_to:
+            availability_filter = Q(userpreference__key='availability')
+            if availability_from:
+                try:
+                    availability_filter &= Q(userpreference__value__gte=availability_from)
+                except ValueError:
+                    pass
+
+            if availability_to:
+                try:
+                    availability_filter &= Q(userpreference__value__lte=availability_to)
+                except ValueError:
+                    pass
+
+            workers = workers.filter(availability_filter)
+
+        # Filter by Reference
+
+        references_filter = next((v for k, v in params.items() if k.startswith("references_") and v), None)
+        if references_filter and references_filter.lower() == 'yes':
+            referenced_user_ids = UserWorkExperience.objects.filter(
+                Q(supervisor_name__isnull=False) & ~Q(supervisor_name__exact='') |
+                Q(supervisor_tel__isnull=False) & ~Q(supervisor_tel__exact='') |
+                Q(supervisor_email__isnull=False) & ~Q(supervisor_email__exact='')
+            ).values_list('user_id', flat=True).distinct()
+
+            workers = workers.filter(id__in=referenced_user_ids)
+
+        # Filter by Age (from dob)
+
+        age_min = next((int(v) for k, v in params.items() if k.startswith("age_min_") and v), None)
+        age_max = next((int(v) for k, v in params.items() if k.startswith("age_max_") and v), None)
+        if age_min is not None or age_max is not None:
+            today = date.today()
+            min_dob = today - relativedelta(years=age_max) if age_max is not None else None
+            max_dob = today - relativedelta(years=age_min) if age_min is not None else None
+            dob_filter = Q()
+            if min_dob:
+                dob_filter &= Q(dob__gte=min_dob)
+            if max_dob:
+                dob_filter &= Q(dob__lte=max_dob)
+
+            workers = [w for w in workers if (
+                (w.dob is not None) and
+                (min_dob is None or w.dob >= min_dob) and
+                (max_dob is None or w.dob <= max_dob)
+            )]
+
+        # Filter by Experience
+        min_exp = next((int(v) for k, v in params.items() if k.startswith("years_of_experience_min_") and v), None)
+        max_exp = next((int(v) for k, v in params.items() if k.startswith("years_of_experience_max_") and v), None)
+        if min_exp is not None or max_exp is not None:
+            filtered = []
+            for w in workers:
+                years = calculate_total_experience(w)
+                if ((min_exp is None or years >= min_exp) and
+                    (max_exp is None or years <= max_exp)):
+                    filtered.append(w)
+            workers = filtered
         paginator = Paginator(workers, per_page)
         page_obj = paginator.get_page(page_number)
 
+        
+        all_workers = workers.distinct()
+
         worker_data = []
-        for worker in page_obj:
+        for worker in all_workers:
             profile_completion = calculate_profile_completion(worker)
             worker_details = get_worker_preferences(worker)
-
+            years_of_experience = calculate_total_experience(worker)
             worker.profile_completion_percentage = profile_completion
             latest_assignment = WorkAssignment.objects.filter(
                 worker=worker,
@@ -607,14 +784,15 @@ class AddWorkersWorkRequests(View):
                 'lastname': worker.last_name,
                 'email': worker.email,
                 'profile_completion': profile_completion,
+                'years_of_experience': years_of_experience,
                 **worker_details
             })
 
-        # Retrieve shortlisted workers based on status and role
         shortlisted_workers = get_shortlisted_workers(status='assigned', role_id=role_id)
         offersent_workers = get_shortlisted_workers(status='offersent', role_id=role_id)
         confirmed_workers = get_shortlisted_workers(status='confirmed', role_id=role_id)
         cancel_workers = get_shortlisted_workers(status='cancelled', role_id=role_id)
+        rejected_workers = get_shortlisted_workers(status='rejected', role_id=role_id)
 
         shortlisted_workers_data = []
         for assignment in shortlisted_workers:
@@ -678,31 +856,45 @@ class AddWorkersWorkRequests(View):
                     'status': assignment.status,
                     **worker_details
                 })
+        
+        rejected_workers_data = []
+        unique_rejected_workers = set()
+        for assignment in rejected_workers:
+            worker = assignment.worker
+            if worker.id not in unique_rejected_workers:
+                unique_rejected_workers.add(worker.id)
+                profile_completion = calculate_profile_completion(worker)
+                worker_details = get_worker_preferences(worker)
+                rejected_workers_data.append({
+                    'id': worker.id,
+                    'firstname': worker.first_name,
+                    'lastname': worker.last_name,
+                    'email': worker.email,
+                    'profile_completion': profile_completion,
+                    'status': assignment.status,
+                    **worker_details
+                })
 
         shortlisted_count = len(shortlisted_workers_data)
         offersent_count = len(offersent_workers_data)
         confirmed_count = len(confirmed_workers_data)
         cancelled_count = len(cancelled_workers_data)
+        rejected_count = len(rejected_workers_data)
+        workers_count = len(all_workers)
 
-        # Store the state in the session
         request.session[session_key] = {
             'search_query': search_query,
             'page_number': page_number,
             'per_page': per_page,
         }
 
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({'workers': worker_data, 'num_pages': paginator.num_pages})
-        
-
         context = {
-            'workers': page_obj,  # All workers (not role-specific)
+            'workers': all_workers,
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
             'form': form,
             'work_assign_form': work_assign_form,
             'filter_form': filter_form,
             'search_query': search_query,
-            'paginator': paginator,
             'per_page': per_page,
             'role': role,
             'work_request': work_request,
@@ -710,10 +902,13 @@ class AddWorkersWorkRequests(View):
             'offersent_workers': offersent_workers_data,
             'confirmed_workers': confirmed_workers_data,
             'cancelled_workers': cancelled_workers_data,
+            'rejected_workers': rejected_workers_data,
             'shortlisted_count': shortlisted_count,
             'offersent_count': offersent_count,
             'confirmed_count': confirmed_count,
             'cancelled_count': cancelled_count,
+            'rejected_count': rejected_count,
+            'workers_count': workers_count,
         }
         return render(request, 'recruiting/work_requests/create_addworker.html', context)
 
@@ -758,7 +953,6 @@ class GetRolesView(View):
             return JsonResponse({'error': 'Work request ID is required'}, status=400)
 
         try:
-            # Fetch the work request with related roles using prefetch_related
             work_request = WorkRequests.objects.filter(id=work_request_id).prefetch_related('roles').first()
             if not work_request:
                 return JsonResponse({'error': 'Work request not found'}, status=404)
@@ -775,8 +969,51 @@ class UpdateWorkerStatusView(View):
     def post(self, request, *args, **kwargs):
         worker_ids = request.POST.getlist('worker_ids[]')
         WorkAssignment.objects.filter(worker_id__in=worker_ids, status='assigned').update(status='offersent')
-        messages.success(request, _("offerSentSuccessfully."))
+        # Need to send an offer notification here for each user
+        for item in worker_ids:
+             UserNotification.objects.create(
+                user=User.objects.get(id=item),
+                title=_("workRequestAddNotificationTitle"),
+                message=_("workRequestAddNotificationBody")
+            )
+        messages.success(request, _("workRequestAddWorkerOfferSentSuccessfully"))
         return JsonResponse({'status':'success','success': 'True', 'message': 'Offer sent successfully.'})
+
+@method_decorator(csrf_exempt, name='dispatch')
+class OfferSendWorkerView(View):
+    def post(self, request, *args, **kwargs):
+        worker_id = request.POST.get('worker_ids')
+        work_request_id = request.POST.get('work_request')
+        role_id = request.POST.get('role')
+        status = request.POST.get('status', 'assigned')
+        
+        assignment = WorkAssignment.objects.filter(
+            worker_id=worker_id,
+            work_request_id=work_request_id,
+            role_id=role_id,
+            status='assigned'
+        ).first()
+
+        if assignment:
+            assignment.status = 'offersent'
+            assignment.save()
+        else:
+            WorkAssignment.objects.create(
+                worker_id=worker_id,
+                work_request_id=work_request_id,
+                role_id=role_id,
+                status='offersent'
+            )
+        UserNotification.objects.create(
+                user=User.objects.get(id=worker_id),
+                title=_("workRequestAddNotificationTitle"),
+                message=_("workRequestAddNotificationBody")
+            )
+       
+        messages.success(request, _("OfferSentSuccessfully."))
+        return redirect('recruiting_web:worker_detail', pk=worker_id)
+
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class CancelOfferView(View):
@@ -801,18 +1038,17 @@ class AddToShortlistView(View):
         added_any, already_assigned = add_workers_to_shortlist(worker_ids, work_request_id, role_id)
 
         if added_any:
-            messages.success(request, "workersAddedToShortlistSuccessfully.")
-            return JsonResponse({'success': True, 'message': _("workersAddedToShortlistSuccessfully.")})
+            messages.success(request, "workRequestAddWorkerWorkersAddedToShortlistSuccessfully.")
+            return JsonResponse({'success': True, 'message': _("workRequestAddWorkerWorkersAddedToShortlistSuccessfully")})
         else:
-            messages.warning(request, "someWorkersAreAlreadyShortlisted.")
-            return JsonResponse({'success': False, 'message': _("someWorkersAreAlreadyShortlisted.")})
+            messages.warning(request, "workRequestAddWorkerSomeWorkersAreAlreadyShortlisted.")
+            return JsonResponse({'success': False, 'message': _("workRequestAddWorkerSomeWorkersAreAlreadyShortlisted")})
 
 
 class ShowWorkerDetails(View):
     def get(self, request, pk):
         view = WorkerDetailsView()
         return view.get(request, pk)
-
 
 class WorkRequestDetailView(View):
     def get(self, request, pk):
@@ -879,7 +1115,17 @@ class WorkRequestDetailView(View):
             for role in roles_qs
             if hasattr(role, 'qualifications') and role.qualifications and role.qualifications.deleted_at is None
         }
-
+        
+        role_deductions = {
+            role.id: role.deductions.filter()
+            for role in roles_qs
+        }
+        
+        deduction_forms = {}
+        for role in roles_qs:
+            deductions = role.deductions.filter()
+            for deduction in deductions:
+                deduction_forms[deduction.id] = RoleDeductionForm(instance=deduction)
 
         context = {
             'workrequest': work_request,
@@ -895,13 +1141,12 @@ class WorkRequestDetailView(View):
             'form': form_data,
             'hours_form': hours_form,
             'wages_form': wages_form,
-            'qualification_form':qualification_forms
+            'qualification_form':qualification_forms,
+            'role_deductions': role_deductions,
+            'deduction_forms': deduction_forms,
 
         }
         return render(request, 'recruiting/work_requests/detail.html', context)
-
-    
-
 class WorkRequestRoleCreateView(CreateView):
     model = Role
     form_class = WorkRequestRoleForm
@@ -944,7 +1189,7 @@ class DeleteRoleView(View):
         role = get_object_or_404(Role, pk=pk)
         work_request_pk = role.work_request.pk 
         role.delete(user=request.user)
-        messages.success(request, 'Role deleted successfully.')
+        messages.success(request, _('addRoleRoleDeletedSuccessfully'))
         return redirect('recruiting_web:workrequest_detail', pk=work_request_pk)
 
 class RecruiterListView(LoginRequiredMixin, View):
@@ -1430,6 +1675,7 @@ class AssignEmployerContactView(View):
         return JsonResponse({'error': 'GET not allowed.'}, status=405)
 
 
+
 @method_decorator(csrf_exempt, name='dispatch')
 class AssignEmployersToRecruiterOrgView(View):
     def post(self, request, *args, **kwargs):
@@ -1439,71 +1685,200 @@ class AssignEmployersToRecruiterOrgView(View):
             recruiter_org_id = data.get('recruiter_org_id')
 
             if not employer_ids or not recruiter_org_id:
-                msg = _('missingEmployerIDsorRecruiterOrganizationID.')
-                messages.error(request, msg)
-                return JsonResponse({'success': False, 'message': msg})
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Missing employer or recruiter organization ID.'
+                })
 
-            recruiter_org = get_object_or_404(Organization, id=recruiter_org_id, type='recruiter')
-            recruiters = User.objects.filter(organizations=recruiter_org)
+            recruiter_org = get_object_or_404(
+                Organization, id=recruiter_org_id, type='recruiter'
+            )
 
-            for employer_id in employer_ids:
-                employer_org = get_object_or_404(Organization, id=employer_id, type='employer')
+            already_assigned = []
+            newly_assigned = []
 
-                EmployerRecruiterOrgLink.objects.get_or_create(
-                    employer_org=employer_org,
-                    recruiter_org=recruiter_org
+            for emp_id in employer_ids:
+                employer_org = get_object_or_404(
+                    Organization, id=emp_id, type='employer'
                 )
 
-                for recruiter in recruiters:
-                    EmployerRecruiter.objects.get_or_create(employer=employer_org, recruiter=recruiter)
+                link, created = EmployerRecruiterOrgLink.objects.get_or_create(
+                    employer_org=employer_org,
+                    recruiter_org=recruiter_org,
+                    defaults={
+                        'employer_status': 'pending',
+                        'recruiter_status': 'pending',
+                        'final_status': 'pending'
+                    }
+                )
 
-                try:
-                    primary_contacts = EmployerContact.objects.filter(employer=recruiter_org, is_primary=True)
+                if created:
+                    newly_assigned.append(employer_org.name)
+                    send_invitation_email_to_org(
+                        employer_org, recruiter_org, request, role='employer'
+                    )
+                    send_invitation_email_to_org(
+                        recruiter_org, employer_org, request, role='recruiter'
+                    )
+                else:
+                    already_assigned.append(employer_org.name)
 
-                    if primary_contacts.exists():
-                        for primary_contact in primary_contacts:
-                            protocol = 'https' if request.is_secure() else 'http'
-                            domain = request.get_host()
-                            subject = "Recruiter Assignment Notification"
-                            accept_url = f"{protocol}://{domain}/update-employer-recruiter-status/?action=accept&employer_org_id={employer_org.id}&recruiter_org_id={recruiter_org.id}&primary_contact_id={primary_contact.id}"
-                            reject_url = f"{protocol}://{domain}/update-employer-recruiter-status/?action=reject&employer_org_id={employer_org.id}&recruiter_org_id={recruiter_org.id}&primary_contact_id={primary_contact.id}"
-                            message = f"""
-                        Hi {primary_contact.name},
+            if newly_assigned:
+                messages.success(
+                    request,
+                    _("Invitations created, emails sent successfully, and employer(s) assigned to the recruiter organization.")
+                )
 
-                        Your organization '{employer_org.name}' has been assigned a new recruiter organization: '{recruiter_org.name}'.
+            if already_assigned:
+                messages.warning(
+                    request,
+                    _("The following employers are already assigned: {}").format(', '.join(already_assigned))
+                )
 
-                        You can accept or reject the assignment:
-
-                        - Accept: <a href="{accept_url}">Accept</a>
-                        - Reject: <a href="{reject_url}">Reject</a>
-
-                        Please click one of the links to confirm your action.
-
-                        Best regards,  
-                        Your Team
-                        """
-                            send_mail(
-                                subject,
-                                message,
-                                'prasanth.s@krify.com',  
-                                [primary_contact.email],
-                                fail_silently=False
-                            )
-                except EmployerContact.DoesNotExist:
-                    print(f"No primary contact found for employer: {employer_org.name}")
-
-            msg = _('EmployersAssignedSuccessfully.')
-            messages.success(request, msg)
-            return JsonResponse({'success': True, 'message': msg})
-
-        except json.JSONDecodeError:
-            msg = _('invalidJSONData.')
-            messages.error(request, msg)
-            return JsonResponse({'success': False, 'message': msg})
+            return JsonResponse({
+                'success': True,
+                'newly_assigned': newly_assigned,
+                'already_assigned': already_assigned,
+                'message': "Processed employer assignment."
+            })
 
         except Exception as e:
-            messages.error(request, str(e))
-            return JsonResponse({'success': False, 'message': str(e)})
+            return JsonResponse({
+                'success': False,
+                'message': str(e)
+            })
+            
+def get_response_status(receiver_org, other_org):
+    try:
+        link = EmployerRecruiterOrgLink.objects.get(
+            employer_org=receiver_org if receiver_org.type == 'employer' else other_org,
+            recruiter_org=receiver_org if receiver_org.type == 'recruiter' else other_org
+        )
+        return link.status
+    except EmployerRecruiterOrgLink.DoesNotExist:
+        return 'pending'
+
+
+
+class InvitationResponseView(View):
+    def get(self, request):
+        action = request.GET.get('action')
+        role = request.GET.get('role')
+        receiver_org_id = request.GET.get('receiver_org_id')
+        other_org_id = request.GET.get('other_org_id')
+
+        try:
+            receiver = get_object_or_404(Organization, id=receiver_org_id)
+            other = get_object_or_404(Organization, id=other_org_id)
+
+            if role == 'employer':
+                employer_org = receiver
+                recruiter_org = other
+            else:
+                employer_org = other
+                recruiter_org = receiver
+
+            link, _ = EmployerRecruiterOrgLink.objects.get_or_create(
+                employer_org=employer_org,
+                recruiter_org=recruiter_org
+            )
+
+            if role == 'employer':
+                link.employer_status = action
+            else:
+                link.recruiter_status = action
+
+            if link.is_fully_accepted() and link.final_status != 'accepted':
+                link.final_status = 'accepted'
+                send_invitation_to_primary_contacts(employer_org, recruiter_org, request)
+
+            elif action == 'rejected':
+                link.final_status = 'rejected'
+
+            link.save()
+            return HttpResponse("Thank you for your response.")
+
+        except Exception as e:
+            return HttpResponse(f"Error: {str(e)}")
+
+
+def send_invitation_email_to_org(receiver_org, other_org, request, role):
+    """
+    Sends initial invitation email to the org's notification email
+    """
+    protocol = 'https' if request.is_secure() else 'http'
+    domain = request.get_host()
+
+    accept_url = (
+        f"{protocol}://{domain}/invitation-response/"
+        f"?action=accepted&receiver_org_id={receiver_org.id}"
+        f"&other_org_id={other_org.id}&role={role}"
+    )
+    reject_url = (
+        f"{protocol}://{domain}/invitation-response/"
+        f"?action=rejected&receiver_org_id={receiver_org.id}"
+        f"&other_org_id={other_org.id}&role={role}"
+    )
+
+    subject = f"Invitation to collaborate with {other_org.name}"
+    message = f"""
+Hi {receiver_org.name},
+
+Your organization has received an invitation to collaborate with '{other_org.name}'.
+
+✅ Accept: {accept_url}  
+❌ Reject: {reject_url}
+
+Regards,  
+Your Team
+    """.strip()
+
+    if receiver_org.email:
+        send_mail(
+            subject,
+            message,
+            settings.EMAIL_HOST_USER,
+            [receiver_org.email],
+            fail_silently=False
+        )
+
+
+def send_invitation_to_primary_contacts(employer_org, recruiter_org, request):
+    print(employer_org, recruiter_org, "employer_org, recruiter_org")
+    
+    protocol = 'https' if request.is_secure() else 'http'
+    domain = request.get_host()
+
+    contacts = EmployerContact.objects.filter(employer=recruiter_org, is_primary=True)
+    print(contacts, "contacts")
+    
+    for contact in contacts:
+        accept_url = f"{protocol}://{domain}/invitation-response/?action=accept&receiver_org_id={employer_org.id}&other_org_id={recruiter_org.id}&role=recruiter"
+        reject_url = f"{protocol}://{domain}/invitation-response/?action=reject&receiver_org_id={employer_org.id}&other_org_id={recruiter_org.id}&role=recruiter"
+
+        subject = f"Collaboration Confirmed with {recruiter_org.name}"
+        message = f"""
+Hi {contact.name},
+
+Your organization '{employer_org.name}' has successfully established a collaboration with '{recruiter_org.name}'.
+
+✅ Accept: {accept_url}  
+❌ Reject: {reject_url}
+
+Regards,  
+Your Team
+        """
+
+        if contact.email:
+            send_mail(
+                subject,
+                message,
+                settings.EMAIL_HOST_USER,
+                [contact.email],
+                fail_silently=False
+            )
+
+
 
 
 def update_employer_recruiter_status(request):
@@ -1524,7 +1899,6 @@ def update_employer_recruiter_status(request):
             employer_org=employer_org, recruiter_org=recruiter_org
         )
 
-        # ✅ Block re-use of the link
         if relation.status in ['accepted', 'rejected']:
             return JsonResponse({
                 'success': False,
@@ -1546,11 +1920,9 @@ def update_employer_recruiter_status(request):
         else:
             return JsonResponse({'success': False, 'message': 'Invalid action.'})
 
-        # Save status and updater
         relation.user_updated_by = primary_contact
         relation.save()
 
-        # Send confirmation email
         send_mail(subject, message, settings.EMAIL_HOST_USER, [primary_contact.email])
         messages.success(request, msg)
 
@@ -1567,18 +1939,17 @@ class EmployerRecruiterOrgStatusListView(ListView):
 
     def get_queryset(self):
         return EmployerRecruiterOrgLink.objects.filter(
-            status__in=['accepted', 'rejected', 'pending']
+            final_status__in=['accepted', 'rejected', 'pending']
         ).select_related(
             'employer_org',
             'recruiter_org',
-            'user_updated_by__user'  # Optimizes access to user fields in template
+            'user_updated_by__user'
         )
 
 class EmployerRecruiterOrgLinkDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         link = get_object_or_404(EmployerRecruiterOrgLink, pk=pk, deleted=False)
 
-        # Optional: Add permission logic here
         if request.user.groups.filter(name='admin').exists():
             link_str = str(link)
             link.delete(user=request.user)
@@ -1587,7 +1958,7 @@ class EmployerRecruiterOrgLinkDeleteView(LoginRequiredMixin, View):
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
 
-            return redirect('recruiting_web:recruiter-status-list')  # Adjust to your list view name
+            return redirect('recruiting_web:recruiter-status-list')
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
@@ -1742,10 +2113,10 @@ class EditEmploymentLocationView(View):
         form = RoleEmploymentLocationForm(request.POST, instance=location)
         if form.is_valid():
             form.save()
-            messages.success(request, 'EmploymentLocationUpdatedSuccessfully.')
+            messages.success(request, _('roleEmploymentLocationEmploymentLocationUpdatedSuccessfully'))
             return redirect('recruiting_web:workrequest_detail', pk=location.role.work_request.pk)
         else:
-            messages.error(request, 'ThereWasAnErrorUpdatingTheEmploymentLocation.')
+            messages.error(request, _('roleEmploymentLocationThereWasAnErrorUpdatingTheEmploymentLocation'))
 
 
 class DeleteEmploymentLocationView(View):
@@ -1753,10 +2124,10 @@ class DeleteEmploymentLocationView(View):
         location = get_object_or_404(EmploymentLocation, pk=pk)
         try:
             location.delete()
-            messages.success(request, 'EmploymentLocationDeletedSuccessfully.')
+            messages.success(request, _('roleEmploymentLocationEmploymentLocationDeletedSuccessfully'))
             return redirect('recruiting_web:workrequest_detail', pk=location.role.work_request.pk)
         except Exception as e:
-            messages.error(request, f'ErrorDeletingEmploymentLocation: {str(e)}')
+            messages.error(request, _('roleEmploymentLocationErrorDeletingEmploymentLocation: %(error)s') % {'error': str(e)})
 
 
 class EditHousingInformationView(View):
@@ -1765,10 +2136,10 @@ class EditHousingInformationView(View):
         form = RoleHousingInformationForm(request.POST, instance=housing)
         if form.is_valid():
             form.save()
-            messages.success(request, 'HousingInformationUpdatedSuccessfully.')
+            messages.success(request, _('joDetailsHousingInfoHousingInformationUpdatedSuccessfully'))
             return redirect('recruiting_web:workrequest_detail', pk=housing.role.work_request.pk)
         else:
-            messages.error(request, 'ThereWasAnErrorUpdatingTheHousingInformation.')
+            messages.error(request, _('joDetailsHousingInfoThereWasAnErrorUpdatingTheHousingInformation'))
             return redirect('recruiting_web:workrequest_detail', pk=housing.role.work_request.pk)
 
 
@@ -1776,12 +2147,12 @@ class DeleteHousingInformationView(View):
     def post(self, request, pk):
         housing = get_object_or_404(HousingInformation, pk=pk)
         try:
-            work_request_pk = housing.role.work_request.pk  # Store before deleting
+            work_request_pk = housing.role.work_request.pk
             housing.delete()
-            messages.success(request, 'HousingInformationDeletedSuccessfully.')
+            messages.success(request, _('joDetailsHousingInfoHousingInformationDeletedSuccessfully'))
             return redirect('recruiting_web:workrequest_detail', pk=work_request_pk)
         except Exception as e:
-            messages.error(request, f'ErrorDeletingHousingInformation: {str(e)}')
+            messages.error(request, _('joDetailsHousingInfoErrorDeletingHousingInformation: %(error)s') % {'error': str(e)})
             return redirect('recruiting_web:workrequest_detail', pk=housing.role.work_request.pk)
         
 class EditMealProvisionView(View):
@@ -1791,10 +2162,10 @@ class EditMealProvisionView(View):
 
         if form.is_valid():
             form.save()
-            messages.success(request, 'MealProvisionUpdatedSuccessfully.')
+            messages.success(request, _('joDetailsMealsMealProvisionUpdatedSuccessfully'))
             return redirect('recruiting_web:workrequest_detail', pk=meal_provision.role.work_request.pk)
         else:
-            messages.error(request, 'ThereWasAnErrorUpdatingTheMealProvision.')
+            messages.error(request, _('joDetailsMealsThereWasAnErrorUpdatingTheMealProvision'))
             return redirect('recruiting_web:workrequest_detail', pk=meal_provision.role.work_request.pk)
         
 
@@ -1802,12 +2173,12 @@ class DeleteMealProvisionView(View):
     def post(self, request, pk):
         meal_provision = get_object_or_404(MealProvision, pk=pk)
         try:
-            work_request_pk = meal_provision.role.work_request.pk  # Store before deleting
+            work_request_pk = meal_provision.role.work_request.pk
             meal_provision.delete()
-            messages.success(request, 'MealProvisionDeletedSuccessfully.')
+            messages.success(request, _('joDetailsMealsMealProvisionDeletedSuccessfully'))
             return redirect('recruiting_web:workrequest_detail', pk=work_request_pk)
         except Exception as e:
-            messages.error(request, f'ErrorDeletingMealProvision: {str(e)}')
+            messages.error(request, _('joDetailsMealsErrorDeletingMealProvision: %(error)s') % {'error': str(e)})
             return redirect('recruiting_web:workrequest_detail', pk=meal_provision.role.work_request.pk)
 
 
@@ -1816,40 +2187,34 @@ class EditRoleHoursView(View):
         hours = get_object_or_404(Hours, pk=pk)
         form = RoleHoursForm(request.POST, instance=hours)
 
-        # Get the work_request_id from the form
         work_request_id = request.POST.get('work_request_id', None)
 
         if form.is_valid():
             form.save()
-            messages.success(request, 'Hours updated successfully.')
+            messages.success(request, _('joDetailsHoursHoursUpdatedSuccessfully'))
         else:
-            messages.error(request, 'There was an error updating the hours.')
+            messages.error(request, _('joDetailsHoursThereWasAnErrorUpdatingTheHours'))
 
-        # Redirect to the work request detail page
         if work_request_id:
             return redirect('recruiting_web:workrequest_detail', pk=work_request_id)
         else:
-            return redirect('/')  # fallback if something goes wrong
+            return redirect('/')
 
 class DeleteRoleHoursView(View):
     def post(self, request, pk):
         hours = get_object_or_404(Hours, pk=pk)
-
-        # Get the work_request_id from the form
         work_request_id = request.POST.get('work_request_id', None)
 
         try:
             hours.delete()
-            messages.success(request, 'Hours deleted successfully.')
+            messages.success(request, _('joDetailsHoursHoursDeletedSuccessfully'))
         except Exception as e:
-            messages.error(request, f'Error deleting hours: {str(e)}')
+            messages.error(request, _('joDetailsHoursErrorDeletingHours: %(error)s')% {'error': str(e)})
 
-        # Redirect to the work request detail page
         if work_request_id:
             return redirect('recruiting_web:workrequest_detail', pk=work_request_id)
         else:
-            return redirect('/')  # fallback
-
+            return redirect('/')
 class EditRoleWagesView(View):
     def post(self, request, pk):
         wages = get_object_or_404(Wages, pk=pk)
@@ -1859,9 +2224,9 @@ class EditRoleWagesView(View):
 
         if form.is_valid():
             form.save()
-            messages.success(request, 'Wages updated successfully.')
+            messages.success(request, _('joDetailsWagesWagesUpdatedSuccessfully'))
         else:
-            messages.error(request, 'There was an error updating the wages.')
+            messages.error(request, _('joDetailsWagesThereWasAnErrorUpdatingTheWages'))
 
         if work_request_id:
             return redirect('recruiting_web:workrequest_detail', pk=work_request_id)
@@ -1873,7 +2238,7 @@ class DeleteRoleWagesView(View):
         wages = get_object_or_404(Wages, pk=pk)
         wages.deleted_at = timezone.now()
         wages.save()
-        messages.success(request, "Wages deleted successfully.")
+        messages.success(request, _("joDetailsWagesWagesDeletedSuccessfully"))
         return redirect('recruiting_web:workrequest_detail', pk=wages.role.work_request.pk)
 class EditRoleQualificationView(View):
     def post(self, request, pk):
@@ -1884,10 +2249,10 @@ class EditRoleQualificationView(View):
 
         if form.is_valid():
             form.save()
-            messages.success(request, 'Qualification updated successfully.')
+            messages.success(request, _('joDetailsQualificationsQualificationUpdatedSuccessfully'))
             return redirect('recruiting_web:workrequest_detail', pk=qualification.role.work_request.pk) 
         else:
-            messages.error(request, 'There was an error updating the qualification.')
+            messages.error(request, _('joDetailsQualificationsThereWasAnErrorUpdatingTheQualification'))
 
         
 
@@ -1897,5 +2262,34 @@ class DeleteQualificationView(View):
         qualification = get_object_or_404(Qualification, pk=pk)
         qualification.delete()
 
-        messages.success(request, "Qualification deleted successfully.")
+        messages.success(request, _("joDetailsQualificationsQualificationDeletedSuccessfully"))
         return redirect('recruiting_web:workrequest_detail', pk=qualification.role.work_request.pk)
+
+class DeleteDeductionView(View):
+    def post(self, request, pk):
+        deduction = get_object_or_404(Deduction, pk=pk)
+        try:
+            deduction.delete()
+            messages.success(request, 'DeductionDeletedSuccessfully.')
+            return redirect('recruiting_web:workrequest_detail', pk=deduction.role.work_request.pk)
+        except Exception as e:
+            messages.error(request, f'ErrorDeletingDeduction: {str(e)}')
+
+
+class DeductionEditView(View):
+    def post(self, request, deduction_id):
+        deduction = get_object_or_404(Deduction, id=deduction_id)
+
+        data = {
+            'role': request.POST.get('role'),
+            'description': request.POST.get('description'),
+            'deduction_amount': request.POST.get('deduction_amount'),
+            'frequency_of_pay': request.POST.get('frequency_of_pay'),
+        }
+        form = RoleDeductionForm(data, instance=deduction)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Deduction updated successfully.")
+            return redirect('recruiting_web:workrequest_detail', pk=deduction.role.work_request.pk)
+        else:
+            return redirect('recruiting_web:workrequest_detail', pk=deduction.role.work_request.pk)

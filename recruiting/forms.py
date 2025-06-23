@@ -11,14 +11,19 @@ from recruiting.models import (
 from django.core.exceptions import ValidationError
 from account.models import (UserWorkExperience)
 from common.utils import StaticContent
+import os
+import json
+from django.utils.translation import get_language
+from django.conf import settings
 
 class EmployerForm(forms.ModelForm):
     class Meta:
         model = Organization
-        fields = ['name', 'email', 'phone', 'website',
-                  'address', 'city', 'state', 'country',
-                  'zip_code', 'description', 'type'
-                  ]
+        fields = [
+            'name', 'email', 'phone', 'website',
+            'address', 'city', 'state', 'country',
+            'zip_code', 'description'
+        ]
 
         labels = {
             'name': _('addEmployerName'),
@@ -31,7 +36,6 @@ class EmployerForm(forms.ModelForm):
             'country': _('addEmployerCountry'),
             'zip_code': _('addEmployerZipCode'),
             'description': _('addEmployerDescription'),
-            'type': _('addEmployerOrganizationType'),
         }
 
         widgets = {
@@ -44,12 +48,13 @@ class EmployerForm(forms.ModelForm):
             'state': forms.TextInput(attrs={'class': 'form-control'}),
             'country': forms.TextInput(attrs={'class': 'form-control'}),
             'zip_code': forms.TextInput(attrs={'class': 'form-control'}),
-            'type': forms.Select(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
-        super(EmployerForm, self).__init__(*args, **kwargs)
-        self.fields['type'].initial = 'recruiter'
+        super().__init__(*args, **kwargs)
+        self.fields['description'].required = False
+
 
 
 class WorkRequestForm(forms.ModelForm):
@@ -114,15 +119,19 @@ class WorkerAssignmentForm(forms.ModelForm):
         }
 
 
-
 class WorkRequestRoleForm(forms.ModelForm):
+    work_type = forms.ChoiceField(
+        choices=[],
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
     class Meta:
         model = Role
         fields = [
             'title', 'usdol_case_number', 'work_type',
             'number_of_required_workers', 'work_request', 'description'
         ]
-        
+
         labels = {
             'title': _('addRoleTitle'),
             'usdol_case_number': _('addRoleUsdolCaseNumber'),
@@ -130,29 +139,24 @@ class WorkRequestRoleForm(forms.ModelForm):
             'number_of_required_workers': _('addRoleNumberOfRequiredWorkers'),
             'work_request': _('addRoleWorkRequest'),
             'description': _('addRoleDescription'),
-        }  
+        }
 
         widgets = {
-            'title': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
-            'usdol_case_number': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
-            'work_type': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
-            'number_of_required_workers': forms.NumberInput(attrs={
-                'class': 'form-control',
-            }),
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'usdol_case_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'number_of_required_workers': forms.NumberInput(attrs={'class': 'form-control'}),
             'work_request': forms.Select(attrs={
                 'class': 'form-control',
                 'readonly': True
             }),
-            'description': forms.Textarea(attrs={
-                'class': 'form-control',
-            }),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        content_service = StaticContent()
+        self.fields['work_type'].choices = content_service.get_sector_choices()
+
 
 
 
@@ -251,34 +255,53 @@ class RoleWagesForm(forms.ModelForm):
             }),
             'wage': forms.NumberInput(attrs={
                 'class': 'form-control',
+                'placeholder': '$'
             }),
             'wage_type': forms.Select(attrs={
                 'class': 'form-control',
             }),
             'piece_rate_offerings': forms.NumberInput(attrs={
                 'class': 'form-control',
+                'placeholder': '$'
             }),
             'piece_rate_offerings_type': forms.Select(attrs={
                 'class': 'form-control',
             }),
-            'frequency_of_pay': forms.TextInput(attrs={
+            'frequency_of_pay': forms.Select(attrs={
                 'class': 'form-control',
+                'placeholder': 'select frequency'
             }),
             'details': forms.TextInput(attrs={
                 'class': 'form-control',
+                'placeholder': 'start typing'
             }),
         }
+        
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+
+            # Required fields
+            self.fields['role'].required = True
+            self.fields['wage'].required = True
+            self.fields['wage_type'].required = True
+            self.fields['frequency_of_pay'].required = True
+
+            # Optional fields
+            self.fields['details'].required = False
+            self.fields['piece_rate_offerings'].required = False
+            self.fields['piece_rate_offerings_type'].required = False
 
 
 class RoleDeductionForm(forms.ModelForm):
     class Meta:
         model = Deduction
-        fields = ['role', 'description', 'deduction_amount']
+        fields = ['role', 'description', 'deduction_amount','frequency_of_pay']
         
         labels = {
             'role': _('roleDeductionsRole'),
             'description': _('roleDeductionsDescription'),
             'deduction_amount': _('roleDeductionsDeductionAmount'),
+            'frequency_of_pay': _('roleDeductionsFrequencyOfPay'),
         }
 
         widgets = {
@@ -292,10 +315,24 @@ class RoleDeductionForm(forms.ModelForm):
             'deduction_amount': forms.NumberInput(attrs={
                 'class': 'form-control',
             }),
+            'frequency_of_pay': forms.Select(attrs={
+                'class': 'form-control',
+            }),
         }
 
 
 class RoleQualificationForm(forms.ModelForm):
+    YES_NO_CHOICES = [
+        (True, _('Yes')),
+        (False, _('No')),
+    ]
+
+    training_required = forms.ChoiceField(
+        choices=YES_NO_CHOICES,
+        widget=forms.RadioSelect(attrs={'class': 'form-check-input'}),  # Use RadioSelect here
+        label=_('roleQualificationTrainingRequired'),
+        required=False
+    )
     class Meta:
         model = Qualification
         fields = [
@@ -394,6 +431,12 @@ class RoleQualificationForm(forms.ModelForm):
                 'class': 'form-control',
             }),
         }
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            # Set all fields except 'role' to not required
+            for field_name in self.fields:
+                if field_name != 'role':
+                    self.fields[field_name].required = False
 
 
 class RoleEmploymentLocationForm(forms.ModelForm):
@@ -403,7 +446,7 @@ class RoleEmploymentLocationForm(forms.ModelForm):
             'role', 'address', 'city', 'county', 'state',
             'postal_code', 'additional_info', 'role'
         ]
-        
+
         labels = {
             'role': _('roleEmploymentLocationRole'),
             'address': _('roleEmploymentLocationAddress'),
@@ -413,7 +456,7 @@ class RoleEmploymentLocationForm(forms.ModelForm):
             'postal_code': _('roleEmploymentLocationPostalCode'),
             'additional_info': _('roleEmploymentLocationAdditionalInfo'),
         }
-        
+
         widgets = {
             'role': forms.Select(attrs={
                 'class': 'form-control',
@@ -423,9 +466,6 @@ class RoleEmploymentLocationForm(forms.ModelForm):
                 'class': 'form-control',
             }),
             'city': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
-            'county': forms.TextInput(attrs={
                 'class': 'form-control',
             }),
             'state': forms.TextInput(attrs={
@@ -439,6 +479,33 @@ class RoleEmploymentLocationForm(forms.ModelForm):
             }),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Load countries.json
+        file_path = os.path.join(settings.BASE_DIR, 'recruiting','countries.json')
+        with open(file_path, 'r', encoding='utf-8') as f:
+            countries = json.load(f)
+        lang = get_language()
+        lang_key = 'en'
+        if lang.lower() in ['es', 'es-mx']:
+            lang_key = 'es-MX'
+
+        # Build choices list
+        country_choices = [('', 'SelectCountry')]  # Default empty
+        for country in countries:
+            if country.get('enabled'):
+                label = f"{country.get(lang_key)}"
+                value = country.get('code')
+                country_choices.append((value, label))
+
+        # Override county field as ChoiceField
+        self.fields['county'] = forms.ChoiceField(
+            choices=country_choices,
+            label=self.fields['county'].label,
+            widget=forms.Select(attrs={'class': 'form-control'})
+        )
+
 
 class RoleHousingInformationForm(forms.ModelForm):
     class Meta:
@@ -447,7 +514,7 @@ class RoleHousingInformationForm(forms.ModelForm):
             'role', 'address', 'city', 'county', 'state',
             'postal_code', 'type_of_housing', 'additional_info'
         ]
-        
+
         labels = {
             'role': _('roleHousingInformationRole'),
             'address': _('roleHousingInformationAddress'),
@@ -458,34 +525,46 @@ class RoleHousingInformationForm(forms.ModelForm):
             'type_of_housing': _('roleHousingInformationTypeOfHousing'),
             'additional_info': _('roleHousingInformationAdditionalInfo'),
         }
-        
+
         widgets = {
-            'role': forms.Select(attrs={
-                'class': 'form-control',
-                'readonly': True
-            }),
-            'address': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
-            'city': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
-            'county': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
-            'state': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
-            'postal_code': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
-            'type_of_housing': forms.Select(attrs={
-                'class': 'form-control',
-            }),
-            'additional_info': forms.Textarea(attrs={
-                'class': 'form-control',
-            }),
+            'role': forms.Select(attrs={'class': 'form-control', 'readonly': True}),
+            'address': forms.TextInput(attrs={'class': 'form-control'}),
+            'city': forms.TextInput(attrs={'class': 'form-control'}),
+            'county': forms.TextInput(attrs={'class': 'form-control'}),  # Temporarily here, will override below
+            'state': forms.TextInput(attrs={'class': 'form-control'}),
+            'postal_code': forms.TextInput(attrs={'class': 'form-control'}),
+            'type_of_housing': forms.Select(attrs={'class': 'form-control'}),
+            'additional_info': forms.Textarea(attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Load countries.json
+        file_path = os.path.join(settings.BASE_DIR, 'recruiting', 'countries.json')
+        with open(file_path, 'r', encoding='utf-8') as f:
+            countries = json.load(f)
+
+        # Get current language
+        lang = get_language()
+        lang_key = 'en'
+        if lang.lower() in ['es', 'es-mx']:
+            lang_key = 'es-MX'
+
+        # Build country choices
+        country_choices = [('', 'SelectCountry')]
+        for country in countries:
+            if country.get('enabled'):
+                label = f"{country.get(lang_key)}"
+                value = country.get('code')
+                country_choices.append((value, label))
+
+        # Override 'county' field with country dropdown
+        self.fields['county'] = forms.ChoiceField(
+            choices=country_choices,
+            label=self.fields['county'].label,
+            widget=forms.Select(attrs={'class': 'form-control'})
+        )
 
 
 class RoleMealProvision(forms.ModelForm):
@@ -514,9 +593,11 @@ class RoleMealProvision(forms.ModelForm):
             }),
             'meal_charge_amount': forms.NumberInput(attrs={
                 'class': 'form-control',
+                'placeholder': 'Charge amount per day'
             }),
             'additional_info': forms.Textarea(attrs={
                 'class': 'form-control',
+                'placeholder': 'start typing'
             }),
         }
 
@@ -539,15 +620,15 @@ class TodoFilterForm(forms.Form):
 
 class OkoMessageFilterForm(forms.Form):
     status = forms.ChoiceField(
-        label=_("status"),
+        label=_("messagesStatus"),
         choices=[
-            ('inbox', _('inbox')),
-            ('sent', _('sent'))   
+            ('inbox', _('messagesInbox')),
+            ('sent', _('messagesSent'))   
         ],
         widget=forms.Select(attrs={'class': 'form-control d-inline w-auto'})
     )
     date = forms.DateField(
-        label=_("date"), 
+        label=_("messagesDate"), 
         widget=forms.DateInput(attrs={
             'class': 'form-control d-inline w-auto', 'type': 'date'})
     )
@@ -632,7 +713,7 @@ class WorkerCreateForm(forms.ModelForm):
         }
         widgets = {
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
-            'curp': forms.TextInput(attrs={'class': 'form-control'}),
+            'curp': forms.TextInput(attrs={'class': 'form-control','required': True}),
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
             'dob': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),

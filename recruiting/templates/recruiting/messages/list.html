@@ -6,7 +6,7 @@
 <div class="page-header">
  <div>
   <h1 class="page-title">
-   {% translate "myMessages" %}
+   {% translate "messagesMyMessages" %}
   </h1>
  </div>
 </div>
@@ -33,7 +33,7 @@
             </div>
             <div class="col-md-4 d-flex align-items-end">
                 <button class="btn btn-primary" type="submit">
-                    {% translate "filter" %}
+                    {% translate "messagesFilter" %}
                 </button>
             </div>
         </form>
@@ -43,7 +43,7 @@
         <i class="fe fe-plus">
         </i>
        </span>
-       {% translate "newMessage" %}
+       {% translate "mesagesNewMessage" %}
       </a>
      </div>
     </div>
@@ -64,7 +64,7 @@
          {{ item.created_at }}
         </td>
         <td class="green-color align-middle">
-         <a class="text-decoration-underline text-primary fw-bold" href="{% url 'recruiting_web:message-details' item.id %}" title="Details">
+         <a class="text-decoration-underline text-primary fw-bold" href="{% url 'recruiting_web:message-details' item.id %}" title="{% translate 'messagesDetails'%}">
           {{ item.subject }}
          </a>
         </td>

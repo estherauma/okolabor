@@ -12,8 +12,7 @@ from account.serializers import (
 )
 from account.models import (
     User, UserJobExperience, UserDocuments, UserJobExperienceDetails,
-    UserNotification, UserPreference,
-    UserReportedProblem, UserWorkExperience,LanguageChoices
+    UserNotification, UserPreference, UserWorkExperience,LanguageChoices
 )
 from account.jwt_manager import JwtManager
 from django.shortcuts import get_object_or_404
@@ -27,6 +26,9 @@ from common.email import EmailHelper
 from jaguar.tasks import check_passport_match
 from django.contrib.auth.models import Group
 from django.utils.translation import gettext as _
+from django.utils import translation
+from rest_framework.permissions import IsAuthenticated
+from common.email import EmailHelper
 
 
 class RegisterView(APIView):
@@ -279,13 +281,17 @@ class UserDocumentsView(APIView):
     )
     def get(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
-        documents = user.documents.filter(
-            deleted=False)
-        serilizer = UserDocumentSerializer(documents, many=True)
-        return Response(
-            serilizer.data,
-            status=status.HTTP_200_OK
+
+        # Get user documents (not deleted)
+        documents = user.documents.filter(deleted=False)
+
+        # Serialize with context
+        serializer = UserDocumentSerializer(
+            documents,
+            many=True,
         )
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class UserDocumentDetailsView(APIView):
@@ -297,8 +303,8 @@ class UserDocumentDetailsView(APIView):
         document = get_object_or_404(
             UserDocuments, pk=document_id, deleted=False)
         serilizer = UserDocumentSerializer(document)
-        if document.kind == 'passport' and document.cloud_vision_match is False:
-            check_passport_match()
+        # if document.kind == 'passport' and document.cloud_vision_match is False:
+        #     check_passport_match()
         return Response(
             serilizer.data,
             status=status.HTTP_200_OK
@@ -375,6 +381,7 @@ class VerifyOTP(APIView):
                 user.is_verified = True
                 user.is_active = True
                 user.save()
+                translation.activate(user.language)
                 # update user preferences with the phone number
                 phone_number = request.data.get('phone_number')
                 if phone_number:
@@ -531,6 +538,8 @@ class UserJobExperienceDetailsView(APIView):
 
 
 class UserReportProblem(APIView):
+    permission_classes = [IsAuthenticated]
+    
     @swagger_auto_schema(
         operation_summary="Report a problem",
         tags=["Report Problem"]
@@ -538,11 +547,28 @@ class UserReportProblem(APIView):
     def post(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
         serializer = ReportAProblemSerializer(data=request.data)
-        if serializer.is_valid():
-            UserReportedProblem.objects.create(
-                user=user, **serializer.validated_data)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if (serializer.is_valid()):
+            if  serializer.validated_data.get('is_anonymous') == True :
+               to_emails = [
+                   user.email, serializer.validated_data.get('report_recipient')
+               ]
+            else: 
+                to_emails = [serializer.validated_data.get('report_recipient')]
+            email_helper = EmailHelper()
+            email_helper.send_email(
+                subject=_('reportAProbjemEmailSubject'),
+                body=serializer.validated_data.get('description'),
+                to_emails=to_emails
+            )
+            
+            return Response(
+                {'message': 'Report sent successfully'},
+                status=status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+       
 
 
 class UserNotificationView(APIView):

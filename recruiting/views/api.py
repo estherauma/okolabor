@@ -1,13 +1,13 @@
 
 from drf_yasg.utils import swagger_auto_schema
-from recruiting.models import Organization, Role, WorkRequests, WorkAssignment
+from recruiting.models import Organization, Role, WorkRequests, WorkAssignment,EmployerRecruiterOrgLink
 from recruiting.serializer import (
     EmployerSerializer, RoleSerializer,
-    WRRoleSerializer, WorkRequestSerializer
+    WRRoleSerializer, WorkRequestSerializer,OrganizationSummarySerializer,EmployerRecruiterPairSerializer
 )
 from rest_framework import status
 from rest_framework.generics import (
-    ListCreateAPIView, RetrieveUpdateDestroyAPIView
+    ListCreateAPIView, RetrieveUpdateDestroyAPIView,ListAPIView
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -89,24 +89,24 @@ class WorkRequestRoleDetailView(RetrieveUpdateDestroyAPIView):
         pass
 
 
-class RoleAPIListView(ListCreateAPIView):
+class RoleAPIListView(ListAPIView):
     serializer_class = RoleSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        
+        # Return roles with assignments confirmed or rejected for the current user
         return Role.objects.filter(
             assignments__worker=self.request.user,
-            assignments__status='offersent'
+            assignments__status__in=['confirmed', 'rejected','offersent','cancelled']
         ).distinct()
-    
 
     @swagger_auto_schema(
-        operation_summary='Retrieve roles with offers sent to the user',
+        operation_summary='Retrieve roles accepted or declined by the user, including accept status.',
         tags=['Roles']
     )
     def get(self, request, *args, **kwargs):
-        serializer = self.get_serializer(self.get_queryset(), many=True)
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class AcceptRoleAPIView(APIView):
@@ -152,3 +152,42 @@ class RejectRoleAPIView(APIView):
             return Response({"detail": "Role offer rejected."}, status=status.HTTP_200_OK)
         except WorkAssignment.DoesNotExist:
             return Response({"detail": "Offer not found or already processed."}, status=status.HTTP_404_NOT_FOUND)
+        
+class WorkerConfirmedOrganizationsAPIView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = OrganizationSummarySerializer  # Use the flat serializer
+
+    @swagger_auto_schema(
+        operation_summary='List confirmed employer–recruiter orgs for the authenticated worker',
+        tags=['Worker - Confirmed Employer-Recruiter Pairs']
+    )
+    def get(self, request, *args, **kwargs):
+        worker = request.user
+
+        confirmed_assignments = WorkAssignment.objects.filter(
+            worker=worker,
+            status='confirmed',
+        ).select_related('work_request__employer')
+        
+
+        seen_org_ids = set()
+        result = []
+
+        for assignment in confirmed_assignments:
+            employer = assignment.work_request.employer
+            if employer and employer.id not in seen_org_ids:
+                seen_org_ids.add(employer.id)
+                result.append(employer)
+
+            recruiter_links = EmployerRecruiterOrgLink.objects.filter(
+                employer_org=employer
+            ).select_related('recruiter_org')
+
+            for link in recruiter_links:
+                recruiter = link.recruiter_org
+                if recruiter and recruiter.id not in seen_org_ids:
+                    seen_org_ids.add(recruiter.id)
+                    result.append(recruiter)
+
+        serializer = self.get_serializer(result, many=True)
+        return Response(serializer.data)

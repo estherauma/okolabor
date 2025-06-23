@@ -1,31 +1,43 @@
-document.getElementById('cancel-offer-btn').addEventListener('click', function() {
-    var workerIds = [];
-    var checkboxes = document.querySelectorAll('input[name="worker-offer-checkbox"]:checked');
-    checkboxes.forEach(function(checkbox) {
-        workerIds.push(checkbox.value);
-    });
+document.addEventListener('DOMContentLoaded', function () {
+    const cancelOfferBtn = document.getElementById('cancel-offer-btn');
+    console.log("cancelOfferBtn", cancelOfferBtn);
+    
+    if (cancelOfferBtn) {
+        console.log("cancelOfferBtn found in the DOM");
+        cancelOfferBtn.addEventListener('click', function () {
+            console.log("Cancel offer button clicked");
+            var workerIds = [];
+            var checkboxes = document.querySelectorAll('input[name="worker-offer-checkbox"]:checked');
+            console.log("Checkboxes selected:", checkboxes);
+            checkboxes.forEach(function (checkbox) {
+                workerIds.push(checkbox.value);
+            });
 
-    if (workerIds.length > 0) {
-        fetch('/cancel-offer/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: JSON.stringify({ worker_ids: workerIds })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                location.reload();
+            if (workerIds.length > 0) {
+                fetch('/cancel-offer/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ worker_ids: workerIds })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        location.reload();
+                    } else {
+                        alert('Failed to cancel offer.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
             } else {
-                alert('Failed to cancel offer.');
+                alert('Please select at least one worker.');
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
         });
     } else {
-        alert('Please select at least one worker.');
+        console.error("Element with ID 'cancel-offer-btn' not found.");
     }
 });

@@ -21,15 +21,6 @@
   </h1>
  </div>
 </div>
-<div class="d-flex align-items-center">
- <a class="green-color" href="{% url 'recruiting_web:workers' %}">
-  <i class="mdi mdi-arrow-left green-color fs-5">
-  </i>
-  <span class="green-color">
-   {% translate "workerDetailsBack" %}
-  </span>
- </a>
-</div>
 <div class="d-flex justify-content-between align-items-center mb-5 flex-column-mobile">
  <div>
   <span class="d-flex justify-content-center align-items-center">
@@ -45,13 +36,13 @@
     {{ worker.email }}
    </h4>
    {% endif %}
-   <span class="gray-color ms-3">
-    ({% translate "profile76%Complete"%} |
-    <a class="link-color" href="#">
-     {% translate "workerDetailsEditProfile" %}
-    </a>
-    )
-   </span>
+  <span class="gray-color ms-3">
+    ({% blocktrans with percent=profile_completion|floatformat:0 %}
+      Profile {{ percent }}% Complete
+    {% endblocktrans %})
+  </span>
+
+
   </span>
  </div>
  <div>
@@ -61,17 +52,25 @@
       data-bs-toggle="modal"
       data-bs-target="#workerShortlistModal{{ worker.id }}"
       data-worker-id="{{ worker.id }}">
-    +{% translate "workerDetailsAddToShortlist" %}
+    {% translate "workerDetailsAddToShortlist" %}
     </button>
 
   {% endif %}
 
-  <button class="btn dark-green-button ms-3">
+  {% if worker %}
+    <button class="btn dark-green-button ms-3 open-offersent-modal"
+    data-bs-toggle="modal"
+    data-bs-target="#workerSentOfferModal{{ worker.id }}"
+    data-worker-id="{{ worker.id }}">
    {% translate "workerDetailsSendOffer" %}
   </button>
+  {% endif %}
+
  </div>
 </div>
 {% include "recruiting/workers/add_shortlist_modal.html" %}
+{% include "recruiting/workers/offer_sent_modal.html" %}
+
 
 <div class="row">
  <div class="col-xl-6 col-md-12">
@@ -296,7 +295,7 @@
      </div>
      <div class="d-contents">
       <span class="green-color">
-       {% translate "workerDetailsAvailable" %}
+       {{ current_status|title }}
       </span>
      </div>
     </div>
@@ -310,7 +309,6 @@
         </div>
         <div>
             <button class="btn dark-green-button" data-bs-toggle="modal" data-bs-target="#infoModal">
-              <span><i class="fe fe-plus"></i></span>
                 {% translate "workerDetailsAddInformation" %}
             </button>
           {% if preferences %}
@@ -705,7 +703,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
 
-      <div class="modal-header bg-danger text-white">
+      <div class="modal-header text-white">
         <h5 class="modal-title">{% translate "Confirm Delete" %}</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>

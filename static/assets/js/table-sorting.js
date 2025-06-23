@@ -8,7 +8,7 @@ $(document).ready(function () {
                 "targets": '_all',
                 "orderable": true
             }],
-            "paging": false,
+            "paging": true,
             "info": false,
 
             // "language": {
@@ -41,6 +41,20 @@ $(document).ready(function () {
             "info": true
         });
 
+         $('#basic-datatable-workers,#basic-datatable-allworkers').DataTable({
+                "ordering": true,
+                "order": [], // No initial ordering
+                "columnDefs": [
+                    {
+                        "targets": '_all', // All other columns
+                        "orderable": true
+                    }
+                ],
+                "paging": true,
+                "info": true
+            });
+
+
         // if (!$.fn.DataTable.isDataTable('#logs-table')) {
         //     $('#logs-table').DataTable({
         //         "ordering": true,
@@ -67,7 +81,7 @@ $(document).ready(function () {
             }],
             "paging": true,   
             "info": true,
-            "searching": false
+            "searching": true 
         });
     } else {
         console.error("DataTables library is not loaded.");

@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load static %}
+{% load user_role_tags %}
 <div class="card">
     <div class="card-body">
         <div class="d-flex justify-content-between align-items-center">
@@ -7,40 +8,38 @@
                 {% translate "manageUsersRecruitersTableTitle" %}
             </h3>
             <div class="d-flex">
-                <button type="button" class="btn btn-green mt-3 me-2" id="assign-organization-btn" data-bs-toggle="modal" data-bs-target="#assignOrganizationModal">
+              {% if request.user|has_group:"admin" %}
+                <button type="button" class="btn dark-green-button ms-2 mb-2" id="assign-organization-btn" data-bs-toggle="modal" data-bs-target="#assignOrganizationModal">
                      {% translate "manageUsersRecruitersTableAssignOrganization" %}
                 </button>
-                <button class="btn btn yellow-button btn-icon p-1" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#inviteUserModal">
+              {% endif %}
+                <button class="btn dark-green-button ms-2 mb-2" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#inviteUserModal">
                     {% translate "manageUsersRecruitersTableNewUser" %}
                 </button>
             </div>
-        </div>
-        
+        </div>  
         <div class="table-responsive">
             <table class="table text-nowrap border-bottom" id="recruiters-datatable">
-                <thead>
+                <thead style="background-color:#7DBF96;">
                     <tr>
-                        <th class="theading-color text-start"><input type="checkbox" id="select-all-checkbox"></th>
-                        <th class="theading-color text-start">{% translate "manageUsersRecruitersTableCurp" %}</th>
-                        <th class="theading-color text-start">{% translate "manageUsersRecruitersTableEmail" %}</th>
-                        <th class="theading-color text-start">{% translate "manageUsersRecruitersTableFirstName" %}</th>
-                        <th class="theading-color text-start">{% translate "manageUsersRecruitersTableLastName" %}</th>
-                        <th class="theading-color text-start">{% translate "manageUsersRecruitersTableCreatedAt" %}</th>
-                        <th class="theading-color text-start">{% translate "manageUsersRecruitersTableActiveStatus" %}</th>
-                        <th class="theading-color text-start">{% translate "manageUsersRecruitersTableGroup" %}</th>
+                        <th class="text-start"><input type="checkbox" id="select-all-checkbox"></th>
+                        <th class="text-start">{% translate "manageUsersRecruitersTableCurp" %}</th>
+                        <th class="text-start">{% translate "manageUsersRecruitersTableEmail" %}</th>
+                        <th class="text-start">{% translate "manageUsersRecruitersTableFirstName" %}</th>
+                        <th class="text-start">{% translate "manageUsersRecruitersTableCreatedAt" %}</th>
+                        <th class="text-start">{% translate "manageUsersRecruitersTableActiveStatus" %}</th>
+                        <th class="text-start">{% translate "manageUsersRecruitersTableGroup" %}</th>
                         <th class="theading-color text-start">{% translate "manageUsersRecruitersTableActions" %}</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for user in users %}
+                    {% for user in recruiters_list %}
                     <tr class="green-color text-start">
                         <td style="padding-left:32px;">
                             <input type="checkbox" class="form-check-input recruiter-checkbox" value="{{ user.id }}">
                         </td>
-                        <td>{{ user.curp }}</td>
                         <td>{{ user.email }}</td>
-                        <td>{{ user.first_name }}</td>
-                        <td>{{ user.last_name }}</td>
+                        <td>{{ user.first_name }} {{ user.last_name }}</td>
                         <td>{{ user.created_at }}</td>
                         <td>{{ user.is_active|yesno:_("active,inactive") }}</td>
                         <td>{{ user.group }}</td>
@@ -61,7 +60,13 @@
                                
                             </i>
 
-                            <i class="side-menu__icon fa fa-trash-o cursor-pointer" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#confirmationModal"></i>
+                           <i 
+                                class="fa fa-trash text-danger" 
+                                style="cursor: pointer;" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#deleteModalManageRecruiter{{ user.id }}" 
+                                title={% translate "recruiterListDelete"%}>
+                            </i>
 
                         </td>
                     </tr>
@@ -71,6 +76,32 @@
         </div>
     </div>
 </div>
+{% for recruiter in recruiters_list %}
+  {% if recruiter.id %}
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModalManageRecruiter{{ recruiter.id }}" tabindex="-1" aria-labelledby="deleteModalManageRecruiterLabel{{ recruiter.id }}" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form method="POST" action="{% url 'recruiter_manage_delete' recruiter.id %}">
+            {% csrf_token %}
+            <h1>{{recruiter.id}}</h1>
+            <div class="modal-header" style="background-color: #7DBF96;">
+              <h5 class="modal-title text-white" id="deleteModalManageRecruiterLabel{{ recruiter.id }}">{% translate "recruiterListConfirmDelete" %}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'recruiterListClose'%}"></button>
+            </div>
+            <div class="modal-body">
+              {% translate 'recruiterListAreYouSureYouWantToDelete'%} <strong>{{ recruiter.first_name }} {{recruiter.last_name}}</strong>?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'recruiterListCancel'%}</button>
+              <button type="submit" class="btn" style='background-color:#F95406; color: white'>{% translate 'recruiterListDelete'%}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endfor %}
 
 {% include 'recruiter/recruiter_modals/edit_recruiter_modal.html' %}
 {% include 'recruiter/recruiter_modals/assign-organization-modal.html' %}

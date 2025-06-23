@@ -87,7 +87,31 @@ class RoleSerializer(serializers.ModelSerializer):
     housing_information = HousingInformationSerializer(read_only=True)
     meal_provision = MealProvisionSerializer(read_only=True)
     work_request = RoleWorkRequestSerializer(read_only=True)
+    accept_status = serializers.SerializerMethodField()  # 👈 Add this line
 
     class Meta:
         model = Role
-        fields = '__all__'
+        fields = '__all__'  # This will now include `accept_status`
+
+    def get_accept_status(self, obj):
+        user = self.context['request'].user
+        qs = obj.assignments.filter(worker=user)
+
+        if qs.filter(status='confirmed').exists():
+            return 'accepted'
+        if qs.filter(status='rejected').exists():
+            return 'rejected'
+        if qs.filter(status='offersent').exists():
+            return 'offersent'
+        if qs.filter(status='cancelled').exists():
+            return 'cancelled'
+        return None
+
+class OrganizationSummarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Organization
+        fields = ['name', 'type', 'email']
+
+class EmployerRecruiterPairSerializer(serializers.Serializer):
+    employer = OrganizationSummarySerializer()
+    recruiter = OrganizationSummarySerializer()

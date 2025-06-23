@@ -18,18 +18,8 @@
 
 <div class="parent-btn-grp">
   <div class="employers-list-flex">
-    <button class="setting-btn">
-      <i aria-hidden="true" class="fa fa-cog"></i>
-    </button>
     <div class="dropdown">
-      <button aria-expanded="false" class="btn dropdown-toggle dropdown-btn" data-bs-toggle="dropdown" id="dropdownMenuButton" type="button">
-        {% translate "employersAssigned" %}
-      </button>
-      <ul aria-labelledby="dropdownMenuButton" class="dropdown-menu">
-        <li><a class="dropdown-item" href="#">{% translate "employersOption1" %}</a></li>
-        <li><a class="dropdown-item" href="#">{% translate "employersOption2" %}</a></li>
-        <li><a class="dropdown-item" href="#">{% translate "employersOption3" %}</a></li>
-      </ul>
+
     </div>
   </div>
     {% if request.user|has_group:"admin" %}
@@ -38,10 +28,10 @@
           {% translate "employersAssignRecruiter" %}
         </button>
     {% endif %}
-    <a class="btn dark-green-button" href="{% url 'recruiting_web:employer_create' %}">
-      <span><i class="fe fe-plus"></i></span>
+    <a class="btn dark-green-button" href="{% url 'recruiting_web:employer_create' %}?type=employer">
       {% translate "employersAddNewEmployer" %}
     </a>
+
   </div>
 </div>
 <div class="modal fade" id="assignRecruiterModal" tabindex="-1" aria-labelledby="assignRecruiterLabel" aria-hidden="true">
@@ -73,25 +63,74 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="employerColumnSettingsModal" tabindex="-1" aria-labelledby="employerColumnSettingsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="employerColumnSettingsModalLabel">{% translate "Select Columns to Display" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'Close' %}"></button>
+      </div>
+      <div class="modal-body">
+        <form id="employer-column-settings-form">
+          <div class="form-check">
+            <input class="form-check-input employer-column-toggle" type="checkbox" value="1" checked id="col-company">
+            <label class="form-check-label" for="col-company">{% translate "employersCompanyName" %}</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input employer-column-toggle" type="checkbox" value="2" checked id="col-contact">
+            <label class="form-check-label" for="col-contact">{% translate "employersContactName" %}</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input employer-column-toggle" type="checkbox" value="3" checked id="col-email">
+            <label class="form-check-label" for="col-email">{% translate "employersEmail" %}</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input employer-column-toggle" type="checkbox" value="4" checked id="col-location">
+            <label class="form-check-label" for="col-location">{% translate "employersLocation" %}</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input employer-column-toggle" type="checkbox" value="5" checked id="col-phone">
+            <label class="form-check-label" for="col-phone">{% translate "employersPhoneNumber" %}</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input employer-column-toggle" type="checkbox" value="6" checked id="col-assigned">
+            <label class="form-check-label" for="col-assigned">{% translate "employersAssignedTo" %}</label>
+          </div>
+          {% if request.user|has_group:"admin" %}
+          <div class="form-check">
+            <input class="form-check-input employer-column-toggle" type="checkbox" value="7" checked id="col-actions">
+            <label class="form-check-label" for="col-actions">{% translate "employersActions" %}</label>
+          </div>
+          {% endif %}
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Close" %}</button>
+        <button type="button" class="btn btn-primary" id="apply-employer-column-settings">{% translate "Apply" %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="row">
   <div class="col-12">
     <div class="card">
       <div class="card-body">
         <div class="table-responsive">
           <table class="table text-nowrap border-bottom" id="employers-list-datatable">
-            <thead>
+            <thead style="background-color: #7DBF96;">
               <tr>
                 <th></th>
-                <th class="theading-color">{% translate "employersCompanyName" %}</th>
-                <th class="theading-color">{% translate "employersContactName" %}</th>
-                <th class="theading-color">{% translate "employersEmail" %}</th>
-                <th class="theading-color">{% translate "employersLocation" %}</th>
-                <th class="theading-color">{% translate "employersPhoneNumber" %}</th>
-                <th class="theading-color">{% translate "employersAssignedTo" %}</th>
+                <th class="col-company">{% translate "employersCompanyName" %}</th>
+                <th class="col-contact">{% translate "employersContactName" %}</th>
+                <th class="col-email">{% translate "employersEmail" %}</th>
+                <th class="col-location">{% translate "employersLocation" %}</th>
+                <th class="col-phone">{% translate "employersPhoneNumber" %}</th>
+                <th class="col-assigned">{% translate "employersAssignedTo" %}</th>
                 {% if request.user|has_group:"admin" %}
-                  <th class="theading-color">{% translate "employersActions" %}</th>
+                  <th class="col-actions">{% translate "employersActions" %}</th>
                 {% endif %}
-
               </tr>
             </thead>
             <tbody>
@@ -102,7 +141,7 @@
                   <a href="/employers/{{ employer.id }}" class="text-decoration-none text-dark">
                       {{ employer.name }}
                   </a>
-              </td>
+                </td>
                 <td>{{ employer.email}}</td>
                 <td>{{ employer.address}}</td>
                 <td>{{ employer.country }}</td>
@@ -212,16 +251,16 @@
         <div class="modal-content">
           <form method="POST" action="{% url 'recruiting_web:employer_delete' employer.id %}">
             {% csrf_token %}
-            <div class="modal-header">
-              <h5 class="modal-title" id="deleteModalLabel{{ employer.id }}">{% translate "employersConfirmDelete" %}</h5>
+            <div class="modal-header" style="background-color: #7DBF96;">
+              <h5 class="modal-title text-white" id="deleteModalLabel{{ employer.id }}">{% translate "employersConfirmDelete" %}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'employersClose'%}"></button>
             </div>
             <div class="modal-body">
-              {% translate 'employersAreYouSureYouWantToDelete'%} <strong>{{ employer.name }}</strong>
+              {% translate 'employersAreYouSureYouWantToDelete'%} <strong>{{ employer.name }}</strong>?
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'employersCancel'%}</button>
-              <button type="submit" class="btn btn-danger">{% translate 'employersDelete'%}</button>
+              <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'employersCancel'%}</button>
+              <button type="submit" class="btn" style='background-color:#F95406; color: white'>{% translate 'employersDelete'%}</button>
             </div>
           </form>
         </div>
@@ -238,8 +277,8 @@
         <div class="modal-content">
           <form method="POST" action="{% url 'recruiting_web:employer_edit' employer.id %}">
             {% csrf_token %}
-            <div class="modal-header">
-              <h5 class="modal-title" id="editModalLabel{{ employer.id }}">{% translate "employersEditEmployer" %}</h5>
+            <div class="modal-header" style="background-color: #7DBF96;">
+              <h5 class="modal-title text-white" id="editModalLabel{{ employer.id }}">{% translate "employersEditEmployer" %}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'employersClose'%}"></button>
             </div>
             <div class="modal-body">
@@ -285,8 +324,8 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'employersCancel' %}</button>
-              <button type="submit" class="btn btn-primary">{% translate 'employersSave' %}</button>
+              <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'employersCancel' %}</button>
+              <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>{% translate 'employersSave' %}</button>
             </div>
           </form>
         </div>
@@ -317,5 +356,78 @@
 <script src="{% static ''%}assets/js/employer_search.js"></script>
 <script src="{% static ''%}assets/js/table-sorting.js"></script>
 <script src="{% static ''%}assets/js/assign_recruiter.js"></script>
-{% endblock scripts %}
+<script>
+function applyEmployerColumnVisibilityFromStorage(table) {
+  $.fn.dataTable.ext.errMode = 'none';
+    const savedSettings = JSON.parse(localStorage.getItem('employerColumnVisibilitySettings')) || {};
+    const columnClasses = [
+        'col-company',
+        'col-contact',
+        'col-email',
+        'col-location',
+        'col-phone',
+        'col-assigned',
+        'col-actions'
+    ];
+    columnClasses.forEach((columnClass, index) => {
+        const isVisible = savedSettings[columnClass] !== false;
+        table.column(index + 1).visible(isVisible);
+        const checkbox = document.querySelector(`.employer-column-toggle[value="${index + 1}"]`);
+        if (checkbox) {
+            checkbox.checked = isVisible;
+                }
+            });
+        }
 
+        document.addEventListener('DOMContentLoaded', () => {
+          const tableId = '#employers-list-datatable';
+            if ($.fn.DataTable.isDataTable(tableId)) {
+                $(tableId).DataTable().clear().destroy();
+            }
+
+    const table = $(tableId).DataTable({
+    });
+    applyEmployerColumnVisibilityFromStorage(table);
+    
+    const applyEmployerBtn = document.getElementById('apply-employer-column-settings');
+    if (applyEmployerBtn) {
+        applyEmployerBtn.addEventListener('click', function () {
+            const savedSettings = {};
+            document.querySelectorAll('.employer-column-toggle').forEach(function (checkbox) {
+                const colIndex = parseInt(checkbox.value);
+                const isVisible = checkbox.checked;
+                const columnClass = [
+                    'col-company',
+                    'col-contact',
+                    'col-email',
+                    'col-location',
+                    'col-phone',
+                    'col-assigned',
+                    'col-actions'
+                ][colIndex - 1];
+                savedSettings[columnClass] = isVisible;
+                table.column(colIndex).visible(isVisible);
+            });
+            localStorage.setItem('employerColumnVisibilitySettings', JSON.stringify(savedSettings));
+            const modalEl = document.getElementById('employerColumnSettingsModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            modal?.hide();
+        });
+    }
+});
+</script>
+<script>
+$(document).ready(function () {
+    const table = $('#employers-list-datatable').DataTable();
+    const settingsBtn = `
+        <button class="setting-btn" data-bs-toggle="modal" data-bs-target="#employerColumnSettingsModal">
+            <i class="fa fa-cog" aria-hidden="true"></i>
+        </button>
+    `;
+    const lengthContainer = $('#employers-list-datatable_length');
+    lengthContainer.addClass('d-flex align-items-center');
+    lengthContainer.prepend(settingsBtn);
+});
+</script>
+
+{% endblock scripts %}

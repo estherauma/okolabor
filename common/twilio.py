@@ -8,10 +8,10 @@ class OTPVerification:
         self.verify_sid = config('TWILIO_VERIFY_SID')
         self.client = Client(self.account_sid, self.auth_token)
 
-    def send_otp(self, phone_number):
+    def send_otp(self, phone_number, locale):
         verification = self.client.verify.v2.services(self.verify_sid) \
             .verifications \
-            .create(to=phone_number, channel="sms", locale="es")
+            .create(to=phone_number, channel="sms", locale=locale)
         return verification.status
 
     def check_otp(self, otp_code, phone_number):

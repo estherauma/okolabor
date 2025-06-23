@@ -6,6 +6,7 @@ from django.conf import settings
 from common.models import AuditableModel, BaseModel,SoftDeleteManager
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+from django.db.models import Q
 
 class UserManager(SoftDeleteManager,BaseUserManager):
     use_in_migrations = True
@@ -40,7 +41,7 @@ class LanguageChoices(models.TextChoices):
 
 class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
     email = models.EmailField('email address', unique=True)
-    curp = models.CharField('curp', max_length=18, unique=True)
+    curp = models.CharField('curp', max_length=18, blank=True, null=True)
     first_name = models.CharField('first name', max_length=255, blank=True)
     last_name = models.CharField('last name', max_length=255, blank=True)
     middle_name = models.CharField('middle name', max_length=255, blank=True)
@@ -82,10 +83,19 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
         blank=True
     )
 
-    USERNAME_FIELD = 'curp'
+    USERNAME_FIELD = 'email'
 
     objects = UserManager()
     all_objects = models.Manager()
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['curp'],
+                name='unique_curp_not_null',
+                condition=~Q(curp=None)
+            )
+        ]
 
     @property
     def is_admin(self):
@@ -180,6 +190,7 @@ class UserDocuments(AuditableModel):
     cloud_vision_response = models.TextField(null=True, blank=True)
     cloud_vision_match = models.BooleanField(default=False)
     file_type = models.CharField(max_length=256, null=True, blank=True)
+    work_experience_id = models.CharField(max_length=256, null=True, blank=True)
 
     objects = SoftDeleteManager()
     all_objects = models.Manager()
@@ -227,22 +238,6 @@ class UserJobExperienceDetails(AuditableModel):
         db_table = 'account_user_crop_experience_details'
 
 
-class UserReportedProblem(AuditableModel):
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='reported_problems')
-    topic = models.CharField(max_length=256, null=False, blank=False)
-    description = models.TextField(null=False, blank=False)
-    solution = models.TextField(null=True, blank=True)
-    status = models.CharField(max_length=256, default='pending')
-    resolved_by = models.ForeignKey(
-            User, on_delete=models.CASCADE, related_name='resolved_problems',
-            null=True, blank=True)
-    resolved_at = models.DateTimeField(null=True, blank=True)
-    
-    def __str__(self):
-        return f'{self.user.curp} - {self.topic} - {self.status}'
-
-
 class UserNotification(AuditableModel):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='notifications')
@@ -281,4 +276,3 @@ class Log(models.Model):
         obj_display = str(self.content_object) if self.content_object else self.object_id
         user_name = self.user.get_full_name() or self.user.first_name if self.user else "Anonymous"
         return f"{self.action} on {model_name} [{obj_display}] by {user_name}"
-

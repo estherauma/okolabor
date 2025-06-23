@@ -1,0 +1,79 @@
+{% load i18n %}
+{% load static %}
+{% load custom_filters %}
+
+<div class="modal fade" id="deleteDeductionModal{{ deduction.id }}" tabindex="-1" aria-labelledby="deleteDeductionModalLabel{{ deduction.id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <!-- Use form tag only if needed for styling, not for submission -->
+      <div class="modal-header" style="background-color: #7DBF96;">
+        <h5 class="modal-title text-white" id="deleteDeductionModalLabel{{ deduction.id }}">
+          {% translate "joDetailsDeductionsConfirmDeletion" %}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{% translate 'joDetailsDeductionsClose'%}"></button>
+      </div>
+
+      <div class="modal-body">
+        <p>{% translate "joDetailsDeductionsAreYouSureYouWantToDeleteThisEntry" %}</p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'joDetailsDeductionsCancel' %}</button>
+        <button type="button" class="btn" onclick="submitDeleteDeductionForm('{{ deduction.id }}')" style='background-color:#F95406; color:white'>{% translate 'joDetailsDeductionsDelete' %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+  
+    function submitDeleteDeductionForm(deductionId) {
+      console.log("Deleting deduction:", deductionId);
+  
+      const url = `/deductions/${deductionId}/delete/`;  // Replace with correct URL pattern if needed
+      const csrftoken = getCookie('csrftoken');
+  
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': csrftoken
+        },
+        credentials: 'same-origin'
+      })
+      .then(response => {
+        if (response.ok) {
+          // Close the modal
+          const modal = bootstrap.Modal.getInstance(document.getElementById(`deleteDeductionModal${deductionId}`));
+          if (modal) {
+            modal.hide();
+          }
+  
+          // Refresh page or remove row
+          location.reload();
+        } else {
+          return response.text().then(text => {
+            console.error("Delete failed:", text);
+            alert("Error deleting deduction. See console for details.");
+          });
+        }
+      })
+      .catch(err => {
+        console.error("Fetch error:", err);
+        alert("An error occurred. Please try again.");
+      });
+    }
+  </script>
+  

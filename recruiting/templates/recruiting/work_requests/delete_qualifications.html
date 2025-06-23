@@ -4,22 +4,31 @@
     <div class="modal-dialog modal-dialog">
       <div class="modal-content">
   
-        <div class="modal-header">
-          <h5 class="modal-title">Confirm Delete</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-header" style="background-color: #7DBF96;">
+          <h5 class="modal-title text-white">{% translate "joDetailsQualificationsConfirmDelete"%}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'joDetailsQualificationsDeleteClose'%}"></button>
         </div>
   
         <div class="modal-body">
-          Are you sure you want to delete the qualification for role <strong>{{ role.title }}</strong>?
+          <p>
+            {% blocktrans with role_title=role.title %}
+              Are you sure you want to delete qualification information for the role <strong>{{ role_title }}</strong>?
+            {% endblocktrans %}
+          </p>
         </div>
+        
   
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          
+          <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate "joDetailsQualificationsDeleteCancel"%}</button>
+
+          {% if role.qualifications and role.qualifications.pk %}
           <form method="POST" action="{% url 'recruiting_web:delete-role-qualification' role.qualifications.pk %}">
             {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Delete</button>
+            <button type="submit" class="btn" style='background-color:#F95406; color:white'>{% translate "joDetailsQualificationsDelete"%}</button>
           </form>
+          {% else %}
+          <p class="text-muted">{% translate "joDetailsQualificationsNoQualificationsToDelete"%}</p>
+          {% endif %}
         </div>
   
       </div>

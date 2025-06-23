@@ -46,13 +46,13 @@
 			</a>
 		</li>
 
-		{% if request.user|has_group:"recruiter_admin" %}
+		{% comment %} {% if request.user|has_group:"recruiter_admin" %}
 		<li>
 			<a class="side-menu__item" href="{% url 'recruiting_web:recruiter_list' %}"><i class="side-menu__icon mdi mdi-tune"></i>
 				<span class="side-menu__label">{% translate "recruitersList" %}</span>
 			</a>
 		</li>
-		{% endif %}
+		{% endif %} {% endcomment %}
 
 		<hr>
 
@@ -85,13 +85,13 @@
 		</li> -->
 
 		<li>
-			<a class="side-menu__item" href="{% url 'recruiting_web:recruiter_messages' %}"><i class="side-menu__icon icon icon-envelope"></i>
+			<a class="side-menu__item" href="{% url 'recruiting_web:recruiter_messages' %}"><i class="side-menu__icon fe fe-mail"></i>
 				<span class="side-menu__label">{% translate "messages" %}</span>
 			</a>
 		</li>
 
 		<li>
-			<a class="side-menu__item" href="{% url 'logout' %}"><i class="side-menu__icon icon icon-logout"></i>
+			<a class="side-menu__item" href="{% url 'logout' %}"><i class="side-menu__icon fe fe-log-out"></i>
 				<span class="side-menu__label">{% translate "logout" %}</span>
 			</a>
 		</li>

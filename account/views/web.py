@@ -17,7 +17,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from django.views import View
 from django.views.generic.edit import FormView,CreateView
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponseForbidden
 from account.forms.account_update import UpdateAccountDetailsForm
 from account.forms.filter_logs import UserLogsFilterForm
 from django.utils import timezone
@@ -61,7 +61,7 @@ class UserListView(LoginRequiredMixin, View):
         ]
 
         workers_list = User.objects.filter(groups__name='worker').values(
-            'curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
+            'id','curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
         )
 
         
@@ -97,13 +97,11 @@ class UserListView(LoginRequiredMixin, View):
         for ra in employer_admin:
             ra['group'] = 'employer_admin'
 
-        combined_users = recruiters + recruiter_admins
-
+        combined_recruiter = recruiters + recruiter_admins
         combined_employer = employer + employer_admin
 
-
         context = {
-            'users': combined_users, 
+            'recruiters_list': combined_recruiter, 
             'language_choices': language_choices,
             'status_choices': status_choices,
             'workers': workers_list,
@@ -120,12 +118,9 @@ class UserListView(LoginRequiredMixin, View):
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         user_email = request.POST.get('email')
-        curp = request.POST.get('curp')
         role = request.POST.get('role')
 
-        
-
-        if not all([first_name, last_name, user_email, curp, role]):
+        if not all([first_name, last_name, user_email, role]):
             messages.error(request, _("addUserAllFieldsAreRequired."))
             return redirect('manage_users')
 
@@ -133,16 +128,13 @@ class UserListView(LoginRequiredMixin, View):
             first_name=first_name,
             last_name=last_name,
             email=user_email,
-            curp=curp,
             is_active=True
         )
 
-        # Assign the correct role (group)
         if role in ['recruiter', 'recruiter_admin','employer', 'employer_admin']:
             group, created = Group.objects.get_or_create(name=role)
             user.groups.add(group)
 
-        # Invite email logic
         token = PasswordResetTokenGenerator().make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         current_site = get_current_site(request)
@@ -174,6 +166,40 @@ class UserListView(LoginRequiredMixin, View):
             messages.error(request, _("inviteEmailFailedToSendEmail."))
 
         return redirect('manage_users')
+    
+class RecruiterManageDeleteView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        user = request.user
+        recruiter_user = get_object_or_404(User, pk=pk, groups__name__in=['recruiter', 'recruiter_admin'], is_active=True)
+
+        if user.groups.filter(name='admin').exists():
+            recruiter_name = f"{recruiter_user.first_name} {recruiter_user.last_name}"
+            recruiter_user.delete()  # Directly deletes the user
+            messages.success(request, _('Recruiter "%(recruiter_name)s" deleted successfully.') % {'recruiter_name': recruiter_name})
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'success'})
+            return redirect('manage_users')
+        else:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'forbidden'}, status=403)
+            return HttpResponseForbidden(_("You do not have permission to delete this recruiter."))
+
+class EmployerManageDeleteView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        user = request.user
+        employer_user = get_object_or_404(User, pk=pk, groups__name__in=['employer', 'employer_admin'], is_active=True)
+
+        if user.groups.filter(name='admin').exists():
+            employer_name = f"{employer_user.first_name} {employer_user.last_name}"
+            employer_user.delete()
+            messages.success(request, _('Employer "%(employer_name)s" deleted successfully.') % {'employer_name': employer_name})
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'success'})
+            return redirect('manage_users')
+        else:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'forbidden'}, status=403)
+            return HttpResponseForbidden(_("You do not have permission to delete this employer."))
 
 
 class UserActivitLogView(LoginRequiredMixin, View):
@@ -277,7 +303,6 @@ def edit_user_view(request, curp):
             user.is_active = form.cleaned_data["is_active"]
             user.save()
 
-            # Update group
             group_name = form.cleaned_data.get("group")
             if group_name:
                 user.groups.clear()
@@ -307,7 +332,6 @@ def edit_employer_view(request, curp):
             user.is_active = form.cleaned_data["is_active"]
             user.save()
 
-            # Update group
             group_name = form.cleaned_data.get("group")
             if group_name:
                 user.groups.clear()
@@ -334,7 +358,6 @@ def edit_worker(request, curp):
         user.last_name = request.POST.get('last_name')
         user.email = request.POST.get('email')
         user.is_active = request.POST.get('is_active')
-        user.language = request.POST.get('language')
         user.save()
 
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -357,7 +380,6 @@ class WorkerModalCreateView(View):
                 messages.error(request, _("WorkerGroupDoesNotExistPleaseCreateIt."))
                 return redirect('manage_users')
                 
-
             messages.success(request, _("workerCreatedSuccessfully."))
             return redirect('manage_users')
         else:
@@ -390,7 +412,6 @@ class OrganizationCreateView(UserPassesTestMixin, CreateView):
     template_name = 'organization/create_organization.html'
 
     def test_func(self):
-       
         return self.request.user.is_superuser
 
     def form_valid(self, form):
@@ -438,13 +459,12 @@ def edit_organization(request, organization_id):
 def assign_organization(request):
     org_id = request.POST.get("organization_id")
     selected_users = request.POST.get("selected_users")
-   
-
+    
     try:
         selected_users = json.loads(selected_users or "[]")
     except json.JSONDecodeError:
         messages.error(request, _("invalidUserSelection."))
-        return JsonResponse({"success": False, "error": _("Invalid user selection.")})
+        return JsonResponse({"success": False, "error": _("invalidUserSelection")})
 
     if not org_id or not selected_users:
         messages.error(request, _("pleaseSelectUsersAndanOrganization."))
@@ -455,53 +475,16 @@ def assign_organization(request):
 
     if not users.exists():
         messages.error(request, _("noValidUsersSelected."))
-        return JsonResponse({"success": False, "error": _("noalidUsersSelected.")})
+        return JsonResponse({"success": False, "error": _("noValidUsersSelected.")})
 
     try:
-        users.update(organization=org)
-        messages.success(request, _("organizationAssignedSuccessfullyToSelectedUsers."))
-        return JsonResponse({"success": True, "message": _("organizationAssignedSuccessfullyToSelectedUsers.")})
+        for user in users:
+            user.organizations.add(org)
+        messages.success(request, _("Organization assigned successfully to selected users."))
+        return JsonResponse({"success": True, "message": _("Organization assigned successfully to selected users.")})
     except Exception as e:
         messages.error(request, _("failedToAssignOrganization: ") + str(e))
         return JsonResponse({"success": False, "error": _("failedToAssignOrganization: ") + str(e)})
-
-
-
-# class LogListView(LoginRequiredMixin, ListView):
-#     model = Log
-#     template_name = 'userlogs/logs.html'
-#     context_object_name = 'logs'
-
-#     def get_queryset(self):
-#         user = self.request.user
-#         base_query = Log.objects.all()
-#         orgs = user.organizations.all()
-
-#         if user.groups.filter(name='recruiter_admin').exists():
-#             base_query = base_query.filter(
-#                 Q(user__organizations__in=orgs, user__groups__name='recruiter') |
-#                 Q(user=user)
-#             ).distinct()
-#             print(base_query,'base_query')
-
-#         elif user.groups.filter(name='employer_admin').exists():
-#             base_query = base_query.filter(
-#                 Q(user__organizations__in=orgs, user__groups__name='employer') |
-#                 Q(user=user)
-#             ).distinct()
-
-#         elif user.groups.filter(name='recruiter').exists():
-#             base_query = base_query.filter(user=user)
-
-#         elif user.groups.filter(name='employer').exists():
-#             base_query = base_query.filter(user=user)
-
-#         elif not user.groups.filter(name='admin').exists():
-#             base_query = base_query.filter(user=user)
-
-#         return base_query.exclude(
-#             content_type__model__in=['session', 'logentry']
-#         ).order_by('-timestamp')
 
 class LogListView(LoginRequiredMixin, ListView):
     model = Log
