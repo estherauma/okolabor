@@ -545,10 +545,8 @@ class WorkerDetailsView(View):
         work_environment_label = static_content.get_label_for_preference_field_two("workEnvironment")
         language_options = static_content.get_english_proficiency_options()
         language_label = static_content.get_label_for_field("englishProficiency")
-<<<<<<< HEAD
         print(document_dict,"preference_data")
         print(preference_data,"preference")
-=======
         
 
         profile_completion = calculate_profile_completion(worker)
@@ -558,7 +556,6 @@ class WorkerDetailsView(View):
 
         current_status = latest_assignment.status if latest_assignment else 'No Assignment'
        
->>>>>>> dev
         context = {
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
             'worker': worker,
