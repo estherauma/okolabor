@@ -24,7 +24,7 @@ from recruiting.views.web import (
     EmployerRecruiterOrgLinkDeleteView,DeleteAssignedOrganizationView,
     DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditEmploymentLocationView,DeleteEmploymentLocationView,EditHousingInformationView,DeleteHousingInformationView,EditMealProvisionView,DeleteMealProvisionView,
     DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditEmploymentLocationView,DeleteEmploymentLocationView,
-    DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditRoleHoursView,DeleteRoleHoursView,EditRoleWagesView,DeleteRoleWagesView,EditRoleQualificationView,DeleteQualificationView,DeductionEditView,DeleteDeductionView,OfferSendWorkerView
+    DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditRoleHoursView,DeleteRoleHoursView,EditRoleWagesView,DeleteRoleWagesView,EditRoleQualificationView,DeleteQualificationView,DeductionEditView,DeleteDeductionView,OfferSendWorkerView,InvitationResponseView
 )
 from recruiting.views.workers import (
      WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,EditWorkExperienceView,DeleteWorkExperienceView,WorkerEditView,WorkerDeleteView,EditUserPreferenceView,EditLanguageProficiencyView,EditDocumentsView,DeleteAllWorkerInfoView,WorkerEditView,WorkerDeleteView
@@ -183,6 +183,7 @@ urlpatterns = [
     path('assign-employers-to-recruiter/', 
          AssignEmployersToRecruiterOrgView.as_view(), 
          name='assign_employers_to_recruiter_org'),
+    path('invitation-response/', InvitationResponseView.as_view(), name='invitation_response'),
     path(
          'employer/<str:employer_id>/assigned-org/<str:recruiter_org_id>/delete/',
          DeleteAssignedOrganizationView.as_view(),name='delete_assigned_org'),
@@ -284,6 +285,7 @@ urlpatterns = [
  
      path('qualification/<str:pk>/edit/', EditRoleQualificationView.as_view(), name='edit-role-qualification'),
      path('qualification/<str:pk>/delete/', DeleteQualificationView.as_view(), name='delete-role-qualification'),
+     path('work-request/delete/<int:pk>/', WorkRequestDeleteView.as_view(), name='work_request_delete'),
 
 
 ]
