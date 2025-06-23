@@ -55,7 +55,6 @@ class AuditableModel(BaseModel):
 
     def hard_delete(self, *args, **kwargs):
         """Hard delete — permanently removes the record"""
-        print(f'Hard deleting object: {self.pk}')
         super().delete(*args, **kwargs)
 
 
