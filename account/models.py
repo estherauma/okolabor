@@ -6,6 +6,7 @@ from django.conf import settings
 from common.models import AuditableModel, BaseModel,SoftDeleteManager
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+from django.db.models import Q
 
 class UserManager(SoftDeleteManager,BaseUserManager):
     use_in_migrations = True
@@ -40,7 +41,7 @@ class LanguageChoices(models.TextChoices):
 
 class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
     email = models.EmailField('email address', unique=True)
-    curp = models.CharField('curp', max_length=18, unique=True)
+    curp = models.CharField('curp', max_length=18, blank=True, null=True)
     first_name = models.CharField('first name', max_length=255, blank=True)
     last_name = models.CharField('last name', max_length=255, blank=True)
     middle_name = models.CharField('middle name', max_length=255, blank=True)
@@ -82,10 +83,19 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
         blank=True
     )
 
-    USERNAME_FIELD = 'curp'
+    USERNAME_FIELD = 'email'
 
     objects = UserManager()
     all_objects = models.Manager()
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['curp'],
+                name='unique_curp_not_null',
+                condition=~Q(curp=None)
+            )
+        ]
 
     @property
     def is_admin(self):

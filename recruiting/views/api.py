@@ -1,6 +1,6 @@
 
 from drf_yasg.utils import swagger_auto_schema
-from recruiting.models import Organization, Role, WorkRequests, WorkAssignment,EmployerRecruiterOrgLink,RecruiterOrganizationEmployer
+from recruiting.models import Organization, Role, WorkRequests, WorkAssignment,EmployerRecruiterOrgLink
 from recruiting.serializer import (
     EmployerSerializer, RoleSerializer,
     WRRoleSerializer, WorkRequestSerializer,OrganizationSummarySerializer,EmployerRecruiterPairSerializer

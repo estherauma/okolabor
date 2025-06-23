@@ -43,9 +43,7 @@ class AuditableModel(BaseModel):
     def delete(self, *args, user=None, **kwargs):
         if user is None:
             user = get_current_user()
-        
         user_id = getattr(user, 'id', None)
-        print(f'Deleting object: {self.pk} by user {user_id}')
         
         if user_id:
             self.deleted_by = user_id
@@ -54,6 +52,10 @@ class AuditableModel(BaseModel):
         self.deleted_at = timezone.now()
 
         self.save(update_fields=['deleted', 'deleted_by', 'deleted_at'])  # explicitly save only updated fields
+
+    def hard_delete(self, *args, **kwargs):
+        """Hard delete — permanently removes the record"""
+        super().delete(*args, **kwargs)
 
 
 

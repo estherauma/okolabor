@@ -21,20 +21,7 @@
 
         <form method="POST">
           {% csrf_token %}
-          {{ form.type_hidden }} <!-- ✅ Required hidden field -->
-
-          <div class="mb-3">
-            <label for="curp" class="form-label modal-labels-custom">
-              {% translate "employerAminListCURP" %}
-            </label>
-            <input
-              type="text"
-              class="form-control"
-              id="curp"
-              name="curp"
-              required
-            />
-          </div>
+         
 
           <div class="mb-3">
             <label for="firstName" class="form-label modal-labels-custom">
