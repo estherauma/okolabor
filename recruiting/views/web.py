@@ -95,6 +95,7 @@ class EmployerListView(View):
             employers_list = Organization.objects.filter(type='employer').order_by('-created_at')
 
         elif user.groups.filter(name__in=['recruiter', 'recruiter_admin']).exists():
+            
             recruiter_orgs = Organization.objects.filter(type='recruiter', recruiters=user).order_by('-created_at')
 
             recruiter_links = EmployerRecruiterOrgLink.objects.filter(
@@ -110,15 +111,6 @@ class EmployerListView(View):
 
         else:
             employers_list = Organization.objects.none()
-
-        if query:
-            employers_list = employers_list.filter(
-                Q(name__icontains=query) |
-                Q(email__icontains=query) |
-                Q(address__icontains=query) |
-                Q(country__icontains=query) |
-                Q(phone__icontains=query)
-            )
 
         recruiter_organizations = Organization.objects.filter(type='recruiter').order_by('-created_at')
 
@@ -141,9 +133,6 @@ class EmployerListView(View):
                 'description': employer.description,
                 'recruiters': recruiter_org_names
             })
-
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({'employers': employers_data, 'has_more': False})
 
         context = {
             'employers': employers_data,
@@ -336,6 +325,15 @@ class EmployerCreateView(CreateView):
                         'final_status': 'accepted'
                     }
                 )
+                EmployerRecruiterOrgLink.objects.get_or_create(
+                    employer_org=org,
+                    recruiter_org=recruiter_org,
+                    defaults={
+                        'employer_status': 'accepted',
+                        'recruiter_status': 'accepted',
+                        'final_status': 'accepted'
+                    }
+                )
 
         messages.success(self.request, _('Organization created successfully'))
         self.object = org
@@ -349,6 +347,7 @@ class EmployerCreateView(CreateView):
 
     def get_success_url(self, pk):
         return reverse('recruiting_web:employer_detail', kwargs={'pk': pk})
+
 
 class EmployerDetailView(View):
     def get(self, request, pk):

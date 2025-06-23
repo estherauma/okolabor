@@ -47,9 +47,9 @@ from recruiting.forms import WorkerCreateForm,RecruiterAdminCreateForm,EmployerF
 
 
 class UserListView(LoginRequiredMixin, View):
-
     def get(self, request):
-        form = UpdateAccountDetailsForm()
+        # Forms
+        form = UpdateAccountDetailsForm() 
         form_worker_class = WorkerCreateForm()
         form_recruiter_admin_class = RecruiterAdminCreateForm()
         language_choices = form.fields["language"].choices
@@ -517,4 +517,3 @@ class LogDetailView(LoginRequiredMixin, DetailView):
     model = Log
     template_name = 'userlogs/log_detail.html'
     context_object_name = 'log'
-
