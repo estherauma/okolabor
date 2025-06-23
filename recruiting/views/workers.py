@@ -884,7 +884,7 @@ class UploadDocumentsView(View):
                 )
 
         text = _('documentsUploadedFor')
-        messages.success(request, f"{text} {user.get_full_name() or user.username}.")
+        messages.success(request, f"{text} {user.get_full_name() or user.email}.")
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
     
 class UploadLanguageProficiencyView(View):
