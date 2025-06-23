@@ -285,6 +285,7 @@ urlpatterns = [
  
      path('qualification/<str:pk>/edit/', EditRoleQualificationView.as_view(), name='edit-role-qualification'),
      path('qualification/<str:pk>/delete/', DeleteQualificationView.as_view(), name='delete-role-qualification'),
+     path('work-request/delete/<int:pk>/', WorkRequestDeleteView.as_view(), name='work_request_delete'),
 
 
 ]
