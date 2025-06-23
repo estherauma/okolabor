@@ -70,7 +70,7 @@
 
 
 <div class="row">
-  <!-- Worker contact informatio card -->
+  <!-- Worker contact information card -->
   <div class="col-xl-6 col-md-12">
     <div class="card">
       <div class="card-body">
@@ -287,6 +287,7 @@
     </div>
   </div>
 
+  <!-- Cards on the right hand side -->
   <div class="col-xl-6 col-md-12">
     <!-- Worker status card -->
     <div class="card">
@@ -305,7 +306,7 @@
     </div>
 
     <div class="card">
-      <!-- Add information card -->
+      <!-- Worker preferences card -->
       <div class="card-header d-flex justify-content-between align-items-center">
         <div class="card-title green-color">
           {% translate "workerDetailsWorkInformation" %}
@@ -315,23 +316,457 @@
             {% translate "workerDetailsAddInformation" %}
           </button>
           {% if preferences %}
-          <i class="fa fa-trash text-danger" style="cursor: pointer; font-size: 20px;padding-left:10px;"
-            data-bs-toggle="modal" data-bs-target="#deleteAllInfoModal" title="Delete">
-          </i>
+            <i class="fa fa-trash text-danger" style="cursor: pointer; font-size: 20px;padding-left:10px;"
+              data-bs-toggle="modal" data-bs-target="#deleteAllInfoModal" title="Delete">
+            </i>
           {% endif %}
         </div>
       </div>
 
       <div class="card-body">
+        <!-- Optinally display buttons for editing user information -->
+        {% if preferences %}
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editDocumentsModal">
+              Edit Documents
+            </button>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editLanguageModal">
+              Edit Language
+            </button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editPreferencesModal">
+              Edit Work Preferences
+            </button>
+          </div>
+        {% endif %}
 
       </div>
     </div>
 
   </div>
-  {% endblock body %}
+</div>
 
-  {% block scripts %}
 
+
+<!-- Modals -->
+<form id="documentUploadForm" method="post" enctype="multipart/form-data" action="{% url 'recruiting_web:upload_documents' %}">
+    {% csrf_token %}
+
+    <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+        <input type="hidden" name="worker_id" value="{{ worker.id }}">
+        <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="infoModalLabel">{% translate "workerDetailsAddInformation"%}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'workerDetailsClose'%}"></button>
+          </div>
+
+          <div class="modal-body">
+            <label for="infoType" class="form-label">{% translate "workerDetailsSelectType"%}</label>
+            <select id="infoType" class="form-select" onchange="handleInfoTypeChange()">
+              <option value="">{% translate "workerDetails--Select--"%}</option>
+
+              <option value="documents" data-action="{% url 'recruiting_web:upload_documents' %}">{% translate "workerDetailsDocuments"%}</option>
+              <option value="languages" data-action="{% url 'recruiting_web:upload_languages' %}">{% translate "workerDetailsLanguages"%}</option>
+              <option value="preferences" data-action="{% url 'recruiting_web:upload_preferences' %}">{% translate "workerDetailsUserPreferences"%}</option>
+            </select>
+
+
+            <div id="documentFields" class="mt-3" style="display: none;">
+              <div class="mb-2">
+                <label for="profilePicture" class="form-label">{{ document_labels.profile_picture }}</label>
+                <input type="file" class="form-control" id="profilePicture" name="profile_picture">
+              </div>
+              <div class="mb-2">
+                <label for="passport" class="form-label">{{ document_labels.passport }}</label>
+                <input type="file" class="form-control" id="passport" name="passport">
+              </div>
+              <div class="mb-2">
+                <label for="usDriving" class="form-label">{{ document_labels.us_driver_license }}</label>
+                <input type="file" class="form-control" id="usDriving" name="us_driving_license">
+              </div>
+              <div class="mb-2">
+                <label for="mexicoDriving" class="form-label">{{ document_labels.mexico_driver_license }}</label>
+                <input type="file" class="form-control" id="mexicoDriving" name="mexico_driving_license">
+              </div>
+            </div>
+            
+
+
+            <!-- Language Fields -->
+            <div id="languageFields" class="mt-3" style="display: none;">
+              <label class="form-label">{{ language_label|capfirst }}</label>
+              <div class="form-group">
+                {% for level in language_options %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="language_level" value="{{ level.value|lower }}" id="{{ level.value|lower }}" onclick="toggleVideoUpload()">
+                        <label class="form-check-label" for="{{ level.value|lower }}">{{ level.label }}</label>
+                    </div>
+                {% endfor %}
+              </div>
+              <div class="mt-2" id="videoUploadSection" style="display: none;">
+                  <label for="languageVideo" class="form-label mt-2">{% translate "workerDetailsUploadLanguageVideo"%}</label>
+                  <input type="file" class="form-control" id="languageVideo" name="language_video">
+              </div>
+            </div>
+
+            <!-- Preferences Fields -->
+            <div id="preferencesFields" class="mt-3" style="display: none;">
+                <div class="mb-2">
+                  <label for="preferredCountries" class="form-label">{{ preferred_countries_label }}</label>
+                  <select multiple class="form-select" id="preferredCountries" name="preferred_countries">
+                    {% for option in preferred_countries_options %}
+                      <option value="{{ option.value }}">{{ option.label }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <div class="mb-2">
+                  <label for="workSectors" class="form-label">{{ work_sectors_label }}</label>
+                  <select multiple class="form-select" id="workSectors" name="work_sectors">
+                    {% for option in work_sectors_options %}
+                      <option value="{{ option.value }}">{{ option.label }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <div class="mb-2">
+                  <label for="preferencesNote" class="form-label">{{ preferences_note_label }}</label>
+                  <textarea class="form-control" id="preferencesNote" name="preferences_note" rows="3"></textarea>
+                </div>
+
+                {% load custom_filters %}
+                {% next_12_months as availability_months %}
+
+                <div class="mb-2">
+                  <label for="availabilityMonths" class="form-label">{{ availability_label }}</label>
+                  <select multiple class="form-select" id="availabilityMonths" name="availability_months">
+                    {% for month in availability_months %}
+                      <option value="{{ month.label }}">{{ month.label }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+
+              
+                <!-- Health status -->
+                <div class="mb-2">
+                  <label class="form-label">
+                      {{ health_status_label }}
+                  </label><br>
+                  <div>
+                      <input type="radio" name="healthStatus" value="yes" onchange="toggleHealthConditionField()" class="me-2"> {% translate "workerDetailsYes"%}
+                      <input type="radio" name="healthStatus" value="no" onchange="toggleHealthConditionField()" class="me-1"> {% translate "workerDetailsNo"%}
+                  </div>
+              </div>
+              
+              <div class="mb-2" id="healthConditionField" style="display: none;">
+                  <label for="healthCondition" class="form-label">{{ health_condition_label }}</label>
+                  <textarea class="form-control" name="healthCondition" rows="3"></textarea>
+              </div>
+              
+              <!-- Suffered Injury -->
+              <div class="mb-2">
+                  <label class="form-label">
+                      {{ suffered_injury_label }}
+                  </label><br>
+                  <div>
+                      <input type="radio" name="suffred_injury" value="yes" class="me-2"> {% translate "workerDetailsYes"%}
+                      <input type="radio" name="suffred_injury" value="no" class="me-1"> {% translate "workerDetailsNo"%}
+                  </div>
+              </div>
+              
+              <!-- Longer Period of Time -->
+              <div class="mb-2">
+                  <label class="form-label">
+                      {{ longer_period_of_time_label }}
+                  </label><br>
+                  <div>
+                      <input type="radio" name="longerPeriodOfTime" value="yes" class="me-2"> {% translate "workerDetailsYes"%}
+                      <input type="radio" name="longerPeriodOfTime" value="no" class="me-1"> {% translate "workerDetailsNo"%}
+                  </div>
+              </div>
+              
+              <!-- Lift/Carry Consent -->
+              <div class="mb-2">
+                  <label class="form-label">
+                      {{ consent_label }}
+                  </label><br>
+                  <div>
+                      <input type="radio" name="consent" value="yes" class="me-2"> {% translate "workerDetailsYes"%}
+                      <input type="radio" name="consent" value="no" class="me-1"> {% translate "workerDetailsNo"%}
+                  </div>
+              </div>
+              
+              <!-- Physical Activities Not Preferred -->
+              <div class="mb-2">
+                  <label for="physicalActivities" class="form-label">
+                      {{ physical_activities_label }}
+                  </label>
+                  <textarea class="form-control" name="physicalActivities" rows="3"></textarea>
+              </div>
+              
+              <!-- Work Environment -->
+              <div class="mb-2">
+                  <label class="form-label">
+                      {{ work_environment_label }}
+                  </label><br>
+                  <div>
+                      <input type="radio" name="workEnvironment" value="yes" class="me-2"> {% translate "workerDetailsYes"%}
+                      <input type="radio" name="workEnvironment" value="no" class="me-1"> {% translate "workerDetailsNo"%}
+                  </div>
+              </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "workerDetailsClose"%}</button>
+            <button type="submit" class="btn btn-primary">{% translate "workerDetailsSave"%}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+</form>
+
+<div class="modal fade" id="editPreferencesModal" tabindex="-1" aria-labelledby="editPreferencesLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form method="post" action="{% url 'recruiting_web:edit_user_preferences' worker_id=worker.id %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="editPreferencesLabel">Edit Work Preferences</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mt-3">
+            <div class="mb-2">
+              <label for="preferredCountries" class="form-label">{{ preferred_countries_label }}</label>
+              <select multiple class="form-select" id="preferredCountries" name="preferred_countries">
+                {% for option in preferred_countries_options %}
+                  <option value="{{ option.value }}">{{ option.label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="mb-2">
+              <label for="workSectors" class="form-label">{{ work_sectors_label }}</label>
+              <select multiple class="form-select" id="workSectors" name="work_sectors">
+                {% for option in work_sectors_options %}
+                  <option value="{{ option.value }}">{{ option.label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="mb-2">
+              <label for="preferencesNote" class="form-label">{{ preferences_note_label }}</label>
+              <textarea class="form-control" id="preferencesNote" name="preferences_note" rows="3"></textarea>
+            </div>
+
+            {% load custom_filters %}
+            {% next_12_months as availability_months %}
+
+            <div class="mb-2">
+              <label for="availabilityMonths" class="form-label">{{ availability_label }}</label>
+              <select multiple class="form-select" id="availabilityMonths" name="availability_months">
+                {% for month in availability_months %}
+                  <option value="{{ month.label }}">{{ month.label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <!-- Health status -->
+                <div class="mb-2">
+                  <label class="form-label">
+                      {{ health_status_label }}
+                  </label><br>
+                  <div>
+                      <input type="radio" name="healthStatus" value="yes" onchange="toggleHealthConditionField()" class="me-2"> Yes
+                      <input type="radio" name="healthStatus" value="no" onchange="toggleHealthConditionField()" class="me-1"> No
+                  </div>
+              </div>
+
+            <div class="mb-2" id="healthConditionField" style="display: none;">
+              <label for="healthCondition" class="form-label">{{ health_condition_label }}</label>
+              <textarea class="form-control" name="healthCondition" rows="3"></textarea>
+            </div>
+
+            <!-- Suffered Injury -->
+            <div class="mb-2">
+              <label class="form-label">{{ suffered_injury_label }}</label><br>
+              <div>
+                <input type="radio" name="suffred_injury" value="yes" class="me-2"> Yes
+                <input type="radio" name="suffred_injury" value="no" class="me-1"> No
+              </div>
+            </div>
+
+            <!-- Longer Period of Time -->
+            <div class="mb-2">
+              <label class="form-label">{{ longer_period_of_time_label }}</label><br>
+              <div>
+                <input type="radio" name="longerPeriodOfTime" value="yes" class="me-2"> Yes
+                <input type="radio" name="longerPeriodOfTime" value="no" class="me-1"> No
+              </div>
+            </div>
+
+            <!-- Lift/Carry Consent -->
+            <div class="mb-2">
+              <label class="form-label">{{ consent_label }}</label><br>
+              <div>
+                <input type="radio" name="consent" value="yes" class="me-2"> Yes
+                <input type="radio" name="consent" value="no" class="me-1"> No
+              </div>
+            </div>
+
+            <!-- Physical Activities Not Preferred -->
+            <div class="mb-2">
+              <label for="physicalActivities" class="form-label">{{ physical_activities_label }}</label>
+              <textarea class="form-control" name="physicalActivities" rows="3"></textarea>
+            </div>
+
+            <!-- Work Environment -->
+            <div class="mb-2">
+              <label class="form-label">{{ work_environment_label }}</label><br>
+              <div>
+                <input type="radio" name="workEnvironment" value="yes" class="me-2"> Yes
+                <input type="radio" name="workEnvironment" value="no" class="me-1"> No
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Language Modal -->
+<div class="modal fade" id="editLanguageModal" tabindex="-1" aria-labelledby="editLanguageModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="post" enctype="multipart/form-data" action="{% url 'recruiting_web:edit_language_proficiency' worker_id=worker.id %}">
+      {% csrf_token %}
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editLanguageModalLabel">Edit Language Proficiency</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div>
+            <label class="form-label">{{ language_label|capfirst }}</label>
+            {% for level in language_options %}
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="language_level" value="{{ level.value|lower }}"
+                           id="lang_{{ level.value|lower }}"
+                           {% if preferences.language_level == level.value|lower %}checked{% endif %}
+                           onclick="toggleVideoUpload()">
+                    <label class="form-check-label" for="lang_{{ level.value|lower }}">{{ level.label }}</label>
+                </div>
+            {% endfor %}
+          </div>
+
+          <div class="mt-2" id="videoUploadSection" style="display: none;">
+            <label for="languageVideo" class="form-label mt-2">Upload Language Video</label>
+            <input type="file" class="form-control" id="languageVideo" name="language_video">
+          </div>
+        </div>
+
+        <input type="hidden" name="worker_id" value="{{ worker.id }}">
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Documents Modal -->
+<div class="modal fade" id="editDocumentsModal" tabindex="-1" aria-labelledby="editDocumentsModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="post" enctype="multipart/form-data" action="{% url 'recruiting_web:edit_documents' worker_id=worker.id %}">
+      {% csrf_token %}
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editDocumentsModalLabel">Edit Documents</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-2">
+            <label for="profilePicture" class="form-label">{{ document_labels.profile_picture }}</label>
+            <input type="file" class="form-control" id="profilePicture" name="profile_picture">
+          </div>
+          <div class="mb-2">
+            <label for="passport" class="form-label">{{ document_labels.passport }}</label>
+            <input type="file" class="form-control" id="passport" name="passport">
+          </div>
+          <div class="mb-2">
+            <label for="usDriving" class="form-label">{{ document_labels.us_driver_license }}</label>
+            <input type="file" class="form-control" id="usDriving" name="us_driving_license">
+          </div>
+          <div class="mb-2">
+            <label for="mexicoDriving" class="form-label">{{ document_labels.mexico_driver_license }}</label>
+            <input type="file" class="form-control" id="mexicoDriving" name="mexico_driving_license">
+          </div>
+        </div>
+
+        <input type="hidden" name="worker_id" value="{{ worker.id }}">
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Delete All Info Modal -->
+<div class="modal fade" id="deleteAllInfoModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header text-white">
+        <h5 class="modal-title">{% translate "Confirm Delete" %}</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        {% translate "Are you sure you want to delete all saved information for this worker? This includes preferences, language proficiency, and uploaded documents." %}
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Cancel" %}</button>
+
+        <form method="POST" action="{% url 'recruiting_web:delete_all_worker_info' worker_id=worker.id %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">{% translate "Delete All" %}</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="mediaModal" tabindex="-1" aria-labelledby="mediaModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="mediaModalLabel">{% translate "workerDetailsMediaViewer"%}</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="{% translate 'workerDetailsClose'%}">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="mediaContent"></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock body %}
+
+{% block scripts %}
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       blockPastMonthsInPicker();
