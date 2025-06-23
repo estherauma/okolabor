@@ -66,7 +66,7 @@ class UserListView(LoginRequiredMixin, View):
 
         
         recruiter_organizations = Organization.objects.filter(type='recruiter').values(
-            'id', 'name', 'email', 'phone', 'website', 'address', 'city', 'state', 'country', 'zip_code', 'type', 'is_active'
+            'id', 'name', 'email', 'phone', 'website', 'address', 'city', 'state', 'country', 'zip_code', 'type', 'is_active',
         )
 
         employer_organizations = Organization.objects.filter(type='employer').values(
@@ -526,4 +526,3 @@ class LogDetailView(LoginRequiredMixin, DetailView):
     model = Log
     template_name = 'userlogs/log_detail.html'
     context_object_name = 'log'
-

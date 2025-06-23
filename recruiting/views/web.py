@@ -348,10 +348,7 @@ class EmployerCreateView(CreateView):
     def get_success_url(self, pk):
         return reverse('recruiting_web:employer_detail', kwargs={'pk': pk})
 
-<<<<<<< HEAD
 
-=======
->>>>>>> dev
 class EmployerDetailView(View):
     def get(self, request, pk):
         user = request.user
