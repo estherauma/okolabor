@@ -501,6 +501,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const table = $(tableId).DataTable({
+        
+            "ordering": true,
+            "order": [], // No initial ordering
+            "columnDefs": [
+                {
+                    "targets": 0,
+                    "orderable": false
+                },
+                {
+                    "targets": -1,
+                    "orderable": false
+                }
+            ],
+            "paging": true,
+            "info": true
+        
     });
 
     applyColumnVisibilityFromStorage(table);

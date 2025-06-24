@@ -3,16 +3,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const assignForm = document.getElementById("assignEmployerOrganizationForm");
     const assignOrgBtn = document.getElementById("assign-employer-organization-btn");
 
-    console.log("Selected Users Input:", selectedUsersInput);
-    console.log("Assign Form:", assignForm);
-    console.log("Assign Org Button:", assignOrgBtn);
-
     assignOrgBtn?.addEventListener("click", function (e) {
         const checkboxes = document.querySelectorAll(".employer-checkbox:checked");
-        console.log("Checked Checkboxes:", checkboxes);
 
         const selectedUserIds = Array.from(checkboxes).map(cb => cb.value.trim()).filter(val => val !== "");
-        console.log("Selected User IDs:", selectedUserIds);
 
         if (selectedUserIds.length === 0) {
             alert("⚠️ Please select at least one user before assigning an organization.");
@@ -22,7 +16,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         selectedUsersInput.value = JSON.stringify(selectedUserIds);
-        console.log("Selected Users Input Value:", selectedUsersInput.value);
     });
 
     assignForm?.addEventListener("submit", function (e) {

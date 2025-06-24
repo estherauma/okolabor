@@ -42,7 +42,13 @@
                         <td>{{ user.first_name }} {{ user.last_name }}</td>
                         <td>{{ user.created_at }}</td>
                         <td>{{ user.is_active|yesno:_("active,inactive") }}</td>
-                        <td>{{ user.group }}</td>
+                        <td>
+                          {% if user.group == "recruiter" %}
+                            {% translate "webCommonNo" %}
+                          {% elif user.group == "recruiter_admin" %}
+                            {% translate "webCommonYes" %}
+                          {% endif %}
+                        </td>
                         <td>
                             {% for org in user.organizations.all %}
                                 {{ org.name }}{% if not forloop.last %}, {% endif %}

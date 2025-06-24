@@ -4,12 +4,11 @@
 
 {% block styles %}
 <!-- SELECT2 CSS -->
-<link href="{% static ''%}assets/plugins/select2/select2.min.css" rel="stylesheet"/>
-<link href="{% static ''%}assets/plugins/common/style.css" rel="stylesheet"/>
+<link href="{% static ''%}assets/plugins/select2/select2.min.css" rel="stylesheet" />
 <!-- DATA TABLE CSS -->
-<link href="{% static ''%}assets/plugins/datatable/css/dataTables.bootstrap5.css" rel="stylesheet"/>
-<link href="{% static ''%}assets/plugins/datatable/css/buttons.bootstrap5.min.css" rel="stylesheet"/>
-<link href="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.css" rel="stylesheet"/>
+<link href="{% static ''%}assets/plugins/datatable/css/dataTables.bootstrap5.css" rel="stylesheet" />
+<link href="{% static ''%}assets/plugins/datatable/css/buttons.bootstrap5.min.css" rel="stylesheet" />
+<link href="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.css" rel="stylesheet" />
 {% endblock styles %}
 
 {% block body %}
@@ -17,7 +16,7 @@
 <div class="parent-btn-grp">
   <div class="employers-list-flex">
     <div class="dropdown">
-     
+
     </div>
   </div>
   <div class="d-flex align-items-center gap-2">
@@ -27,12 +26,14 @@
 
   </div>
 </div>
-<div class="modal fade" id="assignRecruiterModal" tabindex="-1" aria-labelledby="assignRecruiterLabel" aria-hidden="true">
+<div class="modal fade" id="assignRecruiterModal" tabindex="-1" aria-labelledby="assignRecruiterLabel"
+  aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="assignRecruiterLabel">{% translate "recruiterListAssignRecruiter" %}</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'recruiterListClose'%}"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"
+          aria-label="{% translate 'recruiterListClose'%}"></button>
       </div>
       <div class="modal-body">
         <form id="assignRecruiterForm">
@@ -50,14 +51,17 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "recruiterListCancel" %}</button>
-        <button type="button" class="btn btn-primary" id="assignRecruiterBtn">{% translate "recruiterListAssign" %}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "recruiterListCancel"
+          %}</button>
+        <button type="button" class="btn btn-primary" id="assignRecruiterBtn">{% translate "recruiterListAssign"
+          %}</button>
       </div>
     </div>
   </div>
 </div>
 
-<div class="modal fade" id="recruiterColumnSettingsModal" tabindex="-1" aria-labelledby="recruiterColumnSettingsModalLabel" aria-hidden="true">
+<div class="modal fade" id="recruiterColumnSettingsModal" tabindex="-1"
+  aria-labelledby="recruiterColumnSettingsModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
@@ -67,34 +71,43 @@
       <div class="modal-body">
         <form id="recruiter-column-settings-form">
           <div class="form-check">
-            <input class="form-check-input recruiter-column-toggle" type="checkbox" value="1" checked id="col-recruiter-company">
-            <label class="form-check-label" for="col-recruiter-company">{% translate "recruiterListCompanyName" %}</label>
+            <input class="form-check-input recruiter-column-toggle" type="checkbox" value="1" checked
+              id="col-recruiter-company">
+            <label class="form-check-label" for="col-recruiter-company">{% translate "recruiterListCompanyName"
+              %}</label>
           </div>
           <div class="form-check">
-            <input class="form-check-input recruiter-column-toggle" type="checkbox" value="2" checked id="col-recruiter-email">
+            <input class="form-check-input recruiter-column-toggle" type="checkbox" value="2" checked
+              id="col-recruiter-email">
             <label class="form-check-label" for="col-recruiter-email">{% translate "recruiterListEmail" %}</label>
           </div>
           <div class="form-check">
-            <input class="form-check-input recruiter-column-toggle" type="checkbox" value="3" checked id="col-recruiter-location">
+            <input class="form-check-input recruiter-column-toggle" type="checkbox" value="3" checked
+              id="col-recruiter-location">
             <label class="form-check-label" for="col-recruiter-location">{% translate "recruiterListLocation" %}</label>
           </div>
           <div class="form-check">
-            <input class="form-check-input recruiter-column-toggle" type="checkbox" value="4" checked id="col-recruiter-phone">
+            <input class="form-check-input recruiter-column-toggle" type="checkbox" value="4" checked
+              id="col-recruiter-phone">
             <label class="form-check-label" for="col-recruiter-phone">{% translate "recruiterListPhoneNumber" %}</label>
           </div>
           <div class="form-check">
-            <input class="form-check-input recruiter-column-toggle" type="checkbox" value="5" checked id="col-recruiter-assigned">
-            <label class="form-check-label" for="col-recruiter-assigned">{% translate "recruiterListAssignedTo" %}</label>
+            <input class="form-check-input recruiter-column-toggle" type="checkbox" value="5" checked
+              id="col-recruiter-assigned">
+            <label class="form-check-label" for="col-recruiter-assigned">{% translate "recruiterListAssignedTo"
+              %}</label>
           </div>
           <div class="form-check">
-            <input class="form-check-input recruiter-column-toggle" type="checkbox" value="6" checked id="col-recruiter-actions">
+            <input class="form-check-input recruiter-column-toggle" type="checkbox" value="6" checked
+              id="col-recruiter-actions">
             <label class="form-check-label" for="col-recruiter-actions">{% translate "recruiterListAction" %}</label>
           </div>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Close" %}</button>
-        <button type="button" class="btn btn-primary" id="apply-recruiter-column-settings">{% translate "Apply" %}</button>
+        <button type="button" class="btn btn-primary" id="apply-recruiter-column-settings">{% translate "Apply"
+          %}</button>
       </div>
     </div>
   </div>
@@ -106,9 +119,9 @@
       <div class="card-body">
         <div class="table-responsive">
           <table class="table text-nowrap border-bottom" id="employers-list-datatable">
-           <thead style="background-color: #7DBF96;">
+            <thead style="background-color: #7DBF96;">
               <tr>
-                <th></th>
+                <!-- <th></th> -->
                 <th class="col-recruiter-company">{% translate "recruiterListCompanyName" %}</th>
                 <th class="col-recruiter-email">{% translate "recruiterListEmail" %}</th>
                 <th class="col-recruiter-location">{% translate "recruiterListLocation" %}</th>
@@ -120,10 +133,10 @@
             <tbody>
               {% for recruiter in recruiters %}
               <tr class="text-center" data-id="{{ recruiter.id }}">
-                <td><input class="table-checkbox" type="checkbox"/></td>
+                <!-- <td><input class="table-checkbox" type="checkbox" /></td> -->
                 <td>
                   <a href="/recruiters-org/{{ recruiter.id }}" class="text-decoration-none text-dark">
-                      {{ recruiter.name }}
+                    {{ recruiter.name }}
                   </a>
                 </td>
                 <td>{{ recruiter.email }}</td>
@@ -131,28 +144,21 @@
                 <td>{{ recruiter.phone }}</td>
                 <td>
                   {% if recruiter.employers %}
-                      {% for employer_name in recruiter.employers %}
-                          {{ employer_name }}{% if not forloop.last %}, {% endif %}
-                      {% endfor %}
+                  {% for employer_name in recruiter.employers %}
+                  {{ employer_name }}{% if not forloop.last %}, {% endif %}
+                  {% endfor %}
                   {% else %}
-                      {% translate "recruiterListNoEmployersAssigned" %}
+                  {% translate "recruiterListNoEmployersAssigned" %}
                   {% endif %}
                 </td>
                 <td>
-                  <i 
-                    class="fa fa-trash text-danger" 
-                    style="cursor: pointer;" 
-                    data-bs-toggle="modal" 
-                    data-bs-target="#deleteModalRecruiter{{ recruiter.id }}" 
-                    title={% translate "recruiterListDelete"%}>
+                  <i class="fa fa-trash text-danger" style="cursor: pointer;" data-bs-toggle="modal"
+                    data-bs-target="#deleteModalRecruiter{{ recruiter.id }}" title={% translate "recruiterListDelete"
+                    %}>
                   </i>
-                  <i 
-                      class="fa fa-edit text-primary"
-                      style="cursor: pointer;" 
-                      data-bs-toggle="modal"
-                      data-bs-target="#editRecruiterModal{{ recruiter.id }}"
-                      title={% translate "recruiterListEdit"%}>
-                    </i>
+                  <i class="fa fa-edit text-primary" style="cursor: pointer;" data-bs-toggle="modal"
+                    data-bs-target="#editRecruiterModal{{ recruiter.id }}" title={% translate "recruiterListEdit" %}>
+                  </i>
 
                 </td>
               </tr>
@@ -163,54 +169,58 @@
             <nav aria-label="Page navigation example">
               <ul class="pagination justify-content-center">
                 {% if recruiters.has_previous %}
-                  <li class="page-item">
-                    <a class="page-link" href="?page=1&query={{ query }}" aria-label="{% translate 'recruiterListFirst'%}">
-                      <span aria-hidden="true">&laquo;</span>
-                    </a>
-                  </li>
-                  <li class="page-item">
-                    <a class="page-link" href="?page={{ recruiters.previous_page_number }}&query={{ query }}" aria-label="{% translate 'recruiterListPrevious'%}">
-                      <span aria-hidden="true">&lsaquo;</span>
-                    </a>
-                  </li>
+                <li class="page-item">
+                  <a class="page-link" href="?page=1&query={{ query }}"
+                    aria-label="{% translate 'recruiterListFirst'%}">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ recruiters.previous_page_number }}&query={{ query }}"
+                    aria-label="{% translate 'recruiterListPrevious'%}">
+                    <span aria-hidden="true">&lsaquo;</span>
+                  </a>
+                </li>
                 {% else %}
-                  <li class="page-item disabled">
-                    <a class="page-link" href="#" aria-label="{% translate 'recruiterListPrevious'%}">
-                      <span aria-hidden="true">&lsaquo;</span>
-                    </a>
-                  </li>
+                <li class="page-item disabled">
+                  <a class="page-link" href="#" aria-label="{% translate 'recruiterListPrevious'%}">
+                    <span aria-hidden="true">&lsaquo;</span>
+                  </a>
+                </li>
                 {% endif %}
 
                 {% for page_num in recruiters.paginator.page_range %}
-                  {% if page_num == recruiters.number %}
-                    <li class="page-item active">
-                      <a class="page-link" href="#">{{ page_num }}</a>
-                    </li>
-                  {% elif page_num > recruiters.number|add:'-3' and page_num < recruiters.number|add:'3' %}
-                    <li class="page-item">
-                      <a class="page-link" href="?page={{ page_num }}&query={{ query }}">{{ page_num }}</a>
-                    </li>
+                {% if page_num == recruiters.number %}
+                <li class="page-item active">
+                  <a class="page-link" href="#">{{ page_num }}</a>
+                </li>
+                {% elif page_num > recruiters.number|add:'-3' and page_num < recruiters.number|add:'3' %} <li
+                  class="page-item">
+                  <a class="page-link" href="?page={{ page_num }}&query={{ query }}">{{ page_num }}</a>
+                  </li>
                   {% endif %}
-                {% endfor %}
+                  {% endfor %}
 
-                {% if recruiters.has_next %}
+                  {% if recruiters.has_next %}
                   <li class="page-item">
-                    <a class="page-link" href="?page={{ recruiters.next_page_number }}&query={{ query }}" aria-label="{% translate 'recruiterListNext'%}">
+                    <a class="page-link" href="?page={{ recruiters.next_page_number }}&query={{ query }}"
+                      aria-label="{% translate 'recruiterListNext'%}">
                       <span aria-hidden="true">&rsaquo;</span>
                     </a>
                   </li>
                   <li class="page-item">
-                    <a class="page-link" href="?page={{ recruiters.paginator.num_pages }}&query={{ query }}" aria-label="{% translate 'recruiterListLast'%}">
+                    <a class="page-link" href="?page={{ recruiters.paginator.num_pages }}&query={{ query }}"
+                      aria-label="{% translate 'recruiterListLast'%}">
                       <span aria-hidden="true">&raquo;</span>
                     </a>
                   </li>
-                {% else %}
+                  {% else %}
                   <li class="page-item disabled">
                     <a class="page-link" href="#" aria-label="{% translate 'recruiterListNext'%}">
                       <span aria-hidden="true">&rsaquo;</span>
                     </a>
                   </li>
-                {% endif %}
+                  {% endif %}
               </ul>
             </nav>
           </div>
@@ -222,94 +232,115 @@
 
 <!-- Delete Modal -->
 {% for recruiter in recruiters %}
-  {% if recruiter.id %}
-    <!-- Delete Modal -->
-    <div class="modal fade" id="deleteModalRecruiter{{ recruiter.id }}" tabindex="-1" aria-labelledby="deleteModalRecruiterLabel{{ recruiter.id }}" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <form method="POST" action="{% url 'recruiting_web:recruiter_delete' recruiter.id %}">
-            {% csrf_token %}
-            <div class="modal-header" style="background-color: #7DBF96;">
-              <h5 class="modal-title text-white" id="deleteModalRecruiterLabel{{ recruiter.id }}">{% translate "recruiterListConfirmDelete" %}</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'recruiterListClose'%}"></button>
-            </div>
-            <div class="modal-body">
-              {% translate 'recruiterListAreYouSureYouWantToDelete'%} <strong>{{ recruiter.name }}</strong>?
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'recruiterListCancel'%}</button>
-              <button type="submit" class="btn" style='background-color:#F95406; color: white'>{% translate 'recruiterListDelete'%}</button>
-            </div>
-          </form>
+{% if recruiter.id %}
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModalRecruiter{{ recruiter.id }}" tabindex="-1"
+  aria-labelledby="deleteModalRecruiterLabel{{ recruiter.id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="{% url 'recruiting_web:recruiter_delete' recruiter.id %}">
+        {% csrf_token %}
+        <div class="modal-header" style="background-color: #7DBF96;">
+          <h5 class="modal-title text-white" id="deleteModalRecruiterLabel{{ recruiter.id }}">{% translate
+            "recruiterListConfirmDelete" %}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"
+            aria-label="{% translate 'recruiterListClose'%}"></button>
         </div>
-      </div>
+        <div class="modal-body">
+          {% translate 'recruiterListAreYouSureYouWantToDelete'%} <strong>{{ recruiter.name }}</strong>?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{%
+            translate 'recruiterListCancel'%}</button>
+          <button type="submit" class="btn" style='background-color:#F95406; color: white'>{% translate
+            'recruiterListDelete'%}</button>
+        </div>
+      </form>
     </div>
-  {% endif %}
+  </div>
+</div>
+{% endif %}
 {% endfor %}
 
 <!-- Edit Modal -->
 {% for recruiter in recruiters %}
-  {% if recruiter.id %}
-    <div class="modal fade" id="editRecruiterModal{{ recruiter.id }}" tabindex="-1" aria-labelledby="editRecruiterModalLabel{{ recruiter.id }}" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <form method="POST" action="{% url 'recruiting_web:recruiter_edit' recruiter.id %}">
-            {% csrf_token %}
-            <div class="modal-header" style="background-color: #7DBF96;">
-              <h5 class="modal-title text-white" id="editRecruiterModalLabel{{ recruiter.id }}">{% translate "recruiterListEditRecruiter" %}</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'recruiterListClose'%}"></button>
-            </div>
-            <div class="modal-body">
-              <div class="mb-3">
-                <label for="name{{ recruiter.id }}" class="form-label">{% translate "recruiterListName" %}</label>
-                <input type="text" class="form-control" id="name{{ recruiter.id }}" name="name" value="{{ recruiter.name }}">
-              </div>
-              <div class="mb-3">
-                <label for="email{{ employer.id }}" class="form-label">{% translate "recruiterListEmail" %}</label>
-                <input type="email" class="form-control" id="email{{ recruiter.id }}" name="email" value="{{ recruiter.email }}">
-              </div>
-              <div class="mb-3">
-                <label for="phone{{ recruiter.id }}" class="form-label">{% translate "recruiterListPhone" %}</label>
-                <input type="text" class="form-control" id="phone{{ recruiter.id }}" name="phone" value="{{ recruiter.phone }}">
-              </div>
-              <div class="mb-3">
-                <label for="website{{ recruiter.id }}" class="form-label">{% translate "recruiterListWebsite" %}</label>
-                <input type="url" class="form-control" id="website{{ recruiter.id }}" name="website" value="{{ recruiter.website }}">
-              </div>
-              <div class="mb-3">
-                <label for="address{{ recruiter.id }}" class="form-label">{% translate "recruiterListAddress" %}</label>
-                <input type="text" class="form-control" id="address{{ recruiter.id }}" name="address" value="{{ recruiter.address }}">
-              </div>
-              <div class="mb-3">
-                <label for="city{{ recruiter.id }}" class="form-label">{% translate "recruiterListCity" %}</label>
-                <input type="text" class="form-control" id="city{{ recruiter.id }}" name="city" value="{{ recruiter.city }}">
-              </div>
-              <div class="mb-3">
-                <label for="state{{ recruiter.id }}" class="form-label">{% translate "recruiterListState" %}</label>
-                <input type="text" class="form-control" id="state{{ recruiter.id }}" name="state" value="{{ recruiter.state }}">
-              </div>
-              <div class="mb-3">
-                <label for="country{{ recruiter.id }}" class="form-label">{% translate "recruiterListCountry" %}</label>
-                <input type="text" class="form-control" id="country{{ recruiter.id }}" name="country" value="{{ recruiter.country }}">
-              </div>
-              <div class="mb-3">
-                <label for="zip_code{{ recruiter.id }}" class="form-label">{% translate "recruiterListZipCode" %}</label>
-                <input type="text" class="form-control" id="zip_code{{ recruiter.id }}" name="zip_code" value="{{ recruiter.zip_code }}">
-              </div>
-              <div class="mb-3">
-                <label for="description{{ recruiter.id }}" class="form-label">{% translate "recruiterListDescription" %}</label>
-                <textarea class="form-control" id="description{{ recruiter.id }}" name="description">{{ recruiter.description }}</textarea>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'recruiterListCancel' %}</button>
-              <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>{% translate 'recruiterListSave' %}</button>
-            </div>
-          </form>
+{% if recruiter.id %}
+<div class="modal fade" id="editRecruiterModal{{ recruiter.id }}" tabindex="-1"
+  aria-labelledby="editRecruiterModalLabel{{ recruiter.id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="{% url 'recruiting_web:recruiter_edit' recruiter.id %}">
+        {% csrf_token %}
+        <div class="modal-header" style="background-color: #7DBF96;">
+          <h5 class="modal-title text-white" id="editRecruiterModalLabel{{ recruiter.id }}">{% translate
+            "recruiterListEditRecruiter" %}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"
+            aria-label="{% translate 'recruiterListClose'%}"></button>
         </div>
-      </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="name{{ recruiter.id }}" class="form-label">{% translate "recruiterListName" %}</label>
+            <input type="text" class="form-control" id="name{{ recruiter.id }}" name="name"
+              value="{{ recruiter.name }}">
+          </div>
+          <div class="mb-3">
+            <label for="email{{ employer.id }}" class="form-label">{% translate "recruiterListEmail" %}</label>
+            <input type="email" class="form-control" id="email{{ recruiter.id }}" name="email"
+              value="{{ recruiter.email }}">
+          </div>
+          <div class="mb-3">
+            <label for="phone{{ recruiter.id }}" class="form-label">{% translate "recruiterListPhone" %}</label>
+            <input type="text" class="form-control" id="phone{{ recruiter.id }}" name="phone"
+              value="{{ recruiter.phone }}">
+          </div>
+          <div class="mb-3">
+            <label for="website{{ recruiter.id }}" class="form-label">{% translate "recruiterListWebsite" %}</label>
+            <input type="url" class="form-control" id="website{{ recruiter.id }}" name="website"
+              value="{{ recruiter.website }}">
+          </div>
+          <div class="mb-3">
+            <label for="address{{ recruiter.id }}" class="form-label">{% translate "recruiterListAddress" %}</label>
+            <input type="text" class="form-control" id="address{{ recruiter.id }}" name="address"
+              value="{{ recruiter.address }}">
+          </div>
+          <div class="mb-3">
+            <label for="city{{ recruiter.id }}" class="form-label">{% translate "recruiterListCity" %}</label>
+            <input type="text" class="form-control" id="city{{ recruiter.id }}" name="city"
+              value="{{ recruiter.city }}">
+          </div>
+          <div class="mb-3">
+            <label for="state{{ recruiter.id }}" class="form-label">{% translate "recruiterListState" %}</label>
+            <input type="text" class="form-control" id="state{{ recruiter.id }}" name="state"
+              value="{{ recruiter.state }}">
+          </div>
+          <div class="mb-3">
+            <label for="country{{ recruiter.id }}" class="form-label">{% translate "recruiterListCountry" %}</label>
+            <input type="text" class="form-control" id="country{{ recruiter.id }}" name="country"
+              value="{{ recruiter.country }}">
+          </div>
+          <div class="mb-3">
+            <label for="zip_code{{ recruiter.id }}" class="form-label">{% translate "recruiterListZipCode" %}</label>
+            <input type="text" class="form-control" id="zip_code{{ recruiter.id }}" name="zip_code"
+              value="{{ recruiter.zip_code }}">
+          </div>
+          <div class="mb-3">
+            <label for="description{{ recruiter.id }}" class="form-label">{% translate "recruiterListDescription"
+              %}</label>
+            <textarea class="form-control" id="description{{ recruiter.id }}"
+              name="description">{{ recruiter.description }}</textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{%
+            translate 'recruiterListCancel' %}</button>
+          <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>{% translate
+            'recruiterListSave' %}</button>
+        </div>
+      </form>
     </div>
-  {% endif %}
+  </div>
+</div>
+{% endif %}
 {% endfor %}
 
 
@@ -336,58 +367,80 @@
 <script src="{% static ''%}assets/js/table-sorting.js"></script>
 <script src="{% static ''%}assets/js/assign_recruiter.js"></script>
 <script>
-function applyRecruiterColumnVisibilityFromStorage(table) {
-   $.fn.dataTable.ext.errMode = 'none';
+  function applyRecruiterColumnVisibilityFromStorage(table) {
+    $.fn.dataTable.ext.errMode = 'none';
     const savedSettings = JSON.parse(localStorage.getItem('recruiterColumnVisibilitySettings')) || {};
     const columnClasses = [
-        'col-recruiter-company',
-        'col-recruiter-email',
-        'col-recruiter-location',
-        'col-recruiter-phone',
-        'col-recruiter-assigned',
-        'col-recruiter-actions'
+      'col-recruiter-company',
+      'col-recruiter-email',
+      'col-recruiter-location',
+      'col-recruiter-phone',
+      'col-recruiter-assigned',
+      'col-recruiter-actions'
     ];
     columnClasses.forEach((columnClass, index) => {
-        const isVisible = savedSettings[columnClass] !== false;
-        table.column(index + 1).visible(isVisible); // +1 to skip checkbox
-        const checkbox = document.querySelector(`.recruiter-column-toggle[value="${index + 1}"]`);
-        if (checkbox) checkbox.checked = isVisible;
+      const isVisible = savedSettings[columnClass] !== false;
+      table.column(index + 1).visible(isVisible); // +1 to skip checkbox
+      const checkbox = document.querySelector(`.recruiter-column-toggle[value="${index + 1}"]`);
+      if (checkbox) checkbox.checked = isVisible;
     });
-}
+  }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const recruiterTable = $('#employers-list-datatable').DataTable();
+  document.addEventListener('DOMContentLoaded', () => {
+    const recruiterTable = $('#employers-list-datatable').DataTable({
+      "ordering": true,
+      "order": [],
+      "columnDefs": [
+        {
+          "targets": -1,
+          "orderable": false
+        }
+      ],
+      "paging": true,
+      "info": true
+    });
     applyRecruiterColumnVisibilityFromStorage(recruiterTable);
 
     const applyRecruiterBtn = document.getElementById('apply-recruiter-column-settings');
     if (applyRecruiterBtn) {
-        applyRecruiterBtn.addEventListener('click', function () {
-            const savedSettings = {};
-            document.querySelectorAll('.recruiter-column-toggle').forEach(function (checkbox) {
-                const colIndex = parseInt(checkbox.value);
-                const isVisible = checkbox.checked;
-                const columnClass = [
-                    'col-recruiter-company',
-                    'col-recruiter-email',
-                    'col-recruiter-location',
-                    'col-recruiter-phone',
-                    'col-recruiter-assigned',
-                    'col-recruiter-actions'
-                ][colIndex - 1];
-                savedSettings[columnClass] = isVisible;
-                recruiterTable.column(colIndex).visible(isVisible);
-            });
-            localStorage.setItem('recruiterColumnVisibilitySettings', JSON.stringify(savedSettings));
-            const modalEl = document.getElementById('recruiterColumnSettingsModal');
-            const modal = bootstrap.Modal.getInstance(modalEl);
-            modal?.hide();
+      applyRecruiterBtn.addEventListener('click', function () {
+        const savedSettings = {};
+        document.querySelectorAll('.recruiter-column-toggle').forEach(function (checkbox) {
+          const colIndex = parseInt(checkbox.value);
+          const isVisible = checkbox.checked;
+          const columnClass = [
+            'col-recruiter-company',
+            'col-recruiter-email',
+            'col-recruiter-location',
+            'col-recruiter-phone',
+            'col-recruiter-assigned',
+            'col-recruiter-actions'
+          ][colIndex - 1];
+          savedSettings[columnClass] = isVisible;
+          recruiterTable.column(colIndex).visible(isVisible);
         });
+        localStorage.setItem('recruiterColumnVisibilitySettings', JSON.stringify(savedSettings));
+        const modalEl = document.getElementById('recruiterColumnSettingsModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        modal?.hide();
+      });
     }
-});
+  });
 </script>
 <script>
-$(document).ready(function () {
-    const table = $('#employers-list-datatable').DataTable();
+  $(document).ready(function () {
+    const table = $('#employers-list-datatable').DataTable({
+      "ordering": true,
+      "order": [],
+      "columnDefs": [
+        {
+          "targets": -1,
+          "orderable": false
+        }
+      ],
+      "paging": true,
+      "info": true
+    });
     const settingsBtn = `
         <button class="setting-btn" data-bs-toggle="modal" data-bs-target="#recruiterColumnSettingsModal">
             <i class="fa fa-cog" aria-hidden="true"></i>
@@ -396,6 +449,6 @@ $(document).ready(function () {
     const lengthContainer = $('#employers-list-datatable_length');
     lengthContainer.addClass('d-flex align-items-center');
     lengthContainer.prepend(settingsBtn);
-});
+  });
 </script>
 {% endblock scripts %}
