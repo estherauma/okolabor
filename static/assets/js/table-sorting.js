@@ -71,14 +71,54 @@ $(document).ready(function () {
 
         
         
-
-        $('#recruiters-datatable,#workers-list-datatable').DataTable({
+        // Worker list table on manage users
+        $('#workers-list-datatable').DataTable({
             "ordering": true,
             "order": [],
-            "columnDefs": [{
-                "targets": '_all',
-                "orderable": true
-            }],
+            "columnDefs": [
+                {
+                    "targets": -1,
+                    "orderable": false
+                }
+            ],
+            "paging": true,   
+            "info": true,
+            "searching": true 
+        });
+
+        // Recruiters list table on manage users
+        $('#recruiters-datatable').DataTable({
+            "ordering": true,
+            "order": [],
+            "columnDefs": [
+                {
+                    "targets": 0,
+                    "orderable": false
+                },
+                {
+                    "targets": -1,
+                    "orderable": false
+                }
+            ],
+            "paging": true,   
+            "info": true,
+            "searching": true 
+        });
+
+        // Recruiters list table on manage users
+        $('#employers-datatable').DataTable({
+            "ordering": true,
+            "order": [],
+            "columnDefs": [
+                {
+                    "targets": 0,
+                    "orderable": false
+                },
+                {
+                    "targets": -1,
+                    "orderable": false
+                }
+            ],
             "paging": true,   
             "info": true,
             "searching": true 
