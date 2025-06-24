@@ -37,22 +37,23 @@ $(document).ready(function () {
                 "targets": '_all',
                 "orderable": true
             }],
-            "paging": true,   
+            "paging": true,
             "info": true
         });
 
-         $('#basic-datatable-workers,#basic-datatable-allworkers').DataTable({
-                "ordering": true,
-                "order": [], // No initial ordering
-                "columnDefs": [
-                    {
-                        "targets": '_all', // All other columns
-                        "orderable": true
-                    }
-                ],
-                "paging": true,
-                "info": true
-            });
+        $('#basic-datatable-allworkers').DataTable({
+            "ordering": true,
+            "order": [], // No initial ordering
+            "columnDefs": [
+                {
+                    "targets": '_all', // All other columns
+                    "orderable": true
+                }
+            ],
+            "paging": true,
+            "info": true
+        });
+
 
 
         // if (!$.fn.DataTable.isDataTable('#logs-table')) {
@@ -65,12 +66,12 @@ $(document).ready(function () {
         //         }],
         //         "paging": true,
         //         "info": true,
-                
+
         //     });
         // }
 
-        
-        
+
+
         // Worker list table on manage users
         $('#workers-list-datatable').DataTable({
             "ordering": true,
@@ -81,9 +82,9 @@ $(document).ready(function () {
                     "orderable": false
                 }
             ],
-            "paging": true,   
+            "paging": true,
             "info": true,
-            "searching": true 
+            "searching": true
         });
 
         // Recruiters list table on manage users
@@ -100,9 +101,9 @@ $(document).ready(function () {
                     "orderable": false
                 }
             ],
-            "paging": true,   
+            "paging": true,
             "info": true,
-            "searching": true 
+            "searching": true
         });
 
         // Recruiters list table on manage users
@@ -119,9 +120,9 @@ $(document).ready(function () {
                     "orderable": false
                 }
             ],
-            "paging": true,   
+            "paging": true,
             "info": true,
-            "searching": true 
+            "searching": true
         });
     } else {
         console.error("DataTables library is not loaded.");
