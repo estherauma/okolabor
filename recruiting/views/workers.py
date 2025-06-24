@@ -489,7 +489,6 @@ class WorkerDetailsView(View):
         base_url = request.build_absolute_uri('/')
         work_experience = UserWorkExperience.objects.filter(user=worker).first()
         preferences = UserPreference.objects.filter(user=worker)
-        logger.debug(preferences)
         preference_data = {pref.key: pref.value for pref in preferences}
         # They should not be displayed to the user
         tracking_keys = [
@@ -513,11 +512,12 @@ class WorkerDetailsView(View):
         for key in tracking_keys:
             preference_data.pop(key, None)
         
-        
     
-        
-    
-        documents = UserDocuments.objects.filter(user=worker)
+        documents = UserDocuments.objects.filter(
+            user=worker, kind__in=[
+                'passport', 'english_video', 'profile_picture'
+                'us_driving_license', 'mexico_driving_license'
+            ])
         document_dict = {}
         for doc in documents:
             kind = doc.kind.lower() if doc.kind else "other"

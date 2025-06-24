@@ -340,19 +340,113 @@
         </div>
         {% endif %}
       
-        <!-- Display user documents  -->
+      <!-- Display user documents  -->
+      <!-- Display profile picture -->
+      {% if documents.profile_picture %}
+      <div class="mb-4">
+        <p class="fw-bold">Profile Picture</p>
+        {% for doc in documents.profile_picture %}
+        {% if forloop.first or forloop.counter0|divisibleby:2 %}
         <div class="row">
-          <!-- Display profile picture -->
-          <div class="col-6"></div>
-          <!-- Display englis proficiency video -->
-          <div class="col-6"></div>
-          <!-- Display passport -->
-          <div class="col-6"></div>
-          <!-- Display US drivers licence -->
-          <div class="col-6"></div>
-          <!-- Display mexican drivers licence -->
-          <div class="col-6"></div>
+          {% endif %}
+          <div class="col-md-6 mb-3 border border-seconday">
+            <img src="{{ base_url }}{{ doc.path }}" alt="Profile Picture" class="border object-contain w-100 clickable-media"
+              style="max-height: 200px; cursor: pointer;" data-type="image" data-src="{{ base_url }}{{ doc.path }}"
+              data-bs-toggle="modal" data-bs-target="#mediaModal" />
+          </div>
+          {% if forloop.counter|divisibleby:2 or forloop.last %}
         </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+      
+      
+      <!-- Display English proficiency video -->
+      {% if documents.english_proficiency %}
+      <div class="mb-4">
+        <p class="fw-bold">English Proficiency</p>
+        {% for doc in documents.english_proficiency %}
+        {% if forloop.first or forloop.counter0|divisibleby:2 %}
+        <div class="row">
+          {% endif %}
+          <div class="col-md-6 mb-3">
+            <video controls class="border w-100 preview-video clickable-media" style="max-height: 200px; cursor: pointer;"
+              data-type="video" data-src="{{ base_url }}{{ doc.path }}" data-bs-toggle="modal" data-bs-target="#mediaModal">
+              <source src="{{ base_url }}{{ doc.path }}" type="video/mp4">
+              {% translate "workerDetailsYourBrowserDoesNotSupportTheVideoTag" %}
+            </video>
+          </div>
+          {% if forloop.counter|divisibleby:2 or forloop.last %}
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+      
+      
+      <!-- Display passport -->
+      {% if documents.passport %}
+      <div class="mb-4">
+        <p class="fw-bold">Passport</p>
+        {% for doc in documents.passport %}
+        {% if forloop.first or forloop.counter0|divisibleby:2 %}
+        <div class="row">
+          {% endif %}
+          <div class="col-md-6 mb-3  border border-info">
+            <img src="{{ base_url }}{{ doc.path }}" alt="Passport" class="border object-contain w-100 clickable-media"
+              style="max-height: 200px; cursor: pointer;" data-type="image" data-src="{{ base_url }}{{ doc.path }}"
+              data-bs-toggle="modal" data-bs-target="#mediaModal" />
+          </div>
+          {% if forloop.counter|divisibleby:2 or forloop.last %}
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+      
+      
+      <!-- Display US driver's license -->
+      {% if documents.us_driving_license %}
+      <div class="mb-4">
+        <p class="fw-bold">US Driver's License</p>
+        {% for doc in documents.us_driving_license %}
+        {% if forloop.first or forloop.counter0|divisibleby:2 %}
+        <div class="row">
+          {% endif %}
+          <div class="col-md-6 mb-3">
+            <img src="{{ base_url }}{{ doc.path }}" alt="US Driving License"
+              class="border object-contain w-100 clickable-media" style="max-height: 200px; cursor: pointer;"
+              data-type="image" data-src="{{ base_url }}{{ doc.path }}" data-bs-toggle="modal" data-bs-target="#mediaModal" />
+          </div>
+          {% if forloop.counter|divisibleby:2 or forloop.last %}
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+      
+      
+      <!-- Display Mexican driver's license -->
+      {% if documents.mexico_driving_license %}
+      <div class="mb-4">
+        <p class="fw-bold">Mexican Driver's License</p>
+        {% for doc in documents.mexico_driving_license %}
+        {% if forloop.first or forloop.counter0|divisibleby:2 %}
+        <div class="row">
+          {% endif %}
+          <div class="col-md-6 mb-3">
+            <img src="{{ base_url }}{{ doc.path }}" alt="Mexico Driving License" class="border object-contain w-100"
+              style="max-height: 200px;" />
+          </div>
+          {% if forloop.counter|divisibleby:2 or forloop.last %}
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+
+
       
         <!-- The rest of the questions that need to be displayed -->
         <div class="row">
