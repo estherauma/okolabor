@@ -599,7 +599,7 @@
               <div class="form-group">
                 {% for level in language_options %}
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="language_level" value="{{ level.value|lower }}" id="{{ level.value|lower }}" onclick="toggleVideoUpload()">
+                        <input class="form-check-input" type="radio" name="language_level" value="{{ level.value|lower }}" id="{{ level.value|lower }}" onclick="toggleEditLanguageVideoUpload()">
                         <label class="form-check-label" for="{{ level.value|lower }}">{{ level.label }}</label>
                     </div>
                 {% endfor %}
@@ -1035,13 +1035,24 @@
       }
     }
 
+    function toggleEditLanguageVideoUpload() {
+      const selectedLevel = document.querySelector('#editLanguageModal input[name="language_level"]:checked');
+      const videoUpload = document.querySelector('#editLanguageModal #videoUploadSection');
+
+      if (selectedLevel && selectedLevel.value === "fluent") {
+        videoUpload.style.display = "block";
+      } else {
+        videoUpload.style.display = "none";
+      }
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
       const modalElement = document.getElementById("editLanguageModal");
 
       // Ensure Bootstrap modal event works
       if (modalElement) {
         modalElement.addEventListener("shown.bs.modal", function () {
-          toggleVideoUpload();
+          toggleEditLanguageVideoUpload();
         });
       }
     });
