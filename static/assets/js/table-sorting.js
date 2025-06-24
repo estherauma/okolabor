@@ -30,13 +30,12 @@ $(document).ready(function () {
         });
 
         // Special setting for #workrequest-datatable
-        $('#workrequest-datatable, #employers-list-datatable, #logstable').DataTable({
+        $('#logstable').DataTable({
             "ordering": true,
             "order": [],
-            "columnDefs": [{
-                "targets": '_all',
-                "orderable": true
-            }],
+            "columnDefs": [
+                
+            ],
             "paging": true,
             "info": true
         });
@@ -117,6 +116,21 @@ $(document).ready(function () {
                 },
                 {
                     "targets": -1,
+                    "orderable": false
+                }
+            ],
+            "paging": true,
+            "info": true,
+            "searching": true
+        });
+
+        // Recruiters list table on manage users
+        $('#employers-list-datatable').DataTable({
+            "ordering": true,
+            "order": [],
+            "columnDefs": [
+                {
+                    "targets": 0,
                     "orderable": false
                 }
             ],
