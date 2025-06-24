@@ -4,326 +4,551 @@
 {% load static %}
 {% block styles %}
 <!-- SELECT2 CSS -->
-<link href="{% static ''%}assets/plugins/select2/select2.min.css" rel="stylesheet"/>
-<link href="{% static ''%}assets/plugins/common/style.css" rel="stylesheet"/>
+<link href="{% static ''%}assets/plugins/select2/select2.min.css" rel="stylesheet" />
+<link href="{% static ''%}assets/plugins/common/style.css" rel="stylesheet" />
 <!-- DATA TABLE CSS -->
-<link href="{% static ''%}assets/plugins/datatable/css/dataTables.bootstrap5.css" rel="stylesheet"/>
-<link href="{% static ''%}assets/plugins/datatable/css/buttons.bootstrap5.min.css" rel="stylesheet"/>
-<link href="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.css" rel="stylesheet"/>
+<link href="{% static ''%}assets/plugins/datatable/css/dataTables.bootstrap5.css" rel="stylesheet" />
+<link href="{% static ''%}assets/plugins/datatable/css/buttons.bootstrap5.min.css" rel="stylesheet" />
+<link href="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.css" rel="stylesheet" />
 
 {% endblock styles %}
 
 {% block body %}
+<!-- Page headers -->
 <div class="page-header">
- <div>
-  <h1 class="page-title">
-   {% translate "workerDetailsWorkerDetails" %}
-  </h1>
- </div>
+  <div>
+    <h1 class="page-title">
+      {% translate "workerDetailsWorkerDetails" %}
+    </h1>
+  </div>
 </div>
 <div class="d-flex justify-content-between align-items-center mb-5 flex-column-mobile">
- <div>
-  <span class="d-flex justify-content-center align-items-center">
-   <p class="mt-3 me-3 d-flex justify-content-center align-items-center rounded-circle light-green-background text-white text-icon">
-    {% translate "workerDetailsAB" %}
-   </p>
-   {% if worker.first_name and worker.last_name %}
-   <h4 class="dark-green-color d-contents fw-bold">
-    {{ worker.first_name }} {{ worker.last_name }}
-   </h4>
-   {% else %}
-   <h4 class="dark-green-color d-contents fw-bold">
-    {{ worker.email }}
-   </h4>
-   {% endif %}
-  <span class="gray-color ms-3">
-    ({% blocktrans with percent=profile_completion|floatformat:0 %}
-      Profile {{ percent }}% Complete
-    {% endblocktrans %})
-  </span>
+  <!-- Worker email and profile completion -->
+  <div>
+    <span class="d-flex justify-content-center align-items-center">
+      <p
+        class="mt-3 me-3 d-flex justify-content-center align-items-center rounded-circle light-green-background text-white text-icon">
+        {% translate "workerDetailsAB" %}
+      </p>
+      {% if worker.first_name and worker.last_name %}
+      <h4 class="dark-green-color d-contents fw-bold">
+        {{ worker.first_name }} {{ worker.last_name }}
+      </h4>
+      {% else %}
+      <h4 class="dark-green-color d-contents fw-bold">
+        {{ worker.email }}
+      </h4>
+      {% endif %}
+      <span class="gray-color ms-3">
+        ({% blocktrans with percent=profile_completion|floatformat:0 %}
+        Profile {{ percent }}% Complete
+        {% endblocktrans %})
+      </span>
+    </span>
+  </div>
 
-
-  </span>
- </div>
- <div>
-  
-  {% if worker %}
-      <button class="btn dark-green-button ms-3 open-shortlist-modal"
-      data-bs-toggle="modal"
-      data-bs-target="#workerShortlistModal{{ worker.id }}"
-      data-worker-id="{{ worker.id }}">
-    {% translate "workerDetailsAddToShortlist" %}
+  <div>
+    {% if worker %}
+    <button class="btn dark-green-button ms-3 open-shortlist-modal" data-bs-toggle="modal"
+      data-bs-target="#workerShortlistModal{{ worker.id }}" data-worker-id="{{ worker.id }}">
+      {% translate "workerDetailsAddToShortlist" %}
     </button>
 
-  {% endif %}
+    {% endif %}
 
-  {% if worker %}
-    <button class="btn dark-green-button ms-3 open-offersent-modal"
-    data-bs-toggle="modal"
-    data-bs-target="#workerSentOfferModal{{ worker.id }}"
-    data-worker-id="{{ worker.id }}">
-   {% translate "workerDetailsSendOffer" %}
-  </button>
-  {% endif %}
+    {% if worker %}
+    <button class="btn dark-green-button ms-3 open-offersent-modal" data-bs-toggle="modal"
+      data-bs-target="#workerSentOfferModal{{ worker.id }}" data-worker-id="{{ worker.id }}">
+      {% translate "workerDetailsSendOffer" %}
+    </button>
+    {% endif %}
 
- </div>
+  </div>
 </div>
 {% include "recruiting/workers/add_shortlist_modal.html" %}
 {% include "recruiting/workers/offer_sent_modal.html" %}
 
 
 <div class="row">
- <div class="col-xl-6 col-md-12">
-  <div class="card">
-   <div class="card-body">
-    <div class="d-flex justify-content-between align-items-center">
-     <h5 class="card-title green-color d-contents">
-      {% translate "workerDetailsContact" %}
-     </h5>
-     <button class="btn grey-green-button">
-      {% translate "workerDetailsSendMessage" %}
-     </button>
-    </div>
-    <div>
-     <p class="gray-color">
-      {% translate "workerDetailsAddress" %}
-     </p>
-     {{worker.address_line_1}}
-     <br/>
-     {{worker.address_line_2}}
-     <br/>
-     {{worker.city}}, {{worker.state}}
-     <br/>
-     {{worker.country}}
-     <p class="gray-color mt-4">
-      {% translate "workerDetailsEmail" %}
-     </p>
-     {{worker.email}}
-     <p class="gray-color mt-4">
-      {% translate "workerDetailsPhoneNumber" %}
-     </p>
-     {{worker.telephone}}
-     <p class="gray-color mt-4">
-      {% translate "workerDetailsGender" %}
-     </p>
-     {{worker.gender}}
-    </div>
-   </div>
-  </div>
-  <div class="card">
-   <div class="card-body">
-    <div class="row">
-     <div class="d-flex justify-content-between align-items-center">
-      <h5 class="card-title green-color d-contents">
-       {% translate "workerDetailsWorkExperience" %}
-      </h5>
-      <a class="btn grey-green-button" href="{% url 'recruiting_web:worker_experience_create' pk=worker.id %}">
-       {% translate "workerDetailsAddWorkExperience" %}
-      </a>
-     </div>
-    </div>
-    {% for exp in worker.work_experiences.all %}
-    <div class="row">
-     <div class="col-2">
-      <img alt="flag" src="{% static 'assets/images/farm.png' %}" style="width: 60%;"/>
-     </div>
-     <div class="col-10">
-      <div class="row">
-       <a href="{% url 'recruiting_web:work_experience_details' pk=exp.id %}"><h5 class="green-color">{{exp.company}}</h5></a>
-       <div class="col-4" style="display: flex; align-items: center;">
-        <br/>
-        <i class="side-menu__icon icon-location-pin" style="margin-right: 5px;">
-        </i>
-        <span class="side-menu__label">
-         {{exp.country}}
-        </span>
-       </div>
-       <div class="col-4" style="display: flex; align-items: center;">
-        <i class="side-menu__icon icon-calendar" style="margin-right: 5px;">
-        </i>
-        <span class="side-menu__label">
-            {{ exp.start_date }} <br> - {{ exp.end_date }}
-        </span>
-       </div>
-       <div class="col-4">
-        <i 
-          class="fa fa-edit text-primary"
-          style="cursor: pointer; font-size: 20px;padding-left:10px;" 
-          data-bs-toggle="modal"
-          data-bs-target="#editExperienceModal{{ exp.id }}"
-          title="{% translate 'workerDetailsEdit'%}">
-          </i>
-        <!-- Delete Button -->
-          <i 
-          class="fa fa-trash text-danger"
-          style="cursor: pointer; font-size: 20px;padding-left:10px;" 
-          data-bs-toggle="modal"
-          data-bs-target="#deleteExperienceModal{{ exp.id }}"
-          title="{% translate 'workerDetailsDelete'%}">
-          </i>
-       </div>
-      </div>
-
-      <div class="modal fade" id="deleteExperienceModal{{ exp.id }}" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-        
-        <div class="modal-header">
-          <h5 class="modal-title">{% translate "workerDetailsConfirmDelete"%}</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'workerDetailsClose'%}"></button>
-        </div>
-        
-        <div class="modal-body">
-          {% translate "workerDetailsAreYouSureYouWantToDeleteTheExperience?"%} <strong>{{ exp.company }}</strong>
-        </div>
-        
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "workerDetailsCancel"%}</button>
-          
-          <form method="POST" action="{% url 'recruiting_web:work_experience_delete' exp.id %}">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger">{% translate "workerDetailsDelete"%}</button>
-          </form>
-        </div>
-  
-      </div>
-    </div>
-  </div>
-
-      {% for exp in worker.work_experiences.all %}
-  <div class="modal fade" id="editExperienceModal{{ exp.id }}" tabindex="-1" aria-labelledby="editExperienceModalLabel{{ exp.id }}" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content shadow-lg border-0">
-        <div class="modal-header bg-primary text-white">
-          <h5 class="modal-title" id="editExperienceModalLabel{{ exp.id }}">
-            {% translate 'EditWorkExperience' %}
+  <!-- Worker contact information card -->
+  <div class="col-xl-6 col-md-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="card-title green-color d-contents">
+            {% translate "workerDetailsContact" %}
           </h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{% translate 'workerDetailsClose'%}"></button>
-        </div>
-
-        <form method="POST" action="{% url 'recruiting_web:edit_work_experience' exp.id %}" enctype="multipart/form-data">
-          {% csrf_token %}
-          <div class="modal-body p-4">
-            {% with form=experience_forms|get:exp.id %}
-              {% for field in form %}
-                {% if field.name not in 'visa_type visa_file license_file video_file' %}
-                  <div class="form-group my-3" id="div_{{ field.id_for_label }}">
-                    <label>{{ field.label }}</label>
-                    <div class="input-group input-group-outline is_valid my-3">
-                      {{ field }}
-                      {% if field.errors %}
-                        <div class="text-danger small">{{ field.errors|join:", " }}</div>
-                      {% endif %}
-                    </div>
-                  </div>
-                {% endif %}
-              {% endfor %}
-        
-              <!-- Visa Type -->
-              <div class="form-group my-3" id="div_{{ form.visa_type.id_for_label }}">
-                <label>{{ form.visa_type.label }}</label>
-                <div class="input-group input-group-outline is_valid my-3">
-                  {{ form.visa_type }}
-                </div>
-              </div>
-        
-              <!-- Visa Document (file) -->
-              <div class="form-group my-3" id="div_{{ form.visa_file.id_for_label }}">
-                <label>{{ form.visa_file.label }}</label>
-                <div class="input-group input-group-outline is_valid my-3">
-                  {{ form.visa_file }}
-                </div>
-              </div>
-        
-              <!-- Certification (License file) -->
-              <div class="form-group my-3" id="div_{{ form.license_file.id_for_label }}">
-                <label>{{ form.license_file.label }}</label>
-                <div class="input-group input-group-outline is_valid my-3">
-                  {{ form.license_file }}
-                </div>
-              </div>
-        
-              <!-- Video File -->
-              <div class="form-group my-3" id="div_{{ form.video_file.id_for_label }}">
-                <label>{{ form.video_file.label }}</label>
-                <div class="input-group input-group-outline is_valid my-3">
-                  {{ form.video_file }}
-                </div>
-              </div>
-            {% endwith %}
-          </div>
-        
-          <div class="modal-footer bg-light">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-              {% translate 'workerDetailsCancel' %}
-            </button>
-            <button type="submit" class="btn btn-primary">
-              {% translate 'workerDetailsSaveChanges' %}
-            </button>
-          </div>
-        </form>
-        
-      </div>
-    </div>
-  </div>
-{% endfor %}
-
-    {% for job in job_experiences %}
-            <div class="p-4 border rounded-lg bg-white shadow-sm mb-4">
-                <p class="text-gray-700 text-lg flex items-center gap-2">
-                    🚜 {% translate "workerDetailsJobType"%} - <span>{{ job.job_type|default:"No Job Type" }}</span>
-                </p>
-                <p class="text-gray-700 text-lg flex items-center gap-2">
-                    📋 {% translate "workerDetailsTypeDetails"%} - <span>{{ job.type_details|default:"No Type Details" }}</span>
-                </p>
-            </div>
-    {% endfor %}
-     </div>
-    </div>
-    <br/>
-    {% endfor %}
-   </div>
-  </div>
- </div>
- <!-- COL END -->
- <div class="col-xl-6 col-md-12">
-  <div class="card">
-   <div class="card-header">
-    <div class="d-flex justify-content-between align-items-center w-100">
-     <div class="card-title green-color">
-      {% translate "workerDetailsWorkerStatus" %}
-     </div>
-     <div class="d-contents">
-      <span class="green-color">
-       {{ current_status|title }}
-      </span>
-     </div>
-    </div>
-   </div>
-  </div>
-  
-  <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <div class="card-title green-color">
-            {% translate "workerDetailsWorkInformation" %}
+          <button class="btn grey-green-button">
+            {% translate "workerDetailsSendMessage" %}
+          </button>
         </div>
         <div>
-            <button class="btn dark-green-button" data-bs-toggle="modal" data-bs-target="#infoModal">
-                {% translate "workerDetailsAddInformation" %}
-            </button>
+          <p class="gray-color">
+            {% translate "workerDetailsAddress" %}
+          </p>
+          {{worker.address_line_1}}
+          <br />
+          {{worker.address_line_2}}
+          <br />
+          {{worker.city}}, {{worker.state}}
+          <br />
+          {{worker.country}}
+          <p class="gray-color mt-4">
+            {% translate "workerDetailsEmail" %}
+          </p>
+          {{worker.email}}
+          <p class="gray-color mt-4">
+            {% translate "workerDetailsPhoneNumber" %}
+          </p>
+          {{worker.telephone}}
+          <p class="gray-color mt-4">
+            {% translate "workerDetailsGender" %}
+          </p>
+          {{worker.gender}}
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="card-title green-color d-contents">
+              {% translate "workerDetailsWorkExperience" %}
+            </h5>
+            <a class="btn grey-green-button" href="{% url 'recruiting_web:worker_experience_create' pk=worker.id %}">
+              {% translate "workerDetailsAddWorkExperience" %}
+            </a>
+          </div>
+        </div>
+        {% for exp in worker.work_experiences.all %}
+        <div class="row">
+          <div class="col-2">
+            <img alt="flag" src="{% static 'assets/images/farm.png' %}" style="width: 60%;" />
+          </div>
+          <div class="col-10">
+            <div class="row">
+              <a href="{% url 'recruiting_web:work_experience_details' pk=exp.id %}">
+                <h5 class="green-color">{{exp.company}}</h5>
+              </a>
+              <div class="col-4" style="display: flex; align-items: center;">
+                <br />
+                <i class="side-menu__icon icon-location-pin" style="margin-right: 5px;">
+                </i>
+                <span class="side-menu__label">
+                  {{exp.country}}
+                </span>
+              </div>
+              <div class="col-4" style="display: flex; align-items: center;">
+                <i class="side-menu__icon icon-calendar" style="margin-right: 5px;">
+                </i>
+                <span class="side-menu__label">
+                  {{ exp.start_date }} <br> - {{ exp.end_date }}
+                </span>
+              </div>
+              <div class="col-4">
+                <i class="fa fa-edit text-primary" style="cursor: pointer; font-size: 20px;padding-left:10px;"
+                  data-bs-toggle="modal" data-bs-target="#editExperienceModal{{ exp.id }}"
+                  title="{% translate 'workerDetailsEdit'%}">
+                </i>
+                <!-- Delete Button -->
+                <i class="fa fa-trash text-danger" style="cursor: pointer; font-size: 20px;padding-left:10px;"
+                  data-bs-toggle="modal" data-bs-target="#deleteExperienceModal{{ exp.id }}"
+                  title="{% translate 'workerDetailsDelete'%}">
+                </i>
+              </div>
+            </div>
+
+            <div class="modal fade" id="deleteExperienceModal{{ exp.id }}" tabindex="-1" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                  <div class="modal-header">
+                    <h5 class="modal-title">{% translate "workerDetailsConfirmDelete"%}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                      aria-label="{% translate 'workerDetailsClose'%}"></button>
+                  </div>
+
+                  <div class="modal-body">
+                    {% translate "workerDetailsAreYouSureYouWantToDeleteTheExperience?"%} <strong>{{ exp.company
+                      }}</strong>
+                  </div>
+
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate
+                      "workerDetailsCancel"%}</button>
+
+                    <form method="POST" action="{% url 'recruiting_web:work_experience_delete' exp.id %}">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-danger">{% translate "workerDetailsDelete"%}</button>
+                    </form>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            {% for exp in worker.work_experiences.all %}
+            <div class="modal fade" id="editExperienceModal{{ exp.id }}" tabindex="-1"
+              aria-labelledby="editExperienceModalLabel{{ exp.id }}" aria-hidden="true">
+              <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content shadow-lg border-0">
+                  <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="editExperienceModalLabel{{ exp.id }}">
+                      {% translate 'EditWorkExperience' %}
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                      aria-label="{% translate 'workerDetailsClose'%}"></button>
+                  </div>
+
+                  <form method="POST" action="{% url 'recruiting_web:edit_work_experience' exp.id %}"
+                    enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-body p-4">
+                      {% with form=experience_forms|get:exp.id %}
+                      {% for field in form %}
+                      {% if field.name not in 'visa_type visa_file license_file video_file' %}
+                      <div class="form-group my-3" id="div_{{ field.id_for_label }}">
+                        <label>{{ field.label }}</label>
+                        <div class="input-group input-group-outline is_valid my-3">
+                          {{ field }}
+                          {% if field.errors %}
+                          <div class="text-danger small">{{ field.errors|join:", " }}</div>
+                          {% endif %}
+                        </div>
+                      </div>
+                      {% endif %}
+                      {% endfor %}
+
+                      <!-- Visa Type -->
+                      <div class="form-group my-3" id="div_{{ form.visa_type.id_for_label }}">
+                        <label>{{ form.visa_type.label }}</label>
+                        <div class="input-group input-group-outline is_valid my-3">
+                          {{ form.visa_type }}
+                        </div>
+                      </div>
+
+                      <!-- Visa Document (file) -->
+                      <div class="form-group my-3" id="div_{{ form.visa_file.id_for_label }}">
+                        <label>{{ form.visa_file.label }}</label>
+                        <div class="input-group input-group-outline is_valid my-3">
+                          {{ form.visa_file }}
+                        </div>
+                      </div>
+
+                      <!-- Certification (License file) -->
+                      <div class="form-group my-3" id="div_{{ form.license_file.id_for_label }}">
+                        <label>{{ form.license_file.label }}</label>
+                        <div class="input-group input-group-outline is_valid my-3">
+                          {{ form.license_file }}
+                        </div>
+                      </div>
+
+                      <!-- Video File -->
+                      <div class="form-group my-3" id="div_{{ form.video_file.id_for_label }}">
+                        <label>{{ form.video_file.label }}</label>
+                        <div class="input-group input-group-outline is_valid my-3">
+                          {{ form.video_file }}
+                        </div>
+                      </div>
+                      {% endwith %}
+                    </div>
+
+                    <div class="modal-footer bg-light">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        {% translate 'workerDetailsCancel' %}
+                      </button>
+                      <button type="submit" class="btn btn-primary">
+                        {% translate 'workerDetailsSaveChanges' %}
+                      </button>
+                    </div>
+                  </form>
+
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+
+            {% for job in job_experiences %}
+            <div class="p-4 border rounded-lg bg-white shadow-sm mb-4">
+              <p class="text-gray-700 text-lg flex items-center gap-2">
+                🚜 {% translate "workerDetailsJobType"%} - <span>{{ job.job_type|default:"No Job Type" }}</span>
+              </p>
+              <p class="text-gray-700 text-lg flex items-center gap-2">
+                📋 {% translate "workerDetailsTypeDetails"%} - <span>{{ job.type_details|default:"No Type Details"
+                  }}</span>
+              </p>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        <br />
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Cards on the right hand side -->
+  <div class="col-xl-6 col-md-12">
+    <!-- Worker status card -->
+    <div class="card">
+      <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center w-100">
+          <div class="card-title green-color">
+            {% translate "workerDetailsWorkerStatus" %}
+          </div>
+          <div class="d-contents">
+            <span class="green-color">
+              {{ current_status|title }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <!-- Worker preferences card -->
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <div class="card-title green-color">
+          {% translate "workerDetailsWorkInformation" %}
+        </div>
+        <div>
+          <button class="btn dark-green-button" data-bs-toggle="modal" data-bs-target="#infoModal">
+            {% translate "workerDetailsAddInformation" %}
+          </button>
           {% if preferences %}
-          <i 
-          class="fa fa-trash text-danger"
-          style="cursor: pointer; font-size: 20px;padding-left:10px;" 
-          data-bs-toggle="modal"
-          data-bs-target="#deleteAllInfoModal"
-          title="Delete">
-          </i>
+            <i class="fa fa-trash text-danger" style="cursor: pointer; font-size: 20px;padding-left:10px;"
+              data-bs-toggle="modal" data-bs-target="#deleteAllInfoModal" title="Delete">
+            </i>
           {% endif %}
         </div>
+      </div>
+
+      <div class="card-body">
+        <!-- Optionally display buttons for editing user information -->
+        {% if preferences %}
+        <div class="d-flex gap-2">
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editDocumentsModal">
+            Edit Documents
+          </button>
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editLanguageModal">
+            Edit Language
+          </button>
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editPreferencesModal">
+            Edit Work Preferences
+          </button>
+        </div>
+        {% endif %}
+      
+      <!-- Display user documents  -->
+      <!-- Display profile picture -->
+      {% if documents.profile_picture %}
+      <div class="mb-4">
+        <p class="fw-bold">Profile Picture</p>
+        {% for doc in documents.profile_picture %}
+        {% if forloop.first or forloop.counter0|divisibleby:2 %}
+        <div class="row">
+          {% endif %}
+          <div class="col-md-6 mb-3 border border-seconday">
+            <img src="{{ base_url }}{{ doc.path }}" alt="Profile Picture" class="border object-contain w-100 clickable-media"
+              style="max-height: 200px; cursor: pointer;" data-type="image" data-src="{{ base_url }}{{ doc.path }}"
+              data-bs-toggle="modal" data-bs-target="#mediaModal" />
+          </div>
+          {% if forloop.counter|divisibleby:2 or forloop.last %}
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+      
+      
+      <!-- Display English proficiency video -->
+      {% if documents.english_proficiency %}
+      <div class="mb-4">
+        <p class="fw-bold">English Proficiency</p>
+        {% for doc in documents.english_proficiency %}
+        {% if forloop.first or forloop.counter0|divisibleby:2 %}
+        <div class="row">
+          {% endif %}
+          <div class="col-md-6 mb-3">
+            <video controls class="border w-100 preview-video clickable-media" style="max-height: 200px; cursor: pointer;"
+              data-type="video" data-src="{{ base_url }}{{ doc.path }}" data-bs-toggle="modal" data-bs-target="#mediaModal">
+              <source src="{{ base_url }}{{ doc.path }}" type="video/mp4">
+              {% translate "workerDetailsYourBrowserDoesNotSupportTheVideoTag" %}
+            </video>
+          </div>
+          {% if forloop.counter|divisibleby:2 or forloop.last %}
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+      
+      
+      <!-- Display passport -->
+      {% if documents.passport %}
+      <div class="mb-4">
+        <p class="fw-bold">Passport</p>
+        {% for doc in documents.passport %}
+        {% if forloop.first or forloop.counter0|divisibleby:2 %}
+        <div class="row">
+          {% endif %}
+          <div class="col-md-6 mb-3  border border-info">
+            <img src="{{ base_url }}{{ doc.path }}" alt="Passport" class="border object-contain w-100 clickable-media"
+              style="max-height: 200px; cursor: pointer;" data-type="image" data-src="{{ base_url }}{{ doc.path }}"
+              data-bs-toggle="modal" data-bs-target="#mediaModal" />
+          </div>
+          {% if forloop.counter|divisibleby:2 or forloop.last %}
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+      
+      
+      <!-- Display US driver's license -->
+      {% if documents.us_driving_license %}
+      <div class="mb-4">
+        <p class="fw-bold">US Driver's License</p>
+        {% for doc in documents.us_driving_license %}
+        {% if forloop.first or forloop.counter0|divisibleby:2 %}
+        <div class="row">
+          {% endif %}
+          <div class="col-md-6 mb-3">
+            <img src="{{ base_url }}{{ doc.path }}" alt="US Driving License"
+              class="border object-contain w-100 clickable-media" style="max-height: 200px; cursor: pointer;"
+              data-type="image" data-src="{{ base_url }}{{ doc.path }}" data-bs-toggle="modal" data-bs-target="#mediaModal" />
+          </div>
+          {% if forloop.counter|divisibleby:2 or forloop.last %}
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+      
+      
+      <!-- Display Mexican driver's license -->
+      {% if documents.mexico_driving_license %}
+      <div class="mb-4">
+        <p class="fw-bold">Mexican Driver's License</p>
+        {% for doc in documents.mexico_driving_license %}
+        {% if forloop.first or forloop.counter0|divisibleby:2 %}
+        <div class="row">
+          {% endif %}
+          <div class="col-md-6 mb-3">
+            <img src="{{ base_url }}{{ doc.path }}" alt="Mexico Driving License" class="border object-contain w-100"
+              style="max-height: 200px;" />
+          </div>
+          {% if forloop.counter|divisibleby:2 or forloop.last %}
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+
+
+      
+        <!-- The rest of the questions that need to be displayed -->
+        <div class="row">
+          <div class="col-12">
+            <p class="gray-color mt-4">{{preferred_countries_label}}</p>
+            <div class="btn btn-outline-info">
+              {% if preferences.preferred_countries_label %}
+              {{ preferences.preferred_countries_label }}
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="col-12">
+            <p class="gray-color mt-4">{{work_sectors_label}}</p>
+            <div class="btn btn-outline-info">
+              {% if preferences.work_sectors_label %}
+              {{ preferences.work_sectors_label }}
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="col-12">
+            <p class="gray-color mt-4">{{availability_label}}</p>
+            <div class="btn btn-outline-info">
+              {% if preferences.availability_label %}
+              {{ preferences.availability_label }}
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="col-12">
+            <p class="gray-color mt-4">{{health_status_label}}</p>
+            <div class="btn btn-outline-info">
+              {% if preferences.health_status_label %}
+              {{ preferences.health_status_label }}
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="col-12">
+            <p class="gray-color mt-4">{{health_condition_label}}</p>
+            <div class="btn btn-outline-info">
+              {% if preferences.health_condition_label %}
+              {{ preferences.health_condition_label }}
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="col-12">
+            <p class="gray-color mt-4">{{suffered_injury_label}}</p>
+            <div class="btn btn-outline-info">
+              {% if preferences.suffered_injury_label %}
+              {{ preferences.suffered_injury_label }}
+              {% endif %}
+            </div>
+          </div>
+
+           <div class="col-12">
+            <p class="gray-color mt-4">{{longer_period_of_time_label}}</p>
+            <div class="btn btn-outline-info">
+              {% if preferences.longer_period_of_time_label %}
+              {{ preferences.longer_period_of_time_label }}
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="col-12">
+            <p class="gray-color mt-4">{{consent_label}}</p>
+            <div class="btn btn-outline-info">
+              {% if preferences.consent_label %}
+              {{ preferences.consent_label }}
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="col-12">
+            <p class="gray-color mt-4">{{physical_activities_label}}</p>
+            <div class="btn btn-outline-info">
+              {% if preferences.physical_activities_label %}
+              {{ preferences.physical_activities_label }}
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="col-12">
+            <p class="gray-color mt-4">{{work_environment_label}}</p>
+            <div class="btn btn-outline-info">
+              {% if preferences.work_environment_label %}
+              {{ preferences.work_environment_label }}
+              {% endif %}
+            </div>
+          </div>
+        </div> 
+      </div>
     </div>
-    <!-- Modal -->
-<!-- Modal -->
+
+  </div>
+</div>
+
+
+
+<!-- Modals -->
 <form id="documentUploadForm" method="post" enctype="multipart/form-data" action="{% url 'recruiting_web:upload_documents' %}">
     {% csrf_token %}
 
@@ -374,7 +599,7 @@
               <div class="form-group">
                 {% for level in language_options %}
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="language_level" value="{{ level.value|lower }}" id="{{ level.value|lower }}" onclick="toggleVideoUpload()">
+                        <input class="form-check-input" type="radio" name="language_level" value="{{ level.value|lower }}" id="{{ level.value|lower }}" onclick="toggleEditLanguageVideoUpload()">
                         <label class="form-check-label" for="{{ level.value|lower }}">{{ level.label }}</label>
                     </div>
                 {% endfor %}
@@ -634,7 +859,7 @@
                     <input class="form-check-input" type="radio" name="language_level" value="{{ level.value|lower }}"
                            id="lang_{{ level.value|lower }}"
                            {% if preferences.language_level == level.value|lower %}checked{% endif %}
-                           onclick="toggleEditLanguageVideoUpload()">
+                           onclick="toggleVideoUpload()">
                     <label class="form-check-label" for="lang_{{ level.value|lower }}">{{ level.label }}</label>
                 </div>
             {% endfor %}
@@ -697,7 +922,6 @@
   </div>
 </div>
 
-
 <!-- Delete All Info Modal -->
 <div class="modal fade" id="deleteAllInfoModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
@@ -725,180 +949,6 @@
   </div>
 </div>
 
-
-
-
-<div class="card-body">
-  {% if preferences %}
-  <div class="d-flex gap-2">
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editDocumentsModal">
-      Edit Documents
-    </button>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editLanguageModal">
-      Edit Language
-    </button>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editPreferencesModal">
-      Edit Work Preferences
-    </button>
-  </div>
-{% endif %}
-    {% for key, value in preferences.items %}
-      <div class="col-md-12 col-sm-6 mb-3" style="position: relative;">
-        <p style="font-size: 1rem; font-weight: bold;">{% translate key %}</p>
-        <p class="gray-color">{% translate value %}</p>
-        {% if key == "english_proficiency" and documents.english_proficiency %}
-
-          <div class="col-12 mb-3">
-            <p class="gray-color">{% translate "workerDetailsEnglishProficiency"%}</p>
-            <p class="gray-color">{{value}}</p>
-            <div class="row">
-              <div class="col-md-4 col-sm-6 mb-3">
-                {% with documents.english_proficiency.path as clean_path %}
-                  {% with clean_path|lower as filename %}
-                    {% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename or ".gif" in filename %}
-                      <img
-                        src="{{ base_url }}{{ clean_path }}"
-                        alt="English Proficiency"
-                        class="border object-contain w-100 clickable-media"
-                        style="max-height: 200px;"
-                        data-type="image"
-                        data-src="{{ base_url }}{{ clean_path }}"
-                      />
-                    {% elif ".mp4" in filename or ".webm" in filename or ".ogg" in filename %}
-                      <div class="video-container clickable-media"
-                           data-type="video"
-                           data-src="{{ base_url }}{{ clean_path }}">
-                           <video
-                           controls
-                           class="border w-100 preview-video"
-                           style="max-height: 200px;"
-                           data-src="{{ base_url }}{{ clean_path }}"
-                       >
-                           <source src="{{ base_url }}{{ clean_path }}" type="video/mp4">
-                           {% translate "workerDetailsYourBrowserDoesNotSupportTheVideoTag"%}
-                       </video>
-                      </div>
-                    {% endif %}
-                  {% endwith %}
-                {% endwith %}
-              </div>
-            </div>
-          </div>
-        {% endif %}
-
-        {% if key == "Passport" and documents.passport %}
-          <div class="col-12 mb-3">
-            <p class="gray-color">{% translate "workerDetailsPassport"%}</p>
-            <div class="row">
-              <div class="col-md-4 col-sm-6 mb-3">
-                {% with documents.passport.path as clean_path %}
-                  {% with clean_path|lower as filename %}
-                    {% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename or ".gif" in filename %}
-                      <img
-                        src="{{ base_url }}{{ clean_path }}"
-                        alt="Passport"
-                        class="border object-contain w-100 clickable-media"
-                        style="max-height: 200px;"
-                        data-type="image"
-                        data-src="{{ base_url }}{{ clean_path }}"
-                      />
-                    {% elif ".mp4" in filename or ".webm" in filename or ".ogg" in filename %}
-                      <div class="video-container clickable-media"
-                           data-type="video"
-                           data-src="{{ base_url }}{{ clean_path }}">
-                           <video
-                           controls
-                           class="border w-100 preview-video"
-                           style="max-height: 200px;"
-                           data-src="{{ base_url }}{{ clean_path }}"
-                       >
-                           <source src="{{ base_url }}{{ clean_path }}" type="video/mp4">
-                           {% translate "workerDetailsYourBrowserDoesNotSupportTheVideoTag"%}
-                       </video>
-                      </div>
-                    {% endif %}
-                  {% endwith %}
-                {% endwith %}
-              </div>
-            </div>
-          </div>
-        {% endif %}
-
-        {% if key == "workplaces" %}
-          <div class="row">
-            {% for workplace in workplaces %}
-              <div class="col-md-3 col-sm-12 mb-3">
-                <button class="btn offwhite-button" style="width: 100%;">
-                  {{ workplace }}
-                </button>
-              </div>
-            {% endfor %}
-          </div>
-        {% elif key == "Prefered_Employes" %}
-          <div class="row">
-            {% for preferred_employe in preferred_employees %}
-              <div class="col-md-3 col-sm-6 mb-3">
-                <button class="btn offwhite-button" style="width: 100%;">
-                  {{ preferred_employe }}
-                </button>
-              </div>
-            {% endfor %}
-          </div>
-        {% endif %}
-      </div>
-    {% endfor %}
-
-    <!-- Loop through remaining documents -->
-    {% for kind, docs in documents.items %}
-      {% if kind != "passport" and kind != "english_proficiency" %}
-        <div class="col-12 mb-3">
-          <div>
-          {% comment %} <p class="gray-color">{% translate "workerDetailsKind" %}</p> {% endcomment %}
-           <p style="font-size: 1rem; font-weight: bold;">{{kind}}</p>
-          </div>
-          <div class="row">
-            {% for doc in docs %}
-              <div class="col-md-4 col-sm-6 mb-3">
-                {% with doc.path as clean_path %}
-                  {% with clean_path|lower as filename %}
-                    {% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename or ".gif" in filename %}
-                    {% comment %} <p>{{kind}}</p> {% endcomment %}
-                      <img
-                        src="{{ base_url }}{{ clean_path }}"
-                        alt="{{ kind }}"
-                        class="border object-contain w-100 clickable-media"
-                        style="max-height: 200px;"
-                        data-type="image"
-                        data-src="{{ base_url }}{{ clean_path }}"
-                      />
-                    {% elif ".mp4" in filename or ".webm" in filename or ".ogg" in filename %}
-                      <div class="video-container clickable-media"
-                           data-type="video"
-                           data-src="{{ base_url }}{{ clean_path }}">
-                           <video
-                           controls
-                           class="border w-100 preview-video"
-                           style="max-height: 200px;"
-                           data-src="{{ base_url }}{{ clean_path }}"
-                       >
-                           <source src="{{ base_url }}{{ clean_path }}" type="video/mp4">
-                           {% translate "workerDetailsYourBrowserDoesNotSupportTheVideoTag"%}
-                       </video>
-                      </div>
-                    {% endif %}
-                  {% endwith %}
-                {% endwith %}
-              </div>
-            {% endfor %}
-          </div>
-        </div>
-      {% endif %}
-    {% endfor %}
-  </div>
-</div>
-
-
-
 <!-- Modal -->
 <div class="modal fade" id="mediaModal" tabindex="-1" aria-labelledby="mediaModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -915,51 +965,44 @@
     </div>
   </div>
 </div>
-
-
-
- </div>
-
-</div>
 {% endblock body %}
 
 {% block scripts %}
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
       blockPastMonthsInPicker();
       validateFormBeforeSubmit();
 
       // Attach event listener to healthStatus dropdown
       const healthStatusSelect = document.getElementById("healthStatus");
       if (healthStatusSelect) {
-          healthStatusSelect.addEventListener("change", toggleHealthConditionField);
-          toggleHealthConditionField(); // Run once on load to handle prefilled forms
+        healthStatusSelect.addEventListener("change", toggleHealthConditionField);
+        toggleHealthConditionField(); // Run once on load to handle prefilled forms
       }
 
       // Handle clickable media
       document.querySelectorAll('.clickable-media').forEach(item => {
-          item.addEventListener('click', event => {
-              const type = event.currentTarget.getAttribute('data-type');
-              const src = event.currentTarget.getAttribute('data-src');
-              const mediaContent = document.getElementById('mediaContent');
+        item.addEventListener('click', event => {
+          const type = event.currentTarget.getAttribute('data-type');
+          const src = event.currentTarget.getAttribute('data-src');
+          const mediaContent = document.getElementById('mediaContent');
 
-              if (type === 'image') {
-                  mediaContent.innerHTML = `<img src="${src}" class="img-fluid" alt="Media">`;
-              } else if (type === 'video') {
-                  mediaContent.innerHTML = `<video controls class="w-100">
+          if (type === 'image') {
+            mediaContent.innerHTML = `<img src="${src}" class="img-fluid" alt="Media">`;
+          } else if (type === 'video') {
+            mediaContent.innerHTML = `<video controls class="w-100">
                                               <source src="${src}" type="video/mp4">
                                               {% translate "workerDetailsYourBrowserDoesNotSupportTheVideoTag"%}
                                             </video>`;
-              }
+          }
 
-              // Show the modal
-              $('#mediaModal').modal('show');
-          });
+          // Show the modal
+          $('#mediaModal').modal('show');
+        });
       });
-  });
+    });
 
-  function handleInfoTypeChange() {
+    function handleInfoTypeChange() {
       const selectedOption = document.getElementById("infoType").selectedOptions[0];
       const selectedValue = selectedOption.value;
       const actionUrl = selectedOption.getAttribute("data-action");
@@ -975,192 +1018,192 @@
 
       // Update form action
       if (actionUrl) {
-          document.getElementById("documentUploadForm").action = actionUrl;
+        document.getElementById("documentUploadForm").action = actionUrl;
       }
-  }
+    }
 
-   function toggleVideoUpload() {
-    const selectedLevel = document.querySelector('input[name="language_level"]:checked');
-    const videoUpload = document.getElementById('videoUploadSection');
+    function toggleVideoUpload() {
+      const selectedLevel = document.querySelector('#editLanguageModal input[name="language_level"]:checked');
+      const videoUpload = document.querySelector('#editLanguageModal #videoUploadSection');
 
-    if (selectedLevel) {
-        if (selectedLevel.value === "fluent") {
-            videoUpload.style.display = "block";
+      if (selectedLevel) {
+        if (selectedLevel.value === "none") {
+          videoUpload.style.display = "none";
         } else {
-            videoUpload.style.display = "none";
+          videoUpload.style.display = "block";
         }
+      }
     }
-}
 
-function toggleEditLanguageVideoUpload() {
-    const selectedLevel = document.querySelector('#editLanguageModal input[name="language_level"]:checked');
-    const videoUpload = document.querySelector('#editLanguageModal #videoUploadSection');
+    function toggleEditLanguageVideoUpload() {
+      const selectedLevel = document.querySelector('#editLanguageModal input[name="language_level"]:checked');
+      const videoUpload = document.querySelector('#editLanguageModal #videoUploadSection');
 
-    if (selectedLevel && selectedLevel.value === "fluent") {
+      if (selectedLevel && selectedLevel.value === "fluent") {
         videoUpload.style.display = "block";
-    } else {
+      } else {
         videoUpload.style.display = "none";
+      }
     }
-}
 
-  document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
       const modalElement = document.getElementById("editLanguageModal");
 
       // Ensure Bootstrap modal event works
       if (modalElement) {
-          modalElement.addEventListener("shown.bs.modal", function () {
-              toggleEditLanguageVideoUpload();
-          });
+        modalElement.addEventListener("shown.bs.modal", function () {
+          toggleEditLanguageVideoUpload();
+        });
       }
-  });
+    });
 
-  function blockPastMonthsInPicker() {
+    function blockPastMonthsInPicker() {
       const availabilityInput = document.getElementById("availabilityDate");
       if (availabilityInput) {
-          const now = new Date();
-          const month = (now.getMonth() + 1).toString().padStart(2, '0');
-          const year = now.getFullYear();
-          availabilityInput.min = `${year}-${month}`;
+        const now = new Date();
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const year = now.getFullYear();
+        availabilityInput.min = `${year}-${month}`;
       }
-  }
+    }
 
-  function validateFormBeforeSubmit() {
+    function validateFormBeforeSubmit() {
       const form = document.getElementById("documentUploadForm");
 
-      form.addEventListener("submit", function(e) {
-          const infoType = document.getElementById("infoType").value;
+      form.addEventListener("submit", function (e) {
+        const infoType = document.getElementById("infoType").value;
 
-          if (!infoType) {
-              alert("{% translate 'workerDetailsPleaseSelectAnInformationType.'%}");
-              e.preventDefault();
-              return;
+        if (!infoType) {
+          alert("{% translate 'workerDetailsPleaseSelectAnInformationType.'%}");
+          e.preventDefault();
+          return;
+        }
+
+        if (infoType === "documents") {
+          const profilePictureInput = document.getElementById("profilePicture");
+
+          if (!profilePictureInput || profilePictureInput.files.length === 0) {
+            alert("{% translate 'workerDetailsPleaseUploadAProfilePictureItIsRequired.'%}");
+            e.preventDefault();
+            return;
           }
+        }
 
-          if (infoType === "documents") {
-              const profilePictureInput = document.getElementById("profilePicture");
+        if (infoType === "languages") {
+          const selectedLevel = document.querySelector('input[name="language_level"]:checked');
+          const videoInput = document.getElementById("languageVideo");
 
-              if (!profilePictureInput || profilePictureInput.files.length === 0) {
-                  alert("{% translate 'workerDetailsPleaseUploadAProfilePictureItIsRequired.'%}");
-                  e.preventDefault();
-                  return;
-              }
+          if (!selectedLevel) {
+            alert("{% translate 'workerDetailsPleaseSelectALanguagelevel.'%}");
+            e.preventDefault();
+            return;
           }
-
-          if (infoType === "languages") {
-              const selectedLevel = document.querySelector('input[name="language_level"]:checked');
-              const videoInput = document.getElementById("languageVideo");
-
-              if (!selectedLevel) {
-                  alert("{% translate 'workerDetailsPleaseSelectALanguagelevel.'%}");
-                  e.preventDefault();
-                  return;
-              }
-              if (selectedLevel.value !== "none" && videoInput.files.length === 0) {
-                  alert("{% translate 'workerDetailsPleaseUploadAVideoForYourSelectedLanguageLevel.'%}");
-                  e.preventDefault();
-                  return;
-              }
+          if (selectedLevel.value !== "none" && videoInput.files.length === 0) {
+            alert("{% translate 'workerDetailsPleaseUploadAVideoForYourSelectedLanguageLevel.'%}");
+            e.preventDefault();
+            return;
           }
+        }
       });
-  }
-
-  function toggleHealthConditionField() {
-    const selected = document.querySelector('input[name="healthStatus"]:checked');
-    const conditionField = document.getElementById("healthConditionField");
-    if (selected && conditionField) {
-      conditionField.style.display = (selected.value === "yes") ? "block" : "none";
     }
-}
 
-</script>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const initializeModalValidation = (container) => {
-      const sectorField = container.querySelector("[id^='id_type_sector']");
-      const startDateInput = container.querySelector("[id^='id_start_date']");
-      const endDateInput = container.querySelector("[id^='id_end_date']");
-  
-      const toggleFields = () => {
-        const value = sectorField?.value?.trim();
-  
-        const show = (id) => {
-          const el = container.querySelector(`#div_${id}`);
-          if (el) el.style.display = "block";
+    function toggleHealthConditionField() {
+      const selected = document.querySelector('input[name="healthStatus"]:checked');
+      const conditionField = document.getElementById("healthConditionField");
+      if (selected && conditionField) {
+        conditionField.style.display = (selected.value === "yes") ? "block" : "none";
+      }
+    }
+
+  </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const initializeModalValidation = (container) => {
+        const sectorField = container.querySelector("[id^='id_type_sector']");
+        const startDateInput = container.querySelector("[id^='id_start_date']");
+        const endDateInput = container.querySelector("[id^='id_end_date']");
+
+        const toggleFields = () => {
+          const value = sectorField?.value?.trim();
+
+          const show = (id) => {
+            const el = container.querySelector(`#div_${id}`);
+            if (el) el.style.display = "block";
+          };
+
+          const hide = (id) => {
+            const el = container.querySelector(`#div_${id}`);
+            if (el) el.style.display = "none";
+          };
+
+          const allFields = [
+            "id_animal_types",
+            "id_animal_jobs",
+            "id_crop_types",
+            "id_crop_jobs",
+            "id_mechanic_jobs",
+            "id_supervision_jobs",
+            "id_description"
+          ];
+          allFields.forEach(hide);
+
+          if (value === "crop_and_horticulture") {
+            show("id_crop_types");
+            show("id_crop_jobs");
+            show("id_description");
+          } else if (
+            ["construction", "licensed_vehicle_operation", "other"].includes(value)
+          ) {
+            show("id_description");
+          } else if (value === "animals") {
+            show("id_animal_types");
+            show("id_animal_jobs");
+            show("id_description");
+          } else if (value === "mechanics") {
+            show("id_mechanic_jobs");
+            show("id_description");
+          } else if (value === "worker_supervision__management") {
+            show("id_supervision_jobs");
+            show("id_description");
+          }
         };
-  
-        const hide = (id) => {
-          const el = container.querySelector(`#div_${id}`);
-          if (el) el.style.display = "none";
+
+        const validateDates = () => {
+          const errorMsgId = "date-error-msg";
+          const oldError = container.querySelector(`#${errorMsgId}`);
+          if (oldError) oldError.remove();
+
+          const start = new Date(startDateInput?.value);
+          const end = new Date(endDateInput?.value);
+
+          if (startDateInput?.value && endDateInput?.value && start > end) {
+            const error = document.createElement("div");
+            error.id = errorMsgId;
+            error.className = "text-danger mt-2";
+            error.innerText = "{% translate 'workerDetailsEndDateCannotBeEarlierThanStartDate.'%}";
+            endDateInput.parentElement.appendChild(error);
+          }
         };
-  
-        const allFields = [
-          "id_animal_types",
-          "id_animal_jobs",
-          "id_crop_types",
-          "id_crop_jobs",
-          "id_mechanic_jobs",
-          "id_supervision_jobs",
-          "id_description"
-        ];
-        allFields.forEach(hide);
-  
-        if (value === "crop_and_horticulture") {
-          show("id_crop_types");
-          show("id_crop_jobs");
-          show("id_description");
-        } else if (
-          ["construction", "licensed_vehicle_operation", "other"].includes(value)
-        ) {
-          show("id_description");
-        } else if (value === "animals") {
-          show("id_animal_types");
-          show("id_animal_jobs");
-          show("id_description");
-        } else if (value === "mechanics") {
-          show("id_mechanic_jobs");
-          show("id_description");
-        } else if (value === "worker_supervision__management") {
-          show("id_supervision_jobs");
-          show("id_description");
+
+        if (sectorField) {
+          sectorField.addEventListener("change", toggleFields);
+          toggleFields();
+        }
+
+        if (startDateInput && endDateInput) {
+          startDateInput.addEventListener("change", validateDates);
+          endDateInput.addEventListener("change", validateDates);
         }
       };
-  
-      const validateDates = () => {
-        const errorMsgId = "date-error-msg";
-        const oldError = container.querySelector(`#${errorMsgId}`);
-        if (oldError) oldError.remove();
-  
-        const start = new Date(startDateInput?.value);
-        const end = new Date(endDateInput?.value);
-  
-        if (startDateInput?.value && endDateInput?.value && start > end) {
-          const error = document.createElement("div");
-          error.id = errorMsgId;
-          error.className = "text-danger mt-2";
-          error.innerText = "{% translate 'workerDetailsEndDateCannotBeEarlierThanStartDate.'%}";
-          endDateInput.parentElement.appendChild(error);
-        }
-      };
-  
-      if (sectorField) {
-        sectorField.addEventListener("change", toggleFields);
-        toggleFields();
-      }
-  
-      if (startDateInput && endDateInput) {
-        startDateInput.addEventListener("change", validateDates);
-        endDateInput.addEventListener("change", validateDates);
-      }
-    };
-  
-    initializeModalValidation(document);
-  
-    const modals = document.querySelectorAll(".modal");
-    modals.forEach((modal) => {
-      modal.addEventListener("shown.bs.modal", () => {
-        initializeModalValidation(modal);
+
+      initializeModalValidation(document);
+
+      const modals = document.querySelectorAll(".modal");
+      modals.forEach((modal) => {
+        modal.addEventListener("shown.bs.modal", () => {
+          initializeModalValidation(modal);
+        });
       });
     });
-  });
   </script>
-{% endblock scripts %}
+  {% endblock scripts %}
