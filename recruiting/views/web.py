@@ -1827,11 +1827,13 @@ def send_invitation_email_to_org(receiver_org, other_org, request, role):
     )
 
     subject = f"Invitation to collaborate with {other_org.name}"
+    site_url = "https://test.okolabor.com"
     html_content = render_to_string("recruiting/emails/recruiter_invitation.html", {
         "receiver_org": receiver_org,
         "other_org": other_org,
         "accept_url": accept_url,
         "reject_url": reject_url,
+        "site_url": site_url,
     })
     text_content = strip_tags(html_content)
 
