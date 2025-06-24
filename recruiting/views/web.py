@@ -95,6 +95,7 @@ class EmployerListView(View):
             employers_list = Organization.objects.filter(type='employer').order_by('-created_at')
 
         elif user.groups.filter(name__in=['recruiter', 'recruiter_admin']).exists():
+            
             recruiter_orgs = Organization.objects.filter(type='recruiter', recruiters=user).order_by('-created_at')
 
             recruiter_links = EmployerRecruiterOrgLink.objects.filter(
@@ -110,15 +111,6 @@ class EmployerListView(View):
 
         else:
             employers_list = Organization.objects.none()
-
-        if query:
-            employers_list = employers_list.filter(
-                Q(name__icontains=query) |
-                Q(email__icontains=query) |
-                Q(address__icontains=query) |
-                Q(country__icontains=query) |
-                Q(phone__icontains=query)
-            )
 
         recruiter_organizations = Organization.objects.filter(type='recruiter').order_by('-created_at')
 
@@ -141,9 +133,6 @@ class EmployerListView(View):
                 'description': employer.description,
                 'recruiters': recruiter_org_names
             })
-
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({'employers': employers_data, 'has_more': False})
 
         context = {
             'employers': employers_data,
@@ -336,6 +325,15 @@ class EmployerCreateView(CreateView):
                         'final_status': 'accepted'
                     }
                 )
+                EmployerRecruiterOrgLink.objects.get_or_create(
+                    employer_org=org,
+                    recruiter_org=recruiter_org,
+                    defaults={
+                        'employer_status': 'accepted',
+                        'recruiter_status': 'accepted',
+                        'final_status': 'accepted'
+                    }
+                )
 
         messages.success(self.request, _('Organization created successfully'))
         self.object = org
@@ -349,6 +347,7 @@ class EmployerCreateView(CreateView):
 
     def get_success_url(self, pk):
         return reverse('recruiting_web:employer_detail', kwargs={'pk': pk})
+
 
 class EmployerDetailView(View):
     def get(self, request, pk):
@@ -1976,41 +1975,17 @@ class SummaryViews(View):
         form = FilterWorkExperienceForm()
         filter_form = AdvancedFilterForm()
 
-        search_query = request.GET.get('search', '')
-        page_number = request.GET.get('page', 1)
-        per_page = request.GET.get('per_page', 25)
         tab = request.GET.get('tab', 'shortlist')
-
-        try:
-            per_page = int(per_page)
-        except ValueError:
-            per_page = 4
 
         work_request = get_object_or_404(WorkRequests, pk=pk)
         role = get_object_or_404(Role, pk=role_id)
         work_requests = WorkRequests.objects.filter(status='Open').prefetch_related('roles')
 
-        session_key = f'role_{role_id}_state'
-        if session_key in request.session:
-            state = request.session[session_key]
-            search_query = state.get('search_query', '')
-            page_number = state.get('page_number', 1)
-            per_page = state.get('per_page', 25)
-
+        
         workers = User.objects.filter(groups__name='worker').distinct().order_by('-created_at')
 
-        if search_query:
-            workers = workers.filter(
-                Q(first_name__icontains=search_query) |
-                Q(last_name__icontains=search_query) |
-                Q(email__icontains=search_query)
-            )
-
-        paginator = Paginator(workers, per_page)
-        page_obj = paginator.get_page(page_number)
-
         worker_data = []
-        for worker in page_obj:
+        for worker in workers:
             profile_completion = calculate_profile_completion(worker)
             worker_details = get_worker_preferences(worker)
             worker.profile_completion_percentage = profile_completion
@@ -2072,31 +2047,16 @@ class SummaryViews(View):
             elif status_key == 'confirmed':
                 confirmed_workers_data = target_list
 
-        request.session[session_key] = {
-            'search_query': search_query,
-            'page_number': page_number,
-            'per_page': per_page,
-        }
-
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({
-                'workers': worker_data,
-                'num_pages': paginator.num_pages
-            })
-            
         shortlisted_count = len(shortlisted_workers_data)
         offersent_count = len(offersent_workers_data)
         confirmed_count = len(confirmed_workers_data)
 
         context = {
-            'workers': page_obj,
+            'workers': worker_data,
             'work_requests': work_requests,
             'form': form,
             'work_assign_form': work_assign_form,
             'filter_form': filter_form,
-            'search_query': search_query,
-            'paginator': paginator,
-            'per_page': per_page,
             'role': role,
             'work_request': work_request,
             'shortlisted_workers': shortlisted_workers_data,
@@ -2110,6 +2070,7 @@ class SummaryViews(View):
         }
 
         return render(request, 'recruiting/work_requests/summaryList/summarylist.html', context)
+
     
 class EditEmploymentLocationView(View):
     def post(self, request, pk):
