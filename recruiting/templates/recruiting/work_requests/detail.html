@@ -413,9 +413,15 @@
 
                   <div class="d-flex align-items-center gap-2">
                     <!-- Add Hours Button -->
-                    <a class="btn btn-success btn-sm" href="/work-requests/role/{{role.id}}/hours/create">
+                  
+                    <a class="btn btn-success btn-sm" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#hoursModal{{ role.id }}">
                       <i class="fa fa-plus me-1"></i> {% translate "joDetailsHoursAddHours" %}
                     </a>
+
+                    {% include "recruiting/work_requests/create_hours.html"%}
+
 
                     <!-- Edit Icon -->
                     <button class="btn btn-sm btn-icon btn-outline-success"
@@ -472,10 +478,12 @@
               </h6>
               <div class="d-flex align-items-center gap-2">
                 <!-- Add Wages Button -->
-                <a class="btn btn-success btn-sm" href="/work-requests/role/{{role.id}}/wages/create">
-                  <i class="fa fa-plus me-1"></i> {% translate "joDetailsAddWages" %}
+                <a class="btn btn-success btn-sm" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#wagesModal{{ role.id }}">
+                      <i class="fa fa-plus me-1"></i> {% translate "joDetailsAddWages" %}
                 </a>
-
+                {% include "recruiting/work_requests/create_wages.html" %}
                 <!-- Edit Icon -->
                 <button class="btn btn-sm btn-icon btn-outline-success"
                         data-bs-toggle="modal"
@@ -531,9 +539,14 @@
               <h6>
                 {% translate "joDetailsDeductionsDeductions" %}
               </h6>
-              <a class="btn btn-success btn-sm" href="/work-requests/role/{{role.id}}/deductions/create">
-                <i class="fa fa-plus me-1"></i>{% translate "joDetailsDeductionsAddDeductions" %}
-              </a>
+            
+
+              <a class="btn btn-success btn-sm" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#DeductionModal{{ role.id }}">
+                      <i class="fa fa-plus me-1"></i> {% translate "joDetailsDeductionsAddDeductions" %}
+                </a>
+              {% include "recruiting/work_requests/create_deductions.html" %}
               </div>
               <hr class="border-bottom border-3 border-dark"/>
               <div class="deduction-details table-responsive">
@@ -595,9 +608,13 @@
               </h6>
               <div class="d-flex align-items-center gap-2">
                     <!-- Add Qualification Button -->
-                    <a class="btn btn-success btn-sm" href="/work-requests/role/{{role.id}}/qualifications/create">
-                      <i class="fa fa-plus me-1"></i> {% translate "joDetailsQualificationsAddQualifiations" %}
-                    </a>
+
+                    <a class="btn btn-success btn-sm" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#QualificationModal{{ role.id }}">
+                          <i class="fa fa-plus me-1"></i> {% translate "joDetailsQualificationsAddQualifiations" %}
+                     </a>
+                    {% include "recruiting/work_requests/create_qualifications.html" %}
 
                     <!-- Edit Icon -->
                     <button class="btn btn-sm btn-icon btn-outline-success"
@@ -659,10 +676,13 @@
               </h6>
               <div class="d-flex align-items-center gap-2">
                 <!-- Add Location Button -->
-                <a class="btn btn-success btn-sm" href="/work-requests/role/{{role.id}}/location/create">
-                  <i class="fa fa-plus me-1"></i> {% translate "joDetailsPlaceOfEmploymentAddLocation" %}
-                </a>
 
+                 <a class="btn btn-success btn-sm" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#EmploymentModal{{ role.id }}">
+                          <i class="fa fa-plus me-1"></i> {% translate "joDetailsPlaceOfEmploymentAddLocation" %}
+                </a>
+                {% include "recruiting/work_requests/create_employment_location.html" %}
                 <!-- Edit Button -->
                 <button class="btn btn-sm btn-icon btn-outline-success"
                         data-bs-toggle="modal"
@@ -713,10 +733,14 @@
                 {% translate "joDetailsHousingInfoHousingInformation" %}
               </h6>
               <div class="d-flex align-items-center gap-2">
-                  <!-- Add Housing Button -->
-                  <a class="btn btn-success btn-sm" href="/work-requests/role/{{role.id}}/housing/create">
-                    <i class="fa fa-plus me-1"></i> {% translate "joDetailsHousingInfoAddHousing" %}
+                  
+
+                  <a class="btn btn-success btn-sm" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#HousingModal{{ role.id }}">
+                          <i class="fa fa-plus me-1"></i> {% translate "joDetailsHousingInfoAddHousing" %}
                   </a>
+                  {% include "recruiting/work_requests/create_housing_info.html" %}
 
                   <!-- Edit Button -->
                   <button class="btn btn-sm btn-icon btn-outline-success"
@@ -795,9 +819,12 @@
               </h6>
               <div class="d-flex align-items-center gap-2">
                 <!-- Add Meals Button -->
-                <a class="btn btn-success btn-sm" href="/work-requests/role/{{role.id}}/meals/create">
-                  <i class="fa fa-plus me-1"></i> {% translate "joDetailsMealsAddMeals" %}
-                </a>
+                <a class="btn btn-success btn-sm" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#MealsModal{{ role.id }}">
+                          <i class="fa fa-plus me-1"></i> {% translate "joDetailsMealsAddMeals" %}
+                  </a>
+                {% include "recruiting/work_requests/create_meal_provision.html" %}
 
                 <!-- Edit Button -->
                 <button class="btn btn-sm btn-icon btn-outline-success"

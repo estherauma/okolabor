@@ -164,7 +164,6 @@ class RoleHoursForm(forms.ModelForm):
     class Meta:
         model = Hours
         fields = [
-            'role',
             'on_call',
             'estimate_weekly_hours',
             'sunday_hours',
@@ -175,6 +174,7 @@ class RoleHoursForm(forms.ModelForm):
             'friday_hours',
             'saturday_hours',
             'job_description']
+        exclude = ['role']
         
         labels = {
             'role': _('roleHoursRole'),
@@ -233,10 +233,11 @@ class RoleWagesForm(forms.ModelForm):
     class Meta:
         model = Wages
         fields = [
-            'role', 'wage', 'wage_type', 'piece_rate_offerings',
+            'wage', 'wage_type', 'piece_rate_offerings',
             'piece_rate_offerings_type', 'frequency_of_pay',
             'details'
         ]
+        exclude = ['role']
         
         labels = {
             'role': _('roleWagesRole'),
@@ -295,7 +296,8 @@ class RoleWagesForm(forms.ModelForm):
 class RoleDeductionForm(forms.ModelForm):
     class Meta:
         model = Deduction
-        fields = ['role', 'description', 'deduction_amount','frequency_of_pay']
+        fields = ['description', 'deduction_amount','frequency_of_pay']
+        exclude = ['role']
         
         labels = {
             'role': _('roleDeductionsRole'),
@@ -336,7 +338,6 @@ class RoleQualificationForm(forms.ModelForm):
     class Meta:
         model = Qualification
         fields = [
-            'role',
             'minimum_education_requirement',
             'experience_required',
             'number_of_months_experience_required',
@@ -353,6 +354,7 @@ class RoleQualificationForm(forms.ModelForm):
             'repetitive_movements',
             'support_of_other_employees',
             'other_qualifications']
+        exclude = ['role']
         
         labels = {
             'role': _('roleQualificationRole'),
@@ -443,9 +445,10 @@ class RoleEmploymentLocationForm(forms.ModelForm):
     class Meta:
         model = EmploymentLocation
         fields = [
-            'role', 'address', 'city', 'county', 'state',
+            'address', 'city', 'county', 'state',
             'postal_code', 'additional_info', 'role'
         ]
+        exclude = ['role']
 
         labels = {
             'role': _('roleEmploymentLocationRole'),
@@ -511,9 +514,10 @@ class RoleHousingInformationForm(forms.ModelForm):
     class Meta:
         model = HousingInformation
         fields = [
-            'role', 'address', 'city', 'county', 'state',
+            'address', 'city', 'county', 'state',
             'postal_code', 'type_of_housing', 'additional_info'
         ]
+        exclude = ['role']
 
         labels = {
             'role': _('roleHousingInformationRole'),
@@ -571,10 +575,11 @@ class RoleMealProvision(forms.ModelForm):
     class Meta:
         model = MealProvision
         fields = [
-            'role', 'will_provide_meals',
+            'will_provide_meals',
             'meal_charge_amount',
             'additional_info',
         ]
+        exclude = ['role']
         
         labels = {
             'role': _('roleMealProvisionRole'),
