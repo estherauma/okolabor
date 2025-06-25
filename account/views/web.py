@@ -53,63 +53,70 @@ class UserListView(LoginRequiredMixin, View):
         form_worker_class = WorkerCreateForm()
         form_recruiter_admin_class = RecruiterAdminCreateForm()
         language_choices = form.fields["language"].choices
-
-        status_choices = [
-            (True, "Active"),
-            (False, "Inactive"),
-        ]
+        status_choices = [(True, "Active"), (False, "Inactive")]
 
         workers_list = User.objects.filter(groups__name='worker').values(
-            'id', 'curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
+            'id', 'curp', 'email', 'first_name', 'last_name',
+            'created_at', 'is_active', 'language'
         )
 
-        recruiter_organizations = Organization.objects.filter(type='recruiter').values(
-            'id', 'name', 'email', 'phone', 'website', 'address', 'city', 'state', 'country', 'zip_code', 'type', 'is_active',
-        )
-        employer_organizations = Organization.objects.filter(type='employer').values(
-            'id', 'name', 'email', 'phone', 'website', 'address', 'city', 'state', 'country', 'zip_code', 'type', 'is_active',
-        )
+        recruiter_organizations = Organization.objects.filter(type='recruiter').values()
+        employer_organizations = Organization.objects.filter(type='employer').values()
 
-        recruiters = list(
-            User.objects.filter(groups__name='recruiter').prefetch_related('organizations')
-        )
+        is_admin = request.user.is_superuser
+        recruiters, recruiter_admins, employers, employer_admins = [], [], [], []
+
+        if is_admin:
+            recruiters = User.objects.filter(groups__name='recruiter').prefetch_related('organizations')
+            recruiter_admins = User.objects.filter(groups__name='recruiter_admin').prefetch_related('organizations')
+            employers = User.objects.filter(groups__name='employer').prefetch_related('organizations')
+            employer_admins = User.objects.filter(groups__name='employer_admin').prefetch_related('organizations')
+        else:
+            user_orgs = request.user.organizations.all()
+            recruiters = User.objects.filter(
+                groups__name='recruiter',
+                created_by=request.user.id
+            ).prefetch_related('organizations')
+
+            recruiter_admins = User.objects.filter(
+                groups__name='recruiter_admin',
+                created_by=request.user.id 
+            ).prefetch_related('organizations')
+            
+            employers = User.objects.filter(
+                groups__name='employer',
+                created_by=request.user.id
+            ).prefetch_related('organizations')
+
+            employer_admins = User.objects.filter(
+                groups__name='employer_admin',
+                created_by=request.user.id
+            ).prefetch_related('organizations')
+
+        # Assign group info for template
         for user in recruiters:
             user.group = 'recruiter'
-
-        recruiter_admins = list(
-            User.objects.filter(groups__name='recruiter_admin').prefetch_related('organizations')
-        )
         for user in recruiter_admins:
             user.group = 'recruiter_admin'
-
-        employer = list(
-            User.objects.filter(groups__name='employer').prefetch_related('organizations')
-        )
-        for user in employer:
+        for user in employers:
             user.group = 'employer'
-
-        employer_admin = list(
-            User.objects.filter(groups__name='employer_admin').prefetch_related('organizations')
-        )
-        for user in employer_admin:
+        for user in employer_admins:
             user.group = 'employer_admin'
 
-        combined_recruiter = recruiters + recruiter_admins
-        combined_employer = employer + employer_admin
-
         context = {
-            'recruiters_list': combined_recruiter,
+            'recruiters_list': list(recruiters) + list(recruiter_admins),
             'language_choices': language_choices,
             'status_choices': status_choices,
             'workers': workers_list,
             'form_worker_class': form_worker_class,
             'form_recruiter_admin_class': form_recruiter_admin_class,
-            'employers_list': combined_employer,
+            'employers_list': list(employers) + list(employer_admins),
             'recruiter_organizations': recruiter_organizations,
             'employer_organizations': employer_organizations,
         }
 
         return render(request, 'recruiter/manage_users.html', context)
+
 
     def post(self, request):
         first_name = request.POST.get('first_name')
@@ -163,7 +170,7 @@ class UserListView(LoginRequiredMixin, View):
             messages.error(request, _("inviteEmailFailedToSendEmail."))
 
         return redirect('manage_users')
-    
+
 class RecruiterManageDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         user = request.user

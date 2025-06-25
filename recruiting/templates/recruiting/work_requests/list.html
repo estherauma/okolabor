@@ -297,7 +297,22 @@ function applyJobRequestColumnVisibilityFromStorage(table) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const jobRequestTable = $('#workrequest-datatable').DataTable();
+    const jobRequestTable = $('#workrequest-datatable').DataTable({
+            "ordering": true,
+            "order": [],
+            "columnDefs": [
+                {
+                    "targets": 0,
+                    "orderable": false
+                },
+                {
+                    "targets": -1,
+                    "orderable": false
+                }
+            ],
+            "paging": true,
+            "info": true
+        });
     applyJobRequestColumnVisibilityFromStorage(jobRequestTable);
 
     const applyBtn = document.getElementById('apply-job-request-column-settings');
@@ -330,7 +345,24 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 <script>
 $(document).ready(function () {
-    const table = $('#workrequest-datatable').DataTable();
+    const table = $('#workrequest-datatable').DataTable(
+      {
+            "ordering": true,
+            "order": [],
+            "columnDefs": [
+                {
+                    "targets": 0,
+                    "orderable": false
+                },
+                {
+                    "targets": -1,
+                    "orderable": false
+                }
+            ],
+            "paging": true,
+            "info": true
+        }
+    );
     const settingsBtn = `
         <button class="setting-btn" data-bs-toggle="modal" data-bs-target="#jobRequestColumnSettingsModal">
             <i class="fa fa-cog" aria-hidden="true"></i>

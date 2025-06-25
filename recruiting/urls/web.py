@@ -17,7 +17,7 @@ from recruiting.views.web import (
     AddWorkersWorkRequests,ShowWorkerDetails,AddToShortlistView,
     UpdateWorkerStatusView,CancelOfferView,RecruiterListViewInAdmin,
     AssignEmployersToRecruiterOrgView,SummaryViews,RecruiterDetailView,
-    GetRolesView,CopyWorkersView,EmployerDeleteView,EmployerEditView,
+    GetRolesView,CopyWorkersView,EmployerDeleteView,EmployerEditView, 
     RecruiterDeleteView,RecruiterEditView,
     update_employer_recruiter_status,EmployerRecruiterOrgStatusListView,
     WorkRequestEditView,WorkRequestDeleteView,

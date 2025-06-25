@@ -16,7 +16,7 @@
             </div>
         </div>
         <div class="table-responsive">
-            <table class="table text-nowrap border-bottom" id="recruiters-datatable">
+            <table class="table text-nowrap border-bottom" id="employers-datatable">
                 <thead style="background-color: #7DBF96;">
                     <tr>
                         <th class="text-start"><input type="checkbox" id="select-all-employer-checkbox"></th>
@@ -40,12 +40,18 @@
                         <td>{{ user.created_at }}</td>
                         <td>
                           {% if user.is_active %}
-                            {% trans "webCommonActive" %}
+                            {% translate "webCommonActive" %}
                           {% else %}
-                            {% trans "webCommonInactive" %}
+                            {% translate "webCommonInactive" %}
                           {% endif %}
                         </td>
-                        <td>{{ user.group }}</td>
+                        <td>
+                          {% if user.group == "employer" %}
+                            {% translate "webCommonNo" %}
+                          {% elif user.group == "employer_admin" %}
+                            {% translate "webCommonYes" %}
+                          {% endif %}
+                        </td>
                         <td>
                             {% for org in user.organizations.all %}
                                 {{ org.name }}{% if not forloop.last %}, {% endif %}

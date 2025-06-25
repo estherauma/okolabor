@@ -30,29 +30,29 @@ $(document).ready(function () {
         });
 
         // Special setting for #workrequest-datatable
-        $('#workrequest-datatable, #employers-list-datatable, #logstable').DataTable({
+        $('#logstable').DataTable({
             "ordering": true,
             "order": [],
-            "columnDefs": [{
-                "targets": '_all',
-                "orderable": true
-            }],
-            "paging": true,   
+            "columnDefs": [
+                
+            ],
+            "paging": true,
             "info": true
         });
 
-         $('#basic-datatable-workers,#basic-datatable-allworkers').DataTable({
-                "ordering": true,
-                "order": [], // No initial ordering
-                "columnDefs": [
-                    {
-                        "targets": '_all', // All other columns
-                        "orderable": true
-                    }
-                ],
-                "paging": true,
-                "info": true
-            });
+        $('#basic-datatable-allworkers').DataTable({
+            "ordering": true,
+            "order": [], // No initial ordering
+            "columnDefs": [
+                {
+                    "targets": '_all', // All other columns
+                    "orderable": true
+                }
+            ],
+            "paging": true,
+            "info": true
+        });
+
 
 
         // if (!$.fn.DataTable.isDataTable('#logs-table')) {
@@ -65,23 +65,78 @@ $(document).ready(function () {
         //         }],
         //         "paging": true,
         //         "info": true,
-                
+
         //     });
         // }
 
-        
-        
 
-        $('#recruiters-datatable,#workers-list-datatable').DataTable({
+
+        // Worker list table on manage users
+        $('#workers-list-datatable').DataTable({
             "ordering": true,
             "order": [],
-            "columnDefs": [{
-                "targets": '_all',
-                "orderable": true
-            }],
-            "paging": true,   
+            "columnDefs": [
+                {
+                    "targets": -1,
+                    "orderable": false
+                }
+            ],
+            "paging": true,
             "info": true,
-            "searching": true 
+            "searching": true
+        });
+
+        // Recruiters list table on manage users
+        $('#recruiters-datatable').DataTable({
+            "ordering": true,
+            "order": [],
+            "columnDefs": [
+                {
+                    "targets": 0,
+                    "orderable": false
+                },
+                {
+                    "targets": -1,
+                    "orderable": false
+                }
+            ],
+            "paging": true,
+            "info": true,
+            "searching": true
+        });
+
+        // Recruiters list table on manage users
+        $('#employers-datatable').DataTable({
+            "ordering": true,
+            "order": [],
+            "columnDefs": [
+                {
+                    "targets": 0,
+                    "orderable": false
+                },
+                {
+                    "targets": -1,
+                    "orderable": false
+                }
+            ],
+            "paging": true,
+            "info": true,
+            "searching": true
+        });
+
+        // Recruiters list table on manage users
+        $('#employers-list-datatable').DataTable({
+            "ordering": true,
+            "order": [],
+            "columnDefs": [
+                {
+                    "targets": 0,
+                    "orderable": false
+                }
+            ],
+            "paging": true,
+            "info": true,
+            "searching": true
         });
     } else {
         console.error("DataTables library is not loaded.");
