@@ -213,6 +213,7 @@ class FilterWorkExperienceForm(forms.Form):
 
 class DynamicWorkExperienceForm(forms.Form):
     SECTOR_CHOICES = [
+        ('', 'Please select...'),
         ('Animals', _('filterSectionAnimals')),
         ('Construction', _('filterSectionConstruction')),
         ('Crop and Horticulture', _('filterSectionCropAndHorticulture')),

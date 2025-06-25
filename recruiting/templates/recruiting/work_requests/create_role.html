@@ -1,40 +1,63 @@
 {% extends 'components/base.html' %}
-
+{% load static %}
 {% load i18n %}
-{% block title %} {% translate "addRoleAddRole"%} {% endblock title %}
+
+{% block title %}
+  {% translate "addRoleAddRole" %}
+{% endblock title %}
 
 {% block body %}
 <div class="page-header">
- <div>
-  <h1 class="page-title">
-   {% translate "addRoleAddRole" %}
-  </h1>
- </div>
-</div>
-<div class="row">
- <div class="col-md-9 col-xs-12">
-  <div class="card my-4 mb-4 offwhite-background">
-   <div class="card-body">
-    <form method="post">
-     {% csrf_token %}
-                    {% for field in form %}
-     <div class="col">
-      <div class="form-group my-3">
-       <label>
-        {{field.label}}
-       </label>
-       <div class="input-group input-group-outline is_valid my-3">
-        {{ field }}
-       </div>
-      </div>
-     </div>
-     {% endfor %}
-     <button class="btn dark-green-button" type="submit">
-      {% translate "addRoleSubmit" %}
-     </button>
-    </form>
-   </div>
+  <div>
+    <h1 class="page-title">
+      {% translate "addRoleAddRole" %}
+    </h1>
   </div>
- </div>
 </div>
+
+<div class="row">
+  <div class="col-md-9 col-xs-12">
+    <div class="card my-4 mb-4 offwhite-background">
+      <div class="card-body">
+        <form method="post">
+          {% csrf_token %}
+          {% for field in form %}
+            <div class="form-group my-3" id="div_{{ field.id_for_label }}">
+              <label>{{ field.label }}</label>
+              <div class="input-group input-group-outline is_valid my-3">
+                {{ field }}
+              </div>
+            </div>
+          {% endfor %}
+          <button class="btn dark-green-button" type="submit">
+            {% translate "addRoleSubmit" %}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
+
+
+{% block scripts %}
+<!-- INTERNAL SELECT2 JS -->
+<script src="{% static 'assets/plugins/select2/select2.full.min.js' %}"></script>
+<!-- DATA TABLE JS-->
+<script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap5.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/jszip.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/js/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js' %}"></script>
+<script src="{% static 'assets/js/table-data.js' %}"></script>
+<script src="{% static 'assets/js/table-sorting.js' %}"></script>
+<script src="{% static ''%}assets/js/add_role_condition.js"></script>
+{% endblock scripts %}

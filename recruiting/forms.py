@@ -120,22 +120,70 @@ class WorkerAssignmentForm(forms.ModelForm):
 
 
 class WorkRequestRoleForm(forms.ModelForm):
+    # This is equivalent to 'type_sector' in the experience form
     work_type = forms.ChoiceField(
         choices=[],
-        widget=forms.Select(attrs={'class': 'form-control'})
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_type_sector'}),
+        required=True,
+    )
+
+    animal_types = forms.MultipleChoiceField(
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_animal_types'}),
+        required=False,
+    )
+
+    responsibilities_types = forms.MultipleChoiceField(
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_animal_jobs'}),
+        required=False,
+    )
+
+    crop_types = forms.MultipleChoiceField(
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_crop_types'}),
+        required=False,
+    )
+
+    crop_job_types = forms.MultipleChoiceField(
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_crop_jobs'}),
+        required=False,
+    )
+
+    mechanic_job_types = forms.MultipleChoiceField(
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_mechanic_jobs'}),
+        required=False,
+    )
+
+    supervision_jobs_types = forms.MultipleChoiceField(
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_supervision_jobs'}),
+        required=False,
     )
 
     class Meta:
         model = Role
         fields = [
-            'title', 'usdol_case_number', 'work_type',
-            'number_of_required_workers', 'work_request', 'description'
+            'title',
+            'usdol_case_number',
+            'work_type',  # This is your top-level sector
+            'animal_types',
+            'responsibilities_types',
+            'crop_types',
+            'crop_job_types',
+            'mechanic_job_types',
+            'supervision_jobs_types',
+            'number_of_required_workers',
+            'work_request',
+            'description',
         ]
 
         labels = {
             'title': _('addRoleTitle'),
             'usdol_case_number': _('addRoleUsdolCaseNumber'),
             'work_type': _('addRoleWorkType'),
+            'animal_types': _('addRoleAnimalTypes'),
+            'responsibilities_types': _('addRoleResponsibilities'),
+            'crop_types': _('addRoleCropTypes'),
+            'crop_job_types': _('addRoleCropTasks'),
+            'mechanic_job_types': _('addRoleMechanicTasks'),
+            'supervision_jobs_types': _('addRoleSupervisionTasks'),
             'number_of_required_workers': _('addRoleNumberOfRequiredWorkers'),
             'work_request': _('addRoleWorkRequest'),
             'description': _('addRoleDescription'),
@@ -155,7 +203,41 @@ class WorkRequestRoleForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         content_service = StaticContent()
+
         self.fields['work_type'].choices = content_service.get_sector_choices()
+
+        field_config = {
+            'animal_types': {
+                'choices': content_service.get_animal_type_choices,
+                'label': content_service.get_label_for_field('animalType'),
+            },
+            'responsibilities_types': {
+                'choices': content_service.get_animal_responsibilities_choices,
+                'label': content_service.get_label_for_field('responsibilities'),
+            },
+            'crop_types': {
+                'choices': content_service.get_crop_type_choices,
+                'label': content_service.get_label_for_field('cropType'),
+            },
+            'crop_job_types': {
+                'choices': content_service.get_crop_responsibilities_choices,
+                'label': content_service.get_label_for_field('crop_job_types'),
+            },
+            'mechanic_job_types': {
+                'choices': content_service.get_mechanics_responsibilities_choices,
+                'label': content_service.get_label_for_field('mechanic_job_types'),
+            },
+            'supervision_jobs_types': {
+                'choices': content_service.get_worker_supervision_choices,
+                'label': content_service.get_label_for_field('supervision_jobs_types'),
+            },
+        }
+
+        for field_name, config in field_config.items():
+            if field_name in self.fields:
+                self.fields[field_name].choices = config['choices']()
+                self.fields[field_name].label = config['label']
+
 
 
 

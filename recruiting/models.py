@@ -61,6 +61,8 @@ class WorkRequests(AuditableModel):
 
 
 
+from django.contrib.postgres.fields import ArrayField  # if using PostgreSQL
+
 class Role(AuditableModel):
     title = models.CharField(max_length=255)
     usdol_case_number = models.CharField(max_length=50)
@@ -68,15 +70,23 @@ class Role(AuditableModel):
     description = models.TextField()
     work_type = models.CharField(null=True, blank=True, max_length=50)
     work_request = models.ForeignKey(
-        WorkRequests, on_delete=models.DO_NOTHING,
-        related_name='roles'
+        WorkRequests, on_delete=models.DO_NOTHING, related_name='roles'
     )
 
-    objects = SoftDeleteManager()  # Only active (non-deleted)
+    # NEW FIELDS TO ALIGN WITH EXPERIENCE FORM
+    animal_types = ArrayField(models.CharField(max_length=100), blank=True, null=True)
+    responsibilities_types = ArrayField(models.CharField(max_length=100), blank=True, null=True)
+    crop_types = ArrayField(models.CharField(max_length=100), blank=True, null=True)
+    crop_job_types = ArrayField(models.CharField(max_length=100), blank=True, null=True)
+    mechanic_job_types = ArrayField(models.CharField(max_length=100), blank=True, null=True)
+    supervision_jobs_types = ArrayField(models.CharField(max_length=100), blank=True, null=True)
+
+    objects = SoftDeleteManager()
     all_objects = models.Manager()
 
     def __str__(self):
         return f'{self.title}'
+
     
 class WorkAssignment(AuditableModel):
     STATUS_CHOICES = (
