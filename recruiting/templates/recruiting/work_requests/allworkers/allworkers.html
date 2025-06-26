@@ -1,23 +1,17 @@
 {% load i18n %}
 {% load static %}
+
 {% block styles %}
-<!-- SELECT2 CSS -->
+<!-- CSS Dependencies -->
 <link href="{% static 'assets/plugins/select2/select2.min.css' %}" rel="stylesheet"/>
-<!-- DATA TABLE CSS -->
 <link href="{% static 'assets/plugins/datatable/css/dataTables.bootstrap5.css' %}" rel="stylesheet"/>
 <link href="{% static 'assets/plugins/datatable/css/buttons.bootstrap5.min.css' %}" rel="stylesheet"/>
 <link href="{% static 'assets/plugins/datatable/responsive.bootstrap5.css' %}" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 <link href="{% static 'assets/css/workers.css' %}" rel="stylesheet"/>
+
+
 {% endblock styles %}
-<div class="d-flex align-items-center justify-content-end mb-2">
-   
-    <div>
-        <button class="btn dark-green-button ms-3" id="addToShortlistBtn" disabled>
-            {% translate "workRequestAddWorkerAddToShortlist" %}
-        </button>
-    </div>
-</div>
 
 <div class="modal fade" id="columnSettingsModal" tabindex="-1" aria-labelledby="columnSettingsModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable">
@@ -70,21 +64,36 @@
   </div>
 </div>
 
-<!-- Hidden inputs for work_request_id and role_id -->
 <input type="hidden" id="workRequestId" value="{{ work_request.id }}">
 <input type="hidden" id="roleId" value="{{ role.id }}">
 
-<!-- Table and other content for All Workers -->
 <div class="row">
   <div class="col-12">
     <div class="card">
       <div class="card-body">
-        <div class="table-responsive">
 
-    <table class="table text-nowrap border-bottom table-width" id="basic-datatable">
-        <thead style="background-color: #7DBF96;">
-            <tr>
-                <th class="">{% translate "workRequestAddWorkerCheckbox" %}</th>
+        <div class="d-flex align-items-center justify-content-between flex-wrap mb-3 custom-toolbar">
+          <div>
+            <button class="btn dark-green-button" id="addToShortlistBtn" disabled>
+              {% translate "workRequestAddWorkerAddToShortlist" %}
+            </button>
+          </div>
+
+          <div class="flex-grow-1 d-flex justify-content-center">
+            <div id="customSearchContainer" style="width: 100%; max-width: 400px;"></div>
+          </div>
+
+          <div class="d-flex align-items-center gap-2">
+            <div id="customSettingsContainer"></div>
+            <div id="customLengthContainer"></div>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table text-nowrap border-bottom table-width" id="basic-datatable">
+            <thead style="background-color: #7DBF96;">
+              <tr>
+                <th>{% translate "workRequestAddWorkerCheckbox" %}</th>
                 <th class="col-name">{% translate "workRequestAddWorkerName" %}</th>
                 <th class="col-email">{% translate "workRequestAddWorkerEmail" %}</th>
                 <th class="col-town">{% translate "workersLworkRequestAddWorkerTownistTown" %}</th>
@@ -93,19 +102,15 @@
                 <th class="col-english">{% translate "workRequestAddWorkerEnglishProficiency" %}</th>
                 <th class="col-location">{% translate "workRequestAddWorkerLocationPreference" %}</th>
                 <th class="col-offer">{% translate "workRequestAddWorkerStatus" %}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for worker in workers %}
-            <tr class="text-center">
+              </tr>
+            </thead>
+            <tbody>
+              {% for worker in workers %}
+              <tr class="text-center">
                 <td>
-                    <input type="checkbox" class="worker-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.first_name }} {{ worker.last_name }}">
+                  <input type="checkbox" class="worker-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.first_name }} {{ worker.last_name }}">
                 </td>
-                <td class="col-name">
-                  <a href="{{ worker.id }}">
-                      {{ worker.first_name }} {{ worker.last_name }}
-                  </a>
-                </td>
+                <td class="col-name"><a href="{{ worker.id }}">{{ worker.first_name }} {{ worker.last_name }}</a></td>
                 <td class="col-email">{{ worker.email }}</td>
                 <td class="col-town">{{ worker.town|default:"Not Provided" }}</td>
                 <td class="col-profile">{{ worker.profile_completion_percentage|default:0 }}%</td>
@@ -113,42 +118,46 @@
                 <td class="col-english">{{ worker.english_proficiency|default:"Not Provided" }}</td>
                 <td class="col-location">{{ worker.location_preference|default:"Not Provided" }}</td>
                 <td class="col-offer">{{ worker.latest_status }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-</div>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
       </div>
     </div>
   </div>
+</div>
 
-
-<!-- Scripts -->
 {% block scripts %}
-  <!-- Include jQuery -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 
-  <!-- Include DataTables CSS and JS -->
- <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
-  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+<script src="{% static 'assets/js/send-offer.js' %}"></script>
+<script src="{% static 'assets/js/copy-shortlist-workers.js' %}"></script>
+<script src="{% static 'assets/js/tablecolumns_hiding.js' %}"></script>
 
-  <!-- Your custom scripts -->
-  <script src="{% static 'assets/js/send-offer.js' %}"></script>
-  <script src="{% static 'assets/js/copy-shortlist-workers.js' %}"></script>
-  <script src="{% static 'assets/js/tablecolumns_hiding.js' %}"></script>
+<script>
+  $(document).ready(function () {
+    $.fn.dataTable.ext.errMode = 'none';
+    const table = $('#basic-datatable').DataTable();
 
-  <script>
-    $(document).ready(function () {
-      $.fn.dataTable.ext.errMode = 'none';
-        const table = $('#basic-datatable').DataTable();
-        const settingsBtn =
-            '<button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnSettingsModal">' +
-                '<i class="fa fa-cog" aria-hidden="true" style="color: #9A9898;margin-top:-13px"></i>' +
-            '</button>';
-        const lengthContainer = $('#basic-datatable_length');
-        lengthContainer.addClass('d-flex align-items-center');
-        lengthContainer.prepend(settingsBtn);
-    });
-  </script>
+    const searchInput = $('#basic-datatable_filter input')
+      .addClass('form-control')
+      .attr('placeholder', 'Search...')
+      .css('width', '100%');
+    $('#basic-datatable_filter').hide();
+    $('#customSearchContainer').append(searchInput);
+
+    $('#customLengthContainer').append($('#basic-datatable_length'));
+
+    const settingsBtn = `
+      <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#columnSettingsModal">
+        <i class="fa fa-cog" aria-hidden="true" style="font-size: 1.3rem; color: #9A9898;"></i>
+      </button>
+    `;
+    $('#customSettingsContainer').html(settingsBtn);
+  });
+</script>
 {% endblock %}
