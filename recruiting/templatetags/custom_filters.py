@@ -44,3 +44,9 @@ def get_item(dictionary, key):
         return dictionary.get(key)
     except AttributeError:
         return None
+
+@register.filter
+def split(value, delimiter=","):
+    if isinstance(value, str):
+        return [v.strip() for v in value.split(delimiter) if v.strip()]
+    return value
