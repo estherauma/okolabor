@@ -1,97 +1,51 @@
-{% extends 'components/base.html' %}
 {% load i18n %}
 
-{% block title %} {% translate "roleEmploymentLocationRoleEmploymentLocation" %} {% endblock title %}
+<div class="modal fade" id="EmploymentModal{{ role.id }}" tabindex="-1" aria-labelledby="EmploymentModalLabel{{ role.id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h5 class="modal-title" id="EmploymentModalLabel{{ role.id }}">{% translate "addEmployment" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
 
-{% block body %}
-<div class="page-header mt-30">
-  <div>
-    <h1 class="page-title">
-      {% translate "roleEmploymentLocationAddEmploymentLocation" %}
-    </h1>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-md-9 col-xs-12">
-    <div class="card my-4 mb-4 offwhite-background">
-      <div class="card-body">
-        <form method="post">
+      <div class="modal-body">
+        <form method="post" id="EmploymentForm" action="{% url 'recruiting_web:workrequest_employment_create' role.id %}">
           {% csrf_token %}
-
-          {# Section 1: Main Address Fields #}
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-group my-3">
-                <label>{{ form.role.label }}</label>
-                <div class="input-group input-group-outline is_valid my-3">
-                  {{ form.role }}
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="form-group my-3">
-                <label>{{ form.address.label }}</label>
-                <div class="input-group input-group-outline is_valid my-3">
-                  {{ form.address }}
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="form-group my-3">
-                <label>{{ form.city.label }}</label>
-                <div class="input-group input-group-outline is_valid my-3">
-                  {{ form.city }}
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="form-group my-3">
-                <label>{{ form.county.label }}</label>
-                <div class="input-group input-group-outline is_valid my-3">
-                  {{ form.county }}
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="form-group my-3">
-                <label>{{ form.state.label }}</label>
-                <div class="input-group input-group-outline is_valid my-3">
-                  {{ form.state }}
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="form-group my-3">
-                <label>{{ form.postal_code.label }}</label>
-                <div class="input-group input-group-outline is_valid my-3">
-                  {{ form.postal_code }}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {# Section 2: Additional Information #}
-          <div class="mt-4">
+         
+          <div class="col">
             <div class="form-group my-3">
-              <label>{{ form.additional_info.label }}</label>
+              <label>{% translate "roleEmploymentRole" %}</label>
               <div class="input-group input-group-outline is_valid my-3">
-                {{ form.additional_info }}
+                <input type="text" class="form-control" value="{{ role }}" disabled>
               </div>
             </div>
           </div>
 
-          <button class="btn dark-green-button mt-3" type="submit">
-            {% translate "roleEmploymentLocationSubmit" %}
+          
+          <input type="hidden" name="role" value="{{ role.id }}">
+
+          {% for field in role_Employment_form %}
+            {% if field.name != 'role' %}
+              <div class="col">
+                <div class="form-group my-3">
+                  <label>{{ field.label }}</label>
+                  <div class="input-group input-group-outline is_valid my-3">
+                    {{ field }}
+                  </div>
+                  {% for error in field.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+
+          <button class="btn dark-green-button" type="submit">
+            {% translate "roleEmploymentSubmit" %}
           </button>
         </form>
       </div>
     </div>
   </div>
 </div>
-{% endblock %}

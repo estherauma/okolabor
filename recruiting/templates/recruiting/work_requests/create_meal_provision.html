@@ -1,90 +1,51 @@
-{% extends 'components/base.html' %}
 {% load i18n %}
 
-{% block title %} {% translate "roleMealProvisionRoleMealprovision"%} {% endblock title %}
+<div class="modal fade" id="MealsModal{{ role.id }}" tabindex="-1" aria-labelledby="MealsModalLabel{{ role.id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h5 class="modal-title" id="MealsModalLabel{{ role.id }}">{% translate "addMeals" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
 
-{% block body %}
-<div class="page-header mt-30">
- <div>
-  <h1 class="page-title">
-   {% translate "roleMealProvisionAddMealProvisionInformation" %}
-  </h1>
- </div>
-</div>
-<div class="row">
- <div class="col-lg-10 col-md-9 col-xs-12">
-  <div class="card my-4 mb-4 offwhite-background">
-   <div class="card-body">
-    <form method="post">
-        {% csrf_token %}
-
-        <div class="row">
-            <!-- Role (ReadOnly Select) -->
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label>{{ form.role.label }}</label>
-                    {{ form.role }}
-                </div>
+      <div class="modal-body">
+        <form method="post" id="MealsForm" action="{% url 'recruiting_web:workrequest_meals_create' role.id %}">
+          {% csrf_token %}
+         
+          <div class="col">
+            <div class="form-group my-3">
+              <label>{% translate "roleMealsRole" %}</label>
+              <div class="input-group input-group-outline is_valid my-3">
+                <input type="text" class="form-control" value="{{ role }}" disabled>
+              </div>
             </div>
+          </div>
 
-            
+          
+          <input type="hidden" name="role" value="{{ role.id }}">
 
-            <!-- Will provide meals checkbox -->
-            <div class="col-md-12">
-                <p style="color:#9A9898;">The employer</p>
-                <div class="form-check">
-                    {{ form.will_provide_meals }}
-                    <label class="form-check-label" for="{{ form.will_provide_meals.id_for_label }}">
-                    {{ form.will_provide_meals.label }}
-                    </label>
+          {% for field in role_Meals_form %}
+            {% if field.name != 'role' %}
+              <div class="col">
+                <div class="form-group my-3">
+                  <label>{{ field.label }}</label>
+                  <div class="input-group input-group-outline is_valid my-3">
+                    {{ field }}
+                  </div>
+                  {% for error in field.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                  {% endfor %}
                 </div>
-            </div>
+              </div>
+            {% endif %}
+          {% endfor %}
 
-            <!-- Meal Charge Amount (Initially hidden, shown only if checkbox is checked) -->
-            <div class="col-md-12" id="meal-charge-group" style="display: none;">
-                <div class="form-group">
-                    <label>{{ form.meal_charge_amount.label }}</label>
-                    {{ form.meal_charge_amount }}
-                </div>
-            </div>
-
-            <!-- Additional Info -->
-            <div class="col-md-12">
-                
-                <div class="form-group">
-                    <label style="color:#9A9898;">Describe how the employer will provide each worker with three meals per day or furnish free and convenient cooking and kitchen facilities.</label>
-                    {{ form.additional_info }}
-                </div>
-            </div>
-            
-        </div>
-
-        <button class="btn dark-green-button mt-3" type="submit">
-            {% translate "roleMealProvisionSubmit" %}
-        </button>
+          <button class="btn dark-green-button" type="submit">
+            {% translate "roleMealSubmit" %}
+          </button>
         </form>
-
-   </div>
+      </div>
+    </div>
   </div>
- </div>
 </div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const checkbox = document.getElementById("id_will_provide_meals");
-    const mealChargeGroup = document.getElementById("meal-charge-group");
-
-    function toggleMealChargeVisibility() {
-      if (checkbox.checked) {
-        mealChargeGroup.style.display = "block";
-      } else {
-        mealChargeGroup.style.display = "none";
-      }
-    }
-
-    checkbox.addEventListener('change', toggleMealChargeVisibility);
-    toggleMealChargeVisibility();  // call on load
-  });
-</script>
-
-{% endblock %}
