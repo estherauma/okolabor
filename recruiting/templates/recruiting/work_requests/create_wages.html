@@ -1,89 +1,54 @@
-{% extends 'components/base.html' %}
-
 {% load i18n %}
-{% block title %} {% translate "roleWagesAddRoleWages"%} {% endblock title %}
 
-{% block body %}
-<div class="page-header mt-30">
- <div>
-  <h1 class="page-title">
-   {% translate "roleWagesAddWages" %}
-  </h1>
- </div>
-</div>
-<div class="row">
- <div class="col-md-12 col-xs-12">
-  <div class="card my-4 mb-4 offwhite-background">
-   <div class="card-body">
-   <form method="post">
-  {% csrf_token %}
-  <div class="row">
-    <!-- WAGE & WAGE TYPE -->
-    <div class="col-md-5 row">
-        <div class="col-md-7">
-        <div class="form-group">
-            <label>{{ form.wage.label }}</label>
-            {{ form.wage }}
-        </div>
-        </div>
-        <div class="col-md-4">
-        <div class="form-group">
-            <label>{{ form.wage_type.label }}</label>
-            {{ form.wage_type }}
-        </div>
-        </div>
-    </div>
+<div class="modal fade" id="wagesModal{{ role.id }}" tabindex="-1" aria-labelledby="wagesModalLabel{{ role.id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h5 class="modal-title" id="wagesModalLabel{{ role.id }}">{% translate "Add Wages" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
 
-    <!-- PIECE RATE OFFERING & TYPE -->
-    <div class="col-md-6 row">
-        <div class="col-md-7">
-        <div class="form-group">
-            <label>{{ form.piece_rate_offerings.label }}</label>
-            {{ form.piece_rate_offerings }}
-        </div>
-        </div>
-        <div class="col-md-5">
-        <div class="form-group">
-            <label>{{ form.piece_rate_offerings_type.label }}</label>
-            {{ form.piece_rate_offerings_type }}
-        </div>
-        </div>
-    </div>
-
-    <!-- FREQUENCY OF PAY -->
-    <div class="col-md-8 row">
-        <div class="col-md-5">
-            <div class="form-group">
-                <label>{{ form.frequency_of_pay.label }}</label>
-                {{ form.frequency_of_pay }}
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <form method="post" id="wagesForm" action="{% url 'recruiting_web:workrequest_wages_create' role.id %}">
+          {% csrf_token %}
+         
+          <div class="col">
+            <div class="form-group my-3">
+              <label>{% translate "roleWagesRole" %}</label>
+              <div class="input-group input-group-outline is_valid my-3">
+                <input type="text" class="form-control" value="{{ role }}" disabled>
+              </div>
             </div>
-        </div>
+          </div>
 
-        <div class="col-md-5">
-            <div class="form-group">
-                <label>{{ form.role.label }}</label>
-                {{ form.role }}
-            </div>
-        </div>
-    </div>
-    
+          <!-- Hidden field to actually submit role ID -->
+          <input type="hidden" name="role" value="{{ role.id }}">
 
-    <!-- DETAILS -->
-    <div class="col-md-12">
-      <div class="form-group">
-        <label>{{ form.details.label }}</label>
-        {{ form.details }}
+          <!-- Render all other fields except 'role' -->
+          {% for field in role_Wages_form %}
+            {% if field.name != 'role' %}
+              <div class="col">
+                <div class="form-group my-3">
+                  <label>{{ field.label }}</label>
+                  <div class="input-group input-group-outline is_valid my-3">
+                    {{ field }}
+                  </div>
+                  {% for error in field.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+
+          <!-- Submit button -->
+          <button class="btn dark-green-button" type="submit">
+            {% translate "roleWagesSubmit" %}
+          </button>
+        </form>
       </div>
     </div>
   </div>
-
-  <button type="submit" class="btn dark-green-button mt-3">
-    {% translate "roleWagesSubmit" %}
-  </button>
-</form>
-
-   </div>
-  </div>
- </div>
 </div>
-{% endblock %}
