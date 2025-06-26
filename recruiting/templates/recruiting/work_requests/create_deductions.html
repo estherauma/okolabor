@@ -1,70 +1,50 @@
-{% extends 'components/base.html' %}
 {% load i18n %}
 
-{% block title %} {% translate "roleDeductionsRoleDeductions"%} {% endblock title %}
+<div class="modal fade" id="DeductionModal{{ role.id }}" tabindex="-1" aria-labelledby="DeductionModalLabel{{ role.id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h5 class="modal-title" id="DeductionModalLabel{{ role.id }}">{% translate "addDeduction" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
 
-{% block body %}
-<div class="page-header mt-30">
-  <div>
-    <h1 class="page-title">
-      {% translate "roleDeductionsAddRoleDeductions" %}
-    </h1>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-md-9 col-xs-12">
-    <div class="card my-4 mb-4 offwhite-background">
-      <div class="card-body">
-        <form method="post">
+      <div class="modal-body">
+        <form method="post" id="DeductionForm" action="{% url 'recruiting_web:workrequest_deductions_create' role.id %}">
           {% csrf_token %}
-
-            <div class="row">
-                <div class="col-md-4">
-                <label >
-                {{ form.role.label }}
-                </label>
-                {{ form.role }}
+         
+          <div class="col">
+            <div class="form-group my-3">
+              <label>{% translate "roleDeductionRole" %}</label>
+              <div class="input-group input-group-outline is_valid my-3">
+                <input type="text" class="form-control" value="{{ role }}" disabled>
+              </div>
             </div>
-            
-
-            <div class="col-md-3">
-                <label >
-                {{ form.deduction_amount.label }}
-                </label>
-                {{ form.deduction_amount }}
-            </div>
-            <div class="col-md-3">
-                <label >
-                {{ form.frequency_of_pay.label }}
-                </label>
-                {{ form.frequency_of_pay }}
-            </div>
-            </div>
-
-            <div class="row mt-3">
-            
-            <div class="col-md-6">
-                <label>
-                {{ form.description.label }}
-                </label>
-                {{ form.description }}
-            </div>
-
-            
-            </div>
-
-          
-
-          <div class="mt-4">
-            <button class="btn dark-green-button" type="submit">
-              {% translate "roleDeductionsSubmit" %}
-            </button>
           </div>
 
+          <input type="hidden" name="role" value="{{ role.id }}">
+
+          {% for field in role_Deduction_form %}
+            {% if field.name != 'role' %}
+              <div class="col">
+                <div class="form-group my-3">
+                  <label>{{ field.label }}</label>
+                  <div class="input-group input-group-outline is_valid my-3">
+                    {{ field }}
+                  </div>
+                  {% for error in field.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+
+          <button class="btn dark-green-button" type="submit">
+            {% translate "roleDeductionSubmit" %}
+          </button>
         </form>
       </div>
     </div>
   </div>
 </div>
-{% endblock %}

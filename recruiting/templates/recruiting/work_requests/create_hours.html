@@ -1,40 +1,54 @@
-{% extends 'components/base.html' %}
 {% load i18n %}
 
-{% block title %} {% translate "roleHoursEmployers"%}{% endblock title %}
-
-{% block body %}
-<div class="page-header mt-30">
- <div>
-  <h1 class="page-title">
-   {% translate "roleHoursAddWorkHours" %}
-  </h1>
- </div>
-</div>
-<div class="row">
- <div class="col-md-9 col-xs-12">
-  <div class="card my-4 mb-4 offwhite-background">
-   <div class="card-body">
-    <form method="post">
-     {% csrf_token %}
-                    {% for field in form %}
-     <div class="col">
-      <div class="form-group my-3">
-       <label>
-        {{field.label}}
-       </label>
-       <div class="input-group input-group-outline is_valid my-3">
-        {{ field }}
-       </div>
+<div class="modal fade" id="hoursModal{{ role.id }}" tabindex="-1" aria-labelledby="hoursModalLabel{{ role.id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h5 class="modal-title" id="hoursModalLabel{{ role.id }}">{% translate "Add Hours" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-     </div>
-     {% endfor %}
-     <button class="btn dark-green-button" type="submit">
-      {% translate "roleHoursSubmit" %}
-     </button>
-    </form>
-   </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <form method="post" id="hoursForm" action="{% url 'recruiting_web:workrequest_hours_create' role.id %}">
+          {% csrf_token %}
+         
+          <div class="col">
+            <div class="form-group my-3">
+              <label>{% translate "roleHoursRole" %}</label>
+              <div class="input-group input-group-outline is_valid my-3">
+                <input type="text" class="form-control" value="{{ role }}" disabled>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hidden field to actually submit role ID -->
+          <input type="hidden" name="role" value="{{ role.id }}">
+
+          <!-- Render all other fields except 'role' -->
+          {% for field in role_Hours_form %}
+            {% if field.name != 'role' %}
+              <div class="col">
+                <div class="form-group my-3">
+                  <label>{{ field.label }}</label>
+                  <div class="input-group input-group-outline is_valid my-3">
+                    {{ field }}
+                  </div>
+                  {% for error in field.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+
+          <!-- Submit button -->
+          <button class="btn dark-green-button" type="submit">
+            {% translate "roleHoursSubmit" %}
+          </button>
+        </form>
+      </div>
+    </div>
   </div>
- </div>
 </div>
-{% endblock %}
