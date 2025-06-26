@@ -21,14 +21,70 @@
       <div class="card-body">
         <form method="post">
           {% csrf_token %}
-          {% for field in form %}
-            <div class="form-group my-3" id="div_{{ field.id_for_label }}">
-              <label>{{ field.label }}</label>
-              <div class="input-group input-group-outline is_valid my-3">
-                {{ field }}
-              </div>
-            </div>
-          {% endfor %}
+
+          <!-- Always visible fields -->
+          <div class="form-group my-3">
+            <label>{{ form.title.label }}</label>
+            {{ form.title }}
+          </div>
+
+          <div class="form-group my-3">
+            <label>{{ form.usdol_case_number.label }}</label>
+            {{ form.usdol_case_number }}
+          </div>
+
+          <div class="form-group my-3" id="div_id_type_sector">
+            <label>{{ form.work_type.label }}</label>
+            {{ form.work_type }}
+          </div>
+
+          <!-- Conditionally displayed fields -->
+          <div class="form-group my-3" id="div_id_animal_types" style="display:none;">
+            <label>{{ form.animal_types.label }}</label>
+            {{ form.animal_types }}
+          </div>
+
+          <div class="form-group my-3" id="div_id_responsibilities_types" style="display:none;">
+            <label>{{ form.responsibilities_types.label }}</label>
+            {{ form.responsibilities_types }}
+          </div>
+
+          <div class="form-group my-3" id="div_id_crop_types" style="display:none;">
+            <label>{{ form.crop_types.label }}</label>
+            {{ form.crop_types }}
+          </div>
+
+          <div class="form-group my-3" id="div_id_crop_job_types" style="display:none;">
+            <label>{{ form.crop_job_types.label }}</label>
+            {{ form.crop_job_types }}
+          </div>
+
+          <div class="form-group my-3" id="div_id_mechanic_job_types" style="display:none;">
+            <label>{{ form.mechanic_job_types.label }}</label>
+            {{ form.mechanic_job_types }}
+          </div>
+
+          <div class="form-group my-3" id="div_id_supervision_jobs_types" style="display:none;">
+            <label>{{ form.supervision_jobs_types.label }}</label>
+            {{ form.supervision_jobs_types }}
+          </div>
+
+          <div class="form-group my-3" id="div_id_description" style="display:none;">
+            <label>{{ form.description.label }}</label>
+            {{ form.description }}
+          </div>
+
+          <!-- Always visible -->
+          <div class="form-group my-3">
+            <label>{{ form.number_of_required_workers.label }}</label>
+            {{ form.number_of_required_workers }}
+          </div>
+
+          <div class="form-group my-3">
+            <label>{{ form.work_request.label }}</label>
+            {{ form.work_request }}
+          </div>
+
           <button class="btn dark-green-button" type="submit">
             {% translate "addRoleSubmit" %}
           </button>
@@ -37,27 +93,66 @@
     </div>
   </div>
 </div>
-
 {% endblock %}
 
-
 {% block scripts %}
-<!-- INTERNAL SELECT2 JS -->
-<script src="{% static 'assets/plugins/select2/select2.full.min.js' %}"></script>
-<!-- DATA TABLE JS-->
-<script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap5.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/js/jszip.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/pdfmake/pdfmake.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/pdfmake/vfs_fonts.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/js/buttons.html5.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/js/buttons.print.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/js/buttons.colVis.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
-<script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js' %}"></script>
-<script src="{% static 'assets/js/table-data.js' %}"></script>
-<script src="{% static 'assets/js/table-sorting.js' %}"></script>
-<script src="{% static ''%}assets/js/add_role_condition.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const sectorField = document.getElementById("id_type_sector");
+
+    const toggleFields = () => {
+      const value = sectorField.value.trim();
+
+      const show = (id) => {
+        const el = document.getElementById(`div_${id}`);
+        if (el) el.style.display = "block";
+      };
+
+      const hide = (id) => {
+        const el = document.getElementById(`div_${id}`);
+        if (el) el.style.display = "none";
+      };
+
+      const allFields = [
+        "id_animal_types",
+        "id_responsibilities_types",
+        "id_crop_types",
+        "id_crop_job_types",
+        "id_mechanic_job_types",
+        "id_supervision_jobs_types",
+        "id_description"
+      ];
+
+      allFields.forEach(hide);
+      console.log("Selected:", value);
+
+      if (value === "animals") {
+        show("id_animal_types");
+        show("id_responsibilities_types");
+        show("id_description");
+      } else if (value === "crop_and_horticulture") {
+        show("id_crop_types");
+        show("id_crop_job_types");
+        show("id_description");
+      } else if (value === "mechanics") {
+        show("id_mechanic_job_types");
+        show("id_description");
+      } else if (value === "worker_supervision__management") {
+        show("id_supervision_jobs_types");
+        show("id_description");
+      } else if (
+        value === "construction" ||
+        value === "licensed_vehicle_operation" ||
+        value === "other"
+      ) {
+        show("id_description");
+      }
+    };
+
+    if (sectorField) {
+      sectorField.addEventListener("change", toggleFields);
+      toggleFields(); // Initial call
+    }
+  });
+</script>
 {% endblock scripts %}

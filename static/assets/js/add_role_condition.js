@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+  
   const sectorField = document.getElementById("id_type_sector");
 
   const toggleFields = () => {

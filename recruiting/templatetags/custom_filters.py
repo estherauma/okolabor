@@ -44,3 +44,7 @@ def get_item(dictionary, key):
         return dictionary.get(key)
     except AttributeError:
         return None
+    
+@register.filter(name='trim')
+def trim(value):
+    return value.strip()

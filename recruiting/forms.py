@@ -120,41 +120,37 @@ class WorkerAssignmentForm(forms.ModelForm):
 
 
 class WorkRequestRoleForm(forms.ModelForm):
-    # This is equivalent to 'type_sector' in the experience form
     work_type = forms.ChoiceField(
         choices=[],
         widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_type_sector'}),
         required=True,
     )
 
+    # Optional dynamic fields
     animal_types = forms.MultipleChoiceField(
-        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_animal_types'}),
         required=False,
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_animal_types'}),
+    )
+    crop_types = forms.MultipleChoiceField(
+        required=False,
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_crop_types'}),
+    )
+    crop_job_types = forms.MultipleChoiceField(
+        required=False,
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_crop_job_types'}),
+    )
+    mechanic_job_types = forms.MultipleChoiceField(
+        required=False,
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_mechanic_jobs'}),
+    )
+    supervision_jobs_types = forms.MultipleChoiceField(
+        required=False,
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_supervision_jobs'}),
     )
 
     responsibilities_types = forms.MultipleChoiceField(
-        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_animal_jobs'}),
         required=False,
-    )
-
-    crop_types = forms.MultipleChoiceField(
-        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_crop_types'}),
-        required=False,
-    )
-
-    crop_job_types = forms.MultipleChoiceField(
-        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_crop_jobs'}),
-        required=False,
-    )
-
-    mechanic_job_types = forms.MultipleChoiceField(
-        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_mechanic_jobs'}),
-        required=False,
-    )
-
-    supervision_jobs_types = forms.MultipleChoiceField(
-        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_supervision_jobs'}),
-        required=False,
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_responsibilities_types'}),
     )
 
     class Meta:
@@ -162,42 +158,24 @@ class WorkRequestRoleForm(forms.ModelForm):
         fields = [
             'title',
             'usdol_case_number',
-            'work_type',  # This is your top-level sector
+            'work_type',
             'animal_types',
-            'responsibilities_types',
             'crop_types',
             'crop_job_types',
             'mechanic_job_types',
             'supervision_jobs_types',
+            'responsibilities_types',
             'number_of_required_workers',
             'work_request',
             'description',
         ]
-
-        labels = {
-            'title': _('addRoleTitle'),
-            'usdol_case_number': _('addRoleUsdolCaseNumber'),
-            'work_type': _('addRoleWorkType'),
-            'animal_types': _('addRoleAnimalTypes'),
-            'responsibilities_types': _('addRoleResponsibilities'),
-            'crop_types': _('addRoleCropTypes'),
-            'crop_job_types': _('addRoleCropTasks'),
-            'mechanic_job_types': _('addRoleMechanicTasks'),
-            'supervision_jobs_types': _('addRoleSupervisionTasks'),
-            'number_of_required_workers': _('addRoleNumberOfRequiredWorkers'),
-            'work_request': _('addRoleWorkRequest'),
-            'description': _('addRoleDescription'),
-        }
-
+        # ✅ Restored form-control styles for main fields
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'usdol_case_number': forms.TextInput(attrs={'class': 'form-control'}),
             'number_of_required_workers': forms.NumberInput(attrs={'class': 'form-control'}),
-            'work_request': forms.Select(attrs={
-                'class': 'form-control',
-                'readonly': True
-            }),
-            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'work_request': forms.Select(attrs={'class': 'form-control', 'readonly': True}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -238,6 +216,39 @@ class WorkRequestRoleForm(forms.ModelForm):
                 self.fields[field_name].choices = config['choices']()
                 self.fields[field_name].label = config['label']
 
+    def clean(self):
+        cleaned_data = super().clean()
+        work_type = cleaned_data.get("work_type", "").strip().lower()
+        request = self.data
+        work_type_detail = {}
+
+        def strip_list(field_name):
+            return [item.strip() for item in request.getlist(field_name) if item.strip()]
+
+        # Map work_type values to the relevant dynamic form fields
+        dynamic_fields_by_type = {
+            "animals": ["animal_types", "responsibilities_types"],
+            "crop_and_horticulture": ["crop_types", "crop_job_types"],
+            "mechanics": ["mechanic_job_types"],
+            "worker_supervision__management": ["supervision_jobs_types"],
+            # construction, licensed_vehicle_operation, other → only description
+        }
+
+        if work_type in dynamic_fields_by_type:
+            for field in dynamic_fields_by_type[work_type]:
+                work_type_detail[field] = strip_list(field)
+
+        cleaned_data["work_type"] = work_type  # Ensure lowercase consistency
+        cleaned_data["work_type_detail"] = work_type_detail
+        return cleaned_data
+
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.work_type_detail = self.cleaned_data.get("work_type_detail", {})
+        if commit:
+            instance.save()
+        return instance
 
 
 
