@@ -69,6 +69,11 @@
             {{ form.supervision_jobs_types }}
           </div>
 
+          <div class="form-group my-3" id="div_licensed_vehicle_operation_types" style="display:none;">
+            <label>{{ form.licensed_vehicle_operation_types.label }}</label>
+            {{ form.licensed_vehicle_operation_types }}
+          </div>
+
           <div class="form-group my-3" id="div_id_description" style="display:none;">
             <label>{{ form.description.label }}</label>
             {{ form.description }}
@@ -120,6 +125,7 @@
         "id_crop_job_types",
         "id_mechanic_job_types",
         "id_supervision_jobs_types",
+        "licensed_vehicle_operation_types",
         "id_description"
       ];
 
@@ -140,9 +146,11 @@
       } else if (value === "worker_supervision__management") {
         show("id_supervision_jobs_types");
         show("id_description");
-      } else if (
+      } else if (value === "licensed_vehicle_operation") {
+        show("licensed_vehicle_operation_types");
+        show("id_description");
+      }else if (
         value === "construction" ||
-        value === "licensed_vehicle_operation" ||
         value === "other"
       ) {
         show("id_description");

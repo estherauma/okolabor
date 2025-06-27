@@ -148,10 +148,16 @@ class WorkRequestRoleForm(forms.ModelForm):
         widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_supervision_jobs'}),
     )
 
+    licensed_vehicle_operation_types = forms.MultipleChoiceField(
+        required=False,
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'licensed_vehicle_operations'}),
+    )
+
     responsibilities_types = forms.MultipleChoiceField(
         required=False,
         widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_responsibilities_types'}),
     )
+
 
     class Meta:
         model = Role
@@ -166,6 +172,7 @@ class WorkRequestRoleForm(forms.ModelForm):
             'supervision_jobs_types',
             'responsibilities_types',
             'number_of_required_workers',
+            'licensed_vehicle_operation_types',
             'work_request',
             'description',
         ]
@@ -209,6 +216,10 @@ class WorkRequestRoleForm(forms.ModelForm):
                 'choices': content_service.get_worker_supervision_choices,
                 'label': content_service.get_label_for_field('supervision_jobs_types'),
             },
+            'licensed_vehicle_operation_types': {
+                'choices': content_service.get_worker_licensed_vehicle_operation_choices,
+                'label': content_service.get_label_for_field('licensed_vehicle_operation_types'),
+            },
         }
 
         for field_name, config in field_config.items():
@@ -231,6 +242,7 @@ class WorkRequestRoleForm(forms.ModelForm):
             "crop_and_horticulture": ["crop_types", "crop_job_types"],
             "mechanics": ["mechanic_job_types"],
             "worker_supervision__management": ["supervision_jobs_types"],
+            "licensed_vehicle_operation": ["licensed_vehicle_operation_types"],
             # construction, licensed_vehicle_operation, other → only description
         }
 
