@@ -608,10 +608,17 @@ class WorkRequestDeleteView(LoginRequiredMixin, View):
 class AddWorkersWorkRequests(View):
     def get(self, request, pk, role_id):
         type_sector_value = request.GET.get('type_sector')
+        dynamic_field_1_value = request.GET.get('dynamic_field_1', '')
+        dynamic_field_2_value = request.GET.get('dynamic_field_2', '')
         work_assign_form = WorkerAssignmentForm()
         if type_sector_value:
             type_sector_value = type_sector_value.replace('_', ' ').title()
-        form = DynamicWorkExperienceForm(initial={'type_sector': type_sector_value})
+        initial_data = {
+            'type_sector': type_sector_value,
+            'dynamic_field_1': dynamic_field_1_value,
+            'dynamic_field_2': dynamic_field_2_value,
+        }
+        form = DynamicWorkExperienceForm(initial=initial_data)
         filter_form = AdvancedFilterForm(request.GET or None)
         search_query = request.GET.get('search', '')
         page_number = request.GET.get('page', 1)

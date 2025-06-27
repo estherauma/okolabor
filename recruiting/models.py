@@ -2,6 +2,7 @@ from django.db import models
 from common.models import AuditableModel,SoftDeleteManager
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.fields import  JSONField
 
 User = get_user_model()
 
@@ -61,22 +62,28 @@ class WorkRequests(AuditableModel):
 
 
 
+from django.contrib.postgres.fields import ArrayField  # if using PostgreSQL
+
 class Role(AuditableModel):
     title = models.CharField(max_length=255)
     usdol_case_number = models.CharField(max_length=50)
     number_of_required_workers = models.IntegerField()
     description = models.TextField()
     work_type = models.CharField(null=True, blank=True, max_length=50)
+    work_type_detail = JSONField(blank=True, null=True)  # Stores animal_types, crop_types, etc.
+    responsibilities_types = ArrayField(
+        models.CharField(max_length=100), blank=True, null=True
+    )  # Stored separately
     work_request = models.ForeignKey(
-        WorkRequests, on_delete=models.DO_NOTHING,
-        related_name='roles'
+        WorkRequests, on_delete=models.DO_NOTHING, related_name='roles'
     )
 
-    objects = SoftDeleteManager()  # Only active (non-deleted)
+    objects = SoftDeleteManager()
     all_objects = models.Manager()
 
     def __str__(self):
         return f'{self.title}'
+
     
 class WorkAssignment(AuditableModel):
     STATUS_CHOICES = (
