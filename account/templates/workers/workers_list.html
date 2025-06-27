@@ -33,9 +33,10 @@
                                 <td>{{ user.first_name }} {{ user.last_name }}</td>
                                 <td>{{ user.created_at }}</td>
                                 <td>{{ user.is_active|yesno:_("active,inactive") }}</td>
-                                <td>
+                                <td class="text-center">
                                     <!-- Edit Icon -->
-                                    <i class="side-menu__icon icon icon-pencil fa fa-edit me-2 cursor-pointer edit-user-btn"
+                                    <i class="side-menu__icon icon icon-pencil fa fa-edit me-2 cursor-pointer edit-user-btn text-muted"
+                                       style="font-size: 15px;"
                                        data-bs-toggle="modal"
                                        data-bs-target="#editWorkerModal"
                                        data-curp="{{ user.curp }}" 
@@ -48,7 +49,7 @@
                                     <!-- Delete Icon only if user has ID -->
                                     {% if user.id %}
                                     <i class="fa fa-trash text-danger"
-                                       style="cursor: pointer;"
+                                       style="cursor: pointer; font-size: 15px;"
                                        data-bs-toggle="modal"
                                        data-bs-target="#deleteModalManageWorker{{ user.id }}"
                                        title="{% translate 'workersListIconDelete' %}">
