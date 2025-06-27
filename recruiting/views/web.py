@@ -84,6 +84,9 @@ from recruiting.models import (
     EmployerContact,
     EmployerRecruiterOrgLink,
 )
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
     
 class EmployerListView(View):
@@ -2003,7 +2006,7 @@ class InvitationResponseView(View):
                 link.final_status = 'rejected'
 
             link.save()
-            return HttpResponse("Thank you for your response.")
+            return render(request, "recruiting/emails/invitation_response.html")
 
         except Exception as e:
             return HttpResponse(f"Error: {str(e)}")
@@ -2028,26 +2031,23 @@ def send_invitation_email_to_org(receiver_org, other_org, request, role):
     )
 
     subject = f"Invitation to collaborate with {other_org.name}"
-    message = f"""
-Hi {receiver_org.name},
+    site_url = "https://test.okolabor.com"
+    html_content = render_to_string("recruiting/emails/recruiter_invitation.html", {
+        "receiver_org": receiver_org,
+        "other_org": other_org,
+        "accept_url": accept_url,
+        "reject_url": reject_url,
+        "site_url": site_url,
+    })
+    text_content = strip_tags(html_content)
 
-Your organization has received an invitation to collaborate with '{other_org.name}'.
-
-✅ Accept: {accept_url}  
-❌ Reject: {reject_url}
-
-Regards,  
-Your Team
-    """.strip()
-
-    if receiver_org.email:
-        send_mail(
-            subject,
-            message,
-            settings.EMAIL_HOST_USER,
-            [receiver_org.email],
-            fail_silently=False
-        )
+    email = EmailMultiAlternatives(
+        subject=subject,
+        body=text_content,
+        to=[receiver_org.email],
+    )
+    email.attach_alternative(html_content, "text/html")
+    email.send()
 
 
 def send_invitation_to_primary_contacts(employer_org, recruiter_org, request):
