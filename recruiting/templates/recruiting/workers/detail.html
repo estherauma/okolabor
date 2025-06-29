@@ -362,10 +362,10 @@
       
       
       <!-- Display English proficiency video -->
-      {% if documents.english_proficiency %}
+      {% if documents.english_video %}
       <div class="mb-4">
         <p class="fw-bold">English Proficiency</p>
-        {% for doc in documents.english_proficiency %}
+        {% for doc in documents.english_video %}
         {% if forloop.first or forloop.counter0|divisibleby:2 %}
         <div class="row">
           {% endif %}
@@ -382,7 +382,7 @@
         {% endfor %}
       </div>
       {% endif %}
-      
+     
       
       <!-- Display passport -->
       {% if documents.passport %}
@@ -406,10 +406,10 @@
       
       
       <!-- Display US driver's license -->
-      {% if documents.us_driving_license %}
+      {% if documents.us_driver_license %}
       <div class="mb-4">
         <p class="fw-bold">US Driver's License</p>
-        {% for doc in documents.us_driving_license %}
+        {% for doc in documents.us_driver_license %}
         {% if forloop.first or forloop.counter0|divisibleby:2 %}
         <div class="row">
           {% endif %}
@@ -427,10 +427,10 @@
       
       
       <!-- Display Mexican driver's license -->
-      {% if documents.mexico_driving_license %}
+      {% if documents.mexico_driver_license %}
       <div class="mb-4">
         <p class="fw-bold">Mexican Driver's License</p>
-        {% for doc in documents.mexico_driving_license %}
+        {% for doc in documents.mexico_driver_license %}
         {% if forloop.first or forloop.counter0|divisibleby:2 %}
         <div class="row">
           {% endif %}
@@ -450,10 +450,10 @@
         <!-- The rest of the questions that need to be displayed -->
         <div class="row">
           <div class="col-12">
-            <p class="gray-color mt-4">{{preferred_countries_label}}</p>
+            <p class="gray-color mt-4">{{ preferred_countries_label }}</p>
             <div class="btn btn-outline-info">
-              {% if preferences.preferred_countries_label %}
-              {{ preferences.preferred_countries_label }}
+              {% if preferences|get_item:preferred_countries_label %}
+              {{ preferences|get_item:preferred_countries_label }}
               {% endif %}
             </div>
           </div>
@@ -461,8 +461,8 @@
           <div class="col-12">
             <p class="gray-color mt-4">{{work_sectors_label}}</p>
             <div class="btn btn-outline-info">
-              {% if preferences.work_sectors_label %}
-              {{ preferences.work_sectors_label }}
+              {% if preferences|get_item:work_sectors_label %}
+              {{ preferences|get_item:work_sectors_label }}
               {% endif %}
             </div>
           </div>
@@ -470,8 +470,8 @@
           <div class="col-12">
             <p class="gray-color mt-4">{{availability_label}}</p>
             <div class="btn btn-outline-info">
-              {% if preferences.availability_label %}
-              {{ preferences.availability_label }}
+              {% if preferences|get_item:availability_label %}
+              {{ preferences|get_item:availability_label }}
               {% endif %}
             </div>
           </div>
@@ -479,17 +479,18 @@
           <div class="col-12">
             <p class="gray-color mt-4">{{health_status_label}}</p>
             <div class="btn btn-outline-info">
-              {% if preferences.health_status_label %}
-              {{ preferences.health_status_label }}
+              {% if preferences|get_item:health_status_label %}
+              {{ preferences|get_item:health_status_label }}
               {% endif %}
+              
             </div>
           </div>
 
           <div class="col-12">
             <p class="gray-color mt-4">{{health_condition_label}}</p>
             <div class="btn btn-outline-info">
-              {% if preferences.health_condition_label %}
-              {{ preferences.health_condition_label }}
+              {% if preferences|get_item:health_condition_label %}
+              {{ preferences|get_item:health_condition_label }}
               {% endif %}
             </div>
           </div>
@@ -497,8 +498,8 @@
           <div class="col-12">
             <p class="gray-color mt-4">{{suffered_injury_label}}</p>
             <div class="btn btn-outline-info">
-              {% if preferences.suffered_injury_label %}
-              {{ preferences.suffered_injury_label }}
+              {% if preferences|get_item:suffered_injury_label %}
+              {{ preferences|get_item:suffered_injury_label }}
               {% endif %}
             </div>
           </div>
@@ -506,8 +507,8 @@
            <div class="col-12">
             <p class="gray-color mt-4">{{longer_period_of_time_label}}</p>
             <div class="btn btn-outline-info">
-              {% if preferences.longer_period_of_time_label %}
-              {{ preferences.longer_period_of_time_label }}
+              {% if preferences|get_item:longer_period_of_time_label %}
+              {{ preferences|get_item:longer_period_of_time_label }}
               {% endif %}
             </div>
           </div>
@@ -515,8 +516,8 @@
           <div class="col-12">
             <p class="gray-color mt-4">{{consent_label}}</p>
             <div class="btn btn-outline-info">
-              {% if preferences.consent_label %}
-              {{ preferences.consent_label }}
+              {% if preferences|get_item:consent_label %}
+              {{ preferences|get_item:consent_label }}
               {% endif %}
             </div>
           </div>
@@ -524,8 +525,8 @@
           <div class="col-12">
             <p class="gray-color mt-4">{{physical_activities_label}}</p>
             <div class="btn btn-outline-info">
-              {% if preferences.physical_activities_label %}
-              {{ preferences.physical_activities_label }}
+              {% if preferences|get_item:physical_activities_label %}
+              {{ preferences|get_item:physical_activities_label }}
               {% endif %}
             </div>
           </div>
@@ -533,8 +534,8 @@
           <div class="col-12">
             <p class="gray-color mt-4">{{work_environment_label}}</p>
             <div class="btn btn-outline-info">
-              {% if preferences.work_environment_label %}
-              {{ preferences.work_environment_label }}
+              {% if preferences|get_item:work_environment_label %}
+              {{ preferences|get_item:work_environment_label }}
               {% endif %}
             </div>
           </div>

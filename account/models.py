@@ -194,6 +194,9 @@ class UserDocuments(AuditableModel):
 
     objects = SoftDeleteManager()
     all_objects = models.Manager()
+    
+    def __str__(self):
+        return f'{self.user.email} - {self.kind}'
 
 
 class UserJobExperience(AuditableModel):

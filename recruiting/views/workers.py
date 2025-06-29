@@ -487,7 +487,7 @@ class WorkerDetailsView(View):
         logger = AppLogger(log_file='logs/debug.log')
         worker = get_object_or_404(User, pk=pk)
         base_url = request.build_absolute_uri('/')
-        work_experience = UserWorkExperience.objects.filter(user=worker).first()
+        work_experience = UserWorkExperience.objects.filter(user=worker)
         preferences = UserPreference.objects.filter(user=worker)
         preference_data = {pref.key: pref.value for pref in preferences}
         # They should not be displayed to the user
@@ -514,11 +514,10 @@ class WorkerDetailsView(View):
         
     
         documents = UserDocuments.objects.filter(
-            user=worker, kind__in=[
-                'passport', 'english_video', 'profile_picture'
-                'us_driving_license', 'mexico_driving_license'
-            ])
+            user=worker)
+        
         document_dict = {}
+
         for doc in documents:
             kind = doc.kind.lower() if doc.kind else "other"
             if kind not in document_dict:
@@ -533,7 +532,7 @@ class WorkerDetailsView(View):
             for 
             experience in worker.work_experiences.all()
         }
-
+        
         static_content = StaticContent()
         document_labels = static_content.get_document_labels()
         preferred_countries_label = static_content.get_label_for_preference_field("whereYouWantToWork")
@@ -551,9 +550,6 @@ class WorkerDetailsView(View):
         work_environment_label = static_content.get_label_for_preference_field_two("workEnvironment")
         language_options = static_content.get_english_proficiency_options()
         language_label = static_content.get_label_for_field("englishProficiency")
-        print(document_dict,"preference_data")
-        print(preference_data,"preference")
-        
 
         profile_completion = calculate_profile_completion(worker)
         latest_assignment = WorkAssignment.objects.filter(
@@ -561,7 +557,7 @@ class WorkerDetailsView(View):
         ).order_by('-assigned_date').first()
 
         current_status = latest_assignment.status if latest_assignment else 'No Assignment'
-       
+        logger.debug(preference_data)
         context = {
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
             'worker': worker,
