@@ -48,80 +48,83 @@ from recruiting.forms import WorkerCreateForm,RecruiterAdminCreateForm,EmployerF
 
 class UserListView(LoginRequiredMixin, View):
     def get(self, request):
-        
-
+        # Forms
         form = UpdateAccountDetailsForm() 
         form_worker_class = WorkerCreateForm()
         form_recruiter_admin_class = RecruiterAdminCreateForm()
         language_choices = form.fields["language"].choices
-
-        status_choices = [
-            (True, "Active"),
-            (False, "Inactive"),
-        ]
+        status_choices = [(True, "Active"), (False, "Inactive")]
 
         workers_list = User.objects.filter(groups__name='worker').values(
-            'id','curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
+            'id', 'curp', 'email', 'first_name', 'last_name',
+            'created_at', 'is_active', 'language'
         )
 
-        
-        recruiter_organizations = Organization.objects.filter(type='recruiter').values(
-            'id', 'name', 'email', 'phone', 'website', 'address', 'city', 'state', 'country', 'zip_code', 'type', 'is_active'
-        )
+        recruiter_organizations = Organization.objects.filter(type='recruiter').values()
+        employer_organizations = Organization.objects.filter(type='employer').values()
 
-        employer_organizations = Organization.objects.filter(type='employer').values(
-            'id', 'name', 'email', 'phone', 'website', 'address', 'city', 'state', 'country', 'zip_code', 'type', 'is_active'
-        )
+        is_admin = request.user.is_superuser
+        recruiters, recruiter_admins, employers, employer_admins = [], [], [], []
 
-        recruiters = list(User.objects.filter(groups__name='recruiter').values(
-            'id','curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
-        ))
-        for r in recruiters:
-            r['group'] = 'recruiter'
+        if is_admin:
+            recruiters = User.objects.filter(groups__name='recruiter').prefetch_related('organizations')
+            recruiter_admins = User.objects.filter(groups__name='recruiter_admin').prefetch_related('organizations')
+            employers = User.objects.filter(groups__name='employer').prefetch_related('organizations')
+            employer_admins = User.objects.filter(groups__name='employer_admin').prefetch_related('organizations')
+        else:
+            user_orgs = request.user.organizations.all()
+            recruiters = User.objects.filter(
+                groups__name='recruiter',
+                created_by=request.user.id
+            ).prefetch_related('organizations')
 
-        recruiter_admins = list(User.objects.filter(groups__name='recruiter_admin').values(
-            'id','curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
-        ))
-        for ra in recruiter_admins:
-            ra['group'] = 'recruiter_admin'
+            recruiter_admins = User.objects.filter(
+                groups__name='recruiter_admin',
+                created_by=request.user.id 
+            ).prefetch_related('organizations')
+            
+            employers = User.objects.filter(
+                groups__name='employer',
+                created_by=request.user.id
+            ).prefetch_related('organizations')
 
-        employer = list(User.objects.filter(groups__name='employer').values(
-            'id','curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
-        ))
-        for ra in employer:
-            ra['group'] = 'employer'
+            employer_admins = User.objects.filter(
+                groups__name='employer_admin',
+                created_by=request.user.id
+            ).prefetch_related('organizations')
 
-        employer_admin = list(User.objects.filter(groups__name='employer_admin').values(
-            'id','curp', 'email', 'first_name', 'last_name', 'created_at', 'is_active', 'language'
-        ))
-        for ra in employer_admin:
-            ra['group'] = 'employer_admin'
-
-        combined_recruiter = recruiters + recruiter_admins
-        combined_employer = employer + employer_admin
+        # Assign group info for template
+        for user in recruiters:
+            user.group = 'recruiter'
+        for user in recruiter_admins:
+            user.group = 'recruiter_admin'
+        for user in employers:
+            user.group = 'employer'
+        for user in employer_admins:
+            user.group = 'employer_admin'
 
         context = {
-            'recruiters_list': combined_recruiter, 
+            'recruiters_list': list(recruiters) + list(recruiter_admins),
             'language_choices': language_choices,
             'status_choices': status_choices,
             'workers': workers_list,
             'form_worker_class': form_worker_class,
             'form_recruiter_admin_class': form_recruiter_admin_class,
-            'employers_list': combined_employer,
+            'employers_list': list(employers) + list(employer_admins),
             'recruiter_organizations': recruiter_organizations,
             'employer_organizations': employer_organizations,
-            
-            }
+        }
+
         return render(request, 'recruiter/manage_users.html', context)
+
 
     def post(self, request):
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         user_email = request.POST.get('email')
-        curp = request.POST.get('curp')
         role = request.POST.get('role')
 
-        if not all([first_name, last_name, user_email, curp, role]):
+        if not all([first_name, last_name, user_email, role]):
             messages.error(request, _("addUserAllFieldsAreRequired."))
             return redirect('manage_users')
 
@@ -129,7 +132,6 @@ class UserListView(LoginRequiredMixin, View):
             first_name=first_name,
             last_name=last_name,
             email=user_email,
-            curp=curp,
             is_active=True
         )
 
@@ -168,7 +170,7 @@ class UserListView(LoginRequiredMixin, View):
             messages.error(request, _("inviteEmailFailedToSendEmail."))
 
         return redirect('manage_users')
-    
+
 class RecruiterManageDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         user = request.user
@@ -528,4 +530,3 @@ class LogDetailView(LoginRequiredMixin, DetailView):
     model = Log
     template_name = 'userlogs/log_detail.html'
     context_object_name = 'log'
-

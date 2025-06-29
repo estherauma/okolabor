@@ -28,7 +28,8 @@ import json
 from datetime import date
 from recruiting.utils import get_sector_choices
 from common.utils import StaticContent
-from recruiting.utils import calculate_total_experience
+from recruiting.utils import calculate_total_experience,calculate_profile_completion
+from common.logger import AppLogger
 
 
 ONBOARDING_STEPS = [
@@ -483,11 +484,13 @@ class WorkerCreateView(CreateView):
 
 class WorkerDetailsView(View):
     def get(self, request, pk):
+        logger = AppLogger(log_file='logs/debug.log')
         worker = get_object_or_404(User, pk=pk)
         base_url = request.build_absolute_uri('/')
         work_experience = UserWorkExperience.objects.filter(user=worker).first()
         preferences = UserPreference.objects.filter(user=worker)
         preference_data = {pref.key: pref.value for pref in preferences}
+        # They should not be displayed to the user
         tracking_keys = [
             'profileStepOne',
             'workExperience',
@@ -505,13 +508,16 @@ class WorkerDetailsView(View):
             'workPreferences',
         ]
         
+        # remove keys from data sent.
         for key in tracking_keys:
             preference_data.pop(key, None)
-        workplaces = preference_data.get('workplaces', '').split(',') if 'workplaces' in preference_data else []
-        preferred_employees = preference_data.get('Prefered_Employes', '').split(',') if 'Prefered_Employes' in preference_data else []
         
-
-        documents = UserDocuments.objects.filter(user=worker)
+    
+        documents = UserDocuments.objects.filter(
+            user=worker, kind__in=[
+                'passport', 'english_video', 'profile_picture'
+                'us_driving_license', 'mexico_driving_license'
+            ])
         document_dict = {}
         for doc in documents:
             kind = doc.kind.lower() if doc.kind else "other"
@@ -537,20 +543,31 @@ class WorkerDetailsView(View):
         preferences_note_label = static_content.get_label_for_preference_field("tellUsMore")
         availability_label = static_content.get_label_for_preference_field("availability")
         health_status_label = static_content.get_label_for_preference_field_two("healthStatus")
-        health_condition_label = static_content.get_label_for_preference_field_two("healthCondition")
-        suffered_injury_label = static_content.get_label_for_preference_field_two("suffred_injury")
-        longer_period_of_time_label = static_content.get_label_for_preference_field_two("longerPeriodOfTime")
+        health_condition_label = static_content.get_label_for_preference_field_two("HealthCondition")
+        suffered_injury_label = static_content.get_label_for_preference_field_two("sufferedInjury")
+        longer_period_of_time_label = static_content.get_label_for_preference_field_two("longerPeriodsOfTime")
         consent_label = static_content.get_label_for_preference_field_two("consent")
         physical_activities_label = static_content.get_label_for_preference_field_two("physicalActivities")
         work_environment_label = static_content.get_label_for_preference_field_two("workEnvironment")
         language_options = static_content.get_english_proficiency_options()
         language_label = static_content.get_label_for_field("englishProficiency")
+        print(document_dict,"preference_data")
+        print(preference_data,"preference")
+        
+
+        profile_completion = calculate_profile_completion(worker)
+        latest_assignment = WorkAssignment.objects.filter(
+            worker=worker
+        ).order_by('-assigned_date').first()
+
+        current_status = latest_assignment.status if latest_assignment else 'No Assignment'
+       
         context = {
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
             'worker': worker,
             'preferences': preference_data,
-            'workplaces': workplaces,
-            'preferred_employees': preferred_employees,
+            'profile_completion': profile_completion,
+            'current_status': current_status,
             'documents': document_dict,
             'base_url': base_url,
             'document_labels': document_labels,
@@ -873,7 +890,7 @@ class UploadDocumentsView(View):
                 )
 
         text = _('documentsUploadedFor')
-        messages.success(request, f"{text} {user.get_full_name() or user.username}.")
+        messages.success(request, f"{text} {user.get_full_name() or user.email}.")
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
     
 class UploadLanguageProficiencyView(View):
@@ -896,7 +913,7 @@ class UploadLanguageProficiencyView(View):
         )
 
         if language_level != "none" and language_video:
-            folder = "uploads/english_videos"
+            folder = "uploads/explanation"
             filename = language_video.name
             relative_path = os.path.join(folder, filename)
             full_path = os.path.join(settings.MEDIA_ROOT, relative_path)

@@ -2,6 +2,7 @@ from django.db import models
 from common.models import AuditableModel,SoftDeleteManager
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.fields import  JSONField
 
 User = get_user_model()
 
@@ -61,22 +62,28 @@ class WorkRequests(AuditableModel):
 
 
 
+from django.contrib.postgres.fields import ArrayField  # if using PostgreSQL
+
 class Role(AuditableModel):
     title = models.CharField(max_length=255)
     usdol_case_number = models.CharField(max_length=50)
     number_of_required_workers = models.IntegerField()
     description = models.TextField()
     work_type = models.CharField(null=True, blank=True, max_length=50)
+    work_type_detail = JSONField(blank=True, null=True)  # Stores animal_types, crop_types, etc.
+    responsibilities_types = ArrayField(
+        models.CharField(max_length=100), blank=True, null=True
+    )  # Stored separately
     work_request = models.ForeignKey(
-        WorkRequests, on_delete=models.DO_NOTHING,
-        related_name='roles'
+        WorkRequests, on_delete=models.DO_NOTHING, related_name='roles'
     )
 
-    objects = SoftDeleteManager()  # Only active (non-deleted)
+    objects = SoftDeleteManager()
     all_objects = models.Manager()
 
     def __str__(self):
         return f'{self.title}'
+
     
 class WorkAssignment(AuditableModel):
     STATUS_CHOICES = (
@@ -319,27 +326,6 @@ class EmployerRecruiter(AuditableModel):
     def __str__(self):
         return f"{self.recruiter.first_name} -> {self.employer.name}"
 
-class RecruiterOrganizationEmployer(AuditableModel):
-    recruiter_organization = models.ForeignKey(
-        Organization,
-        on_delete=models.CASCADE,
-        related_name='assigned_employers',
-        limit_choices_to={'type': 'recruiter'}
-    )
-    employer_organization = models.ForeignKey(
-        Organization,
-        on_delete=models.CASCADE,
-        related_name='assigned_recruiters',
-        limit_choices_to={'type': 'employer'}
-    )
-
-    class Meta:
-        unique_together = ('recruiter_organization', 'employer_organization')
-
-    def __str__(self):
-        return f"{self.recruiter_organization.name} -> {self.employer_organization.name}"
-
-
 class EmployerContact(AuditableModel):
     employer = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="contacts")
     name = models.CharField(max_length=255)
@@ -358,21 +344,33 @@ class EmployerRecruiterOrgLink(AuditableModel):
         ('accepted', 'Accepted'),
         ('rejected', 'Rejected'),
     )
-    employer_org = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='assigned_recruiter_orgs')
-    recruiter_org = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='assigned_employer_orgs')
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+
+    employer_org = models.ForeignKey(
+        Organization, on_delete=models.CASCADE, related_name='assigned_recruiter_orgs'
+    )
+    recruiter_org = models.ForeignKey(
+        Organization, on_delete=models.CASCADE, related_name='assigned_employer_orgs'
+    )
+    
+    employer_status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    recruiter_status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    final_status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')  # Optional
+
     user_updated_by = models.ForeignKey(EmployerContact, on_delete=models.SET_NULL, null=True, blank=True)
 
     objects = SoftDeleteManager()
     all_objects = models.Manager()
+
     class Meta:
         unique_together = ('employer_org', 'recruiter_org')
-        
+
+    def is_fully_accepted(self):
+        return self.employer_status == 'accepted' and self.recruiter_status == 'accepted'
+
     def updated_by_name(self):
         if self.user_updated_by and self.user_updated_by.user:
             return f"{self.user_updated_by.user.first_name} {self.user_updated_by.user.last_name}"
         return "N/A"
 
-
     def __str__(self):
-        return f"{self.employer_org.name} → {self.recruiter_org.name} [{self.status}]"
+        return f"{self.employer_org.name} → {self.recruiter_org.name} [{self.final_status}]"

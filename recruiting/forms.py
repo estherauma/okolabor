@@ -122,40 +122,145 @@ class WorkerAssignmentForm(forms.ModelForm):
 class WorkRequestRoleForm(forms.ModelForm):
     work_type = forms.ChoiceField(
         choices=[],
-        widget=forms.Select(attrs={'class': 'form-control'})
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_type_sector'}),
+        required=True,
     )
+
+    # Optional dynamic fields
+    animal_types = forms.MultipleChoiceField(
+        required=False,
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_animal_types'}),
+    )
+    crop_types = forms.MultipleChoiceField(
+        required=False,
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_crop_types'}),
+    )
+    crop_job_types = forms.MultipleChoiceField(
+        required=False,
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_crop_job_types'}),
+    )
+    mechanic_job_types = forms.MultipleChoiceField(
+        required=False,
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_mechanic_jobs'}),
+    )
+    supervision_jobs_types = forms.MultipleChoiceField(
+        required=False,
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_supervision_jobs'}),
+    )
+
+    licensed_vehicle_operation_types = forms.MultipleChoiceField(
+        required=False,
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'licensed_vehicle_operations'}),
+    )
+
+    responsibilities_types = forms.MultipleChoiceField(
+        required=False,
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_responsibilities_types'}),
+    )
+
 
     class Meta:
         model = Role
         fields = [
-            'title', 'usdol_case_number', 'work_type',
-            'number_of_required_workers', 'work_request', 'description'
+            'title',
+            'usdol_case_number',
+            'work_type',
+            'animal_types',
+            'crop_types',
+            'crop_job_types',
+            'mechanic_job_types',
+            'supervision_jobs_types',
+            'responsibilities_types',
+            'number_of_required_workers',
+            'licensed_vehicle_operation_types',
+            'work_request',
+            'description',
         ]
-
-        labels = {
-            'title': _('addRoleTitle'),
-            'usdol_case_number': _('addRoleUsdolCaseNumber'),
-            'work_type': _('addRoleWorkType'),
-            'number_of_required_workers': _('addRoleNumberOfRequiredWorkers'),
-            'work_request': _('addRoleWorkRequest'),
-            'description': _('addRoleDescription'),
-        }
-
+        # ✅ Restored form-control styles for main fields
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'usdol_case_number': forms.TextInput(attrs={'class': 'form-control'}),
             'number_of_required_workers': forms.NumberInput(attrs={'class': 'form-control'}),
-            'work_request': forms.Select(attrs={
-                'class': 'form-control',
-                'readonly': True
-            }),
-            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'work_request': forms.Select(attrs={'class': 'form-control', 'readonly': True}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         content_service = StaticContent()
+
         self.fields['work_type'].choices = content_service.get_sector_choices()
+
+        field_config = {
+            'animal_types': {
+                'choices': content_service.get_animal_type_choices,
+                'label': content_service.get_label_for_field('animalType'),
+            },
+            'responsibilities_types': {
+                'choices': content_service.get_animal_responsibilities_choices,
+                'label': content_service.get_label_for_field('responsibilities'),
+            },
+            'crop_types': {
+                'choices': content_service.get_crop_type_choices,
+                'label': content_service.get_label_for_field('cropType'),
+            },
+            'crop_job_types': {
+                'choices': content_service.get_crop_responsibilities_choices,
+                'label': content_service.get_label_for_field('crop_job_types'),
+            },
+            'mechanic_job_types': {
+                'choices': content_service.get_mechanics_responsibilities_choices,
+                'label': content_service.get_label_for_field('mechanic_job_types'),
+            },
+            'supervision_jobs_types': {
+                'choices': content_service.get_worker_supervision_choices,
+                'label': content_service.get_label_for_field('supervision_jobs_types'),
+            },
+            'licensed_vehicle_operation_types': {
+                'choices': content_service.get_worker_licensed_vehicle_operation_choices,
+                'label': content_service.get_label_for_field('licensed_vehicle_operation_types'),
+            },
+        }
+
+        for field_name, config in field_config.items():
+            if field_name in self.fields:
+                self.fields[field_name].choices = config['choices']()
+                self.fields[field_name].label = config['label']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        work_type = cleaned_data.get("work_type", "").strip().lower()
+        request = self.data
+        work_type_detail = {}
+
+        def strip_list(field_name):
+            return [item.strip() for item in request.getlist(field_name) if item.strip()]
+
+        # Map work_type values to the relevant dynamic form fields
+        dynamic_fields_by_type = {
+            "animals": ["animal_types", "responsibilities_types"],
+            "crop_and_horticulture": ["crop_types", "crop_job_types"],
+            "mechanics": ["mechanic_job_types"],
+            "worker_supervision__management": ["supervision_jobs_types"],
+            "licensed_vehicle_operation": ["licensed_vehicle_operation_types"],
+            # construction, licensed_vehicle_operation, other → only description
+        }
+
+        if work_type in dynamic_fields_by_type:
+            for field in dynamic_fields_by_type[work_type]:
+                work_type_detail[field] = strip_list(field)
+
+        cleaned_data["work_type"] = work_type  # Ensure lowercase consistency
+        cleaned_data["work_type_detail"] = work_type_detail
+        return cleaned_data
+
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.work_type_detail = self.cleaned_data.get("work_type_detail", {})
+        if commit:
+            instance.save()
+        return instance
 
 
 
@@ -164,7 +269,6 @@ class RoleHoursForm(forms.ModelForm):
     class Meta:
         model = Hours
         fields = [
-            'role',
             'on_call',
             'estimate_weekly_hours',
             'sunday_hours',
@@ -175,6 +279,7 @@ class RoleHoursForm(forms.ModelForm):
             'friday_hours',
             'saturday_hours',
             'job_description']
+        exclude = ['role']
         
         labels = {
             'role': _('roleHoursRole'),
@@ -233,10 +338,11 @@ class RoleWagesForm(forms.ModelForm):
     class Meta:
         model = Wages
         fields = [
-            'role', 'wage', 'wage_type', 'piece_rate_offerings',
+            'wage', 'wage_type', 'piece_rate_offerings',
             'piece_rate_offerings_type', 'frequency_of_pay',
             'details'
         ]
+        exclude = ['role']
         
         labels = {
             'role': _('roleWagesRole'),
@@ -295,7 +401,8 @@ class RoleWagesForm(forms.ModelForm):
 class RoleDeductionForm(forms.ModelForm):
     class Meta:
         model = Deduction
-        fields = ['role', 'description', 'deduction_amount','frequency_of_pay']
+        fields = ['description', 'deduction_amount','frequency_of_pay']
+        exclude = ['role']
         
         labels = {
             'role': _('roleDeductionsRole'),
@@ -336,7 +443,6 @@ class RoleQualificationForm(forms.ModelForm):
     class Meta:
         model = Qualification
         fields = [
-            'role',
             'minimum_education_requirement',
             'experience_required',
             'number_of_months_experience_required',
@@ -353,6 +459,7 @@ class RoleQualificationForm(forms.ModelForm):
             'repetitive_movements',
             'support_of_other_employees',
             'other_qualifications']
+        exclude = ['role']
         
         labels = {
             'role': _('roleQualificationRole'),
@@ -443,9 +550,10 @@ class RoleEmploymentLocationForm(forms.ModelForm):
     class Meta:
         model = EmploymentLocation
         fields = [
-            'role', 'address', 'city', 'county', 'state',
+            'address', 'city', 'county', 'state',
             'postal_code', 'additional_info', 'role'
         ]
+        exclude = ['role']
 
         labels = {
             'role': _('roleEmploymentLocationRole'),
@@ -511,9 +619,10 @@ class RoleHousingInformationForm(forms.ModelForm):
     class Meta:
         model = HousingInformation
         fields = [
-            'role', 'address', 'city', 'county', 'state',
+            'address', 'city', 'county', 'state',
             'postal_code', 'type_of_housing', 'additional_info'
         ]
+        exclude = ['role']
 
         labels = {
             'role': _('roleHousingInformationRole'),
@@ -571,10 +680,11 @@ class RoleMealProvision(forms.ModelForm):
     class Meta:
         model = MealProvision
         fields = [
-            'role', 'will_provide_meals',
+            'will_provide_meals',
             'meal_charge_amount',
             'additional_info',
         ]
+        exclude = ['role']
         
         labels = {
             'role': _('roleMealProvisionRole'),
@@ -713,7 +823,7 @@ class WorkerCreateForm(forms.ModelForm):
         }
         widgets = {
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
-            'curp': forms.TextInput(attrs={'class': 'form-control'}),
+            'curp': forms.TextInput(attrs={'class': 'form-control','required': True}),
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
             'dob': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),

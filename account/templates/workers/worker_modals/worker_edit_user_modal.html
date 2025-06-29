@@ -12,10 +12,6 @@
         <form id="editWorkerForm" method="POST" action="{% url 'edit_worker' curp='curp_placeholder' %}">
           {% csrf_token %}
           <div class="mb-3">
-            <label for="edit_curp" class="form-label modal-labels-custom">{% translate "editWorkerCURP" %}</label>
-            <input type="text" class="form-control" id="edit_curp" name="curp" readonly />
-          </div>
-          <div class="mb-3">
             <label for="edit_first_name" class="form-label modal-labels-custom">{% translate "editWorkerFirstName" %}</label>
             <input type="text" class="form-control" id="edit_first_name" name="first_name" readonly />
           </div>

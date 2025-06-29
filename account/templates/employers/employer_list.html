@@ -16,16 +16,16 @@
             </div>
         </div>
         <div class="table-responsive">
-            <table class="table text-nowrap border-bottom" id="recruiters-datatable">
+            <table class="table text-nowrap border-bottom" id="employers-datatable">
                 <thead style="background-color: #7DBF96;">
                     <tr>
                         <th class="text-start"><input type="checkbox" id="select-all-employer-checkbox"></th>
-                        <th class="text-start">{% translate "manageUsersEmployersTableCurp" %}</th>
                         <th class="text-start">{% translate "manageUsersEmployersTableEmail" %}</th>
                         <th class="text-start">{% translate "manageUsersEmployersTableFirstName" %}</th>
                         <th class="text-start">{% translate "manageUsersEmployersTableCreatedAt" %}</th>
                         <th class="text-start">{% translate "manageUsersEmployersTableStatus" %}</th>
                         <th class="text-start">{% translate "manageUsersEmployersTableGroup" %}</th>
+                        <th class="text-start">{% translate "manageUsersEmployersTableOrganization" %}</th>
                         <th class="text-start">{% translate "manageUsersEmployersTableActions" %}</th>
                     </tr>
                 </thead>
@@ -35,19 +35,29 @@
                         <td style="padding-left:32px;">
                             <input type="checkbox" class="form-check-input employer-checkbox" value="{{ user.id }}">
                         </td>
-                        <td>{{ user.curp }}</td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.first_name }} {{ user.last_name }}</td>
                         <td>{{ user.created_at }}</td>
                         <td>
                           {% if user.is_active %}
-                            {% trans "webCommonActive" %}
+                            {% translate "webCommonActive" %}
                           {% else %}
-                            {% trans "webCommonInactive" %}
+                            {% translate "webCommonInactive" %}
                           {% endif %}
                         </td>
-                        <td>{{ user.group }}</td>
                         <td>
+                          {% if user.group == "employer" %}
+                            {% translate "webCommonNo" %}
+                          {% elif user.group == "employer_admin" %}
+                            {% translate "webCommonYes" %}
+                          {% endif %}
+                        </td>
+                        <td>
+                            {% for org in user.organizations.all %}
+                                {{ org.name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </td> 
+                        <td class="text-center">
                             <i
                                 class="side-menu__icon icon icon-pencil me-2 cursor-pointer edit-employer-btn"
                                 data-bs-toggle="modal"
@@ -63,10 +73,10 @@
                             </i>
                             <i 
                                 class="fa fa-trash text-danger" 
-                                style="cursor: pointer;" 
+                                style="cursor: pointer;font-size: 15px;" 
                                 data-bs-toggle="modal" 
                                 data-bs-target="#deleteModalManageEmployer{{ user.id }}" 
-                                title={% translate "webCommonDelete"%}>
+                                title={% translate "webCommonDelete" %}>
                             </i>
                         </td>
                     </tr>

@@ -63,6 +63,12 @@ function handleTypeSectorChange(event) {
             field1Options: ["Animals", "Crop and Horticulture", "Other"],
             field2Label: null,
             field2Options: null
+        },
+         "Licensed Vehicle Operation": {
+            field1Label: "Tasks",
+            field1Options: ["Cargo licence", "Passenger licence"],
+            field2Label: null,
+            field2Options: null
         }
     };
 

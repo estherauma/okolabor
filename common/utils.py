@@ -47,13 +47,15 @@ class StaticContent:
 
     def get_responsibilities_choices(self, category=None):
         data = self.content.get("responsibilities", {}).get("data", [])
+        print(data,"datatatta")
         result = []
         for item in data:
             if not item.get("enabled"):
                 continue
-            if category and category not in item.get("category", []):
+            if category and category not in [c.strip() for c in item.get("category", [])]:
                 continue
             result.append((self._normalize(item["name"]), item["label"]))
+            print(result,"result")
         return result
 
     def get_animal_responsibilities_choices(self):
@@ -67,6 +69,9 @@ class StaticContent:
 
     def get_worker_supervision_choices(self):
         return self.get_responsibilities_choices("Worker supervision / management")
+    
+    def get_worker_licensed_vehicle_operation_choices(self):
+        return self.get_responsibilities_choices("Licensed vehicle operation")
     
     def get_document_labels(self):
         documents_section = self.content.get("documents", {}).get("form_questions", [])

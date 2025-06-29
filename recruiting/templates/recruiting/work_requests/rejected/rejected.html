@@ -2,7 +2,7 @@
 {% load user_role_tags %}
 {% load static %}
 
-<div class="tab-pane" id="tab6">
+<div class="tab-pane" id="tab5">
 <div class="modal fade" id="columnRejectedSettingsModal" tabindex="-1" aria-labelledby="columnRejectedSettingsModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable">
     <div class="modal-content">
@@ -48,7 +48,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="display: none;">{% translate "Close" %}</button>
-        <button type="button" class="btn btn-primary" id="apply-column-settings" style="display: none;">{% translate "Apply" %}</button>
+        <button type="button" class="btn btn-primary" id="apply-rejected-column-settings" style="display: none;">{% translate "Apply" %}</button>
       </div>
     </div>
   </div>
@@ -121,7 +121,7 @@
 
         const table = $('#basic-datatable-rejected').DataTable();
         const settingsBtn =
-            '<button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnConfirmedSettingsModal">' +
+            '<button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnRejectedSettingsModal">' +
                 '<i class="fa fa-cog" aria-hidden="true" style="color: #9A9898;margin-top:-13px"></i>' +
             '</button>';
         const lengthContainer = $('#basic-datatable-rejected_length');
