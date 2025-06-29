@@ -452,17 +452,17 @@
           <div class="col-12">
             <p class="gray-color mt-4">{{ preferred_countries_label }}</p>
             <div class="btn btn-outline-info">
-              {% if preferences|get_item:preferred_countries_label %}
-              {{ preferences|get_item:preferred_countries_label }}
-              {% endif %}
+               {% if preferences.whereYouWantToWork %}
+                  {{ preferences.whereYouWantToWork }}
+                {% endif %}
             </div>
           </div>
 
           <div class="col-12">
             <p class="gray-color mt-4">{{work_sectors_label}}</p>
             <div class="btn btn-outline-info">
-              {% if preferences|get_item:work_sectors_label %}
-              {{ preferences|get_item:work_sectors_label }}
+              {% if preferences.kindOfWork %}
+              {{ preferences.kindOfWork }}
               {% endif %}
             </div>
           </div>
@@ -470,8 +470,8 @@
           <div class="col-12">
             <p class="gray-color mt-4">{{availability_label}}</p>
             <div class="btn btn-outline-info">
-              {% if preferences|get_item:availability_label %}
-              {{ preferences|get_item:availability_label }}
+              {% if preferences.availability %}
+              {{ preferences.availability }}
               {% endif %}
             </div>
           </div>
@@ -479,8 +479,8 @@
           <div class="col-12">
             <p class="gray-color mt-4">{{health_status_label}}</p>
             <div class="btn btn-outline-info">
-              {% if preferences|get_item:health_status_label %}
-              {{ preferences|get_item:health_status_label }}
+              {% if preferences.healthStatus %}
+              {{ preferences.healthStatus }}
               {% endif %}
               
             </div>
@@ -489,8 +489,8 @@
           <div class="col-12">
             <p class="gray-color mt-4">{{health_condition_label}}</p>
             <div class="btn btn-outline-info">
-              {% if preferences|get_item:health_condition_label %}
-              {{ preferences|get_item:health_condition_label }}
+              {% if preferences.HealthCondition %}
+              {{ preferences.HealthCondition }}
               {% endif %}
             </div>
           </div>
@@ -498,8 +498,8 @@
           <div class="col-12">
             <p class="gray-color mt-4">{{suffered_injury_label}}</p>
             <div class="btn btn-outline-info">
-              {% if preferences|get_item:suffered_injury_label %}
-              {{ preferences|get_item:suffered_injury_label }}
+              {% if preferences.sufferedInjury%}
+              {{ preferences.sufferedInjury }}
               {% endif %}
             </div>
           </div>
@@ -507,8 +507,8 @@
            <div class="col-12">
             <p class="gray-color mt-4">{{longer_period_of_time_label}}</p>
             <div class="btn btn-outline-info">
-              {% if preferences|get_item:longer_period_of_time_label %}
-              {{ preferences|get_item:longer_period_of_time_label }}
+              {% if preferences.longerPeriodsOfTime %}
+              {{ preferences.longerPeriodsOfTime }}
               {% endif %}
             </div>
           </div>
@@ -516,8 +516,8 @@
           <div class="col-12">
             <p class="gray-color mt-4">{{consent_label}}</p>
             <div class="btn btn-outline-info">
-              {% if preferences|get_item:consent_label %}
-              {{ preferences|get_item:consent_label }}
+              {% if preferences.consent %}
+              {{ preferences.consent }}
               {% endif %}
             </div>
           </div>
@@ -525,8 +525,8 @@
           <div class="col-12">
             <p class="gray-color mt-4">{{physical_activities_label}}</p>
             <div class="btn btn-outline-info">
-              {% if preferences|get_item:physical_activities_label %}
-              {{ preferences|get_item:physical_activities_label }}
+              {% if preferences.physicalActivities %}
+              {{ preferences.physicalActivities }}
               {% endif %}
             </div>
           </div>
@@ -534,8 +534,8 @@
           <div class="col-12">
             <p class="gray-color mt-4">{{work_environment_label}}</p>
             <div class="btn btn-outline-info">
-              {% if preferences|get_item:work_environment_label %}
-              {{ preferences|get_item:work_environment_label }}
+              {% if preferences.workEnvironment %}
+              {{ preferences.workEnvironment }}
               {% endif %}
             </div>
           </div>
