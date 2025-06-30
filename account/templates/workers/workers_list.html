@@ -1,13 +1,38 @@
 {% load static %}
 {% load i18n %}
 
-<!-- DataTables and FontAwesome CSS -->
+<!-- Include CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
+<style>
+
+  #customLengthContainer select {
+    width: 46px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    height: auto;
+  }
+
+  #customLengthContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .dataTables_length label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0;
+  }
+
+  .custom-toolbar .form-control {
+    max-width: 400px;
+  }
+</style>
+
 <div class="card">
   <div class="card-body">
-
     <!-- Custom Toolbar -->
     <div class="d-flex align-items-center justify-content-between flex-wrap mb-3 custom-toolbar">
       <div></div>
@@ -20,7 +45,6 @@
       </div>
     </div>
 
-    <!-- Hidden container to hold original DataTable controls -->
     <div id="datatable-controls" style="display: none;"></div>
 
     <div class="row">
@@ -105,13 +129,11 @@
 {% endif %}
 {% endfor %}
 
-<!-- Include Modals -->
+
 {% include 'workers/worker_modals/worker_edit_user_modal.html' %}
 {% include 'workers/worker_modals/add_worker_modal.html' %}
 
 {% block scripts %}
-
-<!-- jQuery and DataTables JS -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
@@ -123,12 +145,7 @@
     const table = $('#workers-list-datatable').DataTable({
       ordering: true,
       order: [],
-      columnDefs: [
-        {
-          targets: -1,
-          orderable: false
-        }
-      ],
+      columnDefs: [{ targets: -1, orderable: false }],
       paging: true,
       info: true,
       language: {
@@ -137,22 +154,18 @@
       }
     });
 
-    // Move default controls to hidden container
     $('#workers-list-datatable_length').appendTo('#datatable-controls');
     $('#workers-list-datatable_filter').appendTo('#datatable-controls');
 
-    // Move and style search input
     const searchInput = $('#datatable-controls #workers-list-datatable_filter input')
       .addClass('form-control')
       .attr('placeholder', 'Search...')
       .css('width', '100%');
     $('#customSearchContainer').append(searchInput);
 
-    // Move and style length dropdown
-    const lengthDropdown = $('#datatable-controls #workers-list-datatable_length select').parent();
-    $('#customLengthContainer').append(lengthDropdown);
+    const lengthLabel = $('#datatable-controls #workers-list-datatable_length label');
+    $('#customLengthContainer').append(lengthLabel);
 
-    // Add settings button (custom modal trigger - change modal ID as needed)
     const settingsBtn = `
       <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#userLogColumnSettingsModal">
         <i class="fa fa-cog" aria-hidden="true" style="font-size: 1.3rem; color: #9A9898;"></i>
@@ -161,5 +174,4 @@
     $('#customSettingsContainer').html(settingsBtn);
   });
 </script>
-
-{% endblock scripts %}
+{% endblock %}
