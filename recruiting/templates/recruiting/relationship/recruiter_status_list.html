@@ -25,8 +25,22 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
+                    <!-- Custom Toolbar -->
+                    <div class="d-flex align-items-center justify-content-between flex-wrap mb-3 custom-toolbar">
+                        <div></div>
+                        <div class="flex-grow-1 d-flex justify-content-center">
+                            <div id="recruiter-status-customSearchContainer" style="width: 100%; max-width: 400px;"></div>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <div id="recruiter-status-customSettingsContainer"></div>
+                            <div id="recruiter-status-customLengthContainer"></div>
+                        </div>
+                    </div>
+                    <div id="recruiter-status-datatable-controls" style="display: none;"></div>
+
+
                     <div class="table-responsive">
-                        <table class="table text-nowrap border-bottom" id="basic-datatable">
+                        <table class="table text-nowrap border-bottom" id="recruiter-status-datatable">
                             <thead>
                                 <tr>
                                     <th class="theading-color">{% translate "recruiterStatusEmployerOrganization" %}</th>
@@ -139,5 +153,104 @@
 <script src="{% static ''%}assets/plugins/datatable/dataTables.responsive.min.js"></script>
 <script src="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.min.js"></script>
 <script src="{% static ''%}assets/js/table-sorting.js"></script>
+<script>
+  function applyRecruiterColumnVisibilityFromStorage(table) {
+    $.fn.dataTable.ext.errMode = 'none';
+    const savedSettings = JSON.parse(localStorage.getItem('userLogColumnVisibilitySettings')) || {};
+    const columnClasses = [
+      'col-recruiter-company',
+      'col-recruiter-email',
+      'col-recruiter-location',
+      'col-recruiter-phone',
+      'col-recruiter-assigned',
+      'col-recruiter-actions'
+    ];
+    columnClasses.forEach((columnClass, index) => {
+      const isVisible = savedSettings[columnClass] !== false;
+      table.column(index + 1).visible(isVisible); // +1 to skip checkbox
+      const checkbox = document.querySelector(`.recruiter-column-toggle[value="${index + 1}"]`);
+      if (checkbox) checkbox.checked = isVisible;
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const recruiterTable = $('#recruiter-status-datatable').DataTable({
+      "ordering": true,
+      "order": [],
+      "columnDefs": [
+        {
+          "targets": -1,
+          "orderable": false
+        }
+      ],
+      "paging": true,
+      "info": true
+    });
+    applyRecruiterColumnVisibilityFromStorage(recruiterTable);
+
+    const applyRecruiterBtn = document.getElementById('user-log-column-settings');
+    if (applyRecruiterBtn) {
+      applyRecruiterBtn.addEventListener('click', function () {
+        const savedSettings = {};
+        document.querySelectorAll('.recruiter-column-toggle').forEach(function (checkbox) {
+          const colIndex = parseInt(checkbox.value);
+          const isVisible = checkbox.checked;
+          const columnClass = [
+            'col-recruiter-company',
+            'col-recruiter-email',
+            'col-recruiter-location',
+            'col-recruiter-phone',
+            'col-recruiter-assigned',
+            'col-recruiter-actions'
+          ][colIndex - 1];
+          savedSettings[columnClass] = isVisible;
+          recruiterTable.column(colIndex).visible(isVisible);
+        });
+        localStorage.setItem('userLogColumnVisibilitySettings', JSON.stringify(savedSettings));
+        const modalEl = document.getElementById('userLogColumnSettingsModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        modal?.hide();
+      });
+    }
+  });
+</script>
+<script>
+  $(document).ready(function () {
+    $.fn.dataTable.ext.errMode = 'none';
+
+    const table = $('#recruiter-status-datatable').DataTable({
+      ordering: true,
+      order: [],
+      columnDefs: [
+        { targets: -1, orderable: false }
+      ],
+      paging: true,
+      info: true,
+      language: {
+        searchPlaceholder: "Search...",
+        search: ""
+      }
+    });
+
+    $('#recruiter-status-datatable_length').appendTo('#recruiter-status-datatable-controls');
+    $('#recruiter-status-datatable_filter').appendTo('#recruiter-status-datatable-controls');
+
+    const searchInput = $('#recruiter-status-datatable-controls #recruiter-status-datatable_filter input')
+      .addClass('form-control')
+      .attr('placeholder', 'Search...')
+      .css('width', '100%');
+    $('#recruiter-status-customSearchContainer').append(searchInput);
+
+    const lengthDropdown = $('#recruiter-status-datatable-controls #recruiter-status-datatable_length select').parent();
+    $('#recruiter-status-customLengthContainer').append(lengthDropdown);
+
+    const settingsBtn = `
+      <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#employerColumnSettingsModal">
+        <i class="fa fa-cog" aria-hidden="true" style="font-size: 1.3rem; color: #9A9898;"></i>
+      </button>
+    `;
+    $('#recruiter-status-customSettingsContainer').html(settingsBtn);
+  });
+</script>
 
 {% endblock scripts %}
