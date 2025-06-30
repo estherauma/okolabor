@@ -1,124 +1,175 @@
 {% load i18n %}
 {% load static %}
-<div class="card">
-    <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center">
-            <h3 class="card-title green-color fw-bold mb-1">
-                {% translate "manageUsersEmployersTableTitle" %}
-            </h3>
-            <div class="d-flex">
-                <button type="button" class="btn dark-green-button ms-2 mb-2" id="assign-employer-organization-btn" data-bs-toggle="modal" data-bs-target="#assignEmployerOrganizationModal">
-                    {% translate "manageUsersEmployersTableAssignEmployeOrganization" %}
-                </button>
-                <button class="btn dark-green-button ms-2 mb-2" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#inviteEmployeModal">
-                    {% translate "manageUsersEmployersTableNewEmployer" %}
-                </button>
-            </div>
-        </div>
-        <div class="table-responsive">
-            <table class="table text-nowrap border-bottom" id="employers-datatable">
-                <thead style="background-color: #7DBF96;">
-                    <tr>
-                        <th class="text-start"><input type="checkbox" id="select-all-employer-checkbox"></th>
-                        <th class="text-start">{% translate "manageUsersEmployersTableEmail" %}</th>
-                        <th class="text-start">{% translate "manageUsersEmployersTableFirstName" %}</th>
-                        <th class="text-start">{% translate "manageUsersEmployersTableCreatedAt" %}</th>
-                        <th class="text-start">{% translate "manageUsersEmployersTableStatus" %}</th>
-                        <th class="text-start">{% translate "manageUsersEmployersTableGroup" %}</th>
-                        <th class="text-start">{% translate "manageUsersEmployersTableOrganization" %}</th>
-                        <th class="text-start">{% translate "manageUsersEmployersTableActions" %}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in employers_list %}
-                    <tr class="green-color text-start">
-                        <td style="padding-left:32px;">
-                            <input type="checkbox" class="form-check-input employer-checkbox" value="{{ user.id }}">
-                        </td>
-                        <td>{{ user.email }}</td>
-                        <td>{{ user.first_name }} {{ user.last_name }}</td>
-                        <td>{{ user.created_at }}</td>
-                        <td>
-                          {% if user.is_active %}
-                            {% translate "webCommonActive" %}
-                          {% else %}
-                            {% translate "webCommonInactive" %}
-                          {% endif %}
-                        </td>
-                        <td>
-                          {% if user.group == "employer" %}
-                            {% translate "webCommonNo" %}
-                          {% elif user.group == "employer_admin" %}
-                            {% translate "webCommonYes" %}
-                          {% endif %}
-                        </td>
-                        <td>
-                            {% for org in user.organizations.all %}
-                                {{ org.name }}{% if not forloop.last %}, {% endif %}
-                            {% endfor %}
-                        </td> 
-                        <td class="text-center">
-                            <i
-                                class="side-menu__icon icon icon-pencil me-2 cursor-pointer edit-employer-btn"
-                                data-bs-toggle="modal"
-                                data-bs-target="#editEmployerModal"
-                                data-employer-curp="{{ user.curp }}"
-                                data-employer-first-name="{{ user.first_name }}"
-                                data-employer-last-name="{{ user.last_name }}"
-                                data-employer-email="{{ user.email }}"
-                                data-employer-is-active="{{ user.is_active }}"
-                                data-employer-language="{{ user.language }}"
-                                data-employer-group="{{ user.group }}"
-                                >
-                            </i>
-                            <i 
-                                class="fa fa-trash text-danger" 
-                                style="cursor: pointer;font-size: 15px;" 
-                                data-bs-toggle="modal" 
-                                data-bs-target="#deleteModalManageEmployer{{ user.id }}" 
-                                title={% translate "webCommonDelete" %}>
-                            </i>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
 
-{% for employer in employers_list %}
-  {% if employer.id %}
-    <!-- Delete Modal -->
-    <div class="modal fade" id="deleteModalManageEmployer{{ employer.id }}" tabindex="-1" aria-labelledby="deleteModalManageEmployerLabel{{ employer.id }}" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <form method="POST" action="{% url 'employer_manage_delete' employer.id %}">
-            {% csrf_token %}
-            <div class="modal-header" style="background-color: #7DBF96;">
-              <h5 class="modal-title text-white" id="deleteModalManageEmployerLabel{{ employer.id }}">{% translate "webCommonConfirmDelete" %}</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'webCommonClose'%}"></button>
-            </div>
-            <div class="modal-body">
-              {% translate 'employerListAreYouSureYouWantToDelete'%} <strong>{{ employer.first_name }} {{employer.last_name}}</strong>?
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'webCommonCancel'%}</button>
-              <button type="submit" class="btn" style='background-color:#F95406; color: white'>{% translate 'webCommonDelete'%}</button>
-            </div>
-          </form>
-        </div>
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+<div class="card">
+  <div class="card-body">
+
+    <!-- Custom Toolbar -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap mb-3 custom-toolbar">
+      <div class="d-flex">
+        <button type="button" class="btn dark-green-button ms-2 mb-2" id="assign-employer-organization-btn" data-bs-toggle="modal" data-bs-target="#assignEmployerOrganizationModal">
+          {% translate "manageUsersEmployersTableAssignEmployeOrganization" %}
+        </button>
+        <button class="btn dark-green-button ms-2 mb-2" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#inviteEmployeModal">
+          {% translate "manageUsersEmployersTableNewEmployer" %}
+        </button>
+      </div>
+      <div class="flex-grow-1 d-flex justify-content-center">
+        <div id="employer-customSearchContainer" style="width: 100%; max-width: 400px;"></div>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <div id="employer-customSettingsContainer"></div>
+        <div id="employer-customLengthContainer"></div>
       </div>
     </div>
-  {% endif %}
+    <div id="employer-datatable-controls" style="display: none;"></div>
+
+    <div class="table-responsive">
+      <table class="table text-nowrap border-bottom" id="employers-datatable">
+        <thead style="background-color: #7DBF96;">
+          <tr>
+            <th class="text-start"><input type="checkbox" id="select-all-employer-checkbox"></th>
+            <th class="text-start">{% translate "manageUsersEmployersTableEmail" %}</th>
+            <th class="text-start">{% translate "manageUsersEmployersTableFirstName" %}</th>
+            <th class="text-start">{% translate "manageUsersEmployersTableCreatedAt" %}</th>
+            <th class="text-start">{% translate "manageUsersEmployersTableStatus" %}</th>
+            <th class="text-start">{% translate "manageUsersEmployersTableGroup" %}</th>
+            <th class="text-start">{% translate "manageUsersEmployersTableOrganization" %}</th>
+            <th class="text-start">{% translate "manageUsersEmployersTableActions" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in employers_list %}
+          <tr class="green-color text-start">
+            <td style="padding-left:32px;">
+              <input type="checkbox" class="form-check-input employer-checkbox" value="{{ user.id }}">
+            </td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.first_name }} {{ user.last_name }}</td>
+            <td>{{ user.created_at }}</td>
+            <td>
+              {% if user.is_active %}
+              {% translate "webCommonActive" %}
+              {% else %}
+              {% translate "webCommonInactive" %}
+              {% endif %}
+            </td>
+            <td>
+              {% if user.group == "employer" %}
+              {% translate "webCommonNo" %}
+              {% elif user.group == "employer_admin" %}
+              {% translate "webCommonYes" %}
+              {% endif %}
+            </td>
+            <td>
+              {% for org in user.organizations.all %}
+              {{ org.name }}{% if not forloop.last %}, {% endif %}
+              {% endfor %}
+            </td>
+            <td class="text-center">
+              <i class="fa fa-edit me-2 cursor-pointer edit-employer-btn"
+                data-bs-toggle="modal"
+                data-bs-target="#editEmployerModal"
+                data-employer-curp="{{ user.curp }}"
+                data-employer-first-name="{{ user.first_name }}"
+                data-employer-last-name="{{ user.last_name }}"
+                data-employer-email="{{ user.email }}"
+                data-employer-is-active="{{ user.is_active }}"
+                data-employer-language="{{ user.language }}"
+                data-employer-group="{{ user.group }}">
+              </i>
+              <i class="fa fa-trash text-danger"
+                style="cursor: pointer;font-size: 15px;"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteModalManageEmployer{{ user.id }}"
+                title="{% translate 'webCommonDelete' %}">
+              </i>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Modals -->
+{% for employer in employers_list %}
+{% if employer.id %}
+<div class="modal fade" id="deleteModalManageEmployer{{ employer.id }}" tabindex="-1" aria-labelledby="deleteModalManageEmployerLabel{{ employer.id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="{% url 'employer_manage_delete' employer.id %}">
+        {% csrf_token %}
+        <div class="modal-header" style="background-color: #7DBF96;">
+          <h5 class="modal-title text-white" id="deleteModalManageEmployerLabel{{ employer.id }}">{% translate "webCommonConfirmDelete" %}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'webCommonClose'%}"></button>
+        </div>
+        <div class="modal-body">
+          {% translate 'employerListAreYouSureYouWantToDelete'%} <strong>{{ employer.first_name }} {{employer.last_name}}</strong>?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'webCommonCancel'%}</button>
+          <button type="submit" class="btn" style='background-color:#F95406; color: white'>{% translate 'webCommonDelete'%}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endif %}
 {% endfor %}
 
+<!-- Modals -->
 {% include 'employers/edit_employer_modal.html' %}
 {% include 'employers/create_employer.html' %}
 {% include 'employers/assign-employer-organization-modal.html' %}
 
-
-
 {% block scripts %}
-    <script src="{% static ''%}assets/js/table-sorting.js"></script>
+<!-- DataTables JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    $.fn.dataTable.ext.errMode = 'none';
+
+    const table = $('#employers-datatable').DataTable({
+      ordering: true,
+      order: [],
+      columnDefs: [
+        { targets: -1, orderable: false }
+      ],
+      paging: true,
+      info: true,
+      language: {
+        searchPlaceholder: "Search...",
+        search: ""
+      }
+    });
+
+    $('#employers-datatable_length').appendTo('#employer-datatable-controls');
+    $('#employers-datatable_filter').appendTo('#employer-datatable-controls');
+
+    const searchInput = $('#employer-datatable-controls #employers-datatable_filter input')
+      .addClass('form-control')
+      .attr('placeholder', 'Search...')
+      .css('width', '100%');
+    $('#employer-customSearchContainer').append(searchInput);
+
+    const lengthDropdown = $('#employer-datatable-controls #employers-datatable_length select').parent();
+    $('#employer-customLengthContainer').append(lengthDropdown);
+
+    const settingsBtn = `
+      <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#employerColumnSettingsModal">
+        <i class="fa fa-cog" aria-hidden="true" style="font-size: 1.3rem; color: #9A9898;"></i>
+      </button>
+    `;
+    $('#employer-customSettingsContainer').html(settingsBtn);
+  });
+</script>
 {% endblock scripts %}
