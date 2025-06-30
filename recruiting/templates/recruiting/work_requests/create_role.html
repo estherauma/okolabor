@@ -1,6 +1,7 @@
 {% extends 'components/base.html' %}
 {% load static %}
 {% load i18n %}
+{% load custom_filters %}
 
 {% block title %}
   {% translate "addRoleAddRole" %}
@@ -38,42 +39,24 @@
             {{ form.work_type }}
           </div>
 
-          <!-- Conditionally displayed fields -->
-          <div class="form-group my-3" id="div_id_animal_types" style="display:none;">
-            <label>{{ form.animal_types.label }}</label>
-            {{ form.animal_types }}
-          </div>
+          <!-- Conditionally rendered checkbox groups -->
+          {% for field_name in dynamic_fields %}
+            {% with form|get_field:field_name as field %}
+              <div class="form-group my-3" id="div_id_{{ field_name }}" style="display:none;">
+                <label>{{ field.label }}</label>
+                <div class="d-flex flex-wrap gap-3">
+                  {% for checkbox in field %}
+                    <div class="form-check form-check-inline">
+                      {{ checkbox.tag }}
+                      <label class="form-check-label ms-1">{{ checkbox.choice_label }}</label>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endwith %}
+          {% endfor %}
 
-          <div class="form-group my-3" id="div_id_responsibilities_types" style="display:none;">
-            <label>{{ form.responsibilities_types.label }}</label>
-            {{ form.responsibilities_types }}
-          </div>
-
-          <div class="form-group my-3" id="div_id_crop_types" style="display:none;">
-            <label>{{ form.crop_types.label }}</label>
-            {{ form.crop_types }}
-          </div>
-
-          <div class="form-group my-3" id="div_id_crop_job_types" style="display:none;">
-            <label>{{ form.crop_job_types.label }}</label>
-            {{ form.crop_job_types }}
-          </div>
-
-          <div class="form-group my-3" id="div_id_mechanic_job_types" style="display:none;">
-            <label>{{ form.mechanic_job_types.label }}</label>
-            {{ form.mechanic_job_types }}
-          </div>
-
-          <div class="form-group my-3" id="div_id_supervision_jobs_types" style="display:none;">
-            <label>{{ form.supervision_jobs_types.label }}</label>
-            {{ form.supervision_jobs_types }}
-          </div>
-
-          <div class="form-group my-3" id="div_licensed_vehicle_operation_types" style="display:none;">
-            <label>{{ form.licensed_vehicle_operation_types.label }}</label>
-            {{ form.licensed_vehicle_operation_types }}
-          </div>
-
+          <!-- Conditionally visible description -->
           <div class="form-group my-3" id="div_id_description" style="display:none;">
             <label>{{ form.description.label }}</label>
             {{ form.description }}
@@ -130,7 +113,6 @@
       ];
 
       allFields.forEach(hide);
-      console.log("Selected:", value);
 
       if (value === "animals") {
         show("id_animal_types");
@@ -149,7 +131,7 @@
       } else if (value === "licensed_vehicle_operation") {
         show("licensed_vehicle_operation_types");
         show("id_description");
-      }else if (
+      } else if (
         value === "construction" ||
         value === "other"
       ) {
@@ -159,7 +141,7 @@
 
     if (sectorField) {
       sectorField.addEventListener("change", toggleFields);
-      toggleFields(); // Initial call
+      toggleFields(); // Initial load
     }
   });
 </script>
