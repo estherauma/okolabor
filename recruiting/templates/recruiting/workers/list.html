@@ -703,6 +703,23 @@ function handleFilterChange(selectEl, uniqueId) {
                 </div>`;
             break;
 
+        case "exclude_physical_limitations":
+            html = `
+                <div class="form-group">
+                    <label class="form-label gray-color">{% translate "Select a Physical Limitation Question" %}</label>
+                    <select class="form-control" name="physical_limitation_question_${uniqueId}" onchange="handlePhysicalQuestionChange(this, ${uniqueId})">
+                        <option value="">{% translate "Select" %}</option>
+                        <option value="condition_limit">{% translate "Do you have any physical or mental condition that could limit you and should be considered for a labor intensive job?" %}</option>
+                        <option value="injury_aggravation">{% translate "Have you suffered an injury that could be aggravated by intense physical activity?" %}</option>
+                        <option value="stand_long">{% translate "Are you willing and able to work on your feet for long periods of time?" %}</option>
+                        <option value="lift_weight">{% translate "Are you willing and able to lift/carry up to 60 pounds (27kg)?" %}</option>
+                        <option value="extreme_temps">{% translate "Are you unwilling to work in either hot or cold temperatures?" %}</option>
+                    </select>
+                </div>
+                <div class="form-group mt-2" id="physical-yesno-container-${uniqueId}"></div>
+            `;
+            break;
+
         case "work_preference_type":
             html = `
                 <div class="form-group">
@@ -737,12 +754,29 @@ function handleFilterChange(selectEl, uniqueId) {
                     </select>
                 </div>`;
             break;
+                
 
         default:
             html = "";
     }
 
     extraFieldsContainer.innerHTML = html;
+}
+
+function handlePhysicalQuestionChange(selectEl, uniqueId) {
+    const yesNoContainer = document.getElementById(`physical-yesno-container-${uniqueId}`);
+    if (selectEl.value) {
+        yesNoContainer.innerHTML = `
+            <label class="form-label gray-color">{% translate "Your Answer" %}</label>
+            <select class="form-control" name="${selectEl.value}_answer_${uniqueId}">
+                <option value="">{% translate "Select" %}</option>
+                <option value="yes">{% translate "Yes" %}</option>
+                <option value="no">{% translate "No" %}</option>
+            </select>
+        `;
+    } else {
+        yesNoContainer.innerHTML = "";
+    }
 }
 
 function removeFilterRow(button) {
