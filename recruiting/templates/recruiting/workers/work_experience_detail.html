@@ -17,7 +17,6 @@
           <h4 class="fw-bold text-success">{{ work_experience.user.get_full_name }}</h4>
           <p class="mb-0 text-muted">{{ work_experience.country }}, {{ work_experience.country_display }}</p>
         </div>
-        {% comment %} <a href="#" class="btn btn-warning">{% translate "Edit" %}</a> {% endcomment %}
       </div>
 
       <div class="row">
@@ -43,48 +42,47 @@
             <p>{{ work_experience.work_under_h2a_in_usa|yesno:"Yes,No" }}</p>
           </div>
 
-          <!-- VISA YEAR -->
-          <div class="mb-3">
-            <p class="fw-bold text-uppercase small text-muted">VISA YEAR</p>
-            <p>{{ work_experience.visa_year|default:"—" }}</p>
-          </div>
-
-          <!-- DUTIES -->
-          <div class="mb-4">
-            <p class="fw-bold text-uppercase small text-muted">{% translate "DUTIES" %}</p>
-           {% for job in job_experiences %}
-              {% for duty in job.type_details|split:"," %}
-                <span style="background-color: #f1f1de; color: #1f1f1f; border: 1px solid #6bc48c; border-radius: 20px; padding: 6px 12px; font-weight: 500; display: inline-block; margin-right: 8px; margin-bottom: 8px;">
-                  {{ duty }}
-                </span>
-
-              {% endfor %}
-            {% endfor %}
-          </div>
-
           <!-- Job Details -->
           <div class="mb-4">
             <p class="fw-bold text-uppercase small text-muted">{% translate "jobDetails" %}</p>
             {% for job in job_experiences %}
-              <p><strong>🏢 Company:</strong> {{ job.work_experience.company|default:"—" }}</p>
-              <p><strong>🚜 Job Type:</strong> {{ job.job_type|default:"—" }}</p>
-              <p><strong>📋 Type Details:</strong> {{ job.type_details|default:"—" }}</p>
+              <p><strong>Company:</strong> {{ job.work_experience.company|default:"—" }}</p>
+              <p><strong>Primary Job Type:</strong> {{ job.job_type|default:"—" }}</p>
+
+              {% if job.type_details %}
+                <p class="fw-bold mb-2">Tasks & Responsibilities:</p>
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                  {% for duty in job.type_details|split:"," %}
+                    <span style="
+                      background-color: #fefee8;
+                      color: #1f1f1f;
+                      border: 1px solid #b4d7a8;
+                      border-radius: 999px;
+                      padding: 6px 12px;
+                      font-weight: 500;
+                      font-size: 14px;
+                      display: inline-block;">
+                      {{ duty|trim }}
+                    </span>
+                  {% endfor %}
+                </div>
+              {% endif %}
             {% endfor %}
           </div>
 
           <!-- Supervisor Details -->
           <div class="mb-4">
             <p class="fw-bold text-uppercase small text-muted">{% translate "workExperienceDetailsSupervisorDetails" %}</p>
-            <p>📛 {{ work_experience.supervisor_name|default:"No Supervisor Name" }}</p>
-            <p>📞 <a href="tel:{{ work_experience.supervisor_tel }}" class="text-decoration-underline text-primary">{{ work_experience.supervisor_tel|default:"No Phone" }}</a></p>
-            <p>📧 <a href="mailto:{{ work_experience.supervisor_email }}" class="text-decoration-underline text-primary">{{ work_experience.supervisor_email|default:"No Email" }}</a></p>
+            <p>{{ work_experience.supervisor_name|default:"No Supervisor Name" }}</p>
+            <p><a href="tel:{{ work_experience.supervisor_tel }}" class="text-decoration-underline text-primary">{{ work_experience.supervisor_tel|default:"No Phone" }}</a></p>
+            <p><a href="mailto:{{ work_experience.supervisor_email }}" class="text-decoration-underline text-primary">{{ work_experience.supervisor_email|default:"No Email" }}</a></p>
           </div>
 
           <!-- Work Authorization -->
           <div class="mb-4">
             <p class="fw-bold text-uppercase small text-muted">{% translate "workExperienceDetailsWorkAuthorization" %}</p>
-            <p>🛂 Visa Type: {{ work_experience.visa_type|default:"No Visa Type" }}</p>
-            <p>🇺🇸 H2A Work: {{ work_experience.work_under_h2a_in_usa|yesno:"Yes,No" }}</p>
+            <p>Visa Type: {{ work_experience.visa_type|default:"No Visa Type" }}</p>
+            <p>H2A Work: {{ work_experience.work_under_h2a_in_usa|yesno:"Yes,No" }}</p>
           </div>
 
         </div>
@@ -138,24 +136,4 @@
       </div>
     </div>
   </div>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      document.querySelectorAll(".clickable-media").forEach((item) => {
-        item.addEventListener("click", (event) => {
-          const type = event.currentTarget.getAttribute("data-type");
-          const src = event.currentTarget.getAttribute("data-src");
-          const mediaContent = document.getElementById("mediaContent");
-
-          if (type === "image") {
-            mediaContent.innerHTML = `<img src="${src}" class="img-fluid" alt="Media">`;
-          } else if (type === "video") {
-            mediaContent.innerHTML = `<video controls class="w-100"><source src="${src}" type="video/mp4">Your browser does not support the video tag.</video>`;
-          }
-
-          new bootstrap.Modal(document.getElementById("mediaModal")).show();
-        });
-      });
-    });
-  </script>
 {% endblock %}
