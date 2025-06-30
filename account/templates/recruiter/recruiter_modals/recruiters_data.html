@@ -54,7 +54,7 @@
                                 {{ org.name }}{% if not forloop.last %}, {% endif %}
                             {% endfor %}
                         </td>   
-                        <td>
+                        <td class="text-center">
                             <i
                                 class="side-menu__icon icon icon-pencil me-2 cursor-pointer edit-recruiter-btn"
                                 data-bs-toggle="modal"
@@ -72,7 +72,7 @@
 
                            <i 
                                 class="fa fa-trash text-danger" 
-                                style="cursor: pointer;" 
+                                style="cursor: pointer;font-size: 15px;" 
                                 data-bs-toggle="modal" 
                                 data-bs-target="#deleteModalManageRecruiter{{ user.id }}" 
                                 title={% translate "recruiterListDelete"%}>

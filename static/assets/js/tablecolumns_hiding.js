@@ -105,11 +105,47 @@ document.addEventListener('DOMContentLoaded', function () {
                 '8': 'col-actions'
             },
             storageKey: 'tab3ColumnVisibility',
-            checkboxSelector: '#columnShortListSettingsModal input.column-toggle',
+            checkboxSelector: '#columnSentOfferSettingsModal input.column-toggle',
             tableSelector: '#tab3 table',
-            modalId: 'columnShortListSettingsModal',
-            applyButtonId: 'apply-shortlist-column-settings'
+            modalId: 'columnSentOfferSettingsModal',
+            applyButtonId: 'apply-sentoffer-column-settings'
         });
+        initColumnVisibility({
+            columnMap: {
+                '1': 'col-name',
+                '2': 'col-town',
+                '3': 'col-profile',
+                '4': 'col-experience',
+                '5': 'col-english',
+                '6': 'col-location',
+                '7': 'col-offer',
+                '8': 'col-actions'
+            },
+            storageKey: 'tab4ColumnVisibility',
+            checkboxSelector: '#columnConfirmedSettingsModal input.column-toggle',
+            tableSelector: '#tab4 table',
+            modalId: 'columnConfirmedSettingsModal',
+            applyButtonId: 'apply-confirmed-column-settings'
+        });
+        
+        initColumnVisibility({
+            columnMap: {
+                '1': 'col-name',
+                '2': 'col-town',
+                '3': 'col-profile',
+                '4': 'col-experience',
+                '5': 'col-english',
+                '6': 'col-location',
+                '7': 'col-offer',
+                '8': 'col-actions'
+            },
+            storageKey: 'tab5ColumnVisibility',
+            checkboxSelector: '#columnRejectedSettingsModal input.column-toggle',
+            tableSelector: '#tab5 table',
+            modalId: 'columnRejectedSettingsModal',
+            applyButtonId: 'apply-rejected-column-settings'
+        });
+        
     }
     initColumnVisibility({
         columnMap: {
@@ -157,10 +193,44 @@ document.addEventListener('DOMContentLoaded', function () {
             '8': 'col-actions'
         },
         storageKey: 'tab3ColumnVisibility',
-        checkboxSelector: '#columnShortListSettingsModal input.column-toggle',
+        checkboxSelector: '#columnSentOfferSettingsModal input.column-toggle',
         tableSelector: '#tab3 table',
         modalId: 'columnShortListSettingsModal',
-        applyButtonId: 'apply-shortlist-column-settings'
+        applyButtonId: 'apply-sentoffer-column-settings'
+    });
+    initColumnVisibility({
+        columnMap: {
+            '1': 'col-name',
+            '2': 'col-town',
+            '3': 'col-profile',
+            '4': 'col-experience',
+            '5': 'col-english',
+            '6': 'col-location',
+            '7': 'col-offer',
+            '8': 'col-actions'
+        },
+        storageKey: 'tab4ColumnVisibility',
+        checkboxSelector: '#columnConfirmedSettingsModal input.column-toggle',
+        tableSelector: '#tab4 table',
+        modalId: 'columnConfirmedSettingsModal',
+        applyButtonId: 'apply-confirmed-column-settings'
+    });
+    initColumnVisibility({
+        columnMap: {
+            '1': 'col-name',
+            '2': 'col-town',
+            '3': 'col-profile',
+            '4': 'col-experience',
+            '5': 'col-english',
+            '6': 'col-location',
+            '7': 'col-offer',
+            '8': 'col-actions'
+        },
+        storageKey: 'tab5ColumnVisibility',
+        checkboxSelector: '#columnRejectedSettingsModal input.column-toggle',
+        tableSelector: '#tab5 table',
+        modalId: 'columnRejectedSettingsModal',
+        applyButtonId: 'apply-rejected-column-settings'
     });
     document.addEventListener('click', function(e) {
         if (e.target.matches('.pagination a')) {

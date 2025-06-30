@@ -28,16 +28,15 @@
             
         </div>
         <div class="d-flex align-items-center gap-2">
-            <a class="btn dark-green-button add-job-btn" href="{% url 'recruiting_web:workrequest_create' %}" style="min-width: 150px;">
+            <a class="btn dark-green-button add-job-btn" href="#" data-bs-toggle="modal" data-bs-target="#jobOrderModal" style="min-width: 150px;">
                 {% translate "jobOrderListAddNewJobOrder" %}
             </a>
-            <!-- Edit Icon to open modal -->
-            <!-- <button type="button" class="btn yellow-button add-job-btn" data-bs-toggle="modal" data-bs-target="#statusModal">
-                <i class="fas fa-edit"></i> 
-            </button> -->
+
         </div>
     </div>
 </form>
+
+{% include 'recruiting/work_requests/create.html' %}
 
 <!-- Status Update Modal -->
 <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
@@ -148,14 +147,14 @@
                         <td>
                         <i
                             class="fa fa-trash text-danger"
-                            style="cursor: pointer;"
+                            style="cursor: pointer;font-size:15px;"
                             data-bs-toggle="modal"
                             data-bs-target="#deleteModal{{ item.id }}"
                             title="{% translate 'jobOrderListDelete'%}">
                         </i>
                         <i
-                            class="fa fa-edit text-primary"
-                            style="cursor: pointer;"
+                            class="fa fa-edit text-muted ms-2"
+                            style="cursor: pointer;font-size:15px;"
                             data-bs-toggle="modal"
                             data-bs-target="#editModal{{ item.id }}"
                             title="{% translate 'jobOrderListEdit'%}">

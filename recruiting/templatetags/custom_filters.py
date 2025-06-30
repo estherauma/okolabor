@@ -50,3 +50,7 @@ def split(value, delimiter=","):
     if isinstance(value, str):
         return [v.strip() for v in value.split(delimiter) if v.strip()]
     return value
+    
+@register.filter(name='trim')
+def trim(value):
+    return value.strip()

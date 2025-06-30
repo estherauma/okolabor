@@ -1,40 +1,29 @@
-{% extends 'components/base.html' %}
-
 {% load i18n %}
-{% block title %} {%translate "createJobOrderCreateJoborder"%}{% endblock title %}
-
-{% block body %}
-<div class="page-header">
- <div>
-  <h1 class="page-title">
-   {% translate "createJobOrderAddJobOrder" %}
-  </h1>
- </div>
-</div>
-<div class="row">
- <div class="col-lg-6 col-md-9 col-12">
-  <div class="card my-4 mb-4 offwhite-background">
-   <div class="card-body">
-    <form method="post">
-     {% csrf_token %}
-                    {% for field in form %}
-     <div class="col">
-      <div class="form-group my-3">
-       <label>
-        {{field.label}}
-       </label>
-       <div class="input-group input-group-outline is_valid my-3">
-        {{ field }}
-       </div>
+<div class="modal fade" id="jobOrderModal" tabindex="-1" aria-labelledby="jobOrderModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #7DBF96;">
+        <h5 class="modal-title text-white" id="jobOrderModalLabel">{% translate "createJobOrderCreateJoborder" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'Close' %}"></button>
       </div>
-     </div>
-     {% endfor %}
-     <button class="btn dark-green-button" type="submit">
-      {% translate "createJobOrderSubmit" %}
-     </button>
-    </form>
-   </div>
+      <div class="modal-body">
+        <form method="post" action="{% url 'recruiting_web:workrequest_create' %}">
+          {% csrf_token %}
+          {% for field in form %}
+            <div class="col">
+              <div class="form-group my-3">
+                <label>{{ field.label }}</label>
+                <div class="input-group input-group-outline is_valid my-3">
+                  {{ field }}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+          <button class="btn dark-green-button" type="submit">
+            {% translate "createJobOrderSubmit" %}
+          </button>
+        </form>
+      </div>
+    </div>
   </div>
- </div>
 </div>
-{% endblock %}
