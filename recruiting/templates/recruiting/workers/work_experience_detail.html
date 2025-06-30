@@ -10,145 +10,130 @@
 
   <div class="container mt-5">
     <div class="card shadow-sm p-4 position-relative">
-      
-      <!-- Heading -->
-      <h3 class="mb-3">{{ work_experience.user.get_full_name }} - {% translate "workExperienceDetailsWorkExperienceDetails" %}</h3>
-      <hr>
+
+      <!-- Header -->
+      <div class="d-flex justify-content-between align-items-start mb-4">
+        <div>
+          <h4 class="fw-bold text-success">{{ work_experience.user.get_full_name }}</h4>
+          <p class="mb-0 text-muted">{{ work_experience.country }}, {{ work_experience.country_display }}</p>
+        </div>
+      </div>
 
       <div class="row">
         <!-- LEFT COLUMN -->
         <div class="col-md-6">
-          <!-- Country & Dates -->
-          <div class="mb-4">
-            <div class="d-flex align-items-center mb-2">
-              <span class="me-2 fs-4">📍</span>
-              <span class="fs-5 fw-medium">{{ work_experience.country|default:"No Country" }}</span>
-            </div>
-            <h5 class="fw-semibold">{% translate "datesOfEmployment" %}</h5>
-            <a href="{{ base_url }}{{ clean_path }}" target="_blank" class="text-decoration-underline text-primary">{{ clean_path }}</a>
-            <div class="d-flex align-items-center mt-2">
-              <span class="me-2 fs-4">📅</span>
-              <span>
-                {{ work_experience.start_date|date:"F d, Y" }} -
-                {% if work_experience.end_date %}
-                  {{ work_experience.end_date|date:"F d, Y" }}
-                {% else %}
-                  {% translate "workExperienceDetailsPresent" %}
-                {% endif %}
-              </span>
-            </div>
+
+          <!-- Employment Dates -->
+          <div class="mb-3">
+            <p class="fw-bold text-uppercase small text-muted">{% translate "datesOfEmployment" %}</p>
+            <p>
+              {{ work_experience.start_date|date:"F Y" }} –
+              {% if work_experience.end_date %}
+                {{ work_experience.end_date|date:"F Y" }}
+              {% else %}
+                {% translate "workExperienceDetailsPresent" %}
+              {% endif %}
+            </p>
+          </div>
+
+          <!-- H2A PROGRAM -->
+          <div class="mb-3">
+            <p class="fw-bold text-uppercase small text-muted">H2A PROGRAM</p>
+            <p>{{ work_experience.work_under_h2a_in_usa|yesno:"Yes,No" }}</p>
           </div>
 
           <!-- Job Details -->
           <div class="mb-4">
-            <h5 class="fw-semibold">{% translate "jobDetails" %}</h5>
+            <p class="fw-bold text-uppercase small text-muted">{% translate "jobDetails" %}</p>
             {% for job in job_experiences %}
-              <div class="mb-3">
-                <p>🏢 Company: {{ job.work_experience.company|default:"No Company" }}</p>
-                <p>🚜 Job Type: {{ job.job_type|default:"No Job Type" }}</p>
-                <p>📋 Type Details: {{ job.type_details|default:"No Type Details" }}</p>
-              </div>
+              <p><strong>Company:</strong> {{ job.work_experience.company|default:"—" }}</p>
+              <p><strong>Primary Job Type:</strong> {{ job.job_type|default:"—" }}</p>
+
+              {% if job.type_details %}
+                <p class="fw-bold mb-2">Tasks & Responsibilities:</p>
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                  {% for duty in job.type_details|split:"," %}
+                    <span style="
+                      background-color: #fefee8;
+                      color: #1f1f1f;
+                      border: 1px solid #b4d7a8;
+                      border-radius: 999px;
+                      padding: 6px 12px;
+                      font-weight: 500;
+                      font-size: 14px;
+                      display: inline-block;">
+                      {{ duty|trim }}
+                    </span>
+                  {% endfor %}
+                </div>
+              {% endif %}
             {% endfor %}
           </div>
 
-          <!-- Supervisor -->
+          <!-- Supervisor Details -->
           <div class="mb-4">
-            <h5 class="fw-semibold">{% translate "workExperienceDetailsSupervisorDetails" %}</h5>
-            <p>📛 {{ work_experience.supervisor_name|default:"No Supervisor Name" }}</p>
-            <p>📞 <a href="tel:{{ work_experience.supervisor_tel|default:'#' }}" class="text-decoration-underline text-primary">{{ work_experience.supervisor_tel|default:"No Supervisor Tel" }}</a></p>
-            <p>📧 <a href="mailto:{{ work_experience.supervisor_email|default:'#' }}" class="text-decoration-underline text-primary">{{ work_experience.supervisor_email|default:"No Supervisor Email" }}</a></p>
+            <p class="fw-bold text-uppercase small text-muted">{% translate "workExperienceDetailsSupervisorDetails" %}</p>
+            <p>{{ work_experience.supervisor_name|default:"No Supervisor Name" }}</p>
+            <p><a href="tel:{{ work_experience.supervisor_tel }}" class="text-decoration-underline text-primary">{{ work_experience.supervisor_tel|default:"No Phone" }}</a></p>
+            <p><a href="mailto:{{ work_experience.supervisor_email }}" class="text-decoration-underline text-primary">{{ work_experience.supervisor_email|default:"No Email" }}</a></p>
           </div>
 
           <!-- Work Authorization -->
           <div class="mb-4">
-            <h5 class="fw-semibold">{% translate "workExperienceDetailsWorkAuthorization" %}</h5>
-            <p>🛂 Visa Type: {{ work_experience.visa_type|default:"No Visa Type" }}</p>
-            <p>🇺🇸 H2A Work: {{ work_experience.work_under_h2a_in_usa|default:"No H2A Work Info" }}</p>
+            <p class="fw-bold text-uppercase small text-muted">{% translate "workExperienceDetailsWorkAuthorization" %}</p>
+            <p>Visa Type: {{ work_experience.visa_type|default:"No Visa Type" }}</p>
+            <p>H2A Work: {{ work_experience.work_under_h2a_in_usa|yesno:"Yes,No" }}</p>
           </div>
+
         </div>
 
         <!-- RIGHT COLUMN -->
         <div class="col-md-6">
+
           <!-- Certifications Section -->
           <div class="mb-4">
-            <h5 class="fw-semibold">{% translate "Certifications" %}</h5>
-            {% for detail in job_experience_details %}
-              {% if "visa" in detail.kind|lower or "certificate" in detail.kind|lower %}
-                <div class="mb-3">
-                  <p>📌 {{ detail.kind }}:</p>
+            <p class="fw-bold text-uppercase small text-muted">{% translate "CERTIFICATIONS" %}</p>
+            <div class="d-flex flex-wrap gap-3">
+              {% for detail in job_experience_details %}
+                {% if "visa" in detail.kind|lower or "certificate" in detail.kind|lower %}
                   {% with detail.value|strip_leading_slash as clean_path %}
-                    {% with clean_path|lower as filename %}
-                      {% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename or ".gif" in filename or ".webp" in filename %}
-                        <img src="{{ base_url }}{{ clean_path }}" alt="{{ detail.kind }}" class="img-fluid mt-2 clickable-media" style="max-height: 200px;" data-type="image" data-src="{{ base_url }}{{ clean_path }}">
-                      {% elif ".mp4" in filename or ".webm" in filename or ".ogg" in filename %}
-                        <div class="video-container clickable-media mt-2" data-type="video" data-src="{{ base_url }}{{ clean_path }}">
-                          <video controls style="max-width: 100%; max-height: 200px;">
-                            <source src="{{ base_url }}{{ clean_path }}" type="video/mp4">
-                            Your browser does not support the video tag.
-                          </video>
-                        </div>
-                      {% else %}
-                        <p>{{ clean_path }}</p>
-                      {% endif %}
-                    {% endwith %}
+                    <div style="width: 120px;">
+                      <a href="{{ base_url }}{{ clean_path }}" target="_blank">
+                        <img src="{{ base_url }}{{ clean_path }}" alt="certification" class="img-thumbnail" style="height: 100px; object-fit: cover;">
+                      </a>
+                    </div>
                   {% endwith %}
-                </div>
-              {% endif %}
-            {% endfor %}
+                {% endif %}
+              {% endfor %}
+            </div>
           </div>
 
           <!-- Other Media Section -->
           <div class="mb-4">
-            <h5 class="fw-semibold">{% translate "Other Media" %}</h5>
-            {% for detail in job_experience_details %}
-              {% if "visa" not in detail.kind|lower and "certificate" not in detail.kind|lower %}
-                <div class="mb-3">
-                  <p>📌 {{ detail.kind }}:</p>
+            <p class="fw-bold text-uppercase small text-muted">{% translate "OTHER MEDIA" %}</p>
+            <div class="d-flex flex-wrap gap-3">
+              {% for detail in job_experience_details %}
+                {% if "visa" not in detail.kind|lower and "certificate" not in detail.kind|lower %}
                   {% with detail.value|strip_leading_slash as clean_path %}
                     {% with clean_path|lower as filename %}
-                      {% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename or ".gif" in filename or ".webp" in filename %}
-                        <img src="{{ base_url }}{{ clean_path }}" alt="{{ detail.kind }}" class="img-fluid mt-2 clickable-media" style="max-height: 200px;" data-type="image" data-src="{{ base_url }}{{ clean_path }}">
-                      {% elif ".mp4" in filename or ".webm" in filename or ".ogg" in filename %}
-                        <div class="video-container clickable-media mt-2" data-type="video" data-src="{{ base_url }}{{ clean_path }}">
+                      {% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename %}
+                        <img src="{{ base_url }}{{ clean_path }}" class="img-thumbnail" style="height: 100px; object-fit: cover;" />
+                      {% elif ".mp4" in filename %}
+                        <div style="width: 120px;">
                           <video controls style="max-width: 100%; max-height: 200px;">
                             <source src="{{ base_url }}{{ clean_path }}" type="video/mp4">
-                            Your browser does not support the video tag.
                           </video>
                         </div>
-                      {% else %}
-                        <p>{{ clean_path }}</p>
                       {% endif %}
                     {% endwith %}
                   {% endwith %}
-                </div>
-              {% endif %}
-            {% endfor %}
+                {% endif %}
+              {% endfor %}
+            </div>
           </div>
+
         </div>
       </div>
-
-      <!-- Edit Button -->
-      <a href="#" class="btn btn-warning position-absolute top-0 end-0 m-3">Edit</a>
     </div>
   </div>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      document.querySelectorAll(".clickable-media").forEach((item) => {
-        item.addEventListener("click", (event) => {
-          const type = event.currentTarget.getAttribute("data-type");
-          const src = event.currentTarget.getAttribute("data-src");
-          const mediaContent = document.getElementById("mediaContent");
-
-          if (type === "image") {
-            mediaContent.innerHTML = `<img src="${src}" class="img-fluid" alt="Media">`;
-          } else if (type === "video") {
-            mediaContent.innerHTML = `<video controls class="w-100"><source src="${src}" type="video/mp4">Your browser does not support the video tag.</video>`;
-          }
-
-          new bootstrap.Modal(document.getElementById("mediaModal")).show();
-        });
-      });
-    });
-  </script>
 {% endblock %}

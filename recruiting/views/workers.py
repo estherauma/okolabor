@@ -677,7 +677,7 @@ class CreateWorkExperienceView(BaseCreateView):
             if uploaded_file:
                 folder = 'certificates' if kind in ['visa', 'certificate'] else 'explanation'
                 filename = uploaded_file.name
-                relative_path = os.path.join('uploads', folder, filename)
+                relative_path = os.path.join(folder, filename)
                 full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
 
                 os.makedirs(os.path.dirname(full_path), exist_ok=True)
