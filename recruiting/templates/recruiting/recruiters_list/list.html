@@ -19,12 +19,6 @@
 
     </div>
   </div>
-  <div class="d-flex align-items-center gap-2">
-    <a class="btn dark-green-button" href="{% url 'recruiting_web:employer_create' %}?type=recruiter">
-      {% translate "recruiterListAddNewRecruiter" %}
-    </a>
-
-  </div>
 </div>
 <div class="modal fade" id="assignRecruiterModal" tabindex="-1" aria-labelledby="assignRecruiterLabel"
   aria-hidden="true">
@@ -117,8 +111,29 @@
   <div class="col-12">
     <div class="card">
       <div class="card-body">
+
+        <div class="d-flex align-items-center justify-content-between flex-wrap mb-3 custom-toolbar">
+          <div>
+            <a class="btn dark-green-button" href="{% url 'recruiting_web:employer_create' %}?type=recruiter">
+              {% translate "recruiterListAddNewRecruiter" %}
+            </a>
+          </div>
+
+          <div class="flex-grow-1 d-flex justify-content-center">
+            <div id="customSearchContainer" style="width: 100%; max-width: 400px;"></div>
+          </div>
+
+          <div class="d-flex align-items-center gap-2">
+            <div id="customSettingsContainer"></div>
+            <div id="customLengthContainer"></div>
+          </div>
+        </div>
+        <!-- Hidden container to hold original DataTable controls -->
+        <div id="datatable-controls" style="display: none;"></div>
+
+
         <div class="table-responsive">
-          <table class="table text-nowrap border-bottom" id="employers-list-datatable">
+          <table class="table text-nowrap border-bottom" id="recruiters-list-datatable">
             <thead style="background-color: #7DBF96;">
               <tr>
                 <!-- <th></th> -->
@@ -387,7 +402,7 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    const recruiterTable = $('#employers-list-datatable').DataTable({
+    const recruiterTable = $('#recruiters-list-datatable').DataTable({
       "ordering": true,
       "order": [],
       "columnDefs": [
@@ -429,7 +444,9 @@
 </script>
 <script>
   $(document).ready(function () {
-    const table = $('#employers-list-datatable').DataTable({
+  $.fn.dataTable.ext.errMode = 'none';
+
+  const table = $('#recruiters-list-datatable').DataTable({
       "ordering": true,
       "order": [],
       "columnDefs": [
@@ -441,14 +458,31 @@
       "paging": true,
       "info": true
     });
-    const settingsBtn = `
-        <button class="setting-btn" data-bs-toggle="modal" data-bs-target="#recruiterColumnSettingsModal">
-            <i class="fa fa-cog" aria-hidden="true"></i>
-        </button>
-    `;
-    const lengthContainer = $('#employers-list-datatable_length');
-    lengthContainer.addClass('d-flex align-items-center');
-    lengthContainer.prepend(settingsBtn);
-  });
+
+  // Move the original DataTable controls to a hidden container
+  $('#recruiters-list-datatable_length').appendTo('#datatable-controls');
+  $('#recruiters-list-datatable_filter').appendTo('#datatable-controls');
+
+  // ---- Custom: Search input in center ----
+  const searchInput = $('#datatable-controls #recruiters-list-datatable_filter input')
+    .addClass('form-control')
+    .attr('placeholder', 'Search...')
+    .css('width', '100%');
+  $('#customSearchContainer').append(searchInput);
+
+  // ---- Custom: Length dropdown only ----
+  const lengthDropdown = $('#datatable-controls #recruiters-list-datatable_length select').parent();
+  $('#customLengthContainer').append(lengthDropdown);
+
+  // ---- Custom: Settings button (only one!) ----
+  const settingsBtn = `
+    <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#recruiterColumnSettingsModal">
+      <i class="fa fa-cog" aria-hidden="true" style="font-size: 1.3rem; color: #9A9898;"></i>
+    </button>
+  `;
+  $('#customSettingsContainer').html(settingsBtn);
+});
+
+
 </script>
 {% endblock scripts %}
