@@ -1,47 +1,39 @@
-{% extends 'components/base.html' %}
-{% load static %}
 {% load i18n %}
 {% load custom_filters %}
 
-{% block title %}
-  {% translate "addRoleAddRole" %}
-{% endblock title %}
+<div class="modal fade" id="addRoleModal{{ workrequest.id }}" tabindex="-1" aria-labelledby="addRoleModalLabel{{ workrequest.id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      
+      <div class="modal-header" style="background-color: #7DBF96;">
+        <h5 class="modal-title text-white" id="addRoleModalLabel{{ workrequest.id }}">{% translate "Add Role" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
 
-{% block body %}
-<div class="page-header">
-  <div>
-    <h1 class="page-title">
-      {% translate "addRoleAddRole" %}
-    </h1>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-md-9 col-xs-12">
-    <div class="card my-4 mb-4 offwhite-background">
-      <div class="card-body">
-        <form method="post">
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <form method="post" id="addRoleForm" action="{% url 'recruiting_web:workrequest_role_create' workrequest.id %}">
           {% csrf_token %}
 
           <!-- Always visible fields -->
           <div class="form-group my-3">
-            <label>{{ form.title.label }}</label>
-            {{ form.title }}
+            <label>{{ role_add_form.title.label }}</label>
+            {{ role_add_form.title }}
           </div>
 
           <div class="form-group my-3">
-            <label>{{ form.usdol_case_number.label }}</label>
-            {{ form.usdol_case_number }}
+            <label>{{ role_add_form.usdol_case_number.label }}</label>
+            {{ role_add_form.usdol_case_number }}
           </div>
 
           <div class="form-group my-3" id="div_id_type_sector">
-            <label>{{ form.work_type.label }}</label>
-            {{ form.work_type }}
+            <label>{{ role_add_form.work_type.label }}</label>
+            {{ role_add_form.work_type }}
           </div>
 
           <!-- Conditionally rendered checkbox groups -->
           {% for field_name in dynamic_fields %}
-            {% with form|get_field:field_name as field %}
+            {% with role_add_form|get_field:field_name as field %}
               <div class="form-group my-3" id="div_id_{{ field_name }}" style="display:none;">
                 <label>{{ field.label }}</label>
                 <div class="d-flex flex-wrap gap-3">
@@ -58,19 +50,19 @@
 
           <!-- Conditionally visible description -->
           <div class="form-group my-3" id="div_id_description" style="display:none;">
-            <label>{{ form.description.label }}</label>
-            {{ form.description }}
+            <label>{{ role_add_form.description.label }}</label>
+            {{ role_add_form.description }}
           </div>
 
           <!-- Always visible -->
           <div class="form-group my-3">
-            <label>{{ form.number_of_required_workers.label }}</label>
-            {{ form.number_of_required_workers }}
+            <label>{{ role_add_form.number_of_required_workers.label }}</label>
+            {{ role_add_form.number_of_required_workers }}
           </div>
 
           <div class="form-group my-3">
-            <label>{{ form.work_request.label }}</label>
-            {{ form.work_request }}
+            <label>{{ role_add_form.work_request.label }}</label>
+            {{ role_add_form.work_request }}
           </div>
 
           <button class="btn dark-green-button" type="submit">
@@ -81,7 +73,7 @@
     </div>
   </div>
 </div>
-{% endblock %}
+
 
 {% block scripts %}
 <script>

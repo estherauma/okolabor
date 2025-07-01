@@ -224,14 +224,15 @@ class WorkerListView(View):
                 'years_of_experience': years_of_experience, 
                 **worker_details
             })
-        # 🔄 AJAX Support
+         # 🔄 AJAX Support
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({
                 'workers': worker_data,
                 'num_pages': 1  # or len(worker_data) if needed
             })
-            
-
+       
+        worker_form = WorkerCreateForm()
+    
         context = {
             'workers': workers,
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
@@ -241,6 +242,7 @@ class WorkerListView(View):
             'search_query': search_query,
             'years_of_experience': years_of_experience,
             'status_choices': WorkAssignment.STATUS_CHOICES,
+            'worker_form': worker_form,
         }
         return render(request, 'recruiting/workers/list.html', context)
 
@@ -453,7 +455,7 @@ class GetWorkerDetailsView(View):
 class WorkerCreateView(CreateView):
     model = User
     form_class = WorkerCreateForm
-    template_name = 'recruiting/workers/create.html'
+    
 
     def form_valid(self, form):
         worker = form.save()

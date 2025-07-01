@@ -114,9 +114,14 @@
 
         <div class="d-flex align-items-center justify-content-between flex-wrap mb-3 custom-toolbar">
           <div>
-            <a class="btn dark-green-button" href="{% url 'recruiting_web:employer_create' %}?type=recruiter">
+            {% comment %} <a class="btn dark-green-button" href="{% url 'recruiting_web:employer_create' %}?type=recruiter">
               {% translate "recruiterListAddNewRecruiter" %}
-            </a>
+            </a> {% endcomment %}
+            <a class="btn dark-green-button ms-3 text-white" 
+              data-bs-toggle="modal" 
+              data-bs-target="#addRecruiterModal">
+              <i class="fa fa-plus me-1"></i> {% translate "recruiterListAddNewRecruiter" %}
+          </a>
           </div>
 
           <div class="flex-grow-1 d-flex justify-content-center">
@@ -368,6 +373,7 @@
 {% endif %}
 {% endfor %}
 
+{% include 'recruiting/recruiters/create.html' %}
 
 {% endblock body %}
 

@@ -232,10 +232,16 @@
                     <div class="d-flex align-items-center justify-content-between flex-wrap mb-3 custom-toolbar">
                         <div>
                              <button class="btn dark-green-button ms-3" data-bs-toggle="modal" data-bs-target="#workerAssignmentModal" disabled>{% translate "workersListAddTo" %}</button>
-                            <a class="btn dark-green-button ms-3" href="{% url 'recruiting_web:recruiter_create_worker' %}">
-                                {% translate "workersListAddWorker" %}
+
+                            <a class="btn dark-green-button ms-3 text-white" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#addWorkerModal">
+                                <i class="fa fa-plus me-1"></i> {% translate "workersListAddWorker" %}
                             </a>
+                            
+
                         </div>
+
 
                         <div class="flex-grow-1 d-flex justify-content-center">
                             <div id="customSearchContainer" style="width: 100%; max-width: 400px;"></div>
@@ -458,7 +464,10 @@
       </div>
     </div>
   </div>
+
 {% endfor %}
+
+{% include "recruiting/workers/create.html" with worker_form=worker_form%}
 
 {% endblock body %}
 {% block scripts %}
