@@ -1,158 +1,140 @@
-{% load static %}
 {% load i18n %}
+{% load custom_filters %}
 
-<!-- Add Role Modal -->
 <div class="modal fade" id="addRoleModal{{ workrequest.id }}" tabindex="-1" aria-labelledby="addRoleModalLabel{{ workrequest.id }}" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog">
     <div class="modal-content">
-
+      
       <div class="modal-header">
         <h5 class="modal-title" id="addRoleModalLabel{{ workrequest.id }}">{% translate "Add Role" %}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
-      <form method="post" id="roleAddForm" action="{% url 'recruiting_web:workrequest_role_create' workrequest.id %}">
-        {% csrf_token %}
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <form method="post" id="addRoleForm" action="{% url 'recruiting_web:workrequest_role_create' workrequest.id %}">
+          {% csrf_token %}
 
-        <!-- Always visible fields -->
-        <div class="form-group my-3">
-          <label>{{ role_add_form.title.label }}</label>
-          {{ role_add_form.title }}
-        </div>
+          <!-- Always visible fields -->
+          <div class="form-group my-3">
+            <label>{{ role_add_form.title.label }}</label>
+            {{ role_add_form.title }}
+          </div>
 
-        <div class="form-group my-3">
-          <label>{{ role_add_form.usdol_case_number.label }}</label>
-          {{ role_add_form.usdol_case_number }}
-        </div>
+          <div class="form-group my-3">
+            <label>{{ role_add_form.usdol_case_number.label }}</label>
+            {{ role_add_form.usdol_case_number }}
+          </div>
 
-        <div class="form-group my-3" id="id_work_type">
-          <label>{{ role_add_form.work_type.label }}</label>
-          {{ role_add_form.work_type }}
-        </div>
+          <div class="form-group my-3" id="div_id_type_sector">
+            <label>{{ role_add_form.work_type.label }}</label>
+            {{ role_add_form.work_type }}
+          </div>
 
-        <!-- Conditional fields hidden by default -->
-        <div class="form-group my-3" id="div_id_animal_types" style="display:none;">
-          <label>{{ role_add_form.animal_types.label }}</label>
-          {{ role_add_form.animal_types }}
-        </div>
+          <!-- Conditionally rendered checkbox groups -->
+          {% for field_name in dynamic_fields %}
+            {% with role_add_form|get_field:field_name as field %}
+              <div class="form-group my-3" id="div_id_{{ field_name }}" style="display:none;">
+                <label>{{ field.label }}</label>
+                <div class="d-flex flex-wrap gap-3">
+                  {% for checkbox in field %}
+                    <div class="form-check form-check-inline">
+                      {{ checkbox.tag }}
+                      <label class="form-check-label ms-1">{{ checkbox.choice_label }}</label>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endwith %}
+          {% endfor %}
 
-        <div class="form-group my-3" id="div_id_responsibilities_types" style="display:none;">
-          <label>{{ role_add_form.responsibilities_types.label }}</label>
-          {{ role_add_form.responsibilities_types }}
-        </div>
+          <!-- Conditionally visible description -->
+          <div class="form-group my-3" id="div_id_description" style="display:none;">
+            <label>{{ role_add_form.description.label }}</label>
+            {{ role_add_form.description }}
+          </div>
 
-        <div class="form-group my-3" id="div_id_crop_types" style="display:none;">
-          <label>{{ role_add_form.crop_types.label }}</label>
-          {{ role_add_form.crop_types }}
-        </div>
+          <!-- Always visible -->
+          <div class="form-group my-3">
+            <label>{{ role_add_form.number_of_required_workers.label }}</label>
+            {{ role_add_form.number_of_required_workers }}
+          </div>
 
-        <div class="form-group my-3" id="div_id_crop_job_types" style="display:none;">
-          <label>{{ role_add_form.crop_job_types.label }}</label>
-          {{ role_add_form.crop_job_types }}
-        </div>
+          <div class="form-group my-3">
+            <label>{{ role_add_form.work_request.label }}</label>
+            {{ role_add_form.work_request }}
+          </div>
 
-        <div class="form-group my-3" id="div_id_mechanic_job_types" style="display:none;">
-          <label>{{ role_add_form.mechanic_job_types.label }}</label>
-          {{ role_add_form.mechanic_job_types }}
-        </div>
-
-        <div class="form-group my-3" id="div_id_supervision_jobs_types" style="display:none;">
-          <label>{{ role_add_form.supervision_jobs_types.label }}</label>
-          {{ role_add_form.supervision_jobs_types }}
-        </div>
-
-        <div class="form-group my-3" id="div_licensed_vehicle_operation_types" style="display:none;">
-          <label>{{ role_add_form.licensed_vehicle_operation_types.label }}</label>
-          {{ role_add_form.licensed_vehicle_operation_types }}
-        </div>
-
-        <div class="form-group my-3" id="div_id_description" style="display:none;">
-          <label>{{ role_add_form.description.label }}</label>
-          {{ role_add_form.description }}
-        </div>
-
-        <!-- Always visible fields -->
-        <div class="form-group my-3">
-          <label>{{ role_add_form.number_of_required_workers.label }}</label>
-          {{ role_add_form.number_of_required_workers }}
-        </div>
-
-        <div class="form-group my-3">
-          <label>{{ role_add_form.work_request.label }}</label>
-          {{ role_add_form.work_request }}
-        </div>
-
-        <button class="btn dark-green-button" type="submit">
-          {% translate "addRoleSubmit" %}
-        </button>
-      </form>
-
+          <button class="btn dark-green-button" type="submit">
+            {% translate "addRoleSubmit" %}
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 </div>
 
+
 {% block scripts %}
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-  const sectorField = document.getElementById("id_work_type"); // Confirm this ID is correct in the rendered HTML
+    const sectorField = document.getElementById("id_type_sector");
 
-  const toggleFields = () => {
-    if (!sectorField) return;  // prevent error if field doesn't exist
-    const value = sectorField.value.trim();
+    const toggleFields = () => {
+      const value = sectorField.value.trim();
 
-    const show = (id) => {
-      const el = document.getElementById(`div_${id}`);
-      if (el) el.style.display = "block";
+      const show = (id) => {
+        const el = document.getElementById(`div_${id}`);
+        if (el) el.style.display = "block";
+      };
+
+      const hide = (id) => {
+        const el = document.getElementById(`div_${id}`);
+        if (el) el.style.display = "none";
+      };
+
+      const allFields = [
+        "id_animal_types",
+        "id_responsibilities_types",
+        "id_crop_types",
+        "id_crop_job_types",
+        "id_mechanic_job_types",
+        "id_supervision_jobs_types",
+        "licensed_vehicle_operation_types",
+        "id_description"
+      ];
+
+      allFields.forEach(hide);
+
+      if (value === "animals") {
+        show("id_animal_types");
+        show("id_responsibilities_types");
+        show("id_description");
+      } else if (value === "crop_and_horticulture") {
+        show("id_crop_types");
+        show("id_crop_job_types");
+        show("id_description");
+      } else if (value === "mechanics") {
+        show("id_mechanic_job_types");
+        show("id_description");
+      } else if (value === "worker_supervision__management") {
+        show("id_supervision_jobs_types");
+        show("id_description");
+      } else if (value === "licensed_vehicle_operation") {
+        show("licensed_vehicle_operation_types");
+        show("id_description");
+      } else if (
+        value === "construction" ||
+        value === "other"
+      ) {
+        show("id_description");
+      }
     };
 
-    const hide = (id) => {
-      const el = document.getElementById(`div_${id}`);
-      if (el) el.style.display = "none";
-    };
-
-    const allFields = [
-      "id_animal_types",
-      "id_responsibilities_types",
-      "id_crop_types",
-      "id_crop_job_types",
-      "id_mechanic_job_types",
-      "id_supervision_jobs_types",
-      "licensed_vehicle_operation_types",
-      "id_description"
-    ];
-
-    allFields.forEach(hide);
-    console.log("Selected work type:", value);
-
-    if (value === "animals") {
-      show("id_animal_types");
-      show("id_responsibilities_types");
-      show("id_description");
-    } else if (value === "crop_and_horticulture") {
-      show("id_crop_types");
-      show("id_crop_job_types");
-      show("id_description");
-    } else if (value === "mechanics") {
-      show("id_mechanic_job_types");
-      show("id_description");
-    } else if (value === "worker_supervision__management") {
-      show("id_supervision_jobs_types");
-      show("id_description");
-    } else if (value === "licensed_vehicle_operation") {
-      show("licensed_vehicle_operation_types");
-      show("id_description");
-    } else if (value === "construction" || value === "other") {
-      show("id_description");
+    if (sectorField) {
+      sectorField.addEventListener("change", toggleFields);
+      toggleFields(); // Initial load
     }
-  };
-
-  if (sectorField) {
-    sectorField.addEventListener("change", toggleFields);
-    toggleFields(); // Initial call
-  } else {
-    console.warn("Field with ID 'id_work_type' not found.");
-  }
-});
-
+  });
 </script>
 {% endblock scripts %}

@@ -1,23 +1,20 @@
-{% extends 'components/base.html' %}
 {% load i18n %}
+{% load custom_filters %}
 
-{% block title %} {% translate "addWorkerEmployers"%} {% endblock title %}
+<div class="modal fade" id="addWorkerModal" tabindex="-1" aria-labelledby="addWorkerModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h5 class="modal-title" id="addWorkerModalLabel">{% translate "workersListAddWorker" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
 
-{% block body %}
-<div class="page-header">
- <div>
-  <h1 class="page-title">
-   {% translate "addWorkerAddWorker" %}
-  </h1>
- </div>
-</div>
-<div class="row">
- <div class="col-12">
-  <div class="card my-4">
-   <div class="card-body">
-    <form method="post">
+      <!-- Modal Body -->
+      <div class="modal-body">
+    <form method="post" id="addWorkerForm" action="{% url 'recruiting_web:recruiter_create_worker' %}">
      {% csrf_token %}
-                    {% for field in form %}
+    {% for field in worker_form %}
      <div class="col">
       <div class="form-group my-3">
        <label>
@@ -37,4 +34,4 @@
   </div>
  </div>
 </div>
-{% endblock %}
+

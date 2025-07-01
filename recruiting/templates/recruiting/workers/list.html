@@ -170,11 +170,11 @@
     </div>    
 </div>
 
-<div class="modal fade" id="columnSettingsModal" tabindex="-1" aria-labelledby="columnSettingsModalLabel" aria-hidden="true">
+<div class="modal fade" id="columnWorkersSettingsModal" tabindex="-1" aria-labelledby="columnWorkersSettingsModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="columnSettingsModalLabel">{% translate "Select Columns to Display" %}</h5>
+        <h5 class="modal-title" id="columnWorkersSettingsModalLabel">{% translate "Select Columns to Display" %}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'Close' %}"></button>
       </div>
       <div class="modal-body">
@@ -225,18 +225,35 @@
 
     <div class="row row-sm">
         <div class="col-lg-12">
-            <div class="row mb-2">
-                <div class="col-md-12 col-sm-12 col-xs-12">
-                    <div class="d-flex align-items-center justify-content-end">
-                        <button class="btn dark-green-button ms-3" data-bs-toggle="modal" data-bs-target="#workerAssignmentModal" disabled>{% translate "workersListAddTo" %}</button>
-                        <a class="btn dark-green-button ms-3" href="{% url 'recruiting_web:recruiter_create_worker' %}">
-                            {% translate "workersListAddWorker" %}
-                        </a>
-                    </div>
-                </div>
-            </div>
             <div class="card">
                 <div class="card-body">
+
+                    <div class="d-flex align-items-center justify-content-between flex-wrap mb-3 custom-toolbar">
+                        <div>
+                             <button class="btn dark-green-button ms-3" data-bs-toggle="modal" data-bs-target="#workerAssignmentModal" disabled>{% translate "workersListAddTo" %}</button>
+
+                            <a class="btn dark-green-button ms-3 text-white" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#addWorkerModal">
+                                <i class="fa fa-plus me-1"></i> {% translate "workersListAddWorker" %}
+                            </a>
+                            
+
+                        </div>
+
+
+                        <div class="flex-grow-1 d-flex justify-content-center">
+                            <div id="customSearchContainer" style="width: 100%; max-width: 400px;"></div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-2">
+                            <div id="customSettingsContainer"></div>
+                            <div id="customLengthContainer"></div>
+                        </div>
+                    </div>
+                    <!-- Hidden container to hold original DataTable controls -->
+                    <div id="datatable-controls" style="display: none;"></div>
+
                     <div class="table-responsive">
                         <table class="table text-nowrap border-bottom" id="basic-datatable-workers">
                             <thead style="background-color: #7DBF96;">
@@ -443,7 +460,10 @@
       </div>
     </div>
   </div>
+
 {% endfor %}
+
+{% include "recruiting/workers/create.html" with worker_form=worker_form%}
 
 {% endblock body %}
 {% block scripts %}
@@ -552,17 +572,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 <script>
+
 $(document).ready(function () {
-    const table = $('#basic-datatable-workers').DataTable();
-    const settingsBtn = `
-        <button class="setting-btn" data-bs-toggle="modal" data-bs-target="#columnSettingsModal">
-            <i class="fa fa-cog" aria-hidden="true"></i>
-        </button>
-    `;
-    const lengthContainer = $('#basic-datatable-workers_length');
-    lengthContainer.addClass('d-flex align-items-center');
-    lengthContainer.prepend(settingsBtn);
+  $.fn.dataTable.ext.errMode = 'none';
+
+  const table = $('#basic-datatable-workers').DataTable();
+
+  // Move the original DataTable controls to a hidden container
+  $('#basic-datatable-workers_length').appendTo('#datatable-controls');
+  $('#basic-datatable-workers_filter').appendTo('#datatable-controls');
+
+  // ---- Custom: Search input in center ----
+  const searchInput = $('#datatable-controls #basic-datatable-workers_filter input')
+    .addClass('form-control')
+    .attr('placeholder', 'Search...')
+    .css('width', '100%');
+  $('#customSearchContainer').append(searchInput);
+
+  // ---- Custom: Length dropdown only ----
+  const lengthDropdown = $('#datatable-controls #basic-datatable-workers_length select').parent();
+  $('#customLengthContainer').append(lengthDropdown);
+
+  // ---- Custom: Settings button (only one!) ----
+  const settingsBtn = `
+    <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#columnWorkersSettingsModal">
+      <i class="fa fa-cog" aria-hidden="true" style="font-size: 1.3rem; color: #9A9898;"></i>
+    </button>
+  `;
+  $('#customSettingsContainer').html(settingsBtn);
 });
+
 </script>
 <script>
 function addRandomFilter() {

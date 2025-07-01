@@ -54,3 +54,7 @@ def split(value, delimiter=","):
 @register.filter(name='trim')
 def trim(value):
     return value.strip()
+
+@register.filter
+def get_field(form, name):
+    return form[name]

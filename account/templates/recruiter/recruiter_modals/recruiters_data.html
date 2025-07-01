@@ -1,123 +1,175 @@
 {% load i18n %}
 {% load static %}
 {% load user_role_tags %}
-<div class="card">
+
+<!-- DataTables and FontAwesome CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+<!-- Recruiter Tab Content -->
+<div class="tab-pane {% if request.user|has_group:'admin' or request.user|has_group:'recruiter_admin' %}active{% endif %}" id="tab2">
+  <div class="card">
     <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center">
-            <h3 class="card-title green-color fw-bold mb-1">
-                {% translate "manageUsersRecruitersTableTitle" %}
-            </h3>
-            <div class="d-flex">
-              {% if request.user|has_group:"admin" %}
-                <button type="button" class="btn dark-green-button ms-2 mb-2" id="assign-organization-btn" data-bs-toggle="modal" data-bs-target="#assignOrganizationModal">
-                     {% translate "manageUsersRecruitersTableAssignOrganization" %}
-                </button>
-              {% endif %}
-                <button class="btn dark-green-button ms-2 mb-2" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#inviteUserModal">
-                    {% translate "manageUsersRecruitersTableNewUser" %}
-                </button>
-            </div>
-        </div>  
-        <div class="table-responsive">
-            <table class="table text-nowrap border-bottom" id="recruiters-datatable">
-                <thead style="background-color:#7DBF96;">
-                    <tr>
-                        <th class="text-start"><input type="checkbox" id="select-all-checkbox"></th>
-                        <th class="text-start">{% translate "manageUsersRecruitersTableEmail" %}</th>
-                        <th class="text-start">{% translate "manageUsersRecruitersTableFirstName" %}</th>
-                        <th class="text-start">{% translate "manageUsersRecruitersTableCreatedAt" %}</th>
-                        <th class="text-start">{% translate "manageUsersRecruitersTableActiveStatus" %}</th>
-                        <th class="text-start">{% translate "manageUsersRecruitersTableGroup" %}</th>
-                        <th class="text-start">{% translate "manageUsersRecruitersTableRecruiter" %}</th>
-                        <th class="theading-color text-start">{% translate "manageUsersRecruitersTableActions" %}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in recruiters_list %}
-                    <tr class="green-color text-start">
-                        <td style="padding-left:32px;">
-                            <input type="checkbox" class="form-check-input recruiter-checkbox" value="{{ user.id }}">
-                        </td>
-                        <td>{{ user.email }}</td>
-                        <td>{{ user.first_name }} {{ user.last_name }}</td>
-                        <td>{{ user.created_at }}</td>
-                        <td>{{ user.is_active|yesno:_("active,inactive") }}</td>
-                        <td>
-                          {% if user.group == "recruiter" %}
-                            {% translate "webCommonNo" %}
-                          {% elif user.group == "recruiter_admin" %}
-                            {% translate "webCommonYes" %}
-                          {% endif %}
-                        </td>
-                        <td>
-                            {% for org in user.organizations.all %}
-                                {{ org.name }}{% if not forloop.last %}, {% endif %}
-                            {% endfor %}
-                        </td>   
-                        <td class="text-center">
-                            <i
-                                class="side-menu__icon icon icon-pencil me-2 cursor-pointer edit-recruiter-btn"
-                                data-bs-toggle="modal"
-                                data-bs-target="#editRecruiterModal"
-                                data-recruiter-curp="{{ user.curp }}"
-                                data-recruiter-first-name="{{ user.first_name }}"
-                                data-recruiter-last-name="{{ user.last_name }}"
-                                data-recruiter-email="{{ user.email }}"
-                                data-recruiter-is-active="{{ user.is_active }}"
-                                data-recruiter-language="{{ user.language }}"
-                                data-recruiter-group="{{ user.group }}"
-                                >
-                               
-                            </i>
+      
 
-                           <i 
-                                class="fa fa-trash text-danger" 
-                                style="cursor: pointer;font-size: 15px;" 
-                                data-bs-toggle="modal" 
-                                data-bs-target="#deleteModalManageRecruiter{{ user.id }}" 
-                                title={% translate "recruiterListDelete"%}>
-                            </i>
-
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+      <!-- Custom Toolbar -->
+      <div class="d-flex align-items-center justify-content-between flex-wrap mb-3 custom-toolbar">
+        <div class="d-flex">
+          {% if request.user|has_group:"admin" %}
+          <button type="button" class="btn dark-green-button ms-2 mb-2" id="assign-organization-btn" data-bs-toggle="modal" data-bs-target="#assignOrganizationModal">
+            {% translate "manageUsersRecruitersTableAssignOrganization" %}
+          </button>
+          {% endif %}
+          <button class="btn dark-green-button ms-2 mb-2" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#inviteUserModal">
+            {% translate "manageUsersRecruitersTableNewUser" %}
+          </button>
         </div>
-    </div>
-</div>
-{% for recruiter in recruiters_list %}
-  {% if recruiter.id %}
-    <!-- Delete Modal -->
-    <div class="modal fade" id="deleteModalManageRecruiter{{ recruiter.id }}" tabindex="-1" aria-labelledby="deleteModalManageRecruiterLabel{{ recruiter.id }}" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <form method="POST" action="{% url 'recruiter_manage_delete' recruiter.id %}">
-            {% csrf_token %}
-            <h1>{{recruiter.id}}</h1>
-            <div class="modal-header" style="background-color: #7DBF96;">
-              <h5 class="modal-title text-white" id="deleteModalManageRecruiterLabel{{ recruiter.id }}">{% translate "recruiterListConfirmDelete" %}</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'recruiterListClose'%}"></button>
-            </div>
-            <div class="modal-body">
-              {% translate 'recruiterListAreYouSureYouWantToDelete'%} <strong>{{ recruiter.first_name }} {{recruiter.last_name}}</strong>?
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'recruiterListCancel'%}</button>
-              <button type="submit" class="btn" style='background-color:#F95406; color: white'>{% translate 'recruiterListDelete'%}</button>
-            </div>
-          </form>
+        <div class="flex-grow-1 d-flex justify-content-center">
+          <div id="recruiter-customSearchContainer" style="width: 100%; max-width: 400px;"></div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <div id="recruiter-customSettingsContainer"></div>
+          <div id="recruiter-customLengthContainer"></div>
         </div>
       </div>
+      <div id="recruiter-datatable-controls" style="display: none;"></div>
+
+      <div class="table-responsive">
+        <table class="table text-nowrap border-bottom" id="recruiters-datatable">
+          <thead style="background-color:#7DBF96;">
+            <tr>
+              <th class="text-start"><input type="checkbox" id="select-all-checkbox"></th>
+              <th class="text-start">{% translate "manageUsersRecruitersTableEmail" %}</th>
+              <th class="text-start">{% translate "manageUsersRecruitersTableFirstName" %}</th>
+              <th class="text-start">{% translate "manageUsersRecruitersTableCreatedAt" %}</th>
+              <th class="text-start">{% translate "manageUsersRecruitersTableActiveStatus" %}</th>
+              <th class="text-start">{% translate "manageUsersRecruitersTableGroup" %}</th>
+              <th class="text-start">{% translate "manageUsersRecruitersTableRecruiter" %}</th>
+              <th class="text-start">{% translate "manageUsersRecruitersTableActions" %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in recruiters_list %}
+            <tr class="green-color text-start">
+              <td style="padding-left:32px;">
+                <input type="checkbox" class="form-check-input recruiter-checkbox" value="{{ user.id }}">
+              </td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.first_name }} {{ user.last_name }}</td>
+              <td>{{ user.created_at }}</td>
+              <td>{{ user.is_active|yesno:_("active,inactive") }}</td>
+              <td>
+                {% if user.group == "recruiter" %}
+                  {% translate "webCommonNo" %}
+                {% elif user.group == "recruiter_admin" %}
+                  {% translate "webCommonYes" %}
+                {% endif %}
+              </td>
+              <td>
+                {% for org in user.organizations.all %}
+                  {{ org.name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+              </td>
+              <td class="text-center">
+                <i class="fa fa-edit me-2 cursor-pointer edit-recruiter-btn"
+                  data-bs-toggle="modal"
+                  data-bs-target="#editRecruiterModal"
+                  data-recruiter-curp="{{ user.curp }}"
+                  data-recruiter-first-name="{{ user.first_name }}"
+                  data-recruiter-last-name="{{ user.last_name }}"
+                  data-recruiter-email="{{ user.email }}"
+                  data-recruiter-is-active="{{ user.is_active }}"
+                  data-recruiter-language="{{ user.language }}"
+                  data-recruiter-group="{{ user.group }}">
+                </i>
+                <i class="fa fa-trash text-danger"
+                  style="cursor: pointer;font-size: 15px;"
+                  data-bs-toggle="modal"
+                  data-bs-target="#deleteModalManageRecruiter{{ user.id }}"
+                  title="{% translate 'recruiterListDelete' %}">
+                </i>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
+  </div>
+
+  <!-- Delete Modals -->
+  {% for recruiter in recruiters_list %}
+  {% if recruiter.id %}
+  <div class="modal fade" id="deleteModalManageRecruiter{{ recruiter.id }}" tabindex="-1" aria-labelledby="deleteModalManageRecruiterLabel{{ recruiter.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="POST" action="{% url 'recruiter_manage_delete' recruiter.id %}">
+          {% csrf_token %}
+          <div class="modal-header" style="background-color: #7DBF96;">
+            <h5 class="modal-title text-white" id="deleteModalManageRecruiterLabel{{ recruiter.id }}">{% translate "recruiterListConfirmDelete" %}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'recruiterListClose'%}"></button>
+          </div>
+          <div class="modal-body">
+            {% translate 'recruiterListAreYouSureYouWantToDelete'%} <strong>{{ recruiter.first_name }} {{recruiter.last_name}}</strong>?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'recruiterListCancel'%}</button>
+            <button type="submit" class="btn" style='background-color:#F95406; color: white'>{% translate 'recruiterListDelete'%}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   {% endif %}
-{% endfor %}
+  {% endfor %}
 
-{% include 'recruiter/recruiter_modals/edit_recruiter_modal.html' %}
-{% include 'recruiter/recruiter_modals/assign-organization-modal.html' %}
-
+  <!-- Include Modals -->
+  {% include 'recruiter/recruiter_modals/edit_recruiter_modal.html' %}
+  {% include 'recruiter/recruiter_modals/assign-organization-modal.html' %}
+</div>
 
 {% block scripts %}
-    <script src="{% static ''%}assets/js/table-sorting.js"></script>
+<!-- DataTables JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
 
+<script>
+  $(document).ready(function () {
+    $.fn.dataTable.ext.errMode = 'none';
+
+    const table = $('#recruiters-datatable').DataTable({
+      ordering: true,
+      order: [],
+      columnDefs: [
+        { targets: -1, orderable: false }
+      ],
+      paging: true,
+      info: true,
+      language: {
+        searchPlaceholder: "Search...",
+        search: ""
+      }
+    });
+
+    $('#recruiters-datatable_length').appendTo('#recruiter-datatable-controls');
+    $('#recruiters-datatable_filter').appendTo('#recruiter-datatable-controls');
+
+    const searchInput = $('#recruiter-datatable-controls #recruiters-datatable_filter input')
+      .addClass('form-control')
+      .attr('placeholder', 'Search...')
+      .css('width', '100%');
+    $('#recruiter-customSearchContainer').append(searchInput);
+
+    const lengthDropdown = $('#recruiter-datatable-controls #recruiters-datatable_length select').parent();
+    $('#recruiter-customLengthContainer').append(lengthDropdown);
+
+    const settingsBtn = `
+      <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#recruiterColumnSettingsModal">
+        <i class="fa fa-cog" aria-hidden="true" style="font-size: 1.3rem; color: #9A9898;"></i>
+      </button>
+    `;
+    $('#recruiter-customSettingsContainer').html(settingsBtn);
+  });
+</script>
 {% endblock scripts %}
