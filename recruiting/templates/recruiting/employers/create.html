@@ -1,45 +1,42 @@
-{% extends 'components/base.html' %}
 {% load i18n %}
+{% load custom_filters %}
 
-{% block title %} {% translate "addEmployerEmployers"%} {% endblock title %}
-
-{% block body %}
-<div class="page-header">
- <div>
-  <h1 class="page-title">
-   {% translate "addEmployerAddEmployer" %}
-  </h1>
- </div>
-</div>
-<div class="row">
- <div class="col-12">
-  <div class="card my-4">
-   <div class="card-body">
-  <form method="post">
-  {% csrf_token %}
-
-  {% for field in form.visible_fields %}
-    <div class="col">
-      <div class="form-group my-3">
-        <label>{{ field.label }}</label>
-        <div class="input-group input-group-outline is_valid my-3">
-          {{ field }}
-        </div>
+<div class="modal fade" id="addEmployerModal" tabindex="-1" aria-labelledby="addEmployerModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h5 class="modal-title" id="addEmployerModalLabel">{% translate "employersAddNewEmployer" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-    </div>
-  {% endfor %}
 
-  {# Render hidden fields separately, without labels #}
-  {% for hidden in form.hidden_fields %}
-    {{ hidden }}
-  {% endfor %}
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <form method="post" action="{% url 'recruiting_web:employer_create' %}?type=employer" >
+        {% csrf_token %}
 
-     <button class="btn btn-primary" type="submit">
-      {% translate "addEmployerSubmit" %}
-     </button>
-    </form>
+        {% for field in employer_form.visible_fields %}
+          <div class="col">
+            <div class="form-group my-3">
+              <label>{{ field.label }}</label>
+              <div class="input-group input-group-outline is_valid my-3">
+                {{ field }}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+
+        {# Render hidden fields separately, without labels #}
+        {% for hidden in employer_form.hidden_fields %}
+          {{ hidden }}
+        {% endfor %}
+
+          <button class="btn btn-primary" type="submit">
+            {% translate "addEmployerSubmit" %}
+          </button>
+          </form>
    </div>
   </div>
  </div>
 </div>
-{% endblock %}
+

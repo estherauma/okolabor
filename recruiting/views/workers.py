@@ -226,9 +226,7 @@ class WorkerListView(View):
             })
        
         worker_form = WorkerCreateForm()
-        print("Worker Form:", worker_form)
-            
-
+    
         context = {
             'workers': workers,
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),

@@ -136,11 +136,13 @@ class EmployerListView(View):
                 'description': employer.description,
                 'recruiters': recruiter_org_names
             })
+        employer_form = EmployerForm()
 
         context = {
             'employers': employers_data,
             'query': query,
-            'recruiters': recruiter_organizations
+            'recruiters': recruiter_organizations,
+            'employer_form': employer_form,
         }
         return render(request, 'recruiting/employers/list.html', context)
 
@@ -240,8 +242,10 @@ class RecruiterListViewInAdmin(View):
                 'description': recruiter.description,
                 'employers': assigned_employers
             })
-
-        context = {'recruiters': recruiters_data, 'query': query}
+        
+        
+        employer_form = EmployerForm()
+        context = {'recruiters': recruiters_data, 'query': query, 'employer_form': employer_form}
         return render(request, 'recruiting/recruiters_list/list.html', context)
 
 
@@ -294,7 +298,6 @@ class RecruiterEditView(LoginRequiredMixin, View):
 class EmployerCreateView(CreateView):
     model = Organization
     form_class = EmployerForm
-    template_name = 'recruiting/employers/create.html'
 
     def get_initial(self):
         initial = super().get_initial()
