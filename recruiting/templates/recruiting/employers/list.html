@@ -14,14 +14,6 @@
 {% endblock styles %}
 
 {% block body %}
-
-<div class="parent-btn-grp">
-  <div class="employers-list-flex">
-    <div class="dropdown">
-
-    </div>
-  </div>
-</div>
 <div class="modal fade" id="assignRecruiterModal" tabindex="-1" aria-labelledby="assignRecruiterLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -170,21 +162,21 @@
                 </td>
                 {% if request.user|has_group:"admin" %}
                   <td>
-                    <i 
-                      class="fa fa-trash text-danger" 
-                      style="cursor: pointer;font-size:15px;" 
-                      data-bs-toggle="modal" 
-                      data-bs-target="#deleteModal{{ employer.id }}" 
-                      title={% translate "employersDelete"%}>
-                    </i>
-                    <i 
-                      class="fa fa-edit text-muted ms-2"
-                      style="cursor: pointer;font-size: 15px;" 
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-danger"
                       data-bs-toggle="modal"
-                      data-bs-target="#editModal{{ employer.id }}"
-                      title={% translate "employersEdit"%}>
-                    </i>
-
+                      data-bs-target="#deleteModal{{ employer.id }}">
+                      {% translate "employersDelete" %}
+                    </button>
+                    <button 
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary ms-2"
+                      data-bs-toggle="modal"
+                      data-bs-target="#editModal{{ employer.id }}" >
+                      {% translate "employersEdit" %}
+                    </button>
+                  
                   </td>
                 {% endif %}
                 
