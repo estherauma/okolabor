@@ -84,6 +84,18 @@
           <a class="btn btn-light btn-sm" href="roles/create">
             {% translate "jobOrderDetailsAddRole" %}
           </a>
+
+          <a class="btn btn-light btn-sm" 
+            data-bs-toggle="modal" 
+            data-bs-target="#addRoleModal{{ workrequest.id }}">
+            <i class="fa fa-plus me-1"></i> {% translate "jobOrderDetailsAddRole" %}
+          </a>
+
+
+
+
+          {% include "recruiting/work_requests/create_role.html"%}
+
         </div>
       </div>
       <div class="card-body">

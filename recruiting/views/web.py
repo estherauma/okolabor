@@ -1159,6 +1159,7 @@ class WorkRequestDetailView(View):
             for deduction in deductions:
                 deduction_forms[deduction.id] = RoleDeductionForm(instance=deduction)
         
+        role_add_form = WorkRequestRoleForm()
         role_Hours_form = RoleHoursForm()
         role_Wages_form = RoleWagesForm()
         role_Deduction_form = RoleDeductionForm()
@@ -1191,6 +1192,7 @@ class WorkRequestDetailView(View):
             'role_Employment_form': role_Employment_form,
             'role_Housing_form': role_Housing_form,
             'role_Meals_form': role_Meals_form,
+            'role_add_form': role_add_form,
 
         }
         return render(request, 'recruiting/work_requests/detail.html', context)
@@ -1201,24 +1203,17 @@ class WorkRequestRoleCreateView(CreateView):
 
     def get_initial(self):
         initial = super().get_initial()
-        initial['work_request'] = self.kwargs.get('pk')
+        initial['work_request'] = WorkRequests.objects.get(pk=self.kwargs['pk'])
         return initial
 
-    def form_valid(self, form: BaseModelForm) -> HttpResponse:
-        messages.success(self.request, _('addRoleRoleCreatedSuccessfully'))
-        return super().form_valid(form)
+    def get_success_url(self):
+        return reverse_lazy('your_success_page_or_list')  # Adjust to redirect after successful form
 
-    def form_invalid(self, form: BaseModelForm) -> HttpResponse:
-        for field, errors in form.errors.items():
-            for error in errors:
-                messages.error(self.request, f'{field}: {error}')
-        return super().form_invalid(form)
-
-    def get_success_url(self) -> str:
-        return reverse(
-            'recruiting_web:workrequest_detail',
-            kwargs={'pk': self.object.work_request.pk}
-        )
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        if self.request.method == 'GET':
+            kwargs['initial'] = self.get_initial()
+        return kwargs
     
 class EditRoleView(View):
     def post(self, request, pk):
