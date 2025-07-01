@@ -4,7 +4,7 @@ $(document).ready(function () {
 
     const workRequestSelect = $('#modal_work_request');
     workRequestSelect.select2({
-        placeholder: "Search for work requests...",
+        placeholder: "Search for job orders...",
         width: '100%',
         allowClear: true,
         minimumResultsForSearch: 0

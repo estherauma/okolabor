@@ -71,7 +71,9 @@
                 {% endfor %}
               </td>
               <td class="text-center">
-                <i class="fa fa-edit me-2 cursor-pointer edit-recruiter-btn"
+                <button 
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary edit-recruiter-btn"
                   data-bs-toggle="modal"
                   data-bs-target="#editRecruiterModal"
                   data-recruiter-curp="{{ user.curp }}"
@@ -81,13 +83,14 @@
                   data-recruiter-is-active="{{ user.is_active }}"
                   data-recruiter-language="{{ user.language }}"
                   data-recruiter-group="{{ user.group }}">
-                </i>
-                <i class="fa fa-trash text-danger"
-                  style="cursor: pointer;font-size: 15px;"
+                  {% translate 'webCommonEdit' %}
+              </button>
+                <button
+                  type="button" class="btn btn-sm btn-outline-danger ms-2"
                   data-bs-toggle="modal"
                   data-bs-target="#deleteModalManageRecruiter{{ user.id }}"
-                  title="{% translate 'recruiterListDelete' %}">
-                </i>
+                  >{% translate 'webCommonDelete' %}</button>
+                
               </td>
             </tr>
             {% endfor %}

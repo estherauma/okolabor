@@ -167,13 +167,18 @@
                   {% endif %}
                 </td>
                 <td>
-                  <i class="fa fa-trash text-danger" style="cursor: pointer;font-size: 15px;" data-bs-toggle="modal"
-                    data-bs-target="#deleteModalRecruiter{{ recruiter.id }}" title={% translate "recruiterListDelete"
-                    %}>
-                  </i>
-                  <i class="fa fa-edit text-muted ms-2" style="cursor: pointer;font-size: 15px;" data-bs-toggle="modal"
-                    data-bs-target="#editRecruiterModal{{ recruiter.id }}" title={% translate "recruiterListEdit" %}>
-                  </i>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                    data-bs-target="#deleteModalRecruiter{{ recruiter.id }}">
+                    {% translate "recruiterListDelete"%}
+                </button>
+                  <button 
+                    type="button"
+                    class="btn btn-sm btn-outline-secondary ms-2" data-bs-toggle="modal"
+                    data-bs-target="#editRecruiterModal{{ recruiter.id }}">
+                    {% translate "recruiterListEdit" %}
+                </button>
 
                 </td>
               </tr>
@@ -256,8 +261,9 @@
       <form method="POST" action="{% url 'recruiting_web:recruiter_delete' recruiter.id %}">
         {% csrf_token %}
         <div class="modal-header" style="background-color: #7DBF96;">
-          <h5 class="modal-title text-white" id="deleteModalRecruiterLabel{{ recruiter.id }}">{% translate
-            "recruiterListConfirmDelete" %}</h5>
+          <h5 class="modal-title text-white" id="deleteModalRecruiterLabel{{ recruiter.id }}">
+            {% translate "recruiterListConfirmDelete" %}
+          </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"
             aria-label="{% translate 'recruiterListClose'%}"></button>
         </div>
@@ -265,10 +271,11 @@
           {% translate 'recruiterListAreYouSureYouWantToDelete'%} <strong>{{ recruiter.name }}</strong>?
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{%
-            translate 'recruiterListCancel'%}</button>
-          <button type="submit" class="btn" style='background-color:#F95406; color: white'>{% translate
-            'recruiterListDelete'%}</button>
+          <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>
+            {% translate 'recruiterListCancel'%}
+          </button>
+          <button type="submit" class="btn" style='background-color:#F95406; color: white'>
+            {% translate 'recruiterListDelete' %}</button>
         </div>
       </form>
     </div>
@@ -287,8 +294,9 @@
       <form method="POST" action="{% url 'recruiting_web:recruiter_edit' recruiter.id %}">
         {% csrf_token %}
         <div class="modal-header" style="background-color: #7DBF96;">
-          <h5 class="modal-title text-white" id="editRecruiterModalLabel{{ recruiter.id }}">{% translate
-            "recruiterListEditRecruiter" %}</h5>
+          <h5 class="modal-title text-white" id="editRecruiterModalLabel{{ recruiter.id }}">
+            {% translate "recruiterListEditRecruiter" %}
+          </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"
             aria-label="{% translate 'recruiterListClose'%}"></button>
         </div>
@@ -334,22 +342,24 @@
               value="{{ recruiter.country }}">
           </div>
           <div class="mb-3">
-            <label for="zip_code{{ recruiter.id }}" class="form-label">{% translate "recruiterListZipCode" %}</label>
+            <label for="zip_code{{ recruiter.id }}" class="form-label">
+              {% translate "recruiterListZipCode" %}
+            </label>
             <input type="text" class="form-control" id="zip_code{{ recruiter.id }}" name="zip_code"
               value="{{ recruiter.zip_code }}">
           </div>
           <div class="mb-3">
-            <label for="description{{ recruiter.id }}" class="form-label">{% translate "recruiterListDescription"
-              %}</label>
+            <label for="description{{ recruiter.id }}" class="form-label">
+              {% translate 'recruiterListDescription' %}</label>
             <textarea class="form-control" id="description{{ recruiter.id }}"
               name="description">{{ recruiter.description }}</textarea>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{%
-            translate 'recruiterListCancel' %}</button>
-          <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>{% translate
-            'recruiterListSave' %}</button>
+          <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>
+            {% translate 'recruiterListCancel' %}</button>
+          <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>
+            {% translate 'recruiterListSave' %}</button>
         </div>
       </form>
     </div>
