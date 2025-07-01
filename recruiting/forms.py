@@ -119,6 +119,10 @@ class WorkerAssignmentForm(forms.ModelForm):
         }
 
 
+from django import forms
+from django.forms import CheckboxSelectMultiple
+from .models import Role
+
 class WorkRequestRoleForm(forms.ModelForm):
     work_type = forms.ChoiceField(
         choices=[],
@@ -126,38 +130,35 @@ class WorkRequestRoleForm(forms.ModelForm):
         required=True,
     )
 
-    # Optional dynamic fields
+    # Optional dynamic fields using checkboxes now
     animal_types = forms.MultipleChoiceField(
         required=False,
-        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_animal_types'}),
+        widget=CheckboxSelectMultiple(attrs={'class': 'form-check-input', 'id': 'id_animal_types'}),
     )
     crop_types = forms.MultipleChoiceField(
         required=False,
-        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_crop_types'}),
+        widget=CheckboxSelectMultiple(attrs={'class': 'form-check-input', 'id': 'id_crop_types'}),
     )
     crop_job_types = forms.MultipleChoiceField(
         required=False,
-        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_crop_job_types'}),
+        widget=CheckboxSelectMultiple(attrs={'class': 'form-check-input', 'id': 'id_crop_job_types'}),
     )
     mechanic_job_types = forms.MultipleChoiceField(
         required=False,
-        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_mechanic_jobs'}),
+        widget=CheckboxSelectMultiple(attrs={'class': 'form-check-input', 'id': 'id_mechanic_job_types'}),
     )
     supervision_jobs_types = forms.MultipleChoiceField(
         required=False,
-        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_supervision_jobs'}),
+        widget=CheckboxSelectMultiple(attrs={'class': 'form-check-input', 'id': 'id_supervision_jobs_types'}),
     )
-
     licensed_vehicle_operation_types = forms.MultipleChoiceField(
         required=False,
-        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'licensed_vehicle_operations'}),
+        widget=CheckboxSelectMultiple(attrs={'class': 'form-check-input', 'id': 'licensed_vehicle_operation_types'}),
     )
-
     responsibilities_types = forms.MultipleChoiceField(
         required=False,
-        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_responsibilities_types'}),
+        widget=CheckboxSelectMultiple(attrs={'class': 'form-check-input', 'id': 'id_responsibilities_types'}),
     )
-
 
     class Meta:
         model = Role
@@ -176,7 +177,6 @@ class WorkRequestRoleForm(forms.ModelForm):
             'work_request',
             'description',
         ]
-        # ✅ Restored form-control styles for main fields
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'usdol_case_number': forms.TextInput(attrs={'class': 'form-control'}),
@@ -236,24 +236,21 @@ class WorkRequestRoleForm(forms.ModelForm):
         def strip_list(field_name):
             return [item.strip() for item in request.getlist(field_name) if item.strip()]
 
-        # Map work_type values to the relevant dynamic form fields
         dynamic_fields_by_type = {
             "animals": ["animal_types", "responsibilities_types"],
             "crop_and_horticulture": ["crop_types", "crop_job_types"],
             "mechanics": ["mechanic_job_types"],
             "worker_supervision__management": ["supervision_jobs_types"],
             "licensed_vehicle_operation": ["licensed_vehicle_operation_types"],
-            # construction, licensed_vehicle_operation, other → only description
         }
 
         if work_type in dynamic_fields_by_type:
             for field in dynamic_fields_by_type[work_type]:
                 work_type_detail[field] = strip_list(field)
 
-        cleaned_data["work_type"] = work_type  # Ensure lowercase consistency
+        cleaned_data["work_type"] = work_type
         cleaned_data["work_type_detail"] = work_type_detail
         return cleaned_data
-
 
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -261,8 +258,6 @@ class WorkRequestRoleForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
-
-
 
 
 class RoleHoursForm(forms.ModelForm):

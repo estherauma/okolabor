@@ -1204,21 +1204,31 @@ class WorkRequestRoleCreateView(CreateView):
         initial['work_request'] = self.kwargs.get('pk')
         return initial
 
-    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+    def form_valid(self, form):
         messages.success(self.request, _('addRoleRoleCreatedSuccessfully'))
         return super().form_valid(form)
 
-    def form_invalid(self, form: BaseModelForm) -> HttpResponse:
+    def form_invalid(self, form):
         for field, errors in form.errors.items():
             for error in errors:
                 messages.error(self.request, f'{field}: {error}')
         return super().form_invalid(form)
 
-    def get_success_url(self) -> str:
-        return reverse(
-            'recruiting_web:workrequest_detail',
-            kwargs={'pk': self.object.work_request.pk}
-        )
+    def get_success_url(self):
+        return reverse('recruiting_web:workrequest_detail', kwargs={'pk': self.object.work_request.pk})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['dynamic_fields'] = [
+            'animal_types',
+            'responsibilities_types',
+            'crop_types',
+            'crop_job_types',
+            'mechanic_job_types',
+            'supervision_jobs_types',
+            'licensed_vehicle_operation_types',
+        ]
+        return context
     
 class EditRoleView(View):
     def post(self, request, pk):
