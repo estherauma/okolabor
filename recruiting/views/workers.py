@@ -224,6 +224,12 @@ class WorkerListView(View):
                 'years_of_experience': years_of_experience, 
                 **worker_details
             })
+         # 🔄 AJAX Support
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({
+                'workers': worker_data,
+                'num_pages': 1  # or len(worker_data) if needed
+            })
        
         worker_form = WorkerCreateForm()
     
