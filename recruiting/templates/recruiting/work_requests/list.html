@@ -134,7 +134,7 @@
                         <input type="checkbox" class="row-checkbox" data-id="{{ item.id }}">
                     </td>
                     <td class="tbody">
-                        <a class="link-color" href="/work-requests/{{ item.id }}">
+                        <a class="link-color" href="/job-order/{{ item.id }}">
                             {{ item.name }}
                         </a>
                     </td>
@@ -158,20 +158,18 @@
                     </td>
                     {% if request.user|has_group:"admin" %}
                         <td>
-                        <i
-                            class="fa fa-trash text-danger"
-                            style="cursor: pointer;font-size:15px;"
+                        <button
+                            class="btn btn-sm btn-outline-danger"
                             data-bs-toggle="modal"
-                            data-bs-target="#deleteModal{{ item.id }}"
-                            title="{% translate 'jobOrderListDelete'%}">
-                        </i>
-                        <i
-                            class="fa fa-edit text-muted ms-2"
-                            style="cursor: pointer;font-size:15px;"
+                            data-bs-target="#deleteModal{{ item.id }}">
+                          {% translate 'jobOrderListDelete'%}
+                        </button>
+                        <button
+                            class="btn btn-sm btn-outline-secondary ms-2"
                             data-bs-toggle="modal"
-                            data-bs-target="#editModal{{ item.id }}"
-                            title="{% translate 'jobOrderListEdit'%}">
-                        </i>
+                            data-bs-target="#editModal{{ item.id }}">
+                            {% translate 'jobOrderListEdit'%}
+                      </button>
                         </td>
                     {% endif %}
                 </tr>

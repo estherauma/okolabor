@@ -71,7 +71,9 @@
               {% endfor %}
             </td>
             <td class="text-center">
-              <i class="fa fa-edit me-2 cursor-pointer edit-employer-btn"
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary"
                 data-bs-toggle="modal"
                 data-bs-target="#editEmployerModal"
                 data-employer-curp="{{ user.curp }}"
@@ -81,13 +83,16 @@
                 data-employer-is-active="{{ user.is_active }}"
                 data-employer-language="{{ user.language }}"
                 data-employer-group="{{ user.group }}">
-              </i>
-              <i class="fa fa-trash text-danger"
-                style="cursor: pointer;font-size: 15px;"
+                {% translate 'webCommonEdit' %}
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-danger ms-2"
                 data-bs-toggle="modal"
                 data-bs-target="#deleteModalManageEmployer{{ user.id }}"
                 title="{% translate 'webCommonDelete' %}">
-              </i>
+                {% translate 'webCommonDelete' %}
+              </button>
             </td>
           </tr>
           {% endfor %}

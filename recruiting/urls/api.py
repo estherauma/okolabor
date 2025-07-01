@@ -9,7 +9,11 @@ app_name = 'recruiting_api'
 
 urlpatterns = [
     path('employers/', EmployerAPIListView.as_view(), name='employer_list'),
+    # To be deprecated in favor of 'job-orders/' path
+    # This is to maintain backward compatibility with existing apps
     path('work-requests/',
+         WorkRequestsAPIListView.as_view(), name='work_requests_list'),
+    path('job-orders/',
          WorkRequestsAPIListView.as_view(), name='work_requests_list'),
     path('roles/', RoleAPIListView.as_view(), name='role_list'),
     path('role/<pk>/details/',
