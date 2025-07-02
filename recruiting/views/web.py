@@ -503,6 +503,10 @@ class WorkRequestsListView(View):
             "employers": Organization.objects.filter(type='employer'),
             "recruiter": Organization.objects.filter(type='recruiter'),
             "form": form,
+            "breadcrumbs": [
+                        {'name': _('Home'), 'url': 'index'},
+                        {'name': _('Job Orders'), 'url': None},
+                    ],
         }
         return render(request, "recruiting/work_requests/list.html", context)
 

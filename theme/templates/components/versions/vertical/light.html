@@ -99,6 +99,17 @@
               {% endif %}
             </div>
 
+            <div class="container-fluid mt-3">
+              {% block breadcrumbs_wrapper %}
+                <nav aria-label="breadcrumb" class="border bg-white px-3 py-2 shadow-sm">
+                  <ol class="breadcrumb mb-0">
+                    {% block breadcrumbs %}{% endblock %}
+                  </ol>
+                </nav>
+              {% endblock %}
+            </div>
+            <br>
+
             {% block body %} {% endblock %}
           </div>
         </div>
