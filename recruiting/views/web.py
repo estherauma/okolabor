@@ -613,6 +613,17 @@ class WorkRequestDeleteView(LoginRequiredMixin, View):
 
 
 class AddWorkersWorkRequests(View):
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        role_id = self.kwargs.get('pk')
+        role = get_object_or_404(Role, pk=role_id)
+        context.update({
+            'role': role,
+            'workrequest': role.work_request
+        })
+        return context
+    
     def get(self, request, pk, role_id):
         type_sector_value = request.GET.get('type_sector')
         dynamic_field_1_value = request.GET.get('dynamic_field_1', '')
@@ -948,6 +959,12 @@ class AddWorkersWorkRequests(View):
             'cancelled_count': cancelled_count,
             'rejected_count': rejected_count,
             'workers_count': workers_count,
+            'breadcrumbs': [
+                            {'name': _('Home'), 'url': reverse('index')},
+                            {'name': _('Job Orders'), 'url': reverse('recruiting_web:workrequest_list')},
+                            {'name': _('Job Order Details'), 'url': reverse('recruiting_web:workrequest_detail', kwargs={'pk': work_request.pk})},
+                            {'name': _('Add Workers'), 'url': None},
+                        ],
         }
         return render(request, 'recruiting/work_requests/create_addworker.html', context)
 
