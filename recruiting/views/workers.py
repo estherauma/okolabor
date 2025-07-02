@@ -224,14 +224,15 @@ class WorkerListView(View):
                 'years_of_experience': years_of_experience, 
                 **worker_details
             })
-        # 🔄 AJAX Support
+         # 🔄 AJAX Support
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({
                 'workers': worker_data,
                 'num_pages': 1  # or len(worker_data) if needed
             })
-            
-
+       
+        worker_form = WorkerCreateForm()
+    
         context = {
             'workers': workers,
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
@@ -241,6 +242,7 @@ class WorkerListView(View):
             'search_query': search_query,
             'years_of_experience': years_of_experience,
             'status_choices': WorkAssignment.STATUS_CHOICES,
+            'worker_form': worker_form,
         }
         return render(request, 'recruiting/workers/list.html', context)
 
@@ -453,7 +455,7 @@ class GetWorkerDetailsView(View):
 class WorkerCreateView(CreateView):
     model = User
     form_class = WorkerCreateForm
-    template_name = 'recruiting/workers/create.html'
+    
 
     def form_valid(self, form):
         worker = form.save()
@@ -487,7 +489,6 @@ class WorkerDetailsView(View):
         logger = AppLogger(log_file='logs/debug.log')
         worker = get_object_or_404(User, pk=pk)
         base_url = request.build_absolute_uri('/')
-        work_experience = UserWorkExperience.objects.filter(user=worker).first()
         preferences = UserPreference.objects.filter(user=worker)
         preference_data = {pref.key: pref.value for pref in preferences}
         # They should not be displayed to the user
@@ -512,13 +513,12 @@ class WorkerDetailsView(View):
         for key in tracking_keys:
             preference_data.pop(key, None)
         
-    
+
         documents = UserDocuments.objects.filter(
-            user=worker, kind__in=[
-                'passport', 'english_video', 'profile_picture'
-                'us_driving_license', 'mexico_driving_license'
-            ])
+            user=worker)
+        
         document_dict = {}
+
         for doc in documents:
             kind = doc.kind.lower() if doc.kind else "other"
             if kind not in document_dict:
@@ -533,7 +533,7 @@ class WorkerDetailsView(View):
             for 
             experience in worker.work_experiences.all()
         }
-
+        
         static_content = StaticContent()
         document_labels = static_content.get_document_labels()
         preferred_countries_label = static_content.get_label_for_preference_field("whereYouWantToWork")
@@ -551,9 +551,6 @@ class WorkerDetailsView(View):
         work_environment_label = static_content.get_label_for_preference_field_two("workEnvironment")
         language_options = static_content.get_english_proficiency_options()
         language_label = static_content.get_label_for_field("englishProficiency")
-        print(document_dict,"preference_data")
-        print(preference_data,"preference")
-        
 
         profile_completion = calculate_profile_completion(worker)
         latest_assignment = WorkAssignment.objects.filter(
@@ -561,7 +558,6 @@ class WorkerDetailsView(View):
         ).order_by('-assigned_date').first()
 
         current_status = latest_assignment.status if latest_assignment else 'No Assignment'
-       
         context = {
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
             'worker': worker,
@@ -683,7 +679,7 @@ class CreateWorkExperienceView(BaseCreateView):
             if uploaded_file:
                 folder = 'certificates' if kind in ['visa', 'certificate'] else 'explanation'
                 filename = uploaded_file.name
-                relative_path = os.path.join('uploads', folder, filename)
+                relative_path = os.path.join(folder, filename)
                 full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
 
                 os.makedirs(os.path.dirname(full_path), exist_ok=True)

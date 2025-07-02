@@ -1,103 +1,183 @@
 {% load static %}
 {% load i18n %}
+
+<!-- Include CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+<style>
+
+  #customLengthContainer select {
+    width: 46px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    height: auto;
+  }
+
+  #customLengthContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .dataTables_length label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0;
+  }
+
+  .custom-toolbar .form-control {
+    max-width: 400px;
+  }
+</style>
+
 <div class="card">
-    <div class="card-body">
-        <div class="d-flex justify-content-between">
-            <h3 class="card-title green-color fw-bold mb-1">
-                {% translate "manageUsersWorkerTableTitle" %}
-            </h3>
-            <!-- <button class="btn btn yellow-button btn-icon ms-auto p-1 mb-3" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#AddWorkerModal">
-                {% translate "manageUsersWorkerTableNewWorker" %}
-            </button> -->
-        </div>
-
-        <div class="row">
-            <div class="col-12">
-                <div class="table-responsive">
-                    <table class="table text-nowrap border-bottom" id="workers-list-datatable">
-                        <thead style="background-color: #7DBF96;">
-                            <tr>
-                                <th class="text-start">{% translate "manageUsersWorkerTableCurp" %}</th>
-                                <th class="text-start">{% translate "manageUsersWorkerTableEmail" %}</th>
-                                <th class="text-start">{% translate "manageUsersWorkerTableFirstName" %}</th>
-                                <th class="text-start">{% translate "manageUsersWorkerTableCreatedAt" %}</th>
-                                <th class="text-start">{% translate "manageUsersWorkerTableStatus" %}</th>
-                                <th class="text-start">{% translate "manageUsersWorkerTableActions" %}</th>
-                            </tr>
-                        </thead>
-                        <tbody> 
-                            {% for user in workers %}
-                            <tr class="green-color text-start">
-                                <td>{{ user.curp }}</td>
-                                <td>{{ user.email }}</td>
-                                <td>{{ user.first_name }} {{ user.last_name }}</td>
-                                <td>{{ user.created_at }}</td>
-                                <td>{{ user.is_active|yesno:_("active,inactive") }}</td>
-                                <td class="text-center">
-                                    <!-- Edit Icon -->
-                                    <i class="side-menu__icon icon icon-pencil fa fa-edit me-2 cursor-pointer edit-user-btn text-muted"
-                                       style="font-size: 15px;"
-                                       data-bs-toggle="modal"
-                                       data-bs-target="#editWorkerModal"
-                                       data-curp="{{ user.curp }}" 
-                                       data-email="{{ user.email }}" 
-                                       data-first-name="{{ user.first_name }}" 
-                                       data-last-name="{{ user.last_name }}"
-                                       data-is-active="{{ user.is_active|yesno:'True,False' }}">
-                                    </i>
-
-                                    <!-- Delete Icon only if user has ID -->
-                                    {% if user.id %}
-                                    <i class="fa fa-trash text-danger"
-                                       style="cursor: pointer; font-size: 15px;"
-                                       data-bs-toggle="modal"
-                                       data-bs-target="#deleteModalManageWorker{{ user.id }}"
-                                       title="{% translate 'workersListIconDelete' %}">
-                                    </i>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+  <div class="card-body">
+    <!-- Custom Toolbar -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap mb-3 custom-toolbar">
+      <div></div>
+      <div class="flex-grow-1 d-flex justify-content-center">
+        <div id="customSearchContainer" style="width: 100%; max-width: 400px;"></div>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <div id="customSettingsContainer"></div>
+        <div id="customLengthContainer"></div>
+      </div>
     </div>
+
+    <div id="datatable-controls" style="display: none;"></div>
+
+    <div class="row">
+      <div class="col-12">
+        <div class="table-responsive">
+          <table class="table text-nowrap border-bottom" id="workers-list-datatable">
+            <thead style="background-color: #7DBF96;">
+              <tr>
+                <th class="text-start">{% translate "manageUsersWorkerTableCurp" %}</th>
+                <th class="text-start">{% translate "manageUsersWorkerTableEmail" %}</th>
+                <th class="text-start">{% translate "manageUsersWorkerTableFirstName" %}</th>
+                <th class="text-start">{% translate "manageUsersWorkerTableCreatedAt" %}</th>
+                <th class="text-start">{% translate "manageUsersWorkerTableStatus" %}</th>
+                <th class="text-start">{% translate "manageUsersWorkerTableActions" %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for user in workers %}
+              <tr class="green-color text-start">
+                <td>{{ user.curp }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.first_name }} {{ user.last_name }}</td>
+                <td>{{ user.created_at }}</td>
+                <td>{{ user.is_active|yesno:_("active,inactive") }}</td>
+                <td class="text-center">
+                  <button
+                     type="button"
+                     class="btn btn-sm btn-outline-secondary"
+                     data-bs-toggle="modal"
+                     data-bs-target="#editWorkerModal"
+                     data-curp="{{ user.curp }}"
+                     data-email="{{ user.email }}"
+                     data-first-name="{{ user.first_name }}"
+                     data-last-name="{{ user.last_name }}"
+                     data-is-active="{{ user.is_active|yesno:'True,False' }}">
+                      {% translate 'webCommonEdit' %}
+                    </button>
+                  {% if user.id %}
+                  <button
+                     type="button"
+                     class="btn btn-sm btn-outline-danger ms-2"
+                     data-bs-toggle="modal"
+                     data-bs-target="#deleteModalManageWorker{{ user.id }}"
+                     title="{% translate 'workersListIconDelete' %}">
+                      {% translate 'webCommonDelete' %}
+                    </button>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Delete Modals -->
 {% for user in workers %}
-    {% if user.id %}
-    <div class="modal fade" id="deleteModalManageWorker{{ user.id }}" tabindex="-1" aria-labelledby="deleteModalManageWorkerLabel{{ user.id }}" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form method="POST" action="{% url 'recruiting_web:worker_delete' user.id %}">
-                    {% csrf_token %}
-                    <div class="modal-header" style="background-color: #7DBF96;">
-                        <h5 class="modal-title text-white" id="deleteModalManageWorkerLabel{{ user.id }}">
-                            {% translate "workerListConfirmDelete" %}
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'workersListClose'%}"></button>
-                    </div>
-                    <div class="modal-body">
-                        {% translate 'webCommonConfirmDelete'%} <strong>{{ user.first_name }} {{ user.last_name }}</strong>?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn" data-bs-dismiss="modal" style="background-color:#9A9898; color:white;">
-                            {% translate 'workersListCancel' %}
-                        </button>
-                        <button type="submit" class="btn" style="background-color:#F95406; color:white;">
-                            {% translate 'workersListDelete' %}
-                        </button>
-                    </div>
-                </form>
-            </div>
+{% if user.id %}
+<div class="modal fade" id="deleteModalManageWorker{{ user.id }}" tabindex="-1" aria-labelledby="deleteModalManageWorkerLabel{{ user.id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="{% url 'recruiting_web:worker_delete' user.id %}">
+        {% csrf_token %}
+        <div class="modal-header" style="background-color: #7DBF96;">
+          <h5 class="modal-title text-white" id="deleteModalManageWorkerLabel{{ user.id }}">
+            {% translate "workerListConfirmDelete" %}
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'workersListClose' %}"></button>
         </div>
+        <div class="modal-body">
+          {% translate 'webCommonConfirmDelete' %} <strong>{{ user.first_name }} {{ user.last_name }}</strong>?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn" data-bs-dismiss="modal" style="background-color:#9A9898; color:white;">
+            {% translate 'workersListCancel' %}
+          </button>
+          <button type="submit" class="btn" style="background-color:#F95406; color:white;">
+            {% translate 'workersListDelete' %}
+          </button>
+        </div>
+      </form>
     </div>
-    {% endif %}
+  </div>
+</div>
+{% endif %}
 {% endfor %}
 
-<!-- Include Modals -->
+
 {% include 'workers/worker_modals/worker_edit_user_modal.html' %}
 {% include 'workers/worker_modals/add_worker_modal.html' %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    $.fn.dataTable.ext.errMode = 'none';
+
+    const table = $('#workers-list-datatable').DataTable({
+      ordering: true,
+      order: [],
+      columnDefs: [{ targets: -1, orderable: false }],
+      paging: true,
+      info: true,
+      language: {
+        searchPlaceholder: "Search...",
+        search: "",
+      }
+    });
+
+    $('#workers-list-datatable_length').appendTo('#datatable-controls');
+    $('#workers-list-datatable_filter').appendTo('#datatable-controls');
+
+    const searchInput = $('#datatable-controls #workers-list-datatable_filter input')
+      .addClass('form-control')
+      .attr('placeholder', 'Search...')
+      .css('width', '100%');
+    $('#customSearchContainer').append(searchInput);
+
+    const lengthLabel = $('#datatable-controls #workers-list-datatable_length label');
+    $('#customLengthContainer').append(lengthLabel);
+
+    const settingsBtn = `
+      <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#userLogColumnSettingsModal">
+        <i class="fa fa-cog" aria-hidden="true" style="font-size: 1.3rem; color: #9A9898;"></i>
+      </button>
+    `;
+    $('#customSettingsContainer').html(settingsBtn);
+  });
+</script>
+{% endblock %}

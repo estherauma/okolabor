@@ -112,7 +112,7 @@
                             <th class="theading-color">{% translate "workRequestID" %}</th>
                             <th class="theading-color">{% translate "startDate" %}</th>
                             <th class="theading-color">{% translate "endDate" %}</th>
-                            <th class="theading-color">{% translate "Company" %}</th>
+                            <th class="theading-color">{% translate "employerAminListEmployer" %}</th>
                             <th class="theading-color">{% translate "Status" %}</th>
                         </tr>
                     </thead>
@@ -120,7 +120,7 @@
                         {% for work_request in work_requests %}
                         <tr class="text-center" data-id="{{ work_request.id }}">
                             <td>
-                                <a href="/work-requests/{{ work_request.id }}" class="text-decoration-none text-dark">
+                                <a href="{% url 'workrequest_detail' work_request.id %}" class="text-decoration-none text-dark">
                                     {{ work_request.name }}
                                 </a>
                             </td>
@@ -133,7 +133,7 @@
                                 {% endif %}
                             </td>
                             <td>
-                                <a href="/employers/{{ work_request.employer.id }}" class="text-decoration-none text-dark">
+                                <a href="{% url 'employer_detail 'work_request.employer.id %}" class="text-decoration-none text-dark">
                                     {{ work_request.employer.name }}
                                 </a>
                             </td>

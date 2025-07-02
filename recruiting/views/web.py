@@ -136,11 +136,13 @@ class EmployerListView(View):
                 'description': employer.description,
                 'recruiters': recruiter_org_names
             })
+        employer_form = EmployerForm()
 
         context = {
             'employers': employers_data,
             'query': query,
-            'recruiters': recruiter_organizations
+            'recruiters': recruiter_organizations,
+            'employer_form': employer_form,
         }
         return render(request, 'recruiting/employers/list.html', context)
 
@@ -240,8 +242,10 @@ class RecruiterListViewInAdmin(View):
                 'description': recruiter.description,
                 'employers': assigned_employers
             })
-
-        context = {'recruiters': recruiters_data, 'query': query}
+        
+        
+        employer_form = EmployerForm()
+        context = {'recruiters': recruiters_data, 'query': query, 'employer_form': employer_form}
         return render(request, 'recruiting/recruiters_list/list.html', context)
 
 
@@ -294,7 +298,6 @@ class RecruiterEditView(LoginRequiredMixin, View):
 class EmployerCreateView(CreateView):
     model = Organization
     form_class = EmployerForm
-    template_name = 'recruiting/employers/create.html'
 
     def get_initial(self):
         initial = super().get_initial()
@@ -1159,6 +1162,7 @@ class WorkRequestDetailView(View):
             for deduction in deductions:
                 deduction_forms[deduction.id] = RoleDeductionForm(instance=deduction)
         
+        role_add_form = WorkRequestRoleForm(initial={'work_request': work_request})
         role_Hours_form = RoleHoursForm()
         role_Wages_form = RoleWagesForm()
         role_Deduction_form = RoleDeductionForm()
@@ -1166,6 +1170,16 @@ class WorkRequestDetailView(View):
         role_Employment_form = RoleEmploymentLocationForm()
         role_Housing_form = RoleHousingInformationForm()
         role_Meals_form = RoleMealProvision()
+        
+        dynamic_fields = [
+            'animal_types',
+            'responsibilities_types',
+            'crop_types',
+            'crop_job_types',
+            'mechanic_job_types',
+            'supervision_jobs_types',
+            'licensed_vehicle_operation_types',
+        ]
 
         context = {
             'workrequest': work_request,
@@ -1191,34 +1205,45 @@ class WorkRequestDetailView(View):
             'role_Employment_form': role_Employment_form,
             'role_Housing_form': role_Housing_form,
             'role_Meals_form': role_Meals_form,
+            'role_add_form': role_add_form,
+            'dynamic_fields': dynamic_fields,
 
         }
         return render(request, 'recruiting/work_requests/detail.html', context)
 class WorkRequestRoleCreateView(CreateView):
     model = Role
     form_class = WorkRequestRoleForm
-    template_name = 'recruiting/work_requests/create_role.html'
 
     def get_initial(self):
         initial = super().get_initial()
-        initial['work_request'] = self.kwargs.get('pk')
+        initial['work_request'] = WorkRequests.objects.get(pk=self.kwargs['pk'])
         return initial
 
-    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+    def form_valid(self, form):
         messages.success(self.request, _('addRoleRoleCreatedSuccessfully'))
         return super().form_valid(form)
 
-    def form_invalid(self, form: BaseModelForm) -> HttpResponse:
+    def form_invalid(self, form):
         for field, errors in form.errors.items():
             for error in errors:
                 messages.error(self.request, f'{field}: {error}')
         return super().form_invalid(form)
 
-    def get_success_url(self) -> str:
-        return reverse(
-            'recruiting_web:workrequest_detail',
-            kwargs={'pk': self.object.work_request.pk}
-        )
+    def get_success_url(self):
+        return reverse('recruiting_web:workrequest_detail', kwargs={'pk': self.object.work_request.pk})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['dynamic_fields'] = [
+            'animal_types',
+            'responsibilities_types',
+            'crop_types',
+            'crop_job_types',
+            'mechanic_job_types',
+            'supervision_jobs_types',
+            'licensed_vehicle_operation_types',
+        ]
+        return context
     
 class EditRoleView(View):
     def post(self, request, pk):

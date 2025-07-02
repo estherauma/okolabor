@@ -19,12 +19,6 @@
 
     </div>
   </div>
-  <div class="d-flex align-items-center gap-2">
-    <a class="btn dark-green-button" href="{% url 'recruiting_web:employer_create' %}?type=recruiter">
-      {% translate "recruiterListAddNewRecruiter" %}
-    </a>
-
-  </div>
 </div>
 <div class="modal fade" id="assignRecruiterModal" tabindex="-1" aria-labelledby="assignRecruiterLabel"
   aria-hidden="true">
@@ -117,8 +111,34 @@
   <div class="col-12">
     <div class="card">
       <div class="card-body">
+
+        <div class="d-flex align-items-center justify-content-between flex-wrap mb-3 custom-toolbar">
+          <div>
+            {% comment %} <a class="btn dark-green-button" href="{% url 'recruiting_web:employer_create' %}?type=recruiter">
+              {% translate "recruiterListAddNewRecruiter" %}
+            </a> {% endcomment %}
+            <a class="btn dark-green-button ms-3 text-white" 
+              data-bs-toggle="modal" 
+              data-bs-target="#addRecruiterModal">
+              <i class="fa fa-plus me-1"></i> {% translate "recruiterListAddNewRecruiter" %}
+          </a>
+          </div>
+
+          <div class="flex-grow-1 d-flex justify-content-center">
+            <div id="customSearchContainer" style="width: 100%; max-width: 400px;"></div>
+          </div>
+
+          <div class="d-flex align-items-center gap-2">
+            <div id="customSettingsContainer"></div>
+            <div id="customLengthContainer"></div>
+          </div>
+        </div>
+        <!-- Hidden container to hold original DataTable controls -->
+        <div id="datatable-controls" style="display: none;"></div>
+
+
         <div class="table-responsive">
-          <table class="table text-nowrap border-bottom" id="employers-list-datatable">
+          <table class="table text-nowrap border-bottom" id="recruiters-list-datatable">
             <thead style="background-color: #7DBF96;">
               <tr>
                 <!-- <th></th> -->
@@ -152,13 +172,18 @@
                   {% endif %}
                 </td>
                 <td>
-                  <i class="fa fa-trash text-danger" style="cursor: pointer;font-size: 15px;" data-bs-toggle="modal"
-                    data-bs-target="#deleteModalRecruiter{{ recruiter.id }}" title={% translate "recruiterListDelete"
-                    %}>
-                  </i>
-                  <i class="fa fa-edit text-muted ms-2" style="cursor: pointer;font-size: 15px;" data-bs-toggle="modal"
-                    data-bs-target="#editRecruiterModal{{ recruiter.id }}" title={% translate "recruiterListEdit" %}>
-                  </i>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                    data-bs-target="#deleteModalRecruiter{{ recruiter.id }}">
+                    {% translate "recruiterListDelete"%}
+                </button>
+                  <button 
+                    type="button"
+                    class="btn btn-sm btn-outline-secondary ms-2" data-bs-toggle="modal"
+                    data-bs-target="#editRecruiterModal{{ recruiter.id }}">
+                    {% translate "recruiterListEdit" %}
+                </button>
 
                 </td>
               </tr>
@@ -241,8 +266,9 @@
       <form method="POST" action="{% url 'recruiting_web:recruiter_delete' recruiter.id %}">
         {% csrf_token %}
         <div class="modal-header" style="background-color: #7DBF96;">
-          <h5 class="modal-title text-white" id="deleteModalRecruiterLabel{{ recruiter.id }}">{% translate
-            "recruiterListConfirmDelete" %}</h5>
+          <h5 class="modal-title text-white" id="deleteModalRecruiterLabel{{ recruiter.id }}">
+            {% translate "recruiterListConfirmDelete" %}
+          </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"
             aria-label="{% translate 'recruiterListClose'%}"></button>
         </div>
@@ -250,10 +276,11 @@
           {% translate 'recruiterListAreYouSureYouWantToDelete'%} <strong>{{ recruiter.name }}</strong>?
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{%
-            translate 'recruiterListCancel'%}</button>
-          <button type="submit" class="btn" style='background-color:#F95406; color: white'>{% translate
-            'recruiterListDelete'%}</button>
+          <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>
+            {% translate 'recruiterListCancel'%}
+          </button>
+          <button type="submit" class="btn" style='background-color:#F95406; color: white'>
+            {% translate 'recruiterListDelete' %}</button>
         </div>
       </form>
     </div>
@@ -272,8 +299,9 @@
       <form method="POST" action="{% url 'recruiting_web:recruiter_edit' recruiter.id %}">
         {% csrf_token %}
         <div class="modal-header" style="background-color: #7DBF96;">
-          <h5 class="modal-title text-white" id="editRecruiterModalLabel{{ recruiter.id }}">{% translate
-            "recruiterListEditRecruiter" %}</h5>
+          <h5 class="modal-title text-white" id="editRecruiterModalLabel{{ recruiter.id }}">
+            {% translate "recruiterListEditRecruiter" %}
+          </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"
             aria-label="{% translate 'recruiterListClose'%}"></button>
         </div>
@@ -319,22 +347,24 @@
               value="{{ recruiter.country }}">
           </div>
           <div class="mb-3">
-            <label for="zip_code{{ recruiter.id }}" class="form-label">{% translate "recruiterListZipCode" %}</label>
+            <label for="zip_code{{ recruiter.id }}" class="form-label">
+              {% translate "recruiterListZipCode" %}
+            </label>
             <input type="text" class="form-control" id="zip_code{{ recruiter.id }}" name="zip_code"
               value="{{ recruiter.zip_code }}">
           </div>
           <div class="mb-3">
-            <label for="description{{ recruiter.id }}" class="form-label">{% translate "recruiterListDescription"
-              %}</label>
+            <label for="description{{ recruiter.id }}" class="form-label">
+              {% translate 'recruiterListDescription' %}</label>
             <textarea class="form-control" id="description{{ recruiter.id }}"
               name="description">{{ recruiter.description }}</textarea>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{%
-            translate 'recruiterListCancel' %}</button>
-          <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>{% translate
-            'recruiterListSave' %}</button>
+          <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>
+            {% translate 'recruiterListCancel' %}</button>
+          <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>
+            {% translate 'recruiterListSave' %}</button>
         </div>
       </form>
     </div>
@@ -343,6 +373,7 @@
 {% endif %}
 {% endfor %}
 
+{% include 'recruiting/recruiters/create.html' %}
 
 {% endblock body %}
 
@@ -387,7 +418,7 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    const recruiterTable = $('#employers-list-datatable').DataTable({
+    const recruiterTable = $('#recruiters-list-datatable').DataTable({
       "ordering": true,
       "order": [],
       "columnDefs": [
@@ -429,7 +460,9 @@
 </script>
 <script>
   $(document).ready(function () {
-    const table = $('#employers-list-datatable').DataTable({
+  $.fn.dataTable.ext.errMode = 'none';
+
+  const table = $('#recruiters-list-datatable').DataTable({
       "ordering": true,
       "order": [],
       "columnDefs": [
@@ -441,14 +474,31 @@
       "paging": true,
       "info": true
     });
-    const settingsBtn = `
-        <button class="setting-btn" data-bs-toggle="modal" data-bs-target="#recruiterColumnSettingsModal">
-            <i class="fa fa-cog" aria-hidden="true"></i>
-        </button>
-    `;
-    const lengthContainer = $('#employers-list-datatable_length');
-    lengthContainer.addClass('d-flex align-items-center');
-    lengthContainer.prepend(settingsBtn);
-  });
+
+  // Move the original DataTable controls to a hidden container
+  $('#recruiters-list-datatable_length').appendTo('#datatable-controls');
+  $('#recruiters-list-datatable_filter').appendTo('#datatable-controls');
+
+  // ---- Custom: Search input in center ----
+  const searchInput = $('#datatable-controls #recruiters-list-datatable_filter input')
+    .addClass('form-control')
+    .attr('placeholder', 'Search...')
+    .css('width', '100%');
+  $('#customSearchContainer').append(searchInput);
+
+  // ---- Custom: Length dropdown only ----
+  const lengthDropdown = $('#datatable-controls #recruiters-list-datatable_length select').parent();
+  $('#customLengthContainer').append(lengthDropdown);
+
+  // ---- Custom: Settings button (only one!) ----
+  const settingsBtn = `
+    <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#recruiterColumnSettingsModal">
+      <i class="fa fa-cog" aria-hidden="true" style="font-size: 1.3rem; color: #9A9898;"></i>
+    </button>
+  `;
+  $('#customSettingsContainer').html(settingsBtn);
+});
+
+
 </script>
 {% endblock scripts %}
