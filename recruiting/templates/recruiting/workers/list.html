@@ -59,15 +59,20 @@
                         <div class="job-experience-form">
                             <div class="row align-items-center">
                                 {% for field in form %}
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label class="form-label gray-color text" for="{{ field.id_for_label }}">
-                                            {% translate field.label %}
-                                        </label>
-                                        {{ field }}
-                                    </div>
-                                </div>
-                                {% endfor %}
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label class="form-label gray-color text" for="{{ field.id_for_label }}">
+                                                    {% translate field.label %}
+                                                </label>
+                                                {{ field }}
+                                                <div class="selected-options-container mt-2" data-for="{{ field.id_for_label }}"
+                                                    style="margin-top: 0.5rem;">
+                                                    <!-- Pills will be inserted here dynamically -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+
                                 <div class="col-auto">
                                     <button class="btn" type="button" onclick="removeForm(this)">
                                         <span class="sign medium-font">{% translate "workersListX" %}</span>

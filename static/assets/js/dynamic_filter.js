@@ -23,6 +23,13 @@ function bindDynamicFieldEvents() {
         selector.removeEventListener('change', handleTypeSectorChange);
         selector.addEventListener('change', handleTypeSectorChange);
     });
+
+    // Add change listeners for pills rendering
+    const dynamicSelectors = document.querySelectorAll('select[id$="id_dynamic_field_1"], select[id$="id_dynamic_field_2"]');
+    dynamicSelectors.forEach(selector => {
+        selector.removeEventListener('change', () => updatePills(selector));
+        selector.addEventListener('change', () => updatePills(selector));
+    });
 }
 
 function handleTypeSectorChange(event) {
@@ -37,8 +44,6 @@ function handleTypeSectorChange(event) {
 
     const type = typeSelector.value;
 
-    // TODO: This section will be translated once the export script is updated to
-    // properly update strings in the djangojs.po files for all languages.
     const fieldData = {
         "Animals": {
             field1Label: "Animal Type",
@@ -64,7 +69,7 @@ function handleTypeSectorChange(event) {
             field2Label: null,
             field2Options: null
         },
-         "Licensed Vehicle Operation": {
+        "Licensed Vehicle Operation": {
             field1Label: "Tasks",
             field1Options: ["Cargo licence", "Passenger licence"],
             field2Label: null,
@@ -75,33 +80,69 @@ function handleTypeSectorChange(event) {
     const selected = fieldData[type];
 
     if (selected) {
-        // Update Field 1
         field1Label.textContent = selected.field1Label;
-        dynamicField1.innerHTML = `<option value="">Select ${selected.field1Label}</option>`;
+        dynamicField1.innerHTML = "";
+        dynamicField1.setAttribute("multiple", true);
         selected.field1Options.forEach(option => {
             dynamicField1.innerHTML += `<option value="${option}">${option}</option>`;
         });
         dynamicField1.parentElement.style.display = 'block';
-
-        // Update Field 2
         if (selected.field2Options) {
             field2Label.textContent = selected.field2Label;
-            dynamicField2.innerHTML = `<option value="">Select ${selected.field2Label}</option>`;
+            dynamicField2.innerHTML = "";
+            dynamicField2.setAttribute("multiple", true);
             selected.field2Options.forEach(option => {
                 dynamicField2.innerHTML += `<option value="${option}">${option}</option>`;
             });
             dynamicField2.parentElement.style.display = 'block';
         } else {
             dynamicField2.innerHTML = "";
+            dynamicField2.removeAttribute("multiple");
             dynamicField2.parentElement.style.display = 'none';
         }
     } else {
         dynamicField1.innerHTML = "";
         dynamicField2.innerHTML = "";
+        dynamicField1.removeAttribute("multiple");
+        dynamicField2.removeAttribute("multiple");
         dynamicField1.parentElement.style.display = 'none';
         dynamicField2.parentElement.style.display = 'none';
     }
+
+    updatePills(dynamicField1);
+    updatePills(dynamicField2);
 }
+
+function updatePills(selectElement) {
+    const formGroup = selectElement.closest(".form-group");
+    let pillsContainer = formGroup.querySelector(".selected-options-container");
+
+    if (!pillsContainer) {
+        pillsContainer = document.createElement("div");
+        pillsContainer.className = "selected-options-container";
+        pillsContainer.style.marginTop = "0.5rem";
+        formGroup.appendChild(pillsContainer);
+    }
+
+    const selectedOptions = Array.from(selectElement.selectedOptions).map(opt => opt.text).filter(Boolean);
+
+    pillsContainer.innerHTML = "";
+    selectedOptions.forEach(text => {
+        const pill = document.createElement("span");
+        pill.textContent = text;
+        pill.style.display = "inline-block";
+        pill.style.padding = "6px 14px";
+        pill.style.margin = "4px 6px 4px 0";
+        pill.style.fontSize = "0.9rem";
+        pill.style.color = "#2d6a4f";
+        pill.style.border = "1px solid #95d5b2";
+        pill.style.borderRadius = "999px";
+        pill.style.backgroundColor = "#f1fce9";
+        pill.style.boxShadow = "0 1px 2px rgba(0, 0, 0, 0.05)";
+        pillsContainer.appendChild(pill);
+    });
+}
+
 
 document.addEventListener("DOMContentLoaded", () => {
     bindDynamicFieldEvents();
@@ -109,5 +150,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (selector.value) {
             selector.dispatchEvent(new Event('change'));
         }
+    });
+    document.querySelectorAll('select[id$="id_dynamic_field_1"], select[id$="id_dynamic_field_2"]').forEach(select => {
+        updatePills(select);
     });
 });
