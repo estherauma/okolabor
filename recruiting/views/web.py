@@ -1211,6 +1211,11 @@ class WorkRequestDetailView(View):
             'role_Meals_form': role_Meals_form,
             'role_add_form': role_add_form,
             'dynamic_fields': dynamic_fields,
+            'breadcrumbs' :[
+                        {'name': _('Home'), 'url': 'index'},
+                        {'name': _('Job Orders'), 'url': 'recruiting_web:workrequest_list'},
+                        {'name': _('Job Order Details'), 'url': None},
+                    ],
 
         }
         return render(request, 'recruiting/work_requests/detail.html', context)

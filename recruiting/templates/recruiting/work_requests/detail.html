@@ -4,6 +4,23 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 {% endblock styles %}
 {% load i18n %}
+{% block breadcrumbs %}
+  {% if breadcrumbs %}
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        {% for crumb in breadcrumbs %}
+          {% if crumb.url %}
+            <li class="breadcrumb-item">
+              <a href="{% url crumb.url %}">{{ crumb.name }}</a>
+            </li>
+          {% else %}
+            <li class="breadcrumb-item active" aria-current="page">{{ crumb.name }}</li>
+          {% endif %}
+        {% endfor %}
+      </ol>
+    </nav>
+  {% endif %}
+{% endblock %}
 {% block body %}
 <div class="page-header">
  <div>
