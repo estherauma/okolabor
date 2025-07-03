@@ -245,8 +245,8 @@ class WorkerListView(View):
             'status_choices': WorkAssignment.STATUS_CHOICES,
             'worker_form': worker_form,
             'breadcrumbs': [
-                        {'name': 'Home', 'url': reverse('index')},
-                        {'name': 'Workers', 'url': None},
+                        {'name': _('workerListHome'), 'url': reverse('index')},
+                        {'name': _('workerListWorkers'), 'url': None},
                     ],
         }
         return render(request, 'recruiting/workers/list.html', context)
@@ -589,9 +589,9 @@ class WorkerDetailsView(View):
             'language_label': language_label,
             'experience_forms': experience_forms,
             'breadcrumbs': [
-                        {'name': 'Home', 'url': reverse('index')},
-                        {'name': 'Workers', 'url': reverse('recruiting_web:workers')},
-                        {'name': 'Worker Details', 'url': None},
+                        {'name': _('workerDetailsHome'), 'url': reverse('index')},
+                        {'name': _('workerDetailsWorkers'), 'url': reverse('recruiting_web:workers')},
+                        {'name': _('workerDetailsWorkerDetails'), 'url': None},
                     ],
         }
         return render(request, 'recruiting/workers/detail.html', context)

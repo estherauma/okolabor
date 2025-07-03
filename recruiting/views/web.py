@@ -144,8 +144,8 @@ class EmployerListView(View):
             'recruiters': recruiter_organizations,
             'employer_form': employer_form,
             'breadcrumbs': [
-                {'name': _('Home'), 'url': reverse_lazy('index')},
-                {'name': _('Employers'), 'url': None},
+                {'name': _('employersHome'), 'url': reverse_lazy('index')},
+                {'name': _('employersEmployers'), 'url': None},
             ],
         }
         return render(request, 'recruiting/employers/list.html', context)
@@ -253,8 +253,8 @@ class RecruiterListViewInAdmin(View):
                    'query': query, 
                    'employer_form': employer_form,
                    'breadcrumbs': [
-                            {'name': 'Home', 'url': reverse('index')},
-                            {'name': 'Recruiters', 'url': None},
+                            {'name': _('recruiterListHome'), 'url': reverse('index')},
+                            {'name': _('recruiterListRecruiters'), 'url': None},
                         ],
                    }
         return render(request, 'recruiting/recruiters_list/list.html', context)
@@ -420,9 +420,9 @@ class EmployerDetailView(View):
             'work_requests': work_requests,
             'assigned_organizations': assigned_orgs_data,
             'breadcrumbs': [
-                {'name': 'Home', 'url': reverse_lazy('index')},
-                {'name': 'Employers', 'url': reverse_lazy('recruiting_web:employer_list')},
-                {'name': 'Employer Details', 'url': None},
+                {'name': _('employerDetailsHome'), 'url': reverse_lazy('index')},
+                {'name': _('employerDetailsEmployers'), 'url': reverse_lazy('recruiting_web:employer_list')},
+                {'name': _('employerDetailsEmployerDetails'), 'url': None},
             ],
         }
         return render(request, 'recruiting/employers/detail.html', context)
@@ -520,8 +520,8 @@ class WorkRequestsListView(View):
             "recruiter": Organization.objects.filter(type='recruiter'),
             "form": form,
             "breadcrumbs": [
-                        {'name': _('Home'), 'url': 'index'},
-                        {'name': _('Job Orders'), 'url': None},
+                        {'name': _('jobOrderListHome'), 'url': 'index'},
+                        {'name': _('jobOrderListJobOrders'), 'url': None},
                     ],
         }
         return render(request, "recruiting/work_requests/list.html", context)
@@ -976,10 +976,10 @@ class AddWorkersWorkRequests(View):
             'rejected_count': rejected_count,
             'workers_count': workers_count,
             'breadcrumbs': [
-                            {'name': _('Home'), 'url': reverse('index')},
-                            {'name': _('Job Orders'), 'url': reverse('recruiting_web:workrequest_list')},
-                            {'name': _('Job Order Details'), 'url': reverse('recruiting_web:workrequest_detail', kwargs={'pk': work_request.pk})},
-                            {'name': _('Add Workers'), 'url': None},
+                            {'name': _('workRequestAddWorkerHome'), 'url': reverse('index')},
+                            {'name': _('workRequestAddWorkerJobOrders'), 'url': reverse('recruiting_web:workrequest_list')},
+                            {'name': _('workRequestAddWorkerJobOrderDetails'), 'url': reverse('recruiting_web:workrequest_detail', kwargs={'pk': work_request.pk})},
+                            {'name': _('workRequestAddWorkerAddWorkers'), 'url': None},
                         ],
         }
         return render(request, 'recruiting/work_requests/create_addworker.html', context)
@@ -1653,8 +1653,8 @@ class OkoMessageListView(View):
         context = {'items': items, 
                    'form': form ,
                     'breadcrumbs': [
-                        {'name': 'Home', 'url': reverse_lazy('index')},
-                        {'name': 'Messages', 'url': None},
+                        {'name': _('messagesHome'), 'url': reverse_lazy('index')},
+                        {'name': _('messagesMessages'), 'url': None},
                     ],
                    }
         return render(request, 'recruiting/messages/list.html', context)
@@ -1668,9 +1668,9 @@ class OkoMessageCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['breadcrumbs'] = [
-            {'name': 'Home', 'url': reverse_lazy('index')},
-            {'name': 'Messages', 'url': reverse_lazy('recruiting_web:recruiter_messages')},
-            {'name': 'Create Message', 'url': None},
+            {'name': _('createMessageHome'), 'url': reverse_lazy('index')},
+            {'name': _('createMessageMessages'), 'url': reverse_lazy('recruiting_web:recruiter_messages')},
+            {'name': _('createMessageCreateMessage'), 'url': None},
         ]
         return context
 
@@ -1694,9 +1694,9 @@ class OkoMessageDetailsView(View):
         message = get_object_or_404(OkoMessage, pk=id)
         context = {'message': message,
                    'breadcrumbs': [
-                            {'name': 'Home', 'url': reverse('index')},
-                            {'name': 'Messages', 'url': reverse('recruiting_web:recruiter_messages')},
-                            {'name': 'Message Details', 'url': None},
+                            {'name': _('messageDetailsHome'), 'url': reverse('index')},
+                            {'name': _('messageDetailsMessages'), 'url': reverse('recruiting_web:recruiter_messages')},
+                            {'name': _('messageDetailsMessageDetails'), 'url': None},
                         ],
                    }
         return render(request, 'recruiting/messages/details.html',context)
@@ -2251,8 +2251,8 @@ class EmployerRecruiterOrgStatusListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['breadcrumbs'] = [
-            {'name': 'Home', 'url': reverse_lazy('index')},
-            {'name': 'Recruiter Status List', 'url': None},
+            {'name': _('recruiterStatusHome'), 'url': reverse_lazy('index')},
+            {'name': _('recruiterStatusRecruiterStatusList'), 'url': None},
         ]
         return context
 

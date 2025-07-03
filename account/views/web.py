@@ -114,8 +114,8 @@ class UserListView(LoginRequiredMixin, View):
             'recruiter_organizations': recruiter_organizations,
             'employer_organizations': employer_organizations,
             'breadcrumbs': [
-                    {'name': 'Home', 'url': reverse('index')},
-                    {'name': 'Manage Users', 'url': None},
+                    {'name': _('manageUsersHome'), 'url': reverse('index')},
+                    {'name': _('manageUsersManageUsers'), 'url': None},
                 ],
         }
 
@@ -246,8 +246,8 @@ class UserAccountView(LoginRequiredMixin, View):
             'form': form,
             'user': user,
             'breadcrumbs': [
-                {'name': 'Home', 'url': reverse('index')},
-                {'name': 'My Account', 'url': None},
+                {'name': _('accountHome'), 'url': reverse('index')},
+                {'name': _('accountMyAccount'), 'url': None},
                 ],
         }
         return render(request, 'recruiter/user_account.html', context)
@@ -273,8 +273,8 @@ class UpdatePasswordView(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['breadcrumbs'] = [
-            {'name': 'Home', 'url': reverse('index')},
-            {'name': 'Update Password', 'url': None},
+            {'name': _('changePasswordHome'), 'url': reverse('index')},
+            {'name': _('changePasswordUpdatePassword'), 'url': None},
         ]
         return context
 
@@ -546,8 +546,8 @@ class LogListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['breadcrumbs'] = [
-            {'name': 'Home', 'url': reverse_lazy('index')},
-            {'name': 'Logs', 'url': None},
+            {'name': _('userLogsHome'), 'url': reverse_lazy('index')},
+            {'name': _('userLogsLogs'), 'url': None},
         ]
         return context
 
@@ -559,8 +559,8 @@ class LogDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['breadcrumbs'] = [
-            {'name': 'Home', 'url': reverse_lazy('index')},
-            {'name': 'Logs', 'url': reverse_lazy('view_logs')},
-            {'name': 'Log Details', 'url': None},
+            {'name': _('userLogsDetailsHome'), 'url': reverse_lazy('index')},
+            {'name': _('userLogsDetailsLogs'), 'url': reverse_lazy('view_logs')},
+            {'name': _('userLogsDetailsLogDetails'), 'url': None},
         ]
         return context
