@@ -922,6 +922,7 @@ msgid "workersListClose"
 msgstr "Cerca"
 
 #: account/templates/workers/workers_list.html:125
+#: recruiting/templates/recruiting/workers/list.html:432
 #: recruiting/templates/recruiting/workers/list.html:454
 #: recruiting/templates/recruiting/workers/list.html:476
 msgid "workersListCancel"
@@ -2632,8 +2633,8 @@ msgid "workRequestAddWorkerEmail"
 msgstr "Correo electrónico"
 
 #: recruiting/templates/recruiting/work_requests/allworkers/allworkers.html:123
-msgid "workersLworkRequestAddWorkerTownistTown"
-msgstr ""
+msgid "workRequestAddWorkerTown"
+msgstr "Ciudad"
 
 #: recruiting/templates/recruiting/work_requests/allworkers/allworkers.html:124
 msgid "workRequestAddWorkerProfileCompletion"
@@ -2665,7 +2666,6 @@ msgid "workersListCheckbox"
 msgstr "Caja"
 
 #: recruiting/templates/recruiting/work_requests/confirmed/confirmed.html:71
-#: recruiting/templates/recruiting/work_requests/offersent/offersent.html:69
 msgid "assignWorkRequest"
 msgstr ""
 
@@ -2676,34 +2676,28 @@ msgid "workRequestAddWorkerShortlistCopyWorkers"
 msgstr "Trabajadores de copia"
 
 #: recruiting/templates/recruiting/work_requests/confirmed/confirmed.html:132
-#: recruiting/templates/recruiting/work_requests/offersent/offersent.html:149
-msgid "copyWorkersToAnotherWorkRequest"
-msgstr ""
+msgid "workRequestAddWorkerConfirmedCopyWorkersToAnotherWorkRequest"
+msgstr "Copiar trabajadores a otra orden de trabajo"
 
 #: recruiting/templates/recruiting/work_requests/confirmed/confirmed.html:136
-#: recruiting/templates/recruiting/work_requests/offersent/offersent.html:153
-msgid "selectWorkRequest"
-msgstr ""
+msgid "workRequestAddWorkerConfirmedSelectWorkRequest"
+msgstr "Seleccionar orden de trabajo"
 
 #: recruiting/templates/recruiting/work_requests/confirmed/confirmed.html:138
-#: recruiting/templates/recruiting/work_requests/offersent/offersent.html:155
-msgid "Select a work request"
-msgstr ""
+msgid "workRequestAddWorkerConfirmedSelectAWorkRequest"
+msgstr "Seleccione una orden de trabajo"
 
 #: recruiting/templates/recruiting/work_requests/confirmed/confirmed.html:143
-#: recruiting/templates/recruiting/work_requests/offersent/offersent.html:160
-msgid "selectRole"
-msgstr ""
+msgid "workRequestAddWorkerConfirmedSelectRole"
+msgstr "Seleccionar rol"
 
 #: recruiting/templates/recruiting/work_requests/confirmed/confirmed.html:145
-#: recruiting/templates/recruiting/work_requests/offersent/offersent.html:162
-msgid "Select a role"
-msgstr ""
+msgid "workRequestAddWorkerConfirmedSelectARole"
+msgstr "Seleccione un rol"
 
 #: recruiting/templates/recruiting/work_requests/confirmed/confirmed.html:150
-#: recruiting/templates/recruiting/work_requests/offersent/offersent.html:167
-msgid "addWorkers"
-msgstr ""
+msgid "workRequestAddWorkerConfirmedAddWorkers"
+msgstr "Agregar trabajadores"
 
 #: recruiting/templates/recruiting/work_requests/create.html:6
 msgid "createJobOrderCreateJoborder"
@@ -3939,9 +3933,37 @@ msgstr "Trabajadores requeridos"
 msgid "jobOrderListEmployer"
 msgstr "Empleador"
 
+#: recruiting/templates/recruiting/work_requests/offersent/offersent.html:69
+msgid "workRequestAddWorkerOfferSentAssignWorkRequest"
+msgstr "Asignar orden de trabajo"
+
 #: recruiting/templates/recruiting/work_requests/offersent/offersent.html:75
 msgid "cancelOffer"
 msgstr "Cancelar oferta"
+
+#: recruiting/templates/recruiting/work_requests/offersent/offersent.html:149
+msgid "workRequestAddWorkerOfferSentCopyWorkersToAnotherWorkRequest"
+msgstr "Copiar trabajadores a otra orden de trabajo"
+
+#: recruiting/templates/recruiting/work_requests/offersent/offersent.html:153
+msgid "workRequestAddWorkerOfferSentSelectWorkRequest"
+msgstr "Seleccionar orden de trabajo"
+
+#: recruiting/templates/recruiting/work_requests/offersent/offersent.html:155
+msgid "workRequestAddWorkerOfferSentSelectAWorkRequest"
+msgstr "Seleccione una orden de trabajo"
+
+#: recruiting/templates/recruiting/work_requests/offersent/offersent.html:160
+msgid "workRequestAddWorkerOfferSentSelectRole"
+msgstr "Seleccionar rol"
+
+#: recruiting/templates/recruiting/work_requests/offersent/offersent.html:162
+msgid "workRequestAddWorkerOfferSentSelectARole"
+msgstr "Seleccione un rol"
+
+#: recruiting/templates/recruiting/work_requests/offersent/offersent.html:167
+msgid "workRequestAddWorkerOfferSentAddWorkers"
+msgstr "Agregar trabajadores"
 
 #: recruiting/templates/recruiting/work_requests/shortlist/shortlist.html:70
 msgid "workRequestAddWorkerShortlistAssignWorkRequest"
@@ -4815,6 +4837,7 @@ msgid "joDetailsHousingInfoErrorDeletingHousingInformation: %(error)s"
 msgstr "Error al eliminar la información de la vivienda: %(error)s"
 
 #: recruiting/views/web.py:2437
+
 msgid "joDetailsMealsMealProvisionUpdatedSuccessfully"
 msgstr ""
 "La información sobre el suministro de comidas se actualizó correctamente."
