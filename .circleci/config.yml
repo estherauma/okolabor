@@ -20,6 +20,7 @@ jobs:
 
       - run:
           name: run tests
+          command: echo "$FIREBASE_SERVICE_ACCOUNT_KEY_FILE" > firebase-service-account-key.json 
           command: python manage.py test
 
       - store_test_results:
