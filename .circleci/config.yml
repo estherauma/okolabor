@@ -15,12 +15,15 @@ jobs:
           command: echo "$GOOGLE_SERVICES_CREDENTIALS_FILE" > jaguar-services-credentials.json
 
       - run:
+          name: setup services credentials file
+          command: echo "$FIREBASE_SERVICE_ACCOUNT_KEY_FILE" > firebase-service-account-key.json
+          
+      - run:
           name: install dependencies
           command: pip install -r requirements.txt
 
       - run:
           name: run tests
-          command: echo "$FIREBASE_SERVICE_ACCOUNT_KEY_FILE" > firebase-service-account-key.json 
           command: python manage.py test
 
       - store_test_results:
