@@ -16,8 +16,8 @@ jobs:
 
       - run:
           name: setup services account file
-          command: echo "$FIREBASE_SERVICE_ACCOUNT_KEY_FILE" > firebase-service-account-key.json
-
+          command: echo "$FIREBASE_SERVICE_ACCOUNT_KEY_FILE" | base64 --decode > firebase-service-account-key.json
+          
       - run:
           name: install dependencies
           command: pip install -r requirements.txt
