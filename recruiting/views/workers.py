@@ -93,7 +93,6 @@ class WorkerListView(View):
             workers = workers.filter(id__in=h2b_user_ids)
 
 
-
         # Filter by US Driving License
         us_license_filter = next((v for k, v in params.items() if k.startswith("us_driving_license_") and v), None)
         if us_license_filter and us_license_filter.lower() == 'yes':
@@ -201,19 +200,29 @@ class WorkerListView(View):
                     filtered.append(w)
             workers = filtered
         workers = workers.distinct()
-
         worker_data = []
         for worker in workers:
             profile_completion = self.calculate_profile_completion(worker)
             worker_details = self.get_worker_preferences(worker)
             years_of_experience = calculate_total_experience(worker)
-            worker.profile_completion_percentage = profile_completion
-
             latest_assignment = WorkAssignment.objects.filter(worker=worker).order_by('-assigned_date').first()
             worker.latest_status = latest_assignment.status if latest_assignment else None
+            visa_uploaded = UserDocuments.objects.filter(
+                user=worker, kind='visa'
+            ).exclude(path__isnull=True).exclude(path__regex=r'^\s*$').exists()
+
+            intro_video_uploaded = UserDocuments.objects.filter(
+                user=worker, kind='explanation_video'
+            ).exclude(path__isnull=True).exclude(path__regex=r'^\s*$').exists()
 
             for key, value in worker_details.items():
                 setattr(worker, key, value)
+
+            worker.years_of_experience = years_of_experience
+            worker.profile_completion_percentage = profile_completion
+            worker.visa_uploaded = visa_uploaded
+            worker.intro_video_uploaded = intro_video_uploaded
+
 
             worker_data.append({
                 'id': worker.id,
@@ -222,6 +231,8 @@ class WorkerListView(View):
                 'email': worker.email,
                 'profile_completion': profile_completion,
                 'years_of_experience': years_of_experience, 
+                'visa_uploaded': visa_uploaded,
+                'intro_video_uploaded': intro_video_uploaded,
                 **worker_details
             })
          # 🔄 AJAX Support
@@ -252,21 +263,19 @@ class WorkerListView(View):
         user_prefs_dict = {pref.key: pref.value.lower() == "true" for pref in user_preferences}
         completed_steps = sum(user_prefs_dict.get(step, False) for step in ONBOARDING_STEPS)
         total_steps = len(ONBOARDING_STEPS)
-
         return round((completed_steps / total_steps) * 100) if total_steps > 0 else 0
 
     def get_worker_preferences(self, user):
         """Fetch town, work experience, proficiency, and location preference from UserPreference"""
-        preference_keys = ["town", "workExperienceList", "levelOfProficiency", "locationPreference"]
+        preference_keys = ["town", "workExperienceList", "english_proficiency", "locationPreference"]
 
         preferences = UserPreference.objects.filter(user=user, key__in=preference_keys).values("key", "value")
-    
         worker_details = {pref["key"]: pref["value"] for pref in preferences}
 
         return {
             "town": worker_details.get("town", "Not Provided"),
             "work_experience": worker_details.get("workExperienceList", "Not Provided"),
-            "english_proficiency": worker_details.get("levelOfProficiency", "Not Provided"),
+            "english_proficiency": worker_details.get("english_proficiency", "Not Provided"),
             "location_preference": worker_details.get("locationPreference", "Not Provided"),
         }
 

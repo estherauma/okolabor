@@ -1360,7 +1360,6 @@ class RoleHoursCreateView(CreateView):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)  # Use all_objects to bypass soft delete
 
-        print(role,"role")
         # Prevent duplicates: check if Hours already exist for this role
         if Hours.objects.filter(role=role).exists():
             
@@ -1542,7 +1541,6 @@ class RoleHousingCreateView(CreateView):
         }))
 
     def form_invalid(self, form):
-        print(form.errors, "Form errors")
         role_id = self.kwargs['pk']
         try:
             role = Role.all_objects.get(pk=role_id)
@@ -2083,13 +2081,11 @@ def send_invitation_email_to_org(receiver_org, other_org, request, role):
 
 
 def send_invitation_to_primary_contacts(employer_org, recruiter_org, request):
-    print(employer_org, recruiter_org, "employer_org, recruiter_org")
     
     protocol = 'https' if request.is_secure() else 'http'
     domain = request.get_host()
 
     contacts = EmployerContact.objects.filter(employer=recruiter_org, is_primary=True)
-    print(contacts, "contacts")
     
     for contact in contacts:
         accept_url = f"{protocol}://{domain}/invitation-response/?action=accept&receiver_org_id={employer_org.id}&other_org_id={recruiter_org.id}&role=recruiter"
