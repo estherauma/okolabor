@@ -30,6 +30,7 @@ from recruiting.utils import get_sector_choices
 from common.utils import StaticContent
 from recruiting.utils import calculate_total_experience,calculate_profile_completion
 from common.logger import AppLogger
+from django.contrib.auth import get_user_model
 
 
 ONBOARDING_STEPS = [
@@ -243,6 +244,10 @@ class WorkerListView(View):
             'years_of_experience': years_of_experience,
             'status_choices': WorkAssignment.STATUS_CHOICES,
             'worker_form': worker_form,
+            'breadcrumbs': [
+                        {'name': 'Home', 'url': reverse('index')},
+                        {'name': 'Workers', 'url': None},
+                    ],
         }
         return render(request, 'recruiting/workers/list.html', context)
 
@@ -582,7 +587,12 @@ class WorkerDetailsView(View):
             'work_environment_label': work_environment_label,
             'language_options': language_options,
             'language_label': language_label,
-            'experience_forms': experience_forms
+            'experience_forms': experience_forms,
+            'breadcrumbs': [
+                        {'name': 'Home', 'url': reverse('index')},
+                        {'name': 'Workers', 'url': reverse('recruiting_web:workers')},
+                        {'name': 'Worker Details', 'url': None},
+                    ],
         }
         return render(request, 'recruiting/workers/detail.html', context)
     
@@ -651,6 +661,19 @@ class CreateWorkExperienceView(BaseCreateView):
     form_class = WorkExperienceCreateForm
     template_name = 'recruiting/workers/work_experience_create.html'
     content_service = StaticContent()
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        User = get_user_model()
+        worker = get_object_or_404(User, pk=self.kwargs.get('pk'))
+        context['worker'] = worker
+        context['breadcrumbs'] = [
+                {'name': 'Home', 'url': reverse('index')},
+                {'name': 'Workers', 'url': reverse('recruiting_web:workers')},
+                {'name': 'Worker Details', 'url': reverse('recruiting_web:worker_detail', kwargs={'pk': worker.pk})},
+                {'name': 'Create Work Experience', 'url': None},
+            ]
+        return context
     
     def form_valid(self, form):
         response = super().form_valid(form)
