@@ -619,8 +619,8 @@ class AssignWorkerView(View):
             status = request.POST.get("status", "Assigned")
 
             if not worker_ids_str or not work_request_id or not role_id:
-                messages.error(request, _("Missing data. Please select workers, work request, and role."))
-                return JsonResponse({"success": False, "message": _("Missing data.")}, status=400)
+                messages.error(request, _("Missing data. Please select workers, job order, and role."))
+                return JsonResponse({"success": False, "message": "Missing data"}, status=400)
 
             worker_ids = worker_ids_str.split(",")
             work_request = get_object_or_404(WorkRequests, id=work_request_id)

@@ -143,25 +143,25 @@
               data-get-roles-url="{% url 'recruiting_web:get_roles' %}"
               data-csrf="{{ csrf_token }}">
           <div class="modal-header">
-            <h5 class="modal-title" id="copyModalLabel">{% translate "copyWorkersToAnotherWorkRequest" %}</h5>
+            <h5 class="modal-title" id="copyModalLabel">{% translate "workRequestAddWorkerOfferSentCopyWorkersToAnotherWorkRequest" %}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <label for="target_offer_work_request">{% translate "selectWorkRequest" %}:</label>
+            <label for="target_offer_work_request">{% translate "workRequestAddWorkerOfferSentSelectWorkRequest" %}:</label>
             <select name="work_request" id="target_offer_work_request" class="form-select" required>
-              <option value="" disabled selected>{% translate "Select a work request" %}</option>
+              <option value="" disabled selected>{% translate "workRequestAddWorkerOfferSentSelectAWorkRequest" %}</option>
               {% for wr in work_requests %}
                 <option value="{{ wr.id }}">{{ wr.name }}</option>
               {% endfor %}
             </select>
-            <label for="role_offer_id">{% translate "selectRole" %}:</label>
+            <label for="role_offer_id">{% translate "workRequestAddWorkerOfferSentSelectRole" %}:</label>
             <select name="role" id="role_offer_id" class="form-select" required>
-              <option value="" disabled selected>{% translate "Select a role" %}</option>
+              <option value="" disabled selected>{% translate "workRequestAddWorkerOfferSentSelectARole" %}</option>
             </select>
             <input type="hidden" name="status" value="assigned">
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-success" id="copySubmitBtn">{% translate "addWorkers" %}</button>
+            <button type="submit" class="btn btn-success" id="copySubmitBtn">{% translate "workRequestAddWorkerOfferSentAddWorkers" %}</button>
           </div>
         </form>
       </div>
