@@ -1,8 +1,8 @@
 $(document).ready(function () {
-    // Fix for select2 inside bootstrap modal
     $.fn.modal.Constructor.prototype._enforceFocus = function() {};
 
     const workRequestSelect = $('#modal_work_request');
+    console.log(workRequestSelect," workRequestSelect");
     workRequestSelect.select2({
         placeholder: "Search for job orders...",
         width: '100%',

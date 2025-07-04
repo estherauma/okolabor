@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.views import View
-from django.views.generic import CreateView
+from django.views.generic import CreateView,TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from account.models import User, UserWorkExperience, UserJobExperience,UserJobExperienceDetails
@@ -32,6 +32,8 @@ from recruiting.utils import calculate_total_experience,calculate_profile_comple
 from common.logger import AppLogger
 
 
+
+
 ONBOARDING_STEPS = [
     "profileStepOne",
     "workExperienceList",
@@ -41,7 +43,6 @@ ONBOARDING_STEPS = [
     "workPreferenceStepOne",
     "workPreferenceStepTwo"
 ]
-
 class WorkerListView(View):
     def get(self, request):
         work_assign_form = WorkerAssignmentForm()
@@ -50,14 +51,6 @@ class WorkerListView(View):
         search_query = request.GET.get('search', '')
 
         workers = User.objects.filter(groups__name='worker').order_by('-created_at')
-
-        # 🔍 Search Filter
-        if search_query:
-            workers = workers.filter(
-                Q(first_name__icontains=search_query) |
-                Q(last_name__icontains=search_query) |
-                Q(email__icontains=search_query)
-            )
 
         # 🔍 Experience Filters
         type_sector = request.GET.get('type_sector')
@@ -224,7 +217,6 @@ class WorkerListView(View):
                 'years_of_experience': years_of_experience, 
                 **worker_details
             })
-         # 🔄 AJAX Support
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({
                 'workers': worker_data,
@@ -232,9 +224,227 @@ class WorkerListView(View):
             })
        
         worker_form = WorkerCreateForm()
-    
+        
+        shortlisted_assignments = WorkAssignment.objects.filter(
+            status='assigned'
+        ).select_related('worker', 'role', 'work_request')
+
+        shortlisted_workers = []
+        seen_worker_ids = set()
+        for assignment in shortlisted_assignments:
+            worker = assignment.worker
+            if worker and worker.id not in seen_worker_ids:
+                seen_worker_ids.add(worker.id)
+                shortlisted_workers.append(worker)
+
+        shortlisted_worker_data = []
+
+        for worker in shortlisted_workers:
+            profile_completion = self.calculate_profile_completion(worker)
+            worker_details = self.get_worker_preferences(worker)
+            years_of_experience = calculate_total_experience(worker)
+            worker.profile_completion_percentage = profile_completion
+
+            latest_assignment = WorkAssignment.objects.filter(
+                worker=worker
+            ).select_related('role', 'work_request').order_by('-assigned_date').first()
+
+            status = latest_assignment.status if latest_assignment else None
+            work_request_name = (
+                latest_assignment.work_request.name
+                if latest_assignment and latest_assignment.work_request else None
+            )
+            role_name = (
+                latest_assignment.role.title
+                if latest_assignment and latest_assignment.role else None
+            )
+
+            for key, value in worker_details.items():
+                setattr(worker, key, value)
+
+            shortlisted_worker_data.append({
+                'id': worker.id,
+                'firstname': worker.first_name,
+                'lastname': worker.last_name,
+                'email': worker.email,
+                'profile_completion': profile_completion,
+                'years_of_experience': years_of_experience,
+                'work_request': work_request_name,
+                'role': role_name,
+                'status': status,
+                **worker_details
+            })
+
+            
+        offersent_assignments = WorkAssignment.objects.filter(
+            status='offersent'
+        ).select_related('worker', 'role', 'work_request')
+
+        offersent_workers = []
+        seen_worker_ids = set()
+        for assignment in offersent_assignments:
+            worker = assignment.worker
+            if (
+                worker and
+                worker.id not in seen_worker_ids and
+                not worker.email.startswith("deleted_")
+            ):
+                seen_worker_ids.add(worker.id)
+                offersent_workers.append(worker)
+
+        offersent_worker_data = []
+        for worker in offersent_workers:
+            profile_completion = self.calculate_profile_completion(worker)
+            worker_details = self.get_worker_preferences(worker)
+            years_of_experience = calculate_total_experience(worker)
+            worker.profile_completion_percentage = profile_completion
+
+            latest_assignment = WorkAssignment.objects.filter(
+                worker=worker
+            ).select_related('role', 'work_request').order_by('-assigned_date').first()
+
+            status = latest_assignment.status if latest_assignment else None
+            work_request_name = (
+                latest_assignment.work_request.name
+                if latest_assignment and latest_assignment.work_request else None
+            )
+            role_name = (
+                latest_assignment.role.title
+                if latest_assignment and latest_assignment.role else None
+            )
+
+            offersent_worker_data.append({
+                'id': worker.id,
+                'firstname': worker.first_name,
+                'lastname': worker.last_name,
+                'email': worker.email,
+                'profile_completion': profile_completion,
+                'years_of_experience': years_of_experience,
+                'work_request': work_request_name,
+                'role': role_name,
+                'status': status,
+                **worker_details
+            })
+
+            
+        confirmed_assignments = WorkAssignment.objects.filter(
+            status='confirmed'
+        ).select_related('worker', 'role', 'work_request')
+
+        confirmed_workers = []
+        seen_worker_ids = set()
+        for assignment in confirmed_assignments:
+            worker = assignment.worker
+            if worker and worker.id not in seen_worker_ids:
+                seen_worker_ids.add(worker.id)
+                confirmed_workers.append(worker)
+
+        confirmed_worker_data = []
+
+        for worker in confirmed_workers:
+            profile_completion = self.calculate_profile_completion(worker)
+            worker_details = self.get_worker_preferences(worker)
+            years_of_experience = calculate_total_experience(worker)
+            worker.profile_completion_percentage = profile_completion
+
+            latest_assignment = WorkAssignment.objects.filter(
+                worker=worker
+            ).select_related('role', 'work_request').order_by('-assigned_date').first()
+
+            work_request_name = (
+                latest_assignment.work_request.name
+                if latest_assignment and latest_assignment.work_request else None
+            )
+            role_name = (
+                latest_assignment.role.title
+                if latest_assignment and latest_assignment.role else None
+            )
+            status = latest_assignment.status if latest_assignment else None
+
+            worker.latest_status = status
+
+            for key, value in worker_details.items():
+                setattr(worker, key, value)
+
+            confirmed_worker_data.append({
+                'id': worker.id,
+                'firstname': worker.first_name,
+                'lastname': worker.last_name,
+                'email': worker.email,
+                'profile_completion': profile_completion,
+                'years_of_experience': years_of_experience,
+                'work_request': work_request_name,
+                'role': role_name,
+                'status': status,
+                **worker_details
+            })
+
+            
+        rejected_assignments = WorkAssignment.objects.filter(
+            status='rejected'
+        ).select_related('worker', 'role', 'work_request')
+
+        rejected_workers = []
+        seen_worker_ids = set()
+        for assignment in rejected_assignments:
+            worker = assignment.worker
+            if worker and worker.id not in seen_worker_ids:
+                seen_worker_ids.add(worker.id)
+                rejected_workers.append(worker)
+
+        rejected_worker_data = []
+
+        for worker in rejected_workers:
+            profile_completion = self.calculate_profile_completion(worker)
+            worker_details = self.get_worker_preferences(worker)
+            years_of_experience = calculate_total_experience(worker)
+            worker.profile_completion_percentage = profile_completion
+
+            latest_assignment = WorkAssignment.objects.filter(
+                worker=worker
+            ).select_related('role', 'work_request').order_by('-assigned_date').first()
+
+            status = latest_assignment.status if latest_assignment else None
+            work_request_name = (
+                latest_assignment.work_request.name
+                if latest_assignment and latest_assignment.work_request else None
+            )
+            role_name = (
+                latest_assignment.role.title
+                if latest_assignment and latest_assignment.role else None
+            )
+
+            worker.latest_status = status
+
+            for key, value in worker_details.items():
+                setattr(worker, key, value)
+
+            rejected_worker_data.append({
+                'id': worker.id,
+                'firstname': worker.first_name,
+                'lastname': worker.last_name,
+                'email': worker.email,
+                'profile_completion': profile_completion,
+                'years_of_experience': years_of_experience,
+                'work_request': work_request_name,
+                'role': role_name,
+                'status': status,
+                **worker_details
+            })
+
+        workers_length = len(workers)
+        shortlisted_workers_length = len(shortlisted_workers)
+        offersent_workers_length = len(offersent_workers)
+        confirmed_workers_length = len(confirmed_workers)
+        rejected_workers_length = len(rejected_workers)
+        
+
         context = {
             'workers': workers,
+            'shortlisted_workers':shortlisted_worker_data,
+            'offersent_workers':offersent_worker_data,
+            'confirmed_workers':confirmed_worker_data,
+            'rejected_workers':rejected_worker_data,
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
             'form': form,
             'work_assign_form': work_assign_form,
@@ -243,8 +453,13 @@ class WorkerListView(View):
             'years_of_experience': years_of_experience,
             'status_choices': WorkAssignment.STATUS_CHOICES,
             'worker_form': worker_form,
+            'workers_count': workers_length,
+            'shortlisted_count': shortlisted_workers_length,
+            'offersent_count': offersent_workers_length,
+            'confirmed_count': confirmed_workers_length,
+            'rejected_count': rejected_workers_length,
         }
-        return render(request, 'recruiting/workers/list.html', context)
+        return render(request, 'recruiting/workers/manage_tabs/tabs.html', context)
 
     def calculate_profile_completion(self, user):
         """Calculate the profile completion percentage for a user"""
@@ -297,6 +512,21 @@ class WorkerListView(View):
 
         return JsonResponse({'success': 'Workers assigned successfully!'})
     
+
+    def get_worker_preferences(self, user):
+        keys = ["town", "workExperienceList", "levelOfProficiency", "locationPreference"]
+        preferences = UserPreference.objects.filter(user=user, key__in=keys).values("key", "value")
+        pref_dict = {pref["key"]: pref["value"] for pref in preferences}
+
+        return {
+            "town": pref_dict.get("town", "Not Provided"),
+            "work_experience": pref_dict.get("workExperienceList", "Not Provided"),
+            "english_proficiency": pref_dict.get("levelOfProficiency", "Not Provided"),
+            "location_preference": pref_dict.get("locationPreference", "Not Provided"),
+        }
+
+    
+        
 class WorkerEditView(LoginRequiredMixin, View):
     def post(self, request, pk):
         user = request.user
@@ -387,23 +617,23 @@ class AssignWorkerView(View):
             work_request_id = request.POST.get("work_request")
             role_id = request.POST.get("role")
             status = request.POST.get("status", "Assigned")
+
             if not worker_ids_str or not work_request_id or not role_id:
                 messages.error(request, _("Missing data. Please select workers, work request, and role."))
-                return JsonResponse({"success": False, "message": "Missing data"}, status=400)
+                return JsonResponse({"success": False, "message": _("Missing data.")}, status=400)
 
             worker_ids = worker_ids_str.split(",")
             work_request = get_object_or_404(WorkRequests, id=work_request_id)
             role = get_object_or_404(Role, id=role_id)
 
-            already_assigned_workers = []
-            newly_assigned_workers = []
+            already_assigned = []
+            newly_assigned = []
 
             for worker_id in worker_ids:
                 worker = get_object_or_404(User, id=worker_id)
 
-                existing_assignment = WorkAssignment.objects.filter(worker=worker, role=role).first()
-                if existing_assignment:
-                    already_assigned_workers.append(worker.get_full_name() or worker.username)
+                if WorkAssignment.objects.filter(worker=worker, role=role).exists():
+                    already_assigned.append(worker.get_full_name() or worker.username)
                 else:
                     WorkAssignment.objects.create(
                         worker=worker,
@@ -411,36 +641,23 @@ class AssignWorkerView(View):
                         work_request=work_request,
                         status=status
                     )
-                    newly_assigned_workers.append(worker.get_full_name() or worker.username)
+                    newly_assigned.append(worker.get_full_name() or worker.username)
 
-            if already_assigned_workers:
-                messages.warning(
-                    request,
-                    _("The following workers were already assigned: ") + ", ".join(already_assigned_workers)
-                )
+            
+            msg_parts = []
+            if newly_assigned:
+                msg_parts.append(_("Successfully assigned: ") + ", ".join(newly_assigned))
+            if already_assigned:
+                msg_parts.append(_("Already assigned: ") + ", ".join(already_assigned))
 
-            if newly_assigned_workers:
-                messages.success(
-                    request,
-                    _("The following workers have been successfully assigned: ") + ", ".join(newly_assigned_workers)
-                )
-                
-            # Need to create notifications here too for where status is offersent
-            for item in worker_ids:
-                worker = get_object_or_404(User, id=worker_id)
-                if status == 'offersent':
-                    # Create notification for the worker
-                    worker.notifications.create(
-                        title=_("workRequestAddNotificationTitle"),
-                        message=_("workRequestAddNotificationBody")
-                    )
+            final_msg = " ".join(msg_parts)
+            messages.success(request, final_msg)
 
-            return redirect("recruiting_web:workers")
+            return JsonResponse({"success": True, "message": final_msg}, status=200)
 
         except Exception as e:
-            messages.error(request, f"Error: {str(e)}")
+            messages.error(request, str(e))
             return JsonResponse({"success": False, "message": str(e)}, status=400)
-
 
 @method_decorator(csrf_exempt, name='dispatch')
 class GetWorkerDetailsView(View):
@@ -452,36 +669,19 @@ class GetWorkerDetailsView(View):
 
 
 
-class WorkerCreateView(CreateView):
-    model = User
-    form_class = WorkerCreateForm
-    
-
-    def form_valid(self, form):
-        worker = form.save()
-        try:
-            worker_group = Group.objects.get(name='worker')
-            worker.groups.add(worker_group)
-        except Group.DoesNotExist:
-            messages.error(self.request,_("addWorkerWorkerGroupDoesNotExistPleaseCreateIt"))
-            return super().form_invalid(form)
-
-        messages.success(self.request, _('addWorkerWorkerCreatedSuccessfully'))
-        worker.save()
-
-        return super(WorkerCreateView, self).form_valid(form)
-
-    def form_invalid(self, form):
-        for field, errors in form.errors.items():
-            for error in errors:
-                messages.error(self.request, f'{field}: {error}')
-        return super().form_invalid(form)
-
-    def get_success_url(self):
-        return reverse(
-            'recruiting_web:worker_detail',
-            kwargs={'pk': self.object.pk}
-        )
+class WorkerCreateView(View):
+    def post(self, request):
+        form = WorkerCreateForm(request.POST)
+        if form.is_valid():
+            worker = form.save()
+            worker.groups.add(Group.objects.get(name='worker'))
+            messages.success(request, "Worker created successfully")
+            return HttpResponseRedirect(reverse('recruiting_web:worker_detail', kwargs={'pk': worker.pk}))
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field}: {error}')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
 class WorkerDetailsView(View):
@@ -1267,3 +1467,5 @@ class DeleteAllWorkerInfoView(View):
 
         messages.success(request, _("All information related to the worker has been deleted."))
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
+
+
