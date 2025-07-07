@@ -720,3 +720,34 @@ class UserProfileAviNotification(APIView):
             {'message': 'Notification created'},
             status=status.HTTP_200_OK
         )
+
+
+class UserPushNotificationToken(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_summary="Update user push notification token",
+        tags=["User Notifications"]
+    )
+    def post(self, request):
+        try:
+            user = request.user
+            user = get_object_or_404(User, pk=user.id)
+
+            push_token = request.data.get('push_notification_token')
+            if not push_token:
+                return Response(
+                    {'message': 'push_notification_token token is required'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            user.push_notification_token = push_token
+            user.save()
+            return Response(
+                {'message': 'Push notification token updated'},
+                status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return Response(
+                {'message': f'Failed to update push notification token: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )

@@ -31,6 +31,8 @@ from collections import defaultdict
 from django.db.models import Count
 from django.template.loader import render_to_string
 import os
+from common.firebase_utils import send_push_notification
+from common.utils import StaticContent
 from recruiting.utils import (
     get_worker_preferences, calculate_profile_completion,
     calculate_total_experience
@@ -1005,13 +1007,29 @@ class UpdateWorkerStatusView(View):
         worker_ids = request.POST.getlist('worker_ids[]')
         WorkAssignment.objects.filter(worker_id__in=worker_ids, status='assigned').update(status='offersent')
         # Need to send an offer notification here for each user
+        user_push_tokens = []
         for item in worker_ids:
-             UserNotification.objects.create(
-                user=User.objects.get(id=item),
+            user = User.objects.get(id=item)
+            if user.push_notification_token:
+                user_push_tokens.append(user.push_notification_token)
+
+            UserNotification.objects.create(
+                user=user,
                 title=_("workRequestAddNotificationTitle"),
                 message=_("workRequestAddNotificationBody")
             )
         messages.success(request, _("workRequestAddWorkerOfferSentSuccessfully"))
+
+        if len(user_push_tokens) > 0:
+            static_content = StaticContent(language=user.language)
+            metadata = static_content.get_add_workert_to_work_request_metadata()
+
+            send_push_notification(
+                tokens=user_push_tokens,
+                title=next((item["value"] for item in metadata if item["key"] == "workRequestAddNotificationTitle"), None),
+                body=next((item["value"] for item in metadata if item["key"] == "workRequestAddNotificationBody"), None),
+                data={'type': 'job_offer'}
+            )
         return JsonResponse({'status':'success','success': 'True', 'message': 'Offer sent successfully.'})
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -1021,7 +1039,8 @@ class OfferSendWorkerView(View):
         work_request_id = request.POST.get('work_request')
         role_id = request.POST.get('role')
         status = request.POST.get('status', 'assigned')
-        
+        user = User.objects.get(id=worker_id)
+
         assignment = WorkAssignment.objects.filter(
             worker_id=worker_id,
             work_request_id=work_request_id,
@@ -1040,12 +1059,26 @@ class OfferSendWorkerView(View):
                 status='offersent'
             )
         UserNotification.objects.create(
-                user=User.objects.get(id=worker_id),
+                user=user,
                 title=_("workRequestAddNotificationTitle"),
                 message=_("workRequestAddNotificationBody")
             )
-       
         messages.success(request, _("OfferSentSuccessfully."))
+
+        if user.push_notification_token:
+            static_content = StaticContent(language=user.language)
+            metadata = static_content.get_add_workert_to_work_request_metadata()
+
+            send_push_notification(
+                tokens=[user.push_notification_token],
+                title=next((item["value"] for item in metadata if item["key"] == "workRequestAddNotificationTitle"), None),
+                body=next((item["value"] for item in metadata if item["key"] == "workRequestAddNotificationBody"), None),
+                data={
+                    'type': 'job_offer',
+                    'job_id': role_id
+                }
+            )
+
         return redirect('recruiting_web:worker_detail', pk=worker_id)
 
 
