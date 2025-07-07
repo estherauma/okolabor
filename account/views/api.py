@@ -572,7 +572,7 @@ class UserReportProblem(APIView):
             send_mail(
                 subject=subject,
                 message=plain_content,
-                from_email="no-reply@okolabor.com",  # ✅ Hardcoded for now
+                from_email="noreply@fiftyeight.io", 
                 recipient_list=to_emails,
                 html_message=html_content,
             )
