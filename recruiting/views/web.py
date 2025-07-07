@@ -624,7 +624,7 @@ class WorkRequestDeleteView(LoginRequiredMixin, View):
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
-            return HttpResponseForbidden(_("You do not have permission to delete this work request."))
+            return HttpResponseForbidden(_("You do not have permission to delete this job order."))
 
 
 
