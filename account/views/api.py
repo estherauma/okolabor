@@ -715,7 +715,6 @@ class UserPushNotificationToken(APIView):
     def post(self, request):
         try:
             user = request.user
-            print(f"Request data: {user.id}")
             user = get_object_or_404(User, pk=user.id)
 
             push_token = request.data.get('push_notification_token')

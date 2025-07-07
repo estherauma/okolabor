@@ -1028,6 +1028,7 @@ class UpdateWorkerStatusView(View):
                 tokens=user_push_tokens,
                 title=next((item["value"] for item in metadata if item["key"] == "workRequestAddNotificationTitle"), None),
                 body=next((item["value"] for item in metadata if item["key"] == "workRequestAddNotificationBody"), None),
+                data={'type': 'job_offer'}
             )
         return JsonResponse({'status':'success','success': 'True', 'message': 'Offer sent successfully.'})
 
@@ -1072,6 +1073,10 @@ class OfferSendWorkerView(View):
                 tokens=[user.push_notification_token],
                 title=next((item["value"] for item in metadata if item["key"] == "workRequestAddNotificationTitle"), None),
                 body=next((item["value"] for item in metadata if item["key"] == "workRequestAddNotificationBody"), None),
+                data={
+                    'type': 'job_offer',
+                    'job_id': role_id
+                }
             )
 
         return redirect('recruiting_web:worker_detail', pk=worker_id)
