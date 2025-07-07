@@ -27,7 +27,7 @@ from recruiting.views.web import (
     DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditRoleHoursView,DeleteRoleHoursView,EditRoleWagesView,DeleteRoleWagesView,EditRoleQualificationView,DeleteQualificationView,DeductionEditView,DeleteDeductionView,OfferSendWorkerView,InvitationResponseView
 )
 from recruiting.views.workers import (
-     WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,EditWorkExperienceView,DeleteWorkExperienceView,WorkerEditView,WorkerDeleteView,EditUserPreferenceView,EditLanguageProficiencyView,EditDocumentsView,DeleteAllWorkerInfoView,WorkerEditView,WorkerDeleteView
+     WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,EditWorkExperienceView,DeleteWorkExperienceView,WorkerEditView,WorkerDeleteView,EditUserPreferenceView,EditLanguageProficiencyView,EditDocumentsView,DeleteAllWorkerInfoView,WorkerEditView,WorkerDeleteView,FilteredWorkersAjaxView
 )
 from recruiting.views.workers import (
      CreateWorkExperienceView, WorkExperienceDetailsView,
@@ -159,6 +159,8 @@ urlpatterns = [
     path('workers/',
          WorkerListView.as_view(),
          name='workers'),
+    path('workers/filter/', FilteredWorkersAjaxView.as_view(), name='ajax_filtered_workers'),
+
     # urls.py
     path('worker/edit/<str:pk>/', WorkerEditView.as_view(),
          name='edit_worker'),

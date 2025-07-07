@@ -51,6 +51,17 @@ class WorkerListView(View):
         search_query = request.GET.get('search', '')
 
         workers = User.objects.filter(groups__name='worker').order_by('-created_at')
+        
+        job_order_id = request.GET.get("work_request")
+        role_id = request.GET.get("role")
+        
+        print(f"Job Order ID: {job_order_id}, Role ID: {role_id}")
+
+        if job_order_id:
+            workers = workers.filter(workassignment__work_request_id=job_order_id)
+
+        if role_id:
+            workers = workers.filter(workassignment__role_id=role_id)
 
         # 🔍 Experience Filters
         type_sector = request.GET.get('type_sector')
@@ -524,6 +535,33 @@ class WorkerListView(View):
             "english_proficiency": pref_dict.get("levelOfProficiency", "Not Provided"),
             "location_preference": pref_dict.get("locationPreference", "Not Provided"),
         }
+
+class FilteredWorkersAjaxView(View):
+    def get(self, request):
+        job_order_id = request.GET.get("job_order")
+        role_id = request.GET.get("role")
+        status = request.GET.get("status")
+
+        assignments = WorkAssignment.objects.filter(
+            work_request_id=job_order_id,
+            role_id=role_id,
+            status=status
+        ).select_related('worker', 'work_request', 'role')
+
+        result = []
+        for assignment in assignments:
+            worker = assignment.worker
+            result.append({
+                'id': worker.id,
+                'firstname': worker.first_name,
+                'lastname': worker.last_name,
+                'email': worker.email,
+                'profile_completion': WorkerListView.calculate_profile_completion(worker),
+                'work_request': assignment.work_request.name if assignment.work_request else "",
+                'role': assignment.role.title if assignment.role else "",
+            })
+
+        return JsonResponse({'workers': result})
 
     
         
