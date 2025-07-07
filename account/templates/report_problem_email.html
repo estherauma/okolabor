@@ -1,0 +1,23 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report a problem</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #7DBF96; font-family: Arial, sans-serif; color: #ffffff;display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px; background-color: #ffffff; color: #333333; border-radius: 8px;">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <img src="{{ site_url }}{% static 'assets/images/login/logo.svg' %}" alt="Okolabor" style="max-width: 200px; height: auto;" />
+        </div>
+        
+            <p>{{ body }}</p>
+
+    </div>
+</body>
+</html>
