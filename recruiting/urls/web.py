@@ -159,7 +159,10 @@ urlpatterns = [
     path('workers/',
          WorkerListView.as_view(),
          name='workers'),
-    path('workers/filter/', FilteredWorkersAjaxView.as_view(), name='ajax_filtered_workers'),
+     path('workers/ajax-filtered-workers/',
+          FilteredWorkersAjaxView.as_view(), 
+          name='ajax_filtered_workers'),
+
 
     # urls.py
     path('worker/edit/<str:pk>/', WorkerEditView.as_view(),

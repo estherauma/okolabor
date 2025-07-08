@@ -28,7 +28,7 @@ import json
 from datetime import date
 from recruiting.utils import get_sector_choices
 from common.utils import StaticContent
-from recruiting.utils import calculate_total_experience,calculate_profile_completion
+from recruiting.utils import calculate_total_experience,calculate_profile_completion,get_worker_preferences
 from common.logger import AppLogger
 
 
@@ -51,17 +51,6 @@ class WorkerListView(View):
         search_query = request.GET.get('search', '')
 
         workers = User.objects.filter(groups__name='worker').order_by('-created_at')
-        
-        job_order_id = request.GET.get("work_request")
-        role_id = request.GET.get("role")
-        
-        print(f"Job Order ID: {job_order_id}, Role ID: {role_id}")
-
-        if job_order_id:
-            workers = workers.filter(workassignment__work_request_id=job_order_id)
-
-        if role_id:
-            workers = workers.filter(workassignment__role_id=role_id)
 
         # 🔍 Experience Filters
         type_sector = request.GET.get('type_sector')
@@ -208,8 +197,8 @@ class WorkerListView(View):
 
         worker_data = []
         for worker in workers:
-            profile_completion = self.calculate_profile_completion(worker)
-            worker_details = self.get_worker_preferences(worker)
+            profile_completion = calculate_profile_completion(worker)
+            worker_details = get_worker_preferences(worker)
             years_of_experience = calculate_total_experience(worker)
             worker.profile_completion_percentage = profile_completion
 
@@ -251,8 +240,8 @@ class WorkerListView(View):
         shortlisted_worker_data = []
 
         for worker in shortlisted_workers:
-            profile_completion = self.calculate_profile_completion(worker)
-            worker_details = self.get_worker_preferences(worker)
+            profile_completion = calculate_profile_completion(worker)
+            worker_details = get_worker_preferences(worker)
             years_of_experience = calculate_total_experience(worker)
             worker.profile_completion_percentage = profile_completion
 
@@ -305,8 +294,8 @@ class WorkerListView(View):
 
         offersent_worker_data = []
         for worker in offersent_workers:
-            profile_completion = self.calculate_profile_completion(worker)
-            worker_details = self.get_worker_preferences(worker)
+            profile_completion = calculate_profile_completion(worker)
+            worker_details = get_worker_preferences(worker)
             years_of_experience = calculate_total_experience(worker)
             worker.profile_completion_percentage = profile_completion
 
@@ -315,6 +304,8 @@ class WorkerListView(View):
             ).select_related('role', 'work_request').order_by('-assigned_date').first()
 
             status = latest_assignment.status if latest_assignment else None
+
+            print(status,"status")
             work_request_name = (
                 latest_assignment.work_request.name
                 if latest_assignment and latest_assignment.work_request else None
@@ -353,8 +344,8 @@ class WorkerListView(View):
         confirmed_worker_data = []
 
         for worker in confirmed_workers:
-            profile_completion = self.calculate_profile_completion(worker)
-            worker_details = self.get_worker_preferences(worker)
+            profile_completion = calculate_profile_completion(worker)
+            worker_details = get_worker_preferences(worker)
             years_of_experience = calculate_total_experience(worker)
             worker.profile_completion_percentage = profile_completion
 
@@ -406,8 +397,8 @@ class WorkerListView(View):
         rejected_worker_data = []
 
         for worker in rejected_workers:
-            profile_completion = self.calculate_profile_completion(worker)
-            worker_details = self.get_worker_preferences(worker)
+            profile_completion = calculate_profile_completion(worker)
+            worker_details = get_worker_preferences(worker)
             years_of_experience = calculate_total_experience(worker)
             worker.profile_completion_percentage = profile_completion
 
@@ -448,7 +439,11 @@ class WorkerListView(View):
         offersent_workers_length = len(offersent_workers)
         confirmed_workers_length = len(confirmed_workers)
         rejected_workers_length = len(rejected_workers)
-        
+
+        print(shortlisted_workers,"shortlisted_workers")
+        print(offersent_workers,"offersent_workers")
+        print(confirmed_workers,"confirmed_workers")
+        print(rejected_workers,"rejected_workers")
 
         context = {
             'workers': workers,
@@ -471,30 +466,6 @@ class WorkerListView(View):
             'rejected_count': rejected_workers_length,
         }
         return render(request, 'recruiting/workers/manage_tabs/tabs.html', context)
-
-    def calculate_profile_completion(self, user):
-        """Calculate the profile completion percentage for a user"""
-        user_preferences = UserPreference.objects.filter(user=user, key__in=ONBOARDING_STEPS)
-        user_prefs_dict = {pref.key: pref.value.lower() == "true" for pref in user_preferences}
-        completed_steps = sum(user_prefs_dict.get(step, False) for step in ONBOARDING_STEPS)
-        total_steps = len(ONBOARDING_STEPS)
-
-        return round((completed_steps / total_steps) * 100) if total_steps > 0 else 0
-
-    def get_worker_preferences(self, user):
-        """Fetch town, work experience, proficiency, and location preference from UserPreference"""
-        preference_keys = ["town", "workExperienceList", "levelOfProficiency", "locationPreference"]
-
-        preferences = UserPreference.objects.filter(user=user, key__in=preference_keys).values("key", "value")
-    
-        worker_details = {pref["key"]: pref["value"] for pref in preferences}
-
-        return {
-            "town": worker_details.get("town", "Not Provided"),
-            "work_experience": worker_details.get("workExperienceList", "Not Provided"),
-            "english_proficiency": worker_details.get("levelOfProficiency", "Not Provided"),
-            "location_preference": worker_details.get("locationPreference", "Not Provided"),
-        }
 
     def post(self, request):
         """Handles worker assignment"""
@@ -522,46 +493,55 @@ class WorkerListView(View):
                 work_assignment.save()
 
         return JsonResponse({'success': 'Workers assigned successfully!'})
-    
 
-    def get_worker_preferences(self, user):
-        keys = ["town", "workExperienceList", "levelOfProficiency", "locationPreference"]
-        preferences = UserPreference.objects.filter(user=user, key__in=keys).values("key", "value")
-        pref_dict = {pref["key"]: pref["value"] for pref in preferences}
-
-        return {
-            "town": pref_dict.get("town", "Not Provided"),
-            "work_experience": pref_dict.get("workExperienceList", "Not Provided"),
-            "english_proficiency": pref_dict.get("levelOfProficiency", "Not Provided"),
-            "location_preference": pref_dict.get("locationPreference", "Not Provided"),
-        }
 
 class FilteredWorkersAjaxView(View):
     def get(self, request):
-        job_order_id = request.GET.get("job_order")
+        work_request_id = request.GET.get("work_request")
         role_id = request.GET.get("role")
-        status = request.GET.get("status")
+        status = request.GET.get("status")  # optional, e.g., 'assigned'
 
+        print(status,"status")
+
+        if not work_request_id or not role_id:
+            return JsonResponse({'error': 'Missing work request or role'}, status=400)
+
+        # Get filtered assignments
         assignments = WorkAssignment.objects.filter(
-            work_request_id=job_order_id,
+            work_request_id=work_request_id,
             role_id=role_id,
             status=status
-        ).select_related('worker', 'work_request', 'role')
+        )
 
-        result = []
+        assignments = assignments.select_related('worker', 'role', 'work_request')
+
+        workers = []
+        seen_worker_ids = set()
         for assignment in assignments:
             worker = assignment.worker
-            result.append({
-                'id': worker.id,
-                'firstname': worker.first_name,
-                'lastname': worker.last_name,
-                'email': worker.email,
-                'profile_completion': WorkerListView.calculate_profile_completion(worker),
-                'work_request': assignment.work_request.name if assignment.work_request else "",
-                'role': assignment.role.title if assignment.role else "",
-            })
+            if worker and worker.id not in seen_worker_ids:
+                seen_worker_ids.add(worker.id)
 
-        return JsonResponse({'workers': result})
+                profile_completion = calculate_profile_completion(worker)
+                worker_details = get_worker_preferences(worker)
+                experience = calculate_total_experience(worker)
+
+                workers.append({
+                    'id': worker.id,
+                    'name': f"{worker.first_name} {worker.last_name}" if worker.first_name and worker.last_name else worker.email,
+                    'email': worker.email,
+                    'profile_completion': profile_completion,
+                    'experience': experience,
+                    'town': worker_details.get('town', 'Not Provided'),
+                    'work_experience': worker_details.get('work_experience', 'Not Provided'),
+                    'english_proficiency': worker_details.get('english_proficiency', 'Not Provided'),
+                    'location_preference': worker_details.get('location_preference', 'Not Provided'),
+                    'work_request': assignment.work_request.name if assignment.work_request else None,
+                    'role': assignment.role.title if assignment.role else None,
+                    'status': assignment.status,
+                })
+
+        return JsonResponse({'workers': workers})
 
     
         
