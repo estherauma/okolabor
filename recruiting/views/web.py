@@ -422,7 +422,7 @@ class EmployerDetailView(View):
             'breadcrumbs': [
                 {'name': _('employerDetailsHome'), 'url': reverse_lazy('index')},
                 {'name': _('employerDetailsEmployers'), 'url': reverse_lazy('recruiting_web:employer_list')},
-                {'name': _('employerDetailsEmployerDetails'), 'url': None},
+                {'name': employer.name, 'url': None},
             ],
         }
         return render(request, 'recruiting/employers/detail.html', context)
@@ -474,7 +474,12 @@ class RecruiterDetailView(View):
             'closed_work_requests': closed_work_requests,
             'draft_work_requests': draft_work_requests,
             'contacts': contacts,
-            'work_requests': work_requests
+            'work_requests': work_requests,
+            'breadcrumbs': [
+                            {'name': _('recruiterListHome'), 'url': reverse('index')},
+                            {'name': _('recruiterListRecruiters'), 'url': reverse('recruiting_web:recruiter_admin_list')},
+                            {'name': recruiter_org.name, 'url': None},
+                        ],
         }
         return render(request, 'recruiting/recruiters_list/workrequest_detail.html', context)
 

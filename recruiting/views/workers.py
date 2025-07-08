@@ -591,7 +591,7 @@ class WorkerDetailsView(View):
             'breadcrumbs': [
                         {'name': _('workerDetailsHome'), 'url': reverse('index')},
                         {'name': _('workerDetailsWorkers'), 'url': reverse('recruiting_web:workers')},
-                        {'name': _('workerDetailsWorkerDetails'), 'url': None},
+                        {'name': worker.first_name, 'url': None},
                     ],
         }
         return render(request, 'recruiting/workers/detail.html', context)
