@@ -32,6 +32,7 @@ from django.db.models import Count
 from django.template.loader import render_to_string
 import os
 from common.firebase_utils import send_push_notification
+from common.logger import AppLogger
 from common.utils import StaticContent
 from recruiting.utils import (
     get_worker_preferences, calculate_profile_completion,
@@ -90,7 +91,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 
-    
+
 class EmployerListView(View):
     def get(self, request):
         user = request.user
@@ -148,11 +149,6 @@ class EmployerListView(View):
         }
         return render(request, 'recruiting/employers/list.html', context)
 
-
-
-
-
-        
 class EmployerDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         user = request.user
@@ -522,7 +518,6 @@ class DeleteAssignedOrganizationView(View):
         return redirect('recruiting_web:employer_detail', pk=employer.id)
 
 
-
 class DeleteEmployerOrganizationFromRecruiterView(View):
     def post(self, request, recruiter_org_id, employer_org_id):
         recruiter_org = get_object_or_404(Organization, pk=recruiter_org_id, type='recruiter')
@@ -535,7 +530,6 @@ class DeleteEmployerOrganizationFromRecruiterView(View):
         messages.success(self.request, _('employerRecruiterDeletedSuccessfully'))
 
         return redirect('recruiting_web:recruiter_org_detail', pk=recruiter_org.id)
-
 
 
 # class WorkRequestCreateView(CreateView):
@@ -587,7 +581,7 @@ class WorkRequestEditView(LoginRequiredMixin, View):
                 for error in errors:
                     messages.error(request, f'{field}: {error}')
             return redirect('recruiting_web:workrequest_list')
-        
+
 class WorkRequestDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         user = request.user
@@ -607,7 +601,6 @@ class WorkRequestDeleteView(LoginRequiredMixin, View):
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
             return HttpResponseForbidden(_("You do not have permission to delete this job order."))
-
 
 
 class AddWorkersWorkRequests(View):
@@ -1000,7 +993,6 @@ class GetRolesView(View):
             return JsonResponse({'error': 'Work request not found'}, status=404)
 
 
-
 @method_decorator(csrf_exempt, name='dispatch')
 class UpdateWorkerStatusView(View):
     def post(self, request, *args, **kwargs):
@@ -1026,8 +1018,22 @@ class UpdateWorkerStatusView(View):
 
             send_push_notification(
                 tokens=user_push_tokens,
-                title=next((item["value"] for item in metadata if item["key"] == "workRequestAddNotificationTitle"), None),
-                body=next((item["value"] for item in metadata if item["key"] == "workRequestAddNotificationBody"), None),
+                title=next(
+                    (
+                        item["value"]
+                        for item in metadata
+                        if item["key"] == "workRequestAddNotificationTitle"
+                    ),
+                    "New Job Offer",
+                ),
+                body=next(
+                    (
+                        item["value"]
+                        for item in metadata
+                        if item["key"] == "workRequestAddNotificationBody"
+                    ),
+                    "You have received a new job offer",
+                ), 
                 data={'type': 'job_offer'}
             )
         return JsonResponse({'status':'success','success': 'True', 'message': 'Offer sent successfully.'})
@@ -1035,6 +1041,8 @@ class UpdateWorkerStatusView(View):
 @method_decorator(csrf_exempt, name='dispatch')
 class OfferSendWorkerView(View):
     def post(self, request, *args, **kwargs):
+        logger = AppLogger(log_file='logs/debug.log')
+
         worker_id = request.POST.get('worker_ids')
         work_request_id = request.POST.get('work_request')
         role_id = request.POST.get('role')
@@ -1068,19 +1076,35 @@ class OfferSendWorkerView(View):
         if user.push_notification_token:
             static_content = StaticContent(language=user.language)
             metadata = static_content.get_add_workert_to_work_request_metadata()
+            title = next(
+                (
+                    item["value"]
+                    for item in metadata
+                    if item["key"] == "workRequestAddNotificationTitle"
+                ),
+                "New Job Offer",
+            )
+            body = next(
+                (
+                    item["value"]
+                    for item in metadata
+                    if item["key"] == "workRequestAddNotificationBody"
+                ),
+                "You have received a new job offer",
+            )
+
+            logger.debug(
+                f"Sending push notification to user with token {user.push_notification_token}, metadata: {len(metadata)}"
+            )
 
             send_push_notification(
                 tokens=[user.push_notification_token],
-                title=next((item["value"] for item in metadata if item["key"] == "workRequestAddNotificationTitle"), None),
-                body=next((item["value"] for item in metadata if item["key"] == "workRequestAddNotificationBody"), None),
-                data={
-                    'type': 'job_offer',
-                    'job_id': role_id
-                }
+                title=title,
+                body=body,
+                data={"type": "job_offer", "job_id": role_id},
             )
 
         return redirect('recruiting_web:worker_detail', pk=worker_id)
-
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -1091,7 +1115,7 @@ class CancelOfferView(View):
         WorkAssignment.objects.filter(worker_id__in=worker_ids, status='offersent').update(status='cancelled')
         messages.success(request, _("OfferCancelledSuccessfully."))
         return JsonResponse({'status': 'success', 'message': 'Offer cancelled successfully.'})
-    
+
 @method_decorator(csrf_exempt, name='dispatch')
 class AddToShortlistView(View):
     def post(self, request, *args, **kwargs):
@@ -1277,7 +1301,7 @@ class WorkRequestRoleCreateView(CreateView):
             'licensed_vehicle_operation_types',
         ]
         return context
-    
+
 class EditRoleView(View):
     def post(self, request, pk):
         role = get_object_or_404(Role, pk=pk)
@@ -1288,7 +1312,7 @@ class EditRoleView(View):
             return redirect('recruiting_web:workrequest_detail', pk=role.work_request.pk)
         else:
             return redirect('recruiting_web:workrequest_detail', pk=role.work_request.pk)
-        
+
 class DeleteRoleView(View):
     def post(self, request, pk):
         role = get_object_or_404(Role, pk=pk)
@@ -1316,7 +1340,7 @@ class RecruiterListView(LoginRequiredMixin, View):
                 "employer_names": employer_names if employer_names else "Not Assigned any person"
             })
         return render(request, 'recruiting/recruiters/list.html', {'recruiters': recruiter_data, 'employers': employers})
-    
+
 
 class AddRecruiterToEmployerView(LoginRequiredMixin, View):
     def post(self, request, employer_id, recruiter_id):
@@ -1354,12 +1378,11 @@ class RemoveRecruiterFromEmployerView(LoginRequiredMixin, View):
             messages.info(request, _("Recruiter {email} was already removed from {employer}.").format(email=recruiter.email, employer=employer.name))
 
         return redirect('recruiting_web:recruiter_list')
-     
+
 
 class AccessDeniedView(View):
     def get(self, request):
         return render(request, 'recruiting/access_denied.html')
-
 
 
 class RoleDataBaseView(CreateView):
@@ -1517,7 +1540,6 @@ class RoleQualificationsCreateView(CreateView):
             return redirect('recruiting_web:workrequest_list')
 
 
-
 class RoleEmpLocationCreateView(CreateView):
     model = EmploymentLocation
     form_class = RoleEmploymentLocationForm
@@ -1624,7 +1646,6 @@ class RoleMealsCreateView(CreateView):
         }))
 
 
-
 class RecruiterTodoView(LoginRequiredMixin, View):
     def get(self, request):
         # initialize filter form
@@ -1670,7 +1691,7 @@ class OkoMessageDetailsView(View):
         message = get_object_or_404(OkoMessage, pk=id)
         context = {'message': message}
         return render(request, 'recruiting/messages/details.html',context)
-    
+
 class AssignRecruiterView(View):
     def post(self, request):
         try:
@@ -1720,8 +1741,7 @@ class AssignRecruiterView(View):
         except Exception as e:
             return JsonResponse({"success": False, "error": f"anErrorOccurred{str(e)}"}, status=500)
 
-    
-    
+
 @method_decorator(csrf_exempt, name='dispatch')
 class SendRecruiterEmailView(View):
     def post(self, request, *args, **kwargs):
@@ -1901,7 +1921,7 @@ class ContactWorkRequestsView(View):
         }
 
         return render(request, 'recruiting/work_requests/workrequest_details.html', context)
-    
+
 @method_decorator(csrf_exempt, name='dispatch')
 class AssignEmployerContactView(View):
     def post(self, request, *args, **kwargs):
@@ -1948,7 +1968,6 @@ class AssignEmployerContactView(View):
     def get(self, request, *args, **kwargs):
         messages.error(request, "GET not allowed")
         return JsonResponse({'error': 'GET not allowed.'}, status=405)
-
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -2022,7 +2041,7 @@ class AssignEmployersToRecruiterOrgView(View):
                 'success': False,
                 'message': str(e)
             })
-            
+
 def get_response_status(receiver_org, other_org):
     try:
         link = EmployerRecruiterOrgLink.objects.get(
@@ -2032,7 +2051,6 @@ def get_response_status(receiver_org, other_org):
         return link.status
     except EmployerRecruiterOrgLink.DoesNotExist:
         return 'pending'
-
 
 
 class InvitationResponseView(View):
@@ -2149,8 +2167,6 @@ Your Team
                 [contact.email],
                 fail_silently=False
             )
-
-
 
 
 def update_employer_recruiter_status(request):
@@ -2340,7 +2356,7 @@ class SummaryViews(View):
 
         return render(request, 'recruiting/work_requests/summaryList/summarylist.html', context)
 
-    
+
 class EditEmploymentLocationView(View):
     def post(self, request, pk):
         location = get_object_or_404(EmploymentLocation, pk=pk)
@@ -2388,7 +2404,7 @@ class DeleteHousingInformationView(View):
         except Exception as e:
             messages.error(request, _('joDetailsHousingInfoErrorDeletingHousingInformation: %(error)s') % {'error': str(e)})
             return redirect('recruiting_web:workrequest_detail', pk=housing.role.work_request.pk)
-        
+
 class EditMealProvisionView(View):
     def post(self, request, pk):
         meal_provision = get_object_or_404(MealProvision, pk=pk)
@@ -2401,7 +2417,7 @@ class EditMealProvisionView(View):
         else:
             messages.error(request, _('joDetailsMealsThereWasAnErrorUpdatingTheMealProvision'))
             return redirect('recruiting_web:workrequest_detail', pk=meal_provision.role.work_request.pk)
-        
+
 
 class DeleteMealProvisionView(View):
     def post(self, request, pk):
@@ -2487,8 +2503,6 @@ class EditRoleQualificationView(View):
             return redirect('recruiting_web:workrequest_detail', pk=qualification.role.work_request.pk) 
         else:
             messages.error(request, _('joDetailsQualificationsThereWasAnErrorUpdatingTheQualification'))
-
-        
 
 
 class DeleteQualificationView(View):
