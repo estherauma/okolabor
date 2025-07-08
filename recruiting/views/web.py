@@ -1247,7 +1247,7 @@ class WorkRequestDetailView(View):
             'breadcrumbs' :[
                         {'name': _('Home'), 'url': 'index'},
                         {'name': _('Job Orders'), 'url': 'recruiting_web:workrequest_list'},
-                        {'name': _('Job Order Details'), 'url': None},
+                        {'name': work_request.name, 'url': None},
                     ],
 
         }
