@@ -115,7 +115,8 @@
                                     <option value="language_proficiency">{% translate "Language Proficiency" %}</option>
                                     <option value="work_preference_location">{% translate "Work Preference Location" %}</option>
                                     <option value="work_preference_type">{% translate "Work Preference Type" %}</option>
-
+                                    <option value="visa">{% translate "Visa" %}</option>
+                                    <option value="explanation_video">{% translate "Explanation Video" %}</option>
                                 </select>
                             </div>
                         </div>
@@ -725,6 +726,8 @@ function addRandomFilter() {
                     <option value="language_proficiency">{% translate "Language Proficiency" %}</option>
                     <option value="work_preference_location">{% translate "Work Preference Location" %}</option>
                     <option value="work_preference_type">{% translate "Work Preference Type" %}</option>
+                    <option value="visa">{% translate "Visa" %}</option>
+                    <option value="explanation_video">{% translate "Explanation Video" %}</option>
                 </select>
 
             </div>
@@ -844,6 +847,20 @@ function handleFilterChange(selectEl, uniqueId) {
                     </select>
                 </div>
                 <div class="form-group mt-2" id="language-video-container-${uniqueId}"></div>
+            `;
+            break;
+
+        case "visa":
+        case "explanation_video":
+            html = `
+                <div class="form-group">
+                    <label class="form-label gray-color">{% translate "Has" %} ${selectEl.options[selectEl.selectedIndex].text}?</label>
+                    <select class="form-control" name="${selectedValue}_${uniqueId}" onchange="updateCollapseSummary()">
+                        <option value="">{% translate "Select" %}</option>
+                        <option value="yes">{% translate "Yes" %}</option>
+                        <option value="no">{% translate "No" %}</option>
+                    </select>
+                </div>
             `;
             break;
 
