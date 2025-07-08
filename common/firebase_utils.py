@@ -18,6 +18,20 @@ def send_push_notification(tokens, title, body, data=None):
             ),
             tokens=tokens,
             data=data or {},
+            android=messaging.AndroidConfig(
+                priority="high",
+                notification=messaging.AndroidNotification(
+                    sound="default",
+                    channel_id="default"  # Must match the one created in the app
+                )
+            ),
+            apns=messaging.APNSConfig(
+                payload=messaging.APNSPayload(
+                    aps=messaging.Aps(
+                        sound="default"
+                    )
+                )
+            ),
         )
 
         response = messaging.send_each_for_multicast(message)
