@@ -121,6 +121,7 @@ function updatePills(selectElement) {
         pillsContainer = document.createElement("div");
         pillsContainer.className = "selected-options-container";
         pillsContainer.style.marginTop = "0.5rem";
+        pillsContainer.style.display = "none";
         formGroup.appendChild(pillsContainer);
     }
 
@@ -141,7 +142,46 @@ function updatePills(selectElement) {
         pill.style.boxShadow = "0 1px 2px rgba(0, 0, 0, 0.05)";
         pillsContainer.appendChild(pill);
     });
+
+    updateCollapseSummary();
 }
+
+function updateCollapseSummary() {
+  const summaryContainer = document.getElementById('selected-filters-summary');
+  summaryContainer.innerHTML = '';
+
+  const allSelects = document.querySelectorAll('select[id$="id_dynamic_field_1"], select[id$="id_dynamic_field_2"], select[id$="id_type_sector"]');
+  let allSelectedTexts = [];
+
+  allSelects.forEach(select => {
+    const selectedOptions = Array.from(select.selectedOptions)
+      .map(opt => opt.text.trim())
+      .filter(text => text && text !== 'Please select...');
+    allSelectedTexts = allSelectedTexts.concat(selectedOptions);
+  });
+
+  if (allSelectedTexts.length > 0) {
+    const label = document.createElement('strong');
+    label.textContent = 'Active filters: ';
+    summaryContainer.appendChild(label);
+
+    allSelectedTexts.forEach(text => {
+      const pill = document.createElement("span");
+      pill.textContent = text;
+      pill.style.display = "inline-block";
+      pill.style.padding = "4px 10px";
+      pill.style.margin = "2px 4px";
+      pill.style.fontSize = "0.75rem";
+      pill.style.color = "#1b4332";
+      pill.style.border = "1px solid #74c69d";
+      pill.style.borderRadius = "999px";
+      pill.style.backgroundColor = "#d8f3dc";
+      pill.style.boxShadow = "0 1px 2px rgba(0, 0, 0, 0.05)";
+      summaryContainer.appendChild(pill);
+    });
+  }
+}
+
 
 
 document.addEventListener("DOMContentLoaded", () => {
