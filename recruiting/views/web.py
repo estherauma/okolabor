@@ -1074,27 +1074,11 @@ class OfferSendWorkerView(View):
         messages.success(request, _("OfferSentSuccessfully."))
 
         if user.push_notification_token:
-            static_content = StaticContent(language=user.language)
-            metadata = static_content.get_add_worker_to_work_request_metadata()
-            title = next(
-                (
-                    item["value"]
-                    for item in metadata
-                    if item["key"] == "workRequestAddNotificationTitle"
-                ),
-                "New Job Offer",
-            )
-            body = next(
-                (
-                    item["value"]
-                    for item in metadata
-                    if item["key"] == "workRequestAddNotificationBody"
-                ),
-                "You have received a new job offer",
-            )
+            title = _("workRequestAddNotificationTitle")
+            body = _("workRequestAddNotificationBody")
 
             logger.debug(
-                f"Sending push notification to user with token {user.push_notification_token}, metadata: {len(metadata)}"
+                f"Sending push notification to user with token {user.push_notification_token}"
             )
 
             send_push_notification(
