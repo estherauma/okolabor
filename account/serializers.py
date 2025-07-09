@@ -48,8 +48,9 @@ class RegistrationSerializer(serializers.Serializer):
         if len(value) < 18:
             raise serializers.ValidationError(
                 'CURP cannot be less than 18 characters long')
-        if not re.match(r'^[A-Za-z]{4}\d{6}[A-Za-z]{6}\d{2}$', value):
+        if not re.match(r'^[A-Za-z]{4}\d{6}[A-Za-z]{6}[A-Za-z0-9]{1}\d{1}$', value):
             raise serializers.ValidationError('Invalid CURP format')
+
         if User.objects.filter(curp=value).exists():
             raise serializers.ValidationError(
                 'User with given CURP already exists')

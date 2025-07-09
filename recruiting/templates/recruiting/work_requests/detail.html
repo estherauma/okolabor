@@ -5,13 +5,6 @@
 {% endblock styles %}
 {% load i18n %}
 {% block body %}
-<div class="page-header">
- <div>
-  <h1 class="page-title">
-   {% translate "jobOrderDetailsJobOrders" %} / {{workrequest.name}}
-  </h1>
- </div>
-</div>
 <div class="row">
   <!-- left hand side -->
   <div class="col-md-8">
@@ -125,33 +118,7 @@
                         <i class="fa fa-trash-alt"></i>
                       </button>
                   </h2>
-            {% for role in workrequest.roles.all %}
-            
-              <div class="modal fade" id="editRoleModal{{ role.id }}" tabindex="-1" aria-labelledby="editRoleModalLabel{{ role.id }}" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                        <form method="POST" action="{% url 'recruiting_web:edit-role' role.id %}">
-                            {% csrf_token %}
-                            <div class="modal-header" style="background-color: #7DBF96;">
-                              <h5 class="modal-title text-white">{% translate 'joDetailsHoursEditRole' %}</h5>
-                              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-
-                            <div class="modal-body p-3">
-                            {{ role_forms|get:role.id }}
-                            </div>
-
-                            <div class="modal-footer">
-                            <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'jobOrderDetailsCancel' %}</button>
-                            <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>{% translate 'jobOrderDetailsSave' %}</button>
-                            </div>
-                        </form>
-                        </div>
-                    </div>
-                </div>
-
-            {% endfor %}
-            <!-- Edit Modal -->
+          {% include 'recruiting/work_requests/edit_role_modal.html'%}
 
 
             {% for role in roles %}

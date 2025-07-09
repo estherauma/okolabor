@@ -1,11 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
     const copyBtn = document.getElementById('copyOfferBtn');
-    const assignWorkRequestBtn = document.getElementById('assignWorkRequestOfferBtn');
     const workerCheckboxes = document.querySelectorAll('.worker-offer-checkbox');
     const copyForm = document.getElementById('copyOfferForm');
     const targetWorkRequestSelect = document.getElementById('target_offer_work_request');
     const roleSelect = document.getElementById('role_offer_id');
-
 
     const copyUrl = copyForm.dataset.url;
     const getRolesUrl = copyForm.dataset.getRolesUrl;
@@ -15,12 +13,15 @@ document.addEventListener('DOMContentLoaded', function () {
         workerCheckboxes.forEach(checkbox => {
             checkbox.checked = true;
         });
-        assignWorkRequestBtn.style.display = 'inline-block';
-    });
 
-    assignWorkRequestBtn.addEventListener('click', function () {
-        const copyModal = new bootstrap.Modal(document.getElementById('copyOfferModal'));
-        copyModal.show();
+
+        const modalEl = document.getElementById('copyOfferModal');
+        if (modalEl) {
+            const copyModal = new bootstrap.Modal(modalEl);
+            copyModal.show();
+        } else {
+            console.error('❌ copyOfferModal not found!');
+        }
     });
 
     targetWorkRequestSelect.addEventListener('change', function () {
@@ -38,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
                 })
                 .catch(error => {
-                    console.error('Error:', error);
+                    console.error('❌ Error loading roles:', error);
                 });
         } else {
             roleSelect.innerHTML = '<option value="" disabled selected>Select a role</option>';
@@ -47,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     copyForm.addEventListener('submit', function (event) {
         event.preventDefault();
+
         const selectedWorkers = Array.from(workerCheckboxes)
             .filter(cb => cb.checked)
             .map(cb => cb.value);
@@ -73,11 +75,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.success) {
                 location.reload();
             } else {
-                alert('Failed to copy workers.');
+                alert(data.response || 'Failed to copy workers.');
             }
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('❌ Error submitting form:', error);
             alert('An error occurred while copying workers.');
         });
     });

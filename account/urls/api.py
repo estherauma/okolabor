@@ -5,7 +5,7 @@ from account.views.api import (
     UserAccountRecovery, UserAccountRecoveryReset,
     UserJobExperienceDetailsView, UserJobExperienceView,
     UserDocumentDetailsView, UserNotificationView,
-    UserPreferencesUpdateView, UserProfileAviNotification, UserReportProblem, 
+    UserPreferencesUpdateView, UserProfileAviNotification, UserPushNotificationToken, UserReportProblem, 
     UserWorkExperienceDetailsView, UserWorkExperienceView,
     GetOTP, VerifyOTP,
     UserDocumentsView, UserPreferencesUpdateView, UserWorkExperienceView
@@ -74,4 +74,5 @@ urlpatterns = [
     path('recovery-request-reset/', UserAccountRecovery.as_view(), name='password-request-reset'),
     path('recovery-reset-password/', UserAccountRecoveryReset.as_view(), name='password-reset'),
     path('notifications/profile-photo', UserProfileAviNotification.as_view(), name='api-notifications-create'),
+    path('notifications/push-token/', UserPushNotificationToken.as_view(), name='api-notifications-push-token'),
 ]

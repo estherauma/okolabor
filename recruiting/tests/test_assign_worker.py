@@ -42,17 +42,28 @@ class AssignWorkerViewTestCase(TestCase):
         self.client = Client()
 
     def test_assign_worker_view_post_success(self):
-        """Test the POST request for AssignWorkerView with valid data."""
-        url = reverse('recruiting_web:assign_worker')  # Adjust the URL name as per your configuration
+        url = reverse('recruiting_web:assign_worker')
         data = {
-            'worker_ids': self.user.id,
+            'worker_ids': str(self.user.id),  # Or comma-separated if multiple
             'work_request': self.work_request.id,
             'role': self.role.id,
-            'status': 'Assigned'
+            'status': 'assigned'
         }
+
         response = self.client.post(url, data)
-        self.assertEqual(response.status_code, 302)  # Expecting a redirect
-        self.assertTrue(WorkAssignment.objects.filter(worker=self.user, role=self.role, work_request=self.work_request).exists())
+
+        self.assertEqual(response.status_code, 200)  # ✅ Expecting 200 now
+        self.assertEqual(response.json()['success'], True)  # ✅ Assert success key
+
+        self.assertTrue(
+            WorkAssignment.objects.filter(
+                worker=self.user,
+                role=self.role,
+                work_request=self.work_request
+            ).exists()
+        )
+
+
 
     def test_assign_worker_view_post_missing_data(self):
         """Test the POST request for AssignWorkerView with missing data."""
