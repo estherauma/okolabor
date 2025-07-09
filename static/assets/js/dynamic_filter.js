@@ -42,31 +42,31 @@ function handleTypeSectorChange(event) {
     const fieldData = {
         "Animals": {
             field1Label: "Animal Type",
-            field1Options: ["Asses", "Bees", "Buffalo"],
+            field1Options: ["Asses", "Bees", "Buffalo"].sort(),
             field2Label: "Tasks",
-            field2Options: ["Breeding", "Caring", "Packaging"]
+            field2Options: ["Breeding", "Caring", "Packaging"].sort()
         },
         "Crop and Horticulture": {
             field1Label: "Crop Type",
-            field1Options: ["Avocados", "Bananas", "Brazil nuts"],
+            field1Options: ["Avocados", "Bananas", "Brazil nuts"].sort(),
             field2Label: "Tasks",
-            field2Options: ["Cultivating", "Grading and sorting", "Harvesting", "Other"]
+            field2Options: ["Cultivating", "Grading and sorting", "Harvesting", "Other"].sort()
         },
         "Mechanics": {
             field1Label: "Tasks",
-            field1Options: ["Car", "Agricultural Equipment/Machinery"],
+            field1Options: ["Car", "Agricultural Equipment/Machinery"].sort(),
             field2Label: null,
             field2Options: null
         },
         "Worker Supervision/Management": {
             field1Label: "Tasks",
-            field1Options: ["Animals", "Crop and Horticulture", "Other"],
+            field1Options: ["Animals", "Crop and Horticulture", "Other"].sort(),
             field2Label: null,
             field2Options: null
         },
          "Licensed Vehicle Operation": {
             field1Label: "Tasks",
-            field1Options: ["Cargo licence", "Passenger licence"],
+            field1Options: ["Cargo licence", "Passenger licence"].sort(),
             field2Label: null,
             field2Options: null
         }

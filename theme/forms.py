@@ -212,16 +212,25 @@ class FilterWorkExperienceForm(forms.Form):
 
 
 class DynamicWorkExperienceForm(forms.Form):
-    SECTOR_CHOICES = [
-        ('', 'Please select...'),
-        ('Animals', _('filterSectionAnimals')),
-        ('Construction', _('filterSectionConstruction')),
-        ('Crop and Horticulture', _('filterSectionCropAndHorticulture')),
-        ('Licensed Vehicle Operation', _('filterSectionLicensedVehicleOperation')),
-        ('Mechanics', _('filterSectionMechanics')),
-        ('Worker Supervision/Management', _('filterSectionWorkerSupervision/Management')),
-        ('Other', _('filterSectionOther')),
-    ]
+    type_sector = forms.ChoiceField(
+        choices=[],  # set dynamically in __init__
+        label=_("filterSectionType/Sector"),
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_type_sector'}),
+    )
+
+    dynamic_field_1 = forms.ChoiceField(
+        choices=[],
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_dynamic_field_1'}),
+        label=_(""),
+    )
+
+    dynamic_field_2 = forms.ChoiceField(
+        choices=[],
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_dynamic_field_2'}),
+        label=_(""),
+    )
 
     TYPE_SPECIFIC_OPTIONS = {
         'Animals': {
@@ -272,31 +281,22 @@ class DynamicWorkExperienceForm(forms.Form):
             'third_label': None,
             'third_choices': None
         }
-        # Construction, Licensed Vehicle Operation, Other => no other fields
     }
 
-    type_sector = forms.ChoiceField(
-        choices=SECTOR_CHOICES,
-        label=_("filterSectionType/Sector"),
-        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_type_sector'}),
-    )
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-    # These are dynamic placeholders; values will be updated client-side via JavaScript
-    dynamic_field_1 = forms.ChoiceField(
-        choices=[],
-        required=False,
-        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_dynamic_field_1'}),
-        label=_(""),
-    )
+        sector_choices = sorted([
+            ('Animals', _('filterSectionAnimals')),
+            ('Construction', _('filterSectionConstruction')),
+            ('Crop and Horticulture', _('filterSectionCropAndHorticulture')),
+            ('Licensed Vehicle Operation', _('filterSectionLicensedVehicleOperation')),
+            ('Mechanics', _('filterSectionMechanics')),
+            ('Worker Supervision/Management', _('filterSectionWorkerSupervision/Management')),
+            ('Other', _('filterSectionOther')),
+        ], key=lambda x: x[1])
 
-    dynamic_field_2 = forms.ChoiceField(
-        choices=[],
-        required=False,
-        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_dynamic_field_2'}),
-        label=_(""),
-    )
-
-        
+        self.fields['type_sector'].choices = [('', _('filterSectionPleaseSelect...'))] + sector_choices    
 class AdvancedFilterForm(forms.Form):
     choices = [
         ('', 'Please select...'),
