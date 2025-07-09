@@ -990,11 +990,11 @@ class CopyWorkersView(View):
         worker_ids = request.POST.getlist('worker_ids[]')
         work_request_id = request.POST.get('work_request')
         role_id = request.POST.get('role')
-        status = request.POST.get('status', 'Assigned')
+        status = request.POST.get('status', 'assigned')
 
         if not worker_ids or not work_request_id or not role_id:
             messages.error(request, _('Invalid request, missing data'))
-            return JsonResponse({'error': _('Invalid request, missing data')}, status=400)
+            return JsonResponse({'success': False, 'response': _('Invalid request, missing data')}, status=400)
 
         work_request = get_object_or_404(WorkRequests, id=work_request_id)
         role = get_object_or_404(Role, id=role_id)
@@ -1011,12 +1011,14 @@ class CopyWorkersView(View):
                 work_assignment.status = status
                 work_assignment.save()
 
-            messages.success(request, _('workersAssignedSuccessfully!'))
-            return JsonResponse({'success': _('Workers assigned successfully!')})
-        
+            success_message = _('Workers assigned successfully!')
+            messages.success(request, success_message)
+            return JsonResponse({'success': True, 'response': success_message})
+
         except Exception as e:
-            messages.error(request, _('anErrorOccurred: ') + str(e))
-            return JsonResponse({'error': _('An error occurred: ') + str(e)}, status=500)
+            error_message = _('An error occurred: ') + str(e)
+            messages.error(request, error_message)
+            return JsonResponse({'success': False, 'response': error_message}, status=500)
 
 class GetRolesView(View):
     def get(self, request, *args, **kwargs):
