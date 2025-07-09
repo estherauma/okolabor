@@ -14,9 +14,6 @@
 {% block body %}
 <div class="page-header">
  <div>
-  <h1 class="page-title">
-   {{employer.name}}
-  </h1>
  </div>
  <button class="btn dark-green-button"
         data-bs-toggle="modal"
@@ -133,7 +130,7 @@
                                 {% endif %}
                             </td>
                             <td>
-                                <a href="{% url 'employer_detail 'work_request.employer.id %}" class="text-decoration-none text-dark">
+                                <a href="{% url 'employer_detail' work_request.employer.id %}" class="text-decoration-none text-dark">
                                     {{ work_request.employer.name }}
                                 </a>
                             </td>

@@ -29,6 +29,9 @@ from django.utils.translation import gettext as _
 from django.utils import translation
 from rest_framework.permissions import IsAuthenticated
 from common.email import EmailHelper
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.core.mail import send_mail
 
 
 class RegisterView(APIView):
@@ -554,12 +557,26 @@ class UserReportProblem(APIView):
                ]
             else: 
                 to_emails = [serializer.validated_data.get('report_recipient')]
-            email_helper = EmailHelper()
-            email_helper.send_email(
-                subject=_('reportAProbjemEmailSubject'),
-                body=serializer.validated_data.get('description'),
-                to_emails=to_emails
+                
+            subject = _('reportAProbjemEmailSubject')
+            description = serializer.validated_data.get('description')
+            site_url = "https://test.okolabor.com"
+            
+            html_content = render_to_string('report_problem_email.html', {
+                'body': description,
+                'site_url': site_url,
+            })
+            
+            plain_content = strip_tags(html_content)
+
+            send_mail(
+                subject=subject,
+                message=plain_content,
+                from_email="noreply@fiftyeight.io", 
+                recipient_list=to_emails,
+                html_message=html_content,
             )
+            
             
             return Response(
                 {'message': 'Report sent successfully'},
@@ -703,3 +720,34 @@ class UserProfileAviNotification(APIView):
             {'message': 'Notification created'},
             status=status.HTTP_200_OK
         )
+
+
+class UserPushNotificationToken(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_summary="Update user push notification token",
+        tags=["User Notifications"]
+    )
+    def post(self, request):
+        try:
+            user = request.user
+            user = get_object_or_404(User, pk=user.id)
+
+            push_token = request.data.get('push_notification_token')
+            if not push_token:
+                return Response(
+                    {'message': 'push_notification_token token is required'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            user.push_notification_token = push_token
+            user.save()
+            return Response(
+                {'message': 'Push notification token updated'},
+                status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return Response(
+                {'message': f'Failed to update push notification token: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )

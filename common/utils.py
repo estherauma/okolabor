@@ -3,8 +3,8 @@ from django.apps import apps
 from content.models import AggregatedContent
 
 class StaticContent:
-    def __init__(self):
-        raw_lang = (get_language() or 'es-MX').strip().lower()
+    def __init__(self, language=None):
+        raw_lang = (language or (get_language() or 'es-MX').strip().lower())
         self.language = 'es-MX' if raw_lang == 'es-mx' else 'en'
         self._content = None  # Lazy-loaded
 
@@ -114,5 +114,9 @@ class StaticContent:
         questions = self.content.get("profileStepOne", {}).get(section, [])
         for q in questions:
             if q.get("key") == key:
-                return q.get("label") or key 
-        return key 
+                return q.get("label") or key
+        return key
+
+    def get_add_workert_to_work_request_metadata(self):
+        additionalText = self.content.get("rweb-add-worker-to-work-request", {}).get("additional_text", [])
+        return additionalText 

@@ -75,8 +75,8 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
     gender = models.CharField(max_length=15,  blank=True, null=True)
     dob = models.DateField(null=True, blank=True)
     reset_code = models.CharField(max_length=256, null=True, blank=True)
+    push_notification_token = models.CharField(max_length=256, null=True, blank=True)
 
-    
     organizations = models.ManyToManyField(
         'recruiting.Organization',
         related_name='recruiters',
