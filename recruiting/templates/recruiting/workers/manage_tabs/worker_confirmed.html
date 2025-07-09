@@ -99,20 +99,7 @@
                 </tr>
               </thead>
               <tbody>
-                {% for worker in confirmed_workers %}
-                <tr class="text-center">
-                  <td><input type="checkbox" class="worker-confirmed-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.firstname }} {{ worker.lastname }}"></td>
-                  <td class="col-name">{% if worker.first_name and worker.last_name %}<a href="{{ worker.id }}">{{ worker.first_name }} {{ worker.last_name }}</a>{% else %}<a href="{{ worker.id }}">{{ worker.email }}</a>{% endif %}</td>
-                  <td class="col-town">{{ worker.town|default:"Not Provided" }}</td>
-                  <td class="col-profile">{{ worker.profile_completion_percentage|default:0 }}%</td>
-                  <td class="col-experience">{{ worker.work_experience|default:"Not Provided" }}</td>
-                  <td class="col-english">{{ worker.english_proficiency|default:"Not Provided" }}</td>
-                  <td class="col-location">{{ worker.location_preference|default:"Not Provided" }}</td>
-                  <td class="col-location">{{ worker.work_request }}</td>
-                  <td class="col-location">{{ worker.role }}</td>
-                  <td class="col-offer">{{ worker.status }}</td>
-                </tr>
-                {% endfor %}
+                
               </tbody>
             </table>
           </div>

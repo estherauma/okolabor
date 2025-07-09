@@ -45,20 +45,26 @@ $(document).ready(function () {
         const activeTabId = $('.tab-pane.active').attr('id');
         const tabInfo = tabToTableMap[activeTabId];
 
-        console.log('Active Tab ID:', activeTabId);
-        console.log('Tab Info:', tabInfo);
-
         if (!tabInfo) return;
 
         const { tableId, status } = tabInfo;
 
         if (workRequestId && roleId) {
-            console.log(`Fetching workers for Work Request ID: ${workRequestId}, Role ID: ${roleId}, Status: ${status}`);
-
             fetch(`/workers/ajax-filtered-workers/?work_request=${workRequestId}&role=${roleId}&status=${status}`)
                 .then(res => res.json())
                 .then(data => {
-                    console.log(data.workers.length, "length");
+                    const counts = data.counts || {};
+                    const countIdMap = {
+                        'assigned': '#shortlisted-count',
+                        'offersent': '#offersent-count',
+                        'confirmed': '#confirmed-count',
+                        'rejected': '#rejected-count'
+                    };
+
+                    // ✅ Update only active tab count
+                    if (counts[status] !== undefined && countIdMap[status]) {
+                        $(countIdMap[status]).text(`(${counts[status]})`);
+                    }
 
                     if (!$.fn.DataTable.isDataTable(tableId)) {
                         $(tableId).DataTable({
@@ -103,5 +109,10 @@ $(document).ready(function () {
                     console.error('Error loading filtered workers:', err);
                 });
         }
+    });
+
+    // Optional: Trigger refresh when tabs change
+    $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function () {
+        roleSelect.trigger('change');
     });
 });
