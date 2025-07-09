@@ -146,6 +146,10 @@ class EmployerListView(View):
             'query': query,
             'recruiters': recruiter_organizations,
             'employer_form': employer_form,
+            'breadcrumbs': [
+                {'name': _('employersHome'), 'url': reverse_lazy('index')},
+                {'name': _('employersEmployers'), 'url': None},
+            ],
         }
         return render(request, 'recruiting/employers/list.html', context)
 
@@ -243,7 +247,14 @@ class RecruiterListViewInAdmin(View):
         
         
         employer_form = EmployerForm()
-        context = {'recruiters': recruiters_data, 'query': query, 'employer_form': employer_form}
+        context = {'recruiters': recruiters_data, 
+                   'query': query, 
+                   'employer_form': employer_form,
+                   'breadcrumbs': [
+                            {'name': _('recruiterListHome'), 'url': reverse('index')},
+                            {'name': _('recruiterListRecruiters'), 'url': None},
+                        ],
+                   }
         return render(request, 'recruiting/recruiters_list/list.html', context)
 
 
@@ -405,7 +416,12 @@ class EmployerDetailView(View):
             'recruiters': all_recruiter_names,
             'contacts': employer.contacts.all(),
             'work_requests': work_requests,
-            'assigned_organizations': assigned_orgs_data
+            'assigned_organizations': assigned_orgs_data,
+            'breadcrumbs': [
+                {'name': _('employerDetailsHome'), 'url': reverse_lazy('index')},
+                {'name': _('employerDetailsEmployers'), 'url': reverse_lazy('recruiting_web:employer_list')},
+                {'name': employer.name, 'url': None},
+            ],
         }
         return render(request, 'recruiting/employers/detail.html', context)
 
@@ -456,7 +472,12 @@ class RecruiterDetailView(View):
             'closed_work_requests': closed_work_requests,
             'draft_work_requests': draft_work_requests,
             'contacts': contacts,
-            'work_requests': work_requests
+            'work_requests': work_requests,
+            'breadcrumbs': [
+                            {'name': _('recruiterListHome'), 'url': reverse('index')},
+                            {'name': _('recruiterListRecruiters'), 'url': reverse('recruiting_web:recruiter_admin_list')},
+                            {'name': recruiter_org.name, 'url': None},
+                        ],
         }
         return render(request, 'recruiting/recruiters_list/workrequest_detail.html', context)
 
@@ -501,6 +522,10 @@ class WorkRequestsListView(View):
             "employers": Organization.objects.filter(type='employer'),
             "recruiter": Organization.objects.filter(type='recruiter'),
             "form": form,
+            "breadcrumbs": [
+                        {'name': _('jobOrderListHome'), 'url': 'index'},
+                        {'name': _('jobOrderListJobOrders'), 'url': None},
+                    ],
         }
         return render(request, "recruiting/work_requests/list.html", context)
 
@@ -604,6 +629,17 @@ class WorkRequestDeleteView(LoginRequiredMixin, View):
 
 
 class AddWorkersWorkRequests(View):
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        role_id = self.kwargs.get('pk')
+        role = get_object_or_404(Role, pk=role_id)
+        context.update({
+            'role': role,
+            'workrequest': role.work_request
+        })
+        return context
+    
     def get(self, request, pk, role_id):
         type_sector_value = request.GET.get('type_sector')
         dynamic_field_1_value = request.GET.get('dynamic_field_1', '')
@@ -939,6 +975,12 @@ class AddWorkersWorkRequests(View):
             'cancelled_count': cancelled_count,
             'rejected_count': rejected_count,
             'workers_count': workers_count,
+            'breadcrumbs': [
+                            {'name': _('workRequestAddWorkerHome'), 'url': reverse('index')},
+                            {'name': _('workRequestAddWorkerJobOrders'), 'url': reverse('recruiting_web:workrequest_list')},
+                            {'name': _('workRequestAddWorkerJobOrderDetails'), 'url': reverse('recruiting_web:workrequest_detail', kwargs={'pk': work_request.pk})},
+                            {'name': _('workRequestAddWorkerAddWorkers'), 'url': None},
+                        ],
         }
         return render(request, 'recruiting/work_requests/create_addworker.html', context)
 
@@ -1264,6 +1306,11 @@ class WorkRequestDetailView(View):
             'role_Meals_form': role_Meals_form,
             'role_add_form': role_add_form,
             'dynamic_fields': dynamic_fields,
+            'breadcrumbs' :[
+                        {'name': _('Home'), 'url': 'index'},
+                        {'name': _('Job Orders'), 'url': 'recruiting_web:workrequest_list'},
+                        {'name': work_request.name, 'url': None},
+                    ],
 
         }
         return render(request, 'recruiting/work_requests/detail.html', context)
@@ -1662,7 +1709,13 @@ class OkoMessageListView(View):
     def get(self, request):
         form = OkoMessageFilterForm()
         items = OkoMessage.objects.all()
-        context = {'items': items, 'form': form }
+        context = {'items': items, 
+                   'form': form ,
+                    'breadcrumbs': [
+                        {'name': _('messagesHome'), 'url': reverse_lazy('index')},
+                        {'name': _('messagesMessages'), 'url': None},
+                    ],
+                   }
         return render(request, 'recruiting/messages/list.html', context)
 
 
@@ -1670,6 +1723,15 @@ class OkoMessageCreateView(CreateView):
     model = OkoMessage
     form_class = OkoMessageCreateForm
     template_name = 'recruiting/messages/create.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['breadcrumbs'] = [
+            {'name': _('createMessageHome'), 'url': reverse_lazy('index')},
+            {'name': _('createMessageMessages'), 'url': reverse_lazy('recruiting_web:recruiter_messages')},
+            {'name': _('createMessageCreateMessage'), 'url': None},
+        ]
+        return context
 
     def form_valid(self, form):
         messages.success(self.request, _('messageCreatedSuccessfully'))
@@ -1689,7 +1751,13 @@ class OkoMessageCreateView(CreateView):
 class OkoMessageDetailsView(View):
     def get(self, request,id):
         message = get_object_or_404(OkoMessage, pk=id)
-        context = {'message': message}
+        context = {'message': message,
+                   'breadcrumbs': [
+                            {'name': _('messageDetailsHome'), 'url': reverse('index')},
+                            {'name': _('messageDetailsMessages'), 'url': reverse('recruiting_web:recruiter_messages')},
+                            {'name': _('messageDetailsMessageDetails'), 'url': None},
+                        ],
+                   }
         return render(request, 'recruiting/messages/details.html',context)
 
 class AssignRecruiterView(View):
@@ -2233,6 +2301,14 @@ class EmployerRecruiterOrgStatusListView(ListView):
             'recruiter_org',
             'user_updated_by__user'
         )
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['breadcrumbs'] = [
+            {'name': _('recruiterStatusHome'), 'url': reverse_lazy('index')},
+            {'name': _('recruiterStatusRecruiterStatusList'), 'url': None},
+        ]
+        return context
 
 class EmployerRecruiterOrgLinkDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
