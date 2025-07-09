@@ -1014,7 +1014,7 @@ class UpdateWorkerStatusView(View):
 
         if len(user_push_tokens) > 0:
             static_content = StaticContent(language=user.language)
-            metadata = static_content.get_add_workert_to_work_request_metadata()
+            metadata = static_content.get_add_worker_to_work_request_metadata()
 
             send_push_notification(
                 tokens=user_push_tokens,
@@ -1075,7 +1075,7 @@ class OfferSendWorkerView(View):
 
         if user.push_notification_token:
             static_content = StaticContent(language=user.language)
-            metadata = static_content.get_add_workert_to_work_request_metadata()
+            metadata = static_content.get_add_worker_to_work_request_metadata()
             title = next(
                 (
                     item["value"]
