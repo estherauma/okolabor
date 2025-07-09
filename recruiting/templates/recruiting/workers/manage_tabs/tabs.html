@@ -63,9 +63,7 @@
             </span>
     
             <div id="form-container">
-                <!-- Combined Filter Form -->
                 <form method="get" id="filter-form">
-                    <!-- Dynamic Filter Inputs -->
                     <div id="filter-inputs-container">
                         <div class="job-experience-form">
                             <div class="row align-items-center">
@@ -88,7 +86,6 @@
                         </div>
                     </div>
             
-                    <!-- Add Another Filter Button -->
                     <button class="btn light-green-button min-content-width mt-3" type="button" onclick="addAnotherExperience()">
                         
 
@@ -321,7 +318,6 @@ function applyColumnVisibilityFromStorage(table) {
 document.addEventListener('DOMContentLoaded', () => {
     const tableId = '#basic-datatable-workers';
 
-    // Destroy any existing DataTable instance before re-initializing
     if ($.fn.DataTable.isDataTable(tableId)) {
         $(tableId).DataTable().clear().destroy();
     }
