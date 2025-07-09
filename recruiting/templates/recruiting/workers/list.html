@@ -609,16 +609,71 @@ $(document).ready(function () {
 function updateCollapseSummary() {
     const summaryContainer = document.getElementById('selected-filters-summary');
     summaryContainer.innerHTML = '';
-    let allSelectedTexts = [];
+    const allSelectedTextsSet = new Set();
+    const params = new URLSearchParams(window.location.search);
+    for (const [key, value] of params.entries()) {
+        if (!value) continue;
+        let label = '';
+        let formattedValue = decodeURIComponent(value.replace(/\+/g, ' '));
+
+        if (key.includes('type_sector')) label = 'Type/Sector';
+        else if (key.includes('dynamic_field_1')) label = 'Animal Type';
+        else if (key.includes('dynamic_field_2')) label = 'Tasks';
+        else if (key.includes('gender')) label = 'Gender';
+        else if (key.includes('availability')) label = 'Availability';
+        else if (key.includes('age')) label = 'Age';
+        else if (key.includes('years_of_experience')) label = 'Experience';
+        else if (key.includes('us_driving_license')) label = 'US Driving License';
+        else if (key.includes('visa')) label = 'Visa';
+        else if (key.includes('explanation_video')) label = 'Video';
+        else label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+        if (key.includes('availability')) {
+            const from = params.get('availability_from') || '';
+            const to = params.get('availability_to') || '';
+            if (from && to) formattedValue = `${from} to ${to}`;
+            else if (from) formattedValue = `From ${from}`;
+            else if (to) formattedValue = `To ${to}`;
+        }
+
+        if (key.includes('age_min') || key.includes('age_max')) {
+            const min = params.get('age_min') || '';
+            const max = params.get('age_max') || '';
+            if (min && max) formattedValue = `${min} - ${max}`;
+            else if (min) formattedValue = `Min ${min}`;
+            else if (max) formattedValue = `Max ${max}`;
+        }
+
+        if (key.includes('years_of_experience')) {
+            const min = params.get('years_of_experience_min') || '';
+            const max = params.get('years_of_experience_max') || '';
+            if (min && max) formattedValue = `${min} - ${max}`;
+            else if (min) formattedValue = `Min ${min}`;
+            else if (max) formattedValue = `Max ${max}`;
+        }
+
+        allSelectedTextsSet.add(`${label}: ${formattedValue}`);
+    }
     const experienceSelects = document.querySelectorAll('select[id$="id_dynamic_field_1"], select[id$="id_dynamic_field_2"], select[id$="id_type_sector"]');
     experienceSelects.forEach(select => {
         const selectedOptions = Array.from(select.selectedOptions)
             .map(opt => opt.text.trim())
             .filter(text => text && text !== 'Please select...');
-        allSelectedTexts = allSelectedTexts.concat(selectedOptions);
+        if (selectedOptions.length > 0) {
+            let labelText = '';
+            const fieldId = select.getAttribute('id');
+            const labelEl = document.querySelector(`label[for="${fieldId}"]`);
+            if (labelEl) {
+                labelText = labelEl.textContent.trim().replace(':', '');
+            } else {
+                if (select.name.includes('type_sector')) labelText = 'Type';
+                else if (select.name.includes('dynamic_field_1')) labelText = 'Animal Type';
+                else if (select.name.includes('dynamic_field_2')) labelText = 'Tasks';
+                else labelText = 'Filter';
+            }
+            allSelectedTextsSet.add(`${labelText}: ${selectedOptions.join(', ')}`);
+        }
     });
     const randomFilterRows = document.querySelectorAll('#dynamic-random-filters .filter-row');
-
     randomFilterRows.forEach(row => {
         const selectFilter = row.querySelector('select[name="random_filter"]');
         const filterLabel = selectFilter?.options[selectFilter.selectedIndex]?.text?.trim();
@@ -629,32 +684,26 @@ function updateCollapseSummary() {
             const toInput = row.querySelector(`input[name^="availability_to_"]`);
             const fromVal = fromInput?.value;
             const toVal = toInput?.value;
-
             if (fromVal && toVal) valueText = `${fromVal} to ${toVal}`;
             else if (fromVal) valueText = `From ${fromVal}`;
             else if (toVal) valueText = `To ${toVal}`;
-        }
-        if (selectFilter.value === 'age' || selectFilter.value === 'years_of_experience') {
+        } else if (['age', 'years_of_experience'].includes(selectFilter.value)) {
             const minInput = row.querySelector(`input[name^="${selectFilter.value}_min_"]`);
             const maxInput = row.querySelector(`input[name^="${selectFilter.value}_max_"]`);
             const minVal = minInput?.value;
             const maxVal = maxInput?.value;
-
             if (minVal && maxVal) valueText = `${minVal} - ${maxVal}`;
             else if (minVal) valueText = `Min ${minVal}`;
             else if (maxVal) valueText = `Max ${maxVal}`;
-        }
-        if (selectFilter.value === 'exclude_physical_limitations') {
+        } else if (selectFilter.value === 'exclude_physical_limitations') {
             const questionSelect = row.querySelector(`select[name^="physical_limitation_question_"]`);
             const answerSelect = row.querySelector(`#physical-yesno-container-${selectFilter.getAttribute('onchange').match(/\d+/)?.[0]} select`);
             const questionText = questionSelect?.options[questionSelect.selectedIndex]?.text?.trim();
             const answerText = answerSelect?.options[answerSelect.selectedIndex]?.text?.trim();
-
             if (questionText && answerText) {
                 valueText = `${questionText}: ${answerText}`;
             }
-        }
-        if (!valueText) {
+        } else {
             const selectsAndInputs = row.querySelectorAll('.col-md-6 select, .col-md-6 input');
             selectsAndInputs.forEach(input => {
                 if (input.tagName === 'SELECT') {
@@ -670,17 +719,15 @@ function updateCollapseSummary() {
         }
 
         if (valueText) {
-            allSelectedTexts.push(`${filterLabel}: ${valueText}`);
-        } else {
-            
+            allSelectedTextsSet.add(`${filterLabel}: ${valueText}`);
         }
     });
-    if (allSelectedTexts.length > 0) {
+    if (allSelectedTextsSet.size > 0) {
         const label = document.createElement('strong');
         label.textContent = 'Active filters: ';
         summaryContainer.appendChild(label);
 
-        allSelectedTexts.forEach(text => {
+        allSelectedTextsSet.forEach(text => {
             const pill = document.createElement("span");
             pill.textContent = text;
             pill.style.display = "inline-block";
@@ -696,6 +743,8 @@ function updateCollapseSummary() {
         });
     }
 }
+
+document.addEventListener("DOMContentLoaded", updateCollapseSummary);
 
 function addRandomFilter() {
     const container = document.getElementById("dynamic-random-filters");
@@ -748,19 +797,19 @@ function handleFilterChange(selectEl, uniqueId) {
     const selectedValue = selectEl.value;
     let html = "";
     switch (selectedValue) {
-            case "availability":
-            html = `
-                <div class="row">
-                    <div class="col">
-                        <label class="form-label gray-color">{% translate "Availability From" %}</label>
-                        <input type="date" class="form-control" name="availability_from_${uniqueId}" onchange="updateCollapseSummary()" />
-                    </div>
-                    <div class="col">
-                        <label class="form-label gray-color">{% translate "Availability To" %}</label>
-                        <input type="date" class="form-control" name="availability_to_${uniqueId}" onchange="updateCollapseSummary()" />
-                    </div>
-                </div>`;
-            break;
+        case "availability":
+        html = `
+            <div class="row">
+                <div class="col">
+                    <label class="form-label gray-color">{% translate "Availability From" %}</label>
+                    <input type="date" class="form-control" name="availability_from_${uniqueId}" onchange="updateCollapseSummary()" />
+                </div>
+                <div class="col">
+                    <label class="form-label gray-color">{% translate "Availability To" %}</label>
+                    <input type="date" class="form-control" name="availability_to_${uniqueId}" onchange="updateCollapseSummary()" />
+                </div>
+            </div>`;
+        break;
 
         case "years_of_experience":
         case "age":
@@ -883,8 +932,6 @@ function handleFilterChange(selectEl, uniqueId) {
                     </select>
                 </div>`;
             break;
-                
-
         default:
             html = "";
     }
@@ -925,11 +972,8 @@ function handleLanguageProficiencyChange(selectEl, uniqueId) {
     } else {
         videoContainer.innerHTML = '';
     }
-
     updateCollapseSummary();
 }
-
-
 function removeFilterRow(button) {
     const row = button.closest(".filter-row");
     if (row) row.remove();

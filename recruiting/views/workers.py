@@ -91,7 +91,22 @@ class WorkerListView(View):
             ).values_list('user_id', flat=True).distinct()
 
             workers = workers.filter(id__in=h2b_user_ids)
+        
+        # Filter: Visa
+        visa_filter = next((v for k, v in params.items() if k.startswith("visa_") and v), None)
+        if visa_filter:
+            if visa_filter.lower() == 'yes':
+                workers = workers.filter(documents__kind='visa').exclude(documents__path__isnull=True).exclude(documents__path__exact='')
+            elif visa_filter.lower() == 'no':
+                workers = workers.exclude(documents__kind='visa', documents__path__isnull=False).exclude(documents__kind='visa', documents__path__exact='')
 
+        # Filter: Explanation Video
+        video_filter = next((v for k, v in params.items() if k.startswith("explanation_video_") and v), None)
+        if video_filter:
+            if video_filter.lower() == 'yes':
+                workers = workers.filter(documents__kind='explanation_video').exclude(documents__path__isnull=True).exclude(documents__path__exact='')
+            elif video_filter.lower() == 'no':
+                workers = workers.exclude(documents__kind='explanation_video', documents__path__isnull=False).exclude(documents__kind='explanation_video', documents__path__exact='')
 
 
         # Filter by US Driving License
