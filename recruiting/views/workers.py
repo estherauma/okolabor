@@ -240,233 +240,10 @@ class WorkerListView(View):
             })
        
         worker_form = WorkerCreateForm()
-        
-        shortlisted_assignments = WorkAssignment.objects.filter(
-            status='assigned'
-        ).select_related('worker', 'role', 'work_request')
-
-        shortlisted_workers = []
-        seen_worker_ids = set()
-        for assignment in shortlisted_assignments:
-            worker = assignment.worker
-            if worker and worker.id not in seen_worker_ids:
-                seen_worker_ids.add(worker.id)
-                shortlisted_workers.append(worker)
-
-        shortlisted_worker_data = []
-
-        for worker in shortlisted_workers:
-            profile_completion = calculate_profile_completion(worker)
-            worker_details = get_worker_preferences(worker)
-            years_of_experience = calculate_total_experience(worker)
-            worker.profile_completion_percentage = profile_completion
-
-            latest_assignment = WorkAssignment.objects.filter(
-                worker=worker
-            ).select_related('role', 'work_request').order_by('-assigned_date').first()
-
-            status = latest_assignment.status if latest_assignment else None
-            work_request_name = (
-                latest_assignment.work_request.name
-                if latest_assignment and latest_assignment.work_request else None
-            )
-            role_name = (
-                latest_assignment.role.title
-                if latest_assignment and latest_assignment.role else None
-            )
-
-            for key, value in worker_details.items():
-                setattr(worker, key, value)
-
-            shortlisted_worker_data.append({
-                'id': worker.id,
-                'firstname': worker.first_name,
-                'lastname': worker.last_name,
-                'email': worker.email,
-                'profile_completion': profile_completion,
-                'years_of_experience': years_of_experience,
-                'work_request': work_request_name,
-                'role': role_name,
-                'status': status,
-                **worker_details
-            })
-
-            
-        offersent_assignments = WorkAssignment.objects.filter(
-            status='offersent'
-        ).select_related('worker', 'role', 'work_request')
-
-        offersent_workers = []
-        seen_worker_ids = set()
-        for assignment in offersent_assignments:
-            worker = assignment.worker
-            if (
-                worker and
-                worker.id not in seen_worker_ids and
-                not worker.email.startswith("deleted_")
-            ):
-                seen_worker_ids.add(worker.id)
-                offersent_workers.append(worker)
-
-        offersent_worker_data = []
-        for worker in offersent_workers:
-            profile_completion = calculate_profile_completion(worker)
-            worker_details = get_worker_preferences(worker)
-            years_of_experience = calculate_total_experience(worker)
-            worker.profile_completion_percentage = profile_completion
-
-            latest_assignment = WorkAssignment.objects.filter(
-                worker=worker
-            ).select_related('role', 'work_request').order_by('-assigned_date').first()
-
-            status = latest_assignment.status if latest_assignment else None
-
-            print(status,"status")
-            work_request_name = (
-                latest_assignment.work_request.name
-                if latest_assignment and latest_assignment.work_request else None
-            )
-            role_name = (
-                latest_assignment.role.title
-                if latest_assignment and latest_assignment.role else None
-            )
-
-            offersent_worker_data.append({
-                'id': worker.id,
-                'firstname': worker.first_name,
-                'lastname': worker.last_name,
-                'email': worker.email,
-                'profile_completion': profile_completion,
-                'years_of_experience': years_of_experience,
-                'work_request': work_request_name,
-                'role': role_name,
-                'status': status,
-                **worker_details
-            })
-
-            
-        confirmed_assignments = WorkAssignment.objects.filter(
-            status='confirmed'
-        ).select_related('worker', 'role', 'work_request')
-
-        confirmed_workers = []
-        seen_worker_ids = set()
-        for assignment in confirmed_assignments:
-            worker = assignment.worker
-            if worker and worker.id not in seen_worker_ids:
-                seen_worker_ids.add(worker.id)
-                confirmed_workers.append(worker)
-
-        confirmed_worker_data = []
-
-        for worker in confirmed_workers:
-            profile_completion = calculate_profile_completion(worker)
-            worker_details = get_worker_preferences(worker)
-            years_of_experience = calculate_total_experience(worker)
-            worker.profile_completion_percentage = profile_completion
-
-            latest_assignment = WorkAssignment.objects.filter(
-                worker=worker
-            ).select_related('role', 'work_request').order_by('-assigned_date').first()
-
-            work_request_name = (
-                latest_assignment.work_request.name
-                if latest_assignment and latest_assignment.work_request else None
-            )
-            role_name = (
-                latest_assignment.role.title
-                if latest_assignment and latest_assignment.role else None
-            )
-            status = latest_assignment.status if latest_assignment else None
-
-            worker.latest_status = status
-
-            for key, value in worker_details.items():
-                setattr(worker, key, value)
-
-            confirmed_worker_data.append({
-                'id': worker.id,
-                'firstname': worker.first_name,
-                'lastname': worker.last_name,
-                'email': worker.email,
-                'profile_completion': profile_completion,
-                'years_of_experience': years_of_experience,
-                'work_request': work_request_name,
-                'role': role_name,
-                'status': status,
-                **worker_details
-            })
-
-            
-        rejected_assignments = WorkAssignment.objects.filter(
-            status='rejected'
-        ).select_related('worker', 'role', 'work_request')
-
-        rejected_workers = []
-        seen_worker_ids = set()
-        for assignment in rejected_assignments:
-            worker = assignment.worker
-            if worker and worker.id not in seen_worker_ids:
-                seen_worker_ids.add(worker.id)
-                rejected_workers.append(worker)
-
-        rejected_worker_data = []
-
-        for worker in rejected_workers:
-            profile_completion = calculate_profile_completion(worker)
-            worker_details = get_worker_preferences(worker)
-            years_of_experience = calculate_total_experience(worker)
-            worker.profile_completion_percentage = profile_completion
-
-            latest_assignment = WorkAssignment.objects.filter(
-                worker=worker
-            ).select_related('role', 'work_request').order_by('-assigned_date').first()
-
-            status = latest_assignment.status if latest_assignment else None
-            work_request_name = (
-                latest_assignment.work_request.name
-                if latest_assignment and latest_assignment.work_request else None
-            )
-            role_name = (
-                latest_assignment.role.title
-                if latest_assignment and latest_assignment.role else None
-            )
-
-            worker.latest_status = status
-
-            for key, value in worker_details.items():
-                setattr(worker, key, value)
-
-            rejected_worker_data.append({
-                'id': worker.id,
-                'firstname': worker.first_name,
-                'lastname': worker.last_name,
-                'email': worker.email,
-                'profile_completion': profile_completion,
-                'years_of_experience': years_of_experience,
-                'work_request': work_request_name,
-                'role': role_name,
-                'status': status,
-                **worker_details
-            })
-
         workers_length = len(workers)
-        shortlisted_workers_length = len(shortlisted_workers)
-        offersent_workers_length = len(offersent_workers)
-        confirmed_workers_length = len(confirmed_workers)
-        rejected_workers_length = len(rejected_workers)
-
-        print(shortlisted_workers,"shortlisted_workers")
-        print(offersent_workers,"offersent_workers")
-        print(confirmed_workers,"confirmed_workers")
-        print(rejected_workers,"rejected_workers")
 
         context = {
             'workers': workers,
-            'shortlisted_workers':shortlisted_worker_data,
-            'offersent_workers':offersent_worker_data,
-            'confirmed_workers':confirmed_worker_data,
-            'rejected_workers':rejected_worker_data,
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
             'form': form,
             'work_assign_form': work_assign_form,
@@ -476,10 +253,6 @@ class WorkerListView(View):
             'status_choices': WorkAssignment.STATUS_CHOICES,
             'worker_form': worker_form,
             'workers_count': workers_length,
-            'shortlisted_count': shortlisted_workers_length,
-            'offersent_count': offersent_workers_length,
-            'confirmed_count': confirmed_workers_length,
-            'rejected_count': rejected_workers_length,
             'breadcrumbs': [
                         {'name': _('workerListHome'), 'url': reverse('index')},
                         {'name': _('workerListWorkers'), 'url': None},
@@ -514,54 +287,66 @@ class WorkerListView(View):
 
         return JsonResponse({'success': 'Workers assigned successfully!'})
 
-
 class FilteredWorkersAjaxView(View):
     def get(self, request):
         work_request_id = request.GET.get("work_request")
         role_id = request.GET.get("role")
-        status = request.GET.get("status")  # optional, e.g., 'assigned'
-
-        print(status,"status")
+        status = request.GET.get("status")
 
         if not work_request_id or not role_id:
             return JsonResponse({'error': 'Missing work request or role'}, status=400)
 
-        # Get filtered assignments
-        assignments = WorkAssignment.objects.filter(
+        # Fetch all assignments for the given work_request and role
+        all_assignments = WorkAssignment.objects.filter(
             work_request_id=work_request_id,
-            role_id=role_id,
-            status=status
-        )
+            role_id=role_id
+        ).select_related('worker', 'role', 'work_request')
 
-        assignments = assignments.select_related('worker', 'role', 'work_request')
+        # Separate by status
+        status_counts = {
+            'assigned': 0,
+            'offersent': 0,
+            'confirmed': 0,
+            'rejected': 0
+        }
 
         workers = []
         seen_worker_ids = set()
-        for assignment in assignments:
-            worker = assignment.worker
-            if worker and worker.id not in seen_worker_ids:
-                seen_worker_ids.add(worker.id)
 
-                profile_completion = calculate_profile_completion(worker)
-                worker_details = get_worker_preferences(worker)
-                experience = calculate_total_experience(worker)
+        for assignment in all_assignments:
+            current_status = assignment.status
+            if current_status in status_counts:
+                status_counts[current_status] += 1
 
-                workers.append({
-                    'id': worker.id,
-                    'name': f"{worker.first_name} {worker.last_name}" if worker.first_name and worker.last_name else worker.email,
-                    'email': worker.email,
-                    'profile_completion': profile_completion,
-                    'experience': experience,
-                    'town': worker_details.get('town', 'Not Provided'),
-                    'work_experience': worker_details.get('work_experience', 'Not Provided'),
-                    'english_proficiency': worker_details.get('english_proficiency', 'Not Provided'),
-                    'location_preference': worker_details.get('location_preference', 'Not Provided'),
-                    'work_request': assignment.work_request.name if assignment.work_request else None,
-                    'role': assignment.role.title if assignment.role else None,
-                    'status': assignment.status,
-                })
+            if current_status == status:  # Filtered workers for selected tab
+                worker = assignment.worker
+                if worker and worker.id not in seen_worker_ids:
+                    seen_worker_ids.add(worker.id)
 
-        return JsonResponse({'workers': workers})
+                    profile_completion = calculate_profile_completion(worker)
+                    worker_details = get_worker_preferences(worker)
+                    experience = calculate_total_experience(worker)
+
+                    workers.append({
+                        'id': worker.id,
+                        'name': f"{worker.first_name} {worker.last_name}" if worker.first_name and worker.last_name else worker.email,
+                        'email': worker.email,
+                        'profile_completion': profile_completion,
+                        'experience': experience,
+                        'town': worker_details.get('town', 'Not Provided'),
+                        'work_experience': worker_details.get('work_experience', 'Not Provided'),
+                        'english_proficiency': worker_details.get('english_proficiency', 'Not Provided'),
+                        'location_preference': worker_details.get('location_preference', 'Not Provided'),
+                        'work_request': assignment.work_request.name if assignment.work_request else None,
+                        'role': assignment.role.title if assignment.role else None,
+                        'status': assignment.status,
+                    })
+
+        return JsonResponse({
+            'workers': workers,
+            'counts': status_counts
+        })
+
 
     
         
