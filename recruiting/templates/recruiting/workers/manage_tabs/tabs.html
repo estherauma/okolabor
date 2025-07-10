@@ -25,30 +25,26 @@
 {% block body %}
 
 
-<div class="container-fluid" style="position: relative; height: auto">
-    <div
-        style="background-color:#D9D9D9; cursor: pointer; border-radius: 0.5rem;"
-        data-bs-toggle="collapse"
-        data-bs-target="#collapseCard"
-        aria-expanded="false"
-        aria-controls="collapseCard"
+   <div class="container-fluid" style="position: relative; height: auto">
+            <div
+            style="background-color:#D9D9D9; cursor: pointer; border-radius: 0.5rem;"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapseCard"
+            aria-expanded="false"
+            aria-controls="collapseCard"
         >
             <div class="d-flex justify-content-between align-items-center my-2">
-                <button
-                    class="btn green-color-workers"
-                    style="pointer-events: none;"
-                >
+                <button class="btn green-color-workers" style="pointer-events: none;">
                     <i class="fa fa-filter" aria-hidden="true"></i>
                     {% translate "workersListAdvancedFilter" %}
                 </button>
-                <button
-                    class="btn green-color-workers toggle-sign collapsed"
-                    type="button"
-                    style="pointer-events: none;"
-                >
+                <div id="selected-filters-summary" class="d-flex flex-wrap align-items-center"></div>  <!-- ⬅️ New pills will appear here -->
+                <div id="active-filters-list" style="margin-top: 0.5rem;"></div>
+                <button class="btn green-color-workers toggle-sign collapsed" type="button" style="pointer-events: none;">
                     <i class="bi bi-caret-down-fill fs-4"></i>
                 </button>
             </div>
+            
         </div>
     <div class="collapse" id="collapseCard">
         <div class="card offwhite-color card-body">
@@ -63,20 +59,23 @@
             </span>
     
             <div id="form-container">
+                <!-- Combined Filter Form -->
                 <form method="get" id="filter-form">
+                    <!-- Dynamic Filter Inputs -->
                     <div id="filter-inputs-container">
                         <div class="job-experience-form">
                             <div class="row align-items-center">
                                 {% for field in form %}
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label class="form-label gray-color text" for="{{ field.id_for_label }}">
-                                            {% translate field.label %}
-                                        </label>
-                                        {{ field }}
-                                    </div>
-                                </div>
-                                {% endfor %}
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label class="form-label gray-color text" for="{{ field.id_for_label }}">
+                                                    {% translate field.label %}
+                                                </label>
+                                                {{ field }}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+
                                 <div class="col-auto">
                                     <button class="btn" type="button" onclick="removeForm(this)">
                                         <span class="sign medium-font">{% translate "workersListX" %}</span>
@@ -86,6 +85,7 @@
                         </div>
                     </div>
             
+                    <!-- Add Another Filter Button -->
                     <button class="btn light-green-button min-content-width mt-3" type="button" onclick="addAnotherExperience()">
                         
 
@@ -125,7 +125,8 @@
                                     <option value="language_proficiency">{% translate "Language Proficiency" %}</option>
                                     <option value="work_preference_location">{% translate "Work Preference Location" %}</option>
                                     <option value="work_preference_type">{% translate "Work Preference Type" %}</option>
-
+                                    <option value="visa">{% translate "Visa" %}</option>
+                                    <option value="explanation_video">{% translate "Explanation Video" %}</option>
                                 </select>
                             </div>
                         </div>
@@ -153,7 +154,7 @@
                 </div>
                 </form>
             
-           
+            <!-- Hidden template for dynamic form cloning -->
             <div id="form-template" style="display: none;">
                 <div class="job-experience-form">
                     <div class="row align-items-center">
@@ -175,7 +176,7 @@
                     </div>
                 </div>
             </div>  
-    </div>
+    </div>    
 </div>
    
     
@@ -318,6 +319,7 @@ function applyColumnVisibilityFromStorage(table) {
 document.addEventListener('DOMContentLoaded', () => {
     const tableId = '#basic-datatable-workers';
 
+    // Destroy any existing DataTable instance before re-initializing
     if ($.fn.DataTable.isDataTable(tableId)) {
         $(tableId).DataTable().clear().destroy();
     }
@@ -406,12 +408,166 @@ $(document).ready(function () {
 
 </script>
 <script>
+function updateCollapseSummary() {
+    const summaryContainer = document.getElementById('selected-filters-summary');
+    summaryContainer.innerHTML = '';
+
+    const allSelectedTextsSet = new Set();
+
+    // ✅ 1. Extract filters from URL parameters
+    const params = new URLSearchParams(window.location.search);
+    for (const [key, value] of params.entries()) {
+        if (!value) continue;
+
+        let label = '';
+        let formattedValue = decodeURIComponent(value.replace(/\+/g, ' '));
+
+        if (key.includes('type_sector')) label = 'Type/Sector';
+        else if (key.includes('dynamic_field_1')) label = 'Animal Type';
+        else if (key.includes('dynamic_field_2')) label = 'Tasks';
+        else if (key.includes('gender')) label = 'Gender';
+        else if (key.includes('availability')) label = 'Availability';
+        else if (key.includes('age')) label = 'Age';
+        else if (key.includes('years_of_experience')) label = 'Experience';
+        else if (key.includes('us_driving_license')) label = 'US Driving License';
+        else if (key.includes('visa')) label = 'Visa';
+        else if (key.includes('explanation_video')) label = 'Video';
+        else label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+        // Special handling for range fields like availability, age, years_of_experience
+        if (key.includes('availability')) {
+            const from = params.get('availability_from') || '';
+            const to = params.get('availability_to') || '';
+            if (from && to) formattedValue = `${from} to ${to}`;
+            else if (from) formattedValue = `From ${from}`;
+            else if (to) formattedValue = `To ${to}`;
+        }
+
+        if (key.includes('age_min') || key.includes('age_max')) {
+            const min = params.get('age_min') || '';
+            const max = params.get('age_max') || '';
+            if (min && max) formattedValue = `${min} - ${max}`;
+            else if (min) formattedValue = `Min ${min}`;
+            else if (max) formattedValue = `Max ${max}`;
+        }
+
+        if (key.includes('years_of_experience')) {
+            const min = params.get('years_of_experience_min') || '';
+            const max = params.get('years_of_experience_max') || '';
+            if (min && max) formattedValue = `${min} - ${max}`;
+            else if (min) formattedValue = `Min ${min}`;
+            else if (max) formattedValue = `Max ${max}`;
+        }
+
+        allSelectedTextsSet.add(`${label}: ${formattedValue}`);
+    }
+
+    // ✅ 2. Your Existing Logic: Read currently selected form fields
+    const experienceSelects = document.querySelectorAll('select[id$="id_dynamic_field_1"], select[id$="id_dynamic_field_2"], select[id$="id_type_sector"]');
+    experienceSelects.forEach(select => {
+        const selectedOptions = Array.from(select.selectedOptions)
+            .map(opt => opt.text.trim())
+            .filter(text => text && text !== 'Please select...');
+
+        if (selectedOptions.length > 0) {
+            let labelText = '';
+
+            const fieldId = select.getAttribute('id');
+            const labelEl = document.querySelector(`label[for="${fieldId}"]`);
+
+            if (labelEl) {
+                labelText = labelEl.textContent.trim().replace(':', '');
+            } else {
+                if (select.name.includes('type_sector')) labelText = 'Type';
+                else if (select.name.includes('dynamic_field_1')) labelText = 'Animal Type';
+                else if (select.name.includes('dynamic_field_2')) labelText = 'Tasks';
+                else labelText = 'Filter';
+            }
+            allSelectedTextsSet.add(`${labelText}: ${selectedOptions.join(', ')}`);
+        }
+    });
+
+    const randomFilterRows = document.querySelectorAll('#dynamic-random-filters .filter-row');
+    randomFilterRows.forEach(row => {
+        const selectFilter = row.querySelector('select[name="random_filter"]');
+        const filterLabel = selectFilter?.options[selectFilter.selectedIndex]?.text?.trim();
+        if (!filterLabel || filterLabel === 'Choose a filter') return;
+
+        let valueText = '';
+
+        if (selectFilter.value === 'availability') {
+            const fromInput = row.querySelector(`input[name^="availability_from_"]`);
+            const toInput = row.querySelector(`input[name^="availability_to_"]`);
+            const fromVal = fromInput?.value;
+            const toVal = toInput?.value;
+            if (fromVal && toVal) valueText = `${fromVal} to ${toVal}`;
+            else if (fromVal) valueText = `From ${fromVal}`;
+            else if (toVal) valueText = `To ${toVal}`;
+        } else if (['age', 'years_of_experience'].includes(selectFilter.value)) {
+            const minInput = row.querySelector(`input[name^="${selectFilter.value}_min_"]`);
+            const maxInput = row.querySelector(`input[name^="${selectFilter.value}_max_"]`);
+            const minVal = minInput?.value;
+            const maxVal = maxInput?.value;
+            if (minVal && maxVal) valueText = `${minVal} - ${maxVal}`;
+            else if (minVal) valueText = `Min ${minVal}`;
+            else if (maxVal) valueText = `Max ${maxVal}`;
+        } else if (selectFilter.value === 'exclude_physical_limitations') {
+            const questionSelect = row.querySelector(`select[name^="physical_limitation_question_"]`);
+            const answerSelect = row.querySelector(`#physical-yesno-container-${selectFilter.getAttribute('onchange').match(/\d+/)?.[0]} select`);
+            const questionText = questionSelect?.options[questionSelect.selectedIndex]?.text?.trim();
+            const answerText = answerSelect?.options[answerSelect.selectedIndex]?.text?.trim();
+            if (questionText && answerText) {
+                valueText = `${questionText}: ${answerText}`;
+            }
+        } else {
+            const selectsAndInputs = row.querySelectorAll('.col-md-6 select, .col-md-6 input');
+            selectsAndInputs.forEach(input => {
+                if (input.tagName === 'SELECT') {
+                    const selectedOptions = Array.from(input.selectedOptions)
+                        .map(opt => opt.text.trim())
+                        .filter(text => text && text !== 'Please select...');
+                    if (selectedOptions.length > 0) valueText = selectedOptions.join(', ');
+                } else if (input.tagName === 'INPUT') {
+                    const val = input.value.trim();
+                    if (val) valueText = val;
+                }
+            });
+        }
+
+        if (valueText) {
+            allSelectedTextsSet.add(`${filterLabel}: ${valueText}`);
+        }
+    });
+
+    // ✅ 3. Render pills without duplicates
+    if (allSelectedTextsSet.size > 0) {
+        const label = document.createElement('strong');
+        label.textContent = 'Active filters: ';
+        summaryContainer.appendChild(label);
+
+        allSelectedTextsSet.forEach(text => {
+            const pill = document.createElement("span");
+            pill.textContent = text;
+            pill.style.display = "inline-block";
+            pill.style.padding = "4px 10px";
+            pill.style.margin = "2px 4px";
+            pill.style.fontSize = "0.75rem";
+            pill.style.color = "#1b4332";
+            pill.style.border = "1px solid #74c69d";
+            pill.style.borderRadius = "999px";
+            pill.style.backgroundColor = "#d8f3dc";
+            pill.style.boxShadow = "0 1px 2px rgba(0, 0, 0, 0.05)";
+            summaryContainer.appendChild(pill);
+        });
+    }
+}
+
+document.addEventListener("DOMContentLoaded", updateCollapseSummary);
+
 function addRandomFilter() {
     const container = document.getElementById("dynamic-random-filters");
-
     const row = document.createElement("div");
     row.classList.add("row", "align-items-center", "filter-row", "mb-2");
-
     const uniqueId = Date.now();
     row.innerHTML = `
         <div class="col-md-4 col-sm-6 col-xs-6">
@@ -419,7 +575,7 @@ function addRandomFilter() {
                 <label class="form-label gray-color">
                     {% translate "Select Filter" %}
                 </label>
-                <select class="form-control" name="random_filter" onchange="handleFilterChange(this, ${uniqueId})">
+                <select class="form-control" name="random_filter" onchange="handleFilterChange(this, ${uniqueId});updateCollapseSummary();">
                     <option value="">{% translate "Choose a filter" %}</option>
                     <option value="years_of_experience">{% translate "Years of Experience" %}</option>
                     <option value="references">{% translate "References" %}</option>
@@ -437,6 +593,8 @@ function addRandomFilter() {
                     <option value="language_proficiency">{% translate "Language Proficiency" %}</option>
                     <option value="work_preference_location">{% translate "Work Preference Location" %}</option>
                     <option value="work_preference_type">{% translate "Work Preference Type" %}</option>
+                    <option value="visa">{% translate "Visa" %}</option>
+                    <option value="explanation_video">{% translate "Explanation Video" %}</option>
                 </select>
 
             </div>
@@ -448,27 +606,25 @@ function addRandomFilter() {
             </button>
         </div>
     `;
-
     container.appendChild(row);
+    updateCollapseSummary();
 }
 
 function handleFilterChange(selectEl, uniqueId) {
     const extraFieldsContainer = document.getElementById(`extra-fields-${uniqueId}`);
     const selectedValue = selectEl.value;
-
     let html = "";
-
     switch (selectedValue) {
-        case "availability":
+            case "availability":
             html = `
                 <div class="row">
                     <div class="col">
                         <label class="form-label gray-color">{% translate "Availability From" %}</label>
-                        <input type="date" class="form-control" name="availability_from_${uniqueId}" />
+                        <input type="date" class="form-control" name="availability_from_${uniqueId}" onchange="updateCollapseSummary()" />
                     </div>
                     <div class="col">
                         <label class="form-label gray-color">{% translate "Availability To" %}</label>
-                        <input type="date" class="form-control" name="availability_to_${uniqueId}" />
+                        <input type="date" class="form-control" name="availability_to_${uniqueId}" onchange="updateCollapseSummary()" />
                     </div>
                 </div>`;
             break;
@@ -479,11 +635,11 @@ function handleFilterChange(selectEl, uniqueId) {
                 <div class="row">
                     <div class="col">
                         <label class="form-label gray-color">{% translate "Min" %}</label>
-                        <input type="number" class="form-control" name="${selectedValue}_min_${uniqueId}" min="0" />
+                        <input type="number" class="form-control" name="${selectedValue}_min_${uniqueId}" min="0" onchange="updateCollapseSummary()" />
                     </div>
                     <div class="col">
                         <label class="form-label gray-color">{% translate "Max" %}</label>
-                        <input type="number" class="form-control" name="${selectedValue}_max_${uniqueId}" min="0" />
+                        <input type="number" class="form-control" name="${selectedValue}_max_${uniqueId}" min="0" onchange="updateCollapseSummary()" />
                     </div>
                 </div>`;
             break;
@@ -492,7 +648,7 @@ function handleFilterChange(selectEl, uniqueId) {
             html = `
                 <div class="form-group">
                     <label class="form-label gray-color">{% translate "Select Gender" %}</label>
-                    <select class="form-control" name="gender_${uniqueId}">
+                    <select class="form-control" name="gender_${uniqueId}" onchange="updateCollapseSummary()>
                         <option value="">{% translate "Select" %}</option>
                         <option value="male">{% translate "Male" %}</option>
                         <option value="female">{% translate "Female" %}</option>
@@ -501,24 +657,24 @@ function handleFilterChange(selectEl, uniqueId) {
             break;
 
         case "work_preference_location":
-            html = `
-                <div class="form-group">
-                    <label class="form-label gray-color">{% translate "Select Work Preference Location" %}</label>
-                    <select class="form-control" name="work_preference_location_${uniqueId}">
-                        <option value="">{% translate "Select Country" %}</option>
-                        <option value="usa">USA</option>
-                        <option value="mexico">Mexico</option>
-                        <option value="canada">Canada</option>
-                        <option value="australia">Australia</option>
-                    </select>
-                </div>`;
-            break;
+                html = `
+                    <div class="form-group">
+                        <label class="form-label gray-color">{% translate "Select Work Preference Location" %}</label>
+                        <select class="form-control" name="work_preference_location_${uniqueId}" multiple onchange="updateCollapseSummary()">
+                            <option value="usa">USA</option>
+                            <option value="mexico">Mexico</option>
+                            <option value="canada">Canada</option>
+                            <option value="australia">Australia</option>
+                        </select>
+                    </div>`;
+                break;
+
 
         case "exclude_physical_limitations":
             html = `
                 <div class="form-group">
                     <label class="form-label gray-color">{% translate "Select a Physical Limitation Question" %}</label>
-                    <select class="form-control" name="physical_limitation_question_${uniqueId}" onchange="handlePhysicalQuestionChange(this, ${uniqueId})">
+                    <select class="form-control" name="physical_limitation_question_${uniqueId}" onchange="handlePhysicalQuestionChange(this, ${uniqueId});updateCollapseSummary();">
                         <option value="">{% translate "Select" %}</option>
                         <option value="condition_limit">{% translate "Do you have any physical or mental condition that could limit you and should be considered for a labor intensive job?" %}</option>
                         <option value="injury_aggravation">{% translate "Have you suffered an injury that could be aggravated by intense physical activity?" %}</option>
@@ -535,7 +691,7 @@ function handleFilterChange(selectEl, uniqueId) {
             html = `
                 <div class="form-group">
                     <label class="form-label gray-color">{% translate "Select Work Preference Type" %}</label>
-                    <select class="form-control" name="work_preference_type_${uniqueId}">
+                    <select class="form-control" name="work_preference_type_${uniqueId}" onchange="updateCollapseSummary()">
                         <option value="">{% translate "Select Type" %}</option>
                         <option value="farm">Farm Work</option>
                         <option value="construction">Construction</option>
@@ -545,6 +701,36 @@ function handleFilterChange(selectEl, uniqueId) {
                 </div>`;
             break;
 
+        case "language_proficiency":
+            html = `
+                <div class="form-group">
+                    <label class="form-label gray-color">{% translate "Level of Proficiency" %}</label>
+                    <select class="form-control" name="language_proficiency_level_${uniqueId}" onchange="handleLanguageProficiencyChange(this, ${uniqueId}); updateCollapseSummary();">
+                        <option value="">{% translate "Select" %}</option>
+                        <option value="fluent">{% translate "Fluent" %}</option>
+                        <option value="medium">{% translate "Medium" %}</option>
+                        <option value="basic">{% translate "Basic" %}</option>
+                        <option value="none">{% translate "None" %}</option>
+                    </select>
+                </div>
+                <div class="form-group mt-2" id="language-video-container-${uniqueId}"></div>
+            `;
+            break;
+
+        case "visa":
+        case "explanation_video":
+            html = `
+                <div class="form-group">
+                    <label class="form-label gray-color">{% translate "Has" %} ${selectEl.options[selectEl.selectedIndex].text}?</label>
+                    <select class="form-control" name="${selectedValue}_${uniqueId}" onchange="updateCollapseSummary()">
+                        <option value="">{% translate "Select" %}</option>
+                        <option value="yes">{% translate "Yes" %}</option>
+                        <option value="no">{% translate "No" %}</option>
+                    </select>
+                </div>
+            `;
+            break;
+
         case "references":
         case "h2a_experience":
         case "h2b_experience":
@@ -552,13 +738,12 @@ function handleFilterChange(selectEl, uniqueId) {
         case "exclude_physical_limitations":
         case "profile":
         case "passport":
-        case "language_proficiency":
         case "us_driving_license":
         case "mx_us_driving_license":
             html = `
                 <div class="form-group">
                     <label class="form-label gray-color">{% translate "Has" %} ${selectEl.options[selectEl.selectedIndex].text}?</label>
-                    <select class="form-control" name="${selectedValue}_${uniqueId}">
+                    <select class="form-control" name="${selectedValue}_${uniqueId}" onchange="updateCollapseSummary()">
                         <option value="">{% translate "Select" %}</option>
                         <option value="yes">{% translate "Yes" %}</option>
                         <option value="no">{% translate "No" %}</option>
@@ -579,7 +764,7 @@ function handlePhysicalQuestionChange(selectEl, uniqueId) {
     if (selectEl.value) {
         yesNoContainer.innerHTML = `
             <label class="form-label gray-color">{% translate "Your Answer" %}</label>
-            <select class="form-control" name="${selectEl.value}_answer_${uniqueId}">
+            <select class="form-control" name="${selectEl.value}_answer_${uniqueId}" onchange="updateCollapseSummary()">
                 <option value="">{% translate "Select" %}</option>
                 <option value="yes">{% translate "Yes" %}</option>
                 <option value="no">{% translate "No" %}</option>
@@ -588,7 +773,29 @@ function handlePhysicalQuestionChange(selectEl, uniqueId) {
     } else {
         yesNoContainer.innerHTML = "";
     }
+    updateCollapseSummary();
 }
+
+function handleLanguageProficiencyChange(selectEl, uniqueId) {
+    const videoContainer = document.getElementById(`language-video-container-${uniqueId}`);
+    const selectedValue = selectEl.value;
+
+    if (selectedValue && selectedValue !== 'none') {
+        videoContainer.innerHTML = `
+            <label class="form-label gray-color">{% translate "Has video file?" %}</label>
+            <select class="form-control" name="language_video_${uniqueId}" onchange="updateCollapseSummary()">
+                <option value="">{% translate "Select" %}</option>
+                <option value="yes">{% translate "Yes" %}</option>
+                <option value="no">{% translate "No" %}</option>
+            </select>
+        `;
+    } else {
+        videoContainer.innerHTML = '';
+    }
+
+    updateCollapseSummary();
+}
+
 
 function removeFilterRow(button) {
     const row = button.closest(".filter-row");
@@ -598,6 +805,7 @@ function clearAllFilters() {
     const container = document.getElementById("dynamic-random-filters");
     container.innerHTML = '';
     addRandomFilter();
+    updateCollapseSummary();
 }
 document.addEventListener("DOMContentLoaded", () => {
     clearAllFilters();

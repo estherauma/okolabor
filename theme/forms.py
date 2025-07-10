@@ -282,20 +282,19 @@ class DynamicWorkExperienceForm(forms.Form):
     )
 
     # These are dynamic placeholders; values will be updated client-side via JavaScript
-    dynamic_field_1 = forms.ChoiceField(
-        choices=[],
-        required=False,
-        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_dynamic_field_1'}),
-        label=_(""),
+    dynamic_field_1 = forms.MultipleChoiceField(
+    choices=[],
+    required=False,
+    widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_dynamic_field_1'}),
+    label=_(""),
     )
 
-    dynamic_field_2 = forms.ChoiceField(
+    dynamic_field_2 = forms.MultipleChoiceField(
         choices=[],
         required=False,
-        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_dynamic_field_2'}),
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_dynamic_field_2'}),
         label=_(""),
     )
-
         
 class AdvancedFilterForm(forms.Form):
     choices = [
