@@ -184,6 +184,22 @@ class WorkRequestRoleForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'work_request': forms.Select(attrs={'class': 'form-control', 'readonly': True}),
         }
+        
+        labels = {
+            'title': _('addRoleTitle'),
+            'usdol_case_number': _('addRoleUsdolCaseNumber'),
+            'work_type': _('addRoleWorkType'),
+            'animal_types': _('addRoleAnimalTypes'),
+            'crop_types': _('addRoleCropTypes'),
+            'crop_job_types': _('addRoleCropJobTypes'),
+            'mechanic_job_types': _('addRoleMechanicJobTypes'),
+            'supervision_jobs_types': _('addRoleSupervisionJobsTypes'),
+            'responsibilities_types': _('addRoleResponsibilitiesTypes'),
+            'number_of_required_workers': _('addRoleNumberOfRequiredWorkers'),
+            'licensed_vehicle_operation_types': _('addRoleLicensedVehicleOperationTypes'),
+            'work_request': _('addRoleWorkRequest'),
+            'description': _('addRoleDescription'),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

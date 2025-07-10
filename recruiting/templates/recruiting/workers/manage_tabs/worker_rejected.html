@@ -1,0 +1,162 @@
+{% load i18n %}
+{% load user_role_tags %}
+{% load static %}
+
+<div class="tab-pane" id="tab5">
+  <!-- Modal -->
+  <div class="modal fade" id="columnSettingsModalTab5" tabindex="-1" aria-labelledby="columnSettingsModalLabelTab5" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="columnSettingsModalLabelTab5">{% translate "Select Columns to Display" %}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'Close' %}"></button>
+        </div>
+        <div class="modal-body">
+          <form id="column-settings-form">
+            {% for i in "12345678"|make_list %}
+            <div class="form-check">
+              <input class="form-check-input column-toggle" type="checkbox" value="{{ i }}" checked id="col-{{ i }}">
+              <label class="form-check-label" for="col-{{ i }}">
+                {% if i == "1" %}{% translate "workersListName" %}
+                {% elif i == "2" %}{% translate "workersListTown" %}
+                {% elif i == "3" %}{% translate "workersListProfileCompletion" %}
+                {% elif i == "4" %}{% translate "workersListExperience" %}
+                {% elif i == "5" %}{% translate "workersListEnglishProficiency" %}
+                {% elif i == "6" %}{% translate "workersListLocationPreference" %}
+                {% elif i == "7" %}{% translate "workersListOfferStatus" %}
+                {% elif i == "8" %}{% translate "workersListActions" %}
+                {% endif %}
+              </label>
+            </div>
+            {% endfor %}
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="display: none;">{% translate "Close" %}</button>
+          <button type="button" class="btn btn-primary" id="apply-column-settingsTab5" style="display: none;">{% translate "Apply" %}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+
+          <!-- Custom Toolbar -->
+          <div class="d-flex align-items-center justify-content-between flex-wrap mb-3 custom-toolbar">
+            <div></div>
+            <div class="flex-grow-1 d-flex justify-content-center">
+              <div id="customSearchContainerTab5" style="width: 100%; max-width: 400px;"></div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <div id="customSettingsContainerTab5"></div>
+              <div id="customLengthContainerTab5"></div>
+            </div>
+          </div>
+          <div id="datatable-controlsTab5" style="display: none;"></div>
+
+          <div class="table-responsive">
+            <table class="table text-nowrap border-bottom" id="basic-datatable-rejectedTab5">
+              <thead style="background-color: #7DBF96;">
+                <tr>
+                  <th>{% translate "workersListCheckbox" %}</th>
+                  <th class="col-name">{% translate "workersListName" %}</th>
+                  <th class="col-town">{% translate "workersListTown" %}</th>
+                  <th class="col-profile">{% translate "workersListProfileCompletion" %}</th>
+                  <th class="col-experience">{% translate "workersListExperience" %}</th>
+                  <th class="col-english">{% translate "workersListEnglishProficiency" %}</th>
+                  <th class="col-location">{% translate "workersListLocationPreference" %}</th>
+                  <th class="col-location">{% translate "workersListWorkRequest" %}</th>
+                  <th class="col-location">{% translate "workersWorkRequestRole" %}</th>
+                  <th class="col-offer">{% translate "workersListOfferStatus" %}</th>
+                </tr>
+              </thead>
+              <tbody>
+               
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% block scripts %}
+<script>
+  function applyColumnVisibilityFromStorageTab5(table) {
+    const savedSettings = JSON.parse(localStorage.getItem('columnVisibilitySettingsTab5')) || {};
+    const columnClasses = [
+      'col-name', 'col-town', 'col-profile', 'col-experience',
+      'col-english', 'col-location', 'col-offer', 'col-actions'
+    ];
+
+    columnClasses.forEach((className, idx) => {
+      const isVisible = savedSettings[className] !== false;
+      table.column(idx + 1).visible(isVisible);
+      const checkbox = document.querySelector(`#columnSettingsModalTab5 .column-toggle[value="${idx + 1}"]`);
+      if (checkbox) checkbox.checked = isVisible;
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const table = $('#basic-datatable-rejectedTab5').DataTable({
+      ordering: true,
+      order: [],
+      columnDefs: [{ targets: 0, orderable: false }],
+      paging: true,
+      info: true,
+      initComplete: function () {
+        $('#basic-datatable-rejectedTab5_length').appendTo('#datatable-controlsTab5');
+        $('#basic-datatable-rejectedTab5_filter').appendTo('#datatable-controlsTab5');
+
+        const searchInput = $('#datatable-controlsTab5 #basic-datatable-rejectedTab5_filter input')
+          .addClass('form-control')
+          .attr('placeholder', 'Search...')
+          .css('width', '100%');
+        $('#customSearchContainerTab5').append(searchInput);
+
+        const lengthDropdown = $('#datatable-controlsTab5 #basic-datatable-rejectedTab5_length select').parent();
+        $('#customLengthContainerTab5').append(lengthDropdown);
+
+        const settingsBtn = `
+          <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#columnSettingsModalTab5">
+            <i class="fa fa-cog" aria-hidden="true" style="font-size: 1.3rem; color: #9A9898;"></i>
+          </button>
+        `;
+        $('#customSettingsContainerTab5').html(settingsBtn);
+      }
+    });
+
+    applyColumnVisibilityFromStorageTab5(table);
+
+    const applyBtn = document.getElementById('apply-column-settingsTab5');
+    if (applyBtn) {
+      applyBtn.style.display = 'inline-block';
+      document.querySelector('#columnSettingsModalTab5 .btn-secondary[data-bs-dismiss="modal"]').style.display = 'inline-block';
+
+      applyBtn.addEventListener('click', function () {
+        const savedSettings = {};
+        document.querySelectorAll('#columnSettingsModalTab5 .column-toggle').forEach(function (checkbox) {
+          const colIndex = parseInt(checkbox.value);
+          const isVisible = checkbox.checked;
+          const columnMap = [
+            'col-name', 'col-town', 'col-profile', 'col-experience',
+            'col-english', 'col-location', 'col-offer', 'col-actions'
+          ];
+          savedSettings[columnMap[colIndex - 1]] = isVisible;
+          table.column(colIndex).visible(isVisible);
+        });
+        localStorage.setItem('columnVisibilitySettingsTab5', JSON.stringify(savedSettings));
+        const modalEl = document.getElementById('columnSettingsModalTab5');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        modal?.hide();
+      });
+    }
+  });
+</script>
+{% endblock %}

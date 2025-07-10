@@ -113,6 +113,10 @@ class UserListView(LoginRequiredMixin, View):
             'employers_list': list(employers) + list(employer_admins),
             'recruiter_organizations': recruiter_organizations,
             'employer_organizations': employer_organizations,
+            'breadcrumbs': [
+                    {'name': _('manageUsersHome'), 'url': reverse('index')},
+                    {'name': _('manageUsersManageUsers'), 'url': None},
+                ],
         }
 
         return render(request, 'recruiter/manage_users.html', context)
@@ -241,6 +245,10 @@ class UserAccountView(LoginRequiredMixin, View):
         context = {
             'form': form,
             'user': user,
+            'breadcrumbs': [
+                {'name': _('accountHome'), 'url': reverse('index')},
+                {'name': _('accountMyAccount'), 'url': None},
+                ],
         }
         return render(request, 'recruiter/user_account.html', context)
 
@@ -261,6 +269,14 @@ class UpdatePasswordView(LoginRequiredMixin, FormView):
     template_name = 'recruiter/change_password.html'
     form_class = PasswordChangeForm
     success_url = reverse_lazy('recruiter_account')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['breadcrumbs'] = [
+            {'name': _('changePasswordHome'), 'url': reverse('index')},
+            {'name': _('changePasswordUpdatePassword'), 'url': None},
+        ]
+        return context
 
     def get_form(self):
         form = super().get_form()
@@ -285,6 +301,7 @@ class UpdatePasswordView(LoginRequiredMixin, FormView):
         """Handle form errors."""
         messages.error(self.request, _('changePasswordPleaseCorrectTheErrorsBelow.'))
         return super().form_invalid(form)
+    
 
 
 class AccountNotificationsView(LoginRequiredMixin, View):
@@ -525,8 +542,25 @@ class LogListView(LoginRequiredMixin, ListView):
         return base_query.exclude(
             content_type__model__in=['session', 'logentry']
         ).order_by('-timestamp')
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['breadcrumbs'] = [
+            {'name': _('userLogsHome'), 'url': reverse_lazy('index')},
+            {'name': _('userLogsLogs'), 'url': None},
+        ]
+        return context
 
 class LogDetailView(LoginRequiredMixin, DetailView):
     model = Log
     template_name = 'userlogs/log_detail.html'
     context_object_name = 'log'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['breadcrumbs'] = [
+            {'name': _('userLogsDetailsHome'), 'url': reverse_lazy('index')},
+            {'name': _('userLogsDetailsLogs'), 'url': reverse_lazy('view_logs')},
+            {'name': _('userLogsDetailsLogDetails'), 'url': None},
+        ]
+        return context
