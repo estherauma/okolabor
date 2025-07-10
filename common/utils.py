@@ -117,6 +117,6 @@ class StaticContent:
                 return q.get("label") or key
         return key
 
-    def get_add_workert_to_work_request_metadata(self):
+    def get_add_worker_to_work_request_metadata(self):
         additionalText = self.content.get("rweb-add-worker-to-work-request", {}).get("additional_text", [])
         return additionalText 

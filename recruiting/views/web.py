@@ -990,11 +990,11 @@ class CopyWorkersView(View):
         worker_ids = request.POST.getlist('worker_ids[]')
         work_request_id = request.POST.get('work_request')
         role_id = request.POST.get('role')
-        status = request.POST.get('status', 'Assigned')
+        status = request.POST.get('status', 'assigned')
 
         if not worker_ids or not work_request_id or not role_id:
             messages.error(request, _('Invalid request, missing data'))
-            return JsonResponse({'error': _('Invalid request, missing data')}, status=400)
+            return JsonResponse({'success': False, 'response': _('Invalid request, missing data')}, status=400)
 
         work_request = get_object_or_404(WorkRequests, id=work_request_id)
         role = get_object_or_404(Role, id=role_id)
@@ -1011,12 +1011,14 @@ class CopyWorkersView(View):
                 work_assignment.status = status
                 work_assignment.save()
 
-            messages.success(request, _('workersAssignedSuccessfully!'))
-            return JsonResponse({'success': _('Workers assigned successfully!')})
-        
+            success_message = _('Workers assigned successfully!')
+            messages.success(request, success_message)
+            return JsonResponse({'success': True, 'response': success_message})
+
         except Exception as e:
-            messages.error(request, _('anErrorOccurred: ') + str(e))
-            return JsonResponse({'error': _('An error occurred: ') + str(e)}, status=500)
+            error_message = _('An error occurred: ') + str(e)
+            messages.error(request, error_message)
+            return JsonResponse({'success': False, 'response': error_message}, status=500)
 
 class GetRolesView(View):
     def get(self, request, *args, **kwargs):
@@ -1055,27 +1057,13 @@ class UpdateWorkerStatusView(View):
         messages.success(request, _("workRequestAddWorkerOfferSentSuccessfully"))
 
         if len(user_push_tokens) > 0:
-            static_content = StaticContent(language=user.language)
-            metadata = static_content.get_add_workert_to_work_request_metadata()
+            title = str(_("workRequestAddNotificationTitle"))
+            body = str(_("workRequestAddNotificationBody"))
 
             send_push_notification(
                 tokens=user_push_tokens,
-                title=next(
-                    (
-                        item["value"]
-                        for item in metadata
-                        if item["key"] == "workRequestAddNotificationTitle"
-                    ),
-                    "New Job Offer",
-                ),
-                body=next(
-                    (
-                        item["value"]
-                        for item in metadata
-                        if item["key"] == "workRequestAddNotificationBody"
-                    ),
-                    "You have received a new job offer",
-                ), 
+                title=title,
+                body=body,
                 data={'type': 'job_offer'}
             )
         return JsonResponse({'status':'success','success': 'True', 'message': 'Offer sent successfully.'})
@@ -1083,8 +1071,6 @@ class UpdateWorkerStatusView(View):
 @method_decorator(csrf_exempt, name='dispatch')
 class OfferSendWorkerView(View):
     def post(self, request, *args, **kwargs):
-        logger = AppLogger(log_file='logs/debug.log')
-
         worker_id = request.POST.get('worker_ids')
         work_request_id = request.POST.get('work_request')
         role_id = request.POST.get('role')
@@ -1116,28 +1102,8 @@ class OfferSendWorkerView(View):
         messages.success(request, _("OfferSentSuccessfully."))
 
         if user.push_notification_token:
-            static_content = StaticContent(language=user.language)
-            metadata = static_content.get_add_workert_to_work_request_metadata()
-            title = next(
-                (
-                    item["value"]
-                    for item in metadata
-                    if item["key"] == "workRequestAddNotificationTitle"
-                ),
-                "New Job Offer",
-            )
-            body = next(
-                (
-                    item["value"]
-                    for item in metadata
-                    if item["key"] == "workRequestAddNotificationBody"
-                ),
-                "You have received a new job offer",
-            )
-
-            logger.debug(
-                f"Sending push notification to user with token {user.push_notification_token}, metadata: {len(metadata)}"
-            )
+            title = str(_("workRequestAddNotificationTitle"))
+            body = str(_("workRequestAddNotificationBody"))
 
             send_push_notification(
                 tokens=[user.push_notification_token],

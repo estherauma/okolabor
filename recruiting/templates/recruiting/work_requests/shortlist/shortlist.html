@@ -66,9 +66,6 @@
             <!-- Left Buttons -->
             <div>
               {% if request.user|has_group:"admin" or request.user|has_group:"recruiter_admin" or request.user|has_group:"recruiter" %}
-              <button class="btn dark-green-button ms-2 me-2" id="assignWorkRequestBtn" style="display: none;">
-                <i class="fa fa-tasks me-1"></i> {% translate "workRequestAddWorkerShortlistAssignWorkRequest" %}
-              </button>
               <button class="btn dark-green-button" id="copyBtn">
                 {% translate "workRequestAddWorkerShortlistCopyWorkers" %}
               </button>
