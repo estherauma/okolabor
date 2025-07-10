@@ -1339,7 +1339,7 @@ class RecruiterListView(LoginRequiredMixin, View):
         if not request.user.groups.filter(name='recruiter_admin').exists():
             return redirect('recruiting_web:access_denied')
 
-        recruiters = User.objects.filter(groups__name='recruiter').prefetch_related('employerrecruiter_set__employer').order_by('name')
+        recruiters = User.objects.filter(groups__name='recruiter').prefetch_related('employerrecruiter_set__employer').order_by('first_name')
         employers = Organization.objects.all()
 
 
