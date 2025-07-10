@@ -407,9 +407,11 @@ class EmployerDetailView(View):
             })
 
         all_recruiter_names = list(recruiter_names_direct.union(recruiter_names_org))
+        users = User.objects.all()
 
         context = {
             'employer': employer,
+            'users': users,
             'in_progress_work_requests': in_progress_work_requests,
             'closed_work_requests': closed_work_requests,
             'draft_work_requests': draft_work_requests,
@@ -464,9 +466,11 @@ class RecruiterDetailView(View):
             })
 
         contacts = recruiter_org.contacts.all()
+        users = User.objects.all()
 
         context = {
             'employer': recruiter_org,
+            'users': users,
             'employer_organizations': employer_orgs_data,
             'in_progress_work_requests': in_progress_work_requests,
             'closed_work_requests': closed_work_requests,
@@ -1998,47 +2002,41 @@ class AssignEmployerContactView(View):
         try:
             data = json.loads(request.body)
             employer_id = data.get("employer_id")
-            name = data.get("name")
-            email = data.get("email")
-            phone = data.get("phone")
+            user_id = data.get("user_id")
             position = data.get("position", "")
-            is_primary = data.get("is_primary")
-            
+            is_primary = data.get("is_primary", False)
 
-            if not employer_id:
-                messages.error(request, "employerIDIsRequired.")
-                return JsonResponse({'error': 'employerIDIsRequired.'}, status=400)
+            if not employer_id or not user_id:
+                return JsonResponse({'error': 'employerID and userID are required.'}, status=400)
 
-            if EmployerContact.objects.filter(email=email).exists():
-                messages.error(request, "Email already exists.")
-                return JsonResponse({'error': 'emailAlreadyExists.'}, status=400)
+            employer = Organization.objects.get(id=employer_id)
+            user = User.objects.get(id=user_id)
 
-            try:
-                employer = Organization.objects.get(id=employer_id)
-            except Organization.DoesNotExist:
-                messages.error(request, "Employer not found.")
-                return JsonResponse({'error': 'employerNotFound.'}, status=404)
+            # Optional: Prevent duplicate assignments
+            if EmployerContact.objects.filter(user=user, employer=employer).exists():
+                return JsonResponse({'error': 'User is already a contact for this employer.'}, status=400)
 
             EmployerContact.objects.create(
                 employer=employer,
-                name=name,
-                email=email,
-                phone=phone,
+                user=user,
+                name=user.get_full_name(),
+                email=user.email,
+                phone=getattr(user, 'phone', ''),
                 position=position,
                 is_primary=is_primary
             )
 
-            messages.success(request, _("ContactAssignedSuccessfully!"))
             return JsonResponse({'success': True, 'message': 'ContactAssignedSuccessfully!'})
 
+        except Organization.DoesNotExist:
+            return JsonResponse({'error': 'Employer not found.'}, status=404)
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'User not found.'}, status=404)
         except Exception as e:
-            messages.error(request, str(e))
             return JsonResponse({'error': str(e)}, status=500)
 
     def get(self, request, *args, **kwargs):
-        messages.error(request, "GET not allowed")
         return JsonResponse({'error': 'GET not allowed.'}, status=405)
-
 
 @method_decorator(csrf_exempt, name='dispatch')
 class AssignEmployersToRecruiterOrgView(View):

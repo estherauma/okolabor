@@ -6,17 +6,19 @@ document.getElementById("assignContactBtn").addEventListener("click", function (
 document.getElementById("assignContactForm").addEventListener("submit", function (e) {
     e.preventDefault();
 
-    const employerId = document.getElementById("employerIdField").value;
-    const name = document.getElementById("contactName").value;
-    const email = document.getElementById("contactEmail").value;
-    const phone = document.getElementById("contactPhone").value;
-    const position = document.getElementById("contactPosition").value;
-    const isPrimary = document.getElementById("isPrimary").checked;
+        const employerId = document.getElementById("employerIdField").value;
+        const userId = document.getElementById("userSelect").value;
+        const position = document.getElementById("contactPosition").value;
+        const isPrimary = document.getElementById("isPrimary").checked;
+
+         if (!userId) {
+            alert("Please select a user.");
+            return;
+        }
 
     $("#global-loader").fadeIn("slow");
     document.body.style.overflow = "hidden";
 
-    console.log(employerId,"employerId");
 
     fetch("/assign-contact/", {
         method: "POST",
@@ -26,9 +28,7 @@ document.getElementById("assignContactForm").addEventListener("submit", function
         },
         body: JSON.stringify({
             employer_id: employerId,
-            name: name,
-            email: email,
-            phone: phone,
+            user_id: userId,
             position: position,
             is_primary: isPrimary,
         }),
