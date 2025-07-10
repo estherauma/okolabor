@@ -96,6 +96,10 @@ class WorkRequestForm(forms.ModelForm):
                 'class': 'form-control',
             }),
         }
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['employer'].queryset = Organization.objects.filter(type='employer').order_by('name')
 
 class WorkerAssignmentForm(forms.ModelForm):
     work_request = forms.ModelMultipleChoiceField(
@@ -242,6 +246,8 @@ class WorkRequestRoleForm(forms.ModelForm):
             if field_name in self.fields:
                 self.fields[field_name].choices = config['choices']()
                 self.fields[field_name].label = config['label']
+                
+        self.fields['work_request'].queryset = WorkRequests.objects.order_by('name')
 
     def clean(self):
         cleaned_data = super().clean()
@@ -795,6 +801,10 @@ class OkoMessageCreateForm(forms.ModelForm):
                 'class': 'form-control',
             }),
         }
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['job_order'].queryset = WorkRequests.objects.order_by('name')
 
 
 class WorkerCreateForm(forms.ModelForm):
