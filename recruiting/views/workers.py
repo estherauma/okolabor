@@ -726,6 +726,7 @@ class WorkerDetailsView(View):
     def get(self, request, pk):
         logger = AppLogger(log_file='logs/debug.log')
         worker = get_object_or_404(User, pk=pk)
+        form = WorkExperienceCreateForm(initial={'user': worker})
         base_url = request.build_absolute_uri('/')
         preferences = UserPreference.objects.filter(user=worker)
         preference_data = {pref.key: pref.value for pref in preferences}
@@ -821,6 +822,7 @@ class WorkerDetailsView(View):
             'language_options': language_options,
             'language_label': language_label,
             'experience_forms': experience_forms,
+            'form': form,
             'breadcrumbs': [
                         {'name': _('workerDetailsHome'), 'url': reverse('index')},
                         {'name': _('workerDetailsWorkers'), 'url': reverse('recruiting_web:workers')},
@@ -892,7 +894,7 @@ class GetRolesForWorkRequestView(View):
 class CreateWorkExperienceView(BaseCreateView):
     model = UserWorkExperience
     form_class = WorkExperienceCreateForm
-    template_name = 'recruiting/workers/work_experience_create.html'
+    template_name = 'recruiting/workers/detail.html'
     content_service = StaticContent()
     
     def get_context_data(self, **kwargs):
