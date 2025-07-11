@@ -6,9 +6,18 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log("cancelOfferBtn found in the DOM");
         cancelOfferBtn.addEventListener('click', function () {
             console.log("Cancel offer button clicked");
-            var workerIds = [];
-            var checkboxes = document.querySelectorAll('input[name="worker-offer-checkbox"]:checked');
+            let workerIds = [];
+
+            let checkboxes = document.querySelectorAll('input[name="worker-offer-checkbox"]:checked');
+            console.log("Checkboxes selected:", checkboxes.length);
+
+            if (checkboxes.length === 0) {
+                checkboxes = document.querySelectorAll('input[name="worker-shortlist-checkbox"]:checked');
+            }
+
+            console.log("Checkboxes found:", checkboxes.length);
             console.log("Checkboxes selected:", checkboxes);
+
             checkboxes.forEach(function (checkbox) {
                 workerIds.push(checkbox.value);
             });

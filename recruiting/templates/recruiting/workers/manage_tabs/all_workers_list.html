@@ -105,6 +105,10 @@
                                 data-bs-target="#addWorkerModal">
                                 <i class="fa fa-plus me-1"></i> {% translate "workersListAddWorker" %}
                             </a>
+
+                            <button id="sendOfferBtnDirectly" class="btn dark-green-button ms-2"  disabled>
+                              {% translate "workRequestAddWorkerSendOffer" %}
+                            </button>
                             
 
                         </div>
@@ -289,8 +293,6 @@
 
 
 <!-- Custom Scripts -->
-<script src="{% static 'assets/js/send-offer.js' %}"></script>
-<script src="{% static 'assets/js/copy-shortlist-workers.js' %}"></script>
 <script src="{% static 'assets/js/tablecolumns_hiding.js' %}"></script>
 <script src="{% static 'assets/js/worker_workrequst_assignment.js' %}"></script>
 
