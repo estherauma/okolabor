@@ -112,23 +112,22 @@
                                 </label>
                                 <select class="form-control" name="random_filter">
                                     <option value="">{% translate "Choose a filter" %}</option>
-                                    <option value="years_of_experience">{% translate "Years of Experience" %}</option>
-                                    <option value="references">{% translate "References" %}</option>
+                                    <option value="age">{% translate "Age" %}</option>
                                     <option value="availability">{% translate "Availability" %}</option>
+                                    <option value="exclude_physical_limitations">{% translate "Exclude Workers with Physical Labor Limitations" %}</option>
+                                    <option value="gender">{% translate "Gender" %}</option>
                                     <option value="h2a_experience">{% translate "H-2A Experience" %}</option>
                                     <option value="h2b_experience">{% translate "H-2B Experience" %}</option>
-                                    <option value="work_pictures">{% translate "Relevant Work Pictures" %}</option>
-                                    <option value="exclude_physical_limitations">{% translate "Exclude Workers with Physical Labor Limitations" %}</option>
-                                    <option value="age">{% translate "Age" %}</option>
-                                    <option value="gender">{% translate "Gender" %}</option>
-                                    <option value="profile">{% translate "Profile" %}</option>
-                                    <option value="passport">{% translate "Passport" %}</option>
-                                    <option value="us_driving_license">{% translate "US Driving License" %}</option>
-                                    <option value="mx_us_driving_license">{% translate "US-Mexican Driving License" %}</option>
                                     <option value="language_proficiency">{% translate "Language Proficiency" %}</option>
+                                    <option value="mx_us_driving_license">{% translate "US-Mexican Driving License" %}</option>
+                                    <option value="passport">{% translate "Passport" %}</option>
+                                    <option value="profile">{% translate "Profile" %}</option>
+                                    <option value="references">{% translate "References" %}</option>
+                                    <option value="us_driving_license">{% translate "US Driving License" %}</option>
+                                    <option value="work_pictures">{% translate "Relevant Work Pictures" %}</option>
                                     <option value="work_preference_location">{% translate "Work Preference Location" %}</option>
                                     <option value="work_preference_type">{% translate "Work Preference Type" %}</option>
-
+                                    <option value="years_of_experience">{% translate "Years of Experience" %}</option>
                                 </select>
                             </div>
                         </div>
@@ -279,22 +278,22 @@ function addRandomFilter() {
                 </label>
                 <select class="form-control" name="random_filter" onchange="handleFilterChange(this, ${uniqueId})">
                     <option value="">{% translate "Choose a filter" %}</option>
-                    <option value="years_of_experience">{% translate "Years of Experience" %}</option>
-                    <option value="references">{% translate "References" %}</option>
+                    <option value="age">{% translate "Age" %}</option>
                     <option value="availability">{% translate "Availability" %}</option>
+                    <option value="exclude_physical_limitations">{% translate "Exclude Workers with Physical Labor Limitations" %}</option>
+                    <option value="gender">{% translate "Gender" %}</option>
                     <option value="h2a_experience">{% translate "H-2A Experience" %}</option>
                     <option value="h2b_experience">{% translate "H-2B Experience" %}</option>
-                    <option value="work_pictures">{% translate "Relevant Work Pictures" %}</option>
-                    <option value="exclude_physical_limitations">{% translate "Exclude Workers with Physical Labor Limitations" %}</option>
-                    <option value="age">{% translate "Age" %}</option>
-                    <option value="gender">{% translate "Gender" %}</option>
-                    <option value="profile">{% translate "Profile" %}</option>
-                    <option value="passport">{% translate "Passport" %}</option>
-                    <option value="us_driving_license">{% translate "US Driving License" %}</option>
-                    <option value="mx_us_driving_license">{% translate "US-Mexican Driving License" %}</option>
                     <option value="language_proficiency">{% translate "Language Proficiency" %}</option>
+                    <option value="mx_us_driving_license">{% translate "US-Mexican Driving License" %}</option>
+                    <option value="passport">{% translate "Passport" %}</option>
+                    <option value="profile">{% translate "Profile" %}</option>
+                    <option value="references">{% translate "References" %}</option>
+                    <option value="work_pictures">{% translate "Relevant Work Pictures" %}</option>
+                    <option value="us_driving_license">{% translate "US Driving License" %}</option>
                     <option value="work_preference_location">{% translate "Work Preference Location" %}</option>
                     <option value="work_preference_type">{% translate "Work Preference Type" %}</option>
+                    <option value="years_of_experience">{% translate "Years of Experience" %}</option>
                 </select>
 
             </div>
@@ -352,11 +351,12 @@ function handleFilterChange(selectEl, uniqueId) {
                     <label class="form-label gray-color">{% translate "Select a Physical Limitation Question" %}</label>
                     <select class="form-control" name="physical_limitation_question_${uniqueId}" onchange="handlePhysicalQuestionChange(this, ${uniqueId})">
                         <option value="">{% translate "Select" %}</option>
+                        <option value="extreme_temps">{% translate "Are you unwilling to work in either hot or cold temperatures?" %}</option>
+                        <option value="lift_weight">{% translate "Are you willing and able to lift/carry up to 60 pounds (27kg)?" %}</option>
+                        <option value="stand_long">{% translate "Are you willing and able to work on your feet for long periods of time?" %}</option>
                         <option value="condition_limit">{% translate "Do you have any physical or mental condition that could limit you and should be considered for a labor intensive job?" %}</option>
                         <option value="injury_aggravation">{% translate "Have you suffered an injury that could be aggravated by intense physical activity?" %}</option>
-                        <option value="stand_long">{% translate "Are you willing and able to work on your feet for long periods of time?" %}</option>
-                        <option value="lift_weight">{% translate "Are you willing and able to lift/carry up to 60 pounds (27kg)?" %}</option>
-                        <option value="extreme_temps">{% translate "Are you unwilling to work in either hot or cold temperatures?" %}</option>
+
                     </select>
                 </div>
                 <div class="form-group mt-2" id="physical-yesno-container-${uniqueId}"></div>
@@ -370,8 +370,8 @@ function handleFilterChange(selectEl, uniqueId) {
                     <label class="form-label gray-color">{% translate "Select Gender" %}</label>
                     <select class="form-control" name="gender_${uniqueId}">
                         <option value="">{% translate "Select" %}</option>
-                        <option value="male">{% translate "Male" %}</option>
-                        <option value="female">{% translate "Female" %}</option>
+                        <option value="male">{% translate "Female" %}</option>
+                        <option value="female">{% translate "Male" %}</option>
                     </select>
                 </div>`;
             break;
@@ -382,10 +382,10 @@ function handleFilterChange(selectEl, uniqueId) {
                     <label class="form-label gray-color">{% translate "Select Work Preference Location" %}</label>
                     <select class="form-control" name="work_preference_location_${uniqueId}">
                         <option value="">{% translate "Select Country" %}</option>
-                        <option value="usa">USA</option>
-                        <option value="mexico">Mexico</option>
-                        <option value="canada">Canada</option>
                         <option value="australia">Australia</option>
+                        <option value="canada">Canada</option>
+                        <option value="mexico">Mexico</option>
+                        <option value="usa">USA</option>
                     </select>
                 </div>`;
             break;
@@ -396,8 +396,8 @@ function handleFilterChange(selectEl, uniqueId) {
                     <label class="form-label gray-color">{% translate "Select Work Preference Type" %}</label>
                     <select class="form-control" name="work_preference_type_${uniqueId}">
                         <option value="">{% translate "Select Type" %}</option>
-                        <option value="farm">Farm Work</option>
                         <option value="construction">Construction</option>
+                        <option value="farm">Farm Work</option>
                         <option value="hospitality">Hospitality</option>
                         <option value="manufacturing">Manufacturing</option>
                     </select>
@@ -419,8 +419,8 @@ function handleFilterChange(selectEl, uniqueId) {
                     <label class="form-label gray-color">{% translate "Has" %} ${selectEl.options[selectEl.selectedIndex].text}?</label>
                     <select class="form-control" name="${selectedValue}_${uniqueId}">
                         <option value="">{% translate "Select" %}</option>
-                        <option value="yes">{% translate "Yes" %}</option>
-                        <option value="no">{% translate "No" %}</option>
+                        <option value="yes">{% translate "No" %}</option>
+                        <option value="no">{% translate "Yes" %}</option>
                     </select>
                 </div>`;
             break;
@@ -439,8 +439,8 @@ function handlePhysicalQuestionChange(selectEl, uniqueId) {
             <label class="form-label gray-color">{% translate "Your Answer" %}</label>
             <select class="form-control" name="${selectEl.value}_answer_${uniqueId}">
                 <option value="">{% translate "Select" %}</option>
-                <option value="yes">{% translate "Yes" %}</option>
-                <option value="no">{% translate "No" %}</option>
+                <option value="yes">{% translate "No" %}</option>
+                <option value="no">{% translate "Yes" %}</option>
             </select>
         `;
     } else {

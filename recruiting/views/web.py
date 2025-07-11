@@ -98,31 +98,31 @@ class EmployerListView(View):
         query = request.GET.get('query')
 
         if user.groups.filter(name='admin').exists():
-            employers_list = Organization.objects.filter(type='employer').order_by('-created_at')
+            employers_list = Organization.objects.filter(type='employer').order_by('name')
 
         elif user.groups.filter(name__in=['recruiter', 'recruiter_admin']).exists():
             
-            recruiter_orgs = Organization.objects.filter(type='recruiter', recruiters=user).order_by('-created_at')
+            recruiter_orgs = Organization.objects.filter(type='recruiter', recruiters=user).order_by('name')
 
             recruiter_links = EmployerRecruiterOrgLink.objects.filter(
                 recruiter_org__in=recruiter_orgs,
                 final_status='accepted'
             )
             employer_ids = recruiter_links.values_list('employer_org__id', flat=True)
-            employers = Organization.objects.filter(id__in=employer_ids, type='employer')
+            employers = Organization.objects.filter(id__in=employer_ids, type='employer').order_by('name')
 
-            created_employers = Organization.objects.filter(type='employer', created_by=user)
+            created_employers = Organization.objects.filter(type='employer', created_by=user).order_by('name')
 
             employers_list = (employers | created_employers).distinct()
 
         else:
             employers_list = Organization.objects.none()
 
-        recruiter_organizations = Organization.objects.filter(type='recruiter').order_by('-created_at')
+        recruiter_organizations = Organization.objects.filter(type='recruiter').order_by('name')
 
         employers_data = []
         for employer in employers_list:
-            links = EmployerRecruiterOrgLink.objects.filter(employer_org=employer, final_status='accepted')
+            links = EmployerRecruiterOrgLink.objects.filter(employer_org=employer, final_status='accepted').order_by('recruiter_org__name')
             recruiter_org_names = list(set(link.recruiter_org.name for link in links))
 
             employers_data.append({
@@ -205,7 +205,7 @@ class RecruiterListViewInAdmin(View):
         query = request.GET.get('query')
 
         if user.groups.filter(name='admin').exists():
-            recruiters_list = Organization.objects.filter(type='recruiter').order_by('-created_at')
+            recruiters_list = Organization.objects.filter(type='recruiter').order_by('name')
         else:
             recruiters_list = Organization.objects.none()
 
@@ -224,7 +224,7 @@ class RecruiterListViewInAdmin(View):
 
         recruiters_data = []
         for recruiter in recruiters:
-            assigned_links = EmployerRecruiterOrgLink.objects.filter(recruiter_org=recruiter)
+            assigned_links = EmployerRecruiterOrgLink.objects.filter(recruiter_org=recruiter).order_by('employer_org__name')
             assigned_employers = list(set(
                 link.employer_org.name for link in assigned_links
             ))
@@ -519,8 +519,8 @@ class WorkRequestsListView(View):
         form = WorkRequestForm()
         context = {
             "work_requests": work_requests,
-            "employers": Organization.objects.filter(type='employer'),
-            "recruiter": Organization.objects.filter(type='recruiter'),
+            "employers": Organization.objects.filter(type='employer').order_by('name'),
+            "recruiter": Organization.objects.filter(type='recruiter').order_by('name'),
             "form": form,
             "breadcrumbs": [
                         {'name': _('jobOrderListHome'), 'url': 'index'},
@@ -956,7 +956,7 @@ class AddWorkersWorkRequests(View):
 
         context = {
             'workers': all_workers,
-            'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
+            'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles').order_by('name'),
             'form': form,
             'work_assign_form': work_assign_form,
             'filter_form': filter_form,
@@ -1273,8 +1273,8 @@ class WorkRequestDetailView(View):
             'role_add_form': role_add_form,
             'dynamic_fields': dynamic_fields,
             'breadcrumbs' :[
-                        {'name': _('Home'), 'url': 'index'},
-                        {'name': _('Job Orders'), 'url': 'recruiting_web:workrequest_list'},
+                        {'name': _('Home'), 'url': reverse('index')},
+                        {'name': _('Job Orders'), 'url': reverse('recruiting_web:workrequest_list')},
                         {'name': work_request.name, 'url': None},
                     ],
 
@@ -1339,7 +1339,7 @@ class RecruiterListView(LoginRequiredMixin, View):
         if not request.user.groups.filter(name='recruiter_admin').exists():
             return redirect('recruiting_web:access_denied')
 
-        recruiters = User.objects.filter(groups__name='recruiter').prefetch_related('employerrecruiter_set__employer')
+        recruiters = User.objects.filter(groups__name='recruiter').prefetch_related('employerrecruiter_set__employer').order_by('first_name')
         employers = Organization.objects.all()
 
 

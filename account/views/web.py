@@ -60,8 +60,8 @@ class UserListView(LoginRequiredMixin, View):
             'created_at', 'is_active', 'language'
         )
 
-        recruiter_organizations = Organization.objects.filter(type='recruiter').values()
-        employer_organizations = Organization.objects.filter(type='employer').values()
+        recruiter_organizations = Organization.objects.filter(type='recruiter').values().order_by('name')
+        employer_organizations = Organization.objects.filter(type='employer').values().order_by('name')
 
         is_admin = request.user.is_superuser
         recruiters, recruiter_admins, employers, employer_admins = [], [], [], []
