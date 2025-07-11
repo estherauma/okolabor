@@ -328,9 +328,6 @@ class EmployerRecruiter(AuditableModel):
 
 class EmployerContact(AuditableModel):
     employer = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="contacts")
-    name = models.CharField(max_length=255)
-    email = models.EmailField(max_length=255)
-    phone = models.CharField(max_length=255)
     position = models.CharField(max_length=255, blank=True, null=True) 
     is_primary = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True) 

@@ -1983,9 +1983,6 @@ class AssignEmployerContactView(View):
             EmployerContact.objects.create(
                 employer=employer,
                 user=user,
-                name=user.get_full_name(),
-                email=user.email,
-                phone=getattr(user, 'phone', ''),
                 position=position,
                 is_primary=is_primary
             )

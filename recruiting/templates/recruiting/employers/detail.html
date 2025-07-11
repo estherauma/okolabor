@@ -77,13 +77,13 @@
     <a href="{% url 'recruiting_web:contact_work_requests' contact.id %}" class="text-decoration-none text-dark">
         <div class="card shadow-sm p-3" style=" cursor: pointer;">
             <div class="card-body">
-                <h5 class="card-title">{{ contact.name }}</h5>
+                <h5 class="card-title">{{ contact.user.get_full_name }}</h5>
                 <h6 class="card-subtitle mb-2 text-muted">
                     {{ contact.position|default:"No position specified" }}
                 </h6>
                 <p class="card-text">
-                    <strong>{% translate "employerDetailsEmail"%}:</strong> {{ contact.email }}<br>
-                    <strong>{% translate "employerDetailsPhone"%}:</strong> {{ contact.phone }}
+                    <strong>{% translate "employerDetailsEmail"%}:</strong> {{ contact.user.email }}<br>
+                    <strong>{% translate "employerDetailsPhone"%}:</strong> {{ contact.user.phone|default:"N/A" }}
                 </p>
             </div>
         </div>
