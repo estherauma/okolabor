@@ -1,7 +1,7 @@
 {% extends 'components/base.html' %}
 {% load static %}
 {% load i18n %}
-
+{% load user_role_tags %}
 {% block styles %}
 <!-- SELECT2 CSS -->
 <link href="{% static 'assets/plugins/select2/select2.min.css' %}" rel="stylesheet"/>
@@ -261,7 +261,6 @@
                             {% include 'recruiting/workers/manage_tabs/worker_rejected.html' %}
                         </div>
                     </div>
-                </div>
             </div>
         </div>
 
@@ -792,7 +791,6 @@ function handleLanguageProficiencyChange(selectEl, uniqueId) {
     } else {
         videoContainer.innerHTML = '';
     }
-
     updateCollapseSummary();
 }
 
