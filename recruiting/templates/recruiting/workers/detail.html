@@ -108,6 +108,75 @@
       </div>
     </div>
 
+    <div class="modal fade" id="addExperienceModal" tabindex="-1" aria-labelledby="addExperienceModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header" style="background-color: #7DBF96;">
+        <h5 class="modal-title text-white" id="addExperienceModalLabel">{% translate "addWorkerExperienceAddWorkerExperience" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <form method="post" enctype="multipart/form-data" id="addExperienceForm" action="{% url 'recruiting_web:worker_experience_create' pk=worker.id %}">
+          {% csrf_token %}
+
+          {% for field in form %}
+            {% if field.name not in 'visa_type visa_file license_file video_file' %}
+              <div class="form-group my-3" id="div_{{ field.id_for_label }}">
+                <label>{{ field.label }}</label>
+                <div class="input-group input-group-outline is_valid my-3">
+                  {{ field }}
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+
+          <div class="form-group my-3" id="div_{{ form.visa_type.id_for_label }}">
+            <label>{{ form.visa_type.label }}</label>
+            <div class="input-group input-group-outline is_valid my-3">
+              {{ form.visa_type }}
+            </div>
+          </div>
+
+          <div class="form-group my-3" id="div_{{ form.visa_file.id_for_label }}">
+            <label>{{ form.visa_file.label }}</label>
+            <div class="input-group input-group-outline is_valid my-3">
+              {{ form.visa_file }}
+            </div>
+          </div>
+
+          <div class="form-group my-3" id="div_{{ form.license_file.id_for_label }}">
+            <label>{{ form.license_file.label }}</label>
+            <div class="input-group input-group-outline is_valid my-3">
+              {{ form.license_file }}
+            </div>
+          </div>
+
+          <div class="form-group my-3" id="div_{{ form.video_file.id_for_label }}">
+            <label>{{ form.video_file.label }}</label>
+            <div class="input-group input-group-outline is_valid my-3">
+              {{ form.video_file }}
+            </div>
+          </div>
+
+          <div class="text-end mt-3">
+            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal" style="background-color: #9A9898; color: white;">
+              {% translate 'jobOrderDetailsCancel' %}
+            </button>
+            <button type="submit" class="btn btn-success">
+              {% translate "addWorkerExperienceSubmit" %}
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
     <div class="card">
       <div class="card-body">
         <div class="row">
@@ -115,9 +184,13 @@
             <h5 class="card-title green-color d-contents">
               {% translate "workerDetailsWorkExperience" %}
             </h5>
-            <a class="btn grey-green-button" href="{% url 'recruiting_web:worker_experience_create' pk=worker.id %}">
+            {% comment %} <a class="btn grey-green-button" href="{% url 'recruiting_web:worker_experience_create' pk=worker.id %}">
+              {% translate "workerDetailsAddWorkExperience" %}
+            </a> {% endcomment %}
+            <a class="btn grey-green-button" data-bs-toggle="modal" data-bs-target="#addExperienceModal">
               {% translate "workerDetailsAddWorkExperience" %}
             </a>
+
           </div>
         </div>
         {% for exp in worker.work_experiences.all %}
@@ -1206,4 +1279,8 @@
       });
     });
   </script>
+<script src="{% static ''%}assets/js/add_work_experince.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-multiselect@1.1.1/dist/js/bootstrap-multiselect.min.js"></script>
   {% endblock scripts %}
