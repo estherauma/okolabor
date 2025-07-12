@@ -190,23 +190,24 @@
                                     <td class="col-offer">{{ worker.latest_status }}</td>
                                     {% if request.user|has_group:"admin" %}
                                         <td class="col-actions">
-                                        <!-- Delete Button -->
-                                        <button type="button"
-                                                class="btn btn-sm btn-outline-danger"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#deleteModalWorker{{ worker.id }}"
-                                                title="{% translate 'workersListIconDelete' %}">
-                                                {% translate 'webCommonDelete'%}
-                                        </button>
-
                                         <!-- Edit Button -->
-                                        <button type="button"
-                                                class="btn btn-sm btn-outline-secondary ms-2"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#editModal{{ worker.id }}"
-                                                title="{% translate 'workersListIconEdit' %}">
-                                                {% translate 'webCommonEdit'%}
-                                        </button>
+                                          <button type="button"
+                                          class="btn btn-sm btn-outline-secondary"
+                                          data-bs-toggle="modal"
+                                          data-bs-target="#editModal{{ worker.id }}"
+                                          title="{% translate 'workersListIconEdit' %}">
+                                          {% translate 'webCommonEdit'%}
+                                          </button>
+
+                                        <!-- Delete Button -->
+                                          <button type="button"
+                                          class="btn btn-sm btn-outline-danger ms-2"
+                                          data-bs-toggle="modal"
+                                          data-bs-target="#deleteModalWorker{{ worker.id }}"
+                                          title="{% translate 'workersListIconDelete' %}">
+                                          {% translate 'webCommonDelete'%}
+                                          </button>
+                                        
                                         </td>
                                     {% endif %}
                                 </tr>

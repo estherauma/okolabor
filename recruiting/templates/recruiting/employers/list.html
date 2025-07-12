@@ -165,19 +165,19 @@
                 </td>
                 {% if request.user|has_group:"admin" %}
                   <td>
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-outline-danger"
-                      data-bs-toggle="modal"
-                      data-bs-target="#deleteModal{{ employer.id }}">
-                      {% translate "employersDelete" %}
-                    </button>
                     <button 
                       type="button"
-                      class="btn btn-sm btn-outline-secondary ms-2"
+                      class="btn btn-sm btn-outline-secondary"
                       data-bs-toggle="modal"
                       data-bs-target="#editModal{{ employer.id }}" >
                       {% translate "employersEdit" %}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-danger ms-2"
+                      data-bs-toggle="modal"
+                      data-bs-target="#deleteModal{{ employer.id }}">
+                      {% translate "employersDelete" %}
                     </button>
                   
                   </td>
