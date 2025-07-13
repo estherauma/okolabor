@@ -39,18 +39,13 @@
             <input type="hidden" id="selectedEmployersForContact" name="selected_employers">
 
             <div class="mb-3">
-              <label for="contactName" class="form-label">{% translate "employerDetailsContactName" %}</label>
-              <input type="text" class="form-control" id="contactName" name="name" required>
-            </div>
-
-            <div class="mb-3">
-              <label for="contactEmail" class="form-label">{% translate "employerDetailsEmail" %}</label>
-              <input type="email" class="form-control" id="contactEmail" name="email" required>
-            </div>
-
-            <div class="mb-3">
-              <label for="contactPhone" class="form-label">{% translate "employerDetailsPhone" %}</label>
-              <input type="text" class="form-control" id="contactPhone" name="phone" required>
+              <label for="userSelect" class="form-label">{% translate "Select User" %}</label>
+              <select class="form-select" id="userSelect" name="user_id" required>
+                <option value="">{% translate "ChooseUser" %}</option>
+                {% for user in users %}
+                  <option value="{{ user.id }}">{{ user.get_full_name }} ({{ user.email }})</option>
+                {% endfor %}
+              </select>
             </div>
 
             <div class="mb-3">
@@ -76,19 +71,19 @@
         </form>
       </div>
     </div>
-  </div>
+</div>
 <div class="d-flex flex-wrap gap-3">
     {% for contact in contacts %}
     <a href="{% url 'recruiting_web:contact_work_requests' contact.id %}" class="text-decoration-none text-dark">
         <div class="card shadow-sm p-3" style=" cursor: pointer;">
             <div class="card-body">
-                <h5 class="card-title">{{ contact.name }}</h5>
+                <h5 class="card-title">{{ contact.user.get_full_name }}</h5>
                 <h6 class="card-subtitle mb-2 text-muted">
                     {{ contact.position|default:"No position specified" }}
                 </h6>
                 <p class="card-text">
-                    <strong>{% translate "employerDetailsEmail"%}:</strong> {{ contact.email }}<br>
-                    <strong>{% translate "employerDetailsPhone"%}:</strong> {{ contact.phone }}
+                    <strong>{% translate "employerDetailsEmail"%}:</strong> {{ contact.user.email }}<br>
+                    <strong>{% translate "employerDetailsPhone"%}:</strong> {{ contact.user.phone|default:"N/A" }}
                 </p>
             </div>
         </div>
