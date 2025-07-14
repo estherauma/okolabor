@@ -1122,7 +1122,7 @@ class CancelOfferView(View):
         worker_ids = data.get('worker_ids', [])
         WorkAssignment.objects.filter(
                 worker_id__in=worker_ids,
-                status__in=['offersent', 'assigned']
+                status__in=['offersent', 'assigned','confirmed']
             ).update(status='cancelled')
         messages.success(request, _("OfferCancelledSuccessfully."))
         return JsonResponse({'status': 'success', 'message': 'Offer cancelled successfully.'})
