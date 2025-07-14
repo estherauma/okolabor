@@ -88,8 +88,15 @@ $(document).ready(function () {
                         ]);
                     } else {
                         data.workers.forEach(worker => {
+                            const tabCheckboxClassMap = {
+                                tab2: 'worker-shortlist-checkbox',
+                                tab3: 'worker-offersent-checkbox',
+                                tab4: 'worker-confirmed-checkbox',
+                                tab5: 'worker-rejected-checkbox',
+                            };
+                            const checkboxClass = tabCheckboxClassMap[activeTabId] || 'worker-default-checkbox';
                             table.row.add([
-                                `<input type="checkbox" class="worker-shortlist-checkbox" value="${worker.id}" data-worker-name="${worker.name}">`,
+                                 `<input type="checkbox" name="${checkboxClass}" class="${checkboxClass}" value="${worker.id}" data-worker-name="${worker.name}">`,
                                 `<a href="${worker.id}">${worker.name}</a>`,
                                 worker.town || 'Not Provided',
                                 `${worker.profile_completion || 0}%`,
