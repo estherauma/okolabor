@@ -2047,7 +2047,7 @@ class AssignEmployersToRecruiterOrgView(View):
             if newly_assigned:
                 messages.success(
                     request,
-                    _("Invitations created, emails sent successfully, and employer(s) assigned to the recruiter organization.")
+                    _("employersInvitationsCreated,EmailsSentSuccessfully,AndEmployer(s)AssignedToTheRecruiterOrganization")
                 )
 
             if already_assigned:

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-14 14:25+0300\n"
+"POT-Creation-Date: 2025-07-14 16:46+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -184,7 +184,7 @@ msgstr "Acción"
 
 #: account/templates/employers/assign-employer-organization-modal.html:9
 msgid "employerAminListAssignOrganization"
-msgstr "Asignar organización"
+msgstr "Asignar empleador"
 
 #: account/templates/employers/assign-employer-organization-modal.html:10
 msgid "employerAminListOrgClose"
@@ -192,7 +192,7 @@ msgstr "Cerca"
 
 #: account/templates/employers/assign-employer-organization-modal.html:14
 msgid "employerAminListSelectOrganization"
-msgstr "Seleccionar organización"
+msgstr "Seleccionar empleador"
 
 #: account/templates/employers/assign-employer-organization-modal.html:22
 msgid "employerAminListOrgAssign"
@@ -234,7 +234,6 @@ msgid "employerAminListAdmin"
 msgstr "Administrador"
 
 #: account/templates/employers/create_employer.html:77
-#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:107
 msgid "employerAminListEmployer"
 msgstr "Empleador"
 
@@ -502,7 +501,7 @@ msgstr "Enviar invitación"
 
 #: account/templates/recruiter/recruiter_modals/assign-organization-modal.html:9
 msgid "recruiterAdminListAssignOrganization"
-msgstr "Asignar organización"
+msgstr "Asignar reclutador"
 
 #: account/templates/recruiter/recruiter_modals/assign-organization-modal.html:10
 msgid "recruiterAdminListOrgClose"
@@ -510,7 +509,7 @@ msgstr "Cerca"
 
 #: account/templates/recruiter/recruiter_modals/assign-organization-modal.html:14
 msgid "recruiterAdminListSelectOrganization"
-msgstr "Seleccionar organización"
+msgstr "Seleccionar reclutador"
 
 #: account/templates/recruiter/recruiter_modals/assign-organization-modal.html:23
 msgid "recruiterAdminListOrgAssign"
@@ -1093,12 +1092,12 @@ msgid "pleaseCorrectTheErrorsInTheForm."
 msgstr ""
 
 #: account/views/web.py:439
-msgid "organizationCreatedSuccessfully"
-msgstr ""
+msgid "addEmployerOrganizationCreatedSuccessfully"
+msgstr "Empleador creado exitosamente"
 
 #: account/views/web.py:474
-msgid "organizationUpdatedSuccessfully."
-msgstr ""
+msgid "addEmployerOrganizationUpdatedSuccessfully"
+msgstr "Empleador actualizado exitosamente."
 
 #: account/views/web.py:487
 msgid "invalidUserSelection."
@@ -1217,7 +1216,6 @@ msgid "Worker"
 msgstr ""
 
 #: recruiting/forms.py:117
-#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:108
 #: recruiting/templates/recruiting/work_requests/table_header.html:28
 #: recruiting/templates/recruiting/work_requests/table_header.html:67
 msgid "Status"
@@ -1806,14 +1804,13 @@ msgid "employerDetailsClose"
 msgstr "Cerca"
 
 #: recruiting/templates/recruiting/employers/detail.html:42
-#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:42
 msgid "Select User"
 msgstr ""
 
 #: recruiting/templates/recruiting/employers/detail.html:44
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:44
-msgid "ChooseUser"
-msgstr ""
+msgid "recruiterDetailsChooseUser"
+msgstr "Seleccionar usuario"
 
 #: recruiting/templates/recruiting/employers/detail.html:52
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:52
@@ -1921,7 +1918,7 @@ msgstr "Borrar"
 
 #: recruiting/templates/recruiting/employers/detail.html:208
 msgid "employerDetailsNoOrganizationsAssigned"
-msgstr "No hay organizaciones asignadas"
+msgstr "No hay empleadores asignados."
 
 #: recruiting/templates/recruiting/employers/detail.html:228
 msgid "employerDetailsConfirmDelete"
@@ -2337,80 +2334,102 @@ msgid "recruiterListSave"
 msgstr "Ahorrar"
 
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:23
-msgid "assignContactEmployer"
-msgstr ""
+msgid "recruiterDetailsAssignContactEmployer"
+msgstr "Asignar empleador de contacto"
 
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:26
-msgid "employerContacts"
-msgstr "Employer Contacts"
+msgid "recruiterDetailsEmployerContacts"
+msgstr "Contactos del empleador"
+
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:42
+msgid "recruiterDetailsSelectUser"
+msgstr "Seleccionar usuario"
 
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:85
-#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:159
 msgid "Email"
 msgstr ""
 
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:86
-#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:162
 msgid "Phone"
 msgstr ""
 
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:92
-msgid "noContactsAvailable"
-msgstr ""
+msgid "recruiterDetailsNoContactsAvailable"
+msgstr "No hay contactos disponibles"
 
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:104
-msgid "workRequestID"
-msgstr ""
+msgid "recruiterDetailsWorkRequestID"
+msgstr "ID de solicitud de trabajo"
 
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:105
-#: recruiting/templates/recruiting/work_requests/workrequest_details.html:85
-msgid "startDate"
-msgstr ""
+msgid "recruiterDetailsStartDate"
+msgstr "Fecha de inicio"
 
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:106
-msgid "endDate"
-msgstr ""
+msgid "recruiterDetailsEndDate"
+msgstr "Fecha de finalización"
+
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:107
+msgid "recruiterDetailsEmployerAminListEmployer"
+msgstr "Empleador"
+
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:108
+msgid "recruiterDetailsStatus"
+msgstr "Estado"
 
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:138
-msgid "noWorkRequestsAvailable"
-msgstr ""
+msgid "recruiterDetailsNoWorkRequestsAvailable"
+msgstr "No hay solicitudes de trabajo disponibles."
 
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:152
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:163
-msgid "assignedEmployers"
-msgstr "Assigned Employer Organizations"
+msgid "recruiterDetailsAssignedEmployers"
+msgstr "Empleadores asignados"
 
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:158
-msgid "Name"
-msgstr ""
+msgid "recruiterDetailsName"
+msgstr "Nombre"
+
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:159
+msgid "recruiterDetailsEmail"
+msgstr "Correo electrónico"
 
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:160
-msgid "Address"
-msgstr ""
+msgid "recruiterDetailsAddress"
+msgstr "DIRECCIÓN"
 
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:161
-msgid "Country"
-msgstr ""
+msgid "recruiterDetailsCountry"
+msgstr "País"
+
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:162
+msgid "recruiterDetailsPhone"
+msgstr "Teléfono"
 
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:166
-msgid "actions"
-msgstr ""
+msgid "recruiterDetailsActions"
+msgstr "Comportamiento"
+
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:185
+msgid "recruiterDetailsNoRecruiters"
+msgstr "Sin reclutadores"
+
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:195
+#: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:229
+msgid "recruiterDetailsDelete"
+msgstr "Borrar"
 
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:202
-msgid "noEmployerOrganizationsAssigned"
-msgstr ""
+msgid "recruiterDetailsNoEmployerOrganizationsAssigned"
+msgstr "No hay empleadores asignados"
 
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:221
-#: recruiting/templates/recruiting/workers/detail.html:1005
-msgid "Confirm Delete"
-msgstr ""
+msgid "recruiterDetailsConfirmDelete"
+msgstr "Confirmar eliminación"
 
 #: recruiting/templates/recruiting/recruiters_list/workrequest_detail.html:228
-#: recruiting/templates/recruiting/work_requests/Edit_Hours.html:49
-#: recruiting/templates/recruiting/work_requests/edit_wages.html:51
-#: recruiting/templates/recruiting/workers/detail.html:1014
-msgid "Cancel"
-msgstr ""
+msgid "recruiterDetailsCancel"
+msgstr "Cancelar"
 
 #: recruiting/templates/recruiting/relationship/recruiter_status_list.html:36
 msgid "recruiterStatusAcceptRejectStatus"
@@ -2532,6 +2551,12 @@ msgstr "Cerca"
 #: recruiting/templates/recruiting/work_requests/detail.html:152
 msgid "joDetailsHoursNoFormAvailableForThisRole"
 msgstr "No hay ningún formulario disponible para este rol."
+
+#: recruiting/templates/recruiting/work_requests/Edit_Hours.html:49
+#: recruiting/templates/recruiting/work_requests/edit_wages.html:51
+#: recruiting/templates/recruiting/workers/detail.html:1014
+msgid "Cancel"
+msgstr ""
 
 #: recruiting/templates/recruiting/work_requests/Edit_Hours.html:52
 #: recruiting/templates/recruiting/work_requests/detail.html:158
@@ -4225,6 +4250,10 @@ msgstr ""
 msgid "requestDate"
 msgstr ""
 
+#: recruiting/templates/recruiting/work_requests/workrequest_details.html:85
+msgid "startDate"
+msgstr ""
+
 #: recruiting/templates/recruiting/work_requests/workrequest_details.html:86
 #: recruiting/templates/recruiting/work_requests/workrequest_details.html:120
 #: recruiting/templates/recruiting/work_requests/workrequest_details.html:153
@@ -4473,6 +4502,10 @@ msgstr "No"
 #: recruiting/templates/recruiting/workers/detail.html:796
 msgid "workerDetailsSave"
 msgstr "Ahorrar"
+
+#: recruiting/templates/recruiting/workers/detail.html:1005
+msgid "Confirm Delete"
+msgstr ""
 
 #: recruiting/templates/recruiting/workers/detail.html:1010
 msgid ""
@@ -4943,9 +4976,10 @@ msgstr ""
 
 #: recruiting/views/web.py:2050
 msgid ""
-"Invitations created, emails sent successfully, and employer(s) assigned to "
-"the recruiter organization."
+"employersInvitationsCreated,EmailsSentSuccessfully,AndEmployer(s)AssignedToTheRecruiterOrganization"
 msgstr ""
+"Invitaciones creadas, correos electrónicos enviados exitosamente y "
+"empleador(es) asignado(s) al reclutador."
 
 #: recruiting/views/web.py:2056
 msgid "The following employers are already assigned: {}"
@@ -6213,6 +6247,12 @@ msgstr "Has cerrado sesión exitosamente."
 #: theme/views.py:271
 msgid "loginYouHaveSuccessfullyLoggedIn"
 msgstr "Has iniciado sesión exitosamente."
+
+#~ msgid "employerContacts"
+#~ msgstr "Employer Contacts"
+
+#~ msgid "assignedEmployers"
+#~ msgstr "Assigned Employer Organizations"
 
 #~ msgid "employerDetailsContactName"
 #~ msgstr "Nombre del contacto"
