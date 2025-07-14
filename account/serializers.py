@@ -7,6 +7,9 @@ from account.models import (
 import re
 from common.twilio import OTPVerification
 from django.core.exceptions import ObjectDoesNotExist
+from common.logger import AppLogger
+
+logger = AppLogger(log_file='logs/invalid-curps.log')
 
 
 class RegistrationSerializer(serializers.Serializer):
@@ -43,15 +46,19 @@ class RegistrationSerializer(serializers.Serializer):
 
     def validate_curp(self, value):
         if len(value) > 18:
+            logger.info(f'CURP can not be more than 18 characters long: {value}')
             raise serializers.ValidationError(
                 'CURP cannot be more than 18 characters long')
         if len(value) < 18:
+            logger.info(f'CURP cannot be less than 18 characters long: {value}')
             raise serializers.ValidationError(
                 'CURP cannot be less than 18 characters long')
         if not re.match(r'^[A-Za-z]{4}\d{6}[A-Za-z]{6}[A-Za-z0-9]{1}\d{1}$', value):
+            logger.info(f'Invalid CURP format: {value}')
             raise serializers.ValidationError('Invalid CURP format')
 
         if User.objects.filter(curp=value).exists():
+            logger.info(f'User with the given CURP already exists: {value}')
             raise serializers.ValidationError(
                 'User with given CURP already exists')
         return value

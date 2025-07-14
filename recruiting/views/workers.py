@@ -104,7 +104,6 @@ class WorkerListView(View):
             elif video_filter.lower() == 'no':
                 workers = workers.exclude(documents__kind='explanation_video', documents__path__isnull=False).exclude(documents__kind='explanation_video', documents__path__exact='')
 
-
         # Filter by US Driving License
         us_license_filter = next((v for k, v in params.items() if k.startswith("us_driving_license_") and v), None)
         if us_license_filter and us_license_filter.lower() == 'yes':
@@ -212,19 +211,29 @@ class WorkerListView(View):
                     filtered.append(w)
             workers = filtered
         workers = workers.distinct()
-
         worker_data = []
         for worker in workers:
             profile_completion = calculate_profile_completion(worker)
             worker_details = get_worker_preferences(worker)
             years_of_experience = calculate_total_experience(worker)
-            worker.profile_completion_percentage = profile_completion
-
             latest_assignment = WorkAssignment.objects.filter(worker=worker).order_by('-assigned_date').first()
             worker.latest_status = latest_assignment.status if latest_assignment else None
+            visa_uploaded = UserDocuments.objects.filter(
+                user=worker, kind='visa'
+            ).exclude(path__isnull=True).exclude(path__regex=r'^\s*$').exists()
+
+            intro_video_uploaded = UserDocuments.objects.filter(
+                user=worker, kind='explanation_video'
+            ).exclude(path__isnull=True).exclude(path__regex=r'^\s*$').exists()
 
             for key, value in worker_details.items():
                 setattr(worker, key, value)
+
+            worker.years_of_experience = years_of_experience
+            worker.profile_completion_percentage = profile_completion
+            worker.visa_uploaded = visa_uploaded
+            worker.intro_video_uploaded = intro_video_uploaded
+
 
             worker_data.append({
                 'id': worker.id,
@@ -233,6 +242,8 @@ class WorkerListView(View):
                 'email': worker.email,
                 'profile_completion': profile_completion,
                 'years_of_experience': years_of_experience, 
+                'visa_uploaded': visa_uploaded,
+                'intro_video_uploaded': intro_video_uploaded,
                 **worker_details
             })
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -594,6 +605,7 @@ class WorkerDetailsView(View):
     def get(self, request, pk):
         logger = AppLogger(log_file='logs/debug.log')
         worker = get_object_or_404(User, pk=pk)
+        form = WorkExperienceCreateForm(initial={'user': worker})
         base_url = request.build_absolute_uri('/')
         preferences = UserPreference.objects.filter(user=worker)
         preference_data = {pref.key: pref.value for pref in preferences}
@@ -689,6 +701,7 @@ class WorkerDetailsView(View):
             'language_options': language_options,
             'language_label': language_label,
             'experience_forms': experience_forms,
+            'form': form,
             'breadcrumbs': [
                         {'name': _('workerDetailsHome'), 'url': reverse('index')},
                         {'name': _('workerDetailsWorkers'), 'url': reverse('recruiting_web:workers')},
@@ -760,7 +773,7 @@ class GetRolesForWorkRequestView(View):
 class CreateWorkExperienceView(BaseCreateView):
     model = UserWorkExperience
     form_class = WorkExperienceCreateForm
-    template_name = 'recruiting/workers/work_experience_create.html'
+    template_name = 'recruiting/workers/detail.html'
     content_service = StaticContent()
     
     def get_context_data(self, **kwargs):

@@ -98,31 +98,31 @@ class EmployerListView(View):
         query = request.GET.get('query')
 
         if user.groups.filter(name='admin').exists():
-            employers_list = Organization.objects.filter(type='employer').order_by('-created_at')
+            employers_list = Organization.objects.filter(type='employer').order_by('name')
 
         elif user.groups.filter(name__in=['recruiter', 'recruiter_admin']).exists():
             
-            recruiter_orgs = Organization.objects.filter(type='recruiter', recruiters=user).order_by('-created_at')
+            recruiter_orgs = Organization.objects.filter(type='recruiter', recruiters=user).order_by('name')
 
             recruiter_links = EmployerRecruiterOrgLink.objects.filter(
                 recruiter_org__in=recruiter_orgs,
                 final_status='accepted'
             )
             employer_ids = recruiter_links.values_list('employer_org__id', flat=True)
-            employers = Organization.objects.filter(id__in=employer_ids, type='employer')
+            employers = Organization.objects.filter(id__in=employer_ids, type='employer').order_by('name')
 
-            created_employers = Organization.objects.filter(type='employer', created_by=user)
+            created_employers = Organization.objects.filter(type='employer', created_by=user).order_by('name')
 
             employers_list = (employers | created_employers).distinct()
 
         else:
             employers_list = Organization.objects.none()
 
-        recruiter_organizations = Organization.objects.filter(type='recruiter').order_by('-created_at')
+        recruiter_organizations = Organization.objects.filter(type='recruiter').order_by('name')
 
         employers_data = []
         for employer in employers_list:
-            links = EmployerRecruiterOrgLink.objects.filter(employer_org=employer, final_status='accepted')
+            links = EmployerRecruiterOrgLink.objects.filter(employer_org=employer, final_status='accepted').order_by('recruiter_org__name')
             recruiter_org_names = list(set(link.recruiter_org.name for link in links))
 
             employers_data.append({
@@ -205,7 +205,7 @@ class RecruiterListViewInAdmin(View):
         query = request.GET.get('query')
 
         if user.groups.filter(name='admin').exists():
-            recruiters_list = Organization.objects.filter(type='recruiter').order_by('-created_at')
+            recruiters_list = Organization.objects.filter(type='recruiter').order_by('name')
         else:
             recruiters_list = Organization.objects.none()
 
@@ -224,7 +224,7 @@ class RecruiterListViewInAdmin(View):
 
         recruiters_data = []
         for recruiter in recruiters:
-            assigned_links = EmployerRecruiterOrgLink.objects.filter(recruiter_org=recruiter)
+            assigned_links = EmployerRecruiterOrgLink.objects.filter(recruiter_org=recruiter).order_by('employer_org__name')
             assigned_employers = list(set(
                 link.employer_org.name for link in assigned_links
             ))
@@ -407,9 +407,11 @@ class EmployerDetailView(View):
             })
 
         all_recruiter_names = list(recruiter_names_direct.union(recruiter_names_org))
+        users = User.objects.all()
 
         context = {
             'employer': employer,
+            'users': users,
             'in_progress_work_requests': in_progress_work_requests,
             'closed_work_requests': closed_work_requests,
             'draft_work_requests': draft_work_requests,
@@ -464,9 +466,11 @@ class RecruiterDetailView(View):
             })
 
         contacts = recruiter_org.contacts.all()
+        users = User.objects.all()
 
         context = {
             'employer': recruiter_org,
+            'users': users,
             'employer_organizations': employer_orgs_data,
             'in_progress_work_requests': in_progress_work_requests,
             'closed_work_requests': closed_work_requests,
@@ -519,8 +523,8 @@ class WorkRequestsListView(View):
         form = WorkRequestForm()
         context = {
             "work_requests": work_requests,
-            "employers": Organization.objects.filter(type='employer'),
-            "recruiter": Organization.objects.filter(type='recruiter'),
+            "employers": Organization.objects.filter(type='employer').order_by('name'),
+            "recruiter": Organization.objects.filter(type='recruiter').order_by('name'),
             "form": form,
             "breadcrumbs": [
                         {'name': _('jobOrderListHome'), 'url': 'index'},
@@ -956,7 +960,7 @@ class AddWorkersWorkRequests(View):
 
         context = {
             'workers': all_workers,
-            'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
+            'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles').order_by('name'),
             'form': form,
             'work_assign_form': work_assign_form,
             'filter_form': filter_form,
@@ -1276,8 +1280,8 @@ class WorkRequestDetailView(View):
             'role_add_form': role_add_form,
             'dynamic_fields': dynamic_fields,
             'breadcrumbs' :[
-                        {'name': _('Home'), 'url': 'index'},
-                        {'name': _('Job Orders'), 'url': 'recruiting_web:workrequest_list'},
+                        {'name': _('Home'), 'url': reverse('index')},
+                        {'name': _('Job Orders'), 'url': reverse('recruiting_web:workrequest_list')},
                         {'name': work_request.name, 'url': None},
                     ],
 
@@ -1342,7 +1346,7 @@ class RecruiterListView(LoginRequiredMixin, View):
         if not request.user.groups.filter(name='recruiter_admin').exists():
             return redirect('recruiting_web:access_denied')
 
-        recruiters = User.objects.filter(groups__name='recruiter').prefetch_related('employerrecruiter_set__employer')
+        recruiters = User.objects.filter(groups__name='recruiter').prefetch_related('employerrecruiter_set__employer').order_by('first_name')
         employers = Organization.objects.all()
 
 
@@ -1432,7 +1436,6 @@ class RoleHoursCreateView(CreateView):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)  # Use all_objects to bypass soft delete
 
-        print(role,"role")
         # Prevent duplicates: check if Hours already exist for this role
         if Hours.objects.filter(role=role).exists():
             
@@ -1613,7 +1616,6 @@ class RoleHousingCreateView(CreateView):
         }))
 
     def form_invalid(self, form):
-        print(form.errors, "Form errors")
         role_id = self.kwargs['pk']
         try:
             role = Role.all_objects.get(pk=role_id)
@@ -1965,47 +1967,38 @@ class AssignEmployerContactView(View):
         try:
             data = json.loads(request.body)
             employer_id = data.get("employer_id")
-            name = data.get("name")
-            email = data.get("email")
-            phone = data.get("phone")
+            user_id = data.get("user_id")
             position = data.get("position", "")
-            is_primary = data.get("is_primary")
-            
+            is_primary = data.get("is_primary", False)
 
-            if not employer_id:
-                messages.error(request, "employerIDIsRequired.")
-                return JsonResponse({'error': 'employerIDIsRequired.'}, status=400)
+            if not employer_id or not user_id:
+                return JsonResponse({'error': 'employerID and userID are required.'}, status=400)
 
-            if EmployerContact.objects.filter(email=email).exists():
-                messages.error(request, "Email already exists.")
-                return JsonResponse({'error': 'emailAlreadyExists.'}, status=400)
+            employer = Organization.objects.get(id=employer_id)
+            user = User.objects.get(id=user_id)
 
-            try:
-                employer = Organization.objects.get(id=employer_id)
-            except Organization.DoesNotExist:
-                messages.error(request, "Employer not found.")
-                return JsonResponse({'error': 'employerNotFound.'}, status=404)
+            # Optional: Prevent duplicate assignments
+            if EmployerContact.objects.filter(user=user, employer=employer).exists():
+                return JsonResponse({'error': 'User is already a contact for this employer.'}, status=400)
 
             EmployerContact.objects.create(
                 employer=employer,
-                name=name,
-                email=email,
-                phone=phone,
+                user=user,
                 position=position,
                 is_primary=is_primary
             )
 
-            messages.success(request, _("ContactAssignedSuccessfully!"))
             return JsonResponse({'success': True, 'message': 'ContactAssignedSuccessfully!'})
 
+        except Organization.DoesNotExist:
+            return JsonResponse({'error': 'Employer not found.'}, status=404)
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'User not found.'}, status=404)
         except Exception as e:
-            messages.error(request, str(e))
             return JsonResponse({'error': str(e)}, status=500)
 
     def get(self, request, *args, **kwargs):
-        messages.error(request, "GET not allowed")
         return JsonResponse({'error': 'GET not allowed.'}, status=405)
-
 
 @method_decorator(csrf_exempt, name='dispatch')
 class AssignEmployersToRecruiterOrgView(View):
@@ -2171,13 +2164,11 @@ def send_invitation_email_to_org(receiver_org, other_org, request, role):
 
 
 def send_invitation_to_primary_contacts(employer_org, recruiter_org, request):
-    print(employer_org, recruiter_org, "employer_org, recruiter_org")
     
     protocol = 'https' if request.is_secure() else 'http'
     domain = request.get_host()
 
     contacts = EmployerContact.objects.filter(employer=recruiter_org, is_primary=True)
-    print(contacts, "contacts")
     
     for contact in contacts:
         accept_url = f"{protocol}://{domain}/invitation-response/?action=accept&receiver_org_id={employer_org.id}&other_org_id={recruiter_org.id}&role=recruiter"

@@ -43,6 +43,7 @@ class WorkRequests(AuditableModel):
         ('Open', _('createJobOrderOpen')),
         ('Closed', _('createJobOrderClosed')),
     )
+    STATUS_CHOICES = sorted(STATUS_CHOICES, key=lambda x: x[1])
     
     name = models.CharField(max_length=255, null=False, blank=False)
     start_date = models.DateField(null=False, blank=False)
@@ -84,15 +85,15 @@ class Role(AuditableModel):
     def __str__(self):
         return f'{self.title}'
 
-    
+STATUS_CHOICES = sorted([
+    ('assigned', 'Assigned'),
+    ('offersent', 'Offer Sent'),
+    ('confirmed', 'Confirmed'),
+    ('rejected', 'Rejected'),
+    ('cancelled', 'Cancelled'),
+], key=lambda x: str(x[1]))
 class WorkAssignment(AuditableModel):
-    STATUS_CHOICES = (
-        ('assigned', 'Assigned'),
-        ('offersent', 'Offer Sent'),
-        ('confirmed', 'Confirmed'),
-        ('rejected', 'Rejected'),
-        ('cancelled', 'Cancelled'),
-    )
+    STATUS_CHOICES = STATUS_CHOICES
     work_request = models.ForeignKey(WorkRequests, on_delete=models.CASCADE, related_name='assignments',null=True, blank=True)
     role = models.ForeignKey(Role, on_delete=models.CASCADE, related_name="assignments",null=True, blank=True)
     worker = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='assignments',null=True, blank=True)
@@ -126,7 +127,12 @@ class Hours(AuditableModel):
     objects = SoftDeleteManager()  # Only active (non-deleted)
     all_objects = models.Manager()
 
-
+choices = sorted([
+    ('Hourly', _('roleWagesHourly')),
+    ('Daily', _('roleWagesDaily')),
+    ('Weekly', _('roleWagesWeekly')),
+    ('Monthly', _('roleWagesMonthly')),
+], key=lambda x: str(x[1]))
 class Wages(AuditableModel):
     role = models.OneToOneField(
         Role, on_delete=models.CASCADE, related_name='wages'
@@ -134,12 +140,7 @@ class Wages(AuditableModel):
     wage = models.DecimalField(max_digits=10, decimal_places=2)
     wage_type = models.CharField(
         max_length=50,
-        choices=[
-            ('Hourly', _('roleWagesHourly')),
-            ('Daily', _('roleWagesDaily')),
-            ('Weekly', _('roleWagesWeekly')),
-            ('Monthly', _('roleWagesMonthly')),
-        ]
+        choices=choices,
     )
     piece_rate_offerings = models.DecimalField(
         max_digits=10, decimal_places=2,
@@ -147,24 +148,23 @@ class Wages(AuditableModel):
     )
     piece_rate_offerings_type = models.CharField(
         max_length=50,
-        choices=[
-            ('Hourly', _('roleWagesHourly')),
-            ('Daily', _('roleWagesDaily')),
-            ('Weekly', _('roleWagesWeekly')),
-            ('Monthly', _('roleWagesMonthly')),
-        ]
+        choices=choices,
     )
     frequency_of_pay = models.CharField(
         max_length=50,
-        choices=[
+        choices=choices,
+        )
+    details = models.CharField(max_length=100, null=True)
+
+choices = sorted(
+            [
             ('Hourly', _('roleWagesHourly')),
             ('Daily', _('roleWagesDaily')),
             ('Weekly', _('roleWagesWeekly')),
             ('Monthly', _('roleWagesMonthly')),
-        ]
-        )
-    details = models.CharField(max_length=100, null=True)
-
+            ],key=lambda x: str(x[1])
+            
+            )
 
 class Deduction(AuditableModel):
     role = models.ForeignKey(
@@ -175,17 +175,20 @@ class Deduction(AuditableModel):
     deduction_amount = models.DecimalField(max_digits=10, decimal_places=2)
     frequency_of_pay = models.CharField(
         max_length=50,
-        choices=[
-            ('Hourly', _('roleWagesHourly')),
-            ('Daily', _('roleWagesDaily')),
-            ('Weekly', _('roleWagesWeekly')),
-            ('Monthly', _('roleWagesMonthly')),
-        ]
+        choices=choices,
         )
     
     objects = SoftDeleteManager()
     all_objects = models.Manager()
-
+    
+choices = sorted([
+    ('None', _('roleQualificationNone')),
+    ('Highschool/GED', _('roleQualificationHighschool/GED')),
+    ('Associates', _('roleQualificationAssociates')),
+    ('Bachelors', _('roleQualificationBachelors')),
+    ('Masters or higher', _('roleQualificationMastersOrHigher')),
+    ('Other degree', _('roleQualificationOtherDegree')),
+], key=lambda x: str(x[1]))
 
 class Qualification(AuditableModel):
     role = models.OneToOneField(
@@ -195,14 +198,7 @@ class Qualification(AuditableModel):
     minimum_education_requirement = models.CharField(
         max_length=50,
         
-        choices=[
-            ('None', _('roleQualificationNone')),
-            ('Highschool/GED', _('roleQualificationHighschool/GED')),
-            ('Associates', _('roleQualificationAssociates')),
-            ('Bachelors', _('roleQualificationBachelors')),
-            ('Masters or higher', _('roleQualificationMastersOrHigher')),
-            ('Other degree', _('roleQualificationOtherDegree')),
-        ]
+        choices=choices,
     )
     experience_required = models.CharField(max_length=255)
     number_of_months_experience_required = models.IntegerField()
@@ -236,7 +232,13 @@ class EmploymentLocation(AuditableModel):
     state = models.CharField(max_length=2)
     postal_code = models.CharField(max_length=10)
     additional_info = models.TextField(blank=True, null=True)
-
+    
+choices = sorted(
+            [
+            ('Employer provided', _('roleHousingInformationEmployerProvided')),
+            ('Rental or Public', _('roleHousingInformationRentalOrPublic')), 
+        ], key=lambda x: str(x[1])
+    )
 
 class HousingInformation(AuditableModel):
     role = models.OneToOneField(
@@ -251,10 +253,7 @@ class HousingInformation(AuditableModel):
     type_of_housing = models.CharField(
         max_length=50,
         
-        choices=[
-            ('Employer provided', _('roleHousingInformationEmployerProvided')),
-            ('Rental or Public', _('roleHousingInformationRentalOrPublic')),
-            ]
+        choices=choices,
         )
     additional_info = models.TextField(blank=True, null=True)
 
@@ -271,14 +270,24 @@ class MealProvision(AuditableModel):
     )
     additional_info = models.TextField(blank=True, null=True)
 
+choices = sorted([
+                ('Email', _('createMessageEmail')),
+                ('Work Order', _('createMessageWorkOrder')),
+                ], key=lambda x: str(x[1])
+                )
+recipent_choices = sorted(
+                    [
+                    ('All', _('createMessageAll')),
+                    ('Confirmed', _('createMessageConfirmed')),
+                    ('Pending', _('createMessagePending')),
+                    ('Shortlist', _('createMessageShortlist')),   
+                    ], key=lambda x: str(x[1])
+                    )
 
 class OkoMessage(AuditableModel):
     recipient_type = models.CharField(
         max_length=50,
-        choices=[
-            ('Work Order', _('createMessageWorkOrder')),
-            ('Email', _('createMessageEmail'))
-        ]
+        choices=choices,
     )
     job_order = models.ForeignKey(
         WorkRequests, on_delete=models.CASCADE,
@@ -286,12 +295,7 @@ class OkoMessage(AuditableModel):
     )
     include_recipients = models.CharField(
         max_length=255,
-        choices=[
-            ('All', _('createMessageAll')),
-            ('Confirmed', _('createMessageConfirmed')),
-            ('Pending', _('createMessagePending')),
-            ('Shortlist', _('createMessageShortlist')),
-        ]
+        choices=recipent_choices,
     )
     subject = models.CharField(max_length=255)
     body = models.TextField()
@@ -328,9 +332,6 @@ class EmployerRecruiter(AuditableModel):
 
 class EmployerContact(AuditableModel):
     employer = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="contacts")
-    name = models.CharField(max_length=255)
-    email = models.EmailField(max_length=255)
-    phone = models.CharField(max_length=255)
     position = models.CharField(max_length=255, blank=True, null=True) 
     is_primary = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True) 

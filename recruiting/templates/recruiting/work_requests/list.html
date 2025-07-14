@@ -43,10 +43,10 @@
             <div class="modal-body">
                 <label for="statusSelect">{% translate "jobOrderListSelectStatus" %}:</label>
                 <select class="form-select" id="statusSelect">
-                    <option value="Draft">{% translate "jobOrderListDraft" %}</option>
-                    <option value="Requested">{% translate "jobOrderListRequested" %}</option>
-                    <option value="Open">{% translate "jobOrderListOpen" %}</option>
-                    <option value="Closed">{% translate "jobOrderListClosed" %}</option>
+                  <option value="Closed">{% translate "jobOrderListClosed" %}</option>
+                  <option value="Draft">{% translate "jobOrderListDraft" %}</option>
+                  <option value="Open">{% translate "jobOrderListOpen" %}</option>
+                  <option value="Requested">{% translate "jobOrderListRequested" %}</option>
                 </select>
             </div>
             <div class="modal-footer">
@@ -157,20 +157,20 @@
                         {% translate item.status %}
                     </td>
                     {% if request.user|has_group:"admin" %}
-                        <td>
+                      <td>
+                          <button
+                            class="btn btn-sm btn-outline-secondary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editModal{{ item.id }}">
+                            {% translate 'jobOrderListEdit'%}
+                          </button>
                         <button
-                            class="btn btn-sm btn-outline-danger"
+                            class="btn btn-sm btn-outline-danger ms-2"
                             data-bs-toggle="modal"
                             data-bs-target="#deleteModal{{ item.id }}">
                           {% translate 'jobOrderListDelete'%}
                         </button>
-                        <button
-                            class="btn btn-sm btn-outline-secondary ms-2"
-                            data-bs-toggle="modal"
-                            data-bs-target="#editModal{{ item.id }}">
-                            {% translate 'jobOrderListEdit'%}
-                      </button>
-                        </td>
+                      </td>
                     {% endif %}
                 </tr>
                 {% endfor %}
