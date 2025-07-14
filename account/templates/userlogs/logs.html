@@ -103,7 +103,7 @@
                             </thead>
                             <tbody>
                                 {% for log in logs %}
-                                <tr class="text-center">
+                                <tr class="text-start">
                                     <td><a href="{% url 'log_detail' log.pk %}">{{ log.user.email }}</a></td>
                                     <td>{{ log.content_type.model }}</td>
                                     <td>{{ log.action }}</td>

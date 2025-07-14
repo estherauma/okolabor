@@ -98,7 +98,7 @@
               </thead>
               <tbody>
                 {% for worker in confirmed_workers %}
-                <tr class="text-center">
+                <tr class="text-start">
                   <td><input type="checkbox" class="worker-shortlist-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.firstname }} {{ worker.lastname }}"></td>
                   <td class="col-name">{% if worker.first_name and worker.last_name %}<a href="{{ worker.id }}">{{ worker.first_name }} {{ worker.last_name }}</a>{% else %}<a href="{{ worker.id }}">{{ worker.email }}</a>{% endif %}</td>
                   <td class="col-town">{{ worker.town|default:"Not Provided" }}</td>
