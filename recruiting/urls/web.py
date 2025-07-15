@@ -27,12 +27,7 @@ from recruiting.views.web import (
     DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditRoleHoursView,DeleteRoleHoursView,EditRoleWagesView,DeleteRoleWagesView,EditRoleQualificationView,DeleteQualificationView,DeductionEditView,DeleteDeductionView,OfferSendWorkerView,InvitationResponseView
 )
 from recruiting.views.workers import (
-     WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,EditWorkExperienceView,DeleteWorkExperienceView,WorkerEditView,WorkerDeleteView,EditUserPreferenceView,EditLanguageProficiencyView,EditDocumentsView,DeleteAllWorkerInfoView,WorkerEditView,WorkerDeleteView,FilteredWorkersAjaxView
-)
-from recruiting.views.workers import (
-     CreateWorkExperienceView, WorkExperienceDetailsView,
-     ExportWorkerDetailsView,UploadDocumentsView,
-     UploadLanguageProficiencyView,UploadUserPreferenceView
+     WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,EditWorkExperienceView,DeleteWorkExperienceView,WorkerEditView,WorkerDeleteView,EditUserPreferenceView,EditLanguageProficiencyView,EditDocumentsView,DeleteAllWorkerInfoView,WorkerEditView,WorkerDeleteView,FilteredWorkersAjaxView,SendOfferView,CreateWorkExperienceView, WorkExperienceDetailsView,ExportWorkerDetailsView,UploadDocumentsView,UploadLanguageProficiencyView,UploadUserPreferenceView
 )
 
 
@@ -100,6 +95,9 @@ urlpatterns = [
     path('add-to-shortlist/', 
           AddToShortlistView.as_view(), 
           name='add_to_shortlist'),
+    path('send-offer/',
+          SendOfferView.as_view(), 
+          name='send_offer'),
 
     path('job-order/<pk>/',
          WorkRequestDetailView.as_view(),
