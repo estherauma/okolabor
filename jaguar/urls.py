@@ -21,7 +21,7 @@ from django.urls import include, path
 from django.views.static import serve
 
 from jaguar.views import (
-    IndexView, UploadFileView, schema_view, UploadStatusView)
+    IndexView, UploadFileView, schema_view, UploadStatusView,DynamicFieldDataView)
 
 urlpatterns = [
     # API URLS
@@ -41,6 +41,7 @@ urlpatterns = [
 
     # WEB URLS
     path('account/', include('account.urls.web')),
+    path('api/dynamic-field-data/', DynamicFieldDataView.as_view(), name='get_dynamic_field_data'),
 
     path("i18n/", include("django.conf.urls.i18n")),
 ]

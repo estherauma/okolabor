@@ -1,3 +1,18 @@
+let fieldData = {};
+
+async function fetchFieldDataFromAPI() {
+    try {
+        const response = await fetch('/api/dynamic-field-data/');
+        if (response.ok) {
+            fieldData = await response.json();
+        } else {
+            console.error("Failed to fetch dynamic field data:", response.status);
+        }
+    } catch (error) {
+        console.error("Error fetching dynamic field data:", error);
+    }
+}
+
 function addAnotherExperience() {
     const template = document.getElementById("form-template").innerHTML;
     const container = document.getElementById("filter-inputs-container");
@@ -18,13 +33,11 @@ function removeForm(button) {
 
 function bindDynamicFieldEvents() {
     const allTypeSelectors = document.querySelectorAll('select[id$="id_type_sector"]');
-
     allTypeSelectors.forEach(selector => {
         selector.removeEventListener('change', handleTypeSectorChange);
         selector.addEventListener('change', handleTypeSectorChange);
     });
 
-    // Add change listeners for pills rendering
     const dynamicSelectors = document.querySelectorAll('select[id$="id_dynamic_field_1"], select[id$="id_dynamic_field_2"]');
     dynamicSelectors.forEach(selector => {
         selector.removeEventListener('change', () => updatePills(selector));
@@ -43,40 +56,6 @@ function handleTypeSectorChange(event) {
     const field2Label = form.querySelector('label[for$="id_dynamic_field_2"]');
 
     const type = typeSelector.value;
-
-    const fieldData = {
-        "Animals": {
-            field1Label: "Animal Type",
-            field1Options: ["Asses", "Bees", "Buffalo"].sort(),
-            field2Label: "Tasks",
-            field2Options: ["Breeding", "Caring", "Packaging"].sort()
-        },
-        "Crop and Horticulture": {
-            field1Label: "Crop Type",
-            field1Options: ["Avocados", "Bananas", "Brazil nuts"].sort(),
-            field2Label: "Tasks",
-            field2Options: ["Cultivating", "Grading and sorting", "Harvesting", "Other"].sort()
-        },
-        "Mechanics": {
-            field1Label: "Tasks",
-            field1Options: ["Car", "Agricultural Equipment/Machinery"].sort(),
-            field2Label: null,
-            field2Options: null
-        },
-        "Worker Supervision/Management": {
-            field1Label: "Tasks",
-            field1Options: ["Animals", "Crop and Horticulture", "Other"].sort(),
-            field2Label: null,
-            field2Options: null
-        },
-        "Licensed Vehicle Operation": {
-            field1Label: "Tasks",
-            field1Options: ["Cargo licence", "Passenger licence"].sort(),
-            field2Label: null,
-            field2Options: null
-        }
-    };
-
     const selected = fieldData[type];
 
     if (selected) {
@@ -87,6 +66,7 @@ function handleTypeSectorChange(event) {
             dynamicField1.innerHTML += `<option value="${option}">${option}</option>`;
         });
         dynamicField1.parentElement.style.display = 'block';
+
         if (selected.field2Options) {
             field2Label.textContent = selected.field2Label;
             dynamicField2.innerHTML = "";
@@ -147,50 +127,51 @@ function updatePills(selectElement) {
 }
 
 function updateCollapseSummary() {
-  const summaryContainer = document.getElementById('selected-filters-summary');
-  summaryContainer.innerHTML = '';
+    const summaryContainer = document.getElementById('selected-filters-summary');
+    summaryContainer.innerHTML = '';
 
-  const allSelects = document.querySelectorAll('select[id$="id_dynamic_field_1"], select[id$="id_dynamic_field_2"], select[id$="id_type_sector"]');
-  let allSelectedTexts = [];
+    const allSelects = document.querySelectorAll('select[id$="id_dynamic_field_1"], select[id$="id_dynamic_field_2"], select[id$="id_type_sector"]');
+    let allSelectedTexts = [];
 
-  allSelects.forEach(select => {
-    const selectedOptions = Array.from(select.selectedOptions)
-      .map(opt => opt.text.trim())
-      .filter(text => text && text !== 'Please select...');
-    allSelectedTexts = allSelectedTexts.concat(selectedOptions);
-  });
-
-  if (allSelectedTexts.length > 0) {
-    const label = document.createElement('strong');
-    label.textContent = 'Active filters: ';
-    summaryContainer.appendChild(label);
-
-    allSelectedTexts.forEach(text => {
-      const pill = document.createElement("span");
-      pill.textContent = text;
-      pill.style.display = "inline-block";
-      pill.style.padding = "4px 10px";
-      pill.style.margin = "2px 4px";
-      pill.style.fontSize = "0.75rem";
-      pill.style.color = "#1b4332";
-      pill.style.border = "1px solid #74c69d";
-      pill.style.borderRadius = "999px";
-      pill.style.backgroundColor = "#d8f3dc";
-      pill.style.boxShadow = "0 1px 2px rgba(0, 0, 0, 0.05)";
-      summaryContainer.appendChild(pill);
+    allSelects.forEach(select => {
+        const selectedOptions = Array.from(select.selectedOptions)
+            .map(opt => opt.text.trim())
+            .filter(text => text && text !== 'Please select...');
+        allSelectedTexts = allSelectedTexts.concat(selectedOptions);
     });
-  }
+
+    if (allSelectedTexts.length > 0) {
+        const label = document.createElement('strong');
+        label.textContent = 'Active filters: ';
+        summaryContainer.appendChild(label);
+
+        allSelectedTexts.forEach(text => {
+            const pill = document.createElement("span");
+            pill.textContent = text;
+            pill.style.display = "inline-block";
+            pill.style.padding = "4px 10px";
+            pill.style.margin = "2px 4px";
+            pill.style.fontSize = "0.75rem";
+            pill.style.color = "#1b4332";
+            pill.style.border = "1px solid #74c69d";
+            pill.style.borderRadius = "999px";
+            pill.style.backgroundColor = "#d8f3dc";
+            pill.style.boxShadow = "0 1px 2px rgba(0, 0, 0, 0.05)";
+            summaryContainer.appendChild(pill);
+        });
+    }
 }
 
-
-
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+    await fetchFieldDataFromAPI();
     bindDynamicFieldEvents();
+
     document.querySelectorAll('select[id$="id_type_sector"]').forEach(selector => {
         if (selector.value) {
             selector.dispatchEvent(new Event('change'));
         }
     });
+
     document.querySelectorAll('select[id$="id_dynamic_field_1"], select[id$="id_dynamic_field_2"]').forEach(select => {
         updatePills(select);
     });

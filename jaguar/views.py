@@ -13,8 +13,9 @@ from jaguar.serializers import UploadFileSerializer
 import base64
 import os
 from .tasks import process_file_upload
-
+from common.utils import StaticContent
 from celery.result import AsyncResult
+from django.utils.translation import gettext as _
 
 
 class IndexView(APIView):
@@ -145,3 +146,46 @@ class UploadStatusView(APIView):
                 'error': str(result.result)
             }, status=500)
         return Response({'status': result.state}, status=200)
+    
+class DynamicFieldDataView(APIView):
+
+    def get(self, request):
+        content_service = StaticContent()
+        field_data = {
+            "Animals": {
+                "field1Label": _("Animal Type"),
+                "field1Options": content_service.get_animal_type_choices(),
+                "field2Label": _("Tasks"),
+                "field2Options": content_service.get_animal_responsibilities_choices()
+            },
+            "Crop and Horticulture": {
+                "field1Label": _("Crop Type"),
+                "field1Options": content_service.get_crop_type_choices(),
+                "field2Label": _("Tasks"),
+                "field2Options": content_service.get_crop_responsibilities_choices()
+            },
+            "Mechanics": {
+                "field1Label": _("Tasks"),
+                "field1Options": content_service.get_mechanics_responsibilities_choices(),
+                "field2Label": None,
+                "field2Options": None
+            },
+            "Worker Supervision/Management": {
+                "field1Label": _("Tasks"),
+                "field1Options": content_service.get_worker_supervision_choices(),
+                "field2Label": None,
+                "field2Options": None
+            },
+            "Licensed Vehicle Operation": {
+                "field1Label": _("Tasks"),
+                "field1Options": content_service.get_worker_licensed_vehicle_operation_choices(),
+                "field2Label": None,
+                "field2Options": None
+            },
+        }
+        for category in field_data.values():
+            for key in ['field1Options', 'field2Options']:
+                if category[key]:
+                    category[key] = sorted([label for _, label in category[key]])
+
+        return Response(field_data, status=200)
