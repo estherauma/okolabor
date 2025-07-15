@@ -159,13 +159,13 @@
                     {% if request.user|has_group:"admin" %}
                       <td>
                           <button
-                            class="btn btn-sm btn-outline-secondary"
+                            class="btn btn-sm yellow-button"
                             data-bs-toggle="modal"
                             data-bs-target="#editModal{{ item.id }}">
                             {% translate 'jobOrderListEdit'%}
                           </button>
                         <button
-                            class="btn btn-sm btn-outline-danger ms-2"
+                            class="btn btn-sm red-button ms-2"
                             data-bs-toggle="modal"
                             data-bs-target="#deleteModal{{ item.id }}">
                           {% translate 'jobOrderListDelete'%}
