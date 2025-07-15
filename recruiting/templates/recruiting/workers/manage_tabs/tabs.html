@@ -17,7 +17,30 @@
 .select2-dropdown{
     width: 157px !important;
 }
+.close{
+    color: #000000 !important;
+    background-color: transparent !important;
+    font-size: 1.5rem !important;
+    font-weight: 400;
+}
 
+#toggle-sign-btn{
+    background-color:#eaedcc; 
+    cursor: pointer; 
+    font-size: 1.3rem;
+}
+.advanced-filter-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.8rem;
+    background-color: #eaedcc;
+    cursor: pointer;
+}
+.advanced-filter-title{
+    margin:0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--oko-mid-green);
+}
 </style>
 {% endblock styles %}
 
@@ -27,21 +50,21 @@
 
    <div class="container-fluid" style="position: relative; height: auto">
             <div
-            style="background-color:#D9D9D9; cursor: pointer; border-radius: 0.5rem;"
+            class="advanced-filter-btn"
             data-bs-toggle="collapse"
             data-bs-target="#collapseCard"
             aria-expanded="false"
             aria-controls="collapseCard"
         >
-            <div class="d-flex justify-content-between align-items-center my-2">
-                <button class="btn green-color-workers" style="pointer-events: none;">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="advanced-filter-title" style="pointer-events: none;">
                     <i class="fa fa-filter" aria-hidden="true"></i>
                     {% translate "workersListAdvancedFilter" %}
-                </button>
+                </h4>
                 <div id="selected-filters-summary" class="d-flex flex-wrap align-items-center"></div>  <!-- ⬅️ New pills will appear here -->
                 <div id="active-filters-list" style="margin-top: 0.5rem;"></div>
-                <button class="btn green-color-workers toggle-sign collapsed" type="button" style="pointer-events: none;">
-                    <i class="bi bi-caret-down-fill fs-4"></i>
+                <button  id="toggle-sign-btn"  class="btn green-color-workers collapsed" type="button" style="pointer-events: none;">
+                   +
                 </button>
             </div>
             
@@ -78,7 +101,7 @@
 
                                 <div class="col-auto">
                                     <div class="col-auto">
-                                                <button class="btn btn-danger" type="button" onclick="removeForm(this)">
+                                                <button class="btn close " type="button" onclick="removeForm(this)">
                                                     &times;
                                                 </button>
                                     </div>
@@ -133,7 +156,7 @@
                             </div>
                         </div>
                         <div class="col-auto">
-                            <button class="btn btn-danger" type="button" onclick="removeFilterRow(this)">
+                            <button class="btn close" type="button" onclick="removeFilterRow(this)">
                                 &times;
                             </button>
                         </div>
@@ -171,8 +194,8 @@
                         </div>
                         {% endfor %}
                         <div class="col-auto">
-                            <button class="btn" type="button" onclick="removeForm(this)">
-                                <span class="sign medium-font">{% translate "workersListX" %}</span>
+                            <button class="btn close" type="button" onclick="removeForm(this)">
+                                  &times;
                             </button>
                         </div>
                     </div>
@@ -414,6 +437,17 @@ function updateCollapseSummary() {
     summaryContainer.innerHTML = '';
 
     const allSelectedTextsSet = new Set();
+    var collapseCard = document.getElementById('collapseCard');
+    var toggleBtn = document.getElementById('toggle-sign-btn');
+
+     if (collapseCard && toggleBtn) {
+        collapseCard.addEventListener('show.bs.collapse', function () {
+            toggleBtn.textContent = '–'; // Change to minus when expanded
+        });
+        collapseCard.addEventListener('hide.bs.collapse', function () {
+            toggleBtn.textContent = '+'; // Change to plus when collapsed
+        });
+    }
 
     // ✅ 1. Extract filters from URL parameters
     const params = new URLSearchParams(window.location.search);
@@ -602,7 +636,7 @@ function addRandomFilter() {
         </div>
         <div class="col-md-6" id="extra-fields-${uniqueId}"></div>
         <div class="col-auto mt-3">
-            <button class="btn btn-danger btn-sm py-1 px-2 mt-2" type="button" onclick="removeFilterRow(this)">
+            <button class="btn btn-sm close mt-2" type="button" onclick="removeFilterRow(this)">
                 &times;
             </button>
         </div>
