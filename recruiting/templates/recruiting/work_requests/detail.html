@@ -77,7 +77,7 @@
           <a class="btn btn-light btn-sm" 
             data-bs-toggle="modal" 
             data-bs-target="#addRoleModal{{ workrequest.id }}">
-            <i class="fa fa-plus me-1"></i> {% translate "jobOrderDetailsAddRole" %}
+             {% translate "jobOrderDetailsAddRole" %}
           </a>
           {% include "recruiting/work_requests/create_role.html" with workrequest=workrequest form=role_add_form dynamic_fields=dynamic_fields %}
 
@@ -97,7 +97,7 @@
                         <strong>{{ role.title }}</strong>
                     </div>
                     <a href="{% url 'recruiting_web:work_request_add_workers' pk=workrequest.id role_id=role.id %}?type_sector={{ role.work_type|urlencode }}{% if role.work_type == 'animals' %}&dynamic_field_1={{ role.work_type_detail.animal_types|default:''|join:','|urlencode }}&dynamic_field_2={{ role.work_type_detail.responsibilities_types|default:''|join:','|urlencode }}{% elif role.work_type == 'crop_and_horticulture' %}&dynamic_field_1={{ role.work_type_detail.crop_types|default:''|join:','|urlencode }}&dynamic_field_2={{ role.work_type_detail.crop_job_types|default:''|join:','|urlencode }}{% elif role.work_type == 'mechanics' %}&dynamic_field_1={{ role.work_type_detail.mechanic_job_types|default:''|join:','|urlencode }}{% elif role.work_type == 'worker_supervision__management' %}&dynamic_field_1={{ role.work_type_detail.supervision_jobs_types|default:''|join:','|urlencode }}{% endif %}">
-                      <button class="btn btn-success btn-sm ms-3">
+                      <button class="btn btn-sm dark-green-button ">
                         +{% translate "jobOrderDetailsAddWorkers" %}
                       </button>
                     </a>
@@ -386,11 +386,11 @@
 
                   <div class="d-flex align-items-center gap-2">
                     <!-- Add Hours Button -->
-                  
-                    <a class="btn btn-success btn-sm" 
+
+                    <a class="btn btn-sm light-green-button" 
                     data-bs-toggle="modal" 
                     data-bs-target="#hoursModal{{ role.id }}">
-                      <i class="fa fa-plus me-1"></i> {% translate "joDetailsHoursAddHours" %}
+                      {% translate "joDetailsHoursAddHours" %}
                     </a>
 
                     {% include "recruiting/work_requests/create_hours.html"%}
@@ -450,10 +450,10 @@
               </h6>
               <div class="d-flex align-items-center gap-2">
                 <!-- Add Wages Button -->
-                <a class="btn btn-success btn-sm" 
+                <a class="btn  btn-sm light-green-button" 
                     data-bs-toggle="modal" 
                     data-bs-target="#wagesModal{{ role.id }}">
-                      <i class="fa fa-plus me-1"></i> {% translate "joDetailsAddWages" %}
+                      {% translate "joDetailsAddWages" %}
                 </a>
                 {% include "recruiting/work_requests/create_wages.html" %}
                 <!-- Edit Icon -->
@@ -512,10 +512,10 @@
               </h6>
             
 
-              <a class="btn btn-success btn-sm" 
+              <a class="btn  btn-sm light-green-button" 
                     data-bs-toggle="modal" 
                     data-bs-target="#DeductionModal{{ role.id }}">
-                      <i class="fa fa-plus me-1"></i> {% translate "joDetailsDeductionsAddDeductions" %}
+                      {% translate "joDetailsDeductionsAddDeductions" %}
                 </a>
               {% include "recruiting/work_requests/create_deductions.html" %}
               </div>
@@ -580,10 +580,10 @@
               <div class="d-flex align-items-center gap-2">
                     <!-- Add Qualification Button -->
 
-                    <a class="btn btn-success btn-sm" 
+                    <a class="btn  btn-sm light-green-button" 
                         data-bs-toggle="modal" 
                         data-bs-target="#QualificationModal{{ role.id }}">
-                          <i class="fa fa-plus me-1"></i> {% translate "joDetailsQualificationsAddQualifiations" %}
+                           {% translate "joDetailsQualificationsAddQualifiations" %}
                      </a>
                     {% include "recruiting/work_requests/create_qualifications.html" %}
 
@@ -648,10 +648,10 @@
               <div class="d-flex align-items-center gap-2">
                 <!-- Add Location Button -->
 
-                 <a class="btn btn-success btn-sm" 
+                 <a class="btn  btn-sm light-green-button" 
                         data-bs-toggle="modal" 
                         data-bs-target="#EmploymentModal{{ role.id }}">
-                          <i class="fa fa-plus me-1"></i> {% translate "joDetailsPlaceOfEmploymentAddLocation" %}
+                           {% translate "joDetailsPlaceOfEmploymentAddLocation" %}
                 </a>
                 {% include "recruiting/work_requests/create_employment_location.html" %}
                 <!-- Edit Button -->
@@ -706,10 +706,10 @@
               <div class="d-flex align-items-center gap-2">
                   
 
-                  <a class="btn btn-success btn-sm" 
+                  <a class="btn btn-sm light-green-button" 
                         data-bs-toggle="modal" 
                         data-bs-target="#HousingModal{{ role.id }}">
-                          <i class="fa fa-plus me-1"></i> {% translate "joDetailsHousingInfoAddHousing" %}
+                         {% translate "joDetailsHousingInfoAddHousing" %}
                   </a>
                   {% include "recruiting/work_requests/create_housing_info.html" %}
 
@@ -790,10 +790,10 @@
               </h6>
               <div class="d-flex align-items-center gap-2">
                 <!-- Add Meals Button -->
-                <a class="btn btn-success btn-sm" 
+                <a class="btn  btn-sm light-green-button" 
                         data-bs-toggle="modal" 
                         data-bs-target="#MealsModal{{ role.id }}">
-                          <i class="fa fa-plus me-1"></i> {% translate "joDetailsMealsAddMeals" %}
+                         {% translate "joDetailsMealsAddMeals" %}
                   </a>
                 {% include "recruiting/work_requests/create_meal_provision.html" %}
 
