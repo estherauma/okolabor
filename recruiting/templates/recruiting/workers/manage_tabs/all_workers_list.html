@@ -103,7 +103,7 @@
                             {% comment %} <a class="btn dark-green-button ms-3 text-white" 
                                 data-bs-toggle="modal" 
                                 data-bs-target="#addWorkerModal">
-                                <i class="fa fa-plus me-1"></i> {% translate "workersListAddWorker" %}
+                                {% translate "workersListAddWorker" %}
                             </a> {% endcomment %}
 
                             <button id="sendOfferBtnDirectly" class="btn dark-green-button ms-2"  disabled>
@@ -198,7 +198,7 @@
                                         <td class="col-actions">
                                         <!-- Edit Button -->
                                           <button type="button"
-                                          class="btn btn-sm btn-outline-secondary"
+                                          class="btn btn-sm yellow-button"
                                           data-bs-toggle="modal"
                                           data-bs-target="#editModal{{ worker.id }}"
                                           title="{% translate 'workersListIconEdit' %}">
@@ -207,7 +207,7 @@
 
                                         <!-- Delete Button -->
                                           <button type="button"
-                                          class="btn btn-sm btn-outline-danger ms-2"
+                                          class="btn btn-sm red-button ms-2"
                                           data-bs-toggle="modal"
                                           data-bs-target="#deleteModalWorker{{ worker.id }}"
                                           title="{% translate 'workersListIconDelete' %}">
