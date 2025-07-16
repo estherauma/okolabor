@@ -30,8 +30,8 @@
       <div class="modal-content">
         <form method="POST" id="assignContactForm">
           {% csrf_token %}
-          <div class="modal-header">
-            <h5 class="modal-title" id="assignContactLabel">{% translate "employerDetailsAssignContactEmployer" %}</h5>
+          <div class="modal-header" style="background-color: #7DBF96;">
+            <h5 class="modal-title text-white" id="assignContactLabel">{% translate "employerDetailsAssignContactEmployer" %}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'employerDetailsClose' %}"></button>
           </div>
           <input type="hidden" id="employerIdField" name="employer_id">
@@ -62,8 +62,8 @@
           </div>
 
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "employerDetailsCancel" %}</button>
-            <button type="submit" class="btn btn-primary" id="assignContactBtn">
+            <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate "employerDetailsCancel" %}</button>
+            <button type="submit" class="btn" id="assignContactBtn" style='background-color:#7DBF96; color:white'>
               {% translate "employerDetailsSave" %}
             </button>
 
@@ -99,13 +99,13 @@
 <div class="table-responsive">
     <h3>{% translate "employerDetailsWorkRequests"%}</h3>
     <table class="table text-nowrap border-bottom" id="work-requests-list-datatable">
-        <thead>
+        <thead style="background-color: #7DBF96;">
             <tr>
-                <th class="theading-color">{% translate "employerDetailsWorkRequestId"%}</th>
-                <th class="theading-color">{% translate "employerDetailsStartDate"%}</th>
-                <th class="theading-color">{% translate "employerDetailsEndDate"%}</th>
-                <th class="theading-color">{% translate "employerDetailsCompany"%}</th>
-                <th class="theading-color">{% translate "employerDetailsStatus"%}</th>
+                <th>{% translate "employerDetailsWorkRequestId"%}</th>
+                <th>{% translate "employerDetailsStartDate"%}</th>
+                <th>{% translate "employerDetailsEndDate"%}</th>
+                <th>{% translate "employerDetailsCompany"%}</th>
+                <th>{% translate "employerDetailsStatus"%}</th>
             </tr>
         </thead>
         <tbody>
@@ -152,17 +152,17 @@
           <h3>{% translate 'employerDetailsAssignedRecruiters'%}</h3>
             <div class="table-responsive">
                 <table class="table text-nowrap border-bottom" id="assigned-orgs-table">
-                    <thead>
+                    <thead style="background-color: #7DBF96;">
                         <tr>
                             
-                            <th class="theading-color">{% translate 'employerDetailsName'%}</th>
-                            <th class="theading-color">{% translate 'employerDetailsEmail'%}</th>
-                            <th class="theading-color">{% translate 'employerDetailsAddress'%}</th>
-                            <th class="theading-color">{% translate 'employerDetailsCountry'%}</th>
-                            <th class="theading-color">{% translate 'employerDetailsPhone'%}</th>
-                            <th class="theading-color">{% translate 'employerDetailsRecruiters'%}</th>
+                            <th>{% translate 'employerDetailsName'%}</th>
+                            <th>{% translate 'employerDetailsEmail'%}</th>
+                            <th>{% translate 'employerDetailsAddress'%}</th>
+                            <th>{% translate 'employerDetailsCountry'%}</th>
+                            <th>{% translate 'employerDetailsPhone'%}</th>
+                            <th>{% translate 'employerDetailsRecruiters'%}</th>
                             {% if request.user|has_group:"admin" %}
-                                <th class="theading-color">
+                                <th>
                                     {% translate "employerDetailsActions" %}
                                 </th>
                             {% endif %}
