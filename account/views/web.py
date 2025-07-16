@@ -436,7 +436,7 @@ class OrganizationCreateView(UserPassesTestMixin, CreateView):
         return self.request.user.is_superuser
 
     def form_valid(self, form):
-        messages.success(self.request, _('organizationCreatedSuccessfully'))
+        messages.success(self.request, _('addEmployerOrganizationCreatedSuccessfully'))
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -471,7 +471,7 @@ def edit_organization(request, organization_id):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({'success': True})
 
-        messages.success(request, _('organizationUpdatedSuccessfully.'))
+        messages.success(request, _('addEmployerOrganizationUpdatedSuccessfully'))
         return redirect('recruiting_web:employer_detail', pk=organization.pk)
 
     return redirect('recruiting_web:employer_detail', pk=organization_id)
