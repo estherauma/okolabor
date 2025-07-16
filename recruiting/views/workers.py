@@ -477,13 +477,13 @@ class AssignWorkerView(View):
                     )
                     
                     if created:
-                        newly_assigned.append(worker.get_full_name() or worker.username)
+                        newly_assigned.append(worker.get_full_name() or worker.first_name)
                     elif work_assignment.status != status: 
                         work_assignment.status = status
                         work_assignment.save()
-                        newly_assigned.append(worker.get_full_name() or worker.username)
+                        newly_assigned.append(worker.get_full_name() or worker.first_name)
                     else:
-                        already_assigned.append(worker.get_full_name() or worker.username)
+                        already_assigned.append(worker.get_full_name() or worker.first_name)
 
 
             msg_parts = []

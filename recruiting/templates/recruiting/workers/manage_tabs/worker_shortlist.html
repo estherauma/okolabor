@@ -89,7 +89,8 @@
             <table class="table text-nowrap border-bottom" id="basic-datatable-shortlist">
               <thead style="background-color: #7DBF96;">
                 <tr>
-                  <th>{% translate "workersListCheckbox" %}</th>
+                  <th>
+                    <input type="checkbox" id="select-all-shortlist"></th>
                   <th class="col-name">{% translate "workersListName" %}</th>
                   <th class="col-town">{% translate "workersListTown" %}</th>
                   <th class="col-profile">{% translate "workersListProfileCompletion" %}</th>
@@ -126,6 +127,7 @@
   <script src="{% static 'assets/js/send-offer.js' %}"></script>
   <script src="{% static 'assets/js/cancel-offer.js' %}"></script>
   <script src="{% static 'assets/js/tablecolumns_hiding.js' %}"></script>
+  <script src="{% static 'assets/js/select_all_checkbox.js' %}"></script>
 <script>
 $(document).ready(function () {
   $.fn.dataTable.ext.errMode = 'none';

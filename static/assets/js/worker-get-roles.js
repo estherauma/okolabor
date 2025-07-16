@@ -17,14 +17,12 @@ $(document).ready(function () {
         tab5: { tableId: '#basic-datatable-rejectedTab5', status: 'rejected' },
     };
 
-    // Save tab change to session
     $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
         const activeTabId = $(e.target).attr('href').replace('#', '');
         sessionStorage.setItem("activeTabId", activeTabId);
         roleSelect.trigger('change');
     });
 
-    // Fetch roles for selected work request
     workRequestSelect.on('change', function () {
         const workRequestId = $(this).val();
         roleSelect.html('<option value="">{% translate "workersListSelectARole" %}</option>');
@@ -47,12 +45,10 @@ $(document).ready(function () {
         }
     });
 
-    // Load workers data based on role
     roleSelect.on('change', function () {
         const workRequestId = workRequestSelect.val();
         const roleId = roleSelect.val();
 
-        // Save to session
         sessionStorage.setItem("selectedWorkRequest", workRequestId);
         sessionStorage.setItem("selectedRole", roleId);
 
@@ -75,12 +71,10 @@ $(document).ready(function () {
                         'rejected': '#rejected-count'
                     };
 
-                    // Update count of the active tab
                     if (counts[status] !== undefined && countIdMap[status]) {
                         $(countIdMap[status]).text(`(${counts[status]})`);
                     }
 
-                    // Init table if not already
                     if (!$.fn.DataTable.isDataTable(tableId)) {
                         $(tableId).DataTable({
                             ordering: true,
@@ -126,6 +120,7 @@ $(document).ready(function () {
                     }
 
                     table.draw();
+                    bindSelectAllCheckbox(activeTabId); // ✅ Add this line
                 })
                 .catch(err => {
                     console.error('Error loading filtered workers:', err);
@@ -133,21 +128,17 @@ $(document).ready(function () {
         }
     });
 
-    // Restore previously selected values from sessionStorage
     const savedWorkRequest = sessionStorage.getItem("selectedWorkRequest");
     const savedRole = sessionStorage.getItem("selectedRole");
     const savedTabId = sessionStorage.getItem("activeTabId");
 
-    // Restore active tab
     if (savedTabId) {
         $(`#${savedTabId}-tab`).tab('show');
     }
 
-    // Restore WorkRequest and Role
     if (savedWorkRequest) {
         workRequestSelect.val(savedWorkRequest).trigger('change');
 
-        // Delay role selection until roles are fetched
         fetch(`/workers/get-roles-for-work-request/${savedWorkRequest}/`)
             .then(response => response.json())
             .then(data => {
@@ -164,5 +155,38 @@ $(document).ready(function () {
                 }
             })
             .catch(error => console.error('Error restoring previous roles:', error));
+    }
+
+    // ✅ Select All Checkbox logic per tab
+    function bindSelectAllCheckbox(tabId) {
+        let selectAllId = '';
+        let checkboxClass = '';
+
+        if (tabId === 'tab2') {
+            selectAllId = '#select-all-shortlist';
+            checkboxClass = '.worker-shortlist-checkbox';
+        } else if (tabId === 'tab3') {
+            selectAllId = '#select-all-offersent';
+            checkboxClass = '.worker-offersent-checkbox';
+        } else if (tabId === 'tab4') {
+            selectAllId = '#select-all-confirmed';
+            checkboxClass = '.worker-confirmed-checkbox';
+        } else if (tabId === 'tab5') {
+            selectAllId = '#select-all-rejected';
+            checkboxClass = '.worker-rejected-checkbox';
+        } else {
+            return;
+        }
+
+        $(selectAllId).off('change').on('change', function () {
+            const isChecked = $(this).is(':checked');
+            $(checkboxClass).prop('checked', isChecked);
+        });
+
+        $(document).off('change', checkboxClass).on('change', checkboxClass, function () {
+            const total = $(checkboxClass).length;
+            const checked = $(checkboxClass + ':checked').length;
+            $(selectAllId).prop('checked', total === checked);
+        });
     }
 });
