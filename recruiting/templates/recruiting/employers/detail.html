@@ -41,7 +41,7 @@
             <div class="mb-3">
               <label for="userSelect" class="form-label">{% translate "Select User" %}</label>
               <select class="form-select" id="userSelect" name="user_id" required>
-                <option value="">{% translate "ChooseUser" %}</option>
+                <option value="">{% translate "recruiterDetailsChooseUser" %}</option>
                 {% for user in users %}
                   <option value="{{ user.id }}">{{ user.get_full_name }} ({{ user.email }})</option>
                 {% endfor %}
