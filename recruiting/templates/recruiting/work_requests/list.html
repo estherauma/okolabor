@@ -113,7 +113,7 @@
     <div class="table-responsive">
         <table class="table text-nowrap border-bottom" id="workrequest-datatable">
           <thead style="background-color: #7DBF96;">
-          <tr class="text-center">
+          <tr class="text-start">
             <th class="col-checkbox "></th>
             <th class="col-worker-request ">{% translate "jobOrderListWorkerRequest" %}</th>
             <th class="col-deadline ">{% translate "jobOrderListDeadline" %}</th>
@@ -129,7 +129,7 @@
 
             <tbody>
                 {% for item in work_requests %}
-                <tr class="text-center">
+                <tr class="text-start">
                     <td class="tbody">
                         <input type="checkbox" class="row-checkbox" data-id="{{ item.id }}">
                     </td>
