@@ -14,9 +14,6 @@
 .select2-container--default .select2-selection--single {
     background-color: white !important;
 }
-.select2-dropdown{
-    width: 157px !important;
-}
 .close{
     color: #000000 !important;
     background-color: transparent !important;
@@ -41,15 +38,19 @@
     font-weight: 700;
     color: var(--oko-mid-green);
 }
-#workRequestRoleFilter{
-    justify-content: space-between !important;
-}
 #workRequestRoleFilter.row{
     padding: 0 !important;
     padding-left: 0.5rem !important;
+    justify-content: space-between !important;
 }
-#workRequestRoleFilter .no-padding {
+
+#workRequestRoleFilter .job-order-wrapper,
+#workRequestRoleFilter .role-wrapper {
     padding: 0 !important;
+}
+.job-order-wrapper .select2{
+    flex: 1 1 0;
+    margin-right: 10px;
 }
 </style>
 {% endblock styles %}
@@ -250,9 +251,9 @@
                                 </li>
                             </ul>
                         </div>
-                        <div id="workRequestRoleFilter" class="col-lg-4 row ">
+                        <div id="workRequestRoleFilter" class="col-lg-4 row">
                             <!-- Work Request Dropdown -->
-                            <div class="col-lg-6 d-flex align-items-center gap-1 no-padding">
+                            <div class="col-lg-6 d-flex align-items-center gap-1 job-order-wrapper">
                                 <label for="modal_work_request" class="form-label gray-color">
                                     {% translate "workersListWorkRequest" %}
                                 </label>
@@ -267,7 +268,7 @@
                             </div>
 
                             <!-- Role Dropdown -->
-                            <div class="col-lg-6 d-flex align-items-center gap-1 no-padding">
+                            <div class="col-lg-6 d-flex align-items-center gap-1 role-wrapper">
                                 <label for="modal_role" class="form-label gray-color">
                                     {% translate "workersListRole" %}
                                 </label>
