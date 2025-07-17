@@ -41,6 +41,16 @@
     font-weight: 700;
     color: var(--oko-mid-green);
 }
+#workRequestRoleFilter{
+    justify-content: space-between !important;
+}
+#workRequestRoleFilter.row{
+    padding: 0 !important;
+    padding-left: 0.5rem !important;
+}
+#workRequestRoleFilter .no-padding {
+    padding: 0 !important;
+}
 </style>
 {% endblock styles %}
 
@@ -240,14 +250,14 @@
                                 </li>
                             </ul>
                         </div>
-                        <div id="workRequestRoleFilter" class="col-lg-4 row">
+                        <div id="workRequestRoleFilter" class="col-lg-4 row ">
                             <!-- Work Request Dropdown -->
-                            <div class="col-lg-6 d-flex align-items-center">
-                                <label for="modal_work_request" class="w-50 form-label gray-color">
+                            <div class="col-lg-6 d-flex align-items-center gap-1 no-padding">
+                                <label for="modal_work_request" class="form-label gray-color">
                                     {% translate "workersListWorkRequest" %}
                                 </label>
                             
-                                    <select class="w-25 form-select form-select-sm" id="modal_work_request" name="work_request">
+                                    <select class="form-select form-select-sm" id="modal_work_request" name="work_request">
                                         <option style="width: 157px;" value="">{% translate "workersListSelectAWorkRequest" %}</option>
                                         {% for work_request in work_requests %}
                                             <option style="width: 157px;" value="{{ work_request.id }}">{{ work_request.name }}</option>
@@ -257,8 +267,8 @@
                             </div>
 
                             <!-- Role Dropdown -->
-                            <div class="col-lg-6 d-flex align-items-center">
-                                <label for="modal_role" class="w-50 form-label gray-color">
+                            <div class="col-lg-6 d-flex align-items-center gap-1 no-padding">
+                                <label for="modal_role" class="form-label gray-color">
                                     {% translate "workersListRole" %}
                                 </label>
                                 <select class="form-control" id="modal_role" name="role">
