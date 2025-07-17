@@ -20,7 +20,7 @@
         data-bs-target="#assignContactModal"
         id="assignContactBtn"
         data-employer-id="{{ employer.id }}">
-    {% translate "employerDetailsAssignContactEmployer" %}
+    {% translate "employerDetailsAssignUser" %}
 </button>
 </div>
 <h3>{% translate "employerDetailsEmployerContacts"%}</h3>
@@ -31,7 +31,7 @@
         <form method="POST" id="assignContactForm">
           {% csrf_token %}
           <div class="modal-header">
-            <h5 class="modal-title" id="assignContactLabel">{% translate "employerDetailsAssignContactEmployer" %}</h5>
+            <h5 class="modal-title" id="assignContactLabel">{% translate "employerDetailsAssignUser" %}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'employerDetailsClose' %}"></button>
           </div>
           <input type="hidden" id="employerIdField" name="employer_id">
@@ -77,13 +77,13 @@
     <a href="{% url 'recruiting_web:contact_work_requests' contact.id %}" class="text-decoration-none text-dark">
         <div class="card shadow-sm p-3" style=" cursor: pointer;">
             <div class="card-body">
-                <h5 class="card-title">{{ contact.user.get_full_name }}</h5>
+                <h5 class="card-title">{{ contact.get_full_name }}</h5>
                 <h6 class="card-subtitle mb-2 text-muted">
                     {{ contact.position|default:"No position specified" }}
                 </h6>
                 <p class="card-text">
-                    <strong>{% translate "employerDetailsEmail"%}:</strong> {{ contact.user.email }}<br>
-                    <strong>{% translate "employerDetailsPhone"%}:</strong> {{ contact.user.phone|default:"N/A" }}
+                    <strong>{% translate "employerDetailsEmail"%}:</strong> {{ contact.email }}<br>
+                    <strong>{% translate "employerDetailsPhone"%}:</strong> {{ contact.phone|default:"N/A" }}
                 </p>
             </div>
         </div>

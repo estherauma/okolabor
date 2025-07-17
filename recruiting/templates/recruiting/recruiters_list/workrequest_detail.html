@@ -20,7 +20,7 @@
         data-bs-target="#assignContactModal"
         id="assignContactBtn"
         data-employer-id="{{ employer.id }}">
-    {% translate "assignContactEmployer" %}
+    {% translate "assignUser" %}
 </button>
 </div>
 <h3>{% translate "employerContacts" %}</h3>
@@ -31,7 +31,7 @@
         <form method="POST" id="assignContactForm">
           {% csrf_token %}
           <div class="modal-header">
-            <h5 class="modal-title" id="assignContactLabel">{% translate "employerDetailsAssignContactEmployer" %}</h5>
+            <h5 class="modal-title" id="assignContactLabel">{% translate "employerDetailsAssignUser" %}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'employerDetailsClose' %}"></button>
           </div>
           <input type="hidden" id="employerIdField" name="employer_id">
@@ -77,19 +77,19 @@
     <a href="{% url 'recruiting_web:contact_work_requests' contact.id %}" class="text-decoration-none text-dark">
         <div class="card shadow-sm p-3" style=" cursor: pointer;">
             <div class="card-body">
-                <h5 class="card-title">{{ contact.name }}</h5>
+                <h5 class="card-title">{{ contact.get_full_name }}</h5>
                 <h6 class="card-subtitle mb-2 text-muted">
                     {{ contact.position|default:"No position specified" }}
                 </h6>
                 <p class="card-text">
                     <strong>{% translate "Email" %}:</strong> {{ contact.email }}<br>
-                    <strong>{% translate "Phone" %}:</strong> {{ contact.phone }}
+                    <strong>{% translate "Phone" %}:</strong> {{ contact.phone|default:"N/A" }}
                 </p>
             </div>
         </div>
     </a>
     {% empty %}
-        <p>{% translate "noContactsAvailable" %}</p>
+        <p>{% translate "noUsersAvailable" %}</p>
     {% endfor %}
 </div>
 <div class="row">
@@ -101,11 +101,11 @@
                 <table class="table text-nowrap border-bottom" id="work-requests-list-datatable">
                     <thead>
                         <tr>
-                            <th class="theading-color">{% translate "workRequestID" %}</th>
-                            <th class="theading-color">{% translate "startDate" %}</th>
-                            <th class="theading-color">{% translate "endDate" %}</th>
-                            <th class="theading-color">{% translate "employerAminListEmployer" %}</th>
-                            <th class="theading-color">{% translate "Status" %}</th>
+                          <th class="theading-color">{% translate "workRequestID" %}</th>
+                          <th class="theading-color">{% translate "startDate" %}</th>
+                          <th class="theading-color">{% translate "endDate" %}</th>
+                          <th class="theading-color">{% translate "employerAminListEmployer" %}</th>
+                          <th class="theading-color">{% translate "Status" %}</th>
                         </tr>
                     </thead>
                     <tbody>
