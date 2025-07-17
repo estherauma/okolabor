@@ -129,8 +129,8 @@
           <div class="modal-content">
             <form method="POST" action="{% url 'recruiting_web:edit-role-hours' role.hours.id %}">
               {% csrf_token %}
-              <div class="modal-header" style="background-color: #7DBF96;">
-                <h5 class="modal-title text-white">{% translate 'joDetailsHoursEditHours' %}</h5>
+              <div class="modal-header">
+                <h5 class="modal-title">{% translate 'joDetailsHoursEditHours' %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
               </div>
               <div class="modal-body">
@@ -153,8 +153,8 @@
                 {% endwith %}
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'joDetailsHoursCancel' %}</button>
-                <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>{% translate 'joDetailsHoursSave' %}</button>
+                <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'joDetailsHoursCancel' %}</button>
+                <button type="submit" class="btn light-green-button">{% translate 'joDetailsHoursSave' %}</button>
               </div>
             </form>
           </div>
@@ -168,8 +168,8 @@
           <div class="modal-content">
             <form method="POST" >
               {% csrf_token %}
-              <div class="modal-header" style="background-color: #7DBF96;">
-                <h5 class="modal-title text-white">{% translate 'joDetailsHoursDeleteHours' %}</h5>
+              <div class="modal-header">
+                <h5 class="modal-title">{% translate 'joDetailsHoursDeleteHours' %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
               </div>
               <div class="modal-body">
@@ -177,8 +177,8 @@
                 <!-- Optional: display some context -->
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'joDetailsHoursDeleteCancel' %}</button>
-                <button type="submit" class="btn" style='background-color:#F95406; color:white'>{% translate 'joDetailsHoursDelete' %}</button>
+                <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'joDetailsHoursDeleteCancel' %}</button>
+                <button type="submit" class="btn red-button">{% translate 'joDetailsHoursDelete' %}</button>
               </div>
             </form>
           </div>
@@ -191,8 +191,8 @@
             {% if role.wages and role.wages.id %}
       <form method="POST" action="{% url 'recruiting_web:edit-role-wages' role.wages.id %}">
         {% csrf_token %}
-        <div class="modal-header" style="background-color: #7DBF96;" >
-          <h5 class="modal-title text-white">{% translate 'joDetailsWagesEditWagesEditWages' %}</h5>
+        <div class="modal-header">
+          <h5 class="modal-title">{% translate 'joDetailsWagesEditWagesEditWages' %}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
@@ -215,8 +215,8 @@
           {% endwith %}
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'joDetailsWagesCancel' %}</button>
-          <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>{% translate 'joDetailsWagesSave' %}</button>
+          <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'joDetailsWagesCancel' %}</button>
+          <button type="submit" class="btn light-green-button">{% translate 'joDetailsWagesSave' %}</button>
         </div>
       </form>
     {% else %}

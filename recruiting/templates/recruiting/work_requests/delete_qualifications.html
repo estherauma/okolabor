@@ -19,12 +19,12 @@
         
   
         <div class="modal-footer">
-          <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate "joDetailsQualificationsDeleteCancel"%}</button>
+          <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate "joDetailsQualificationsDeleteCancel"%}</button>
 
           {% if role.qualifications and role.qualifications.pk %}
           <form method="POST" action="{% url 'recruiting_web:delete-role-qualification' role.qualifications.pk %}">
             {% csrf_token %}
-            <button type="submit" class="btn" style='background-color:#F95406; color:white'>{% translate "joDetailsQualificationsDelete"%}</button>
+            <button type="submit" class="btn red-button">{% translate "joDetailsQualificationsDelete"%}</button>
           </form>
           {% else %}
           <p class="text-muted">{% translate "joDetailsQualificationsNoQualificationsToDelete"%}</p>

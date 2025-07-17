@@ -8,8 +8,8 @@
       {% if role.meal_provision and role.meal_provision.id %}
       <form method="POST" action="{% url 'recruiting_web:meal_provision_edit' role.meal_provision.id %}">
         {% csrf_token %}
-        <div class="modal-header" style="background-color: #7DBF96;">
-          <h5 class="modal-title text-white" id="editMealProvisionLabel{{ role.id }}">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editMealProvisionLabel{{ role.id }}">
             {% translate "joDetailsMealsEditMealProvisionForRole" %}: {{ role.name }}
           </h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{% translate 'joDetailsMealsClose'%}"></button>
@@ -22,10 +22,10 @@
         </div>
 
         <div class="modal-footer bg-light rounded-bottom">
-          <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>
+          <button type="button" class="btn grey-button" data-bs-dismiss="modal">
             {% translate 'joDetailsMealsCancel' %}
           </button>
-          <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>
+          <button type="submit" class="btn light-green-button">
             {% translate 'joDetailsMealsSaveChanges' %}
           </button>
         </div>
