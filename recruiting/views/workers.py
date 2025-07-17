@@ -11,7 +11,7 @@ from django.views import View
 from django.views.generic import CreateView,TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
-from account.models import User, UserWorkExperience, UserJobExperience,UserJobExperienceDetails
+from account.models import User, UserWorkExperience, UserJobExperience,UserJobExperienceDetails,UserNotification
 from common.views import BaseCreateView
 from recruiting.forms import WorkerCreateForm, WorkExperienceCreateForm,WorkerAssignmentForm
 from theme.forms import AdvancedFilterForm,DynamicWorkExperienceForm
@@ -21,6 +21,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from content.models import AggregatedContent
 from content.serializers import AggregatedContentSerializer
+from django.db import transaction
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 from django.http import HttpResponse
@@ -31,6 +32,7 @@ from common.utils import StaticContent
 from recruiting.utils import calculate_total_experience,calculate_profile_completion,get_worker_preferences
 from common.logger import AppLogger
 from django.contrib.auth import get_user_model
+from common.firebase_utils import send_push_notification
 
 
 
@@ -450,7 +452,7 @@ class AssignWorkerView(View):
             worker_ids_str = request.POST.get("worker_ids")
             work_request_id = request.POST.get("work_request")
             role_id = request.POST.get("role")
-            status = request.POST.get("status", "Assigned")
+            status = request.POST.get("status", "assigned")
 
             if not worker_ids_str or not work_request_id or not role_id:
                 messages.error(request, _("Missing data. Please select workers, job order, and role."))
@@ -463,21 +465,27 @@ class AssignWorkerView(View):
             already_assigned = []
             newly_assigned = []
 
-            for worker_id in worker_ids:
-                worker = get_object_or_404(User, id=worker_id)
+            with transaction.atomic():
+                for worker_id in worker_ids:
+                    worker = get_object_or_404(User, id=worker_id)
 
-                if WorkAssignment.objects.filter(worker=worker, role=role).exists():
-                    already_assigned.append(worker.get_full_name() or worker.username)
-                else:
-                    WorkAssignment.objects.create(
+                    work_assignment, created = WorkAssignment.objects.get_or_create(
                         worker=worker,
                         role=role,
                         work_request=work_request,
-                        status=status
+                        defaults={'status': status}
                     )
-                    newly_assigned.append(worker.get_full_name() or worker.username)
+                    
+                    if created:
+                        newly_assigned.append(worker.get_full_name() or worker.username)
+                    elif work_assignment.status != status: 
+                        work_assignment.status = status
+                        work_assignment.save()
+                        newly_assigned.append(worker.get_full_name() or worker.username)
+                    else:
+                        already_assigned.append(worker.get_full_name() or worker.username)
 
-            
+
             msg_parts = []
             if newly_assigned:
                 msg_parts.append(_("Successfully assigned: ") + ", ".join(newly_assigned))
@@ -488,6 +496,81 @@ class AssignWorkerView(View):
             messages.success(request, final_msg)
 
             return JsonResponse({"success": True, "message": final_msg}, status=200)
+
+        except Exception as e:
+            messages.error(request, str(e))
+            return JsonResponse({"success": False, "message": str(e)}, status=400)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class SendOfferView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            worker_ids_str = request.POST.get("worker_ids")
+            work_request_id = request.POST.get("work_request")
+            role_id = request.POST.get("role")
+
+            if not worker_ids_str or not work_request_id or not role_id:
+                messages.error(request, _("Missing data. Please select workers, job order, and role."))
+                return JsonResponse({"success": False, "message": "Missing data"}, status=400)
+
+            worker_ids = worker_ids_str.split(",")
+            work_request = get_object_or_404(WorkRequests, id=work_request_id)
+            role = get_object_or_404(Role, id=role_id)
+
+            users_for_notification = []
+            newly_offered = []
+            already_offered = []
+
+            with transaction.atomic():
+                for worker_id in worker_ids:
+                    worker = get_object_or_404(User, id=worker_id)
+                    
+                    work_assignment, created = WorkAssignment.objects.get_or_create(
+                        worker=worker,
+                        role=role,
+                        work_request=work_request,
+                        defaults={'status': 'offersent'}
+                    )
+
+                    if created or work_assignment.status != 'offersent':
+                        work_assignment.status = 'offersent'
+                        work_assignment.save()
+                        users_for_notification.append(worker)
+                        newly_offered.append(worker.get_full_name() or worker.username)
+                    else:
+                        already_offered.append(worker.get_full_name() or worker.username)
+
+            msg_parts = []
+            if newly_offered:
+                msg_parts.append(_("Successfully sent offer to: ") + ", ".join(newly_offered))
+            if already_offered:
+                msg_parts.append(_("Offer already sent to: ") + ", ".join(already_offered))
+
+            # Send notifications
+            user_push_tokens = []
+            for user in users_for_notification:
+                if user.push_notification_token:
+                    user_push_tokens.append(user.push_notification_token)
+
+                UserNotification.objects.create(
+                    user=user,
+                    title=_("workRequestAddNotificationTitle"),
+                    message=_("workRequestAddNotificationBody")
+                )
+            
+            if user_push_tokens:
+                title = str(_("workRequestAddNotificationTitle"))
+                body = str(_("workRequestAddNotificationBody"))
+                send_push_notification(
+                    tokens=user_push_tokens,
+                    title=title,
+                    body=body,
+                    data={'type': 'job_offer'}
+                )
+            
+            final_msg = " ".join(msg_parts)
+            messages.success(request, final_msg)
+            return JsonResponse({'success': True, 'message': final_msg})
 
         except Exception as e:
             messages.error(request, str(e))
