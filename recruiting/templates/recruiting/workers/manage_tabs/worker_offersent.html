@@ -64,7 +64,7 @@
           <div class="d-flex align-items-center justify-content-between flex-wrap mb-3 custom-toolbar">
             <!-- Left Side Buttons -->
             <div>
-              <button id="cancel-offer-btn" class="btn dark-green-button">{% translate "cancelOffer" %}</button>
+              <button id="cancel-offer-offersent" class="btn dark-green-button ms-3">{% translate "cancelOffer" %}</button>
             </div>
 
             <!-- Centered Search -->
@@ -116,15 +116,19 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
-<script src="{% static 'assets/js/cancel-offer.js' %}"></script>
-<script src="{% static 'assets/js/copy-offer-workers.js' %}"></script>
 <script src="{% static 'assets/js/tablecolumns_hiding.js' %}"></script>
 
 <script>
   $(document).ready(function () {
     $.fn.dataTable.ext.errMode = 'none';
 
-    const table = $('#basic-datatable-offersent').DataTable();
+    const table = $('#basic-datatable-offersent').DataTable({
+            ordering: true,
+            order: [],
+            columnDefs: [{ targets: 0, orderable: false }],
+            paging: true,
+            info: true,
+    });
 
     $('#basic-datatable-offersent_length').appendTo('#datatable-offersent-controls');
     $('#basic-datatable-offersent_filter').appendTo('#datatable-offersent-controls');

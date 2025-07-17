@@ -461,27 +461,21 @@ class AssignWorkerView(View):
             already_assigned = []
             newly_assigned = []
 
-            with transaction.atomic():
-                for worker_id in worker_ids:
-                    worker = get_object_or_404(User, id=worker_id)
+            for worker_id in worker_ids:
+                worker = get_object_or_404(User, id=worker_id)
 
-                    work_assignment, created = WorkAssignment.objects.get_or_create(
+                if WorkAssignment.objects.filter(worker=worker, role=role).exists():
+                    already_assigned.append(worker.get_full_name() or worker.first_name)
+                else:
+                    WorkAssignment.objects.create(
                         worker=worker,
                         role=role,
                         work_request=work_request,
-                        defaults={'status': status}
+                        status=status
                     )
-                    
-                    if created:
-                        newly_assigned.append(worker.get_full_name() or worker.first_name)
-                    elif work_assignment.status != status: 
-                        work_assignment.status = status
-                        work_assignment.save()
-                        newly_assigned.append(worker.get_full_name() or worker.first_name)
-                    else:
-                        already_assigned.append(worker.get_full_name() or worker.first_name)
+                    newly_assigned.append(worker.get_full_name() or worker.first_name)
 
-
+            
             msg_parts = []
             if newly_assigned:
                 msg_parts.append(_("Successfully assigned: ") + ", ".join(newly_assigned))
@@ -496,7 +490,6 @@ class AssignWorkerView(View):
         except Exception as e:
             messages.error(request, str(e))
             return JsonResponse({"success": False, "message": str(e)}, status=400)
-
 @method_decorator(csrf_exempt, name='dispatch')
 class SendOfferView(View):
     def post(self, request, *args, **kwargs):

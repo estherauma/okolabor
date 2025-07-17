@@ -329,16 +329,11 @@ $(document).ready(function () {
         $.fn.dataTable.ext.errMode = 'none';
 
         const table = $('#basic-datatable-allworkers-workers').DataTable({
-            "ordering": true,
-            "order": [], // No initial ordering
-            "paging": true,
-            "info": true,
-            "columnDefs": [
-                {
-                    "targets": '_all',
-                    "orderable": true
-                }
-            ]
+            ordering: true,
+            order: [],
+            columnDefs: [{ targets: 0, orderable: false }],
+            paging: true,
+            info: true,
         });
 
         // Move default controls to custom containers
