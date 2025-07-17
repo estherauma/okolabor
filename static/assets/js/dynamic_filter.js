@@ -40,12 +40,18 @@ function bindDynamicFieldEvents() {
 
     const dynamicSelectors = document.querySelectorAll('select[id$="id_dynamic_field_1"], select[id$="id_dynamic_field_2"]');
     dynamicSelectors.forEach(selector => {
-        selector.removeEventListener('change', () => updatePills(selector));
-        selector.addEventListener('change', () => updatePills(selector));
+        selector.style.display = 'none';  
     });
 }
 
 function handleTypeSectorChange(event) {
+    const dynamicSelectors = document.querySelectorAll('select[id$="id_dynamic_field_1"], select[id$="id_dynamic_field_2"]');
+    dynamicSelectors.forEach(selector => {
+        selector.style.display = 'inline-block';  
+        selector.removeEventListener('change', () => updatePills(selector));
+        selector.addEventListener('change', () => updatePills(selector));
+    });
+
     const typeSelector = event.target;
     const form = typeSelector.closest(".job-experience-form");
 
