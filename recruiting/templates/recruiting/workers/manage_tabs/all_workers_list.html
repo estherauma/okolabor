@@ -130,7 +130,9 @@
                         <table class="table text-nowrap border-bottom" id="basic-datatable-allworkers-workers">
                              <thead>
                                 <tr class="text-start">
-                                    <th class="col-namee">{% translate "workersListCheckbox" %}</th>
+                                    <th class="col-namee">
+                                      <input type="checkbox" id="select-all-workers"> {% translate "workersListCheckbox" %}
+                                    </th>
                                     <th class="col-name">{% translate "workersListName" %}</th>
                                     <th class="col-name">{% translate "workersListEmail" %}</th>
                                     <th class="col-town">{% translate "workersListTown" %}</th>
@@ -327,16 +329,11 @@ $(document).ready(function () {
         $.fn.dataTable.ext.errMode = 'none';
 
         const table = $('#basic-datatable-allworkers-workers').DataTable({
-            "ordering": true,
-            "order": [], // No initial ordering
-            "paging": true,
-            "info": true,
-            "columnDefs": [
-                {
-                    "targets": '_all',
-                    "orderable": true
-                }
-            ]
+            ordering: true,
+            order: [],
+            columnDefs: [{ targets: 0, orderable: false }],
+            paging: true,
+            info: true,
         });
 
         // Move default controls to custom containers

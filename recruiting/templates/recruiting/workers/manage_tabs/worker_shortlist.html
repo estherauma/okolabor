@@ -68,7 +68,7 @@
               <button class="btn dark-green-button ms-2" id="sendOfferBtn">
                 {% translate "workRequestAddWorkerSendOffer" %}
               </button>
-              <button id="cancel-offer-btn" class="btn dark-green-button ms-3">{% translate "cancelOffer" %}</button>
+              <button id="cancel-offer-shortlist" class="btn dark-green-button ms-3">{% translate "cancelOffer" %}</button>
             </div>
 
             <!-- Center Search Box -->
@@ -89,7 +89,8 @@
             <table class="table text-nowrap border-bottom" id="basic-datatable-shortlist">
               <thead>
                 <tr>
-                  <th>{% translate "workersListCheckbox" %}</th>
+                  <th>
+                    <input type="checkbox" id="select-all-shortlist"></th>
                   <th class="col-name">{% translate "workersListName" %}</th>
                   <th class="col-town">{% translate "workersListTown" %}</th>
                   <th class="col-profile">{% translate "workersListProfileCompletion" %}</th>
@@ -124,13 +125,18 @@
 
   <!-- Your custom scripts -->
   <script src="{% static 'assets/js/send-offer.js' %}"></script>
-  <script src="{% static 'assets/js/cancel-offer.js' %}"></script>
   <script src="{% static 'assets/js/tablecolumns_hiding.js' %}"></script>
 <script>
 $(document).ready(function () {
   $.fn.dataTable.ext.errMode = 'none';
 
-  const shortlistTable = $('#basic-datatable-shortlist').DataTable();
+  const shortlistTable = $('#basic-datatable-shortlist').DataTable({
+            ordering: true,
+            order: [],
+            columnDefs: [{ targets: 0, orderable: false }],
+            paging: true,
+            info: true,
+    });
 
   // Move default controls to hidden container to prevent duplication
   $('#basic-datatable-shortlist_length').appendTo('#datatable-controls');

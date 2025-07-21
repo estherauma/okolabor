@@ -67,7 +67,7 @@
           <div class="d-flex align-items-center justify-content-between flex-wrap mb-3 custom-toolbar">
             <div>
                 <div>
-                  <button id="cancel-offer-btn" class="btn dark-green-button">{% translate "cancelOffer" %}</button>
+                  <button id="cancel-confirmed-btn" class="btn dark-green-button">{% translate "cancelOffer" %}</button>
                 </div>
             </div>
             <div class="flex-grow-1 d-flex justify-content-center">
@@ -84,7 +84,7 @@
             <table class="table text-nowrap border-bottom" id="basic-datatable-confirmed">
               <thead>
                 <tr>
-                  <th>{% translate "workersListCheckbox" %}</th>
+                  <th><input type="checkbox" id="select-all-confirmed"></th>
                   <th class="col-name">{% translate "workersListName" %}</th>
                   <th class="col-town">{% translate "workersListTown" %}</th>
                   <th class="col-profile">{% translate "workersListProfileCompletion" %}</th>
@@ -121,7 +121,13 @@
 <script>
   $(document).ready(function () {
     $.fn.dataTable.ext.errMode = 'none';
-    const table = $('#basic-datatable-confirmed').DataTable();
+    const table = $('#basic-datatable-confirmed').DataTable({
+            ordering: true,
+            order: [],
+            columnDefs: [{ targets: 0, orderable: false }],
+            paging: true,
+            info: true,
+    });
 
     // Move search input
     const searchInput = $('#basic-datatable-confirmed_filter input')
