@@ -485,7 +485,7 @@ class RecruiterDetailView(View):
                             {'name': recruiter_org.name, 'url': None},
                         ],
         }
-        return render(request, 'recruiting/recruiters_list/workrequest_detail.html', context)
+        return render(request, 'recruiting/recruiters_list/details.html', context)
 
 
 class WorkRequestsListView(View):

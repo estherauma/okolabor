@@ -23,7 +23,53 @@
     {% translate "assignUser" %}
 </button>
 </div>
-<h3>{% translate "recruiterDetailsEmployerContacts" %}</h3>
+
+<div class="row">
+  <div class="col-md-4">
+    <h3> {% translate "recruiterDetails" %} </h3>
+    <div class="card">
+      <div class="card-body">
+          
+          <ul class="list-group no-margin">
+              <li class="list-group-item">
+                  <span><strong>{% translate "employerDetailsEmail" %}:</strong></span>
+                  <span>{{ employer.email }}</span>
+              </li>
+              <li class="list-group-item">
+                  <span><strong>{% translate "employerDetailsPhone" %}:</strong></span>
+                  <span>{{ employer.phone }}</span>
+              </li>
+              <li class="list-group-item">
+                  <span><strong>{% translate "employerDetailsWebsite" %}:</strong></span>
+                  <span>{{ employer.website }}</span>
+              </li>
+              <li class="list-group-item">
+                  <span><strong>{% translate "employerDetailsAddress" %}:</strong></span>
+                  <span>{{ employer.address }}</span>
+              </li>
+              <li class="list-group-item">
+                  <span><strong>{% translate "employerDetailsCity" %}:</strong></span>
+                  <span>{{ employer.city }}</span>
+              </li>
+              <li class="list-group-item">
+                  <span><strong>{% translate "employerDetailsState" %}:</strong></span>
+                  <span>{{ employer.state }}</span>
+              </li>
+              <li class="list-group-item">
+                  <span><strong>{% translate "employerDetailsCountry" %}:</strong></span>
+                  <span>{{ employer.country }}</span>
+              </li>
+              <li class="list-group-item">
+                  <span><strong>{% translate "employerDetailsZipCode" %}:</strong></span>
+                  <span>{{ employer.zipcode }}</span>
+              </li>
+              
+          </ul>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-8">
+<h3>{% translate "recruiterDetailsContacts" %}</h3>
 
 <div class="modal fade" id="assignContactModal" tabindex="-1" aria-labelledby="assignContactLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -234,6 +280,9 @@
     </div>
   {% endif %}
 {% endfor %}
+  </div>
+</div>
+
 
 {% endblock body %}
 

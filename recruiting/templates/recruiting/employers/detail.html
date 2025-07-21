@@ -20,10 +20,56 @@
         data-bs-target="#assignContactModal"
         id="assignContactBtn"
         data-employer-id="{{ employer.id }}">
-    {% translate "employerDetailsAssignUser" %}
+    {% translate "recruiterDetailAssignUser" %}
 </button>
 </div>
-<h3>{% translate "employerDetailsEmployerContacts"%}</h3>
+
+<div class="row">
+  <div class="col-md-4">
+    <h3> {% translate "employerDetailsEmployerDetails" %} </h3>
+    <div class="card">
+      <div class="card-body">
+          
+          <ul class="list-group no-margin">
+              <li class="list-group-item">
+                  <span><strong>{% translate "employerDetailsEmail" %}:</strong></span>
+                  <span>{{ employer.email }}</span>
+              </li>
+              <li class="list-group-item">
+                  <span><strong>{% translate "employerDetailsPhone" %}:</strong></span>
+                  <span>{{ employer.phone }}</span>
+              </li>
+              <li class="list-group-item">
+                  <span><strong>{% translate "employerDetailsWebsite" %}:</strong></span>
+                  <span>{{ employer.website }}</span>
+              </li>
+              <li class="list-group-item">
+                  <span><strong>{% translate "employerDetailsAddress" %}:</strong></span>
+                  <span>{{ employer.address }}</span>
+              </li>
+              <li class="list-group-item">
+                  <span><strong>{% translate "employerDetailsCity" %}:</strong></span>
+                  <span>{{ employer.city }}</span>
+              </li>
+              <li class="list-group-item">
+                  <span><strong>{% translate "employerDetailsState" %}:</strong></span>
+                  <span>{{ employer.state }}</span>
+              </li>
+              <li class="list-group-item">
+                  <span><strong>{% translate "employerDetailsCountry" %}:</strong></span>
+                  <span>{{ employer.country }}</span>
+              </li>
+              <li class="list-group-item">
+                  <span><strong>{% translate "employerDetailsZipCode" %}:</strong></span>
+                  <span>{{ employer.zipcode }}</span>
+              </li>
+              
+          </ul>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <h3>{% translate "employerDetailsEmployerContacts"%}</h3>
 
 <div class="modal fade" id="assignContactModal" tabindex="-1" aria-labelledby="assignContactLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -74,13 +120,11 @@
 </div>
 <div class="d-flex flex-wrap gap-3">
     {% for contact in contacts %}
-    <a href="{% url 'recruiting_web:contact_work_requests' contact.id %}" class="text-decoration-none text-dark">
+    <a href="#" class="text-decoration-none text-dark">
         <div class="card shadow-sm p-3" style=" cursor: pointer;">
             <div class="card-body">
                 <h5 class="card-title">{{ contact.get_full_name }}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">
-                    {{ contact.position|default:"No position specified" }}
-                </h6>
+                 <!--Display user role  -->
                 <p class="card-text">
                     <strong>{% translate "employerDetailsEmail"%}:</strong> {{ contact.email }}<br>
                     <strong>{% translate "employerDetailsPhone"%}:</strong> {{ contact.phone|default:"N/A" }}
@@ -240,6 +284,8 @@
     </div>
   {% endif %}
 {% endfor %}
+  </div>
+</div>
 
 {% endblock body %}
 
