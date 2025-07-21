@@ -112,7 +112,7 @@
                         {% for work_request in work_requests %}
                         <tr class="text-center" data-id="{{ work_request.id }}">
                             <td>
-                                <a href="{% url 'workrequest_detail' work_request.id %}" class="text-decoration-none text-dark">
+                                <a href="{% url 'recruiting_web:workrequest_detail' work_request.id %}" class="text-decoration-none text-dark">
                                     {{ work_request.name }}
                                 </a>
                             </td>
@@ -125,7 +125,7 @@
                                 {% endif %}
                             </td>
                             <td>
-                                <a href="{% url 'employer_detail' work_request.employer.id %}" class="text-decoration-none text-dark">
+                                <a href="{% url 'recruiting_web:employer_detail' work_request.employer.id %}" class="text-decoration-none text-dark">
                                     {{ work_request.employer.name }}
                                 </a>
                             </td>
