@@ -103,7 +103,7 @@
                             {% comment %} <a class="btn dark-green-button ms-3 text-white" 
                                 data-bs-toggle="modal" 
                                 data-bs-target="#addWorkerModal">
-                                <i class="fa fa-plus me-1"></i> {% translate "workersListAddWorker" %}
+                                {% translate "workersListAddWorker" %}
                             </a> {% endcomment %}
 
                             <button id="sendOfferBtnDirectly" class="btn dark-green-button ms-2"  disabled>
@@ -130,7 +130,9 @@
                         <table class="table text-nowrap border-bottom" id="basic-datatable-allworkers-workers">
                              <thead style="background-color: #7DBF96;">
                                 <tr>
-                                    <th class="col-namee">{% translate "workersListCheckbox" %}</th>
+                                    <th class="col-namee">
+                                      <input type="checkbox" id="select-all-workers">
+                                    </th>
                                     <th class="col-name">{% translate "workersListName" %}</th>
                                     <th class="col-name">{% translate "workersListEmail" %}</th>
                                     <th class="col-town">{% translate "workersListTown" %}</th>
@@ -196,7 +198,7 @@
                                         <td class="col-actions">
                                         <!-- Edit Button -->
                                           <button type="button"
-                                          class="btn btn-sm btn-outline-secondary"
+                                          class="btn btn-sm yellow-button"
                                           data-bs-toggle="modal"
                                           data-bs-target="#editModal{{ worker.id }}"
                                           title="{% translate 'workersListIconEdit' %}">
@@ -205,7 +207,7 @@
 
                                         <!-- Delete Button -->
                                           <button type="button"
-                                          class="btn btn-sm btn-outline-danger ms-2"
+                                          class="btn btn-sm red-button ms-2"
                                           data-bs-toggle="modal"
                                           data-bs-target="#deleteModalWorker{{ worker.id }}"
                                           title="{% translate 'workersListIconDelete' %}">
@@ -327,16 +329,11 @@ $(document).ready(function () {
         $.fn.dataTable.ext.errMode = 'none';
 
         const table = $('#basic-datatable-allworkers-workers').DataTable({
-            "ordering": true,
-            "order": [], // No initial ordering
-            "paging": true,
-            "info": true,
-            "columnDefs": [
-                {
-                    "targets": '_all',
-                    "orderable": true
-                }
-            ]
+            ordering: true,
+            order: [],
+            columnDefs: [{ targets: 0, orderable: false }],
+            paging: true,
+            info: true,
         });
 
         // Move default controls to custom containers

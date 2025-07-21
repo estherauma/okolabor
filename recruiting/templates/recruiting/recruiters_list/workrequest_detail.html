@@ -23,7 +23,7 @@
     {% translate "assignUser" %}
 </button>
 </div>
-<h3>{% translate "employerContacts" %}</h3>
+<h3>{% translate "recruiterDetailsEmployerContacts" %}</h3>
 
 <div class="modal fade" id="assignContactModal" tabindex="-1" aria-labelledby="assignContactLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -39,9 +39,9 @@
             <input type="hidden" id="selectedEmployersForContact" name="selected_employers">
 
             <div class="mb-3">
-              <label for="userSelect" class="form-label">{% translate "Select User" %}</label>
+              <label for="userSelect" class="form-label">{% translate "recruiterDetailsSelectUser" %}</label>
               <select class="form-select" id="userSelect" name="user_id" required>
-                <option value="">{% translate "ChooseUser" %}</option>
+                <option value="">{% translate "recruiterDetailsChooseUser" %}</option>
                 {% for user in users %}
                   <option value="{{ user.id }}">{{ user.get_full_name }} ({{ user.email }})</option>
                 {% endfor %}
@@ -82,14 +82,14 @@
                     {{ contact.position|default:"No position specified" }}
                 </h6>
                 <p class="card-text">
-                    <strong>{% translate "Email" %}:</strong> {{ contact.email }}<br>
-                    <strong>{% translate "Phone" %}:</strong> {{ contact.phone|default:"N/A" }}
+                  <strong>{% translate "Email" %}:</strong> {{ contact.email }}<br>
+                  <strong>{% translate "Phone" %}:</strong> {{ contact.phone|default:"N/A" }}
                 </p>
             </div>
         </div>
     </a>
     {% empty %}
-        <p>{% translate "noUsersAvailable" %}</p>
+        <p>{% translate "recruiterDetailsNoContactsAvailable" %}</p>
     {% endfor %}
 </div>
 <div class="row">
@@ -101,11 +101,11 @@
                 <table class="table text-nowrap border-bottom" id="work-requests-list-datatable">
                     <thead>
                         <tr>
-                          <th class="theading-color">{% translate "workRequestID" %}</th>
-                          <th class="theading-color">{% translate "startDate" %}</th>
-                          <th class="theading-color">{% translate "endDate" %}</th>
-                          <th class="theading-color">{% translate "employerAminListEmployer" %}</th>
-                          <th class="theading-color">{% translate "Status" %}</th>
+                            <th class="theading-color">{% translate "recruiterDetailsWorkRequestID" %}</th>
+                            <th class="theading-color">{% translate "recruiterDetailsStartDate" %}</th>
+                            <th class="theading-color">{% translate "recruiterDetailsEndDate" %}</th>
+                            <th class="theading-color">{% translate "recruiterDetailsEmployerAminListEmployer" %}</th>
+                            <th class="theading-color">{% translate "recruiterDetailsStatus" %}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -135,7 +135,7 @@
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="5" class="text-center">{% translate "noWorkRequestsAvailable" %}</td>
+                            <td colspan="5" class="text-center">{% translate "recruiterDetailsNoWorkRequestsAvailable" %}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -149,21 +149,21 @@
     <div class="col-12 mt-4">
       <div class="card">
         <div class="card-body">
-          <h3>{% translate "assignedEmployers" %}</h3>
+          <h3>{% translate "recruiterDetailsAssignedEmployers" %}</h3>
             <div class="table-responsive">
                 <table class="table text-nowrap border-bottom" id="assigned-orgs-table">
                     <thead>
                         <tr>
                             
-                            <th class="theading-color">{% translate "Name" %}</th>
-                            <th class="theading-color">{% translate "Email" %}</th>
-                            <th class="theading-color">{% translate "Address" %}</th>
-                            <th class="theading-color">{% translate "Country" %}</th>
-                            <th class="theading-color">{% translate "Phone" %}</th>
-                            <th class="theading-color">{% translate "assignedEmployers" %}</th>
+                            <th class="theading-color">{% translate "recruiterDetailsName" %}</th>
+                            <th class="theading-color">{% translate "recruiterDetailsEmail" %}</th>
+                            <th class="theading-color">{% translate "recruiterDetailsAddress" %}</th>
+                            <th class="theading-color">{% translate "recruiterDetailsCountry" %}</th>
+                            <th class="theading-color">{% translate "recruiterDetailsPhone" %}</th>
+                            <th class="theading-color">{% translate "recruiterDetailsAssignedEmployers" %}</th>
                             {% if request.user|has_group:"admin" %}
                                 <th class="theading-color">
-                                    {% translate "actions" %}
+                                    {% translate "recruiterDetailsActions" %}
                                 </th>
                             {% endif %}
                         </tr>
@@ -182,7 +182,7 @@
                                     {{ recruiter_name }}{% if not forloop.last %}, {% endif %}
                                 {% endfor %}
                             {% else %}
-                                No recruiters
+                                {% translate 'recruiterDetailsNoRecruiters'%}
                             {% endif %}
                             </td>
                             {% if request.user|has_group:"admin" %}
@@ -192,14 +192,14 @@
                                     style="cursor: pointer;"
                                     data-bs-toggle="modal"
                                     data-bs-target="#deleteModal{{ org.id }}"
-                                    title="Delete">
+                                    title="{% translate 'recruiterDetailsDelete'%}">
                                 </i>
                                 
                                 </td>
                             {% endif %}
                         </tr>
                         {% empty %}
-                        <tr><td colspan="6" class="text-center">{% translate "noEmployerOrganizationsAssigned" %}</td></tr>
+                        <tr><td colspan="6" class="text-center">{% translate "recruiterDetailsNoEmployerOrganizationsAssigned" %}</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>
@@ -218,15 +218,15 @@
           <form method="POST" action="{% url 'recruiting_web:delete_employer_org_from_recruiter' employer.id org.id %}">
             {% csrf_token %}
             <div class="modal-header" style="background-color: #7DBF96;">
-              <h5 class="modal-title text-white" id="deleteModalLabel{{ org.id }}">{% translate "Confirm Delete" %}</h5>
+              <h5 class="modal-title text-white" id="deleteModalLabel{{ org.id }}">{% translate "recruiterDetailsConfirmDelete" %}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
               {% translate 'webCommonConfirmDelete' %} <strong>{{ org.name }}</strong>?
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'Cancel' %}</button>
-              <button type="submit" class="btn btn-danger">{% translate 'Delete' %}</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'recruiterDetailsCancel' %}</button>
+              <button type="submit" class="btn btn-danger">{% translate 'recruiterDetailsDelete' %}</button>
             </div>
           </form>
         </div>

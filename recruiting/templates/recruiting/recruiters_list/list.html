@@ -120,7 +120,7 @@
             <a class="btn dark-green-button ms-3 text-white" 
               data-bs-toggle="modal" 
               data-bs-target="#addRecruiterModal">
-              <i class="fa fa-plus me-1"></i> {% translate "recruiterListAddNewRecruiter" %}
+              {% translate "recruiterListAddNewRecruiter" %}
           </a>
           </div>
 
@@ -152,7 +152,7 @@
             </thead>
             <tbody>
               {% for recruiter in recruiters %}
-              <tr class="text-center" data-id="{{ recruiter.id }}">
+              <tr class="text-start" data-id="{{ recruiter.id }}">
                 <!-- <td><input class="table-checkbox" type="checkbox" /></td> -->
                 <td>
                   <a href="/recruiters-org/{{ recruiter.id }}" class="text-decoration-none text-dark">

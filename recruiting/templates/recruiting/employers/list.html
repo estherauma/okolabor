@@ -109,7 +109,7 @@
                  <a class="btn dark-green-button ms-3 text-white" 
                     data-bs-toggle="modal" 
                     data-bs-target="#addEmployerModal">
-                    <i class="fa fa-plus me-1"></i> {% translate "employersAddNewEmployer" %}
+                    {% translate "employersAddNewEmployer" %}
                 </a>
           </div>
 
@@ -143,7 +143,7 @@
             </thead>
             <tbody>
               {% for employer in employers %}
-              <tr class="text-center" data-id="{{ employer.id }}">
+              <tr class="text-start" data-id="{{ employer.id }}">
                 <td><input class="table-checkbox" type="checkbox"/></td>
                 <td>
                   <a href="/employers/{{ employer.id }}" class="text-decoration-none text-dark">
@@ -167,14 +167,14 @@
                   <td>
                     <button 
                       type="button"
-                      class="btn btn-sm btn-outline-secondary"
+                      class="btn btn-sm yellow-button"
                       data-bs-toggle="modal"
                       data-bs-target="#editModal{{ employer.id }}" >
                       {% translate "webCommonEdit" %}
                     </button>
                     <button
                       type="button"
-                      class="btn btn-sm btn-outline-danger ms-2"
+                      class="btn btn-sm red-button ms-2"
                       data-bs-toggle="modal"
                       data-bs-target="#deleteModal{{ employer.id }}">
                       {% translate "webCommonDelete" %}
