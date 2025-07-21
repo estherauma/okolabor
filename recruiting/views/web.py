@@ -1045,11 +1045,42 @@ class GetRolesView(View):
 class UpdateWorkerStatusView(View):
     def post(self, request, *args, **kwargs):
         worker_ids = request.POST.getlist('worker_ids[]')
-        WorkAssignment.objects.filter(worker_id__in=worker_ids, status='assigned').update(status='offersent')
-        # Need to send an offer notification here for each user
+        work_request_id = request.POST.get('work_request')
+        role_id = request.POST.get('role')
+
+        if not work_request_id or not role_id:
+            messages.error(request, 'Missing work request or role')
+            return JsonResponse({'status': 'fail', 'message': 'Missing work request or role'}, status=400)
+
+        work_request = get_object_or_404(WorkRequests, id=work_request_id)
+        role = get_object_or_404(Role, id=role_id)
+
         user_push_tokens = []
-        for item in worker_ids:
-            user = User.objects.get(id=item)
+
+        for worker_id in worker_ids:
+            user = get_object_or_404(User, id=worker_id)
+
+            assignments = WorkAssignment.objects.filter(
+                worker=user,
+                role=role,
+                work_request=work_request
+            )
+
+            if assignments.exists():
+                for assignment in assignments:
+                    if assignment.status != 'offersent':
+                        assignment.status = 'offersent'
+                        assignment.save()
+            else:
+                WorkAssignment.objects.create(
+                    worker=user,
+                    role=role,
+                    work_request=work_request,
+                    status='offersent'
+                )
+                messages.success(request, f'Offer sent to {user.get_full_name()}')
+
+            # Send notification
             if user.push_notification_token:
                 user_push_tokens.append(user.push_notification_token)
 
@@ -1058,20 +1089,23 @@ class UpdateWorkerStatusView(View):
                 title=_("workRequestAddNotificationTitle"),
                 message=_("workRequestAddNotificationBody")
             )
-        messages.success(request, _("workRequestAddWorkerOfferSentSuccessfully"))
 
-        if len(user_push_tokens) > 0:
-            title = str(_("workRequestAddNotificationTitle"))
-            body = str(_("workRequestAddNotificationBody"))
-
+        if user_push_tokens:
             send_push_notification(
                 tokens=user_push_tokens,
-                title=title,
-                body=body,
+                title=str(_("workRequestAddNotificationTitle")),
+                body=str(_("workRequestAddNotificationBody")),
                 data={'type': 'job_offer'}
             )
-        return JsonResponse({'status':'success','success': 'True', 'message': 'Offer sent successfully.'})
 
+        messages.success(request, 'Offers sent successfully to selected workers.')
+
+        return JsonResponse({
+            'status': 'success',
+            'success': 'True',
+            'message': _('Offer sent successfully.')
+        })
+        
 @method_decorator(csrf_exempt, name='dispatch')
 class OfferSendWorkerView(View):
     def post(self, request, *args, **kwargs):

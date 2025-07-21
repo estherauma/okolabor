@@ -77,9 +77,12 @@ urlpatterns = [
          CopyWorkersView.as_view(), 
          name='copy_workers'),
           
-    path('update-worker-status/', 
-         UpdateWorkerStatusView.as_view(), 
-         name='update_worker_status'),
+     path(
+     'job-order/<str:pk>/add-workers/<str:role_id>/update-worker-status/',
+     UpdateWorkerStatusView.as_view(),
+     name='update_worker_status'
+     ),
+
     path('offer/send-worker/', 
          OfferSendWorkerView.as_view(), 
          name='offer_send_worker'),

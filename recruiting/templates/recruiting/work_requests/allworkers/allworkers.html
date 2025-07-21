@@ -98,6 +98,9 @@
             <button class="btn dark-green-button" id="addToShortlistBtn" disabled>
               {% translate "workRequestAddWorkerAddToShortlist" %}
             </button>
+            <button class="btn dark-green-button ms-2" id="workerSendOfferBtn">
+                {% translate "workRequestAddWorkerSendOffer" %}
+              </button>
           </div>
 
           <div class="flex-grow-1 d-flex justify-content-center">
@@ -117,7 +120,9 @@
           <table class="table text-nowrap border-bottom table-width" id="basic-datatable">
             <thead style="background-color: #7DBF96;">
               <tr>
-                <th>{% translate "workRequestAddWorkerCheckbox" %}</th>
+                <th class="col-namee">
+                  <input type="checkbox" id="selectAllAllWorkers">
+                </th>
                 <th class="col-name">{% translate "workRequestAddWorkerName" %}</th>
                 <th class="col-email">{% translate "workRequestAddWorkerEmail" %}</th>
                 <th class="col-town">{% translate "workRequestAddWorkerTown" %}</th>
@@ -132,7 +137,7 @@
               {% for worker in workers %}
               <tr class="text-start">
                 <td>
-                  <input type="checkbox" class="worker-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.first_name }} {{ worker.last_name }}">
+                  <input type="checkbox" class="allworkers-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.first_name }} {{ worker.last_name }}">
                 </td>
                 <td class="col-name"><a href="{{ worker.id }}">{{ worker.first_name }} {{ worker.last_name }}</a></td>
                 <td class="col-email">{{ worker.email }}</td>
@@ -157,16 +162,19 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
-
-<script src="{% static 'assets/js/send-offer.js' %}"></script>
-<script src="{% static 'assets/js/copy-shortlist-workers.js' %}"></script>
 <script src="{% static 'assets/js/tablecolumns_hiding.js' %}"></script>
 
 <script>
 $(document).ready(function () {
   $.fn.dataTable.ext.errMode = 'none';
 
-  const table = $('#basic-datatable').DataTable();
+  const table = $('#basic-datatable').DataTable({
+    ordering: true,
+    order: [],
+    columnDefs: [{ targets: 0, orderable: false }],
+    paging: true,
+    info: true,
+  });
 
   // Move original DataTable controls to hidden container
   $('#basic-datatable_length').appendTo('#datatable-controls');
