@@ -77,7 +77,7 @@
           <a class="btn btn-light btn-sm" 
             data-bs-toggle="modal" 
             data-bs-target="#addRoleModal{{ workrequest.id }}">
-             {% translate "jobOrderDetailsAddRole" %}
+             {% translate "webCommonAdd" %}
           </a>
           {% include "recruiting/work_requests/create_role.html" with workrequest=workrequest form=role_add_form dynamic_fields=dynamic_fields %}
 
@@ -98,7 +98,7 @@
                     </div>
                     <a href="{% url 'recruiting_web:work_request_add_workers' pk=workrequest.id role_id=role.id %}?type_sector={{ role.work_type|urlencode }}{% if role.work_type == 'animals' %}&dynamic_field_1={{ role.work_type_detail.animal_types|default:''|join:','|urlencode }}&dynamic_field_2={{ role.work_type_detail.responsibilities_types|default:''|join:','|urlencode }}{% elif role.work_type == 'crop_and_horticulture' %}&dynamic_field_1={{ role.work_type_detail.crop_types|default:''|join:','|urlencode }}&dynamic_field_2={{ role.work_type_detail.crop_job_types|default:''|join:','|urlencode }}{% elif role.work_type == 'mechanics' %}&dynamic_field_1={{ role.work_type_detail.mechanic_job_types|default:''|join:','|urlencode }}{% elif role.work_type == 'worker_supervision__management' %}&dynamic_field_1={{ role.work_type_detail.supervision_jobs_types|default:''|join:','|urlencode }}{% endif %}">
                       <button class="btn btn-sm dark-green-button ms-3">
-                        {% translate "jobOrderDetailsAddWorkers" %}
+                        {% translate "webCommonAdd" %}
                       </button>
                     </a>
 
@@ -390,7 +390,7 @@
                     <a class="btn btn-sm light-green-button" 
                     data-bs-toggle="modal" 
                     data-bs-target="#hoursModal{{ role.id }}">
-                      {% translate "joDetailsHoursAddHours" %}
+                      {% translate "webCommonAdd" %}
                     </a>
 
                     {% include "recruiting/work_requests/create_hours.html"%}
@@ -453,7 +453,7 @@
                 <a class="btn  btn-sm light-green-button" 
                     data-bs-toggle="modal" 
                     data-bs-target="#wagesModal{{ role.id }}">
-                      {% translate "joDetailsAddWages" %}
+                      {% translate "webCommonAdd" %}
                 </a>
                 {% include "recruiting/work_requests/create_wages.html" %}
                 <!-- Edit Icon -->
@@ -515,7 +515,7 @@
               <a class="btn  btn-sm light-green-button" 
                     data-bs-toggle="modal" 
                     data-bs-target="#DeductionModal{{ role.id }}">
-                      {% translate "joDetailsDeductionsAddDeductions" %}
+                      {% translate "webCommonAdd" %}
                 </a>
               {% include "recruiting/work_requests/create_deductions.html" %}
               </div>
@@ -583,7 +583,7 @@
                     <a class="btn  btn-sm light-green-button" 
                         data-bs-toggle="modal" 
                         data-bs-target="#QualificationModal{{ role.id }}">
-                           {% translate "joDetailsQualificationsAddQualifiations" %}
+                           {% translate "webCommonAdd" %}
                      </a>
                     {% include "recruiting/work_requests/create_qualifications.html" %}
 
@@ -651,7 +651,7 @@
                  <a class="btn  btn-sm light-green-button" 
                         data-bs-toggle="modal" 
                         data-bs-target="#EmploymentModal{{ role.id }}">
-                           {% translate "joDetailsPlaceOfEmploymentAddLocation" %}
+                           {% translate "webCommonAdd" %}
                 </a>
                 {% include "recruiting/work_requests/create_employment_location.html" %}
                 <!-- Edit Button -->
@@ -709,7 +709,7 @@
                   <a class="btn btn-sm light-green-button" 
                         data-bs-toggle="modal" 
                         data-bs-target="#HousingModal{{ role.id }}">
-                         {% translate "joDetailsHousingInfoAddHousing" %}
+                         {% translate "webCommonAdd" %}
                   </a>
                   {% include "recruiting/work_requests/create_housing_info.html" %}
 
@@ -793,7 +793,7 @@
                 <a class="btn  btn-sm light-green-button" 
                         data-bs-toggle="modal" 
                         data-bs-target="#MealsModal{{ role.id }}">
-                         {% translate "joDetailsMealsAddMeals" %}
+                         {% translate "webCommonAdd" %}
                   </a>
                 {% include "recruiting/work_requests/create_meal_provision.html" %}
 
