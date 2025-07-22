@@ -108,8 +108,8 @@
           </div>
 
           <div class="modal-footer">
-            <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate "employerDetailsCancel" %}</button>
-            <button type="submit" class="btn light-green-button" id="assignContactBtn">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "employerDetailsCancel" %}</button>
+            <button type="submit" class="btn btn-primary" id="assignContactBtn">
               {% translate "employerDetailsSave" %}
             </button>
 
@@ -158,7 +158,7 @@
                         {% for work_request in work_requests %}
                         <tr class="text-center" data-id="{{ work_request.id }}">
                             <td>
-                                <a href="{% url 'recruiting_web:workrequest_detail' work_request.id %}" class="text-decoration-none text-dark">
+                                <a href="{% url 'workrequest_detail' work_request.id %}" class="text-decoration-none text-dark">
                                     {{ work_request.name }}
                                 </a>
                             </td>
@@ -171,7 +171,7 @@
                                 {% endif %}
                             </td>
                             <td>
-                                <a href="{% url 'recruiting_web:employer_detail' work_request.employer.id %}" class="text-decoration-none text-dark">
+                                <a href="{% url 'employer_detail' work_request.employer.id %}" class="text-decoration-none text-dark">
                                     {{ work_request.employer.name }}
                                 </a>
                             </td>
@@ -263,16 +263,16 @@
         <div class="modal-content">
           <form method="POST" action="{% url 'recruiting_web:delete_employer_org_from_recruiter' employer.id org.id %}">
             {% csrf_token %}
-            <div class="modal-header">
-              <h5 class="modal-title" id="deleteModalLabel{{ org.id }}">{% translate "recruiterDetailsConfirmDelete" %}</h5>
+            <div class="modal-header" style="background-color: #7DBF96;">
+              <h5 class="modal-title text-white" id="deleteModalLabel{{ org.id }}">{% translate "recruiterDetailsConfirmDelete" %}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
               {% translate 'webCommonConfirmDelete' %} <strong>{{ org.name }}</strong>?
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'recruiterDetailsCancel' %}</button>
-              <button type="submit" class="btn red-button">{% translate 'recruiterDetailsDelete' %}</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'recruiterDetailsCancel' %}</button>
+              <button type="submit" class="btn btn-danger">{% translate 'recruiterDetailsDelete' %}</button>
             </div>
           </form>
         </div>

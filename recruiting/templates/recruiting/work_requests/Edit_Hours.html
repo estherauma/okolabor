@@ -7,7 +7,7 @@
         <form method="POST" action="{% url 'recruiting_web:edit-role-hours' role.hours.id %}">
           {% csrf_token %}
           
-          <div class="modal-header">
+          <div class="modal-header bg-primary text-white">
             <h5 class="modal-title" id="editHoursLabel{{ role.id }}">{% translate 'joDetailsHoursEditHours' %}</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{% translate 'joDetailsHoursClose'%}"></button>
           </div>

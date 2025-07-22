@@ -7,8 +7,8 @@
         {% if role.qualifications and role.qualifications.id %}
         <form method="POST" action="{% url 'recruiting_web:edit-role-qualification' role.qualifications.id %}">
           {% csrf_token %}
-          <div class="modal-header">
-            <h5 class="modal-title">{% translate 'joDetailsQualificationsEditQualification' %}</h5>
+          <div class="modal-header" style="background-color: #7DBF96;">
+            <h5 class="modal-title text-white">{% translate 'joDetailsQualificationsEditQualification' %}</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{% translate 'joDetailsQualificationsClose'%}"></button>
           </div>
   
@@ -48,8 +48,8 @@
           </div>
   
           <div class="modal-footer">
-            <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'joDetailsQualificationsCancel' %}</button>
-            <button type="submit" class="btn light-green-button">{% translate 'joDetailsQualificationsSaveChanges' %}</button>
+            <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'joDetailsQualificationsCancel' %}</button>
+            <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>{% translate 'joDetailsQualificationsSaveChanges' %}</button>
           </div>
         </form>
         {% else %}
