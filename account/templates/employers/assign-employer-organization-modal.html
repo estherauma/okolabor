@@ -5,8 +5,8 @@
         <form id="assignEmployerOrganizationForm">
             {% csrf_token %}
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="assignOrgLabel">{% translate "employerAminListAssignOrganization" %}</h5>
+                <div class="modal-header" style="background-color: #7DBF96;">
+                    <h5 class="modal-title text-white" id="assignOrgLabel">{% translate "employerAminListAssignOrganization" %}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'employerAminListOrgClose' %}"></button>
                 </div>
                 <div class="modal-body">
@@ -19,7 +19,7 @@
                     <input type="hidden" name="selected_users" id="selectedEmployerUsersInput">
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn light-green-button">{% translate "employerAminListOrgAssign" %}</button>
+                    <button type="submit" class="btn btn-success">{% translate "employerAminListOrgAssign" %}</button>
                 </div>
             </div>
         </form>
