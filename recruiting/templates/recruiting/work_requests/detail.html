@@ -386,6 +386,7 @@
 
                   <div class="d-flex align-items-center gap-2">
                     <!-- Add Hours Button -->
+                    {% if not role.hours %}
 
                     <a class="btn btn-sm light-green-button" 
                     data-bs-toggle="modal" 
@@ -395,6 +396,7 @@
 
                     {% include "recruiting/work_requests/create_hours.html"%}
 
+                    {% else %}
 
                     <!-- Edit Icon -->
                     <button class="btn btn-sm btn-icon btn-outline-success"
@@ -410,6 +412,7 @@
                         title="{% translate 'webCommonDelete' %}">
                         <i class="fa fa-trash-alt"></i>
                     </button>
+                    {% endif %}
                   </div>
                 </div>
 
@@ -449,6 +452,7 @@
                 {% translate "joDetailsWagesWages" %}
               </h6>
               <div class="d-flex align-items-center gap-2">
+                {% if not role.wages %}
                 <!-- Add Wages Button -->
                 <a class="btn  btn-sm light-green-button" 
                     data-bs-toggle="modal" 
@@ -456,6 +460,8 @@
                       {% translate "webCommonAdd" %}
                 </a>
                 {% include "recruiting/work_requests/create_wages.html" %}
+
+                {% else %}
                 <!-- Edit Icon -->
                 <button class="btn btn-sm btn-icon btn-outline-success"
                         data-bs-toggle="modal"
@@ -471,6 +477,7 @@
                         title="{% translate 'webCommonDelete' %}">
                   <i class="fa fa-trash-alt"></i>
                 </button>
+                {% endif %}
               </div>
 
               </div>
@@ -511,7 +518,6 @@
                 {% translate "joDetailsDeductionsDeductions" %}
               </h6>
             
-
               <a class="btn  btn-sm light-green-button" 
                     data-bs-toggle="modal" 
                     data-bs-target="#DeductionModal{{ role.id }}">
@@ -523,20 +529,20 @@
               <div class="deduction-details table-responsive">
               <table class="table table-bordered text-nowrap border-bottom">
                 <thead>
-                <tr>
-                  <th>
-                  {% translate "joDetailsDeductionsDescription" %}
-                  </th>
-                  <th>
-                  {% translate "joDetailsDeductionsDeductionAmount" %}
-                  </th>
-                  <th>
-                  {% translate "joDetailsDeductionFrequencyOfDeduction" %}
-                  </th>
-                  <th>
-                    {% translate "Actions" %}
-                  </th>
-                </tr>
+                  <tr>
+                      <th>
+                      {% translate "joDetailsDeductionsDescription" %}
+                      </th>
+                      <th>
+                      {% translate "joDetailsDeductionsDeductionAmount" %}
+                      </th>
+                      <th>
+                      {% translate "joDetailsDeductionFrequencyOfDeduction" %}
+                      </th>
+                      <th>
+                        {% translate "Actions" %}
+                      </th>
+                  </tr>
                 </thead>
                 <tbody>
                   {% for deduction in role_deductions|get_item:role.id %}
@@ -579,14 +585,14 @@
               </h6>
               <div class="d-flex align-items-center gap-2">
                     <!-- Add Qualification Button -->
-
+                    {% if not role.qualifications %}
                     <a class="btn  btn-sm light-green-button" 
                         data-bs-toggle="modal" 
                         data-bs-target="#QualificationModal{{ role.id }}">
                            {% translate "webCommonAdd" %}
                      </a>
                     {% include "recruiting/work_requests/create_qualifications.html" %}
-
+                    {% else %}
                     <!-- Edit Icon -->
                     <button class="btn btn-sm btn-icon btn-outline-success"
                             data-bs-toggle="modal"
@@ -602,6 +608,7 @@
                             title="{% translate 'webCommonDelete' %}">
                       <i class="fa fa-trash-alt"></i>
                     </button>
+                    {% endif %}
                   </div>
               </div>
               <hr class="border-bottom border-3 border-dark"/>
@@ -648,12 +655,14 @@
               <div class="d-flex align-items-center gap-2">
                 <!-- Add Location Button -->
 
+                {% if not role.employment_location %}
                  <a class="btn  btn-sm light-green-button" 
                         data-bs-toggle="modal" 
                         data-bs-target="#EmploymentModal{{ role.id }}">
                            {% translate "webCommonAdd" %}
                 </a>
                 {% include "recruiting/work_requests/create_employment_location.html" %}
+                {% else %}
                 <!-- Edit Button -->
                 <button class="btn btn-sm btn-icon btn-outline-success"
                         data-bs-toggle="modal"
@@ -669,6 +678,7 @@
                         title="{% translate 'webCommonDelete' %}">
                   <i class="fa fa-trash-alt"></i>
                 </button>
+                {% endif %}
               </div>
 
               </div>
@@ -705,13 +715,16 @@
               </h6>
               <div class="d-flex align-items-center gap-2">
                   
-
+                  <!-- Add Housing Button -->
+                  {% if not role.housing_information %}
                   <a class="btn btn-sm light-green-button" 
                         data-bs-toggle="modal" 
                         data-bs-target="#HousingModal{{ role.id }}">
                          {% translate "webCommonAdd" %}
                   </a>
                   {% include "recruiting/work_requests/create_housing_info.html" %}
+
+                  {% else %}
 
                   <!-- Edit Button -->
                   <button class="btn btn-sm btn-icon btn-outline-success"
@@ -728,6 +741,7 @@
                           title="{% translate 'webCommonDelete' %}">
                     <i class="fa fa-trash-alt"></i>
                   </button>
+                  {% endif %}
                 </div>
 
               </div>
@@ -789,6 +803,8 @@
                 {% translate "joDetailsMealsProvisionOfMeals" %}
               </h6>
               <div class="d-flex align-items-center gap-2">
+
+                {% if not role.meal_provision %}
                 <!-- Add Meals Button -->
                 <a class="btn  btn-sm light-green-button" 
                         data-bs-toggle="modal" 
@@ -796,6 +812,7 @@
                          {% translate "webCommonAdd" %}
                   </a>
                 {% include "recruiting/work_requests/create_meal_provision.html" %}
+                {% else %}
 
                 <!-- Edit Button -->
                 <button class="btn btn-sm btn-icon btn-outline-success"
@@ -812,6 +829,7 @@
                         title="{% translate 'webCommonDelete' %}">
                   <i class="fa fa-trash-alt"></i>
                 </button>
+                {% endif %}
               </div>
 
               </div>
