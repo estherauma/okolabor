@@ -78,8 +78,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Close" %}</button>
-        <button type="button" class="btn btn-primary" id="apply-column-settings">{% translate "Apply" %}</button>
+        <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate "Close" %}</button>
+        <button type="button" class="btn light-green-button" id="apply-column-settings">{% translate "Apply" %}</button>
       </div>
     </div>
   </div>
@@ -128,10 +128,10 @@
 
                     <div class="table-responsive">
                         <table class="table text-nowrap border-bottom" id="basic-datatable-allworkers-workers">
-                             <thead style="background-color: #7DBF96;">
-                                <tr>
+                             <thead>
+                                <tr class="text-start">
                                     <th class="col-namee">
-                                      <input type="checkbox" id="select-all-workers">
+                                      <input type="checkbox" id="select-all-workers"> {% translate "workersListCheckbox" %}
                                     </th>
                                     <th class="col-name">{% translate "workersListName" %}</th>
                                     <th class="col-name">{% translate "workersListEmail" %}</th>
@@ -232,8 +232,8 @@
       <div class="modal-content">
         <form method="POST" action="{% url 'recruiting_web:edit_worker' worker.id %}">
           {% csrf_token %}
-          <div class="modal-header" style="background-color: #7DBF96;">
-            <h5 class="modal-title text-white" id="editModalLabel{{ worker.id }}">{% translate "workersListEditWorker" %}</h5>
+          <div class="modal-header">
+            <h5 class="modal-title" id="editModalLabel{{ worker.id }}">{% translate "workersListEditWorker" %}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'workersListClose'%}"></button>
           </div>
           <div class="modal-body">
@@ -277,8 +277,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'workersListCancel' %}</button>
-            <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>{% translate 'workersListSave' %}</button>
+            <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'workersListCancel' %}</button>
+            <button type="submit" class="btn light-green-button">{% translate 'workersListSave' %}</button>
           </div>
         </form>
       </div>
@@ -291,16 +291,16 @@
       <div class="modal-content">
         <form method="POST" action="{% url 'recruiting_web:worker_delete' worker.id %}">
           {% csrf_token %}
-          <div class="modal-header" style="background-color: #7DBF96;">
-            <h5 class="modal-title text-white" id="deleteModalWorkerLabel{{ worker.id }}">{% translate "workerListConfirmDelete" %}</h5>
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalWorkerLabel{{ worker.id }}">{% translate "workerListConfirmDelete" %}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'workersListClose'%}"></button>
           </div>
           <div class="modal-body">
-            {% translate 'workerListAreYouSureYouWantToDelete'%} <strong>{{ worker.first_name }}{{worker.last_name}}</strong>?
+            {% translate 'workerListAreYouSureYouWantToDelete'%} <strong>{{ worker.first_name }}{{worker.last_name}}</strong>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'workersListCancel'%}</button>
-            <button type="submit" class="btn" style='background-color:#F95406; color:white'>{% translate 'workersListDelete'%}</button>
+            <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'workersListCancel'%}</button>
+            <button type="submit" class="btn red-button">{% translate 'workersListDelete'%}</button>
           </div>
         </form>
       </div>
