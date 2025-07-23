@@ -89,8 +89,8 @@
     <div class="modal-content">
       <form method="POST" action="{% url 'recruiting_web:worker_delete' user.id %}">
         {% csrf_token %}
-        <div class="modal-header" style="background-color: #7DBF96;">
-          <h5 class="modal-title text-white" id="deleteModalManageWorkerLabel{{ user.id }}">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalManageWorkerLabel{{ user.id }}">
             {% translate "workerListConfirmDelete" %}
           </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'workersListClose' %}"></button>

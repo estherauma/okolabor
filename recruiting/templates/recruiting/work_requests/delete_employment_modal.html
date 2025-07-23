@@ -8,8 +8,8 @@
         {% csrf_token %}
         <input type="hidden" name="work_request_id" value="{{ workrequest.id }}">
 
-        <div class="modal-header" style="background-color: #7DBF96;">
-          <h5 class="modal-title text-white" id="deleteEmploymentInformationLabel{{ role.id }}">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteEmploymentInformationLabel{{ role.id }}">
             {% translate "roleEmploymentLocationConfirmDeletion" %}
           </h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{% translate 'roleEmploymentLocationDeleteClose'%}"></button>

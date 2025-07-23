@@ -232,8 +232,8 @@
       <div class="modal-content">
         <form method="POST" action="{% url 'recruiting_web:edit_worker' worker.id %}">
           {% csrf_token %}
-          <div class="modal-header" style="background-color: #7DBF96;">
-            <h5 class="modal-title text-white" id="editModalLabel{{ worker.id }}">{% translate "workersListEditWorker" %}</h5>
+          <div class="modal-header">
+            <h5 class="modal-title" id="editModalLabel{{ worker.id }}">{% translate "workersListEditWorker" %}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'workersListClose'%}"></button>
           </div>
           <div class="modal-body">
@@ -291,8 +291,8 @@
       <div class="modal-content">
         <form method="POST" action="{% url 'recruiting_web:worker_delete' worker.id %}">
           {% csrf_token %}
-          <div class="modal-header" style="background-color: #7DBF96;">
-            <h5 class="modal-title text-white" id="deleteModalWorkerLabel{{ worker.id }}">{% translate "workerListConfirmDelete" %}</h5>
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalWorkerLabel{{ worker.id }}">{% translate "workerListConfirmDelete" %}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'workersListClose'%}"></button>
           </div>
           <div class="modal-body">
