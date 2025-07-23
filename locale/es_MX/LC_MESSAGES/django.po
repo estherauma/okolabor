@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-23 14:00+0300\n"
+"POT-Creation-Date: 2025-07-23 18:41+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -359,6 +359,14 @@ msgstr "Sí"
 #: account/templates/recruiter/recruiter_modals/recruiters_data.html:88
 #: account/templates/workers/workers_list.html:61
 #: recruiting/templates/recruiting/employers/list.html:173
+#: recruiting/templates/recruiting/work_requests/detail.html:110
+#: recruiting/templates/recruiting/work_requests/detail.html:405
+#: recruiting/templates/recruiting/work_requests/detail.html:469
+#: recruiting/templates/recruiting/work_requests/detail.html:557
+#: recruiting/templates/recruiting/work_requests/detail.html:600
+#: recruiting/templates/recruiting/work_requests/detail.html:670
+#: recruiting/templates/recruiting/work_requests/detail.html:733
+#: recruiting/templates/recruiting/work_requests/detail.html:821
 #: recruiting/templates/recruiting/workers/manage_tabs/all_workers_list.html:206
 msgid "webCommonEdit"
 msgstr "Editar"
@@ -370,6 +378,14 @@ msgstr "Editar"
 #: account/templates/workers/workers_list.html:70
 #: recruiting/templates/recruiting/employers/list.html:180
 #: recruiting/templates/recruiting/relationship/recruiter_status_list.html:109
+#: recruiting/templates/recruiting/work_requests/detail.html:118
+#: recruiting/templates/recruiting/work_requests/detail.html:412
+#: recruiting/templates/recruiting/work_requests/detail.html:477
+#: recruiting/templates/recruiting/work_requests/detail.html:564
+#: recruiting/templates/recruiting/work_requests/detail.html:608
+#: recruiting/templates/recruiting/work_requests/detail.html:678
+#: recruiting/templates/recruiting/work_requests/detail.html:741
+#: recruiting/templates/recruiting/work_requests/detail.html:829
 #: recruiting/templates/recruiting/workers/manage_tabs/all_workers_list.html:215
 msgid "webCommonDelete"
 msgstr "Borrar"
@@ -1381,6 +1397,26 @@ msgstr "Monto de la deducción"
 #: recruiting/forms.py:428
 #: recruiting/templates/recruiting/work_requests/edit_deduction_modal.html:50
 msgid "roleDeductionsFrequencyOfPay"
+msgstr ""
+
+#: recruiting/forms.py:450
+#: recruiting/templates/recruiting/work_requests/create_addworker.html:422
+#: recruiting/templates/recruiting/work_requests/create_addworker.html:442
+#: recruiting/templates/recruiting/workers/manage_tabs/tabs.html:774
+#: recruiting/templates/recruiting/workers/manage_tabs/tabs.html:795
+#: recruiting/templates/recruiting/workers/manage_tabs/tabs.html:816
+#: recruiting/templates/recruiting/workers/manage_tabs/tabs.html:835
+msgid "Yes"
+msgstr "No"
+
+#: recruiting/forms.py:451
+#: recruiting/templates/recruiting/work_requests/create_addworker.html:421
+#: recruiting/templates/recruiting/work_requests/create_addworker.html:441
+#: recruiting/templates/recruiting/workers/manage_tabs/tabs.html:775
+#: recruiting/templates/recruiting/workers/manage_tabs/tabs.html:796
+#: recruiting/templates/recruiting/workers/manage_tabs/tabs.html:817
+#: recruiting/templates/recruiting/workers/manage_tabs/tabs.html:836
+msgid "No"
 msgstr ""
 
 #: recruiting/forms.py:457 recruiting/forms.py:486
@@ -3455,21 +3491,16 @@ msgid "jobOrderDetailsRequestedWorkerCategories"
 msgstr "Categorías de trabajadores solicitadas"
 
 #: recruiting/templates/recruiting/work_requests/detail.html:81
-msgid "jobOrderDetailsAddRole"
-msgstr "Agregar rol"
-
 #: recruiting/templates/recruiting/work_requests/detail.html:102
-msgid "jobOrderDetailsAddWorkers"
-msgstr "Agregar trabajadores"
-
-#: recruiting/templates/recruiting/work_requests/detail.html:110
-msgid "jobOrderDetailsEdit"
-msgstr "Editar"
-
-#: recruiting/templates/recruiting/work_requests/detail.html:118
-#: recruiting/templates/recruiting/work_requests/detail.html:306
-msgid "jobOrderDetailsDelete"
-msgstr "Borrar"
+#: recruiting/templates/recruiting/work_requests/detail.html:394
+#: recruiting/templates/recruiting/work_requests/detail.html:460
+#: recruiting/templates/recruiting/work_requests/detail.html:524
+#: recruiting/templates/recruiting/work_requests/detail.html:592
+#: recruiting/templates/recruiting/work_requests/detail.html:662
+#: recruiting/templates/recruiting/work_requests/detail.html:723
+#: recruiting/templates/recruiting/work_requests/detail.html:812
+msgid "webCommonAdd"
+msgstr "Agregar"
 
 #: recruiting/templates/recruiting/work_requests/detail.html:157
 msgid "joDetailsHoursCancel"
@@ -3524,6 +3555,10 @@ msgstr ""
 msgid "jobOrderDetailsCancel"
 msgstr "Cancelar"
 
+#: recruiting/templates/recruiting/work_requests/detail.html:306
+msgid "jobOrderDetailsDelete"
+msgstr "Borrar"
+
 #: recruiting/templates/recruiting/work_requests/detail.html:321
 msgid "joDetailsWagesDeleteWages"
 msgstr "Eliminar salarios"
@@ -3552,328 +3587,290 @@ msgstr "Número USDOL"
 msgid "joDetailsHoursHours"
 msgstr "Horas"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:393
-msgid "joDetailsHoursAddHours"
-msgstr "Agregar horas"
-
-#: recruiting/templates/recruiting/work_requests/detail.html:403
-#: recruiting/templates/recruiting/work_requests/detail.html:463
-#: recruiting/templates/recruiting/work_requests/detail.html:551
-#: recruiting/templates/recruiting/work_requests/detail.html:594
-#: recruiting/templates/recruiting/work_requests/detail.html:661
-#: recruiting/templates/recruiting/work_requests/detail.html:720
-#: recruiting/templates/recruiting/work_requests/detail.html:804
-msgid "Edit"
-msgstr ""
-
-#: recruiting/templates/recruiting/work_requests/detail.html:423
+#: recruiting/templates/recruiting/work_requests/detail.html:426
 msgid "joDetailsHoursOnCall"
 msgstr "De guardia"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:424
+#: recruiting/templates/recruiting/work_requests/detail.html:427
 msgid "joDetailsHoursEstimatedWeeklyHours"
 msgstr "Horas semanales estimadas"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:425
+#: recruiting/templates/recruiting/work_requests/detail.html:428
 msgid "joDetailsHoursSundayHours"
 msgstr "Horario del domingo"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:426
+#: recruiting/templates/recruiting/work_requests/detail.html:429
 msgid "joDetailsHoursMondayHours"
 msgstr "Horario del lunes"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:427
+#: recruiting/templates/recruiting/work_requests/detail.html:430
 msgid "joDetailsHoursTuesdayHours"
 msgstr "Horario del martes"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:432
+#: recruiting/templates/recruiting/work_requests/detail.html:435
 msgid "joDetailsHoursWednesdayHours"
 msgstr "Horario del miércoles"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:433
+#: recruiting/templates/recruiting/work_requests/detail.html:436
 msgid "joDetailsHoursThursdayHours"
 msgstr "Horario del jueves"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:434
+#: recruiting/templates/recruiting/work_requests/detail.html:437
 msgid "joDetailsHoursFridayHours"
 msgstr "Horario del viernes"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:435
+#: recruiting/templates/recruiting/work_requests/detail.html:438
 msgid "joDetailsHoursSaturdayHours"
 msgstr "Horario del sábado"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:436
+#: recruiting/templates/recruiting/work_requests/detail.html:439
 msgid "joDetailsHoursJobDescription"
 msgstr "Descripción"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:443
+#: recruiting/templates/recruiting/work_requests/detail.html:446
 msgid "joDetailsHoursNoHoursInformationAvailableForThisRole"
 msgstr "No hay información de horas disponible para este puesto."
 
-#: recruiting/templates/recruiting/work_requests/detail.html:449
+#: recruiting/templates/recruiting/work_requests/detail.html:452
 msgid "joDetailsWagesWages"
 msgstr "Salarios"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:456
-msgid "joDetailsAddWages"
-msgstr "Agregar salarios"
-
-#: recruiting/templates/recruiting/work_requests/detail.html:484
+#: recruiting/templates/recruiting/work_requests/detail.html:491
 msgid "joDetailsWagesWage"
 msgstr "Salario"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:485
+#: recruiting/templates/recruiting/work_requests/detail.html:492
 msgid "joDetailsWagesWageType"
 msgstr "Tipo de salario"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:487
+#: recruiting/templates/recruiting/work_requests/detail.html:494
 msgid "joDetailsWagesPieceRateOfferings"
 msgstr "Tarifa por pieza de las ofertas"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:494
+#: recruiting/templates/recruiting/work_requests/detail.html:501
 msgid "joDetailsWagesPieceRateOfferingsType"
 msgstr "Tarifa por pieza del tipo de oferta"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:496
+#: recruiting/templates/recruiting/work_requests/detail.html:503
 msgid "joDetailsWagesFrequencyOfPay"
 msgstr "Frecuencia de pago"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:498
+#: recruiting/templates/recruiting/work_requests/detail.html:505
 msgid "joDetailsWagesDetails"
 msgstr "Detalles"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:505
+#: recruiting/templates/recruiting/work_requests/detail.html:512
 msgid "joDetailsWagesNoWagesInformationAvailableForThisRole"
 msgstr "No hay información salarial disponible para este puesto."
 
-#: recruiting/templates/recruiting/work_requests/detail.html:511
+#: recruiting/templates/recruiting/work_requests/detail.html:518
 msgid "joDetailsDeductionsDeductions"
 msgstr "Deducciones"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:518
-msgid "joDetailsDeductionsAddDeductions"
-msgstr "Añadir deducciones"
-
-#: recruiting/templates/recruiting/work_requests/detail.html:528
+#: recruiting/templates/recruiting/work_requests/detail.html:534
 msgid "joDetailsDeductionsDescription"
 msgstr "Descripción"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:531
+#: recruiting/templates/recruiting/work_requests/detail.html:537
 msgid "joDetailsDeductionsDeductionAmount"
 msgstr "Monto de la deducción"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:534
+#: recruiting/templates/recruiting/work_requests/detail.html:540
 msgid "joDetailsDeductionFrequencyOfDeduction"
 msgstr "Frecuencia"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:537
+#: recruiting/templates/recruiting/work_requests/detail.html:543
 msgid "Actions"
 msgstr ""
 
-#: recruiting/templates/recruiting/work_requests/detail.html:578
+#: recruiting/templates/recruiting/work_requests/detail.html:584
 msgid "joDetails1QualificationsQualifications"
 msgstr "Cualificaciones"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:586
-msgid "joDetailsQualificationsAddQualifiations"
-msgstr "Agregar calificaciones"
-
-#: recruiting/templates/recruiting/work_requests/detail.html:612
+#: recruiting/templates/recruiting/work_requests/detail.html:619
 msgid "joDetailsQualificationsMinimumEducationRequirement"
 msgstr "Requisito mínimo de educación"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:613
+#: recruiting/templates/recruiting/work_requests/detail.html:620
 msgid "joDetailsQualificationsExperienceRequired"
 msgstr "Se requiere experiencia"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:613
-#: recruiting/templates/recruiting/work_requests/detail.html:615
-#: recruiting/templates/recruiting/work_requests/detail.html:617
-#: recruiting/templates/recruiting/work_requests/detail.html:618
+#: recruiting/templates/recruiting/work_requests/detail.html:620
+#: recruiting/templates/recruiting/work_requests/detail.html:622
+#: recruiting/templates/recruiting/work_requests/detail.html:624
 #: recruiting/templates/recruiting/work_requests/detail.html:625
-#: recruiting/templates/recruiting/work_requests/detail.html:626
-#: recruiting/templates/recruiting/work_requests/detail.html:627
-#: recruiting/templates/recruiting/work_requests/detail.html:628
-#: recruiting/templates/recruiting/work_requests/detail.html:629
-#: recruiting/templates/recruiting/work_requests/detail.html:630
-#: recruiting/templates/recruiting/work_requests/detail.html:825
+#: recruiting/templates/recruiting/work_requests/detail.html:632
+#: recruiting/templates/recruiting/work_requests/detail.html:633
+#: recruiting/templates/recruiting/work_requests/detail.html:634
+#: recruiting/templates/recruiting/work_requests/detail.html:635
+#: recruiting/templates/recruiting/work_requests/detail.html:636
+#: recruiting/templates/recruiting/work_requests/detail.html:637
+#: recruiting/templates/recruiting/work_requests/detail.html:843
 msgid "Yes,No"
 msgstr "Sí, no"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:614
+#: recruiting/templates/recruiting/work_requests/detail.html:621
 msgid "joDetailsQualificationsNumberOfMonthsExperienceRequired"
 msgstr "Número de meses de experiencia requeridos"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:615
+#: recruiting/templates/recruiting/work_requests/detail.html:622
 msgid "joDetailsQualificationsTrainingRequired"
 msgstr "Entrenamiento requerido"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:616
+#: recruiting/templates/recruiting/work_requests/detail.html:623
 msgid "joDetailsQualificationsNumberOfMonthsTrainingRequired"
 msgstr "Número de meses de capacitación requeridos"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:617
+#: recruiting/templates/recruiting/work_requests/detail.html:624
 msgid "joDetailsQualificationsCertification/LicenseRequirements"
 msgstr "Requisitos de certificación/licencia"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:618
+#: recruiting/templates/recruiting/work_requests/detail.html:625
 msgid "joDetailsQualificationsDrugScreen"
 msgstr "Prueba de drogas"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:623
+#: recruiting/templates/recruiting/work_requests/detail.html:630
 msgid "joDetailsQualificationsLiftingRequirements"
 msgstr "Requisitos de elevación"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:624
+#: recruiting/templates/recruiting/work_requests/detail.html:631
 msgid "joDetailsQualificationsLiftingRequirementWeight"
 msgstr "Peso requerido para levantar"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:624
+#: recruiting/templates/recruiting/work_requests/detail.html:631
 msgid "joDetailsQualificationslbs"
 msgstr "Cualificaciones"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:625
+#: recruiting/templates/recruiting/work_requests/detail.html:632
 msgid "joDetailsQualificationsExposureToTemperature"
 msgstr "Exposición a la temperatura"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:626
+#: recruiting/templates/recruiting/work_requests/detail.html:633
 msgid "joDetailsQualificationsExtensivePushingOrPulling"
 msgstr "Empujar o tirar mucho"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:627
+#: recruiting/templates/recruiting/work_requests/detail.html:634
 msgid "joDetailsQualificationsExtensiveSittingOrWalking"
 msgstr "Estar sentado o caminar mucho tiempo"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:628
+#: recruiting/templates/recruiting/work_requests/detail.html:635
 msgid "joDetailsQualificationsFrequentStoopingOrBendingOver"
 msgstr "Encorvarse o inclinarse con frecuencia"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:629
+#: recruiting/templates/recruiting/work_requests/detail.html:636
 msgid "joDetailsQualificationsRepetitiveMovements"
 msgstr "Movimientos repetitivos"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:630
+#: recruiting/templates/recruiting/work_requests/detail.html:637
 msgid "joDetailsQualificationsSupportOfOtherEmployees"
 msgstr "Apoyo de otros empleados"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:632
+#: recruiting/templates/recruiting/work_requests/detail.html:639
 msgid "joDetailsQualificationsOtherQualifications"
 msgstr "Otras cualificaciones"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:639
+#: recruiting/templates/recruiting/work_requests/detail.html:646
 msgid "joDetailsQualificationsNoQualificationsFoundForThisRole"
 msgstr "No se encontraron calificaciones para este puesto."
 
-#: recruiting/templates/recruiting/work_requests/detail.html:646
+#: recruiting/templates/recruiting/work_requests/detail.html:653
 msgid "joDetailsPlaceOfEmploymentPlaceOfEmploymentInformation"
 msgstr "Información sobre el lugar de trabajo"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:654
-msgid "joDetailsPlaceOfEmploymentAddLocation"
-msgstr "Agregar ubicación"
-
-#: recruiting/templates/recruiting/work_requests/detail.html:680
+#: recruiting/templates/recruiting/work_requests/detail.html:690
 msgid "joDetailsPlaceOfEmploymentAddress"
 msgstr "DIRECCIÓN"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:681
+#: recruiting/templates/recruiting/work_requests/detail.html:691
 msgid "joDetailsPlaceOfEmploymentCity"
 msgstr "Ciudad"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:682
+#: recruiting/templates/recruiting/work_requests/detail.html:692
 msgid "joDetailsPlaceOfEmploymentCountry"
 msgstr "País"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:687
+#: recruiting/templates/recruiting/work_requests/detail.html:697
 msgid "joDetailsPlaceOfEmploymentState"
 msgstr "Estado"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:688
+#: recruiting/templates/recruiting/work_requests/detail.html:698
 msgid "joDetailsPlaceOfEmploymentPostalCode"
 msgstr "Código Postal"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:690
+#: recruiting/templates/recruiting/work_requests/detail.html:700
 msgid "joDetailsPlaceOfEmploymentAdditionalInformation"
 msgstr "Información adicional"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:697
+#: recruiting/templates/recruiting/work_requests/detail.html:707
 msgid "joDetailsPlaceOfEmploymentNoEmploymentLocationInformationForThisRole"
 msgstr "No hay información de ubicación de empleo para este puesto."
 
-#: recruiting/templates/recruiting/work_requests/detail.html:704
+#: recruiting/templates/recruiting/work_requests/detail.html:714
 msgid "joDetailsHousingInfoHousingInformation"
 msgstr "Información de vivienda"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:712
-msgid "joDetailsHousingInfoAddHousing"
-msgstr "Añadir vivienda"
-
-#: recruiting/templates/recruiting/work_requests/detail.html:739
-#: recruiting/templates/recruiting/work_requests/detail.html:763
+#: recruiting/templates/recruiting/work_requests/detail.html:753
+#: recruiting/templates/recruiting/work_requests/detail.html:777
 msgid "joDetailsHousingInfoAddress"
 msgstr "DIRECCIÓN"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:745
+#: recruiting/templates/recruiting/work_requests/detail.html:759
 msgid "joDetailsHousingInfoCity"
 msgstr "Ciudad"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:751
+#: recruiting/templates/recruiting/work_requests/detail.html:765
 msgid "joDetailsHousingInfoCountry"
 msgstr "País"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:757
+#: recruiting/templates/recruiting/work_requests/detail.html:771
 msgid "joDetailsHousingInfoState"
 msgstr "Estado"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:769
+#: recruiting/templates/recruiting/work_requests/detail.html:783
 msgid "joDetailsHousingInfoHousingType"
 msgstr "Tipo de vivienda"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:775
+#: recruiting/templates/recruiting/work_requests/detail.html:789
 msgid "joDetailsHousingInfoAdditionalInformation"
 msgstr "información adicional"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:782
+#: recruiting/templates/recruiting/work_requests/detail.html:796
 msgid "joDetailsHousingInfoNoHousingInformationForThisRole"
 msgstr "No hay información de vivienda para este puesto."
 
-#: recruiting/templates/recruiting/work_requests/detail.html:789
+#: recruiting/templates/recruiting/work_requests/detail.html:803
 msgid "joDetailsMealsProvisionOfMeals"
 msgstr "Provisión de comidas"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:796
-msgid "joDetailsMealsAddMeals"
-msgstr "Agregar comidas"
-
-#: recruiting/templates/recruiting/work_requests/detail.html:823
+#: recruiting/templates/recruiting/work_requests/detail.html:841
 msgid "joDetailsMealsAreMealsProvided"
 msgstr "¿Se proporcionan comidas?"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:829
+#: recruiting/templates/recruiting/work_requests/detail.html:847
 msgid "joDetailsMealsAmountChargedPerDay"
 msgstr "Cantidad cobrada por día"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:835
+#: recruiting/templates/recruiting/work_requests/detail.html:853
 msgid "joDetailsMealsAdditionalInformation"
 msgstr "información adicional"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:842
+#: recruiting/templates/recruiting/work_requests/detail.html:860
 msgid "joDetailsMealsNoMealInformationForThisRole"
 msgstr "No hay información de comidas para este puesto."
 
-#: recruiting/templates/recruiting/work_requests/detail.html:861
+#: recruiting/templates/recruiting/work_requests/detail.html:879
 msgid "jobOrderDetailsWorkerInformation"
 msgstr "Información del trabajador"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:867
+#: recruiting/templates/recruiting/work_requests/detail.html:885
 msgid "jobOrderDetailsShortlist"
 msgstr "Lista corta"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:887
+#: recruiting/templates/recruiting/work_requests/detail.html:905
 msgid "jobOrderDetailsOfferSentPending"
 msgstr "Oferta enviada(pendiente)"
 
-#: recruiting/templates/recruiting/work_requests/detail.html:909
+#: recruiting/templates/recruiting/work_requests/detail.html:927
 msgid "jobOrderDetailsConfirmed"
 msgstr "Confirmado"
 
@@ -6270,17 +6267,35 @@ msgstr "Has cerrado sesión exitosamente."
 msgid "loginYouHaveSuccessfullyLoggedIn"
 msgstr "Has iniciado sesión exitosamente."
 
-#~ msgid "workersListTabsX"
-#~ msgstr "X"
+#~ msgid "joDetailsHoursAddHours"
+#~ msgstr "Agregar horas"
 
-#~ msgid "recruiterDetailsEmployerContacts"
-#~ msgstr "Contactos del empleador"
+#~ msgid "jobOrderDetailsEdit"
+#~ msgstr "Editar"
 
-#~ msgid "employerDetailsAssignContactEmployer"
-#~ msgstr "Agregar usuarios"
+#~ msgid "jobOrderDetailsAddRole"
+#~ msgstr "Agregar rol"
 
-#~ msgid "recruiterDetailsAssignContactEmployer"
-#~ msgstr "Asignar empleador de contacto"
+#~ msgid "jobOrderDetailsAddWorkers"
+#~ msgstr "Agregar trabajadores"
+
+#~ msgid "joDetailsAddWages"
+#~ msgstr "Agregar salarios"
+
+#~ msgid "joDetailsDeductionsAddDeductions"
+#~ msgstr "Añadir deducciones"
+
+#~ msgid "joDetailsQualificationsAddQualifiations"
+#~ msgstr "Agregar calificaciones"
+
+#~ msgid "joDetailsPlaceOfEmploymentAddLocation"
+#~ msgstr "Agregar ubicación"
+
+#~ msgid "joDetailsHousingInfoAddHousing"
+#~ msgstr "Añadir vivienda"
+
+#~ msgid "joDetailsMealsAddMeals"
+#~ msgstr "Agregar comidas"
 
 #~ msgid "workersListX"
 #~ msgstr "X"
