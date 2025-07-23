@@ -13,6 +13,7 @@ from django.views.generic import CreateView,DeleteView,ListView
 from django.views.decorators.csrf import csrf_exempt,csrf_protect
 from django.views.decorators.http import require_POST
 import json
+from django.utils.translation import gettext as _
 from dateutil.relativedelta import relativedelta
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import Group
@@ -38,6 +39,7 @@ from recruiting.utils import (
     get_worker_preferences, calculate_profile_completion,
     calculate_total_experience
 )
+from recruiting.models import Organization
 from account.models import User
 from recruiting.utils import *
 from recruiting.views.workers import WorkerDetailsView
@@ -387,6 +389,8 @@ class EmployerDetailView(View):
         assigned_orgs_data = []
         recruiter_names_org = set()
 
+        assigned_users = employer.recruiters.all()
+
         for org in recruiter_orgs:
             org_recruiters = org.recruiters.all()
             org_recruiter_names = [
@@ -408,7 +412,6 @@ class EmployerDetailView(View):
 
         all_recruiter_names = list(recruiter_names_direct.union(recruiter_names_org))
         users = User.objects.all()
-
         context = {
             'employer': employer,
             'users': users,
@@ -416,7 +419,7 @@ class EmployerDetailView(View):
             'closed_work_requests': closed_work_requests,
             'draft_work_requests': draft_work_requests,
             'recruiters': all_recruiter_names,
-            'contacts': employer.contacts.all(),
+            'contacts': assigned_users,
             'work_requests': work_requests,
             'assigned_organizations': assigned_orgs_data,
             'breadcrumbs': [
@@ -464,10 +467,9 @@ class RecruiterDetailView(View):
                 'phone': org.phone,
                 'recruiters': recruiter_names
             })
-
-        contacts = recruiter_org.contacts.all()
+        assigned_users = recruiter_org.recruiters.all()
+        # contacts = recruiter_org.contacts.all()
         users = User.objects.all()
-
         context = {
             'employer': recruiter_org,
             'users': users,
@@ -475,7 +477,7 @@ class RecruiterDetailView(View):
             'in_progress_work_requests': in_progress_work_requests,
             'closed_work_requests': closed_work_requests,
             'draft_work_requests': draft_work_requests,
-            'contacts': contacts,
+            'contacts': assigned_users,
             'work_requests': work_requests,
             'breadcrumbs': [
                             {'name': _('recruiterListHome'), 'url': reverse('index')},
@@ -483,7 +485,7 @@ class RecruiterDetailView(View):
                             {'name': recruiter_org.name, 'url': None},
                         ],
         }
-        return render(request, 'recruiting/recruiters_list/workrequest_detail.html', context)
+        return render(request, 'recruiting/recruiters_list/details.html', context)
 
 
 class WorkRequestsListView(View):
@@ -1975,8 +1977,8 @@ class UpdateStatusView(View):
 
 class ContactWorkRequestsView(View):
     def get(self, request, contact_id):
-        contact = get_object_or_404(EmployerContact, id=contact_id)
-        employer = contact.employer 
+        contact = get_object_or_404(User, id=contact_id)
+        employer = contact.organizations.first()
         recruiters = EmployerRecruiter.objects.filter(employer=employer).select_related('recruiter')
         work_requests = WorkRequests.objects.filter(employer=employer)
         in_progress_work_requests = work_requests.filter(status__in=['Open', 'Requested'])
@@ -1995,6 +1997,7 @@ class ContactWorkRequestsView(View):
 
         return render(request, 'recruiting/work_requests/workrequest_details.html', context)
 
+
 @method_decorator(csrf_exempt, name='dispatch')
 class AssignEmployerContactView(View):
     def post(self, request, *args, **kwargs):
@@ -2002,37 +2005,45 @@ class AssignEmployerContactView(View):
             data = json.loads(request.body)
             employer_id = data.get("employer_id")
             user_id = data.get("user_id")
-            position = data.get("position", "")
-            is_primary = data.get("is_primary", False)
 
             if not employer_id or not user_id:
-                return JsonResponse({'error': 'employerID and userID are required.'}, status=400)
+                return JsonResponse({
+                    "success": False,
+                    "error": _("Employer ID and User ID are required.")
+                }, status=400)
 
-            employer = Organization.objects.get(id=employer_id)
-            user = User.objects.get(id=user_id)
+            employer = get_object_or_404(Organization, id=employer_id)
+            user = get_object_or_404(User, id=user_id)
 
-            # Optional: Prevent duplicate assignments
-            if EmployerContact.objects.filter(user=user, employer=employer).exists():
-                return JsonResponse({'error': 'User is already a contact for this employer.'}, status=400)
+            if employer in user.organizations.all():
+                return JsonResponse({
+                    "success": False,
+                    "error": _("User is already assigned to this organization.")
+                }, status=400)
 
-            EmployerContact.objects.create(
-                employer=employer,
-                user=user,
-                position=position,
-                is_primary=is_primary
-            )
+            user.organizations.add(employer)
 
-            return JsonResponse({'success': True, 'message': 'ContactAssignedSuccessfully!'})
+            return JsonResponse({
+                "success": True,
+                "message": _("Organization assigned successfully to user.")
+            })
 
-        except Organization.DoesNotExist:
-            return JsonResponse({'error': 'Employer not found.'}, status=404)
-        except User.DoesNotExist:
-            return JsonResponse({'error': 'User not found.'}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({
+                "success": False,
+                "error": _("Invalid JSON payload.")
+            }, status=400)
         except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
+            return JsonResponse({
+                "success": False,
+                "error": _("Failed to assign organization: ") + str(e)
+            }, status=500)
 
     def get(self, request, *args, **kwargs):
-        return JsonResponse({'error': 'GET not allowed.'}, status=405)
+        return JsonResponse({
+            "error": "GET not allowed."
+        }, status=405)
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class AssignEmployersToRecruiterOrgView(View):

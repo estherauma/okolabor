@@ -89,7 +89,7 @@
           <!-- DataTable -->
           <div class="table-responsive">
             <table class="table text-nowrap border-bottom" id="basic-datatable-shortlist">
-              <thead style="background-color: #7DBF96;">
+              <thead>
                 <tr>
                    <th class="col-namee">
                   <input type="checkbox" id="selectAllShortlist">
@@ -132,6 +132,40 @@
   </div>
 </div>
 
+
+<!-- Copy Modal -->
+<div class="modal fade" id="copyModal" tabindex="-1" aria-labelledby="copyModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="copyForm"
+            data-url="{% url 'recruiting_web:copy_workers' %}"
+            data-get-roles-url="{% url 'recruiting_web:get_roles' %}"
+            data-csrf="{{ csrf_token }}">
+        <div class="modal-header">
+          <h5 class="modal-title" id="copyModalLabel">{% translate "workRequestAddWorkerShortlistCopyWorkersToAnotherWorkRequest" %}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'workRequestAddWorkerShortlistClose'%}"></button>
+        </div>
+        <div class="modal-body">
+          <label for="target_work_request">{% translate "workRequestAddWorkerShortlistSelectWorkRequest" %}:</label>
+          <select name="work_request" id="target_work_request" class="form-select" required>
+            <option value="" disabled selected>{% translate "workRequestAddWorkerShortlistSelectAWorkRequest" %}</option>
+            {% for wr in work_requests %}
+              <option value="{{ wr.id }}">{{ wr.name }}</option>
+            {% endfor %}
+          </select>
+          <label for="role_id">{% translate "workRequestAddWorkerShortlistSelectRole" %}:</label>
+          <select name="role" id="role_id" class="form-select" required>
+            <option value="" disabled selected>{% translate "workRequestAddWorkerShortlistSelectARole" %}</option>
+          </select>
+          <input type="hidden" name="status" value="assigned">
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn light-green-button" id="copySubmitBtn">{% translate "workRequestAddWorkerShortlistAddWorkers" %}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 
 <!-- JS Scripts -->
 {% block scripts %}

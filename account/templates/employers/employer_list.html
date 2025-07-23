@@ -29,7 +29,7 @@
 
     <div class="table-responsive">
       <table class="table text-nowrap border-bottom" id="employers-datatable">
-        <thead style="background-color: #7DBF96;">
+        <thead>
           <tr>
             <th class="text-start"><input type="checkbox" id="select-all-employer-checkbox"></th>
             <th class="text-start">{% translate "manageUsersEmployersTableEmail" %}</th>
@@ -109,8 +109,8 @@
     <div class="modal-content">
       <form method="POST" action="{% url 'employer_manage_delete' employer.id %}">
         {% csrf_token %}
-        <div class="modal-header" style="background-color: #7DBF96;">
-          <h5 class="modal-title text-white" id="deleteModalManageEmployerLabel{{ employer.id }}">{% translate "webCommonConfirmDelete" %}</h5>
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalManageEmployerLabel{{ employer.id }}">{% translate "employerListConfirmDelete" %}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'webCommonClose'%}"></button>
         </div>
         <div class="modal-body">
