@@ -8,8 +8,8 @@
         {% csrf_token %}
         <input type="hidden" name="work_request_id" value="{{ workrequest.id }}">
 
-        <div class="modal-header" style="background-color: #7DBF96;">
-          <h5 class="modal-title text-white" id="deleteHousingInformationLabel{{ role.id }}">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteHousingInformationLabel{{ role.id }}">
             {% translate "joDetailsHousingInfoConfirmDelete" %}
           </h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{% translate 'joDetailsHousingInfoDeleteClose'%}"></button>
@@ -21,8 +21,8 @@
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'joDetailsHousingInfoDeleteCancel' %}</button>
-          <button type="submit" class="btn" style='background-color:#F95406; color:white'>{% translate 'joDetailsHousingInfoDelete' %}</button>
+          <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'joDetailsHousingInfoDeleteCancel' %}</button>
+          <button type="submit" class="btn red-button">{% translate 'joDetailsHousingInfoDelete' %}</button>
         </div>
       </form>
     </div>

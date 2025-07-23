@@ -191,8 +191,8 @@
             {% if role.wages and role.wages.id %}
       <form method="POST" action="{% url 'recruiting_web:edit-role-wages' role.wages.id %}">
         {% csrf_token %}
-        <div class="modal-header" style="background-color: #7DBF96;" >
-          <h5 class="modal-title text-white">{% translate 'joDetailsWagesEditWagesEditWages' %}</h5>
+        <div class="modal-header">
+          <h5 class="modal-title">{% translate 'joDetailsWagesEditWagesEditWages' %}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
@@ -272,7 +272,6 @@
 
             {% endfor %}
             
-            
 
 
             <!-- Delete Modal -->
@@ -299,11 +298,11 @@
             
             
             <div class="modal-footer">
-              <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate "jobOrderDetailsCancel"%}</button>
+              <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate "jobOrderDetailsCancel"%}</button>
               
               <form method="POST" action="{% url 'recruiting_web:delete_role' role.id %}">
                 {% csrf_token %}
-                <button type="submit" class="btn" style='background-color:#F95406; color:white'>{% translate "jobOrderDetailsDelete"%}</button>
+                <button type="submit" class="btn red-button">{% translate "jobOrderDetailsDelete"%}</button>
               </form>
             </div>
       
@@ -317,8 +316,8 @@
             {% if role.wages and role.wages.id %}
             <form method="POST" action="{% url 'recruiting_web:delete-role-wages' role.wages.id %}">
               {% csrf_token %}
-              <div class="modal-header" style="background-color: #7DBF96;">
-                <h5 class="modal-title text-white">{% translate 'joDetailsWagesDeleteWages' %}</h5>
+              <div class="modal-header">
+                <h5 class="modal-title">{% translate 'joDetailsWagesDeleteWages' %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
               </div>
               <div class="modal-body">
@@ -326,8 +325,8 @@
               </div>
               <div class="modal-footer">
                 <input type="hidden" name="work_request_id" value="{{ workrequest.id }}">
-                <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'joDetailsWagesDeleteCancel' %}</button>
-                <button type="submit" class="btn" style='background-color:#F95406; color:white'>{% translate 'joDetailsWagesDelete' %}</button>
+                <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'joDetailsWagesDeleteCancel' %}</button>
+                <button type="submit" class="btn red-button">{% translate 'joDetailsWagesDelete' %}</button>
               </div>
             </form>
             {% else %}

@@ -58,7 +58,7 @@
 
                     <div class="table-responsive">
                         <table class="table text-nowrap border-bottom" id="recruiter-status-datatable">
-                            <thead style="background-color: #7DBF96;">
+                            <thead>
                                 <tr>
                                     <th>{% translate "recruiterStatusEmployerOrganization" %}</th>
                                     <th>{% translate "recruiterStatusRecruiterOrganization" %}</th>
@@ -142,8 +142,8 @@
                     {% translate 'recruiterStatusAreYouSureYouWantToDelete' %} <strong>{{ item }}</strong>?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'recruiterStatusCancel' %}</button>
-                    <button type="submit" class="btn" style='background-color:#F95406; color:white'>{% translate 'recruiterStatusDelete' %}</button>
+                    <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'recruiterStatusCancel' %}</button>
+                    <button type="submit" class="btn red-button">{% translate 'recruiterStatusDelete' %}</button>
                 </div>
                 </form>
             </div>

@@ -8,8 +8,8 @@
                     <form method="POST" action="{% url 'recruiting_web:housing_information_edit' role.housing_information.id %}">
                         {% csrf_token %}
 
-                        <div class="modal-header" style="background-color: #7DBF96;">
-                        <h5 class="modal-title text-white" id="editRoleLocationModalLabel{{ role.id }}">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="editRoleLocationModalLabel{{ role.id }}">
                             {% translate "joDetailsHousingInfoEditHousingInformationForRole" %}: {{ role.name }}
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'joDetailsHousingInfoClose'%}"></button>
