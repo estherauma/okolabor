@@ -76,7 +76,7 @@
         </h3>
         </div>
         <div class="card-options">
-          <a class="btn btn-light btn-sm" 
+          <a class="btn btn-sm add-cat-btn" 
             data-bs-toggle="modal" 
             data-bs-target="#addRoleModal{{ workrequest.id }}">
              {% translate "webCommonAdd" %}
@@ -91,7 +91,7 @@
         {% for role in workrequest.roles.all %}
         <div class="accordion-item mb-2 ">
           <div class="d-flex align-items-center ">
-            <div class="d-flex col-md-10 align-items-center">
+            <div class="d-flex col-md-9 align-items-center">
               <div class="job-title-container">
                 <p class="job-title-label-container">
                   <span class="job-title-label">{% translate "jobOrderDetailsJobTitle" %}</span>
@@ -115,22 +115,9 @@
                   </a>
                 </p>
               </div>
-          
-          
-              <!-- Edit Button -->
-              <!-- <button class="btn btn-sm btn-icon btn-outline-success ms-2" data-bs-toggle="modal"
-                                    data-bs-target="#editRoleModal{{ role.id }}" title="{% translate 'jobOrderDetailsEdit' %}">
-                                    <i class="fa fa-edit"></i>
-                                  </button> -->
-          
-              <!-- Delete Button -->
-              <!-- <button class="btn btn-sm btn-icon btn-outline-danger ms-2" data-bs-toggle="modal"
-                                    data-bs-target="#deleteRoleModal{{ role.id }}" title="{% translate 'jobOrderDetailsDelete' %}">
-                                    <i class="fa fa-trash-alt"></i>
-                                  </button> -->
             </div>
             <!-- accordion collapse icon -->
-            <button aria-controls="collapse{{ forloop.counter }}" aria-expanded="false" class="accordion-button collapsed "
+            <button aria-controls="collapse{{ forloop.counter }}" aria-expanded="false" class="accordion-button collapsed"
               data-bs-target="#collapse{{ forloop.counter }}" data-bs-toggle="collapse" type="button"></button>
           </div>
           {% include 'recruiting/work_requests/edit_role_modal.html'%}
@@ -355,7 +342,7 @@
 
             
           <div aria-labelledby="heading{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#rolesAccordion" id="collapse{{ forloop.counter }}">
-          <div class="accordion-body">
+          <div class="accordion-body border-t-dotted-green">
             <div class="details-row">
              <label>
                 {% translate "jobOrderDetailsNumberOfWorkersRequired" %}
