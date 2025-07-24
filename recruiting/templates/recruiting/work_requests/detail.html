@@ -374,6 +374,7 @@
             <!-- You can add more details here -->
             <div class="row ">
             <div class="col-12">
+              <!-- Hours -->
               <div class="role-item-container">
                 <div class="d-flex align-items-center header-container">
                   <h5 class="mb-0 me-3">
@@ -453,6 +454,7 @@
                 </p>
                 {% endif %}
               </div>
+              <!-- Wages -->
               <div class="role-item-container">
                 <div class="d-flex align-items-center header-container">
                   <h5 class="mb-0 me-3">
@@ -531,7 +533,8 @@
                 </p>
                 {% endif %}
               </div>
-                <div class="role-item-container">
+              <!-- Deductions -->
+              <div class="role-item-container">
                 <div class="d-flex align-items-center header-container">
                   <h5 class="mb-0 me-3">
                     {% translate "joDetailsDeductionsDeductions" %}
@@ -597,287 +600,336 @@
                   </table>
                 </div>
               </div>
-              <div class="d-flex justify-content-between align-items-center">
-              <h6>
-                {% translate "joDetails1QualificationsQualifications" %}
-              </h6>
-              <div class="d-flex align-items-center gap-2">
-                    <!-- Add Qualification Button -->
-                    {% if not role.qualifications %}
-                    <a class="btn  btn-sm light-green-button" 
-                        data-bs-toggle="modal" 
-                        data-bs-target="#QualificationModal{{ role.id }}">
-                           {% translate "webCommonAdd" %}
-                     </a>
-                    {% include "recruiting/work_requests/create_qualifications.html" %}
-                    {% else %}
-                    <!-- Edit Icon -->
-                    <button class="btn btn-sm btn-icon btn-outline-success"
-                            data-bs-toggle="modal"
-                            data-bs-target="#editQualificationModal{{ role.id }}"
-                            title="{% translate 'webCommonEdit' %}">
-                      <i class="fa fa-edit"></i>
-                    </button>
-
-                    <!-- Delete Icon -->
-                    <button class="btn btn-sm btn-icon btn-outline-danger"
-                            data-bs-toggle="modal"
-                            data-bs-target="#deleteQualificationModal{{ role.id }}"
-                            title="{% translate 'webCommonDelete' %}">
-                      <i class="fa fa-trash-alt"></i>
-                    </button>
-                    {% endif %}
-                  </div>
-              </div>
-              <hr class="border-bottom border-3 border-dark"/>
-              {% if role.qualifications %}
-                <div class="row g-3 p-3 bg-white rounded-3 shadow-sm">
-                  <!-- Column 1 -->
-                  <div class="col-md-6">
-                    <p class="mb-2"><strong>{% translate "joDetailsQualificationsMinimumEducationRequirement" %}:</strong> {{ role.qualifications.minimum_education_requirement|default:"" }}</p>
-                    <p class="mb-2"><strong>{% translate "joDetailsQualificationsExperienceRequired" %}:</strong> {{ role.qualifications.experience_required|yesno:_("Yes,No") }}</p>
-                    <p class="mb-2"><strong>{% translate "joDetailsQualificationsNumberOfMonthsExperienceRequired" %}:</strong> {{ role.qualifications.number_of_months_experience_required|default:"" }}</p>
-                    <p class="mb-2"><strong>{% translate "joDetailsQualificationsTrainingRequired" %}:</strong> {{ role.qualifications.training_required|yesno:_("Yes,No") }}</p>
-                    <p class="mb-2"><strong>{% translate "joDetailsQualificationsNumberOfMonthsTrainingRequired" %}:</strong> {{ role.qualifications.number_of_months_training_required|default:"" }}</p>
-                    <p class="mb-2"><strong>{% translate "joDetailsQualificationsCertification/LicenseRequirements" %}:</strong> {{ role.qualifications.certification_license_requirements|yesno:_("Yes,No") }}</p>
-                    <p class="mb-2"><strong>{% translate "joDetailsQualificationsDrugScreen" %}:</strong> {{ role.qualifications.drug_screen|yesno:_("Yes,No") }}</p>
-                  </div>
-
-                  <!-- Column 2 -->
-                  <div class="col-md-6">
-                    <p class="mb-2"><strong>{% translate "joDetailsQualificationsLiftingRequirements" %}:</strong> {{ role.qualifications.lifting_requirements|default:"" }}</p>
-                    <p class="mb-2"><strong>{% translate "joDetailsQualificationsLiftingRequirementWeight" %}:</strong> {{ role.qualifications.lifting_requirement_weight|default:"" }} {% translate "joDetailsQualificationslbs" %}</p>
-                    <p class="mb-2"><strong>{% translate "joDetailsQualificationsExposureToTemperature" %}:</strong> {{ role.qualifications.exposure_to_temperature|yesno:_("Yes,No") }}</p>
-                    <p class="mb-2"><strong>{% translate "joDetailsQualificationsExtensivePushingOrPulling" %}:</strong> {{ role.qualifications.extensive_pushing_or_pulling|yesno:_("Yes,No") }}</p>
-                    <p class="mb-2"><strong>{% translate "joDetailsQualificationsExtensiveSittingOrWalking" %}:</strong> {{ role.qualifications.extensive_sitting_or_walking|yesno:_("Yes,No") }}</p>
-                    <p class="mb-2"><strong>{% translate "joDetailsQualificationsFrequentStoopingOrBendingOver" %}:</strong> {{ role.qualifications.frequent_stooping_or_bending_over|yesno:_("Yes,No") }}</p>
-                    <p class="mb-2"><strong>{% translate "joDetailsQualificationsRepetitiveMovements" %}:</strong> {{ role.qualifications.repetitive_movements|yesno:_("Yes,No") }}</p>
-                    <p class="mb-2"><strong>{% translate "joDetailsQualificationsSupportOfOtherEmployees" %}:</strong> {{ role.qualifications.support_of_other_employees|yesno:_("Yes,No") }}</p>
-                    {% if role.qualifications.other_qualifications %}
-                    <p class="mb-2"><strong>{% translate "joDetailsQualificationsOtherQualifications" %}:</strong> {{ role.qualifications.other_qualifications }}</p>
-                    {% endif %}
-                  </div>
-                </div>
-                {% else %}
-                <div class="alert alert-info p-3 rounded-3">
-                  <i class="fas fa-info-circle me-2"></i>
-                  {% translate "joDetailsQualificationsNoQualificationsFoundForThisRole" %}
-                </div>
-                {% endif %}
-
-              <hr class="border-bottom border-3"/>
-              <div class="d-flex justify-content-between align-items-center">
-              <h6>
-                {% translate "joDetailsPlaceOfEmploymentPlaceOfEmploymentInformation" %}
-              </h6>
-              <div class="d-flex align-items-center gap-2">
-                <!-- Add Location Button -->
-
-                {% if not role.employment_location %}
-                 <a class="btn  btn-sm light-green-button" 
-                        data-bs-toggle="modal" 
-                        data-bs-target="#EmploymentModal{{ role.id }}">
-                           {% translate "webCommonAdd" %}
-                </a>
-                {% include "recruiting/work_requests/create_employment_location.html" %}
-                {% else %}
-                <!-- Edit Button -->
-                <button class="btn btn-sm btn-icon btn-outline-success"
-                        data-bs-toggle="modal"
-                        data-bs-target="#editEmployementInformationModal{{ role.id }}"
-                        title="{% translate 'webCommonEdit' %}">
-                  <i class="fa fa-edit"></i>
-                </button>
-
-                <!-- Delete Button -->
-                <button class="btn btn-sm btn-icon btn-outline-danger"
-                        data-bs-toggle="modal"
-                        data-bs-target="#deleteEmploymentInformationModal{{ role.id }}"
-                        title="{% translate 'webCommonDelete' %}">
-                  <i class="fa fa-trash-alt"></i>
-                </button>
-                {% endif %}
-              </div>
-
-              </div>
-              <hr class="border-bottom border-3 border-dark"/>
-            {% if role.employment_location %}
-                      <div class="row g-3">
-                        <!-- Column 1 -->
-                        <div class="col-md-6">
-                          <p><strong>{% translate "joDetailsPlaceOfEmploymentAddress" %}:</strong> {{ role.employment_location.address|default:"" }}</p>
-                          <p><strong>{% translate "joDetailsPlaceOfEmploymentCity" %}:</strong> {{ role.employment_location.city|default:"" }}</p>
-                          <p><strong>{% translate "joDetailsPlaceOfEmploymentCountry" %}:</strong> {{ role.employment_location.country|default:"" }}</p>
-                        </div>
-
-                        <!-- Column 2 -->
-                        <div class="col-md-6">
-                          <p><strong>{% translate "joDetailsPlaceOfEmploymentState" %}:</strong> {{ role.employment_location.state|default:"" }}</p>
-                          <p><strong>{% translate "joDetailsPlaceOfEmploymentPostalCode" %}:</strong> {{ role.employment_location.postal_code|default:"" }}</p>
-                          {% if role.employment_location.additional_information %}
-                          <p><strong>{% translate "joDetailsPlaceOfEmploymentAdditionalInformation" %}:</strong> {{ role.employment_location.additional_information }}</p>
-                          {% endif %}
-                        </div>
-                      </div>
-                      {% else %}
-                      <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>
-                        {% translate "joDetailsPlaceOfEmploymentNoEmploymentLocationInformationForThisRole" %}
-                      </div>
-                      {% endif %}
-              <hr class="border-bottom border-3"/>
-              <!-- End of employment location informations -->
-              <div class="d-flex justify-content-between align-items-center">
-              <h6>
-                {% translate "joDetailsHousingInfoHousingInformation" %}
-              </h6>
-              <div class="d-flex align-items-center gap-2">
-                  
-                  <!-- Add Housing Button -->
-                  {% if not role.housing_information %}
-                  <a class="btn btn-sm light-green-button" 
-                        data-bs-toggle="modal" 
-                        data-bs-target="#HousingModal{{ role.id }}">
-                         {% translate "webCommonAdd" %}
+              <!-- Qualifications -->
+              <div class="role-item-container">
+                <div class="d-flex align-items-center header-container">
+                  <h5 class="mb-0 me-3">
+                    {% translate "joDetails1QualificationsQualifications" %}
+                  </h5>
+                  <!-- Add Qualifications Button -->
+                  {% if not role.qualifications %}
+                
+                  <a class="btn btn-sm yellow-button" data-bs-toggle="modal"  data-bs-target="#QualificationModal{{ role.id }}">
+                    {% translate "webCommonAdd" %}
                   </a>
-                  {% include "recruiting/work_requests/create_housing_info.html" %}
-
+                  {% include "recruiting/work_requests/create_qualifications.html" %}                
                   {% else %}
-
-                  <!-- Edit Button -->
-                  <button class="btn btn-sm btn-icon btn-outline-success"
-                          data-bs-toggle="modal"
-                          data-bs-target="#editHousingInformationModal{{ role.id }}"
-                          title="{% translate 'webCommonEdit' %}">
+                
+                  <!-- Edit Icon -->
+                  <button class="btn btn-sm btn-icon edit-btn" data-bs-toggle="modal" data-bs-target="#editQualificationModal{{ role.id }}"
+                    title="{% translate 'webCommonEdit' %}">
                     <i class="fa fa-edit"></i>
                   </button>
-
-                  <!-- Delete Button -->
-                  <button class="btn btn-sm btn-icon btn-outline-danger"
-                          data-bs-toggle="modal"
-                          data-bs-target="#deleteHousingInformationModal{{ role.id }}"
-                          title="{% translate 'webCommonDelete' %}">
+                  <!-- Delete Icon -->
+                  <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteQualificationModal{{ role.id }}"
+                    title="{% translate 'webCommonDelete' %}">
                     <i class="fa fa-trash-alt"></i>
                   </button>
                   {% endif %}
                 </div>
+                {% if role.qualifications %}
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsQualificationsMinimumEducationRequirement" %}
+                  </label>
+                  <p> {{ role.qualifications.minimum_education_requirement|default:"" }}</p>
+                </div>
 
-              </div>
-              <hr class="border-bottom border-3 border-dark"/>
-              {% if role.housing_information %}
-              <ul>
-              <li>
-                <strong>
-                {% translate "joDetailsHousingInfoAddress" %}:
-                </strong>
-                {{role.housing_information.address}}
-              </li>
-              <li>
-                <strong>
-                {% translate "joDetailsHousingInfoCity" %}:
-                </strong>
-                {{role.housing_information.city}}
-              </li>
-              <li>
-                <strong>
-                {% translate "joDetailsHousingInfoCountry" %}:
-                </strong>
-                {{role.housing_information.county}}
-              </li>
-              <li>
-                <strong>
-                {% translate "joDetailsHousingInfoState" %}:
-                </strong>
-                {{role.housing_information.state}}
-              </li>
-              <li>
-                <strong>
-                {% translate "joDetailsHousingInfoAddress" %}:
-                </strong>
-                {{role.housing_information.postal_code}}
-              </li>
-              <li>
-                <strong>
-                {% translate "joDetailsHousingInfoHousingType" %}:
-                </strong>
-                {{role.housing_information.type_of_housing}}
-              </li>
-              <li>
-                <strong>
-                {% translate "joDetailsHousingInfoAdditionalInformation" %}:
-                </strong>
-                {{role.housing_information.additional_information}}
-              </li>
-              </ul>
-              {% else %}
-              <p>
-              {% translate "joDetailsHousingInfoNoHousingInformationForThisRole" %}
-              </p>
-              {% endif %}
-              <hr class="border-bottom border-3"/>
-              <!-- End of housing informations -->
-              <div class="d-flex justify-content-between align-items-center">
-              <h6>
-                {% translate "joDetailsMealsProvisionOfMeals" %}
-              </h6>
-              <div class="d-flex align-items-center gap-2">
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsQualificationsExperienceRequired" %}
+                  </label>
 
-                {% if not role.meal_provision %}
-                <!-- Add Meals Button -->
-                <a class="btn  btn-sm light-green-button" 
-                        data-bs-toggle="modal" 
-                        data-bs-target="#MealsModal{{ role.id }}">
-                         {% translate "webCommonAdd" %}
-                  </a>
-                {% include "recruiting/work_requests/create_meal_provision.html" %}
+                  <p>{{ role.qualifications.experience_required|yesno:_("Yes,No") }}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsQualificationsNumberOfMonthsExperienceRequired" %}
+                  </label>
+                  <p>{{ role.qualifications.number_of_months_experience_required|default:"" }}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsQualificationsTrainingRequired" %}
+                  </label>
+                  <p>{{ role.qualifications.lifting_requirements }}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsQualificationsNumberOfMonthsTrainingRequired" %}:
+                  </label>
+                  <p>{{ role.qualifications.number_of_months_training_required|default:"" }}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsQualificationsCertification/LicenseRequirements" %}:
+                  </label>
+                  <p>{{ role.qualifications.certification_license_requirements|yesno:_("Yes,No") }}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsQualificationsDrugScreen" %}:
+                  </label>
+                  <p>{{ role.qualifications.drug_screen|yesno:_("Yes,No") }}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsQualificationsLiftingRequirements" %}:
+                  </label>
+                  <p>{{ role.qualifications.lifting_requirements|default:"" }}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsQualificationsLiftingRequirementWeight" %}:
+                  </label>
+                  <p>{{ role.qualifications.lifting_requirement_weight|default:"" }} {% translate "joDetailsQualificationslbs" %}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsQualificationsExposureToTemperature" %}:
+                  </label>
+                  <p>{{ role.qualifications.exposure_to_temperature|yesno:_("Yes,No") }}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsQualificationsExtensivePushingOrPulling" %}:
+                  </label>
+                  <p>{{ role.qualifications.extensive_pushing_or_pulling|yesno:_("Yes,No") }}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsQualificationsExtensiveSittingOrWalking" %}:
+                  </label>
+                  <p>{{ role.qualifications.extensive_sitting_or_walking|yesno:_("Yes,No") }}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsQualificationsFrequentStoopingOrBendingOver" %}:
+                  </label>
+                  <p>{{ role.qualifications.frequent_stooping_or_bending_over|yesno:_("Yes,No") }}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsQualificationsRepetitiveMovements" %}:
+                  </label>
+                  <p>{{ role.qualifications.repetitive_movements|yesno:_("Yes,No") }}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsQualificationsSupportOfOtherEmployees" %}:
+                  </label>
+                  <p>{{ role.qualifications.support_of_other_employees|yesno:_("Yes,No") }}</p>
+                </div>
                 {% else %}
-
-                <!-- Edit Button -->
-                <button class="btn btn-sm btn-icon btn-outline-success"
-                        data-bs-toggle="modal"
-                        data-bs-target="#editMealProvisionModal{{ role.id }}"
-                        title="{% translate 'webCommonEdit' %}">
-                  <i class="fa fa-edit"></i>
-                </button>
-
-                <!-- Delete Button -->
-                <button class="btn btn-sm btn-icon btn-outline-danger"
-                        data-bs-toggle="modal"
-                        data-bs-target="#deleteMealProvisionModal{{ role.id }}"
-                        title="{% translate 'webCommonDelete' %}">
-                  <i class="fa fa-trash-alt"></i>
-                </button>
+                <p class="no-info">
+                  {% translate "joDetailsHoursNoHoursInformationAvailableForThisRole" %}
+                </p>
                 {% endif %}
               </div>
-
+              <!-- Location -->
+              <div class="role-item-container">
+                <div class="d-flex align-items-center header-container">
+                  <h5 class="mb-0 me-3">
+                    {% translate "joDetailsPlaceOfEmploymentPlaceOfEmploymentInformation" %}
+                  </h5>
+                  <!-- Add Hours Button -->
+                  {% if not role.employment_location %}
+                
+                  <a class="btn btn-sm yellow-button" data-bs-toggle="modal" data-bs-target="#EmploymentModal{{ role.id }}">
+                    {% translate "webCommonAdd" %}
+                  </a>
+                
+                  {% include "recruiting/work_requests/create_employment_location.html" %}
+                
+                  {% else %}
+                
+                  <!-- Edit Icon -->
+                  <button class="btn btn-sm btn-icon edit-btn" data-bs-toggle="modal" data-bs-target="#editEmployementInformationModal{{ role.id }}"
+                    title="{% translate 'webCommonEdit' %}">
+                    <i class="fa fa-edit"></i>
+                  </button>
+                  <!-- Delete Icon -->
+                  <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteEmploymentInformationModal{{ role.id }}"
+                    title="{% translate 'Delete' %}">
+                    <i class="fa fa-trash-alt"></i>
+                  </button>
+                  {% endif %}
+                </div>
+                {% if role.employment_location %}
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsPlaceOfEmploymentAddress" %}
+                  </label>
+                  <p>{{ role.employment_location.address|default:"" }}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsPlaceOfEmploymentCity" %}
+                  </label>
+                  <p>{{ role.employment_location.city|default:"" }}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsPlaceOfEmploymentCountry" %}
+                  </label>
+                  <p>{{ role.employment_location.country|default:"" }}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsPlaceOfEmploymentState" %}
+                  </label>
+                  <p>{{ role.employment_location.state|default:"" }}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsPlaceOfEmploymentPostalCode" %}
+                  </label>
+                  <p>{{ role.employment_location.postal_code|default:"" }}</p>
+                </div>
+                {% if role.employment_location.additional_information %}
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsPlaceOfEmploymentAdditionalInformation" %}
+                  </label>
+                  <p>{{ role.employment_location.additional_information }}</p>
+                </div>
+                {% endif %}
+                {% else %}
+                <p class="no-info">
+                  {% translate "joDetailsHoursNoHoursInformationAvailableForThisRole" %}
+                </p>
+                {% endif %}
               </div>
-              <hr class="border-bottom border-3 border-dark"/>
-              {% if role.meal_provision %}
-              <ul>
-              <li>
-                <strong>
-                {% translate "joDetailsMealsAreMealsProvided" %}:
-                </strong>
-                {{ role.meal_provision|yesno:_("Yes,No") }}
-              </li>
-              <li>
-                <strong>
-                {% translate "joDetailsMealsAmountChargedPerDay" %}:
-                </strong>
-                {{ role.meal_provision.meal_charge_amount }}
-              </li>
-              <li>
-                <strong>
-                {% translate "joDetailsMealsAdditionalInformation" %}:
-                </strong>
-                {{ role.meal_provision.additional_info }}
-              </li>
-              </ul>
-              {% else %}
-              <p>
-              {% translate "joDetailsMealsNoMealInformationForThisRole" %}
-              </p>
-              {% endif %}
+              <!-- Housing Information -->
+              <div class="role-item-container">
+                <div class="d-flex align-items-center header-container">
+                  <h5 class="mb-0 me-3">
+                    {% translate "joDetailsHousingInfoHousingInformation" %}
+                  </h5>
+                  <!-- Add Hours Button -->
+                  {% if not role.housing_information %}
+                  <a class="btn btn-sm yellow-button" data-bs-toggle="modal" data-bs-target="#HousingModal{{ role.id }}">
+                    {% translate "webCommonAdd" %}
+                  </a>
+                
+                  {% include "recruiting/work_requests/create_housing_info.html" %}
+                
+                  {% else %}
+                
+                  <!-- Edit Icon -->
+                  <button class="btn btn-sm btn-icon edit-btn" data-bs-toggle="modal" data-bs-target="#editHousingInformationModal{{ role.id }}"
+                    title="{% translate 'webCommonEdit' %}">
+                    <i class="fa fa-edit"></i>
+                  </button>
+                  <!-- Delete Icon -->
+                  <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteHousingInformationModal{{ role.id }}"
+                    title="{% translate 'Delete' %}">
+                    <i class="fa fa-trash-alt"></i>
+                  </button>
+                  {% endif %}
+                </div>
+                {% if role.housing_information %}
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsHousingInfoAddress" %}
+                  </label>
+                  <p>{{ role.housing_information.address }}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsHousingInfoCity" %}
+                  </label>
+                  <p>{{ role.housing_information.city }}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsHousingInfoCountry" %}
+                  </label>
+                  <p>{{ role.housing_information.county }}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsHousingInfoState" %}
+                  </label>
+                  <p>{{ role.housing_information.state }}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsHousingInfoAddress" %}
+                  </label>
+                  <p>{{ role.housing_information.postal_code }}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsHousingInfoHousingType" %}
+                  </label>
+                  <p>{{ role.housing_information.type_of_housing }}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsHousingInfoAdditionalInformation" %}
+                  </label>
+                  <p>{{ role.housing_information.additional_information }}</p>
+                </div>
+                {% else %}
+                <p class="no-info">
+                  {% translate "joDetailsHoursNoHoursInformationAvailableForThisRole" %}
+                </p>
+                {% endif %}
+              </div>
+              <!-- Meals Provision -->
+              <div class="role-item-container">
+                <div class="d-flex align-items-center header-container">
+                  <h5 class="mb-0 me-3">
+                    {% translate "joDetailsMealsProvisionOfMeals" %}
+                  </h5>
+                  <!-- Add Hours Button -->
+                  {% if not role.meal_provision %}
+                  <a class="btn btn-sm yellow-button" data-bs-toggle="modal" data-bs-target="#MealsModal{{ role.id }}">
+                    {% translate "webCommonAdd" %}
+                  </a>
+                
+                {% include "recruiting/work_requests/create_meal_provision.html" %}
+                
+                  {% else %}
+                
+                  <!-- Edit Icon -->
+                  <button class="btn btn-sm btn-icon edit-btn" data-bs-toggle="modal" data-bs-target="#editMealProvisionModal{{ role.id }}"
+                    title="{% translate 'webCommonEdit' %}">
+                    <i class="fa fa-edit"></i>
+                  </button>
+                  <!-- Delete Icon -->
+                  <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteMealProvisionModal{{ role.id }}"
+                    title="{% translate 'Delete' %}">
+                    <i class="fa fa-trash-alt"></i>
+                  </button>
+                  {% endif %}
+                </div>
+                {% if role.meal_provision %}
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsMealsAreMealsProvided" %}
+                  </label>
+                  <p>{{ role.meal_provision|yesno:_("Yes,No") }}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsMealsAmountChargedPerDay" %}
+                  </label>
+                  <p>{{ role.meal_provision.meal_charge_amount|default:"0" }}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsMealsAdditionalInformation" %}
+                  </label>
+                  <p>{{ role.meal_provision.additional_info }}</p>
+                </div>
+                {% else %}
+                <p class="no-info">
+                  {% translate "joDetailsHoursNoHoursInformationAvailableForThisRole" %}
+                </p>
+                {% endif %}
+              </div>
             </div>
             </div>
           </div>
