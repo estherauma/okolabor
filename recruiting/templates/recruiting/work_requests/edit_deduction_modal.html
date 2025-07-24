@@ -8,8 +8,8 @@
   <div class="modal-dialog">
     <div class="modal-content">
 
-      <div class="modal-header" style="background-color: #7DBF96;">
-        <h5 class="modal-title text-white" id="editDeductionModalLabel{{ deduction.id }}">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editDeductionModalLabel{{ deduction.id }}">
           {% trans "joDetailsDeductionsEditDeduction" %}
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
@@ -69,8 +69,8 @@
             </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% trans "Close" %}</button>
-        <button type="button" class="btn" onclick="submitEditDeductionForm('{{ deduction.id }}')" style='background-color:#7DBF96; color:white'>
+        <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% trans "Close" %}</button>
+        <button type="button" class="btn light-green-button" onclick="submitEditDeductionForm('{{ deduction.id }}')">
           {% trans "Save changes" %}
         </button>
       </div>
