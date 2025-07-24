@@ -372,7 +372,7 @@
               </p>
             </div>
             <!-- You can add more details here -->
-            <div class="row mt-5">
+            <div class="row ">
             <div class="col-12">
               <div class="role-item-container">
                 <div class="d-flex align-items-center header-container">
@@ -384,7 +384,7 @@
                   {% if not role.hours %}
                 
                   <a class="btn btn-sm yellow-button" data-bs-toggle="modal" data-bs-target="#hoursModal{{ role.id }}">
-                    {% translate "joDetailsHoursAddHours" %}
+                    {% translate "webCommonAdd" %}
                   </a>
                 
                   {% include "recruiting/work_requests/create_hours.html"%}
@@ -393,7 +393,7 @@
                 
                   <!-- Edit Icon -->
                   <button class="btn btn-sm btn-icon edit-btn" data-bs-toggle="modal" data-bs-target="#edithoursModal{{ role.id }}"
-                    title="{% translate 'Edit' %}">
+                    title="{% translate 'webCommonEdit' %}">
                     <i class="fa fa-edit"></i>
                   </button>
                   <!-- Delete Icon -->
@@ -453,142 +453,150 @@
                 </p>
                 {% endif %}
               </div>
+              <div class="role-item-container">
+                <div class="d-flex align-items-center header-container">
+                  <h5 class="mb-0 me-3">
+                    {% translate "joDetailsWagesWages" %}
+                  </h5>
+                  <!-- Add Wages Button -->
+                  {% if not role.wages %}
+                
+                  <a class="btn btn-sm yellow-button" data-bs-toggle="modal"  data-bs-target="#wagesModal{{ role.id }}">
+                    {% translate "webCommonAdd" %}
+                  </a>
+                
+                  {% include "recruiting/work_requests/create_wages.html" %}
+                
+                  {% else %}
+                
+                  <!-- Edit Icon -->
+                  <button class="btn btn-sm btn-icon edit-btn" data-bs-toggle="modal" data-bs-target="#editWagesModal{{ role.id }}"
+                    title="{% translate 'webCommonEdit' %}">
+                    <i class="fa fa-edit"></i>
+                  </button>
+                  <!-- Delete Icon -->
+                  <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteWagesModal{{ role.id }}"
+                    title="{% translate 'webCommonDelete' %}">
+                    <i class="fa fa-trash-alt"></i>
+                  </button>
+                  {% endif %}
+                </div>
+                {% if role.wages %}
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsWagesWage" %}
+                  </label>
+                  <p> ${{ role.wages.wage}}</p>
+                </div>
 
-               
-              <!-- </div> -->
-
-              <div class="d-flex justify-content-between align-items-center mt-5">
-              <h6>
-                {% translate "joDetailsWagesWages" %}
-              </h6>
-              <div class="d-flex align-items-center gap-2">
-                {% if not role.wages %}
-                <!-- Add Wages Button -->
-                <a class="btn  btn-sm light-green-button" 
-                    data-bs-toggle="modal" 
-                    data-bs-target="#wagesModal{{ role.id }}">
-                      {% translate "webCommonAdd" %}
-                </a>
-                {% include "recruiting/work_requests/create_wages.html" %}
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsWagesWageType" %}
+                  </label>
+                
+                  <p>{{ role.wages.get_wage_type_display }}</p>
+                </div>
+                {% if role.wages.piece_rate_offerings %}
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsWagesPieceRateOfferings" %}
+                  </label>
+                  <p>{{ role.wages.piece_rate_offerings }}</p>
+                </div>
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsWagesPieceRateOfferingsType" %}
+                  </label>
+                  <p>{{ role.wages.get_piece_rate_offerings_type_display }}</p>
+                </div>
+                {% endif %}
+                <div class="details-row">
+                  <label>
+                    {% translate "joDetailsWagesFrequencyOfPay" %}
+                  </label>
+                  <p>{{ role.wages.get_frequency_of_pay_display }}</p>
+                </div>
+                {% if role.wages.details %}
+                <div class="details-row">
+                <label>
+                  {% translate "joDetailsWagesDetails" %}
+                </label>
+                  <p>{{ role.wages.details }}</p>
+                </div>
+                {% endif %}
 
                 {% else %}
-                <!-- Edit Icon -->
-                <button class="btn btn-sm btn-icon btn-outline-success"
-                        data-bs-toggle="modal"
-                        data-bs-target="#editWagesModal{{ role.id }}"
-                        title="{% translate 'webCommonEdit' %}">
-                  <i class="fa fa-edit"></i>
-                </button>
-
-                <!-- Delete Icon -->
-                <button class="btn btn-sm btn-icon btn-outline-danger"
-                        data-bs-toggle="modal"
-                        data-bs-target="#deleteWagesModal{{ role.id }}"
-                        title="{% translate 'webCommonDelete' %}">
-                  <i class="fa fa-trash-alt"></i>
-                </button>
+                <p class="no-info">
+                  {% translate "joDetailsHoursNoHoursInformationAvailableForThisRole" %}
+                </p>
                 {% endif %}
               </div>
+                <div class="role-item-container">
+                <div class="d-flex align-items-center header-container">
+                  <h5 class="mb-0 me-3">
+                    {% translate "joDetailsDeductionsDeductions" %}
+                  </h5>
+                  <!-- Add Wages Button -->
 
-              </div>
-              <hr class="border-bottom border-3 border-dark"/>
-              {% if role.wages %}
-            <div class="card p-3 mb-3 shadow-sm">
-
-                <div class="row g-3">
-                  <!-- Column 1 -->
-                  <div class="col-md-6">
-                    <p><strong>{% translate "joDetailsWagesWage" %}:</strong> ${{ role.wages.wage }}</p>
-                    <p><strong>{% translate "joDetailsWagesWageType" %}:</strong> {{ role.wages.get_wage_type_display }}</p>
-                    {% if role.wages.piece_rate_offerings %}
-                    <p><strong>{% translate "joDetailsWagesPieceRateOfferings" %}:</strong> ${{ role.wages.piece_rate_offerings }}</p>
-                    {% endif %}
-                  </div>
-
-                  <!-- Column 2 -->
-                  <div class="col-md-6">
-                    {% if role.wages.piece_rate_offerings %}
-                    <p><strong>{% translate "joDetailsWagesPieceRateOfferingsType" %}:</strong> {{ role.wages.get_piece_rate_offerings_type_display }}</p>
-                    {% endif %}
-                    <p><strong>{% translate "joDetailsWagesFrequencyOfPay" %}:</strong> {{ role.wages.frequency_of_pay }}</p>
-                    {% if role.wages.details %}
-                    <p><strong>{% translate "joDetailsWagesDetails" %}:</strong> {{ role.wages.details }}</p>
-                    {% endif %}
-                  </div>
+                  <a class="btn btn-sm yellow-button" data-bs-toggle="modal"  data-bs-target="#DeductionModal{{ role.id }}">
+                    {% translate "webCommonAdd" %}
+                  </a>
+                
+                  {% include "recruiting/work_requests/create_deductions.html" %}
+                </div>
+                <div class="deduction-details table-responsive">
+                  <table class="table table-bordered text-nowrap border-bottom">
+                    <thead>
+                      <tr>
+                          <th>
+                          {% translate "joDetailsDeductionsDescription" %}
+                          </th>
+                          <th>
+                          {% translate "joDetailsDeductionsDeductionAmount" %}
+                          </th>
+                          <th>
+                          {% translate "joDetailsDeductionFrequencyOfDeduction" %}
+                          </th>
+                          <th>
+                            {% translate "Actions" %}
+                          </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for deduction in role_deductions|get_item:role.id %}
+                        <tr>
+                          <td>{{ deduction.description }}</td>
+                          <td>${{ deduction.deduction_amount }}</td>
+                          <td>{{ deduction.frequency_of_pay }}</td>
+                          <td>
+                              <button class="btn btn-sm btn-icon edit-btn"
+                              data-bs-toggle="modal"
+                              data-bs-target="#editDeductionModal{{ deduction.id }}"
+                              title="{% translate 'webCommonEdit' %}">
+                                <i class="fa fa-edit"></i>
+                              </button>
+                
+                              <button class="btn btn-sm btn-icon delete-btn"
+                              data-bs-toggle="modal"
+                              data-bs-target="#deleteDeductionModal{{ deduction.id }}"
+                              title="{% translate 'webCommonDelete' %}">
+                              <i class="fa fa-trash-alt"></i>
+                            </button>
+                          </td>
+                        </tr>
+                
+                        <!-- Include Edit Modal, passing the form for this deduction -->
+                        {% include "recruiting/work_requests/edit_deduction_modal.html" with form=deduction_forms|get_item:deduction.id deduction=deduction %}
+                        {% include "recruiting/work_requests/delete_deduction_modal.html" with deduction=deduction %}
+                      {% empty %}
+                        <tr>
+                          <td colspan="4">No deductions found.</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
                 </div>
               </div>
-              {% else %}
-              <p>
-              {% translate "joDetailsWagesNoWagesInformationAvailableForThisRole" %}
-              </p>
-              {% endif %}
-              <hr class="border-bottom border-dark"/>
-              <div class="d-flex justify-content-between align-items-center">
-              <h6>
-                {% translate "joDetailsDeductionsDeductions" %}
-              </h6>
-            
-              <a class="btn  btn-sm light-green-button" 
-                    data-bs-toggle="modal" 
-                    data-bs-target="#DeductionModal{{ role.id }}">
-                      {% translate "webCommonAdd" %}
-                </a>
-              {% include "recruiting/work_requests/create_deductions.html" %}
-              </div>
-              <hr class="border-bottom border-3 border-dark"/>
-              <div class="deduction-details table-responsive">
-              <table class="table table-bordered text-nowrap border-bottom">
-                <thead>
-                  <tr>
-                      <th>
-                      {% translate "joDetailsDeductionsDescription" %}
-                      </th>
-                      <th>
-                      {% translate "joDetailsDeductionsDeductionAmount" %}
-                      </th>
-                      <th>
-                      {% translate "joDetailsDeductionFrequencyOfDeduction" %}
-                      </th>
-                      <th>
-                        {% translate "Actions" %}
-                      </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for deduction in role_deductions|get_item:role.id %}
-                    <tr>
-                      <td>{{ deduction.description }}</td>
-                      <td>${{ deduction.deduction_amount }}</td>
-                      <td>{{ deduction.frequency_of_pay }}</td>
-                      <td>
-                          <button class="btn btn-sm btn-icon btn-outline-success"
-                          data-bs-toggle="modal"
-                          data-bs-target="#editDeductionModal{{ deduction.id }}"
-                          title="{% translate 'webCommonEdit' %}">
-                            <i class="fa fa-edit"></i>
-                          </button>
-            
-                          <button class="btn btn-sm btn-icon btn-outline-danger"
-                          data-bs-toggle="modal"
-                          data-bs-target="#deleteDeductionModal{{ deduction.id }}"
-                          title="{% translate 'webCommonDelete' %}">
-                          <i class="fa fa-trash-alt"></i>
-                        </button>
-                      </td>
-                    </tr>
-            
-                    <!-- Include Edit Modal, passing the form for this deduction -->
-                    {% include "recruiting/work_requests/edit_deduction_modal.html" with form=deduction_forms|get_item:deduction.id deduction=deduction %}
-                    {% include "recruiting/work_requests/delete_deduction_modal.html" with deduction=deduction %}
-                  {% empty %}
-                    <tr>
-                      <td colspan="4">No deductions found.</td>
-                    </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-              </div>
-              <hr class="border-bottom border-3"/>
               <div class="d-flex justify-content-between align-items-center">
               <h6>
                 {% translate "joDetails1QualificationsQualifications" %}
