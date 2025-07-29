@@ -59,7 +59,7 @@
   <div class="modal-dialog modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="recruiterColumnSettingsModalLabel">{% translate "Select Columns to Display" %}</h5>
+        <h5 class="modal-title" id="recruiterColumnSettingsModalLabel">{% translate "webCommonSelectColumnsToDisplay" %}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'Close' %}"></button>
       </div>
       <div class="modal-body">
@@ -67,8 +67,7 @@
           <div class="form-check">
             <input class="form-check-input recruiter-column-toggle" type="checkbox" value="1" checked
               id="col-recruiter-company">
-            <label class="form-check-label" for="col-recruiter-company">{% translate "recruiterListCompanyName"
-              %}</label>
+            <label class="form-check-label" for="col-recruiter-company">{% translate "recruiterListCompanyName"%}</label>
           </div>
           <div class="form-check">
             <input class="form-check-input recruiter-column-toggle" type="checkbox" value="2" checked
@@ -88,8 +87,7 @@
           <div class="form-check">
             <input class="form-check-input recruiter-column-toggle" type="checkbox" value="5" checked
               id="col-recruiter-assigned">
-            <label class="form-check-label" for="col-recruiter-assigned">{% translate "recruiterListAssignedTo"
-              %}</label>
+            <label class="form-check-label" for="col-recruiter-assigned">{% translate "recruiterListAssignedTo"%}</label>
           </div>
           <div class="form-check">
             <input class="form-check-input recruiter-column-toggle" type="checkbox" value="6" checked
@@ -99,9 +97,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Close" %}</button>
-        <button type="button" class="btn btn-primary" id="apply-recruiter-column-settings">{% translate "Apply"
-          %}</button>
+        <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate "Close" %}</button>
+        <button type="button" class="btn light-green-button" id="apply-recruiter-column-settings">{% translate "Apply"%}</button>
       </div>
     </div>
   </div>
@@ -276,10 +273,10 @@
           {% translate 'recruiterListAreYouSureYouWantToDelete'%} <strong>{{ recruiter.name }}</strong>?
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>
+          <button type="button" class="btn grey-button" data-bs-dismiss="modal">
             {% translate 'recruiterListCancel'%}
           </button>
-          <button type="submit" class="btn" style='background-color:#F95406; color: white'>
+          <button type="submit" class="btn red-button">
             {% translate 'recruiterListDelete' %}</button>
         </div>
       </form>

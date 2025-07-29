@@ -8,7 +8,7 @@
     <div class="modal-dialog modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="columnShortListSettingsModalLabel">{% translate "Select Columns to Display" %}</h5>
+          <h5 class="modal-title" id="columnShortListSettingsModalLabel">{% translate "webCommonSelectColumnsToDisplay" %}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'Close' %}"></button>
         </div>
         <div class="modal-body">
@@ -48,8 +48,8 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Close" %}</button>
-          <button type="button" class="btn btn-primary" id="apply-shortlist-column-settings">{% translate "Apply" %}</button>
+          <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate "Close" %}</button>
+          <button type="button" class="btn btn-primary" id="apply-shortlist-column-settings">{% translate "webCommonApply" %}</button>
         </div>
       </div>
     </div>
@@ -65,16 +65,12 @@
           <div class="d-flex align-items-center justify-content-between flex-wrap mb-3 custom-toolbar">
             <!-- Left Buttons -->
             <div>
-              {% if request.user|has_group:"admin" or request.user|has_group:"recruiter_admin" or request.user|has_group:"recruiter" %}
-              <button class="btn dark-green-button" id="copyBtn">
-                {% translate "workRequestAddWorkerShortlistCopyWorkers" %}
-              </button>
              
 
-              {% endif %}
               <button class="btn dark-green-button ms-2" id="sendOfferBtn">
                 {% translate "workRequestAddWorkerSendOffer" %}
               </button>
+              <button id="cancel-offer-shortlist" class="btn dark-green-button ms-2">{% translate "cancelOffer" %}</button>
             </div>
 
             <!-- Center Search Box -->
@@ -95,7 +91,9 @@
             <table class="table text-nowrap border-bottom" id="basic-datatable-shortlist">
               <thead>
                 <tr>
-                  <th>{% translate "workersListCheckbox" %}</th>
+                   <th class="col-namee">
+                  <input type="checkbox" id="selectAllShortlist">
+                  </th>
                   <th class="col-name">{% translate "workersListName" %}</th>
                   <th class="col-town">{% translate "workersListTown" %}</th>
                   <th class="col-profile">{% translate "workersListProfileCompletion" %}</th>
@@ -108,7 +106,7 @@
               <tbody>
                 {% for worker in shortlisted_workers %}
                 <tr class="text-start">
-                  <td><input type="checkbox" class="worker-shortlist-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.firstname }} {{ worker.lastname }}"></td>
+                  <td><input type="checkbox" class="worker-shortlist-checkbox" name="worker-shortlist-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.firstname }} {{ worker.lastname }}"></td>
                   <td class="col-name">
                     {% if worker.first_name and worker.last_name %}
                     <a href="{{ worker.id }}">{{ worker.first_name }} {{ worker.last_name }}</a>
@@ -178,14 +176,18 @@
   <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 
   <!-- Your custom scripts -->
-  <script src="{% static 'assets/js/send-offer.js' %}"></script>
-  <script src="{% static 'assets/js/copy-shortlist-workers.js' %}"></script>
   <script src="{% static 'assets/js/tablecolumns_hiding.js' %}"></script>
 <script>
 $(document).ready(function () {
   $.fn.dataTable.ext.errMode = 'none';
 
-  const shortlistTable = $('#basic-datatable-shortlist').DataTable();
+    const shortlistTable = $('#basic-datatable-shortlist').DataTable({
+      ordering: true,
+      order: [],
+      columnDefs: [{ targets: 0, orderable: false }],
+      paging: true,
+      info: true,
+    });
 
   // Move default controls to hidden container to prevent duplication
   $('#basic-datatable-shortlist_length').appendTo('#datatable-controls');

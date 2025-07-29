@@ -1,19 +1,15 @@
-$(document).ready(function () {
-        // When #select-all-workers is clicked
-        $('#select-all-shortlist').on('change', function () {
-            let isChecked = $(this).is(':checked');
-            $('.worker-checkbox').prop('checked', isChecked);
-        });
-
-        // If any single checkbox is unchecked, uncheck the "select all"
-        $('.worker-checkbox').on('change', function () {
-            if (!$(this).is(':checked')) {
-                $('#select-all-shortlist').prop('checked', false);
-            } else {
-                // Check if all checkboxes are checked, then check "select all"
-                if ($('.worker-checkbox:checked').length === $('.worker-checkbox').length) {
-                    $('#select-all-shortlist').prop('checked', true);
-                }
-            }
-        });
+function syncSelectAll(groupClass, selectAllId) {
+  const checkboxes = document.querySelectorAll(groupClass);
+  const selectAll = document.getElementById(selectAllId);
+  checkboxes.forEach(cb => {
+    cb.addEventListener("change", () => {
+      const allChecked = [...checkboxes].every(c => c.checked);
+      selectAll.checked = allChecked;
     });
+  });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  syncSelectAll(".allworkers-checkbox", "select-all-allworkers");
+  syncSelectAll(".shortlist-checkbox", "select-all-shortlist");
+});

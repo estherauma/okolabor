@@ -1,25 +1,41 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const checkboxes = document.querySelectorAll('.worker-checkbox');
+document.addEventListener('DOMContentLoaded', function () {
+    const checkboxes = document.querySelectorAll('.allworkers-checkbox');
+    const selectAllCheckbox = document.getElementById('selectAllAllWorkers');
     const addToShortlistBtn = document.getElementById('addToShortlistBtn');
 
-    // Enable/disable the "Add to Shortlist" button based on checkbox selection
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function () {
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+            toggleAddButton();
+        });
+    }
+
     checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
-            addToShortlistBtn.disabled = !anyChecked;
+        checkbox.addEventListener('change', function () {
+            toggleAddButton();
+
+            // Sync "Select All" checkbox status
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            selectAllCheckbox.checked = allChecked;
         });
     });
 
-    addToShortlistBtn.addEventListener('click', function() {
+    function toggleAddButton() {
+        const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+        addToShortlistBtn.disabled = !anyChecked;
+    }
+
+    // ✅ Add to Shortlist click handler
+    addToShortlistBtn.addEventListener('click', function () {
         const selectedWorkerIds = Array.from(checkboxes)
             .filter(checkbox => checkbox.checked)
             .map(checkbox => checkbox.value);
 
-        // Retrieve work_request_id and role_id from hidden inputs
         const workRequestId = document.getElementById('workRequestId').value;
         const roleId = document.getElementById('roleId').value;
 
-        // Send the selected worker IDs, work_request_id, and role_id to the server
         fetch('/add-to-shortlist/', {
             method: 'POST',
             headers: {
@@ -34,11 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                location.reload();
-            }
+            location.reload();
         })
         .catch(error => {
             console.error('Error:', error);
