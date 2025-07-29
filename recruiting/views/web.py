@@ -1266,7 +1266,6 @@ class WorkRequestDetailView(View):
         
         deduction_forms = {}
         for role in roles_qs:
-            print(role)
             deductions = role.deductions.filter()
             for deduction in deductions:
                 deduction_forms[deduction.id] = RoleDeductionForm(instance=deduction)
