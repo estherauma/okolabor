@@ -8,3 +8,41 @@
     text-transform: capitalize;
     background-color: var(--oko-light-green);
 }
+
+.table-responsive {
+    max-height: 250px;
+}
+
+.table-responsive nav {
+    display: none
+}
+
+@media (min-height: 700px) {
+    .table-responsive {
+        max-height: 400px;
+    }
+}
+
+@media (min-height: 900px) {
+    .table-responsive {
+        max-height: 650px;
+    }
+}
+
+/* fix table headers */
+.table thead {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 2;
+}
+
+/* fix pagination container */
+.dataTables_wrapper>.row:last-child {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    z-index: 20;
+    padding: 8px 0;
+    border-top: 1px solid #eee;
+}
