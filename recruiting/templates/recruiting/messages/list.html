@@ -3,78 +3,73 @@
 {% block title %} My Messages {% endblock title %}
 
 {% block body %}
-<div class="page-header">
- <div>
-  <h1 class="page-title">
-   {% translate "messagesMyMessages" %}
-  </h1>
- </div>
-</div>
 <div class="row">
- <div class="col-md-12">
-  <div class="card offwhite-color">
-   <div class="card-body">
-    <div class="d-flex justify-content-between">
-        <form method="post">
-            {% csrf_token %}
-            <div class="row">
-                {% for field in form %}
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label class="form-label">{{ field.label }}</label>
-                        {{ field }}
-                        {% if field.errors %}
-                            <small class="text-danger">{{ field.errors.0 }}</small>
-                        {% endif %}
+    <div class="col-md-12">
+        <div class="card offwhite-color">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            {% for field in form %}
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">{{ field.label }}</label>
+                                    {{ field }}
+                                    {% if field.errors %}
+                                    <small class="text-danger">{{ field.errors.0 }}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button class="btn btn-primary" type="submit">
+                                {% translate "messagesFilter" %}
+                            </button>
+                        </div>
+                    </form>
+                    <div>
+                        <a class="btn dark-green-button" href="{% url 'recruiting_web:recruiter_create_message' %}">
+                            <span>
+                                <i class="fe fe-plus">
+                                </i>
+                            </span>
+                            {% translate "mesagesNewMessage" %}
+                        </a>
                     </div>
                 </div>
-                {% endfor %}
-                
             </div>
-            <div class="col-md-4 d-flex align-items-end">
-                <button class="btn btn-primary" type="submit">
-                    {% translate "messagesFilter" %}
-                </button>
-            </div>
-        </form>
-     <div>
-      <a class="btn dark-green-button" href="{% url 'recruiting_web:recruiter_create_message' %}">
-       <span>
-        <i class="fe fe-plus">
-        </i>
-       </span>
-       {% translate "mesagesNewMessage" %}
-      </a>
-     </div>
+        </div>
     </div>
-   </div>
-  </div>
- </div>
 </div>
 <div class="row">
- <div class="col-md-12">
-  <div class="card">
-   <div class="card-body">
-    <div class="table-responsive">
-     <table class="table text-nowrap border-bottom">
-      <tbody>
-       {% for item in items %}
-       <tr>
-        <td class="green-color align-middle">
-         {{ item.created_at }}
-        </td>
-        <td class="green-color align-middle">
-         <a class="text-decoration-underline text-primary fw-bold" href="{% url 'recruiting_web:message-details' item.id %}" title="{% translate 'messagesDetails'%}">
-          {{ item.subject }}
-         </a>
-        </td>
-       </tr>
-       {% endfor %}
-      </tbody>
-     </table>
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table text-nowrap border-bottom">
+                        <tbody>
+                            {% for item in items %}
+                            <tr>
+                                <td class="green-color align-middle">
+                                    {{ item.created_at }}
+                                </td>
+                                <td class="green-color align-middle">
+                                    <a class="text-decoration-underline text-primary fw-bold"
+                                        href="{% url 'recruiting_web:message-details' item.id %}"
+                                        title="{% translate 'messagesDetails'%}">
+                                        {{ item.subject }}
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-   </div>
-  </div>
- </div>
 </div>
 {% endblock %}
