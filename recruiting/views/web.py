@@ -1225,7 +1225,7 @@ class WorkRequestDetailView(View):
                 deleted_at__isnull=True,
             )
         roles_qs = [role for role in roles_qs_raw if hasattr(role, 'hours') and role.hours.deleted_at is None]
-
+    
         role_forms = {
             role.id: WorkRequestRoleForm(instance=role)
             for 
@@ -1266,6 +1266,7 @@ class WorkRequestDetailView(View):
         
         deduction_forms = {}
         for role in roles_qs:
+            print(role)
             deductions = role.deductions.filter()
             for deduction in deductions:
                 deduction_forms[deduction.id] = RoleDeductionForm(instance=deduction)
@@ -1278,6 +1279,29 @@ class WorkRequestDetailView(View):
         role_Employment_form = RoleEmploymentLocationForm()
         role_Housing_form = RoleHousingInformationForm()
         role_Meals_form = RoleMealProvision()
+        
+        # for item in roles_qs, find shortlist, offersent, confirmed and rejected count
+        for item in roles_qs:
+            item.shortlist_count = WorkAssignment.objects.filter(
+                work_request=work_request,
+                role=item,
+                status='assigned'
+            ).count()
+            item.offersent_count = WorkAssignment.objects.filter(
+                work_request=work_request,
+                role=item,
+                status='offersent'
+            ).count()
+            item.confirmed_count = WorkAssignment.objects.filter(
+                work_request=work_request,
+                role=item,
+                status='confirmed'
+            ).count()
+            item.rejected_count = WorkAssignment.objects.filter(
+                work_request=work_request,
+                role=item,
+                status='rejected'
+            ).count()
         
         dynamic_fields = [
             'animal_types',
