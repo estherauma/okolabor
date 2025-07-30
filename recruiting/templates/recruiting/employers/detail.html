@@ -322,29 +322,4 @@
 </script>
 <script src="{% static 'assets/js/table-sorting.js' %}"></script>
 <script src="{% static ''%}assets/js/assign_contact_employer.js"></script>
-<script>
-    $(document).ready(function () {
-        if ($.fn.DataTable.isDataTable('#delete-datatable')) {
-            $('#delete-datatable').DataTable().destroy();
-        }
-
-        $('#delete-datatable').DataTable({
-            "language": {
-                "search": "{% translate 'datatableSearch' %}",
-                "lengthMenu": "{% blocktrans with menu='_MENU_' %}Show {{ menu }} entries{% endblocktrans %}",
-                "info": "{% blocktrans with start='_START_' end='_END_' total='_TOTAL_' %}Showing {{ start }} to {{ end }} of {{ total }} entries{% endblocktrans %}",
-                "infoEmpty": "{% translate 'datatableNoEntriesAvailable' %}",
-                "zeroRecords": "{% translate 'datatableNoMatchingRecordsFound' %}",
-                "paginate": {
-                    "first": "{% translate 'datatableFirst' %}",
-                    "last": "{% translate 'datatableLast' %}",
-                    "next": "{% translate 'datatableNext' %}",
-                    "previous": "{% translate 'datatablePrevious' %}"
-                }
-            }
-        });
-    });
-
-</script>
-
 {% endblock scripts %}

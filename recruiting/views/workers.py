@@ -451,7 +451,7 @@ class AssignWorkerView(View):
             status = request.POST.get("status", "assigned")
 
             if not worker_ids_str or not work_request_id or not role_id:
-                messages.error(request, _("Missing data. Please select workers, job order, and role."))
+                messages.error(request, _("workersMissingData.PleaseSelectWorkers,JobOrder,AndRole"))
                 return JsonResponse({"success": False, "message": "Missing data"}, status=400)
 
             worker_ids = worker_ids_str.split(",")
@@ -499,7 +499,7 @@ class SendOfferView(View):
             role_id = request.POST.get("role")
 
             if not worker_ids_str or not work_request_id or not role_id:
-                messages.error(request, _("Missing data. Please select workers, job order, and role."))
+                messages.error(request, _("workersMissingData.PleaseSelectWorkers,JobOrder,AndRole"))
                 return JsonResponse({"success": False, "message": "Missing data"}, status=400)
 
             worker_ids = worker_ids_str.split(",")

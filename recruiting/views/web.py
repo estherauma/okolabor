@@ -1164,7 +1164,7 @@ class CancelOfferView(View):
                 worker_id__in=worker_ids,
                 status__in=['offersent', 'assigned','confirmed']
             ).update(status='cancelled')
-        messages.success(request, _("OfferCancelledSuccessfully."))
+        messages.success(request, _("workRequestAddWorkerOfferCancelledSuccessfully"))
         return JsonResponse({'status': 'success', 'message': 'Offer cancelled successfully.'})
 
 @method_decorator(csrf_exempt, name='dispatch')
