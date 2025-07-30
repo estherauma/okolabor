@@ -8,26 +8,26 @@
     text-transform: capitalize;
     background-color: var(--oko-light-green);
 }
-
-.table-responsive {
-    max-height: 250px;
+.table td {
+    color: black;
+}
+.table td >a {
+    color: var(--oko-light-green);
 }
 
 .table-responsive nav {
     display: none
 }
 
+.table-max-height {
+    max-height: 250px !important;
+}
 @media (min-height: 700px) {
-    .table-responsive {
-        max-height: 400px;
+    .table-max-height {
+        max-height: 500px !important;
     }
 }
 
-@media (min-height: 900px) {
-    .table-responsive {
-        max-height: 650px;
-    }
-}
 
 /* fix table headers */
 .table thead {
@@ -45,4 +45,13 @@
     z-index: 20;
     padding: 8px 0;
     border-top: 1px solid #eee;
+}
+
+.table-responsive::-webkit-scrollbar:vertical {
+  width: 5px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:vertical {
+  background:rgba(0, 0, 0, 0.074);
+  border-radius: 4px;
 }
