@@ -1895,9 +1895,10 @@ class AcceptRecruiterView(View):
             Team
             """
             send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [recruiter.email])
-
-            messages.success(request, _("recruiterAssignmentAcceptedSuccessfully."))
-            return JsonResponse({"success": True, "message": "recruiterAssignmentAcceptedSuccessfully."})
+            
+            message = _("recruiterAdminListrecruiterAssignmentAcceptedSuccessfully")
+            messages.success(request, message)
+            return JsonResponse({"success": True, "message": message})
 
         except Organization.DoesNotExist:
             return JsonResponse({"success": False, "error": "employerNotFound."}, status=404)
@@ -1918,9 +1919,9 @@ class RejectRecruiterView(View):
             employer = get_object_or_404(Organization, id=employer_id)
             recruiter = get_object_or_404(User, id=recruiter_id)
 
-
-            messages.success(request, _("recruiterAssignmentRejectedSuccessfully."))
-            return JsonResponse({"success": True, "message": "recruiterAssignmentRejectedSuccessfully."})
+            message = _("recruiterAdminListRecruiterAssignmentRejectedSuccessfully")
+            messages.success(request, message)
+            return JsonResponse({"success": True, "message": message})
 
         except Organization.DoesNotExist:
             return JsonResponse({"success": False, "error": "employerNotFound."}, status=404)
@@ -1962,8 +1963,9 @@ class UpdateStatusView(View):
             if work_requests and status:
                 updated_count = WorkRequests.objects.filter(id__in=work_requests).update(status=status)
                 if updated_count > 0:
-                    messages.success(request, _("updateWorkRequestsSuccessfullyUpdatedTo'{}'Status.").format(status))
-                    return JsonResponse({'success': True, 'message': f"workRequestsSuccessfullyUpdatedTo'{status}'Status."})
+                    message = _("jobOrderDetailsWorkRequestsSuccessfullyUpdatedTo'{}'Status.").format(status)
+                    messages.success(request, message)
+                    return JsonResponse({'success': True, 'message': message})
                 else:
                     messages.error(request, _("noWorkRequestsFoundToUpdate."))
                     return JsonResponse({'success': False, 'message': 'noWorkRequestsFoundtoUpdate.'})
