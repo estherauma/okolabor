@@ -563,26 +563,6 @@ class DeleteEmployerOrganizationFromRecruiterView(View):
         return redirect('recruiting_web:recruiter_org_detail', pk=recruiter_org.id)
 
 
-# class WorkRequestCreateView(CreateView):
-#     model = WorkRequests
-#     form_class = WorkRequestForm
-#     template_name = 'recruiting/work_requests/create.html'
-
-#     def form_valid(self, form):
-#         messages.success(self.request, _('createJobOrderJobOrderCreatedSuccessfully'))
-#         return super(WorkRequestCreateView, self).form_valid(form)
-
-#     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
-#         for field, errors in form.errors.items():
-#             for error in errors:
-#                 messages.error(self.request, f'{field}: {error}')
-#         return super().form_invalid(form)
-
-#     def get_success_url(self):
-#         return reverse(
-#             'recruiting_web:workrequest_detail',
-#             kwargs={'pk': self.object.pk}
-#         )
 class WorkRequestCreateView(CreateView):
     model = WorkRequests
     form_class = WorkRequestForm

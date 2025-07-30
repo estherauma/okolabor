@@ -277,7 +277,6 @@ class WorkerListView(View):
             'selected_work_request':WorkRequests.objects.filter(id=work_request_id).first() if work_request_id else None,
             'selected_role': Role.objects.filter(id=role_id).first() if role_id else None,
         }
-        print(context)
         return render(request, 'recruiting/workers/manage_tabs/tabs.html', context)
 
     def post(self, request):
