@@ -860,14 +860,7 @@ class RecruiterAdminCreateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['curp', 'first_name', 'last_name', 'email']
-
-        labels = {
-            'curp': _("curp"),
-            'first_name': _("firstName"),
-            'last_name': _("lastName"),
-            'email': _("email"),  
-        }
-
+        
         widgets = {
             'curp': forms.TextInput(attrs={'class': 'form-control'}),
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -989,7 +982,7 @@ class WorkExperienceCreateForm(forms.ModelForm):
         end_date = cleaned_data.get("end_date")
         if start_date and end_date and start_date > end_date:
             raise ValidationError({
-                "end_date": _("endDateCannotBeEarlierThanStartDate.")
+                "end_date": _("addWorkExperienceEndDateCannotBeEarlierThanStartDate")
             })
 
     class Meta:
