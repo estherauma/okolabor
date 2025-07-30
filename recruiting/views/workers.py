@@ -48,6 +48,10 @@ ONBOARDING_STEPS = [
 ]
 class WorkerListView(View):
     def get(self, request):
+        # if coming from add workers button on work request detail page
+        # Get optional parameters from query string
+        role_id = request.GET.get('role')
+        work_request_id = request.GET.get('work_request')
         work_assign_form = WorkerAssignmentForm()
         form = DynamicWorkExperienceForm(request.GET or None)
         filter_form = AdvancedFilterForm(request.GET or None)
@@ -1393,5 +1397,3 @@ class DeleteAllWorkerInfoView(View):
 
         messages.success(request, _("All information related to the worker has been deleted."))
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
-
-
