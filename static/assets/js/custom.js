@@ -458,8 +458,19 @@
 		$('body').removeClass('gradient-menu');
 		return false;
 	  });
+	  
+	// ______________ TABLE 
+	// Add max-height to table-responsive if it has horizontal scroll
+	$(document).ready(function () {
+	  const el = document.querySelector('.table-responsive');
+	  if (!el) return; // Exit if the element is not found
+	  const hasHorizontalScroll = el.scrollWidth > el.clientWidth;
 
-
-	
-	
+	  if (hasHorizontalScroll) {
+		el.classList.add('table-max-height');
+	  } else {
+		el.classList.remove('table-max-height');
+		el.style.maxHeight = 'none'; 
+	  }
+	});
 })(jQuery);
