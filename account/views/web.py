@@ -129,7 +129,7 @@ class UserListView(LoginRequiredMixin, View):
         role = request.POST.get('role')
 
         if not all([first_name, last_name, user_email, role]):
-            messages.error(request, _("addUserAllFieldsAreRequired."))
+            messages.error(request, _("manageUsersAddUserAllFieldsAreRequired"))
             return redirect('manage_users')
 
         user = User.objects.create(
@@ -417,13 +417,13 @@ class RecruiterAdminModalCreateView(View):
                 recruiter_group = Group.objects.get(name='recruiter_admin')
                 recruiter.groups.add(recruiter_group)
             except Group.DoesNotExist:
-                messages.error(request, _("recruiterAdminGroupDoesNotExistPleaseCreateIt."))
+                messages.error(request, _("recruiterAdminListGroupDoesNotExistPleaseCreateIt"))
                 return redirect('manage_users')
 
-            messages.success(request, _("recruiterAdminCreatedSuccessfully."))
+            messages.success(request, _("recruiterAdminListCreatedSuccessfully"))
             return redirect('manage_users')
         else:
-            messages.error(request, _("pleaseCorrectTheErrorsInTheForm."))
+            messages.error(request, _("recruiterAdminListPleaseCorrectTheErrorsInTheForm"))
             return redirect('manage_users')
         
 
@@ -484,28 +484,28 @@ def assign_organization(request):
     try:
         selected_users = json.loads(selected_users or "[]")
     except json.JSONDecodeError:
-        messages.error(request, _("invalidUserSelection."))
-        return JsonResponse({"success": False, "error": _("invalidUserSelection")})
+        messages.error(request, _("addEmployerInvalidUserSelection"))
+        return JsonResponse({"success": False, "error": _("addEmployerInvalidUserSelection")})
 
     if not org_id or not selected_users:
-        messages.error(request, _("pleaseSelectUsersAndanOrganization."))
-        return JsonResponse({"success": False, "error": _("pleaseSelectUsersAndAnOrganization.")})
+        messages.error(request, _("addEmployerPleaseSelectUsersAndAnOrganization"))
+        return JsonResponse({"success": False, "error": _("addEmployerPleaseSelectUsersAndAnOrganization")})
 
     org = get_object_or_404(Organization, id=org_id)
     users = User.objects.filter(id__in=selected_users)
 
     if not users.exists():
-        messages.error(request, _("noValidUsersSelected."))
-        return JsonResponse({"success": False, "error": _("noValidUsersSelected.")})
+        messages.error(request, _("addEmployerNoValidUsersSelected"))
+        return JsonResponse({"success": False, "error": _("addEmployerNoValidUsersSelected")})
 
     try:
         for user in users:
             user.organizations.add(org)
-        messages.success(request, _("Organization assigned successfully to selected users."))
-        return JsonResponse({"success": True, "message": _("Organization assigned successfully to selected users.")})
+        messages.success(request, _("addEmployerOrganizationAssignedSuccessfullyToSelectedUsers"))
+        return JsonResponse({"success": True, "message": _("addEmployerOrganizationAssignedSuccessfullyToSelectedUsers")})
     except Exception as e:
-        messages.error(request, _("failedToAssignOrganization: ") + str(e))
-        return JsonResponse({"success": False, "error": _("failedToAssignOrganization: ") + str(e)})
+        messages.error(request, _("addEmployerFailedToAssignOrganization: ") + str(e))
+        return JsonResponse({"success": False, "error": _("addEmployerFailedToAssignOrganization: ") + str(e)})
 
 class LogListView(LoginRequiredMixin, ListView):
     model = Log
