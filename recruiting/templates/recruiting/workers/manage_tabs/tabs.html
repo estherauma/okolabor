@@ -526,6 +526,8 @@ function updateCollapseSummary() {
             else if (max) formattedValue = `Max ${max}`;
         }
 
+        
+
         allSelectedTextsSet.add(`${label}: ${formattedValue}`);
     }
 
@@ -615,7 +617,13 @@ function updateCollapseSummary() {
         allSelectedTextsSet.forEach(text => {
             const pill = document.createElement("span");
             pill.textContent = text;
-            pill.style.display = "inline-block";
+            // If text starts with Role: or Work Request:, display none
+            // This is to hide the role and wr from the pill as there's a form for them
+            if (text.startsWith("Role:") || text.startsWith("Work Request:")) {
+                pill.style.display = "none";
+            } else {
+                pill.style.display = "inline-block";
+            }
             pill.style.padding = "4px 10px";
             pill.style.margin = "2px 4px";
             pill.style.fontSize = "0.75rem";
