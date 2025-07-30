@@ -125,7 +125,7 @@
                 <p>
                   <span class="job-title ">{{ role.title }}</span>
       
-                  <a href="{% url 'recruiting_web:work_request_add_workers' pk=workrequest.id role_id=role.id %}?type_sector={{ role.work_type|urlencode }}{% if role.work_type == 'animals' %}&dynamic_field_1={{ role.work_type_detail.animal_types|default:''|join:','|urlencode }}&dynamic_field_2={{ role.work_type_detail.responsibilities_types|default:''|join:','|urlencode }}{% elif role.work_type == 'crop_and_horticulture' %}&dynamic_field_1={{ role.work_type_detail.crop_types|default:''|join:','|urlencode }}&dynamic_field_2={{ role.work_type_detail.crop_job_types|default:''|join:','|urlencode }}{% elif role.work_type == 'mechanics' %}&dynamic_field_1={{ role.work_type_detail.mechanic_job_types|default:''|join:','|urlencode }}{% elif role.work_type == 'worker_supervision__management' %}&dynamic_field_1={{ role.work_type_detail.supervision_jobs_types|default:''|join:','|urlencode }}{% endif %}">
+                  <a href="{% url 'recruiting_web:workers' %}?role={{role.id}}&work_request={{workrequest.id}} ">
                     <button class="btn btn-sm yellow-button">
                       {% translate "jobOrderDetailsAddWorkers" %}
                     </button>

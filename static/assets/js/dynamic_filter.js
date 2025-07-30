@@ -152,6 +152,7 @@ function updateCollapseSummary() {
         summaryContainer.appendChild(label);
 
         allSelectedTexts.forEach(text => {
+            console.log("Adding pill for:", text);
             const pill = document.createElement("span");
             pill.textContent = text;
             pill.style.display = "inline-block";
