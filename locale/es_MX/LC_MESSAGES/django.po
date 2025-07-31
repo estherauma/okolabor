@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-31 15:58+0300\n"
+"POT-Creation-Date: 2025-07-31 16:42+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1086,8 +1086,8 @@ msgstr "Tipos de animales"
 
 #: jaguar/views.py:158 jaguar/views.py:164 jaguar/views.py:168
 #: jaguar/views.py:174 jaguar/views.py:180
-msgid "Tasks"
-msgstr ""
+msgid "webCommonTasks"
+msgstr "Tareas"
 
 #: jaguar/views.py:162
 msgid "Crop Type"
@@ -1158,16 +1158,23 @@ msgid "createJobOrderStatus"
 msgstr "Estado"
 
 #: recruiting/forms.py:108
-msgid "Work Request"
-msgstr ""
+#: recruiting/templates/recruiting/workers/add_shortlist_modal.html:22
+#: recruiting/templates/recruiting/workers/manage_tabs/tabs.html:258
+#: recruiting/templates/recruiting/workers/manage_tabs/worker_confirmed.html:94
+#: recruiting/templates/recruiting/workers/manage_tabs/worker_offersent.html:97
+#: recruiting/templates/recruiting/workers/manage_tabs/worker_rejected.html:72
+#: recruiting/templates/recruiting/workers/manage_tabs/worker_shortlist.html:100
+#: recruiting/templates/recruiting/workers/offer_sent_modal.html:22
+msgid "workersListWorkRequest"
+msgstr "Solicitud de trabajo"
 
 #: recruiting/forms.py:116
-msgid "Worker"
-msgstr ""
+msgid "workersListWorker"
+msgstr "Obrero"
 
 #: recruiting/forms.py:117
-msgid "Status"
-msgstr ""
+msgid "workersListStatus"
+msgstr "Estado"
 
 #: recruiting/forms.py:193
 msgid "addRoleTitle"
@@ -1311,8 +1318,9 @@ msgid "roleDeductionsDeductionAmount"
 msgstr "Monto de la deducción"
 
 #: recruiting/forms.py:428
-msgid "roleDeductionsFrequencyOfPay"
-msgstr ""
+#: recruiting/templates/recruiting/work_requests/edit_deduction_modal.html:50
+msgid "joDetailsDeductionsFrequencyOfPay"
+msgstr "Frecuencia de pago"
 
 #: recruiting/forms.py:457 recruiting/forms.py:486
 msgid "roleQualificationTrainingRequired"
@@ -1547,47 +1555,63 @@ msgstr "Línea de dirección 2"
 msgid "addWorkerCity"
 msgstr "Ciudad"
 
-#: recruiting/forms.py:985
-msgid "addWorkExperienceEndDateCannotBeEarlierThanStartDate"
-msgstr "La fecha de finalización no puede ser anterior a la fecha de inicio"
+#: recruiting/forms.py:865
+msgid "curp"
+msgstr ""
 
-#: recruiting/forms.py:996
+#: recruiting/forms.py:866
+msgid "firstName"
+msgstr "Nombre de pila"
+
+#: recruiting/forms.py:867
+msgid "lastName"
+msgstr "Apellido"
+
+#: recruiting/forms.py:868
+msgid "email"
+msgstr ""
+
+#: recruiting/forms.py:992
+msgid "endDateCannotBeEarlierThanStartDate."
+msgstr "La fecha de finalización no puede ser anterior a la fecha de inicio."
+
+#: recruiting/forms.py:1003
 msgid "addWorkerExperienceUser"
 msgstr "Usuario"
 
-#: recruiting/forms.py:997
+#: recruiting/forms.py:1004
 msgid "addWorkerExperienceCompany"
 msgstr "Compañía"
 
-#: recruiting/forms.py:998
+#: recruiting/forms.py:1005
 msgid "addWorkerExperienceWorkTitle"
 msgstr "Título de la obra"
 
-#: recruiting/forms.py:999
+#: recruiting/forms.py:1006
 msgid "addWorkerExperienceStartDate"
 msgstr "Fecha de inicio"
 
-#: recruiting/forms.py:1000
+#: recruiting/forms.py:1007
 msgid "addWorkerExperienceEndDate"
 msgstr "Fecha de finalización"
 
-#: recruiting/forms.py:1001
+#: recruiting/forms.py:1008
 msgid "addWorkerExperienceCountry"
 msgstr "País"
 
-#: recruiting/forms.py:1002
+#: recruiting/forms.py:1009
 msgid "addWorkerExperienceSupervisorName"
 msgstr "Nombre del supervisor"
 
-#: recruiting/forms.py:1003
+#: recruiting/forms.py:1010
 msgid "addWorkerExperienceSupervisorTelephone"
 msgstr "Teléfono del supervisor"
 
-#: recruiting/forms.py:1004
+#: recruiting/forms.py:1011
 msgid "addWorkerExperienceSupervisorEmail"
 msgstr "Correo electrónico del supervisor"
 
-#: recruiting/forms.py:1005
+#: recruiting/forms.py:1012
 msgid "addWorkerExperienceVisaType"
 msgstr "Tipo de visa"
 
@@ -1797,8 +1821,8 @@ msgid "employerDetailsClose"
 msgstr "Cerca"
 
 #: recruiting/templates/recruiting/employers/detail.html:88
-msgid "Select User"
-msgstr ""
+msgid "employerDetailsSelectUser"
+msgstr "Seleccionar usuario"
 
 #: recruiting/templates/recruiting/employers/detail.html:90
 #: recruiting/templates/recruiting/recruiters_list/details.html:90
@@ -2823,8 +2847,8 @@ msgid "roleEmploymentSubmit"
 msgstr "Entregar"
 
 #: recruiting/templates/recruiting/work_requests/create_hours.html:8
-msgid "Add Hours"
-msgstr ""
+msgid "joDetailsHoursAddHours"
+msgstr "Agregar horas"
 
 #: recruiting/templates/recruiting/work_requests/create_hours.html:48
 msgid "roleHoursSubmit"
@@ -2927,7 +2951,7 @@ msgstr "Eliminar horas"
 
 #: recruiting/templates/recruiting/work_requests/delete_hours.html:15
 msgid "joDetailsHoursAreYouSureYouWantToDeleteThisEntry"
-msgstr ""
+msgstr "¿Estás seguro que deseas eliminar esta entrada?"
 
 #: recruiting/templates/recruiting/work_requests/delete_hours.html:19
 #: recruiting/templates/recruiting/work_requests/detail.html:199
@@ -3410,10 +3434,6 @@ msgstr "información adicional"
 msgid "joDetailsDeductionsEditDeduction"
 msgstr "Editar deducciones"
 
-#: recruiting/templates/recruiting/work_requests/edit_deduction_modal.html:50
-msgid "joDetailsDeductionsFrequencyOfPay"
-msgstr "Frecuencia de pago"
-
 #: recruiting/templates/recruiting/work_requests/edit_deduction_modal.html:74
 msgid "joDetailsDeductionsSaveChanges"
 msgstr "Guardar cambios"
@@ -3687,16 +3707,6 @@ msgstr "Asignado a"
 msgid "workersListAssignWorker"
 msgstr "Asignar trabajador"
 
-#: recruiting/templates/recruiting/workers/add_shortlist_modal.html:22
-#: recruiting/templates/recruiting/workers/manage_tabs/tabs.html:258
-#: recruiting/templates/recruiting/workers/manage_tabs/worker_confirmed.html:94
-#: recruiting/templates/recruiting/workers/manage_tabs/worker_offersent.html:97
-#: recruiting/templates/recruiting/workers/manage_tabs/worker_rejected.html:72
-#: recruiting/templates/recruiting/workers/manage_tabs/worker_shortlist.html:100
-#: recruiting/templates/recruiting/workers/offer_sent_modal.html:22
-msgid "workersListWorkRequest"
-msgstr "Orden de trabajo"
-
 #: recruiting/templates/recruiting/workers/add_shortlist_modal.html:24
 #: recruiting/templates/recruiting/workers/manage_tabs/tabs.html:262
 #: recruiting/templates/recruiting/workers/offer_sent_modal.html:24
@@ -3817,8 +3827,8 @@ msgid "workerDetailsClose"
 msgstr "Cerca"
 
 #: recruiting/templates/recruiting/workers/detail.html:238
-msgid "workerDetailsAreYouSureYouWantToDeleteTheExperience?"
-msgstr ""
+msgid "workerDetailsAreYouSureYouWantToDeleteTheExperience"
+msgstr "¿Estás seguro de que deseas eliminar la experiencia?"
 
 #: recruiting/templates/recruiting/workers/detail.html:263
 msgid "EditWorkExperience"
@@ -3880,7 +3890,7 @@ msgstr "Preferencias del usuario"
 
 #: recruiting/templates/recruiting/workers/detail.html:674
 msgid "workerDetailsUploadLanguageVideo"
-msgstr ""
+msgstr "Subir vídeo en idioma"
 
 #: recruiting/templates/recruiting/workers/detail.html:723
 #: recruiting/templates/recruiting/workers/detail.html:739
@@ -4349,14 +4359,6 @@ msgstr "El trabajador ha sido añadido a la lista corta."
 msgid "workRequestAddWorkerSomeWorkersAreAlreadyShortlisted"
 msgstr "Algunos trabajadores ya han sido preseleccionados."
 
-#: recruiting/views/web.py:967
-msgid "Home"
-msgstr ""
-
-#: recruiting/views/web.py:968
-msgid "Job Orders"
-msgstr "Órdenes de trabajo"
-
 #: recruiting/views/web.py:984
 msgid "addRoleRoleCreatedSuccessfully"
 msgstr "Rol creado exitosamente"
@@ -4375,6 +4377,7 @@ msgid "recruiterAdminListRecruiter {email} assigned to {employer}."
 msgstr "Reclutador {email} asignado a {employer}."
 
 #: recruiting/views/web.py:1063
+#, python-brace-format
 msgid "Recruiter {email} is already assigned to {employer}."
 msgstr "El reclutador {email} ya está asignado a {employer}."
 
@@ -5498,10 +5501,6 @@ msgstr "Administrar usuarios"
 msgid "employerAcceptRejectStatus"
 msgstr "Estado de la conexión"
 
-#: theme/templates/components/layouts/vertical/app-sidebar.html:87
-msgid "toDo"
-msgstr ""
-
 #: theme/templates/components/layouts/vertical/app-sidebar.html:92
 msgid "messages"
 msgstr "Mensajes"
@@ -5642,6 +5641,12 @@ msgstr "Has cerrado sesión exitosamente."
 msgid "loginYouHaveSuccessfullyLoggedIn"
 msgstr "Has iniciado sesión exitosamente."
 
+#~ msgid "addWorkExperienceEndDateCannotBeEarlierThanStartDate"
+#~ msgstr "La fecha de finalización no puede ser anterior a la fecha de inicio"
+
+#~ msgid "Job Orders"
+#~ msgstr "Órdenes de trabajo"
+
 #~ msgid "workRequestAddWorkerAddToShortlist"
 #~ msgstr "Añadir a la lista de favoritos"
 
@@ -5773,9 +5778,6 @@ msgstr "Has iniciado sesión exitosamente."
 
 #~ msgid "workRequestAddWorkerOfferSentAddWorkers"
 #~ msgstr "Agregar trabajadores"
-
-#~ msgid "joDetailsHoursAddHours"
-#~ msgstr "Agregar horas"
 
 #~ msgid "jobOrderDetailsAddRole"
 #~ msgstr "Agregar rol"

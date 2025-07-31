@@ -105,7 +105,7 @@ class WorkerAssignmentForm(forms.ModelForm):
     work_request = forms.ModelMultipleChoiceField(
         queryset=WorkRequests.objects.all(),
         widget=forms.SelectMultiple(attrs={'class': 'form-control'}),
-        label=_("Work Request")
+        label=_("workersListWorkRequest")
     )
 
     class Meta:
@@ -113,8 +113,8 @@ class WorkerAssignmentForm(forms.ModelForm):
         fields = ['work_request', 'worker', 'status']
 
         labels = {
-            'worker': _("Worker"),
-            'status': _("Status"),
+            'worker': _("workersListWorker"),
+            'status': _("workersListStatus"),
         }
 
         widgets = {
@@ -425,7 +425,7 @@ class RoleDeductionForm(forms.ModelForm):
             'role': _('roleDeductionsRole'),
             'description': _('roleDeductionsDescription'),
             'deduction_amount': _('roleDeductionsDeductionAmount'),
-            'frequency_of_pay': _('roleDeductionsFrequencyOfPay'),
+            'frequency_of_pay': _('joDetailsDeductionsFrequencyOfPay'),
         }
 
         widgets = {
@@ -860,7 +860,14 @@ class RecruiterAdminCreateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['curp', 'first_name', 'last_name', 'email']
-        
+
+        labels = {
+            'curp': _("curp"),
+            'first_name': _("firstName"),
+            'last_name': _("lastName"),
+            'email': _("email"),  
+        }
+
         widgets = {
             'curp': forms.TextInput(attrs={'class': 'form-control'}),
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -982,7 +989,7 @@ class WorkExperienceCreateForm(forms.ModelForm):
         end_date = cleaned_data.get("end_date")
         if start_date and end_date and start_date > end_date:
             raise ValidationError({
-                "end_date": _("addWorkExperienceEndDateCannotBeEarlierThanStartDate")
+                "end_date": _("endDateCannotBeEarlierThanStartDate.")
             })
 
     class Meta:

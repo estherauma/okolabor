@@ -964,8 +964,8 @@ class WorkRequestDetailView(View):
             'role_add_form': role_add_form,
             'dynamic_fields': dynamic_fields,
             'breadcrumbs' :[
-                        {'name': _('Home'), 'url': reverse('index')},
-                        {'name': _('Job Orders'), 'url': reverse('recruiting_web:workrequest_list')},
+                        {'name': 'Home', 'url': reverse('index')},
+                        {'name': 'Job Orders', 'url': reverse('recruiting_web:workrequest_list')},
                         {'name': work_request.name, 'url': None},
                     ],
 
