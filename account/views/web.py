@@ -183,14 +183,14 @@ class RecruiterManageDeleteView(LoginRequiredMixin, View):
         if user.groups.filter(name='admin').exists():
             recruiter_name = f"{recruiter_user.first_name} {recruiter_user.last_name}"
             recruiter_user.delete()  # Directly deletes the user
-            messages.success(request, _('Recruiter "%(recruiter_name)s" deleted successfully.') % {'recruiter_name': recruiter_name})
+            messages.success(request, _('recruiterAdminListRecruiter "%(recruiter_name)s" deleted successfully.') % {'recruiter_name': recruiter_name})
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
             return redirect('manage_users')
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
-            return HttpResponseForbidden(_("You do not have permission to delete this recruiter."))
+            return HttpResponseForbidden(_("recruiterAdminListYouDoNotHavePermissionToDeleteThisRecruiter"))
 
 class EmployerManageDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
@@ -200,14 +200,14 @@ class EmployerManageDeleteView(LoginRequiredMixin, View):
         if user.groups.filter(name='admin').exists():
             employer_name = f"{employer_user.first_name} {employer_user.last_name}"
             employer_user.delete()
-            messages.success(request, _('Employer "%(employer_name)s" deleted successfully.') % {'employer_name': employer_name})
+            messages.success(request, _('employerAminListEmployer "%(employer_name)s" deleted successfully') % {'employer_name': employer_name})
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
             return redirect('manage_users')
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
-            return HttpResponseForbidden(_("You do not have permission to delete this employer."))
+            return HttpResponseForbidden(_("employerAminListYouDoNotHavePermissionToDeleteThisEmployer"))
 
 
 class UserActivitLogView(LoginRequiredMixin, View):
@@ -384,7 +384,7 @@ def edit_worker(request, curp):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({'success': True})
 
-        messages.success(request, _('WorkerUpdatedSuccessfully.'))
+        messages.success(request, _('workersListWorkerUpdatedSuccessfully'))
         return redirect('manage_users')
 
     return redirect('manage_users')
@@ -398,13 +398,13 @@ class WorkerModalCreateView(View):
                 worker_group = Group.objects.get(name='worker')
                 worker.groups.add(worker_group)
             except Group.DoesNotExist:
-                messages.error(request, _("WorkerGroupDoesNotExistPleaseCreateIt."))
+                messages.error(request, _("workersListWorkerGroupDoesNotExistPleaseCreateIt"))
                 return redirect('manage_users')
                 
-            messages.success(request, _("workerCreatedSuccessfully."))
+            messages.success(request, _("workersListWorkerCreatedSuccessfully"))
             return redirect('manage_users')
         else:
-            messages.error(request, _("pleaseCorrectTheErrorsInTheForm"))
+            messages.error(request, _("workersListPleaseCorrectTheErrorsInTheForm"))
             return redirect('manage_users')
         
 

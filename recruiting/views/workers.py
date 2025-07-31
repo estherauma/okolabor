@@ -385,7 +385,7 @@ class WorkerEditView(LoginRequiredMixin, View):
                     assignment.status = latest_status
                     assignment.save()
 
-            messages.success(request, _('Worker "%(worker_name)s" EditedSuccessfully.') % {'worker_name': worker.first_name})
+            messages.success(request, _('workersListWorker "%(worker_name)s" EditedSuccessfully.') % {'worker_name': worker.first_name})
             
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
@@ -394,7 +394,7 @@ class WorkerEditView(LoginRequiredMixin, View):
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
-            return HttpResponseForbidden(_("YouDoNotHavePermissionToEditThisWorker."))
+            return HttpResponseForbidden(_("workersListYouDoNotHavePermissionToEditThisWorker"))
 
     def update_user_preference(self, user, key, value):
         if value:
@@ -429,7 +429,7 @@ class WorkerDeleteView(LoginRequiredMixin, View):
             worker_name = f"{worker.first_name} {worker.last_name}"
             worker.delete(user=user)  # Assuming this does a soft delete
 
-            messages.success(request, _('Worker "%(worker_name)s" DeletedSuccessfully.') % {'worker_name': worker_name})
+            messages.success(request, _('workersListWorker "%(worker_name)s" DeletedSuccessfully') % {'worker_name': worker_name})
 
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
@@ -439,7 +439,7 @@ class WorkerDeleteView(LoginRequiredMixin, View):
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
-            return HttpResponseForbidden(_("youDoNotHavePermissionToDeleteThisWorker."))
+            return HttpResponseForbidden(_("workersListYouDoNotHavePermissionToDeleteThisWorker"))
 
     
 class AssignWorkerView(View):
@@ -478,9 +478,9 @@ class AssignWorkerView(View):
             
             msg_parts = []
             if newly_assigned:
-                msg_parts.append(_("Successfully assigned: ") + ", ".join(newly_assigned))
+                msg_parts.append(_("workersListSuccessfully assigned: ") + ", ".join(newly_assigned))
             if already_assigned:
-                msg_parts.append(_("Already assigned: ") + ", ".join(already_assigned))
+                msg_parts.append(_("workersListAlready assigned: ") + ", ".join(already_assigned))
 
             final_msg = " ".join(msg_parts)
             messages.success(request, final_msg)
@@ -531,9 +531,9 @@ class SendOfferView(View):
 
             msg_parts = []
             if newly_offered:
-                msg_parts.append(_("Successfully sent offer to: ") + ", ".join(newly_offered))
+                msg_parts.append(_("workersListSuccessfullySentOfferTo: ") + ", ".join(newly_offered))
             if already_offered:
-                msg_parts.append(_("Offer already sent to: ") + ", ".join(already_offered))
+                msg_parts.append(_("workersListOfferAlreadySentTo: ") + ", ".join(already_offered))
 
             # Send notifications
             user_push_tokens = []
@@ -713,7 +713,7 @@ class EditPreferenceView(View):
                 kind="preference",
                 defaults={"value": value},             # ✅ Updates or creates the preference
             )
-            messages.success(request, _("User preference updated successfully."))  # ✅ Feedback
+            messages.success(request, _("workersListUserPreferenceUpdatedSuccessfully"))  # ✅ Feedback
 
         return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))  # ✅ Redirect
 
@@ -730,13 +730,13 @@ class DeletePreferenceView(LoginRequiredMixin, View):
         )
 
         if not preferences.exists():
-            messages.error(request, _("Preference with key '%(key)s' not found.") % {'key': key})
+            messages.error(request, _("workersListPreference with key '%(key)s' not found.") % {'key': key})
             return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": target_user.pk}))
 
         if user.groups.filter(name='admin').exists():
             for pref in preferences:
                 pref.delete(user=user)
-            messages.success(request, _('Preference "%(key)s" deleted successfully.') % {'key': key})
+            messages.success(request, _('workersListPreference "%(key)s" deleted successfully.') % {'key': key})
 
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
@@ -746,7 +746,7 @@ class DeletePreferenceView(LoginRequiredMixin, View):
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
 
-            return HttpResponseForbidden(_("You do not have permission to delete this preference."))
+            return HttpResponseForbidden(_("workersListNoPermission"))
 
 
 class GetRolesForWorkRequestView(View):
@@ -1294,7 +1294,7 @@ class EditUserPreferenceView(View):
                     obj.value = value
                     obj.save()
 
-        messages.success(request, _("userPreferencesUpdatedSuccessfully."))
+        messages.success(request, _("workersListUserPreferencesUpdatedSuccessfully"))
         return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
 
 
@@ -1380,7 +1380,7 @@ class EditDocumentsView(View):
                     file_type=uploaded_file.content_type
                 )
 
-        messages.success(request, _("Documents updated successfully."))
+        messages.success(request, _("workersListDocumentsUpdatedSuccessfully"))
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
 
 
@@ -1391,7 +1391,7 @@ class DeleteAllWorkerInfoView(View):
         UserPreference.objects.filter(user=user).delete()
         UserDocuments.objects.filter(user=user).delete()
 
-        messages.success(request, _("All information related to the worker has been deleted."))
+        messages.success(request, _("workersListAllInformationDeleted"))
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
 
 

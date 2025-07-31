@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-31 10:27+0300\n"
+"POT-Creation-Date: 2025-07-31 14:12+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -980,21 +980,21 @@ msgstr "Failed to send email"
 
 #: account/views/web.py:186
 #, python-format
-msgid "Recruiter \"%(recruiter_name)s\" deleted successfully."
-msgstr ""
+msgid "recruiterAdminListRecruiter \"%(recruiter_name)s\" deleted successfully."
+msgstr "Recruiter \"%(recruiter_name)s\" deleted successfully."
 
-#: account/views/web.py:193
-msgid "You do not have permission to delete this recruiter."
-msgstr ""
+#: account/views/web.py:193 recruiting/views/web.py:279
+msgid "recruiterAdminListYouDoNotHavePermissionToDeleteThisRecruiter"
+msgstr "You do not have permission to delete this recruiter."
 
 #: account/views/web.py:203
 #, python-format
-msgid "Employer \"%(employer_name)s\" deleted successfully."
-msgstr ""
+msgid "employerAminListEmployer \"%(employer_name)s\" deleted successfully"
+msgstr "Employer \"%(employer_name)s\" deleted successfully."
 
 #: account/views/web.py:210
-msgid "You do not have permission to delete this employer."
-msgstr ""
+msgid "employerAminListYouDoNotHavePermissionToDeleteThisEmployer"
+msgstr "You do not have permission to delete this employer."
 
 #: account/views/web.py:249
 msgid "accountHome"
@@ -1025,20 +1025,20 @@ msgid "changePasswordPleaseCorrectTheErrorsBelow."
 msgstr "Please correct the error below."
 
 #: account/views/web.py:387
-msgid "WorkerUpdatedSuccessfully."
-msgstr ""
+msgid "workersListWorkerUpdatedSuccessfully"
+msgstr "Worker updated successfully"
 
 #: account/views/web.py:401
-msgid "WorkerGroupDoesNotExistPleaseCreateIt."
-msgstr ""
+msgid "workersListWorkerGroupDoesNotExistPleaseCreateIt"
+msgstr "Worker group does not exist, please create it"
 
 #: account/views/web.py:404
-msgid "workerCreatedSuccessfully."
-msgstr ""
+msgid "workersListWorkerCreatedSuccessfully"
+msgstr "Worker created successfully"
 
 #: account/views/web.py:407
-msgid "pleaseCorrectTheErrorsInTheForm"
-msgstr ""
+msgid "workersListPleaseCorrectTheErrorsInTheForm"
+msgstr "Please correct the errors in the form"
 
 #: account/views/web.py:420
 msgid "recruiterAdminListGroupDoesNotExistPleaseCreateIt"
@@ -1718,11 +1718,11 @@ msgstr "Shortlist"
 #: recruiting/templates/recruiting/access_denied.html:5
 #: recruiting/templates/recruiting/access_denied.html:8
 msgid "accessDenied"
-msgstr ""
+msgstr "Access Denied"
 
 #: recruiting/templates/recruiting/access_denied.html:9
-msgid "youDoNotHavePermissionToAccessThisPage."
-msgstr ""
+msgid "accessDeniedYouDoNotHavePermissionToAccessThisPage"
+msgstr "You do not have permission to access this page"
 
 #: recruiting/templates/recruiting/employers/create.html:9
 #: recruiting/templates/recruiting/employers/list.html:112
@@ -2075,7 +2075,7 @@ msgid "employersSave"
 msgstr "Save"
 
 #: recruiting/templates/recruiting/messages/create.html:10
-#: recruiting/views/web.py:1739
+#: recruiting/views/web.py:1740
 msgid "createMessageCreateMessage"
 msgstr "Create Message"
 
@@ -4100,6 +4100,7 @@ msgid "workerDetailsDelete"
 msgstr "Delete"
 
 #: recruiting/templates/recruiting/workers/detail.html:240
+#: recruiting/templates/recruiting/workers/detail.html:1005
 msgid "workerDetailsConfirmDelete"
 msgstr "Confirm Delete"
 
@@ -4197,19 +4198,15 @@ msgstr "No"
 msgid "workerDetailsSave"
 msgstr "Save"
 
-#: recruiting/templates/recruiting/workers/detail.html:1005
-msgid "Confirm Delete"
-msgstr ""
-
 #: recruiting/templates/recruiting/workers/detail.html:1010
-msgid ""
+msgid "workerDetailsConfirmDeleteText"
+msgstr ""
 "Are you sure you want to delete all saved information for this worker? This "
 "includes preferences, language proficiency, and uploaded documents."
-msgstr ""
 
 #: recruiting/templates/recruiting/workers/detail.html:1018
-msgid "Delete All"
-msgstr ""
+msgid "workerDetailsDeleteAll"
+msgstr "Delete All"
 
 #: recruiting/templates/recruiting/workers/detail.html:1031
 msgid "workerDetailsMediaViewer"
@@ -4412,6 +4409,7 @@ msgid "employersEmployers"
 msgstr "Employers"
 
 #: recruiting/views/web.py:167
+#, python-format
 msgid "employersEmployer \"%(employer_name)s\" DeletedSuccessfully"
 msgstr "Employer \"%(employer_name)s\" deleted successfully."
 
@@ -4437,14 +4435,12 @@ msgid "recruiterListRecruiters"
 msgstr "Recruiters"
 
 #: recruiting/views/web.py:271
+#, python-format
 msgid "recruiterAdminListRecruiter \"%(recruiter_name)s\" deletedSuccessfully."
 msgstr "Recruiter \"%(recruiter_name)s\" deleted successfully."
 
-#: recruiting/views/web.py:279
-msgid "recruiterAdminListYouDoNotHavePermissionToDeleteThisRecruiter"
-msgstr "You do not have permission to delete this recruiter"
-
 #: recruiting/views/web.py:300
+#, python-format
 msgid "recruiterAdminListRecruiter \"%(recruiter_name)s\" editedSuccessfully."
 msgstr "Recruiter \"%(recruiter_name)s\" edited successfully."
 
@@ -4473,16 +4469,16 @@ msgid "jobOrderListJobOrders"
 msgstr "Job Orders"
 
 #: recruiting/views/web.py:548 recruiting/views/web.py:561
-msgid "employerRecruiterDeletedSuccessfully"
-msgstr ""
+msgid "employerAminListEmployerRecruiterDeletedSuccessfully"
+msgstr "Employer recruiter deleted successfully"
 
 #: recruiting/views/web.py:592
 msgid "createJobOrderJobOrderCreatedSuccessfully"
 msgstr "Job order created successfully."
 
 #: recruiting/views/web.py:608
-msgid "WorkRequestEditedSuccessfully"
-msgstr ""
+msgid "jobOrderListWorkRequestEditedSuccessfully"
+msgstr "Work request edited successfully"
 
 #: recruiting/views/web.py:626
 #, python-format
@@ -4505,286 +4501,288 @@ msgstr "Job Orders"
 msgid "workRequestAddWorkerJobOrderDetails"
 msgstr "Job Order Details"
 
-#: recruiting/views/web.py:1002 recruiting/views/web.py:1003
-msgid "Invalid request, missing data"
-msgstr ""
+#: recruiting/views/web.py:1002
+msgid "workersListInvalidRequestMissingData"
+msgstr "Invalid request, missing data"
 
-#: recruiting/views/web.py:1020
-msgid "Workers assigned successfully!"
-msgstr ""
+#: recruiting/views/web.py:1021
+msgid "workersListWorkersAssignedSuccessfully"
+msgstr "Workers assigned successfully!"
 
-#: recruiting/views/web.py:1025
-msgid "An error occurred: "
-msgstr ""
+#: recruiting/views/web.py:1026
+msgid "workersListAn Error Occurred: "
+msgstr "An error occurred: "
 
-#: recruiting/views/web.py:1091 recruiting/views/web.py:1098
-#: recruiting/views/web.py:1139 recruiting/views/web.py:1145
+#: recruiting/views/web.py:1092 recruiting/views/web.py:1099
+#: recruiting/views/web.py:1140 recruiting/views/web.py:1146
 #: recruiting/views/workers.py:546 recruiting/views/workers.py:551
 msgid "workRequestAddNotificationTitle"
 msgstr "New Job Offer"
 
-#: recruiting/views/web.py:1092 recruiting/views/web.py:1099
-#: recruiting/views/web.py:1140 recruiting/views/web.py:1146
+#: recruiting/views/web.py:1093 recruiting/views/web.py:1100
+#: recruiting/views/web.py:1141 recruiting/views/web.py:1147
 #: recruiting/views/workers.py:547 recruiting/views/workers.py:552
 msgid "workRequestAddNotificationBody"
 msgstr "To see the new job offer details, please check the jobs section."
 
-#: recruiting/views/web.py:1108
+#: recruiting/views/web.py:1109
 msgid "Offer sent successfully."
 msgstr "User preferences saved successfully."
 
-#: recruiting/views/web.py:1142
-msgid "OfferSentSuccessfully."
-msgstr ""
+#: recruiting/views/web.py:1143
+msgid "workersListOfferSentSuccessfully"
+msgstr "Offer sent successfully."
 
-#: recruiting/views/web.py:1167
+#: recruiting/views/web.py:1168
 msgid "workRequestAddWorkerOfferCancelledSuccessfully"
 msgstr "Offer cancelled successfully"
 
-#: recruiting/views/web.py:1185
+#: recruiting/views/web.py:1186
 msgid "workRequestAddWorkerWorkersAddedToShortlistSuccessfully"
 msgstr "Worker has been added to the shortlist."
 
-#: recruiting/views/web.py:1188
+#: recruiting/views/web.py:1189
 msgid "workRequestAddWorkerSomeWorkersAreAlreadyShortlisted"
 msgstr "Some workers have already been shortlisted."
 
-#: recruiting/views/web.py:1319
+#: recruiting/views/web.py:1320
 msgid "Home"
 msgstr ""
 
-#: recruiting/views/web.py:1320
+#: recruiting/views/web.py:1321
 msgid "Job Orders"
 msgstr "Job Orders"
 
-#: recruiting/views/web.py:1336
+#: recruiting/views/web.py:1337
 msgid "addRoleRoleCreatedSuccessfully"
 msgstr "Role created successfully."
 
-#: recruiting/views/web.py:1367
+#: recruiting/views/web.py:1368
 msgid "addRoleRoleUpdatedSuccessfully"
 msgstr "Role updated successfully."
 
-#: recruiting/views/web.py:1377
+#: recruiting/views/web.py:1378
 msgid "addRoleRoleDeletedSuccessfully"
 msgstr "Role deleted successfully."
 
-#: recruiting/views/web.py:1413
+#: recruiting/views/web.py:1414
+#, python-brace-format
 msgid "recruiterAdminListRecruiter {email} assigned to {employer}."
 msgstr "Recruiter {email} assigned to {employer}."
 
-#: recruiting/views/web.py:1415
+#: recruiting/views/web.py:1416
 #, python-brace-format
 msgid "recruiterAdminListRecruiter {email} is already assigned to {employer}."
 msgstr "Recruiter {email} is already assigned to {employer}."
 
-#: recruiting/views/web.py:1432
+#: recruiting/views/web.py:1433
+#, python-brace-format
 msgid "recruiterAdminListRecruiter {email} removed from {employer}."
 msgstr "Recruiter {email} removed from {employer}."
 
-#: recruiting/views/web.py:1434
+#: recruiting/views/web.py:1435
 #, python-brace-format
 msgid ""
 "recruiterAdminListRecruiter {email} was already removed from {employer}."
 msgstr "Recruiter {email} was already removed from {employer}."
 
-#: recruiting/views/web.py:1722
+#: recruiting/views/web.py:1723
 msgid "messagesHome"
 msgstr "Home"
 
-#: recruiting/views/web.py:1723
+#: recruiting/views/web.py:1724
 msgid "messagesMessages"
 msgstr "Messages"
 
-#: recruiting/views/web.py:1737
+#: recruiting/views/web.py:1738
 msgid "createMessageHome"
 msgstr "Home"
 
-#: recruiting/views/web.py:1738
+#: recruiting/views/web.py:1739
 msgid "createMessageMessages"
 msgstr "Messages"
 
-#: recruiting/views/web.py:1744
+#: recruiting/views/web.py:1745
 msgid "createMessageMessageCreatedSuccessfully"
 msgstr "Message created successfully"
 
-#: recruiting/views/web.py:1763
+#: recruiting/views/web.py:1764
 msgid "messageDetailsHome"
 msgstr "Home"
 
-#: recruiting/views/web.py:1764
+#: recruiting/views/web.py:1765
 msgid "messageDetailsMessages"
 msgstr "Messages"
 
-#: recruiting/views/web.py:1765
+#: recruiting/views/web.py:1766
 msgid "messageDetailsMessageDetails"
 msgstr "Message Details"
 
-#: recruiting/views/web.py:1899
+#: recruiting/views/web.py:1900
 msgid "recruiterAdminListrecruiterAssignmentAcceptedSuccessfully"
 msgstr "Recruiter assignment accepted successfully"
 
-#: recruiting/views/web.py:1922
+#: recruiting/views/web.py:1923
 msgid "recruiterAdminListRecruiterAssignmentRejectedSuccessfully"
 msgstr "Recruiter assignment rejected successfully"
 
-#: recruiting/views/web.py:1947
+#: recruiting/views/web.py:1948
 msgid "workersListWorkerAssignmentSuccessfullyMarkedAsDeleted"
 msgstr "Worker assignment successfully marked as deleted."
 
-#: recruiting/views/web.py:1966
+#: recruiting/views/web.py:1967
 msgid "jobOrderDetailsWorkRequestsSuccessfullyUpdatedTo'{}'Status."
 msgstr "Job order successfully updated to '{status}' status."
 
-#: recruiting/views/web.py:1970
+#: recruiting/views/web.py:1971
 msgid "jobOrderListNoWorkRequestsFoundToUpdate"
 msgstr "No job order found to update"
 
-#: recruiting/views/web.py:1973
+#: recruiting/views/web.py:1974
 msgid "jobOrderListInvalidDataProvided"
 msgstr "Invalid data provided"
 
-#: recruiting/views/web.py:1978
+#: recruiting/views/web.py:1979
 msgid "jobOrderListInvalidJSONData"
 msgstr "Invalid JSON data"
 
-#: recruiting/views/web.py:2017
+#: recruiting/views/web.py:2018
 msgid "employersEmployerIDAndUserIDAreRequired"
 msgstr "Employer ID and User ID are required."
 
-#: recruiting/views/web.py:2026
+#: recruiting/views/web.py:2027
 msgid "employersUserIsAlreadyAssignedToThisOrganization"
 msgstr "User is already assigned to this organization."
 
-#: recruiting/views/web.py:2033
+#: recruiting/views/web.py:2034
 msgid "employersOrganizationAssignedSuccessfullyToUser"
 msgstr "Organization assigned successfully to user."
 
-#: recruiting/views/web.py:2039
+#: recruiting/views/web.py:2040
 msgid "employersInvalidJSONPayload"
 msgstr "Invalid JSON payload."
 
-#: recruiting/views/web.py:2044
+#: recruiting/views/web.py:2045
 msgid "employersFailedToAssignOrganization: "
 msgstr "Assign Employer"
 
-#: recruiting/views/web.py:2103
+#: recruiting/views/web.py:2104
 msgid ""
 "employersInvitationsCreated,EmailsSentSuccessfully,AndEmployer(s)AssignedToTheRecruiterOrganization"
 msgstr ""
 "Invitations created, emails sent successfully, and employer(s) assigned to "
 "the recruiter."
 
-#: recruiting/views/web.py:2109
+#: recruiting/views/web.py:2110
 msgid "employersTheFollowingEmployersAre AlreadyAssigned: {}"
 msgstr "The following employers are already assigned: {}"
 
-#: recruiting/views/web.py:2318
+#: recruiting/views/web.py:2319
 msgid "recruiterStatusHome"
 msgstr "Home"
 
-#: recruiting/views/web.py:2319
+#: recruiting/views/web.py:2320
 msgid "recruiterStatusRecruiterStatusList"
 msgstr "Recruiter Status List"
 
-#: recruiting/views/web.py:2330
+#: recruiting/views/web.py:2331
 #, python-format
-msgid "Link \"%(link_str)s\" deleted successfully."
-msgstr ""
+msgid "employersLink \"%(link_str)s\" deleted successfully."
+msgstr "Link \"%(link_str)s\" deleted successfully."
 
-#: recruiting/views/web.py:2340
-msgid "You do not have permission to delete this link."
-msgstr ""
+#: recruiting/views/web.py:2341
+msgid "employersYouDoNotHavePermissionToDeleteThisLink"
+msgstr "You do not have permission to delete this link."
 
-#: recruiting/views/web.py:2452
+#: recruiting/views/web.py:2453
 msgid "roleEmploymentLocationEmploymentLocationUpdatedSuccessfully"
 msgstr "Employment location updated successfully."
 
-#: recruiting/views/web.py:2455
+#: recruiting/views/web.py:2456
 msgid "roleEmploymentLocationThereWasAnErrorUpdatingTheEmploymentLocation"
 msgstr "There was an error updating the employment location."
 
-#: recruiting/views/web.py:2463
+#: recruiting/views/web.py:2464
 msgid "roleEmploymentLocationEmploymentLocationDeletedSuccessfully"
 msgstr "Employment location deleted successfully."
 
-#: recruiting/views/web.py:2466
+#: recruiting/views/web.py:2467
 #, python-format
 msgid "roleEmploymentLocationErrorDeletingEmploymentLocation: %(error)s"
 msgstr "Error deleting employment location: %(error)s"
 
-#: recruiting/views/web.py:2475
+#: recruiting/views/web.py:2476
 msgid "joDetailsHousingInfoHousingInformationUpdatedSuccessfully"
 msgstr "Housing information updated successfully."
 
-#: recruiting/views/web.py:2478
+#: recruiting/views/web.py:2479
 msgid "joDetailsHousingInfoThereWasAnErrorUpdatingTheHousingInformation"
 msgstr "There was an error updating the housing information."
 
-#: recruiting/views/web.py:2488
+#: recruiting/views/web.py:2489
 msgid "joDetailsHousingInfoHousingInformationDeletedSuccessfully"
 msgstr "Housing information deleted successfully."
 
-#: recruiting/views/web.py:2491
+#: recruiting/views/web.py:2492
 #, python-format
 msgid "joDetailsHousingInfoErrorDeletingHousingInformation: %(error)s"
 msgstr "Error deleting housing information: %(error)s"
 
-#: recruiting/views/web.py:2501
+#: recruiting/views/web.py:2502
 msgid "joDetailsMealsMealProvisionUpdatedSuccessfully"
 msgstr "Meal provision information updated successfully."
 
-#: recruiting/views/web.py:2504
+#: recruiting/views/web.py:2505
 msgid "joDetailsMealsThereWasAnErrorUpdatingTheMealProvision"
 msgstr "There was an error updating the meal provision."
 
-#: recruiting/views/web.py:2514
+#: recruiting/views/web.py:2515
 msgid "joDetailsMealsMealProvisionDeletedSuccessfully"
 msgstr "Meal provision deleted successfully."
 
-#: recruiting/views/web.py:2517
+#: recruiting/views/web.py:2518
 #, python-format
 msgid "joDetailsMealsErrorDeletingMealProvision: %(error)s"
 msgstr "Error deleting meal provision: %(error)s"
 
-#: recruiting/views/web.py:2530
+#: recruiting/views/web.py:2531
 msgid "joDetailsHoursHoursUpdatedSuccessfully"
 msgstr "Hours successfully updated."
 
-#: recruiting/views/web.py:2532
+#: recruiting/views/web.py:2533
 msgid "joDetailsHoursThereWasAnErrorUpdatingTheHours"
 msgstr "There was an error updating the hours."
 
-#: recruiting/views/web.py:2546
+#: recruiting/views/web.py:2547
 msgid "joDetailsHoursHoursDeletedSuccessfully"
 msgstr "Hours deleted successfully."
 
-#: recruiting/views/web.py:2548
+#: recruiting/views/web.py:2549
 #, python-format
 msgid "joDetailsHoursErrorDeletingHours: %(error)s"
 msgstr "Error deleting hours: %(error)s"
 
-#: recruiting/views/web.py:2563
+#: recruiting/views/web.py:2564
 msgid "joDetailsWagesWagesUpdatedSuccessfully"
 msgstr "Wages updated successfully."
 
-#: recruiting/views/web.py:2565
+#: recruiting/views/web.py:2566
 msgid "joDetailsWagesThereWasAnErrorUpdatingTheWages"
 msgstr "There was an error updating the wages."
 
-#: recruiting/views/web.py:2577
+#: recruiting/views/web.py:2578
 msgid "joDetailsWagesWagesDeletedSuccessfully"
 msgstr "Wages deleted successfully."
 
-#: recruiting/views/web.py:2588
+#: recruiting/views/web.py:2589
 msgid "joDetailsQualificationsQualificationUpdatedSuccessfully"
 msgstr "Qualification updated successfully."
 
-#: recruiting/views/web.py:2591
+#: recruiting/views/web.py:2592
 msgid "joDetailsQualificationsThereWasAnErrorUpdatingTheQualification"
 msgstr "There was an error updating the qualification."
 
-#: recruiting/views/web.py:2599
+#: recruiting/views/web.py:2600
 msgid "joDetailsQualificationsQualificationDeletedSuccessfully"
 msgstr "Qualification deleted successfully."
 
@@ -4798,41 +4796,41 @@ msgstr "Workers"
 
 #: recruiting/views/workers.py:388
 #, python-format
-msgid "Worker \"%(worker_name)s\" EditedSuccessfully."
-msgstr ""
+msgid "workersListWorker \"%(worker_name)s\" EditedSuccessfully."
+msgstr "Worker \"%(worker_name)s\" edited successfully."
 
 #: recruiting/views/workers.py:397
-msgid "YouDoNotHavePermissionToEditThisWorker."
-msgstr ""
+msgid "workersListYouDoNotHavePermissionToEditThisWorker"
+msgstr "You do not have permission to edit this worker"
 
 #: recruiting/views/workers.py:432
 #, python-format
-msgid "Worker \"%(worker_name)s\" DeletedSuccessfully."
-msgstr ""
+msgid "workersListWorker \"%(worker_name)s\" DeletedSuccessfully"
+msgstr "Worker \"%(worker_name)s\" deleted successfully."
 
 #: recruiting/views/workers.py:442
-msgid "youDoNotHavePermissionToDeleteThisWorker."
-msgstr ""
+msgid "workersListYouDoNotHavePermissionToDeleteThisWorker"
+msgstr "You do not have permission to delete this worker"
 
 #: recruiting/views/workers.py:454 recruiting/views/workers.py:502
 msgid "workersMissingData.PleaseSelectWorkers,JobOrder,AndRole"
 msgstr "Missing data. Please select workers, job order, and role."
 
 #: recruiting/views/workers.py:481
-msgid "Successfully assigned: "
-msgstr ""
+msgid "workersListSuccessfully assigned: "
+msgstr "Successfully assigned: "
 
 #: recruiting/views/workers.py:483
-msgid "Already assigned: "
-msgstr ""
+msgid "workersListAlready assigned: "
+msgstr "Already assigned: "
 
 #: recruiting/views/workers.py:534
-msgid "Successfully sent offer to: "
-msgstr ""
+msgid "workersListSuccessfullySentOfferTo: "
+msgstr "Successfully sent offer to: "
 
 #: recruiting/views/workers.py:536
-msgid "Offer already sent to: "
-msgstr ""
+msgid "workersListOfferAlreadySentTo: "
+msgstr "Offer already sent to: "
 
 #: recruiting/views/workers.py:695
 msgid "workerDetailsHome"
@@ -4843,22 +4841,22 @@ msgid "workerDetailsWorkers"
 msgstr "Workers"
 
 #: recruiting/views/workers.py:716
-msgid "User preference updated successfully."
-msgstr ""
+msgid "workersListUserPreferenceUpdatedSuccessfully"
+msgstr "User preference updated successfully."
 
 #: recruiting/views/workers.py:733
 #, python-format
-msgid "Preference with key '%(key)s' not found."
-msgstr ""
+msgid "workersListPreference with key '%(key)s' not found."
+msgstr "Preference with key '%(key)s' not found."
 
 #: recruiting/views/workers.py:739
 #, python-format
-msgid "Preference \"%(key)s\" deleted successfully."
-msgstr ""
+msgid "workersListPreference \"%(key)s\" deleted successfully."
+msgstr "Preference \"%(key)s\" deleted successfully."
 
 #: recruiting/views/workers.py:749
-msgid "You do not have permission to delete this preference."
-msgstr ""
+msgid "workersListNoPermission"
+msgstr "You do not have permission to delete this preference."
 
 #: recruiting/views/workers.py:1014
 msgid "documentsUploadedFor"
@@ -4873,16 +4871,16 @@ msgid "userPreferencesSavedSuccessfully."
 msgstr "User preferences saved successfully."
 
 #: recruiting/views/workers.py:1297
-msgid "userPreferencesUpdatedSuccessfully."
-msgstr ""
+msgid "workersListUserPreferencesUpdatedSuccessfully"
+msgstr "User preference updated successfully"
 
 #: recruiting/views/workers.py:1383
-msgid "Documents updated successfully."
-msgstr ""
+msgid "workersListDocumentsUpdatedSuccessfully"
+msgstr "Documents updated successfully."
 
 #: recruiting/views/workers.py:1394
-msgid "All information related to the worker has been deleted."
-msgstr ""
+msgid "workersListAllInformationDeleted"
+msgstr "All information related to the worker has been deleted."
 
 #: theme/forms.py:48
 msgid "oilPalmFruit"
@@ -5986,9 +5984,6 @@ msgstr "You have successfully logged in."
 
 #~ msgid "Job Order Details"
 #~ msgstr "Edit"
-
-#~ msgid "addWorkerWorkerCreatedSuccessfully"
-#~ msgstr "Worker created successfully."
 
 #~ msgid "manageUsersEmployersTableTitle"
 #~ msgstr "Employers"

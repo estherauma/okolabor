@@ -545,7 +545,7 @@ class DeleteAssignedOrganizationView(View):
             employer_org=employer,
             recruiter_org=recruiter_org
         ).delete()
-        messages.success(self.request, _('employerRecruiterDeletedSuccessfully'))
+        messages.success(self.request, _('employerAminListEmployerRecruiterDeletedSuccessfully'))
         return redirect('recruiting_web:employer_detail', pk=employer.id)
 
 
@@ -558,7 +558,7 @@ class DeleteEmployerOrganizationFromRecruiterView(View):
             recruiter_org=recruiter_org,
             employer_org=employer_org
         ).delete()
-        messages.success(self.request, _('employerRecruiterDeletedSuccessfully'))
+        messages.success(self.request, _('employerAminListEmployerRecruiterDeletedSuccessfully'))
 
         return redirect('recruiting_web:recruiter_org_detail', pk=recruiter_org.id)
 
@@ -605,7 +605,7 @@ class WorkRequestEditView(LoginRequiredMixin, View):
         form = WorkRequestForm(request.POST, instance=work_request)
         if form.is_valid():
             form.save()
-            messages.success(request, _('WorkRequestEditedSuccessfully'))
+            messages.success(request, _('jobOrderListWorkRequestEditedSuccessfully'))
             return redirect('recruiting_web:workrequest_detail', pk=work_request.pk)
         else:
             for field, errors in form.errors.items():
@@ -999,8 +999,9 @@ class CopyWorkersView(View):
         status = request.POST.get('status', 'assigned')
 
         if not worker_ids or not work_request_id or not role_id:
-            messages.error(request, _('Invalid request, missing data'))
-            return JsonResponse({'success': False, 'response': _('Invalid request, missing data')}, status=400)
+            message = _('workersListInvalidRequestMissingData')
+            messages.error(request, message)
+            return JsonResponse({'success': False, 'response': message}, status=400)
 
         work_request = get_object_or_404(WorkRequests, id=work_request_id)
         role = get_object_or_404(Role, id=role_id)
@@ -1017,12 +1018,12 @@ class CopyWorkersView(View):
                 work_assignment.status = status
                 work_assignment.save()
 
-            success_message = _('Workers assigned successfully!')
+            success_message = _('workersListWorkersAssignedSuccessfully')
             messages.success(request, success_message)
             return JsonResponse({'success': True, 'response': success_message})
 
         except Exception as e:
-            error_message = _('An error occurred: ') + str(e)
+            error_message = _('workersListAn Error Occurred: ') + str(e)
             messages.error(request, error_message)
             return JsonResponse({'success': False, 'response': error_message}, status=500)
 
@@ -1139,7 +1140,7 @@ class OfferSendWorkerView(View):
                 title=_("workRequestAddNotificationTitle"),
                 message=_("workRequestAddNotificationBody")
             )
-        messages.success(request, _("OfferSentSuccessfully."))
+        messages.success(request, _("workersListOfferSentSuccessfully"))
 
         if user.push_notification_token:
             title = str(_("workRequestAddNotificationTitle"))
@@ -2327,7 +2328,7 @@ class EmployerRecruiterOrgLinkDeleteView(LoginRequiredMixin, View):
         if request.user.groups.filter(name='admin').exists():
             link_str = str(link)
             link.delete(user=request.user)
-            messages.success(request, _('Link "%(link_str)s" deleted successfully.') % {'link_str': link_str})
+            messages.success(request, _('employersLink "%(link_str)s" deleted successfully.') % {'link_str': link_str})
 
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
@@ -2337,7 +2338,7 @@ class EmployerRecruiterOrgLinkDeleteView(LoginRequiredMixin, View):
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
 
-            return HttpResponseForbidden(_("You do not have permission to delete this link."))
+            return HttpResponseForbidden(_("employersYouDoNotHavePermissionToDeleteThisLink"))
 
 
 class SummaryViews(View):
