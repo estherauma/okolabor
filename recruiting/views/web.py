@@ -1077,9 +1077,9 @@ class RemoveRecruiterFromEmployerView(LoginRequiredMixin, View):
         num_deleted, deleted_info = EmployerRecruiter.objects.filter(employer=employer, recruiter=recruiter).delete()
 
         if num_deleted > 0:
-            messages.success(request, _("recruiterAdminListRecruiter {email} removed from {employer}.").format(email=recruiter.email, employer=employer.name))
+            messages.success(request, _("Recruiter {email} removed from {employer}.").format(email=recruiter.email, employer=employer.name))
         else:
-            messages.info(request, _("recruiterAdminListRecruiter {email} was already removed from {employer}.").format(email=recruiter.email, employer=employer.name))
+            messages.info(request, _("Recruiter {email} was already removed from {employer}.").format(email=recruiter.email, employer=employer.name))
 
         return redirect('recruiting_web:recruiter_list')
 
