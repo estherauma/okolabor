@@ -1060,7 +1060,7 @@ class AddRecruiterToEmployerView(LoginRequiredMixin, View):
         if created:
             messages.success(request, _("recruiterAdminListRecruiter {email} assigned to {employer}.").format(email=recruiter.email, employer=employer.name))
         else:
-            messages.info(request, _("recruiterAdminListRecruiter {email} is already assigned to {employer}.").format(email=recruiter.email, employer=employer.name))
+            messages.info(request, _("Recruiter {email} is already assigned to {employer}.").format(email=recruiter.email, employer=employer.name))
 
         return redirect('recruiting_web:recruiter_list')
 
