@@ -14,7 +14,7 @@ from recruiting.views.web import (
     AcceptRecruiterView,RejectRecruiterView,
     RemoveWorkerFromAssignmentView,UpdateStatusView,
     ContactWorkRequestsView,AssignEmployerContactView,
-    AddWorkersWorkRequests,ShowWorkerDetails,AddToShortlistView,
+    ShowWorkerDetails,AddToShortlistView,
     UpdateWorkerStatusView,CancelOfferView,RecruiterListViewInAdmin,
     AssignEmployersToRecruiterOrgView,SummaryViews,RecruiterDetailView,
     GetRolesView,CopyWorkersView,EmployerDeleteView,EmployerEditView, 
@@ -67,9 +67,6 @@ urlpatterns = [
          SummaryViews.as_view(), 
          name='summary'),
 
-    path('job-order/<str:pk>/add-workers/<str:role_id>/',
-          AddWorkersWorkRequests.as_view(),
-          name='work_request_add_workers'),
     path('get_roles/', 
          GetRolesView.as_view(), 
          name='get_roles'),

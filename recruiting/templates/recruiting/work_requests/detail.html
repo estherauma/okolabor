@@ -9,61 +9,78 @@
 {% block body %}
 <div class="row">
   <!-- left hand side -->
-  <div class="col-md-8">
+  <div class="col-md-9">
     <!-- Job order overview card -->
     <div class="card">
-    <div class="card-header" style="background-color: #7DBF96;">
-      <div class="card-title">
-      <h3 class="card-title text-white">
-        {% translate "jobOrderDetailsRequestOverview" %}
-      </h3>
+      <div class="card-header" style="background-color: #7DBF96;">
+        <div class="card-title">
+          <h3 class="card-title text-white">
+            {% translate "jobOrderDetailsRequestOverview" %}
+          </h3>
+        </div>
       </div>
-    </div>
-    <div class="card-body">
-      <h5>
-      <strong>
-        {% translate "jobOrderDetailsEmployer" %}
-      </strong>
-      {{workrequest.employer}}
-      </h5>
-      {% comment %} <h6>
-      <strong>
-        {% translate "jobOrderDetailsRequirements" %}
-      </strong>
-      </h6> {% endcomment %}
-      <div class="table-responsive">
-      <table class="table border text-nowrap text-md-nowrap table-striped mg-b-0">
-        <thead>
-        <tr>
-          <th>
-          {% translate "jobOrderDetailsJobTitle" %}
-          </th>
-          <th>
-          {% translate "jobOrderDetailsNumberOfWorkersRequired" %}
-          </th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for role in roles %}
-        <tr>
-          <td>
-          {{ role.title }}
-          </td>
-          <td>
-          {{ role.number_of_required_workers }}
-          </td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="2">
-          {% translate "jobOrderDetailsNoRolesAvailableForThisWorkRequest" %}
-          </td>
-        </tr>
-        {% endfor %}
-        </tbody>
-      </table>
+      <div class="card-body">
+        <h5><strong>{% translate "jobOrderDetailsEmployer" %}</strong>
+          {{workrequest.employer}}
+        </h5>
+      
+        <div class="table-responsive">
+          <table class="table border text-nowrap text-md-nowrap table-striped mg-b-0">
+            <thead>
+              <tr>
+                <th>
+                  {% translate "jobOrderDetailsJobTitle" %}
+                </th>
+                <th>
+                  {% translate "jobOrderDetailsNumberOfWorkersRequired" %}
+                </th>
+                <th>
+                  {% translate "jobOrderDetailsShortlist" %}
+                </th>
+                <th>
+                  {% translate "jobOrderDetailsOfferSentPending" %}
+                </th>
+                <th>
+                  {% translate "jobOrderDetailsConfirmed" %}
+                </th>
+                <th>
+                  {% translate "jobOrderDetailsRejected" %}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for role in roles %}
+              <tr>
+                <td>
+                  {{ role.title }}
+                </td>
+                <td>
+                  {{ role.number_of_required_workers }}
+                </td>
+                <td>
+                  {{ role.shortlist_count }}
+                </td>
+                <td>
+                  {{ role.offersent_count }}
+                </td>
+                <td>
+                  {{ role.confirmed_count }}
+                </td>
+                <td>
+                  {{ role.rejected_count }}
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="2">
+                  {% translate "jobOrderDetailsNoRolesAvailableForThisWorkRequest" %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
     </div>
     <!-- End request overview card -->
 
@@ -88,7 +105,7 @@
       </div>
       <div class="card-body">
         <div class="accordion" id="rolesAccordion">
-        {% for role in workrequest.roles.all %}
+        {% for role in  workrequest.roles.all %}
         <div class="accordion-item mb-2 ">
           <div class="d-flex align-items-center ">
             <div class="d-flex col-11 col-md-9 align-items-center">
@@ -108,7 +125,7 @@
                 <p>
                   <span class="job-title ">{{ role.title }}</span>
       
-                  <a href="{% url 'recruiting_web:work_request_add_workers' pk=workrequest.id role_id=role.id %}?type_sector={{ role.work_type|urlencode }}{% if role.work_type == 'animals' %}&dynamic_field_1={{ role.work_type_detail.animal_types|default:''|join:','|urlencode }}&dynamic_field_2={{ role.work_type_detail.responsibilities_types|default:''|join:','|urlencode }}{% elif role.work_type == 'crop_and_horticulture' %}&dynamic_field_1={{ role.work_type_detail.crop_types|default:''|join:','|urlencode }}&dynamic_field_2={{ role.work_type_detail.crop_job_types|default:''|join:','|urlencode }}{% elif role.work_type == 'mechanics' %}&dynamic_field_1={{ role.work_type_detail.mechanic_job_types|default:''|join:','|urlencode }}{% elif role.work_type == 'worker_supervision__management' %}&dynamic_field_1={{ role.work_type_detail.supervision_jobs_types|default:''|join:','|urlencode }}{% endif %}">
+                  <a href="{% url 'recruiting_web:workers' %}?role={{role.id}}&work_request={{workrequest.id}} ">
                     <button class="btn btn-sm yellow-button">
                       {% translate "jobOrderDetailsAddWorkers" %}
                     </button>
@@ -927,80 +944,7 @@
       </div>
     </div>
   </div>
-  <!-- Right hand side -->
-  <div class="col-md-4">
-    <!-- work information card -->
-    <div class="card">
-      <div class="card-header" style="background-color: #7DBF96;">
-        <h3 class="card-title text-white">
-          {% translate "jobOrderDetailsWorkerInformation" %}
-        </h3>
-      </div>
-      <div class="card-body">
-        <div>
-          <div class="d-flex justify-content-between">
-            <div><strong>{% translate "jobOrderDetailsShortlist" %}</strong></div>
-            <div><strong>{{ total_shortlist_count }}</strong></div>
-          </div>
-          <ul>
-            {% for role in roles %}
-            <div class="d-flex justify-content-between">
-              <div>
-                <a href="{% url 'recruiting_web:summary' pk=workrequest.id role_id=role.id %}?tab=shortlist"
-                  style="color:rgb(106, 192, 139);">
-                  {{ role.title }}
-                </a>
-              </div>
-              <div>{{ worker_summary.assigned|get:role.title }}</div>
-            </div>
-            {% endfor %}
-          </ul>
-        </div>
-
-        <div>
-          <div class="d-flex justify-content-between">
-            <div><strong>{% translate "jobOrderDetailsOfferSentPending" %}</strong></div>
-            <div><strong>{{ total_offersent_count }}</strong></div>
-          </div>
-          <ul>
-            {% for role in roles %}
-            <li>
-              <div class="d-flex justify-content-between">
-                <div>
-                  <a href="{% url 'recruiting_web:summary' pk=workrequest.id role_id=role.id %}?tab=offersent"
-                    style="color:rgb(106, 192, 139);">
-                    {{ role.title }}
-                  </a>
-                </div>
-                <div>{{ worker_summary.offersent|get:role.title }}</div>
-              </div>
-            </li>
-            {% endfor %}
-          </ul>
-        </div>
-
-        <div>
-          <div class="d-flex justify-content-between">
-            <div><strong>{% translate "jobOrderDetailsConfirmed" %}</strong></div>
-            <div><strong>{{ total_confirmed_count }}</strong></div>
-          </div>
-          <ul>
-            {% for role in roles %}
-            <div class="d-flex justify-content-between">
-              <div>
-                <a href="{% url 'recruiting_web:summary' pk=workrequest.id role_id=role.id %}?tab=confirmed"
-                  style="color:rgb(106, 192, 139);">
-                  {{ role.title }}
-                </a>
-              </div>
-              <div>{{ worker_summary.confirmed|get:role.title }}</div>
-            </div>
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
-    </div>
- </div>
+  
 </div>
 
 {% endblock body %}

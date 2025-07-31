@@ -260,8 +260,13 @@
                             
                                     <select class="form-select form-select-sm" id="modal_work_request" name="work_request">
                                         <option style="width: 157px;" value="">{% translate "workersListSelectAWorkRequest" %}</option>
+                                        {% if selected_work_request %}
+                                            <option style="width: 157px;" value="{{ selected_work_request.id }}" selected>{{ selected_work_request.name }}</option>
+                                        {% endif %}
                                         {% for work_request in work_requests %}
-                                            <option style="width: 157px;" value="{{ work_request.id }}">{{ work_request.name }}</option>
+                                            {% if not selected_work_request or work_request.id != selected_work_request.id %}
+                                                <option style="width: 157px;" value="{{ work_request.id }}">{{ work_request.name }}</option>
+                                            {% endif %}
                                         {% endfor %}
                                     </select>
                                 
@@ -274,8 +279,22 @@
                                 </label>
                                 <select class="form-control" id="modal_role" name="role">
                                     <option value="">{% translate "workersListSelectARole" %}</option>
+                                    {% if selected_role %}
+                                        <option value="{{ selected_role.id }}" selected>{{ selected_role.name }}</option>
+                                    {% endif %}
+                                    {% for role in roles %}
+                                        {% if not selected_role or role.id != selected_role.id %}
+                                            <option value="{{ role.id }}">{{ role.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
                                 </select>
                             </div>
+                            <!-- Attempt to set the values -->
+                            <div id="role-workrequest-data"
+                                data-work-request="{{ selected_work_request.id|default:'' }}"
+                                data-role="{{ selected_role.id|default:'' }}">
+                            </div>
+                            
                         </div>
 
                     </div>
@@ -324,6 +343,7 @@
 <script src="{% static ''%}assets/js/table-data.js"></script>
 <script src="{% static ''%}assets/js/worker-search.js"></script>
 <script src="{% static ''%}assets/js/table-sorting.js"></script>
+<script src="{% static ''%}assets/js/set-default-role-and-workrequest.js"></script>
 <script src="{% static 'assets/js/worker-get-roles.js'%}"></script>
 <script src="{% static ''%}assets/js/dynamic_filter.js"></script>
 <script src="{% static 'assets/js/cancel-offer.js' %}"></script>
@@ -506,6 +526,8 @@ function updateCollapseSummary() {
             else if (max) formattedValue = `Max ${max}`;
         }
 
+        
+
         allSelectedTextsSet.add(`${label}: ${formattedValue}`);
     }
 
@@ -595,7 +617,13 @@ function updateCollapseSummary() {
         allSelectedTextsSet.forEach(text => {
             const pill = document.createElement("span");
             pill.textContent = text;
-            pill.style.display = "inline-block";
+            // If text starts with Role: or Work Request:, display none
+            // This is to hide the role and wr from the pill as there's a form for them
+            if (text.startsWith("Role:") || text.startsWith("Work Request:")) {
+                pill.style.display = "none";
+            } else {
+                pill.style.display = "inline-block";
+            }
             pill.style.padding = "4px 10px";
             pill.style.margin = "2px 4px";
             pill.style.fontSize = "0.75rem";
@@ -858,4 +886,3 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 {% endblock scripts %}
-
