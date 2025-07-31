@@ -164,7 +164,7 @@ class EmployerDeleteView(LoginRequiredMixin, View):
             employer_name = employer.name
             employer.delete(user=user)
             
-            messages.success(request, _('Employer "%(employer_name)s" DeletedSuccessfully.') % {'employer_name': employer_name})
+            messages.success(request, _('employersEmployer "%(employer_name)s" DeletedSuccessfully') % {'employer_name': employer_name})
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
             return redirect('recruiting_web:employer_list')
@@ -172,7 +172,7 @@ class EmployerDeleteView(LoginRequiredMixin, View):
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
-            return HttpResponseForbidden(_("youDoNotHavePermissionToDeleteThisEmployer."))
+            return HttpResponseForbidden(_("employersYouDoNotHavePermissionToDeleteThisEmployer"))
 
 class EmployerEditView(LoginRequiredMixin, View):
     def post(self, request, pk):
@@ -192,14 +192,14 @@ class EmployerEditView(LoginRequiredMixin, View):
             employer.description = request.POST.get('description')
             employer.save()
 
-            messages.success(request, _('Employer "%(employer_name)s" Edited Successfully.') % {'employer_name': employer.name})
+            messages.success(request, _('employersEmployer "%(employer_name)s" Edited Successfully.') % {'employer_name': employer.name})
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
             return redirect('recruiting_web:employer_list')
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
-            return HttpResponseForbidden(_("You do not have permission to edit this employer."))
+            return HttpResponseForbidden(_("employersYouDoNotHavePermissionToEditThisEmployer"))
 
 class RecruiterListViewInAdmin(View):
     def get(self, request):
@@ -268,7 +268,7 @@ class RecruiterDeleteView(LoginRequiredMixin, View):
         if user.groups.filter(name='admin').exists():
             recruiter_name = recruiter.name
             recruiter.delete(user=user)
-            messages.success(request, _('Recruiter "%(recruiter_name)s" deletedSuccessfully.') % {'recruiter_name': recruiter_name})
+            messages.success(request, _('recruiterAdminListRecruiter "%(recruiter_name)s" deletedSuccessfully.') % {'recruiter_name': recruiter_name})
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
             return redirect('recruiting_web:recruiter_admin_list')
@@ -276,7 +276,7 @@ class RecruiterDeleteView(LoginRequiredMixin, View):
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
-            return HttpResponseForbidden(_("youDoNotHavePermissionToDeleteThisRecruiter."))
+            return HttpResponseForbidden(_("recruiterAdminListYouDoNotHavePermissionToDeleteThisRecruiter"))
 
 class RecruiterEditView(LoginRequiredMixin, View):
     def post(self, request, pk):
@@ -297,14 +297,14 @@ class RecruiterEditView(LoginRequiredMixin, View):
             recruiter.description = request.POST.get('description')
             recruiter.save()
 
-            messages.success(request, _('Recruiter "%(recruiter_name)s" editedSuccessfully.') % {'recruiter_name': recruiter.name})
+            messages.success(request, _('recruiterAdminListRecruiter "%(recruiter_name)s" editedSuccessfully.') % {'recruiter_name': recruiter.name})
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
             return redirect('recruiting_web:recruiter_admin_list')
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
-            return HttpResponseForbidden(_("You do not have permission to edit this recruiter."))
+            return HttpResponseForbidden(_("recruiterAdminListYouDoNotHavePermissionToEditThisRecruiter"))
 
 class EmployerCreateView(CreateView):
     model = Organization
@@ -352,7 +352,7 @@ class EmployerCreateView(CreateView):
                     }
                 )
 
-        messages.success(self.request, _('Organization created successfully'))
+        messages.success(self.request, _('employerAminListOrganizationCreatedSuccessfully'))
         self.object = org
         return redirect(self.get_success_url(org.pk))
 
@@ -623,7 +623,7 @@ class WorkRequestDeleteView(LoginRequiredMixin, View):
             work_request.hard_delete()
             messages.success(
                 request,
-                _('WorkRequest "%(work_request_name)s" successfully deleted.') % {'work_request_name': work_request_name}
+                _('jobOrderList "%(work_request_name)s" successfully deleted.') % {'work_request_name': work_request_name}
             )
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
@@ -631,7 +631,7 @@ class WorkRequestDeleteView(LoginRequiredMixin, View):
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
-            return HttpResponseForbidden(_("You do not have permission to delete this job order."))
+            return HttpResponseForbidden(_("jobOrderListYouDoNotHavePermissionToDeleteThisJobOrder"))
 
 
 class AddWorkersWorkRequests(View):
@@ -1410,9 +1410,9 @@ class AddRecruiterToEmployerView(LoginRequiredMixin, View):
         employer_recruiter, created = EmployerRecruiter.objects.get_or_create(employer=employer, recruiter=recruiter)
 
         if created:
-            messages.success(request, _("Recruiter {email} assigned to {employer}.").format(email=recruiter.email, employer=employer.name))
+            messages.success(request, _("recruiterAdminListRecruiter {email} assigned to {employer}.").format(email=recruiter.email, employer=employer.name))
         else:
-            messages.info(request, _("Recruiter {email} is already assigned to {employer}.").format(email=recruiter.email, employer=employer.name))
+            messages.info(request, _("recruiterAdminListRecruiter {email} is already assigned to {employer}.").format(email=recruiter.email, employer=employer.name))
 
         return redirect('recruiting_web:recruiter_list')
 
@@ -1429,9 +1429,9 @@ class RemoveRecruiterFromEmployerView(LoginRequiredMixin, View):
         num_deleted, deleted_info = EmployerRecruiter.objects.filter(employer=employer, recruiter=recruiter).delete()
 
         if num_deleted > 0:
-            messages.success(request, _("Recruiter {email} removed from {employer}.").format(email=recruiter.email, employer=employer.name))
+            messages.success(request, _("recruiterAdminListRecruiter {email} removed from {employer}.").format(email=recruiter.email, employer=employer.name))
         else:
-            messages.info(request, _("Recruiter {email} was already removed from {employer}.").format(email=recruiter.email, employer=employer.name))
+            messages.info(request, _("recruiterAdminListRecruiter {email} was already removed from {employer}.").format(email=recruiter.email, employer=employer.name))
 
         return redirect('recruiting_web:recruiter_list')
 
@@ -1741,7 +1741,7 @@ class OkoMessageCreateView(CreateView):
         return context
 
     def form_valid(self, form):
-        messages.success(self.request, _('messageCreatedSuccessfully'))
+        messages.success(self.request, _('createMessageMessageCreatedSuccessfully'))
         return super(OkoMessageCreateView, self).form_valid(form)
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
@@ -1944,7 +1944,7 @@ class RemoveWorkerFromAssignmentView(View):
             assignment.status = 'Deleted'
             assignment.save()
 
-            messages.success(request, _("WorkerAssignmentSuccessfullyMarkedAsDeleted."))
+            messages.success(request, _("workersListWorkerAssignmentSuccessfullyMarkedAsDeleted"))
         
         except Exception as e:
             messages.error(request, f"errorRemovingWorker_{str(e)}")
@@ -1967,14 +1967,17 @@ class UpdateStatusView(View):
                     messages.success(request, message)
                     return JsonResponse({'success': True, 'message': message})
                 else:
-                    messages.error(request, _("noWorkRequestsFoundToUpdate."))
-                    return JsonResponse({'success': False, 'message': 'noWorkRequestsFoundtoUpdate.'})
-            messages.error(request, _("invalidDataProvided."))
-            return JsonResponse({'success': False, 'message': 'invalidDataProvided.'})
+                    message = _("jobOrderListNoWorkRequestsFoundToUpdate")
+                    messages.error(request, message)
+                    return JsonResponse({'success': False, 'message': message})
+            message = _("jobOrderListInvalidDataProvided")
+            messages.error(request, message)
+            return JsonResponse({'success': False, 'message': message})
 
         except json.JSONDecodeError:
-            messages.error(request, "invalidJSONData.")
-            return JsonResponse({'success': False, 'message': 'invalidJSONData.'})
+            message = _("jobOrderListInvalidJSONData")
+            messages.error(request, message)
+            return JsonResponse({'success': False, 'message': message})
 
 
 class ContactWorkRequestsView(View):
@@ -2011,7 +2014,7 @@ class AssignEmployerContactView(View):
             if not employer_id or not user_id:
                 return JsonResponse({
                     "success": False,
-                    "error": _("Employer ID and User ID are required.")
+                    "error": _("employersEmployerIDAndUserIDAreRequired")
                 }, status=400)
 
             employer = get_object_or_404(Organization, id=employer_id)
@@ -2020,25 +2023,25 @@ class AssignEmployerContactView(View):
             if employer in user.organizations.all():
                 return JsonResponse({
                     "success": False,
-                    "error": _("User is already assigned to this organization.")
+                    "error": _("employersUserIsAlreadyAssignedToThisOrganization")
                 }, status=400)
 
             user.organizations.add(employer)
 
             return JsonResponse({
                 "success": True,
-                "message": _("Organization assigned successfully to user.")
+                "message": _("employersOrganizationAssignedSuccessfullyToUser")
             })
 
         except json.JSONDecodeError:
             return JsonResponse({
                 "success": False,
-                "error": _("Invalid JSON payload.")
+                "error": _("employersInvalidJSONPayload")
             }, status=400)
         except Exception as e:
             return JsonResponse({
                 "success": False,
-                "error": _("Failed to assign organization: ") + str(e)
+                "error": _("employersFailedToAssignOrganization: ") + str(e)
             }, status=500)
 
     def get(self, request, *args, **kwargs):
@@ -2103,7 +2106,7 @@ class AssignEmployersToRecruiterOrgView(View):
             if already_assigned:
                 messages.warning(
                     request,
-                    _("The following employers are already assigned: {}").format(', '.join(already_assigned))
+                    _("employersTheFollowingEmployersAre AlreadyAssigned: {}").format(', '.join(already_assigned))
                 )
 
             return JsonResponse({
@@ -2270,13 +2273,13 @@ def update_employer_recruiter_status(request):
 
         if action == 'accept':
             relation.status = 'accepted'
-            msg = _('You have accepted the recruiter assignment.')
+            msg = 'You have accepted the recruiter assignment.'
             subject = "Recruiter Assignment Accepted"
             message = f"Your organization '{employer_org.name}' has successfully accepted the assignment from '{recruiter_org.name}'."
 
         elif action == 'reject':
             relation.status = 'rejected'
-            msg = _('You have rejected the recruiter assignment.')
+            msg = 'You have rejected the recruiter assignment.'
             subject = "Recruiter Assignment Rejected"
             message = f"Your organization '{employer_org.name}' has rejected the assignment from '{recruiter_org.name}'."
 
