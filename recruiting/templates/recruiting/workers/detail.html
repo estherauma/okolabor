@@ -31,9 +31,7 @@
       </h4>
       {% endif %}
       <span class="gray-color ms-3">
-        ({% blocktrans with percent=profile_completion|floatformat:0 %}
-        Profile {{ percent }}% Complete
-        {% endblocktrans %})
+        Profile {{ profile_completion|floatformat:0 }}% Complete
       </span>
     </span>
   </div>
@@ -259,7 +257,7 @@
                 <div class="modal-content shadow-lg border-0">
                   <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title" id="editExperienceModalLabel{{ exp.id }}">
-                      {% translate 'EditWorkExperience' %}
+                      {% translate 'workerDetailsEditWorkExperience' %}
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                       aria-label="{% translate 'workerDetailsClose'%}"></button>

@@ -861,13 +861,6 @@ class RecruiterAdminCreateForm(forms.ModelForm):
         model = User
         fields = ['curp', 'first_name', 'last_name', 'email']
 
-        labels = {
-            'curp': _("curp"),
-            'first_name': _("firstName"),
-            'last_name': _("lastName"),
-            'email': _("email"),  
-        }
-
         widgets = {
             'curp': forms.TextInput(attrs={'class': 'form-control'}),
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
