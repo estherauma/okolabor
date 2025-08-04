@@ -23,7 +23,7 @@ from django.urls import reverse
 from django.core.mail import send_mail
 from django.conf import settings
 from django.utils.http import urlsafe_base64_decode
-from django.utils import timezone
+from django.utils import timezone,translation
 from django.utils.encoding import force_str
 from django.http import HttpResponseRedirect,HttpResponseForbidden
 from django.core.exceptions import ObjectDoesNotExist
@@ -1134,23 +1134,34 @@ class OfferSendWorkerView(View):
                 role_id=role_id,
                 status='offersent'
             )
-        UserNotification.objects.create(
-                user=user,
-                title=_("workRequestAddNotificationTitle"),
-                message=_("workRequestAddNotificationBody")
+            
+        current_lang = translation.get_language()
+        try:
+            translation.activate(user.language)
+            title = _("workRequestAddNotificationTitle")
+            body = _("workRequestAddNotificationBody")
+            UserNotification.objects.create(
+                    user=user,
+                    title= title,
+                    message= body
+                )
+        
+
+            if user.push_notification_token:
+                title = str(_("workRequestAddNotificationTitle"))
+                body = str(_("workRequestAddNotificationBody"))
+
+                send_push_notification(
+                    tokens=[user.push_notification_token],
+                    title=title,
+                    body=body,
+                    data={"type": "job_offer", "job_id": role_id},
             )
+                
+        finally:
+            translation.activate(current_lang)
+            
         messages.success(request, _("OfferSentSuccessfully."))
-
-        if user.push_notification_token:
-            title = str(_("workRequestAddNotificationTitle"))
-            body = str(_("workRequestAddNotificationBody"))
-
-            send_push_notification(
-                tokens=[user.push_notification_token],
-                title=title,
-                body=body,
-                data={"type": "job_offer", "job_id": role_id},
-            )
 
         return redirect('recruiting_web:worker_detail', pk=worker_id)
 
