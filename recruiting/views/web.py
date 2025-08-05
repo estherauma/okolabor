@@ -1276,20 +1276,19 @@ class RoleHousingCreateView(CreateView):
     def form_valid(self, form):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)
+        # If role has existing housing information, hard delete it
+        if role.housing_information and role.housing_information.deleted_at:
+            role.housing_information.hard_delete()
 
         # Prevent duplicate housing info
         if HousingInformation.objects.filter(role=role).exists():
             messages.warning(self.request, 'Housing information already added for this role.')
-            return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-                'pk': role.work_request.pk
-            }))
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
         form.instance.role = role
         self.object = form.save()
         messages.success(self.request, 'Housing information successfully added.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': role.work_request.pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
     def form_invalid(self, form):
         role_id = self.kwargs['pk']
@@ -1300,9 +1299,7 @@ class RoleHousingCreateView(CreateView):
             return redirect('recruiting_web:workrequest_list')
 
         messages.error(self.request, 'Failed to add housing information. Please correct the errors.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': work_request_pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_pk])}?open_role={role.id}')
 
 
 class RoleMealsCreateView(CreateView):
@@ -1312,20 +1309,19 @@ class RoleMealsCreateView(CreateView):
     def form_valid(self, form):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)
+        # If role has existing meal provision, hard delete it
+        if role.meal_provision and role.meal_provision.deleted_at:
+            role.meal_provision.hard_delete()
 
         # Check if MealProvision already exists for this role
         if MealProvision.objects.filter(role=role).exists():
             messages.warning(self.request, 'Meal Provision already added for this role.')
-            return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-                'pk': role.work_request.pk
-            }))
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
         form.instance.role = role
         self.object = form.save()
         messages.success(self.request, 'Meal Provision successfully added.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': role.work_request.pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
     def form_invalid(self, form):
         messages.error(self.request, 'Failed to add Meal Provision. Please correct the errors.')
@@ -1335,9 +1331,7 @@ class RoleMealsCreateView(CreateView):
         except Role.DoesNotExist:
             return redirect('recruiting_web:workrequest_list')
 
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': work_request_pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_pk])}?open_role={role.id}')
 
 
 class RecruiterTodoView(LoginRequiredMixin, View):
@@ -2108,10 +2102,10 @@ class EditHousingInformationView(View):
         if form.is_valid():
             form.save()
             messages.success(request, _('joDetailsHousingInfoHousingInformationUpdatedSuccessfully'))
-            return redirect('recruiting_web:workrequest_detail', pk=housing.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[housing.role.work_request.pk])}?open_role={housing.role.id}')
         else:
             messages.error(request, _('joDetailsHousingInfoThereWasAnErrorUpdatingTheHousingInformation'))
-            return redirect('recruiting_web:workrequest_detail', pk=housing.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[housing.role.work_request.pk])}?open_role={housing.role.id}')
 
 
 class DeleteHousingInformationView(View):
@@ -2121,10 +2115,10 @@ class DeleteHousingInformationView(View):
             work_request_pk = housing.role.work_request.pk
             housing.delete()
             messages.success(request, _('joDetailsHousingInfoHousingInformationDeletedSuccessfully'))
-            return redirect('recruiting_web:workrequest_detail', pk=work_request_pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_pk])}?open_role={housing.role.id}')
         except Exception as e:
             messages.error(request, _('joDetailsHousingInfoErrorDeletingHousingInformation: %(error)s') % {'error': str(e)})
-            return redirect('recruiting_web:workrequest_detail', pk=housing.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[housing.role.work_request.pk])}?open_role={housing.role.id}')
 
 class EditMealProvisionView(View):
     def post(self, request, pk):
@@ -2134,10 +2128,10 @@ class EditMealProvisionView(View):
         if form.is_valid():
             form.save()
             messages.success(request, _('joDetailsMealsMealProvisionUpdatedSuccessfully'))
-            return redirect('recruiting_web:workrequest_detail', pk=meal_provision.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[meal_provision.role.work_request.pk])}?open_role={meal_provision.role.id}')
         else:
             messages.error(request, _('joDetailsMealsThereWasAnErrorUpdatingTheMealProvision'))
-            return redirect('recruiting_web:workrequest_detail', pk=meal_provision.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[meal_provision.role.work_request.pk])}?open_role={meal_provision.role.id}')
 
 
 class DeleteMealProvisionView(View):
@@ -2147,10 +2141,10 @@ class DeleteMealProvisionView(View):
             work_request_pk = meal_provision.role.work_request.pk
             meal_provision.delete()
             messages.success(request, _('joDetailsMealsMealProvisionDeletedSuccessfully'))
-            return redirect('recruiting_web:workrequest_detail', pk=work_request_pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_pk])}?open_role={meal_provision.role.id}')
         except Exception as e:
             messages.error(request, _('joDetailsMealsErrorDeletingMealProvision: %(error)s') % {'error': str(e)})
-            return redirect('recruiting_web:workrequest_detail', pk=meal_provision.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[meal_provision.role.work_request.pk])}?open_role={meal_provision.role.id}')
 
 
 class EditRoleHoursView(View):

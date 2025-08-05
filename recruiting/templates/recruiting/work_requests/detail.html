@@ -283,7 +283,7 @@
 
             <!-- Delete Modal for EmploymentLocation -->
 
-            {% if role.housing_information %}
+            {% if role.meal_provision %}
             {% include "recruiting/work_requests/delete_mealprovision_modal.html" %}
             {% endif %}
 
@@ -807,7 +807,7 @@
                     {% translate "joDetailsHousingInfoHousingInformation" %}
                   </h5>
                   <!-- Add Hours Button -->
-                  {% if not role.housing_information %}
+                  {% if not role.housing_information or role.housing_information.deleted_at %}
                   <a class="btn btn-sm yellow-button" data-bs-toggle="modal" data-bs-target="#HousingModal{{ role.id }}">
                     {% translate "webCommonAdd" %}
                   </a>
@@ -828,7 +828,7 @@
                   </button>
                   {% endif %}
                 </div>
-                {% if role.housing_information %}
+                {% if role.housing_information and role.housing_information.deleted_at is None %}
                 <div class="details-row">
                   <label>
                     {% translate "joDetailsHousingInfoAddress" %}
@@ -867,9 +867,9 @@
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsHousingInfoAdditionalInformation" %}
+                    {% translate "joDetailsHousingInfoAdditionalInfo" %}
                   </label>
-                  <p>{{ role.housing_information.additional_information }}</p>
+                  <p>{{ role.housing_information.additional_info }}</p>
                 </div>
                 {% else %}
                 <p class="no-info">
@@ -884,7 +884,7 @@
                     {% translate "joDetailsMealsProvisionOfMeals" %}
                   </h5>
                   <!-- Add Hours Button -->
-                  {% if not role.meal_provision %}
+                  {% if not role.meal_provision or role.meal_provision.deleted_at %}
                   <a class="btn btn-sm yellow-button" data-bs-toggle="modal" data-bs-target="#MealsModal{{ role.id }}">
                     {% translate "webCommonAdd" %}
                   </a>
@@ -905,7 +905,7 @@
                   </button>
                   {% endif %}
                 </div>
-                {% if role.meal_provision %}
+                {% if role.meal_provision and role.meal_provision.deleted_at is  None %}
                 <div class="details-row">
                   <label>
                     {% translate "joDetailsMealsAreMealsProvided" %}
