@@ -875,7 +875,7 @@ class WorkRequestDetailView(View):
             }
         wages_form = {
             role.id: RoleWagesForm(instance=role.wages)
-            for role in roles_qs if hasattr(role, 'wages') and role.wages and role.wages.deleted_at is None 
+            for role in roles_qs_raw if hasattr(role, 'wages') and role.wages and role.wages.deleted_at is None 
         }  
         qualification_forms = {
             role.id: RoleQualificationForm(instance=role.qualifications)
@@ -1133,9 +1133,7 @@ class RoleHoursCreateView(CreateView):
         form.instance.role = role
         self.object = form.save()
         messages.success(self.request, 'Hours successfully added.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': role.work_request.pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
     def form_invalid(self, form):
         role_id = self.kwargs['pk']
@@ -1150,9 +1148,9 @@ class RoleHoursCreateView(CreateView):
             return redirect('recruiting_web:workrequest_list')
 
         messages.error(self.request, 'Failed to add hours. Please correct the errors.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': work_request_pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_pk])}?open_role={role.id}')
+    
+
 class RoleWagesCreateView(CreateView):
     model = Wages
     form_class = RoleWagesForm
@@ -1160,6 +1158,9 @@ class RoleWagesCreateView(CreateView):
     def form_valid(self, form):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)
+        # If role has existing wages, hard delete them
+        if role.wages and role.wages.deleted_at:
+            role.wages.hard_delete()
 
         # Check for existing wages
         if Wages.objects.filter(role=role).exists():
@@ -1171,9 +1172,8 @@ class RoleWagesCreateView(CreateView):
         form.instance.role = role  # assign manually
         self.object = form.save()
         messages.success(self.request, 'Wages successfully added.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': role.work_request.pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
+
 
     def form_invalid(self, form):
         messages.error(self.request, 'Failed to add wages. Please correct the errors.')
@@ -1184,9 +1184,8 @@ class RoleWagesCreateView(CreateView):
         except Role.DoesNotExist:
             return redirect('recruiting_web:workrequest_list')
 
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': work_request_pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_pk])}?open_role={role.id}')
+
 
 class RoleDeductionsCreateView(CreateView):
     model = Deduction
@@ -2201,7 +2200,7 @@ class EditRoleWagesView(View):
         wages = get_object_or_404(Wages, pk=pk)
         form = RoleWagesForm(request.POST, instance=wages)
 
-        work_request_id = request.POST.get('work_request_id', None)
+        work_request_id = request.POST.get('work_request_id', wages.role.work_request.id)
 
         if form.is_valid():
             form.save()
@@ -2210,7 +2209,7 @@ class EditRoleWagesView(View):
             messages.error(request, _('joDetailsWagesThereWasAnErrorUpdatingTheWages'))
 
         if work_request_id:
-            return redirect('recruiting_web:workrequest_detail', pk=work_request_id)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_id])}?open_role={wages.role.id}')
         else:
             return redirect('/')
 
@@ -2220,7 +2219,8 @@ class DeleteRoleWagesView(View):
         wages.deleted_at = timezone.now()
         wages.save()
         messages.success(request, _("joDetailsWagesWagesDeletedSuccessfully"))
-        return redirect('recruiting_web:workrequest_detail', pk=wages.role.work_request.pk)
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[wages.role.work_request.id])}?open_role={wages.role.id}')
+
 class EditRoleQualificationView(View):
     def post(self, request, pk):
         qualification = get_object_or_404(Qualification, pk=pk)
