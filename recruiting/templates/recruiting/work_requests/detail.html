@@ -134,13 +134,11 @@
               </div>
             </div>
             <!-- accordion collapse icon -->
-            <button aria-controls="collapse{{ forloop.counter }}" aria-expanded="false" class="accordion-button collapsed"
-              data-bs-target="#collapse{{ forloop.counter }}" data-bs-toggle="collapse" type="button"></button>
+            <button aria-controls="collapse{{ role.id }}" aria-expanded="false" class="accordion-button collapsed"
+              data-bs-target="#collapse{{ role.id }}" data-bs-toggle="collapse" type="button"></button>
           </div>
           {% include 'recruiting/work_requests/edit_role_modal.html'%}
 
-
-            {% for role in roles %}
 
       <!-- Modal -->
       <div class="modal fade" id="edithoursModal{{ role.id }}" tabindex="-1">
@@ -148,7 +146,9 @@
           <div class="modal-content">
             <form method="POST" action="{% url 'recruiting_web:edit-role-hours' role.hours.id %}">
               {% csrf_token %}
-              <div class="modal-header" style="background-color: #7DBF96;">
+              <!-- This is a hidden field to pass the work request ID to the view -->
+              <input type="hidden" name="work_request_id" value="{{ workrequest.id }}">
+              <div class="modal-header">
                 <h5 class="modal-title text-white">{% translate 'joDetailsHoursEditHours' %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
               </div>
@@ -179,14 +179,15 @@
           </div>
         </div>
       </div>
-    {% endfor %}
 
     <!-- Delete Modal -->
     <div class="modal fade" id="deletehoursModal{{ role.id }}" tabindex="-1">
         <div class="modal-dialog">
           <div class="modal-content">
-            <form method="POST" >
+            <form method="POST" action="{% url 'recruiting_web:delete-role-hours' role.hours.id %}">
               {% csrf_token %}
+              <!-- This is a hidden field to pass the work request ID to the view -->
+              <input type="hidden" name="work_request_id" value="{{ workrequest.id }}">
               <div class="modal-header" style="background-color: #7DBF96;">
                 <h5 class="modal-title text-white">{% translate 'joDetailsHoursDeleteHours' %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -358,7 +359,7 @@
 
 
             
-          <div aria-labelledby="heading{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#rolesAccordion" id="collapse{{ forloop.counter }}">
+          <div aria-labelledby="heading{{ role.id }}" class="accordion-collapse collapse" data-bs-parent="#rolesAccordion" id="collapse{{ role.id }}">
           <div class="accordion-body border-t-dotted-green">
             <div class="details-row">
              <label>
@@ -387,8 +388,7 @@
                   </h5>
                   <!-- <div class="d-flex align-items-center gap-2"> -->
                   <!-- Add Hours Button -->
-                  {% if not role.hours %}
-                
+                  {% if not role.hours or role.hours.deleted %}
                   <a class="btn btn-sm yellow-button" data-bs-toggle="modal" data-bs-target="#hoursModal{{ role.id }}">
                     {% translate "webCommonAdd" %}
                   </a>
@@ -409,7 +409,7 @@
                   </button>
                   {% endif %}
                 </div>
-                {% if role.hours %}
+                {% if role.hours and not role.hours.deleted %}
                 <div class="details-row">
                   <label>
                     {% translate "joDetailsHoursEstimatedWeeklyHours" %}
@@ -949,3 +949,25 @@
 </div>
 
 {% endblock body %}
+{% block scripts %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const params = new URLSearchParams(window.location.search);
+    const openRole = params.get('open_role');
+    if (openRole) {
+      const panel = document.getElementById('collapse' + openRole);
+      if (panel) {
+        new bootstrap.Collapse(panel, { toggle: true });
+
+        // Listen for collapse event to remove open_role from URL
+        panel.addEventListener('hidden.bs.collapse', function () {
+          params.delete('open_role');
+          const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+          window.history.replaceState({}, '', newUrl);
+        });
+      }
+    }
+  });
+</script>
+{% endblock scripts %}
+
