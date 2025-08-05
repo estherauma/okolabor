@@ -734,8 +734,7 @@
                     {% translate "joDetailsPlaceOfEmploymentPlaceOfEmploymentInformation" %}
                   </h5>
                   <!-- Add Hours Button -->
-                  {% if not role.employment_location %}
-                
+                  {% if not role.employment_location or role.employment_location.deleted_at %}
                   <a class="btn btn-sm yellow-button" data-bs-toggle="modal" data-bs-target="#EmploymentModal{{ role.id }}">
                     {% translate "webCommonAdd" %}
                   </a>
@@ -756,7 +755,7 @@
                   </button>
                   {% endif %}
                 </div>
-                {% if role.employment_location %}
+                {% if role.employment_location and role.employment_location.deleted_at is None %}
                 <div class="details-row">
                   <label>
                     {% translate "joDetailsPlaceOfEmploymentAddress" %}
@@ -773,7 +772,7 @@
                   <label>
                     {% translate "joDetailsPlaceOfEmploymentCountry" %}
                   </label>
-                  <p>{{ role.employment_location.country|default:"" }}</p>
+                  <p>{{ role.employment_location.county|default:"" }}</p>
                 </div>
                 <div class="details-row">
                   <label>
@@ -787,12 +786,12 @@
                   </label>
                   <p>{{ role.employment_location.postal_code|default:"" }}</p>
                 </div>
-                {% if role.employment_location.additional_information %}
+                {% if role.employment_location.additional_info %}
                 <div class="details-row">
                   <label>
                     {% translate "joDetailsPlaceOfEmploymentAdditionalInformation" %}
                   </label>
-                  <p>{{ role.employment_location.additional_information }}</p>
+                  <p>{{ role.employment_location.additional_info }}</p>
                 </div>
                 {% endif %}
                 {% else %}

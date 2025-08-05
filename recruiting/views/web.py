@@ -1245,19 +1245,18 @@ class RoleEmpLocationCreateView(CreateView):
     def form_valid(self, form):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)
+        # If role has existing employment location, hard delete it
+        if role.employment_location and role.employment_location.deleted_at:
+            role.employment_location.hard_delete()
 
         if EmploymentLocation.objects.filter(role=role).exists():
             messages.warning(self.request, 'Employment location already added for this role.')
-            return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-                'pk': role.work_request.pk
-            }))
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
         form.instance.role = role
         self.object = form.save()
         messages.success(self.request, 'Employment location successfully added.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': role.work_request.pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
     def form_invalid(self, form):
         role_id = self.kwargs['pk']
@@ -1268,9 +1267,7 @@ class RoleEmpLocationCreateView(CreateView):
             return redirect('recruiting_web:workrequest_list')
 
         messages.error(self.request, 'Failed to add employment location. Please correct the errors.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': work_request_pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_pk])}?open_role={role.id}')
 
 class RoleHousingCreateView(CreateView):
     model = HousingInformation
@@ -2088,7 +2085,7 @@ class EditEmploymentLocationView(View):
         if form.is_valid():
             form.save()
             messages.success(request, _('roleEmploymentLocationEmploymentLocationUpdatedSuccessfully'))
-            return redirect('recruiting_web:workrequest_detail', pk=location.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[location.role.work_request.pk])}?open_role={location.role.id}')
         else:
             messages.error(request, _('roleEmploymentLocationThereWasAnErrorUpdatingTheEmploymentLocation'))
 
@@ -2099,7 +2096,7 @@ class DeleteEmploymentLocationView(View):
         try:
             location.delete()
             messages.success(request, _('roleEmploymentLocationEmploymentLocationDeletedSuccessfully'))
-            return redirect('recruiting_web:workrequest_detail', pk=location.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[location.role.work_request.pk])}?open_role={location.role.id}')
         except Exception as e:
             messages.error(request, _('roleEmploymentLocationErrorDeletingEmploymentLocation: %(error)s') % {'error': str(e)})
 
