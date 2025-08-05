@@ -466,8 +466,7 @@
                     {% translate "joDetailsWagesWages" %}
                   </h5>
                   <!-- Add Wages Button -->
-                  {% if not role.wages %}
-                
+                  {% if not role.wages or role.wages.deleted_at %}
                   <a class="btn btn-sm yellow-button" data-bs-toggle="modal"  data-bs-target="#wagesModal{{ role.id }}">
                     {% translate "webCommonAdd" %}
                   </a>
@@ -488,7 +487,7 @@
                   </button>
                   {% endif %}
                 </div>
-                {% if role.wages %}
+                {% if role.wages and role.wages.deleted_at is None %}
                 <div class="details-row">
                   <label>
                     {% translate "joDetailsWagesWage" %}
