@@ -885,11 +885,11 @@ class WorkRequestDetailView(View):
         
         role_deductions = {
             role.id: role.deductions.filter()
-            for role in roles_qs
+            for role in roles_qs_raw
         }
         
         deduction_forms = {}
-        for role in roles_qs:
+        for role in roles_qs_raw:
             deductions = role.deductions.filter()
             for deduction in deductions:
                 deduction_forms[deduction.id] = RoleDeductionForm(instance=deduction)
@@ -1198,17 +1198,15 @@ class RoleDeductionsCreateView(CreateView):
         form.instance.role = role
         self.object = form.save()
         messages.success(self.request, 'Deductions successfully added.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': role.work_request.pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
+
 
     def form_invalid(self, form):
         messages.error(self.request, 'Failed to add deductions. Please correct the errors.')
         try:
             role = Role.all_objects.get(pk=self.kwargs['pk'])
-            return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-                'pk': role.work_request.pk
-            }))
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
+
         except Role.DoesNotExist:
             return redirect('recruiting_web:workrequest_list')
 
@@ -2250,7 +2248,8 @@ class DeleteDeductionView(View):
         try:
             deduction.delete()
             messages.success(request, 'DeductionDeletedSuccessfully.')
-            return redirect('recruiting_web:workrequest_detail', pk=deduction.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[deduction.role.work_request.pk])}?open_role={deduction.role.id}')
+
         except Exception as e:
             messages.error(request, f'ErrorDeletingDeduction: {str(e)}')
 
@@ -2269,6 +2268,6 @@ class DeductionEditView(View):
         if form.is_valid():
             form.save()
             messages.success(request, "Deduction updated successfully.")
-            return redirect('recruiting_web:workrequest_detail', pk=deduction.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[deduction.role.work_request.pk])}?open_role={deduction.role.id}')
         else:
-            return redirect('recruiting_web:workrequest_detail', pk=deduction.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[deduction.role.work_request.pk])}?open_role={deduction.role.id}')
