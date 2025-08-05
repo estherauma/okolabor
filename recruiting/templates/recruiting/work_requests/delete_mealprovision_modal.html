@@ -4,7 +4,7 @@
 <div class="modal fade" id="deleteMealProvisionModal{{ role.id }}" tabindex="-1" aria-labelledby="deleteEmploymentInformationLabel{{ role.id }}" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form method="POST" action="{% url 'recruiting_web:meal_provision_delete' role.employment_location.id %}">
+      <form method="POST" action="{% url 'recruiting_web:meal_provision_delete' role.meal_provision.id %}">
         {% csrf_token %}
         <input type="hidden" name="work_request_id" value="{{ workrequest.id }}">
 
