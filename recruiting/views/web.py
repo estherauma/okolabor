@@ -1118,6 +1118,9 @@ class RoleHoursCreateView(CreateView):
     def form_valid(self, form):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)  # Use all_objects to bypass soft delete
+        # If role has existing hours, hard delete them
+        if role.hours and role.hours.deleted:
+            role.hours.hard_delete()
 
         # Prevent duplicates: check if Hours already exist for this role
         if Hours.objects.filter(role=role).exists():
@@ -2174,7 +2177,7 @@ class EditRoleHoursView(View):
             messages.error(request, _('joDetailsHoursThereWasAnErrorUpdatingTheHours'))
 
         if work_request_id:
-            return redirect('recruiting_web:workrequest_detail', pk=work_request_id)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_id])}?open_role={hours.role.id}')
         else:
             return redirect('/')
 
@@ -2190,7 +2193,7 @@ class DeleteRoleHoursView(View):
             messages.error(request, _('joDetailsHoursErrorDeletingHours: %(error)s')% {'error': str(e)})
 
         if work_request_id:
-            return redirect('recruiting_web:workrequest_detail', pk=work_request_id)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_id])}?open_role={hours.role.id}')
         else:
             return redirect('/')
 class EditRoleWagesView(View):
