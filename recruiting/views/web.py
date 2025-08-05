@@ -879,8 +879,7 @@ class WorkRequestDetailView(View):
         }  
         qualification_forms = {
             role.id: RoleQualificationForm(instance=role.qualifications)
-            for role in roles_qs
-            if hasattr(role, 'qualifications') and role.qualifications and role.qualifications.deleted_at is None
+            for role in roles_qs_raw if hasattr(role, 'qualifications') and role.qualifications and role.qualifications.deleted_at is None
         }
         
         role_deductions = {
@@ -1217,27 +1216,24 @@ class RoleQualificationsCreateView(CreateView):
     def form_valid(self, form):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)
+        # If role has existing qualifications, hard delete them
+        if role.qualifications and role.qualifications.deleted_at:
+            role.qualifications.hard_delete()
 
         if Qualification.objects.filter(role=role).exists():
             messages.warning(self.request, 'Qualifications already added for this role.')
-            return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-                'pk': role.work_request.pk
-            }))
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
         form.instance.role = role
         self.object = form.save()
         messages.success(self.request, 'Qualifications successfully added.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': role.work_request.pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
     def form_invalid(self, form):
         messages.error(self.request, 'Failed to add qualifications. Please correct the errors.')
         try:
             role = Role.all_objects.get(pk=self.kwargs['pk'])
-            return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-                'pk': role.work_request.pk
-            }))
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
         except Role.DoesNotExist:
             return redirect('recruiting_web:workrequest_list')
 
@@ -2229,7 +2225,7 @@ class EditRoleQualificationView(View):
         if form.is_valid():
             form.save()
             messages.success(request, _('joDetailsQualificationsQualificationUpdatedSuccessfully'))
-            return redirect('recruiting_web:workrequest_detail', pk=qualification.role.work_request.pk) 
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[qualification.role.work_request.pk])}?open_role={qualification.role.id}')
         else:
             messages.error(request, _('joDetailsQualificationsThereWasAnErrorUpdatingTheQualification'))
 
@@ -2240,7 +2236,7 @@ class DeleteQualificationView(View):
         qualification.delete()
 
         messages.success(request, _("joDetailsQualificationsQualificationDeletedSuccessfully"))
-        return redirect('recruiting_web:workrequest_detail', pk=qualification.role.work_request.pk)
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[qualification.role.work_request.pk])}?open_role={qualification.role.id}')
 
 class DeleteDeductionView(View):
     def post(self, request, pk):

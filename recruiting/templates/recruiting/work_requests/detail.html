@@ -287,10 +287,8 @@
             {% include "recruiting/work_requests/delete_mealprovision_modal.html" %}
             {% endif %}
 
-            {% for role in roles %}
-                {% include "recruiting/work_requests/edit_qualifications.html" with role=role %}
+            {% include "recruiting/work_requests/edit_qualifications.html" with role=role %}
 
-            {% endfor %}
             
 
 
@@ -611,8 +609,7 @@
                     {% translate "joDetails1QualificationsQualifications" %}
                   </h5>
                   <!-- Add Qualifications Button -->
-                  {% if not role.qualifications %}
-                
+                  {% if not role.qualifications or role.qualifications.deleted_at %}
                   <a class="btn btn-sm yellow-button" data-bs-toggle="modal"  data-bs-target="#QualificationModal{{ role.id }}">
                     {% translate "webCommonAdd" %}
                   </a>
@@ -631,7 +628,7 @@
                   </button>
                   {% endif %}
                 </div>
-                {% if role.qualifications %}
+                {% if role.qualifications and role.qualifications.deleted_at is None %}
                 <div class="details-row">
                   <label>
                     {% translate "joDetailsQualificationsMinimumEducationRequirement" %}
