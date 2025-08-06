@@ -1118,8 +1118,11 @@ class RoleHoursCreateView(CreateView):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)  # Use all_objects to bypass soft delete
         # If role has existing hours, hard delete them
-        if role.hours and role.hours.deleted:
-            role.hours.hard_delete()
+        try:
+            if role.hours and role.hours.deleted_at:
+                role.hours.hard_delete()
+        except ObjectDoesNotExist:
+            pass
 
         # Prevent duplicates: check if Hours already exist for this role
         if Hours.objects.filter(role=role).exists():
@@ -1158,8 +1161,11 @@ class RoleWagesCreateView(CreateView):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)
         # If role has existing wages, hard delete them
-        if role.wages and role.wages.deleted_at:
-            role.wages.hard_delete()
+        try:
+            if role.wages and role.wages.deleted_at:
+                role.wages.hard_delete()
+        except ObjectDoesNotExist:
+            pass
 
         # Check for existing wages
         if Wages.objects.filter(role=role).exists():
@@ -1217,8 +1223,11 @@ class RoleQualificationsCreateView(CreateView):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)
         # If role has existing qualifications, hard delete them
-        if role.qualifications and role.qualifications.deleted_at:
-            role.qualifications.hard_delete()
+        try:
+            if role.qualifications and role.qualifications.deleted_at:
+                role.qualifications.hard_delete()
+        except ObjectDoesNotExist:
+            pass
 
         if Qualification.objects.filter(role=role).exists():
             messages.warning(self.request, 'Qualifications already added for this role.')
@@ -1245,9 +1254,11 @@ class RoleEmpLocationCreateView(CreateView):
     def form_valid(self, form):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)
-        # If role has existing employment location, hard delete it
-        if role.employment_location and role.employment_location.deleted_at:
-            role.employment_location.hard_delete()
+        try:
+            if role.employment_location and role.employment_location.deleted_at:
+                role.employment_location.hard_delete()
+        except ObjectDoesNotExist:
+            pass
 
         if EmploymentLocation.objects.filter(role=role).exists():
             messages.warning(self.request, 'Employment location already added for this role.')
@@ -1277,8 +1288,11 @@ class RoleHousingCreateView(CreateView):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)
         # If role has existing housing information, hard delete it
-        if role.housing_information and role.housing_information.deleted_at:
-            role.housing_information.hard_delete()
+        try:
+            if role.housing_information and role.housing_information.deleted_at:
+                role.housing_information.hard_delete()
+        except ObjectDoesNotExist:
+            pass
 
         # Prevent duplicate housing info
         if HousingInformation.objects.filter(role=role).exists():
@@ -1310,8 +1324,11 @@ class RoleMealsCreateView(CreateView):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)
         # If role has existing meal provision, hard delete it
-        if role.meal_provision and role.meal_provision.deleted_at:
-            role.meal_provision.hard_delete()
+        try:
+            if role.meal_provision and role.meal_provision.deleted_at:
+                role.meal_provision.hard_delete()
+        except ObjectDoesNotExist:
+            pass
 
         # Check if MealProvision already exists for this role
         if MealProvision.objects.filter(role=role).exists():
