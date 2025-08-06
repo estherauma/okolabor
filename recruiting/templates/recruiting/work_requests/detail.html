@@ -157,8 +157,18 @@
                   {% if form %}
                     {% for field in form %}
                       <div class="mb-3">
+                        {% if field.name == "on_call" %}
+                        <div class="form-check">
+                          <label class="form-check-label ms-2" for="{{ field.id_for_label }}">
+                            {{ field.label }}
+                          </label>
+                         {{ field }}
+
+                        </div>
+                      {% else %}
                         <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
                         {{ field }}
+                        {% endif %}
                         {% if field.errors %}
                           <div class="text-danger">
                             {{ field.errors }}
@@ -910,7 +920,7 @@
                   <label>
                     {% translate "joDetailsMealsAreMealsProvided" %}
                   </label>
-                  <p>{{ role.meal_provision|yesno:_("Yes,No") }}</p>
+                  <p>{{ role.meal_provision.will_provide_meals|yesno:_("Yes,No") }}</p>
                 </div>
                 <div class="details-row">
                   <label>
