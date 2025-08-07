@@ -515,7 +515,6 @@ class SendOfferView(View):
             role = get_object_or_404(Role, id=role_id)
 
             users_for_notification = []
-            newly_offered = []
             already_offered = []
 
             with transaction.atomic():
@@ -533,38 +532,33 @@ class SendOfferView(View):
                         work_assignment.status = 'offersent'
                         work_assignment.save()
                         users_for_notification.append(worker)
-                        newly_offered.append(worker)
                     else:
                         already_offered.append(worker)
 
-            for user in newly_offered:
+            for user in users_for_notification:
                 current_lang = translation.get_language()
                 try:
                     translation.activate(user.language)
-
-                    title = _("workRequestAddNotificationTitle")
-                    body = _("workRequestAddNotificationBody")
-
                     UserNotification.objects.create(
                         user=user,
-                        title=title,
-                        message=body
+                        title=_("workRequestAddNotificationTitle"),
+                        message=_("workRequestAddNotificationBody")
                     )
 
                     if user.push_notification_token:
                         send_push_notification(
                             tokens=[user.push_notification_token],
-                            title=str(title),
-                            body=str(body),
+                            title=str(_('workRequestAddNotificationTitle')),
+                            body=str(_('workRequestAddNotificationBody')),
                             data={'type': 'job_offer', 'job_id': role_id}
                         )
                 finally:
                     translation.activate(current_lang)
 
             msg_parts = []
-            if newly_offered:
+            if users_for_notification:
                 msg_parts.append(_("Successfully sent offer to: ") + ", ".join(
-                    [user.get_full_name() or user.username for user in newly_offered]
+                    [user.get_full_name() or user.username for user in users_for_notification]
                 ))
             if already_offered:
                 msg_parts.append(_("Offer already sent to: ") + ", ".join(

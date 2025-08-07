@@ -762,23 +762,18 @@ class OfferSendWorkerView(View):
         current_lang = translation.get_language()
         try:
             translation.activate(user.language)
-            title = _("workRequestAddNotificationTitle")
-            body = _("workRequestAddNotificationBody")
             UserNotification.objects.create(
                     user=user,
-                    title= title,
-                    message= body
+                    title=_("workRequestAddNotificationTitle"),
+                    message= _("workRequestAddNotificationBody")
                 )
         
 
             if user.push_notification_token:
-                title = str(_("workRequestAddNotificationTitle"))
-                body = str(_("workRequestAddNotificationBody"))
-
                 send_push_notification(
                     tokens=[user.push_notification_token],
-                    title=title,
-                    body=body,
+                    title=str(_("workRequestAddNotificationTitle")),
+                    body=str(_("workRequestAddNotificationBody")),
                     data={"type": "job_offer", "job_id": role_id},
             )
                 
