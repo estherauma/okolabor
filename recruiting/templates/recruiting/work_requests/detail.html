@@ -134,13 +134,11 @@
               </div>
             </div>
             <!-- accordion collapse icon -->
-            <button aria-controls="collapse{{ forloop.counter }}" aria-expanded="false" class="accordion-button collapsed"
-              data-bs-target="#collapse{{ forloop.counter }}" data-bs-toggle="collapse" type="button"></button>
+            <button aria-controls="collapse{{ role.id }}" aria-expanded="false" class="accordion-button collapsed"
+              data-bs-target="#collapse{{ role.id }}" data-bs-toggle="collapse" type="button"></button>
           </div>
           {% include 'recruiting/work_requests/edit_role_modal.html'%}
 
-
-            {% for role in roles %}
 
       <!-- Modal -->
       <div class="modal fade" id="edithoursModal{{ role.id }}" tabindex="-1">
@@ -148,7 +146,9 @@
           <div class="modal-content">
             <form method="POST" action="{% url 'recruiting_web:edit-role-hours' role.hours.id %}">
               {% csrf_token %}
-              <div class="modal-header" style="background-color: #7DBF96;">
+              <!-- This is a hidden field to pass the work request ID to the view -->
+              <input type="hidden" name="work_request_id" value="{{ workrequest.id }}">
+              <div class="modal-header">
                 <h5 class="modal-title text-white">{% translate 'joDetailsHoursEditHours' %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
               </div>
@@ -157,8 +157,18 @@
                   {% if form %}
                     {% for field in form %}
                       <div class="mb-3">
+                        {% if field.name == "on_call" %}
+                        <div class="form-check">
+                          <label class="form-check-label ms-2" for="{{ field.id_for_label }}">
+                            {{ field.label }}
+                          </label>
+                         {{ field }}
+
+                        </div>
+                      {% else %}
                         <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
                         {{ field }}
+                        {% endif %}
                         {% if field.errors %}
                           <div class="text-danger">
                             {{ field.errors }}
@@ -179,14 +189,15 @@
           </div>
         </div>
       </div>
-    {% endfor %}
 
     <!-- Delete Modal -->
     <div class="modal fade" id="deletehoursModal{{ role.id }}" tabindex="-1">
         <div class="modal-dialog">
           <div class="modal-content">
-            <form method="POST" >
+            <form method="POST" action="{% url 'recruiting_web:delete-role-hours' role.hours.id %}">
               {% csrf_token %}
+              <!-- This is a hidden field to pass the work request ID to the view -->
+              <input type="hidden" name="work_request_id" value="{{ workrequest.id }}">
               <div class="modal-header" style="background-color: #7DBF96;">
                 <h5 class="modal-title text-white">{% translate 'joDetailsHoursDeleteHours' %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -282,14 +293,12 @@
 
             <!-- Delete Modal for EmploymentLocation -->
 
-            {% if role.housing_information %}
+            {% if role.meal_provision %}
             {% include "recruiting/work_requests/delete_mealprovision_modal.html" %}
             {% endif %}
 
-            {% for role in roles %}
-                {% include "recruiting/work_requests/edit_qualifications.html" with role=role %}
+            {% include "recruiting/work_requests/edit_qualifications.html" with role=role %}
 
-            {% endfor %}
             
 
 
@@ -358,7 +367,7 @@
 
 
             
-          <div aria-labelledby="heading{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#rolesAccordion" id="collapse{{ forloop.counter }}">
+          <div aria-labelledby="heading{{ role.id }}" class="accordion-collapse collapse" data-bs-parent="#rolesAccordion" id="collapse{{ role.id }}">
           <div class="accordion-body border-t-dotted-green">
             <div class="details-row">
              <label>
@@ -387,8 +396,7 @@
                   </h5>
                   <!-- <div class="d-flex align-items-center gap-2"> -->
                   <!-- Add Hours Button -->
-                  {% if not role.hours %}
-                
+                  {% if not role.hours or role.hours.deleted %}
                   <a class="btn btn-sm yellow-button" data-bs-toggle="modal" data-bs-target="#hoursModal{{ role.id }}">
                     {% translate "webCommonAdd" %}
                   </a>
@@ -409,7 +417,7 @@
                   </button>
                   {% endif %}
                 </div>
-                {% if role.hours %}
+                {% if role.hours and not role.hours.deleted %}
                 <div class="details-row">
                   <label>
                     {% translate "joDetailsHoursEstimatedWeeklyHours" %}
@@ -466,8 +474,7 @@
                     {% translate "joDetailsWagesWages" %}
                   </h5>
                   <!-- Add Wages Button -->
-                  {% if not role.wages %}
-                
+                  {% if not role.wages or role.wages.deleted_at %}
                   <a class="btn btn-sm yellow-button" data-bs-toggle="modal"  data-bs-target="#wagesModal{{ role.id }}">
                     {% translate "webCommonAdd" %}
                   </a>
@@ -488,7 +495,7 @@
                   </button>
                   {% endif %}
                 </div>
-                {% if role.wages %}
+                {% if role.wages and role.wages.deleted_at is None %}
                 <div class="details-row">
                   <label>
                     {% translate "joDetailsWagesWage" %}
@@ -534,7 +541,7 @@
 
                 {% else %}
                 <p class="no-info">
-                  {% translate "joDetailsHoursNoHoursInformationAvailableForThisRole" %}
+                  {% translate "joDetailsWagesNoWagesInformationAvailableForThisRole" %}
                 </p>
                 {% endif %}
               </div>
@@ -612,8 +619,7 @@
                     {% translate "joDetails1QualificationsQualifications" %}
                   </h5>
                   <!-- Add Qualifications Button -->
-                  {% if not role.qualifications %}
-                
+                  {% if not role.qualifications or role.qualifications.deleted_at %}
                   <a class="btn btn-sm yellow-button" data-bs-toggle="modal"  data-bs-target="#QualificationModal{{ role.id }}">
                     {% translate "webCommonAdd" %}
                   </a>
@@ -632,7 +638,7 @@
                   </button>
                   {% endif %}
                 </div>
-                {% if role.qualifications %}
+                {% if role.qualifications and role.qualifications.deleted_at is None %}
                 <div class="details-row">
                   <label>
                     {% translate "joDetailsQualificationsMinimumEducationRequirement" %}
@@ -727,7 +733,7 @@
                 </div>
                 {% else %}
                 <p class="no-info">
-                  {% translate "joDetailsHoursNoHoursInformationAvailableForThisRole" %}
+                  {% translate "joDetailsQualificationsNoQualificationsFoundForThisRole" %}
                 </p>
                 {% endif %}
               </div>
@@ -738,8 +744,7 @@
                     {% translate "joDetailsPlaceOfEmploymentPlaceOfEmploymentInformation" %}
                   </h5>
                   <!-- Add Hours Button -->
-                  {% if not role.employment_location %}
-                
+                  {% if not role.employment_location or role.employment_location.deleted_at %}
                   <a class="btn btn-sm yellow-button" data-bs-toggle="modal" data-bs-target="#EmploymentModal{{ role.id }}">
                     {% translate "webCommonAdd" %}
                   </a>
@@ -760,7 +765,7 @@
                   </button>
                   {% endif %}
                 </div>
-                {% if role.employment_location %}
+                {% if role.employment_location and role.employment_location.deleted_at is None %}
                 <div class="details-row">
                   <label>
                     {% translate "joDetailsPlaceOfEmploymentAddress" %}
@@ -777,7 +782,7 @@
                   <label>
                     {% translate "joDetailsPlaceOfEmploymentCountry" %}
                   </label>
-                  <p>{{ role.employment_location.country|default:"" }}</p>
+                  <p>{{ role.employment_location.county|default:"" }}</p>
                 </div>
                 <div class="details-row">
                   <label>
@@ -791,17 +796,17 @@
                   </label>
                   <p>{{ role.employment_location.postal_code|default:"" }}</p>
                 </div>
-                {% if role.employment_location.additional_information %}
+                {% if role.employment_location.additional_info %}
                 <div class="details-row">
                   <label>
                     {% translate "joDetailsPlaceOfEmploymentAdditionalInformation" %}
                   </label>
-                  <p>{{ role.employment_location.additional_information }}</p>
+                  <p>{{ role.employment_location.additional_info }}</p>
                 </div>
                 {% endif %}
                 {% else %}
                 <p class="no-info">
-                  {% translate "joDetailsHoursNoHoursInformationAvailableForThisRole" %}
+                  {% translate "joDetailsPlaceOfEmploymentNoEmploymentLocationInformationForThisRole" %}
                 </p>
                 {% endif %}
               </div>
@@ -812,7 +817,7 @@
                     {% translate "joDetailsHousingInfoHousingInformation" %}
                   </h5>
                   <!-- Add Hours Button -->
-                  {% if not role.housing_information %}
+                  {% if not role.housing_information or role.housing_information.deleted_at %}
                   <a class="btn btn-sm yellow-button" data-bs-toggle="modal" data-bs-target="#HousingModal{{ role.id }}">
                     {% translate "webCommonAdd" %}
                   </a>
@@ -833,7 +838,7 @@
                   </button>
                   {% endif %}
                 </div>
-                {% if role.housing_information %}
+                {% if role.housing_information and role.housing_information.deleted_at is None %}
                 <div class="details-row">
                   <label>
                     {% translate "joDetailsHousingInfoAddress" %}
@@ -872,13 +877,13 @@
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsHousingInfoAdditionalInformation" %}
+                    {% translate "joDetailsHousingInfoAdditionalInfo" %}
                   </label>
-                  <p>{{ role.housing_information.additional_information }}</p>
+                  <p>{{ role.housing_information.additional_info }}</p>
                 </div>
                 {% else %}
                 <p class="no-info">
-                  {% translate "joDetailsHoursNoHoursInformationAvailableForThisRole" %}
+                  {% translate "joDetailsHousingInfoNoHousingInformationForThisRole" %}
                 </p>
                 {% endif %}
               </div>
@@ -889,7 +894,7 @@
                     {% translate "joDetailsMealsProvisionOfMeals" %}
                   </h5>
                   <!-- Add Hours Button -->
-                  {% if not role.meal_provision %}
+                  {% if not role.meal_provision or role.meal_provision.deleted_at %}
                   <a class="btn btn-sm yellow-button" data-bs-toggle="modal" data-bs-target="#MealsModal{{ role.id }}">
                     {% translate "webCommonAdd" %}
                   </a>
@@ -910,12 +915,12 @@
                   </button>
                   {% endif %}
                 </div>
-                {% if role.meal_provision %}
+                {% if role.meal_provision and role.meal_provision.deleted_at is  None %}
                 <div class="details-row">
                   <label>
                     {% translate "joDetailsMealsAreMealsProvided" %}
                   </label>
-                  <p>{{ role.meal_provision|yesno:_("Yes,No") }}</p>
+                  <p>{{ role.meal_provision.will_provide_meals|yesno:_("Yes,No") }}</p>
                 </div>
                 <div class="details-row">
                   <label>
@@ -931,7 +936,7 @@
                 </div>
                 {% else %}
                 <p class="no-info">
-                  {% translate "joDetailsHoursNoHoursInformationAvailableForThisRole" %}
+                  {% translate "joDetailsMealsNoMealInformationForThisRole" %}
                 </p>
                 {% endif %}
               </div>
@@ -949,3 +954,25 @@
 </div>
 
 {% endblock body %}
+{% block scripts %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const params = new URLSearchParams(window.location.search);
+    const openRole = params.get('open_role');
+    if (openRole) {
+      const panel = document.getElementById('collapse' + openRole);
+      if (panel) {
+        new bootstrap.Collapse(panel, { toggle: true });
+
+        // Listen for collapse event to remove open_role from URL
+        panel.addEventListener('hidden.bs.collapse', function () {
+          params.delete('open_role');
+          const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+          window.history.replaceState({}, '', newUrl);
+        });
+      }
+    }
+  });
+</script>
+{% endblock scripts %}
+

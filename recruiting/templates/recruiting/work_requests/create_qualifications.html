@@ -13,7 +13,7 @@
         <form method="post" id="QualificationForm" action="{% url 'recruiting_web:workrequest_qualifications_create' role.id %}">
           {% csrf_token %}
          
-          <div class="col">
+          <div class="d-flex flex-column gap-3">
             <div class="form-group my-3">
               <label>{% translate "roleQualificationRole" %}</label>
               <div class="input-group input-group-outline is_valid my-3">
@@ -24,22 +24,35 @@
 
           
           <input type="hidden" name="role" value="{{ role.id }}">
+                            <div class="d-flex flex-column gap-3">
 
           {% for field in role_Qualification_form %}
             {% if field.name != 'role' %}
-              <div class="col">
-                <div class="form-group my-3">
-                  <label>{{ field.label }}</label>
-                  <div class="input-group input-group-outline is_valid my-3">
-                    {{ field }}
-                  </div>
-                  {% for error in field.errors %}
-                    <div class="text-danger small">{{ error }}</div>
-                  {% endfor %}
-                </div>
-              </div>
+                <div class="form-group">
+                      {% if field.field.widget.input_type == "checkbox" %}
+                        <div class="form-check d-flex align-items-center gap-2">
+                          {{ field }}
+                          <label class="form-check-label mb-0" for="{{ field.id_for_label }}">
+                            {{ field.label }}
+                          </label>
+                        </div>
+                        {% if field.help_text %}
+                          <small class="form-text text-muted ms-4">{{ field.help_text }}</small>
+                        {% endif %}
+                      {% else %}
+                        <label for="{{ field.id_for_label }}" class="form-label fw-semibold">{{ field.label }}</label>
+                        {{ field }}
+                      {% endif %}
+  
+                      {% if field.errors %}
+                        <div class="text-danger small mt-1">
+                          {{ field.errors }}
+                        </div>
+                      {% endif %}
+                    </div>
             {% endif %}
           {% endfor %}
+          </div>
 
           <button class="btn dark-green-button" type="submit">
             {% translate "roleQualificationSubmit" %}

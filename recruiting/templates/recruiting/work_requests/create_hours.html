@@ -29,17 +29,28 @@
           <!-- Render all other fields except 'role' -->
           {% for field in role_Hours_form %}
             {% if field.name != 'role' %}
-              <div class="col">
-                <div class="form-group my-3">
-                  <label>{{ field.label }}</label>
-                  <div class="input-group input-group-outline is_valid my-3">
-                    {{ field }}
+              {% if field.name == 'on_call' %}
+                <div class="col">
+                  <div class="form-roup my-5">
+                    <div class="form-check">
+                      <label class="form-check-label " for="{{ field.id_for_label }}">{{ field.label }}</label>
+                      {{ field }}
+                    </div>
                   </div>
-                  {% for error in field.errors %}
-                    <div class="text-danger small">{{ error }}</div>
-                  {% endfor %}
                 </div>
-              </div>
+                {% else %}
+                  <div class="col">
+                    <div class="form-group my-3">
+                      <label>{{ field.label }}</label>
+                      <div class="input-group input-group-outline is_valid my-3">
+                        {{ field }}
+                      </div>
+                      {% for error in field.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                {% endif %}
             {% endif %}
           {% endfor %}
 
