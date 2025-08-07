@@ -514,6 +514,7 @@ class SendOfferView(View):
             work_request = get_object_or_404(WorkRequests, id=work_request_id)
             role = get_object_or_404(Role, id=role_id)
 
+            users_for_notification = []
             newly_offered = []
             already_offered = []
 
@@ -531,6 +532,7 @@ class SendOfferView(View):
                     if created or work_assignment.status != 'offersent':
                         work_assignment.status = 'offersent'
                         work_assignment.save()
+                        users_for_notification.append(worker)
                         newly_offered.append(worker)
                     else:
                         already_offered.append(worker)
