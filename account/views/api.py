@@ -87,7 +87,9 @@ class LoginView(APIView):
 
             if not user.is_verified or not user.is_active:
                 return Response({
-                    'message': 'Account not verified'},
+                    'message': 'Account not verified',
+                    'error_key': 'not_verified'
+                    },
                     status=status.HTTP_403_FORBIDDEN
                 )
             if user.check_password(serializer.validated_data['password']):
