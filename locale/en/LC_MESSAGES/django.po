@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-01 10:53+0300\n"
+"POT-Creation-Date: 2025-08-12 10:51+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -86,9 +86,49 @@ msgstr "This Month"
 msgid "userLogsFilterByDate"
 msgstr "Filter By Date"
 
+#: account/templates/account/notifications.html:5
+msgid "notificationsNotifications"
+msgstr "Notifications"
+
+#: account/templates/account/notifications.html:10
+msgid "notificationsWorkerRequests"
+msgstr "Worker Request"
+
+#: account/templates/account/notifications.html:13
+msgid "notificationsFilterByDate"
+msgstr "Filter by date"
+
+#: account/templates/account/notifications.html:16
+msgid "notificationsNew"
+msgstr "New"
+
 #: account/templates/account/notifications.html:38
 msgid "webCommonSeeMore"
 msgstr "See more"
+
+#: account/templates/account/notifications.html:57
+msgid "notificationsCategory"
+msgstr "Category"
+
+#: account/templates/account/notifications.html:61
+msgid "notificationsStatus"
+msgstr "Status"
+
+#: account/templates/account/notifications.html:65
+msgid "notificationsReadAt"
+msgstr "Read at"
+
+#: account/templates/account/notifications.html:69
+msgid "notificationsCreatedAt"
+msgstr "Created at"
+
+#: account/templates/account/notifications.html:73
+msgid "notificationsClose"
+msgstr "Close"
+
+#: account/templates/account/notifications.html:83
+msgid "notificationsNoNotificationsAvailable"
+msgstr "No notifications available"
 
 #: account/templates/activity_log.html:6
 msgid "userLogsUserLogs"
@@ -381,6 +421,10 @@ msgstr "Are you sure you want to delete"
 msgid "webCommonCancel"
 msgstr "Cancel"
 
+#: account/templates/invite_email.html:8
+msgid "inviteEmailDocument"
+msgstr "Invitation email"
+
 #: account/templates/invite_email.html:22
 msgid "inviteEmailHello"
 msgstr "Hi"
@@ -441,14 +485,17 @@ msgid ""
 msgstr "Then short notification message goes here with action button below."
 
 #: account/templates/recruiter/recruiter_modals/add_user_modal.html:32
+#: recruiting/forms.py:866
 msgid "recruiterAdminListFirstName"
 msgstr "First Name"
 
 #: account/templates/recruiter/recruiter_modals/add_user_modal.html:46
+#: recruiting/forms.py:867
 msgid "recruiterAdminListLastName"
 msgstr "Last Name"
 
 #: account/templates/recruiter/recruiter_modals/add_user_modal.html:60
+#: recruiting/forms.py:868
 msgid "recruiterAdminListEmail"
 msgstr "Email"
 
@@ -1547,47 +1594,51 @@ msgstr "Address Line 2"
 msgid "addWorkerCity"
 msgstr "City"
 
-#: recruiting/forms.py:985
+#: recruiting/forms.py:865
+msgid "recruiterAdminListcurp"
+msgstr "CURP"
+
+#: recruiting/forms.py:992
 msgid "endDateCannotBeEarlierThanStartDate."
 msgstr "End date can not be earlier than start date."
 
-#: recruiting/forms.py:996
+#: recruiting/forms.py:1003
 msgid "addWorkerExperienceUser"
 msgstr "User"
 
-#: recruiting/forms.py:997
+#: recruiting/forms.py:1004
 msgid "addWorkerExperienceCompany"
 msgstr "Company"
 
-#: recruiting/forms.py:998
+#: recruiting/forms.py:1005
 msgid "addWorkerExperienceWorkTitle"
 msgstr "Work Title"
 
-#: recruiting/forms.py:999
+#: recruiting/forms.py:1006
 msgid "addWorkerExperienceStartDate"
 msgstr "Start Date"
 
-#: recruiting/forms.py:1000
+#: recruiting/forms.py:1007
 msgid "addWorkerExperienceEndDate"
 msgstr "End Date"
 
-#: recruiting/forms.py:1001
+#: recruiting/forms.py:1008
 msgid "addWorkerExperienceCountry"
 msgstr "Country"
 
-#: recruiting/forms.py:1002
+#: recruiting/forms.py:1009
 msgid "addWorkerExperienceSupervisorName"
 msgstr "Supervisor Name"
 
-#: recruiting/forms.py:1003
+#: recruiting/forms.py:1010
 msgid "addWorkerExperienceSupervisorTelephone"
 msgstr "Supervisor Telephone"
 
-#: recruiting/forms.py:1004
+#: recruiting/forms.py:1011
 msgid "addWorkerExperienceSupervisorEmail"
 msgstr "Supervisor Email"
 
-#: recruiting/forms.py:1005
+#: recruiting/forms.py:1012
 msgid "addWorkerExperienceVisaType"
 msgstr "Visa Type"
 
@@ -3659,9 +3710,102 @@ msgstr "Offer sent"
 msgid "summaryListConfirmed"
 msgstr "Confirmed"
 
+#: recruiting/templates/recruiting/work_requests/table_header.html:21
+msgid "tableHeadersCheckbox"
+msgstr "Checkbox"
+
+#: recruiting/templates/recruiting/work_requests/table_header.html:22
+#: recruiting/templates/recruiting/work_requests/table_header.html:43
+msgid "tableHeadersName"
+msgstr "Name"
+
+#: recruiting/templates/recruiting/work_requests/table_header.html:23
+#: recruiting/templates/recruiting/work_requests/table_header.html:47
+msgid "tableHeadersTown"
+msgstr "Town"
+
+#: recruiting/templates/recruiting/work_requests/table_header.html:24
+#: recruiting/templates/recruiting/work_requests/table_header.html:51
+msgid "tableHeadersProfileCompletion"
+msgstr "Profile Completion"
+
+#: recruiting/templates/recruiting/work_requests/table_header.html:25
+#: recruiting/templates/recruiting/work_requests/table_header.html:55
+msgid "tableHeadersExperience"
+msgstr "Experience"
+
+#: recruiting/templates/recruiting/work_requests/table_header.html:26
+#: recruiting/templates/recruiting/work_requests/table_header.html:59
+msgid "tableHeadersEnglishProficiency"
+msgstr "English Proficiency"
+
+#: recruiting/templates/recruiting/work_requests/table_header.html:27
+#: recruiting/templates/recruiting/work_requests/table_header.html:63
+msgid "tableHeadersLocationPreference"
+msgstr "Location Preference"
+
+#: recruiting/templates/recruiting/work_requests/table_header.html:28
+#: recruiting/templates/recruiting/work_requests/table_header.html:67
+msgid "tableHeadersStatus"
+msgstr "Status"
+
+#: recruiting/templates/recruiting/work_requests/table_header.html:36
+msgid "tableHeadersChooseColumnsToDisplay"
+msgstr "Choose columns to display"
+
 #: recruiting/templates/recruiting/work_requests/workrequest_details.html:56
 msgid "AssignedTo"
 msgstr "Assigned To"
+
+#: recruiting/templates/recruiting/work_requests/workrequest_details.html:63
+msgid "workRequestDetailsNoRecruitersAssigned"
+msgstr "No recruiters assigned"
+
+#: recruiting/templates/recruiting/work_requests/workrequest_details.html:75
+msgid "workRequestDetailsInProgressWorkRequests"
+msgstr "In progress work requests"
+
+#: recruiting/templates/recruiting/work_requests/workrequest_details.html:83
+#: recruiting/templates/recruiting/work_requests/workrequest_details.html:118
+#: recruiting/templates/recruiting/work_requests/workrequest_details.html:151
+msgid "workRequestDetailsRequestID"
+msgstr "Request ID"
+
+#: recruiting/templates/recruiting/work_requests/workrequest_details.html:84
+#: recruiting/templates/recruiting/work_requests/workrequest_details.html:119
+#: recruiting/templates/recruiting/work_requests/workrequest_details.html:152
+msgid "workRequestDetailsRequestDate"
+msgstr "Request Date"
+
+#: recruiting/templates/recruiting/work_requests/workrequest_details.html:85
+msgid "workRequestDetailsStartDate"
+msgstr "Start date"
+
+#: recruiting/templates/recruiting/work_requests/workrequest_details.html:86
+#: recruiting/templates/recruiting/work_requests/workrequest_details.html:120
+#: recruiting/templates/recruiting/work_requests/workrequest_details.html:153
+msgid "workRequestDetailsStatus"
+msgstr "Status"
+
+#: recruiting/templates/recruiting/work_requests/workrequest_details.html:99
+msgid "workRequestDetailsNoInProgressWorkRequests"
+msgstr "No in progress work requests"
+
+#: recruiting/templates/recruiting/work_requests/workrequest_details.html:110
+msgid "workRequestDetailsClosedWorkRequests"
+msgstr "Closed work requests"
+
+#: recruiting/templates/recruiting/work_requests/workrequest_details.html:132
+msgid "workRequestDetailsNoClosedWorkRequests"
+msgstr "No closed work requests"
+
+#: recruiting/templates/recruiting/work_requests/workrequest_details.html:143
+msgid "workRequestDetailsDraftWorkRequests"
+msgstr "Draft work requests"
+
+#: recruiting/templates/recruiting/work_requests/workrequest_details.html:165
+msgid "workRequestDetailsNoDraftWorkRequests"
+msgstr "No draft work requests"
 
 #: recruiting/templates/recruiting/workers/add_shortlist_modal.html:11
 msgid "workersListAssignWorker"
@@ -5447,6 +5591,10 @@ msgstr "Manage Users"
 msgid "employerAcceptRejectStatus"
 msgstr "Connection Status "
 
+#: theme/templates/components/layouts/vertical/app-sidebar.html:87
+msgid "toDo"
+msgstr "To Do"
+
 #: theme/templates/components/layouts/vertical/app-sidebar.html:92
 msgid "messages"
 msgstr "Messages"
@@ -5478,6 +5626,94 @@ msgstr "Manage Users"
 #: theme/templates/components/layouts/vertical/main-header.html:71
 msgid "mainHeaderLogOut"
 msgstr "Logout"
+
+#: theme/templates/components/modals/add_user_modal.html:18
+msgid "addUserInviteUser"
+msgstr "Invite User"
+
+#: theme/templates/components/modals/add_user_modal.html:23
+msgid "addUserThenAShortNotificationMessageGoesHereWithActionButtonsBelow"
+msgstr "Then short notification message goes here with action buttons below."
+
+#: theme/templates/components/modals/add_user_modal.html:28
+msgid "addUserCURP"
+msgstr "CURP"
+
+#: theme/templates/components/modals/add_user_modal.html:42
+msgid "addUserFirstName"
+msgstr "First Name"
+
+#: theme/templates/components/modals/add_user_modal.html:56
+msgid "addUserLastName"
+msgstr "Last Name"
+
+#: theme/templates/components/modals/add_user_modal.html:70
+msgid "addUserEmail"
+msgstr "Email"
+
+#: theme/templates/components/modals/add_user_modal.html:84
+msgid "addUserRole"
+msgstr "Role"
+
+#: theme/templates/components/modals/add_user_modal.html:87
+msgid "addUserSelectRole"
+msgstr "Select Role"
+
+#: theme/templates/components/modals/add_user_modal.html:88
+msgid "addUserRecruiter"
+msgstr "Recruiter"
+
+#: theme/templates/components/modals/add_user_modal.html:97
+msgid "addUserCancel"
+msgstr "Cancel"
+
+#: theme/templates/components/modals/add_user_modal.html:103
+msgid "addUserSendInvite"
+msgstr "Send Invite"
+
+#: theme/templates/components/modals/edit_user_modal.html:7
+msgid "editUserEditUser"
+msgstr "Edit User"
+
+#: theme/templates/components/modals/edit_user_modal.html:14
+msgid "editUserCURP"
+msgstr "CURP"
+
+#: theme/templates/components/modals/edit_user_modal.html:18
+msgid "editUserFirstName"
+msgstr "First Name"
+
+#: theme/templates/components/modals/edit_user_modal.html:22
+msgid "editUserLastName"
+msgstr "Last Name"
+
+#: theme/templates/components/modals/edit_user_modal.html:26
+msgid "editUserEmail"
+msgstr "Email"
+
+#: theme/templates/components/modals/edit_user_modal.html:32
+msgid "editUserIsActive"
+msgstr "Is Active"
+
+#: theme/templates/components/modals/edit_user_modal.html:35
+msgid "editUserActive"
+msgstr "Active"
+
+#: theme/templates/components/modals/edit_user_modal.html:36
+msgid "editUserInactive"
+msgstr "Inactive"
+
+#: theme/templates/components/modals/edit_user_modal.html:42
+msgid "editUserRole"
+msgstr "Role"
+
+#: theme/templates/components/modals/edit_user_modal.html:45
+msgid "editUserSelectRole"
+msgstr "Select Role"
+
+#: theme/templates/components/modals/edit_user_modal.html:46
+msgid "editUserRecruiter"
+msgstr "Recruiter"
 
 #: theme/templates/components/modals/edit_user_modal.html:56
 msgid "webCommonSave"
@@ -5633,9 +5869,6 @@ msgstr "You have successfully logged in."
 #~ msgid "workRequestAddWorkerShortlistClose"
 #~ msgstr "Close"
 
-#~ msgid "workRequestAddWorkerShortlistSelectWorkRequest"
-#~ msgstr "Select Job Order"
-
 #~ msgid "workRequestAddWorkerShortlistSelectAWorkRequest"
 #~ msgstr "Select a job order"
 
@@ -5747,9 +5980,6 @@ msgstr "You have successfully logged in."
 #~ msgid "Select a work request"
 #~ msgstr "Select a job order"
 
-#~ msgid "selectRole"
-#~ msgstr "Select a role"
-
 #~ msgid "addWorkers"
 #~ msgstr "Male"
 
@@ -5782,9 +6012,6 @@ msgstr "You have successfully logged in."
 
 #~ msgid "joDetailsWagesSectionTitle"
 #~ msgstr "Wages"
-
-#~ msgid "workRequestAddWorkerOfferSentAssignWorkRequest"
-#~ msgstr "Assign Job Order"
 
 #~ msgid "workRequestAddWorkerShortlistAssignWorkRequest"
 #~ msgstr "Assign Job Order"
@@ -5888,9 +6115,6 @@ msgstr "You have successfully logged in."
 #~ msgid "manageUsersRecruitersTableCurp"
 #~ msgstr "CURP"
 
-#~ msgid "editWorkerCURP"
-#~ msgstr "CURP"
-
 #~ msgid "recruiterListAssign"
 #~ msgstr "Assign"
 
@@ -5905,9 +6129,6 @@ msgstr "You have successfully logged in."
 
 #~ msgid "workerDetailsAvailable"
 #~ msgstr "Available"
-
-#~ msgid "workerDetailsEnglishProficiency"
-#~ msgstr "English Proficiency"
 
 #~ msgid "workerDetailsPassport"
 #~ msgstr "Passport"

@@ -860,6 +860,13 @@ class RecruiterAdminCreateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['curp', 'first_name', 'last_name', 'email']
+        
+        labels = {
+            'curp': _("recruiterAdminListcurp"),
+            'first_name': _("recruiterAdminListFirstName"),
+            'last_name': _("recruiterAdminListLastName"),
+            'email': _("recruiterAdminListEmail"),  
+        }
 
         widgets = {
             'curp': forms.TextInput(attrs={'class': 'form-control'}),

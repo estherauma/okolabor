@@ -60,7 +60,7 @@
                                     {{ employer_recruiter.recruiter.first_name }} {{ employer_recruiter.recruiter.last_name }}{% if not forloop.last %}, {% endif %}
                                 {% endfor %}
                             {% else %}
-                                <strong>No Recruiters Assigned</strong>
+                            <strong>{% translate "workRequestDetailsNoRecruitersAssigned" %}</strong>
                             {% endif %}
                         </span>
                     </li>
@@ -72,7 +72,7 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">
-                    In Progress Work Requests
+                    {% translate "workRequestDetailsInProgressWorkRequests" %}
                 </h3>
             </div>
             <div class="card-body">
@@ -80,10 +80,10 @@
                     <table class="table table-bordered text-nowrap border-bottom" id="datatable-in-progress">
                         <thead>
                             <tr>
-                                <th class="border-bottom-0">Request ID</th>
-                                <th class="border-bottom-0">Request Date</th>
-                                <th class="border-bottom-0">Start Date</th>
-                                <th class="border-bottom-0">Status</th>
+                                <th class="border-bottom-0">{% translate "workRequestDetailsRequestID" %}</th>
+                                <th class="border-bottom-0">{% translate "workRequestDetailsRequestDate" %}</th>
+                                <th class="border-bottom-0">{% translate "workRequestDetailsStartDate" %}</th>
+                                <th class="border-bottom-0">{% translate "workRequestDetailsStatus" %}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -96,7 +96,7 @@
                                 </tr>
                             {% empty %}
                                 <tr>
-                                    <td colspan="4" class="text-center">No In Progress Work Requests</td>
+                                    <td colspan="4" class="text-center"><td colspan="4" class="text-center">{% translate "workRequestDetailsNoInProgressWorkRequests" %}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -107,7 +107,7 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">
-                    Closed Work Requests
+                    {% translate "workRequestDetailsClosedWorkRequests" %}
                 </h3>
             </div>
             <div class="card-body">
@@ -115,9 +115,9 @@
                     <table class="table table-bordered text-nowrap border-bottom" id="datatable-closed">
                         <thead>
                             <tr>
-                                <th class="wd-15p border-bottom-0">Request ID</th>
-                                <th class="wd-15p border-bottom-0">Request Date</th>
-                                <th class="wd-20p border-bottom-0">Status</th>
+                                <th class="wd-15p border-bottom-0">{% translate "workRequestDetailsRequestID" %}</th>
+                                <th class="wd-15p border-bottom-0">{% translate "workRequestDetailsRequestDate" %}</th>
+                                <th class="wd-20p border-bottom-0">{% translate "workRequestDetailsStatus" %}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -129,7 +129,7 @@
                                 </tr>
                             {% empty %}
                                 <tr>
-                                    <td colspan="3" class="text-center">No Closed Work Requests</td>
+                                    <td colspan="3" class="text-center">{% translate "workRequestDetailsNoClosedWorkRequests" %}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -140,7 +140,7 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">
-                    Draft Work Requests
+                    {% translate "workRequestDetailsDraftWorkRequests" %}
                 </h3>
             </div>
             <div class="card-body">
@@ -148,9 +148,9 @@
                     <table class="table table-bordered text-nowrap border-bottom" id="datatable-draft">
                         <thead>
                             <tr>
-                                <th class="wd-15p border-bottom-0">Request ID</th>
-                                <th class="wd-15p border-bottom-0">Request Date</th>
-                                <th class="wd-20p border-bottom-0">Status</th>
+                                <th class="wd-15p border-bottom-0">{% translate "workRequestDetailsRequestID" %}</th>
+                                <th class="wd-15p border-bottom-0">{% translate "workRequestDetailsRequestDate" %}</th>
+                                <th class="wd-20p border-bottom-0">{% translate "workRequestDetailsStatus" %}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -162,7 +162,7 @@
                                 </tr>
                             {% empty %}
                                 <tr>
-                                    <td colspan="3" class="text-center">No Draft Work Requests</td>
+                                    <td colspan="3" class="text-center">{% translate "workRequestDetailsNoDraftWorkRequests" %}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>

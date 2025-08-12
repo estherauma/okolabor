@@ -18,14 +18,14 @@
 <!-- Table header -->
 <thead>
     <tr>
-        <th class="col-checkbox">Checkbox</th>
-        <th class="col-name">Name</th>
-        <th class="col-town">Town</th>
-        <th class="col-profile">Profile Completion</th>
-        <th class="col-experience">Experience</th>
-        <th class="col-english">English Proficiency</th>
-        <th class="col-location">Location Preference</th>
-        <th class="col-status">Status</th>
+      <th class="col-checkbox">{% translate "tableHeadersCheckbox" %}</th>
+      <th class="col-name">{% translate "tableHeadersName" %}</th>
+      <th class="col-town">{% translate "tableHeadersTown" %}</th>
+      <th class="col-profile">{% translate "tableHeadersProfileCompletion" %}</th>
+      <th class="col-experience">{% translate "tableHeadersExperience" %}</th>
+      <th class="col-english">{% translate "tableHeadersEnglishProficiency" %}</th>
+      <th class="col-location">{% translate "tableHeadersLocationPreference" %}</th>
+      <th class="col-status">{% translate "tableHeadersStatus" %}</th>
     </tr>
 </thead>
 <!-- Column Settings Modal -->
@@ -33,38 +33,38 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="columnSettingsModalLabel">Choose Columns to Display</h5>
+        <h5 class="modal-title" id="columnSettingsModalLabel">{% translate "tableHeadersChooseColumnsToDisplay" %}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'webCommonClose' %}"></button>
       </div>
       <div class="modal-body">
         <form id="column-settings-form">
           <div class="form-check">
             <input class="form-check-input column-toggle" type="checkbox" data-column="col-name" id="col-name" checked>
-            <label class="form-check-label" for="col-name">Name</label>
+            <label class="form-check-label" for="col-name">{% translate "tableHeadersName" %}</label>
           </div>
           <div class="form-check">
             <input class="form-check-input column-toggle" type="checkbox" data-column="col-town" id="col-town" checked>
-            <label class="form-check-label" for="col-town">Town</label>
+            <label class="form-check-label" for="col-town">{% translate "tableHeadersTown" %}</label>
           </div>
           <div class="form-check">
             <input class="form-check-input column-toggle" type="checkbox" data-column="col-profile" id="col-profile" checked>
-            <label class="form-check-label" for="col-profile">Profile Completion</label>
+            <label class="form-check-label" for="col-profile">{% translate "tableHeadersProfileCompletion" %}</label>
           </div>
           <div class="form-check">
             <input class="form-check-input column-toggle" type="checkbox" data-column="col-experience" id="col-experience" checked>
-            <label class="form-check-label" for="col-experience">Experience</label>
+            <label class="form-check-label" for="col-experience">{% translate "tableHeadersExperience" %}</label>
           </div>
           <div class="form-check">
             <input class="form-check-input column-toggle" type="checkbox" data-column="col-english" id="col-english" checked>
-            <label class="form-check-label" for="col-english">English Proficiency</label>
+            <label class="form-check-label" for="col-english">{% translate "tableHeadersEnglishProficiency" %}</label>
           </div>
           <div class="form-check">
             <input class="form-check-input column-toggle" type="checkbox" data-column="col-location" id="col-location" checked>
-            <label class="form-check-label" for="col-location">Location Preference</label>
+            <label class="form-check-label" for="col-location">{% translate "tableHeadersLocationPreference" %}</label>
           </div>
           <div class="form-check">
             <input class="form-check-input column-toggle" type="checkbox" data-column="col-status" id="col-status" checked>
-            <label class="form-check-label" for="col-status">Status</label>
+            <label class="form-check-label" for="col-status">{% translate "tableHeadersStatus" %}</label>
           </div>
         </form>
       </div>
