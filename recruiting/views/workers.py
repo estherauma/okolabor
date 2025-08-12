@@ -515,6 +515,7 @@ class SendOfferView(View):
             role = get_object_or_404(Role, id=role_id)
 
             users_for_notification = []
+            newly_offered = []
             already_offered = []
 
             with transaction.atomic():
@@ -532,8 +533,9 @@ class SendOfferView(View):
                         work_assignment.status = 'offersent'
                         work_assignment.save()
                         users_for_notification.append(worker)
+                        newly_offered.append(worker.get_full_name() or worker.username)
                     else:
-                        already_offered.append(worker)
+                        already_offered.append(worker.get_full_name() or worker.username)
 
             for user in users_for_notification:
                 current_lang = translation.get_language()
@@ -556,14 +558,10 @@ class SendOfferView(View):
                     translation.activate(current_lang)
 
             msg_parts = []
-            if users_for_notification:
-                msg_parts.append(_("Successfully sent offer to: ") + ", ".join(
-                    [user.get_full_name() or user.username for user in users_for_notification]
-                ))
+            if newly_offered:
+                msg_parts.append(_("Successfully sent offer to: ") + ", ".join(newly_offered))
             if already_offered:
-                msg_parts.append(_("Offer already sent to: ") + ", ".join(
-                    [user.get_full_name() or user.username for user in already_offered]
-                ))
+                msg_parts.append(_("Offer already sent to: ") + ", ".join(already_offered))
 
             final_msg = " ".join(msg_parts)
             messages.success(request, final_msg)
