@@ -33,6 +33,7 @@ from recruiting.utils import calculate_total_experience,calculate_profile_comple
 from common.logger import AppLogger
 from django.contrib.auth import get_user_model
 from common.firebase_utils import send_push_notification
+from django.utils import translation
 
 
 
@@ -496,6 +497,7 @@ class AssignWorkerView(View):
         except Exception as e:
             messages.error(request, str(e))
             return JsonResponse({"success": False, "message": str(e)}, status=400)
+        
 @method_decorator(csrf_exempt, name='dispatch')
 class SendOfferView(View):
     def post(self, request, *args, **kwargs):
@@ -519,7 +521,7 @@ class SendOfferView(View):
             with transaction.atomic():
                 for worker_id in worker_ids:
                     worker = get_object_or_404(User, id=worker_id)
-                    
+
                     work_assignment, created = WorkAssignment.objects.get_or_create(
                         worker=worker,
                         role=role,
@@ -535,34 +537,32 @@ class SendOfferView(View):
                     else:
                         already_offered.append(worker.get_full_name() or worker.username)
 
+            for user in users_for_notification:
+                current_lang = translation.get_language()
+                try:
+                    translation.activate(user.language)
+                    UserNotification.objects.create(
+                        user=user,
+                        title=_("workRequestAddNotificationTitle"),
+                        message=_("workRequestAddNotificationBody")
+                    )
+
+                    if user.push_notification_token:
+                        send_push_notification(
+                            tokens=[user.push_notification_token],
+                            title=str(_('workRequestAddNotificationTitle')),
+                            body=str(_('workRequestAddNotificationBody')),
+                            data={'type': 'job_offer', 'job_id': role_id}
+                        )
+                finally:
+                    translation.activate(current_lang)
+
             msg_parts = []
             if newly_offered:
                 msg_parts.append(_("Successfully sent offer to: ") + ", ".join(newly_offered))
             if already_offered:
                 msg_parts.append(_("Offer already sent to: ") + ", ".join(already_offered))
 
-            # Send notifications
-            user_push_tokens = []
-            for user in users_for_notification:
-                if user.push_notification_token:
-                    user_push_tokens.append(user.push_notification_token)
-
-                UserNotification.objects.create(
-                    user=user,
-                    title=_("workRequestAddNotificationTitle"),
-                    message=_("workRequestAddNotificationBody")
-                )
-            
-            if user_push_tokens:
-                title = str(_("workRequestAddNotificationTitle"))
-                body = str(_("workRequestAddNotificationBody"))
-                send_push_notification(
-                    tokens=user_push_tokens,
-                    title=title,
-                    body=body,
-                    data={'type': 'job_offer'}
-                )
-            
             final_msg = " ".join(msg_parts)
             messages.success(request, final_msg)
             return JsonResponse({'success': True, 'message': final_msg})
@@ -570,7 +570,7 @@ class SendOfferView(View):
         except Exception as e:
             messages.error(request, str(e))
             return JsonResponse({"success": False, "message": str(e)}, status=400)
-
+        
 @method_decorator(csrf_exempt, name='dispatch')
 class GetWorkerDetailsView(View):
     def post(self, request, *args, **kwargs):
