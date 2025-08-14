@@ -86,11 +86,11 @@ class Role(AuditableModel):
         return f'{self.title}'
 
 STATUS_CHOICES = sorted([
-    ('assigned', 'Assigned'),
-    ('offersent', 'Offer Sent'),
-    ('confirmed', 'Confirmed'),
-    ('rejected', 'Rejected'),
-    ('cancelled', 'Cancelled'),
+    ('assigned', _('workersListAssigned')),
+    ('offersent', _('workersListOfferSent')),
+    ('confirmed', _('workersListConfirmed')),
+    ('rejected', _('workersListRejected')),
+    ('cancelled', _('workersListCancelled')),
 ], key=lambda x: str(x[1]))
 class WorkAssignment(AuditableModel):
     STATUS_CHOICES = STATUS_CHOICES

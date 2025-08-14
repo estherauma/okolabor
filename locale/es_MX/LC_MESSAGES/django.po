@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-12 16:10+0300\n"
+"POT-Creation-Date: 2025-08-13 15:01+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1208,8 +1208,15 @@ msgid "createJobOrderStatus"
 msgstr "Estado"
 
 #: recruiting/forms.py:108
-msgid "Work Request"
-msgstr ""
+#: recruiting/templates/recruiting/workers/add_shortlist_modal.html:22
+#: recruiting/templates/recruiting/workers/manage_tabs/tabs.html:258
+#: recruiting/templates/recruiting/workers/manage_tabs/worker_confirmed.html:94
+#: recruiting/templates/recruiting/workers/manage_tabs/worker_offersent.html:97
+#: recruiting/templates/recruiting/workers/manage_tabs/worker_rejected.html:72
+#: recruiting/templates/recruiting/workers/manage_tabs/worker_shortlist.html:100
+#: recruiting/templates/recruiting/workers/offer_sent_modal.html:22
+msgid "workersListWorkRequest"
+msgstr "Orden de trabajo"
 
 #: recruiting/forms.py:116
 msgid "Worker"
@@ -1691,6 +1698,26 @@ msgstr "Abierto"
 #: recruiting/models.py:44
 msgid "createJobOrderClosed"
 msgstr "Cerrado"
+
+#: recruiting/models.py:89
+msgid "workersListAssigned"
+msgstr "Asignado"
+
+#: recruiting/models.py:90
+msgid "workersListOfferSent"
+msgstr "Oferta enviada"
+
+#: recruiting/models.py:91
+msgid "workersListConfirmed"
+msgstr "Confirmado"
+
+#: recruiting/models.py:92
+msgid "workersListRejected"
+msgstr "Rechazado"
+
+#: recruiting/models.py:93
+msgid "workersListCancelled"
+msgstr "Cancelado"
 
 #: recruiting/models.py:131 recruiting/models.py:161
 #: recruiting/templates/recruiting/work_requests/edit_deduction_modal.html:54
@@ -2303,7 +2330,7 @@ msgstr "No hay contactos disponibles"
 
 #: recruiting/templates/recruiting/recruiters_list/details.html:150
 msgid "recruiterDetailsWorkRequestID"
-msgstr "ID de solicitud de trabajo"
+msgstr "ID de orden de trabajo"
 
 #: recruiting/templates/recruiting/recruiters_list/details.html:151
 msgid "recruiterDetailsStartDate"
@@ -2675,7 +2702,7 @@ msgstr "Entregar"
 msgid "Add Role"
 msgstr "Agregar rol"
 
-#: recruiting/templates/recruiting/work_requests/create_role.html:69
+#: recruiting/templates/recruiting/work_requests/create_role.html:70
 msgid "addRoleSubmit"
 msgstr "Entregar"
 
@@ -2864,15 +2891,8 @@ msgid "jobOrderDetailsRequestedWorkerCategories"
 msgstr "Categorías de trabajadores solicitadas"
 
 #: recruiting/templates/recruiting/work_requests/detail.html:99
-#: recruiting/templates/recruiting/work_requests/detail.html:403
-#: recruiting/templates/recruiting/work_requests/detail.html:481
-#: recruiting/templates/recruiting/work_requests/detail.html:559
-#: recruiting/templates/recruiting/work_requests/detail.html:626
-#: recruiting/templates/recruiting/work_requests/detail.html:751
-#: recruiting/templates/recruiting/work_requests/detail.html:824
-#: recruiting/templates/recruiting/work_requests/detail.html:901
-msgid "webCommonAdd"
-msgstr "Agregar"
+msgid "jobOrderDetailsAddRole"
+msgstr "Agregar rol"
 
 #: recruiting/templates/recruiting/work_requests/detail.html:116
 msgid "jobOrderDetailsEdit"
@@ -2967,6 +2987,16 @@ msgstr "Número USDOL"
 #: recruiting/templates/recruiting/work_requests/detail.html:397
 msgid "joDetailsHoursHours"
 msgstr "Horas"
+
+#: recruiting/templates/recruiting/work_requests/detail.html:403
+#: recruiting/templates/recruiting/work_requests/detail.html:481
+#: recruiting/templates/recruiting/work_requests/detail.html:559
+#: recruiting/templates/recruiting/work_requests/detail.html:626
+#: recruiting/templates/recruiting/work_requests/detail.html:751
+#: recruiting/templates/recruiting/work_requests/detail.html:824
+#: recruiting/templates/recruiting/work_requests/detail.html:901
+msgid "webCommonAdd"
+msgstr "Agregar"
 
 #: recruiting/templates/recruiting/work_requests/detail.html:425
 msgid "joDetailsHoursEstimatedWeeklyHours"
@@ -3449,7 +3479,7 @@ msgstr "Cancelar"
 
 #: recruiting/templates/recruiting/work_requests/list.html:210
 msgid "jobOrderListEditWorkRequest"
-msgstr "Editar solicitud de trabajo"
+msgstr "Editar orden de trabajo"
 
 #: recruiting/templates/recruiting/work_requests/list.html:215
 msgid "jobOrderListName"
@@ -3484,7 +3514,7 @@ msgstr "Ofertas enviada"
 #: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:33
 #: recruiting/templates/recruiting/workers/manage_tabs/tabs.html:243
 msgid "workRequestAddWorkerConfirmed"
-msgstr "Ofertas Aceptadas"
+msgstr "Ofertas aceptadas"
 
 #: recruiting/templates/recruiting/work_requests/summaryList/summarylist.html:43
 msgid "advancedFilter"
@@ -3622,16 +3652,6 @@ msgstr ""
 #: recruiting/templates/recruiting/workers/add_shortlist_modal.html:11
 msgid "workersListAssignWorker"
 msgstr "Asignar trabajador"
-
-#: recruiting/templates/recruiting/workers/add_shortlist_modal.html:22
-#: recruiting/templates/recruiting/workers/manage_tabs/tabs.html:258
-#: recruiting/templates/recruiting/workers/manage_tabs/worker_confirmed.html:94
-#: recruiting/templates/recruiting/workers/manage_tabs/worker_offersent.html:97
-#: recruiting/templates/recruiting/workers/manage_tabs/worker_rejected.html:72
-#: recruiting/templates/recruiting/workers/manage_tabs/worker_shortlist.html:100
-#: recruiting/templates/recruiting/workers/offer_sent_modal.html:22
-msgid "workersListWorkRequest"
-msgstr "Solicitud de trabajo"
 
 #: recruiting/templates/recruiting/workers/add_shortlist_modal.html:24
 #: recruiting/templates/recruiting/workers/manage_tabs/tabs.html:262
@@ -3976,7 +3996,7 @@ msgid "workersListActions"
 msgstr "Comportamiento"
 
 #: recruiting/templates/recruiting/workers/manage_tabs/all_workers_list.html:99
-msgid "workersListAddToShortlist"
+msgid "workersListAddToShortlists"
 msgstr "Añadir a la lista de favoritos"
 
 #: recruiting/templates/recruiting/workers/manage_tabs/all_workers_list.html:111
@@ -4295,8 +4315,7 @@ msgstr ""
 
 #: recruiting/templates/recruiting/workers/manage_tabs/worker_confirmed.html:70
 #: recruiting/templates/recruiting/workers/manage_tabs/worker_offersent.html:67
-#: recruiting/templates/recruiting/workers/manage_tabs/worker_shortlist.html:71
-msgid "cancelOffer"
+msgid "workRequestAddWorkerCancelOffer"
 msgstr "Cancelar oferta"
 
 #: recruiting/templates/recruiting/workers/manage_tabs/worker_confirmed.html:95
@@ -4304,7 +4323,11 @@ msgstr "Cancelar oferta"
 #: recruiting/templates/recruiting/workers/manage_tabs/worker_rejected.html:73
 #: recruiting/templates/recruiting/workers/manage_tabs/worker_shortlist.html:101
 msgid "workersWorkRequestRole"
-msgstr "Rol de solicitud de trabajo"
+msgstr "Rol de orden de trabajo"
+
+#: recruiting/templates/recruiting/workers/manage_tabs/worker_shortlist.html:71
+msgid "workRequestAddWorkerShortlistCancelOffer"
+msgstr "Eliminar de la lista de favoritos"
 
 #: recruiting/templates/recruiting/workers/offer_sent_modal.html:11
 msgid "OfferSentWorker"
@@ -5875,6 +5898,9 @@ msgstr "Has cerrado sesión exitosamente."
 msgid "loginYouHaveSuccessfullyLoggedIn"
 msgstr "Has iniciado sesión exitosamente."
 
+#~ msgid "cancelOffer"
+#~ msgstr "Cancelar oferta"
+
 #~ msgid "workRequestAddWorkerAddToShortlist"
 #~ msgstr "Añadir a la lista de favoritos"
 
@@ -5905,9 +5931,6 @@ msgstr "Has iniciado sesión exitosamente."
 #~ msgid "workersListCheckbox"
 #~ msgstr "Caja"
 
-#~ msgid "workRequestAddWorkerCancelled"
-#~ msgstr "Ofertas Canceladas"
-
 #~ msgid "workRequestAddWorkerAdvancedFilter"
 #~ msgstr "Filtrar"
 
@@ -5925,9 +5948,6 @@ msgstr "Has iniciado sesión exitosamente."
 
 #~ msgid "workRequestAddWorkerShortlistCopyWorkersToAnotherWorkRequest"
 #~ msgstr "Copiar trabajadores a otra orden de trabajo"
-
-#~ msgid "workRequestAddWorkerShortlistClose"
-#~ msgstr "Cerca"
 
 #~ msgid "workRequestAddWorkerShortlistSelectWorkRequest"
 #~ msgstr "Seleccionar orden de trabajo"

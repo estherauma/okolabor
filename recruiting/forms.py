@@ -105,7 +105,7 @@ class WorkerAssignmentForm(forms.ModelForm):
     work_request = forms.ModelMultipleChoiceField(
         queryset=WorkRequests.objects.all(),
         widget=forms.SelectMultiple(attrs={'class': 'form-control'}),
-        label=_("Work Request")
+        label=_("workersListWorkRequest")
     )
 
     class Meta:
