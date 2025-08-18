@@ -129,7 +129,7 @@ class UserListView(LoginRequiredMixin, View):
         role = request.POST.get('role')
 
         if not all([first_name, last_name, user_email, role]):
-            messages.error(request, _("addUserAllFieldsAreRequired."))
+            messages.error(request, _("manageUsersAddUserAllFieldsAreRequired"))
             return redirect('manage_users')
 
         user = User.objects.create(
@@ -183,14 +183,14 @@ class RecruiterManageDeleteView(LoginRequiredMixin, View):
         if user.groups.filter(name='admin').exists():
             recruiter_name = f"{recruiter_user.first_name} {recruiter_user.last_name}"
             recruiter_user.delete()  # Directly deletes the user
-            messages.success(request, _('Recruiter "%(recruiter_name)s" deleted successfully.') % {'recruiter_name': recruiter_name})
+            messages.success(request, _('recruiterAdminListRecruiter "%(recruiter_name)s" deleted successfully.') % {'recruiter_name': recruiter_name})
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
             return redirect('manage_users')
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
-            return HttpResponseForbidden(_("You do not have permission to delete this recruiter."))
+            return HttpResponseForbidden(_("recruiterAdminListYouDoNotHavePermissionToDeleteThisRecruiter"))
 
 class EmployerManageDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
@@ -200,14 +200,14 @@ class EmployerManageDeleteView(LoginRequiredMixin, View):
         if user.groups.filter(name='admin').exists():
             employer_name = f"{employer_user.first_name} {employer_user.last_name}"
             employer_user.delete()
-            messages.success(request, _('Employer "%(employer_name)s" deleted successfully.') % {'employer_name': employer_name})
+            messages.success(request, _('employerAminListEmployer "%(employer_name)s" deleted successfully') % {'employer_name': employer_name})
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
             return redirect('manage_users')
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
-            return HttpResponseForbidden(_("You do not have permission to delete this employer."))
+            return HttpResponseForbidden(_("employerAminListYouDoNotHavePermissionToDeleteThisEmployer"))
 
 
 class UserActivitLogView(LoginRequiredMixin, View):
@@ -384,7 +384,7 @@ def edit_worker(request, curp):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({'success': True})
 
-        messages.success(request, _('WorkerUpdatedSuccessfully.'))
+        messages.success(request, _('workersListWorkerUpdatedSuccessfully'))
         return redirect('manage_users')
 
     return redirect('manage_users')
@@ -398,13 +398,13 @@ class WorkerModalCreateView(View):
                 worker_group = Group.objects.get(name='worker')
                 worker.groups.add(worker_group)
             except Group.DoesNotExist:
-                messages.error(request, _("WorkerGroupDoesNotExistPleaseCreateIt."))
+                messages.error(request, _("workersListWorkerGroupDoesNotExistPleaseCreateIt"))
                 return redirect('manage_users')
                 
-            messages.success(request, _("workerCreatedSuccessfully."))
+            messages.success(request, _("workersListWorkerCreatedSuccessfully"))
             return redirect('manage_users')
         else:
-            messages.error(request, _("pleaseCorrectTheErrorsInTheForm"))
+            messages.error(request, _("workersListPleaseCorrectTheErrorsInTheForm"))
             return redirect('manage_users')
         
 
@@ -417,13 +417,13 @@ class RecruiterAdminModalCreateView(View):
                 recruiter_group = Group.objects.get(name='recruiter_admin')
                 recruiter.groups.add(recruiter_group)
             except Group.DoesNotExist:
-                messages.error(request, _("recruiterAdminGroupDoesNotExistPleaseCreateIt."))
+                messages.error(request, _("recruiterAdminListGroupDoesNotExistPleaseCreateIt"))
                 return redirect('manage_users')
 
-            messages.success(request, _("recruiterAdminCreatedSuccessfully."))
+            messages.success(request, _("recruiterAdminListCreatedSuccessfully"))
             return redirect('manage_users')
         else:
-            messages.error(request, _("pleaseCorrectTheErrorsInTheForm."))
+            messages.error(request, _("recruiterAdminListPleaseCorrectTheErrorsInTheForm"))
             return redirect('manage_users')
         
 
@@ -484,28 +484,28 @@ def assign_organization(request):
     try:
         selected_users = json.loads(selected_users or "[]")
     except json.JSONDecodeError:
-        messages.error(request, _("invalidUserSelection."))
-        return JsonResponse({"success": False, "error": _("invalidUserSelection")})
+        messages.error(request, _("addEmployerInvalidUserSelection"))
+        return JsonResponse({"success": False, "error": _("addEmployerInvalidUserSelection")})
 
     if not org_id or not selected_users:
-        messages.error(request, _("pleaseSelectUsersAndanOrganization."))
-        return JsonResponse({"success": False, "error": _("pleaseSelectUsersAndAnOrganization.")})
+        messages.error(request, _("addEmployerPleaseSelectUsersAndAnOrganization"))
+        return JsonResponse({"success": False, "error": _("addEmployerPleaseSelectUsersAndAnOrganization")})
 
     org = get_object_or_404(Organization, id=org_id)
     users = User.objects.filter(id__in=selected_users)
 
     if not users.exists():
-        messages.error(request, _("noValidUsersSelected."))
-        return JsonResponse({"success": False, "error": _("noValidUsersSelected.")})
+        messages.error(request, _("addEmployerNoValidUsersSelected"))
+        return JsonResponse({"success": False, "error": _("addEmployerNoValidUsersSelected")})
 
     try:
         for user in users:
             user.organizations.add(org)
-        messages.success(request, _("Organization assigned successfully to selected users."))
-        return JsonResponse({"success": True, "message": _("Organization assigned successfully to selected users.")})
+        messages.success(request, _("addEmployerOrganizationAssignedSuccessfullyToSelectedUsers"))
+        return JsonResponse({"success": True, "message": _("addEmployerOrganizationAssignedSuccessfullyToSelectedUsers")})
     except Exception as e:
-        messages.error(request, _("failedToAssignOrganization: ") + str(e))
-        return JsonResponse({"success": False, "error": _("failedToAssignOrganization: ") + str(e)})
+        messages.error(request, _("addEmployerFailedToAssignOrganization: ") + str(e))
+        return JsonResponse({"success": False, "error": _("addEmployerFailedToAssignOrganization: ") + str(e)})
 
 class LogListView(LoginRequiredMixin, ListView):
     model = Log
