@@ -141,28 +141,28 @@
                         <div class="col-md-4 col-sm-6 col-xs-6">
                             <div class="form-group">
                                 <label class="form-label gray-color">
-                                    {% translate "Select Filter" %}
+                                    {% translate "filterSectionSelectFilter" %}
                                 </label>
                                 <select class="form-control" name="random_filter">
-                                    <option value="">{% translate "Choose a filter" %}</option>
-                                    <option value="years_of_experience">{% translate "Years of Experience" %}</option>
-                                    <option value="references">{% translate "References" %}</option>
-                                    <option value="availability">{% translate "Availability" %}</option>
-                                    <option value="h2a_experience">{% translate "H-2A Experience" %}</option>
-                                    <option value="h2b_experience">{% translate "H-2B Experience" %}</option>
-                                    <option value="work_pictures">{% translate "Relevant Work Pictures" %}</option>
-                                    <option value="exclude_physical_limitations">{% translate "Exclude Workers with Physical Labor Limitations" %}</option>
-                                    <option value="age">{% translate "Age" %}</option>
-                                    <option value="gender">{% translate "Gender" %}</option>
-                                    <option value="profile">{% translate "Profile" %}</option>
-                                    <option value="passport">{% translate "Passport" %}</option>
-                                    <option value="us_driving_license">{% translate "US Driving License" %}</option>
-                                    <option value="mx_us_driving_license">{% translate "US-Mexican Driving License" %}</option>
-                                    <option value="language_proficiency">{% translate "Language Proficiency" %}</option>
-                                    <option value="work_preference_location">{% translate "Work Preference Location" %}</option>
-                                    <option value="work_preference_type">{% translate "Work Preference Type" %}</option>
-                                    <option value="visa">{% translate "Visa" %}</option>
-                                    <option value="explanation_video">{% translate "Explanation Video" %}</option>
+                                    <option value="">{% translate "filterSectionChooseAFilter" %}</option>
+                                    <option value="years_of_experience">{% translate "filterSectionYearsofExperience" %}</option>
+                                    <option value="references">{% translate "filterSectionReferences" %}</option>
+                                    <option value="availability">{% translate "filterSectionAvailability" %}</option>
+                                    <option value="h2a_experience">{% translate "filterSectionH-2AExperience" %}</option>
+                                    <option value="h2b_experience">{% translate "filterSectionH-2BExperience" %}</option>
+                                    <option value="work_pictures">{% translate "filterSectionRelevantWorkPictures" %}</option>
+                                    <option value="exclude_physical_limitations">{% translate "filterSectionExcludeWorkerswithPhysicalLaborLimitations" %}</option>
+                                    <option value="age">{% translate "filterSectionAge" %}</option>
+                                    <option value="gender">{% translate "filterSectionGender" %}</option>
+                                    <option value="profile">{% translate "filterSectionProfile" %}</option>
+                                    <option value="passport">{% translate "filterSectionPassport" %}</option>
+                                    <option value="us_driving_license">{% translate "filterSectionUSDrivingLicense" %}</option>
+                                    <option value="mx_us_driving_license">{% translate "filterSectionUS-MexicanDrivingLicense" %}</option>
+                                    <option value="language_proficiency">{% translate "filterSectionLanguageProficiency" %}</option>
+                                    <option value="work_preference_location">{% translate "filterSectionWorkPreferenceLocation" %}</option>
+                                    <option value="work_preference_type">{% translate "filterSectionWorkPreferenceType" %}</option>
+                                    <option value="visa">{% translate "filterSectionVisa" %}</option>
+                                    <option value="explanation_video">{% translate "filterSectionExplanationVideo" %}</option>
                                 </select>
                             </div>
                         </div>
@@ -178,10 +178,10 @@
                     <!-- Add / Clear Buttons -->
                 <div class="mt-3">
                     <button class="btn light-green-button me-2" type="button" onclick="addRandomFilter()">
-                        <i class="fe fe-plus"></i> {% translate "Add Another Filter" %}
+                        <i class="fe fe-plus"></i> {% translate "filterSectionAddAnotherFilter" %}
                     </button>
                     <button class="btn light-green-button" type="button" onclick="clearAllFilters()">
-                        {% translate "Clear Filters" %}
+                        {% translate "filterSectionClearFilters" %}
                     </button>
                     <button class="btn light-green-button min-content-width ms-3" type="submit">
                         {% translate "workersListApplyFilters" %}
@@ -648,28 +648,28 @@ function addRandomFilter() {
         <div class="col-md-4 col-sm-6 col-xs-6">
             <div class="form-group">
                 <label class="form-label gray-color">
-                    {% translate "Select Filter" %}
+                    {% translate "filterSectionSelectFilter" %}
                 </label>
                 <select class="form-control" name="random_filter" onchange="handleFilterChange(this, ${uniqueId});updateCollapseSummary();">
-                    <option value="">{% translate "Choose a filter" %}</option>
-                    <option value="years_of_experience">{% translate "Years of Experience" %}</option>
-                    <option value="references">{% translate "References" %}</option>
-                    <option value="availability">{% translate "Availability" %}</option>
-                    <option value="h2a_experience">{% translate "H-2A Experience" %}</option>
-                    <option value="h2b_experience">{% translate "H-2B Experience" %}</option>
-                    <option value="work_pictures">{% translate "Relevant Work Pictures" %}</option>
-                    <option value="exclude_physical_limitations">{% translate "Exclude Workers with Physical Labor Limitations" %}</option>
-                    <option value="age">{% translate "Age" %}</option>
-                    <option value="gender">{% translate "Gender" %}</option>
-                    <option value="profile">{% translate "Profile" %}</option>
-                    <option value="passport">{% translate "Passport" %}</option>
-                    <option value="us_driving_license">{% translate "US Driving License" %}</option>
-                    <option value="mx_us_driving_license">{% translate "US-Mexican Driving License" %}</option>
-                    <option value="language_proficiency">{% translate "Language Proficiency" %}</option>
-                    <option value="work_preference_location">{% translate "Work Preference Location" %}</option>
-                    <option value="work_preference_type">{% translate "Work Preference Type" %}</option>
-                    <option value="visa">{% translate "Visa" %}</option>
-                    <option value="explanation_video">{% translate "Explanation Video" %}</option>
+                    <option value="">{% translate "filterSectionChooseAFilter" %}</option>
+                    <option value="years_of_experience">{% translate "filterSectionYearsofExperience" %}</option>
+                    <option value="references">{% translate "filterSectionReferences" %}</option>
+                    <option value="availability">{% translate "filterSectionAvailability" %}</option>
+                    <option value="h2a_experience">{% translate "filterSectionH-2AExperience" %}</option>
+                    <option value="h2b_experience">{% translate "filterSectionH-2BExperience" %}</option>
+                    <option value="work_pictures">{% translate "filterSectionRelevantWorkPictures" %}</option>
+                    <option value="exclude_physical_limitations">{% translate "filterSectionExcludeWorkerswithPhysicalLaborLimitations" %}</option>
+                    <option value="age">{% translate "filterSectionAge" %}</option>
+                    <option value="gender">{% translate "filterSectionGender" %}</option>
+                    <option value="profile">{% translate "filterSectionProfile" %}</option>
+                    <option value="passport">{% translate "filterSectionPassport" %}</option>
+                    <option value="us_driving_license">{% translate "filterSectionUSDrivingLicense" %}</option>
+                    <option value="mx_us_driving_license">{% translate "filterSectionUS-MexicanDrivingLicense" %}</option>
+                    <option value="language_proficiency">{% translate "filterSectionLanguageProficiency" %}</option>
+                    <option value="work_preference_location">{% translate "filterSectionWorkPreferenceLocation" %}</option>
+                    <option value="work_preference_type">{% translate "filterSectionWorkPreferenceType" %}</option>
+                    <option value="visa">{% translate "filterSectionVisa" %}</option>
+                    <option value="explanation_video">{% translate "filterSectionExplanationVideo" %}</option>
                 </select>
 
             </div>
@@ -694,11 +694,11 @@ function handleFilterChange(selectEl, uniqueId) {
             html = `
                 <div class="row">
                     <div class="col">
-                        <label class="form-label gray-color">{% translate "Availability From" %}</label>
+                        <label class="form-label gray-color">{% translate "filterSectionAvailabilityFrom" %}</label>
                         <input type="date" class="form-control" name="availability_from_${uniqueId}" onchange="updateCollapseSummary()" />
                     </div>
                     <div class="col">
-                        <label class="form-label gray-color">{% translate "Availability To" %}</label>
+                        <label class="form-label gray-color">{% translate "filterSectionAvailabilityTo" %}</label>
                         <input type="date" class="form-control" name="availability_to_${uniqueId}" onchange="updateCollapseSummary()" />
                     </div>
                 </div>`;
@@ -709,11 +709,11 @@ function handleFilterChange(selectEl, uniqueId) {
             html = `
                 <div class="row">
                     <div class="col">
-                        <label class="form-label gray-color">{% translate "Min" %}</label>
+                        <label class="form-label gray-color">{% translate "filterSectionMin" %}</label>
                         <input type="number" class="form-control" name="${selectedValue}_min_${uniqueId}" min="0" onchange="updateCollapseSummary()" />
                     </div>
                     <div class="col">
-                        <label class="form-label gray-color">{% translate "Max" %}</label>
+                        <label class="form-label gray-color">{% translate "filterSectionMax" %}</label>
                         <input type="number" class="form-control" name="${selectedValue}_max_${uniqueId}" min="0" onchange="updateCollapseSummary()" />
                     </div>
                 </div>`;
@@ -722,11 +722,11 @@ function handleFilterChange(selectEl, uniqueId) {
         case "gender":
             html = `
                 <div class="form-group">
-                    <label class="form-label gray-color">{% translate "Select Gender" %}</label>
+                    <label class="form-label gray-color">{% translate "filterSectionSelectGender" %}</label>
                     <select class="form-control" name="gender_${uniqueId}" onchange="updateCollapseSummary()>
-                        <option value="">{% translate "Select" %}</option>
-                        <option value="male">{% translate "Male" %}</option>
-                        <option value="female">{% translate "Female" %}</option>
+                        <option value="">{% translate "filterSectionSelect" %}</option>
+                        <option value="male">{% translate "filterSectionMale" %}</option>
+                        <option value="female">{% translate "filterSectionFemale" %}</option>
                     </select>
                 </div>`;
             break;
@@ -734,7 +734,7 @@ function handleFilterChange(selectEl, uniqueId) {
         case "work_preference_location":
                 html = `
                     <div class="form-group">
-                        <label class="form-label gray-color">{% translate "Select Work Preference Location" %}</label>
+                        <label class="form-label gray-color">{% translate "filterSectionSelectWorkPreferenceLocation" %}</label>
                         <select class="form-control" name="work_preference_location_${uniqueId}" multiple onchange="updateCollapseSummary()">
                             <option value="usa">USA</option>
                             <option value="mexico">Mexico</option>
@@ -748,14 +748,14 @@ function handleFilterChange(selectEl, uniqueId) {
         case "exclude_physical_limitations":
             html = `
                 <div class="form-group">
-                    <label class="form-label gray-color">{% translate "Select a Physical Limitation Question" %}</label>
+                    <label class="form-label gray-color">{% translate "filterSectionSelectaPhysicalLimitationQuestion" %}</label>
                     <select class="form-control" name="physical_limitation_question_${uniqueId}" onchange="handlePhysicalQuestionChange(this, ${uniqueId});updateCollapseSummary();">
-                        <option value="">{% translate "Select" %}</option>
-                        <option value="condition_limit">{% translate "Do you have any physical or mental condition that could limit you and should be considered for a labor intensive job?" %}</option>
-                        <option value="injury_aggravation">{% translate "Have you suffered an injury that could be aggravated by intense physical activity?" %}</option>
-                        <option value="stand_long">{% translate "Are you willing and able to work on your feet for long periods of time?" %}</option>
-                        <option value="lift_weight">{% translate "Are you willing and able to lift/carry up to 60 pounds (27kg)?" %}</option>
-                        <option value="extreme_temps">{% translate "Are you unwilling to work in either hot or cold temperatures?" %}</option>
+                        <option value="">{% translate "filterSectionSelect" %}</option>
+                        <option value="condition_limit">{% translate "filterSectionDoYouHaveAnyPhysicalOrMentalConditionThatCouldLimitYouAndShouldBeConsideredForALaborIntensiveJob" %}</option>
+                        <option value="injury_aggravation">{% translate "filterSectionHaveYouSufferedAnInjuryThatCouldBeAggravatedByIntensePhysicalActivity" %}</option>
+                        <option value="stand_long">{% translate "filterSectionAreYouWillingAndAbleToWorkOnYourFeetForLongPeriodsOfTime" %}</option>
+                        <option value="lift_weight">{% translate "filterSectionAreYouWillingAndAbleToLiftCarryUpTo60Pounds27kg" %}</option>
+                        <option value="extreme_temps">{% translate "filterSectionAreYouUnwillingToWorkInEitherHotOrColdTemperatures" %}</option>
                     </select>
                 </div>
                 <div class="form-group mt-2" id="physical-yesno-container-${uniqueId}"></div>
@@ -765,13 +765,13 @@ function handleFilterChange(selectEl, uniqueId) {
         case "work_preference_type":
             html = `
                 <div class="form-group">
-                    <label class="form-label gray-color">{% translate "Select Work Preference Type" %}</label>
+                    <label class="form-label gray-color">{% translate "filterSectionSelectWorkPreferenceType" %}</label>
                     <select class="form-control" name="work_preference_type_${uniqueId}" onchange="updateCollapseSummary()">
-                        <option value="">{% translate "Select Type" %}</option>
-                        <option value="farm">Farm Work</option>
-                        <option value="construction">Construction</option>
-                        <option value="hospitality">Hospitality</option>
-                        <option value="manufacturing">Manufacturing</option>
+                        <option value="">{% translate "filterSectionSelectType" %}</option>
+                        <option value="farm">{% translate "filterSectionFarmWork"%}</option>
+                        <option value="construction">{% translate "filterSectionConstraction"%}</option>
+                        <option value="hospitality">{% translate "filterSectionHospitality"%}</option>
+                        <option value="manufacturing">{% translate "filterSectionManufacturing"%}</option>
                     </select>
                 </div>`;
             break;
@@ -779,13 +779,13 @@ function handleFilterChange(selectEl, uniqueId) {
         case "language_proficiency":
             html = `
                 <div class="form-group">
-                    <label class="form-label gray-color">{% translate "Level of Proficiency" %}</label>
+                    <label class="form-label gray-color">{% translate "filterSectionLevelofProficiency" %}</label>
                     <select class="form-control" name="language_proficiency_level_${uniqueId}" onchange="handleLanguageProficiencyChange(this, ${uniqueId}); updateCollapseSummary();">
-                        <option value="">{% translate "Select" %}</option>
-                        <option value="fluent">{% translate "Fluent" %}</option>
-                        <option value="medium">{% translate "Medium" %}</option>
-                        <option value="basic">{% translate "Basic" %}</option>
-                        <option value="none">{% translate "None" %}</option>
+                        <option value="">{% translate "filterSectionSelect" %}</option>
+                        <option value="fluent">{% translate "filterSectionFluent" %}</option>
+                        <option value="medium">{% translate "filterSectionMedium" %}</option>
+                        <option value="basic">{% translate "filterSectionBasic" %}</option>
+                        <option value="none">{% translate "filterSectionNone" %}</option>
                     </select>
                 </div>
                 <div class="form-group mt-2" id="language-video-container-${uniqueId}"></div>
@@ -796,11 +796,11 @@ function handleFilterChange(selectEl, uniqueId) {
         case "explanation_video":
             html = `
                 <div class="form-group">
-                    <label class="form-label gray-color">{% translate "Has" %} ${selectEl.options[selectEl.selectedIndex].text}?</label>
+                    <label class="form-label gray-color">{% translate "filterSectionHas" %} ${selectEl.options[selectEl.selectedIndex].text}?</label>
                     <select class="form-control" name="${selectedValue}_${uniqueId}" onchange="updateCollapseSummary()">
-                        <option value="">{% translate "Select" %}</option>
-                        <option value="yes">{% translate "Yes" %}</option>
-                        <option value="no">{% translate "No" %}</option>
+                        <option value="">{% translate "filterSectionSelect" %}</option>
+                        <option value="yes">{% translate "filterSectionYes" %}</option>
+                        <option value="no">{% translate "filterSectionNo" %}</option>
                     </select>
                 </div>
             `;
@@ -817,11 +817,11 @@ function handleFilterChange(selectEl, uniqueId) {
         case "mx_us_driving_license":
             html = `
                 <div class="form-group">
-                    <label class="form-label gray-color">{% translate "Has" %} ${selectEl.options[selectEl.selectedIndex].text}?</label>
+                    <label class="form-label gray-color">{% translate "filterSectionHas" %} ${selectEl.options[selectEl.selectedIndex].text}?</label>
                     <select class="form-control" name="${selectedValue}_${uniqueId}" onchange="updateCollapseSummary()">
-                        <option value="">{% translate "Select" %}</option>
-                        <option value="yes">{% translate "Yes" %}</option>
-                        <option value="no">{% translate "No" %}</option>
+                        <option value="">{% translate "filterSectionSelect" %}</option>
+                        <option value="yes">{% translate "filterSectionYes" %}</option>
+                        <option value="no">{% translate "filterSectionNo" %}</option>
                     </select>
                 </div>`;
             break;
@@ -838,11 +838,11 @@ function handlePhysicalQuestionChange(selectEl, uniqueId) {
     const yesNoContainer = document.getElementById(`physical-yesno-container-${uniqueId}`);
     if (selectEl.value) {
         yesNoContainer.innerHTML = `
-            <label class="form-label gray-color">{% translate "Your Answer" %}</label>
+            <label class="form-label gray-color">{% translate "filterSectionYourAnswer" %}</label>
             <select class="form-control" name="${selectEl.value}_answer_${uniqueId}" onchange="updateCollapseSummary()">
-                <option value="">{% translate "Select" %}</option>
-                <option value="yes">{% translate "Yes" %}</option>
-                <option value="no">{% translate "No" %}</option>
+                <option value="">{% translate "filterSectionSelect" %}</option>
+                <option value="yes">{% translate "filterSectionYes" %}</option>
+                <option value="no">{% translate "filterSectionNo" %}</option>
             </select>
         `;
     } else {
@@ -857,11 +857,11 @@ function handleLanguageProficiencyChange(selectEl, uniqueId) {
 
     if (selectedValue && selectedValue !== 'none') {
         videoContainer.innerHTML = `
-            <label class="form-label gray-color">{% translate "Has video file?" %}</label>
+            <label class="form-label gray-color">{% translate "filterSectionHasVideoFile" %}</label>
             <select class="form-control" name="language_video_${uniqueId}" onchange="updateCollapseSummary()">
-                <option value="">{% translate "Select" %}</option>
-                <option value="yes">{% translate "Yes" %}</option>
-                <option value="no">{% translate "No" %}</option>
+                <option value="">{% translate "filterSectionSelect" %}</option>
+                <option value="yes">{% translate "filterSectionYes" %}</option>
+                <option value="no">{% translate "filterSectionNo" %}</option>
             </select>
         `;
     } else {

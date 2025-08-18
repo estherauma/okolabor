@@ -2,7 +2,7 @@
 {% load i18n %}
 {% block body %}
 <h1>
- {% translate "notificationsNotifications" %}
+  {% translate "notificationsNotifications" %}
 </h1>
 <hr/>
 <div class="container-dropdown">
@@ -54,7 +54,7 @@
        {{ notification.message }}
       </p>
       <small>
-       {% translate "notificationsCategory"%}: {{ notification.category }}
+        {% translate "notificationsCategory"%}: {{ notification.category }}
       </small>
       <br/>
       <small>
@@ -62,7 +62,7 @@
       </small>
       <br/>
       <small>
-        {% translate "notificationsReatAt"%}: {{ notification.read_at|default:"Not read yet" }}
+        {% translate "notificationsReadAt"%}: {{ notification.read_at|default:"Not read yet" }}
       </small>
       <br/>
       <small>
@@ -70,7 +70,7 @@
       </small>
       <br/>
       <button class="close-notification" onclick="toggleMessage('message{{ forloop.counter }}'); return false;">
-       {% translate "notificationsClose" %}
+        {% translate "notificationsClose" %}
       </button>
      </div>
     </td>
@@ -80,7 +80,7 @@
  </table>
  {% else %}
  <p>
-  {% translate "notificationsNoNotificationsAvailable." %}
+  {% translate "notificationsNoNotificationsAvailable" %}
  </p>
  {% endif %}
 </div>

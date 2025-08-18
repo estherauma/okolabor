@@ -65,7 +65,10 @@ class RegistrationSerializer(serializers.Serializer):
 
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():
-            raise serializers.ValidationError('Email already exists')
+            raise serializers.ValidationError({
+                'error_key': 'email_exists',
+                'message': 'Email already exists'
+            })
         return value
 
 
@@ -110,7 +113,7 @@ class UserWorkexperienceSerializer(serializers.ModelSerializer):
     work_title = serializers.CharField(required=True)
     supervisor_name = serializers.CharField(required=False, allow_blank=True)
     supervisor_tel = serializers.CharField(required=False, allow_blank=True)
-    supervisor_email = serializers.EmailField(required=False, allow_blank=True)
+    supervisor_email = serializers.CharField(required=False, allow_blank=True)
     work_under_h2a_in_usa = serializers.CharField(allow_blank=True, required=False)
     
 

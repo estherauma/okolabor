@@ -321,9 +321,8 @@
             </div>
             
             <div class="modal-body">
-              {% blocktrans with role_title=role.title %}
-                Are you sure you want to delete the role <strong>{{ role_title }}</strong>?
-              {% endblocktrans %}
+                {% translate "addRoleAreYouSureYouWantToDeleteTheRole"%}
+                <strong>{{ role_title }}</strong>?
             </div>
             
             
@@ -575,7 +574,7 @@
                           {% translate "joDetailsDeductionFrequencyOfDeduction" %}
                           </th>
                           <th>
-                            {% translate "Actions" %}
+                            {% translate "jobOrderDetailsActions" %}
                           </th>
                       </tr>
                     </thead>

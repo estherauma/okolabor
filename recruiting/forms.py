@@ -113,8 +113,8 @@ class WorkerAssignmentForm(forms.ModelForm):
         fields = ['work_request', 'worker', 'status']
 
         labels = {
-            'worker': _("Worker"),
-            'status': _("Status"),
+            'worker': _("workersListWorker"),
+            'status': _("workersListStatus"),
         }
 
         widgets = {
@@ -425,7 +425,7 @@ class RoleDeductionForm(forms.ModelForm):
             'role': _('roleDeductionsRole'),
             'description': _('roleDeductionsDescription'),
             'deduction_amount': _('roleDeductionsDeductionAmount'),
-            'frequency_of_pay': _('roleDeductionsFrequencyOfPay'),
+            'frequency_of_pay': _('joDetailsDeductionsFrequencyOfPay'),
         }
 
         widgets = {
@@ -860,12 +860,12 @@ class RecruiterAdminCreateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['curp', 'first_name', 'last_name', 'email']
-
+        
         labels = {
-            'curp': _("curp"),
-            'first_name': _("firstName"),
-            'last_name': _("lastName"),
-            'email': _("email"),  
+            'curp': _("recruiterAdminListcurp"),
+            'first_name': _("recruiterAdminListFirstName"),
+            'last_name': _("recruiterAdminListLastName"),
+            'email': _("recruiterAdminListEmail"),  
         }
 
         widgets = {

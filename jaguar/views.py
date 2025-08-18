@@ -155,29 +155,29 @@ class DynamicFieldDataView(APIView):
             "Animals": {
                 "field1Label": _("Animal Type"),
                 "field1Options": content_service.get_animal_type_choices(),
-                "field2Label": _("Tasks"),
+                "field2Label": _("webCommonTasks"),
                 "field2Options": content_service.get_animal_responsibilities_choices()
             },
             "Crop and Horticulture": {
                 "field1Label": _("Crop Type"),
                 "field1Options": content_service.get_crop_type_choices(),
-                "field2Label": _("Tasks"),
+                "field2Label": _("webCommonTasks"),
                 "field2Options": content_service.get_crop_responsibilities_choices()
             },
             "Mechanics": {
-                "field1Label": _("Tasks"),
+                "field1Label": _("webCommonTasks"),
                 "field1Options": content_service.get_mechanics_responsibilities_choices(),
                 "field2Label": None,
                 "field2Options": None
             },
             "Worker Supervision/Management": {
-                "field1Label": _("Tasks"),
+                "field1Label": _("webCommonTasks"),
                 "field1Options": content_service.get_worker_supervision_choices(),
                 "field2Label": None,
                 "field2Options": None
             },
             "Licensed Vehicle Operation": {
-                "field1Label": _("Tasks"),
+                "field1Label": _("webCommonTasks"),
                 "field1Options": content_service.get_worker_licensed_vehicle_operation_choices(),
                 "field2Label": None,
                 "field2Options": None

@@ -25,13 +25,13 @@
 
           <!-- Employment Dates -->
           <div class="mb-3">
-            <p class="fw-bold text-uppercase small text-muted">{% translate "workExperienceDetailsDatesOfEmployment" %}</p>
+            <p class="fw-bold text-uppercase small text-muted">{% translate "jobOrderDetailsDatesOfEmployment" %}</p>
             <p>
               {{ work_experience.start_date|date:"F Y" }} –
               {% if work_experience.end_date %}
                 {{ work_experience.end_date|date:"F Y" }}
               {% else %}
-                {% translate "workExperienceDetailsPresent" %}
+                {% translate "jobOrderDetailsPresent" %}
               {% endif %}
             </p>
           </div>
@@ -44,7 +44,7 @@
 
           <!-- Job Details -->
           <div class="mb-4">
-            <p class="fw-bold text-uppercase small text-muted">{% translate "jobDetails" %}</p>
+            <p class="fw-bold text-uppercase small text-muted">Job Details</p>
             {% for job in job_experiences %}
               <p><strong>{% translate 'workExperienceDetailsCompany'%}:</strong> {{ job.work_experience.company|default:"—" }}</p>
               <p><strong>{% translate 'workExperienceDetailsPrimaryJobType'%}:</strong> {{ job.job_type|default:"—" }}</p>
@@ -81,8 +81,8 @@
           <!-- Work Authorization -->
           <div class="mb-4">
             <p class="fw-bold text-uppercase small text-muted">{% translate "workExperienceDetailsWorkAuthorization" %}</p>
-            <p>{% translate 'workExperienceDetailsVisaType'%}: {{ work_experience.visa_type|default:"No Visa Type" }}</p>
-            <p>{% translate 'workExperienceDetailsH2AWork'%}: {{ work_experience.work_under_h2a_in_usa|yesno:"Yes,No" }}</p>
+            <p>{% translate "workExperienceDetailsVisaType"%}: {{ work_experience.visa_type|default:"No Visa Type" }}</p>
+            <p>{% translate "workExperienceDetailsH2AWork"%}: {{ work_experience.work_under_h2a_in_usa|yesno:"Yes,No" }}</p>
           </div>
 
         </div>
