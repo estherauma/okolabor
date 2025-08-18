@@ -18,7 +18,7 @@
                 <div class="d-flex flex-column">
                   {% for field in form %}
                     <div class="mb-3 w-100">
-                      {% if field.field.widget.input_type == "checkbox" %}
+                      {% if field.name == "on_call" %}
                         <div class="form-check">
                           {{ field }}
                           <label class="form-check-label ms-2" for="{{ field.id_for_label }}">

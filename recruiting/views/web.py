@@ -23,7 +23,7 @@ from django.urls import reverse
 from django.core.mail import send_mail
 from django.conf import settings
 from django.utils.http import urlsafe_base64_decode
-from django.utils import timezone
+from django.utils import timezone,translation
 from django.utils.encoding import force_str
 from django.http import HttpResponseRedirect,HttpResponseForbidden
 from django.core.exceptions import ObjectDoesNotExist
@@ -759,23 +759,29 @@ class OfferSendWorkerView(View):
                 role_id=role_id,
                 status='offersent'
             )
-        UserNotification.objects.create(
-                user=user,
-                title=_("workRequestAddNotificationTitle"),
-                message=_("workRequestAddNotificationBody")
-            )
-        messages.success(request, _("workersListOfferSentSuccessfully"))
+            
+        current_lang = translation.get_language()
+        try:
+            translation.activate(user.language)
+            UserNotification.objects.create(
+                    user=user,
+                    title=_("workRequestAddNotificationTitle"),
+                    message= _("workRequestAddNotificationBody")
+                )
+        
 
-        if user.push_notification_token:
-            title = str(_("workRequestAddNotificationTitle"))
-            body = str(_("workRequestAddNotificationBody"))
-
-            send_push_notification(
-                tokens=[user.push_notification_token],
-                title=title,
-                body=body,
-                data={"type": "job_offer", "job_id": role_id},
+            if user.push_notification_token:
+                send_push_notification(
+                    tokens=[user.push_notification_token],
+                    title=str(_("workRequestAddNotificationTitle")),
+                    body=str(_("workRequestAddNotificationBody")),
+                    data={"type": "job_offer", "job_id": role_id},
             )
+                
+        finally:
+            translation.activate(current_lang)
+            
+        messages.success(request, _("OfferSentSuccessfully."))
 
         return redirect('recruiting_web:worker_detail', pk=worker_id)
 
@@ -876,21 +882,20 @@ class WorkRequestDetailView(View):
             }
         wages_form = {
             role.id: RoleWagesForm(instance=role.wages)
-            for role in roles_qs if hasattr(role, 'wages') and role.wages and role.wages.deleted_at is None 
+            for role in roles_qs_raw if hasattr(role, 'wages') and role.wages and role.wages.deleted_at is None 
         }  
         qualification_forms = {
             role.id: RoleQualificationForm(instance=role.qualifications)
-            for role in roles_qs
-            if hasattr(role, 'qualifications') and role.qualifications and role.qualifications.deleted_at is None
+            for role in roles_qs_raw if hasattr(role, 'qualifications') and role.qualifications and role.qualifications.deleted_at is None
         }
         
         role_deductions = {
             role.id: role.deductions.filter()
-            for role in roles_qs
+            for role in roles_qs_raw
         }
         
         deduction_forms = {}
-        for role in roles_qs:
+        for role in roles_qs_raw:
             deductions = role.deductions.filter()
             for deduction in deductions:
                 deduction_forms[deduction.id] = RoleDeductionForm(instance=deduction)
@@ -1119,6 +1124,12 @@ class RoleHoursCreateView(CreateView):
     def form_valid(self, form):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)  # Use all_objects to bypass soft delete
+        # If role has existing hours, hard delete them
+        try:
+            if role.hours and role.hours.deleted_at:
+                role.hours.hard_delete()
+        except ObjectDoesNotExist:
+            pass
 
         # Prevent duplicates: check if Hours already exist for this role
         if Hours.objects.filter(role=role).exists():
@@ -1131,9 +1142,7 @@ class RoleHoursCreateView(CreateView):
         form.instance.role = role
         self.object = form.save()
         messages.success(self.request, 'Hours successfully added.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': role.work_request.pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
     def form_invalid(self, form):
         role_id = self.kwargs['pk']
@@ -1148,9 +1157,9 @@ class RoleHoursCreateView(CreateView):
             return redirect('recruiting_web:workrequest_list')
 
         messages.error(self.request, 'Failed to add hours. Please correct the errors.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': work_request_pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_pk])}?open_role={role.id}')
+    
+
 class RoleWagesCreateView(CreateView):
     model = Wages
     form_class = RoleWagesForm
@@ -1158,6 +1167,12 @@ class RoleWagesCreateView(CreateView):
     def form_valid(self, form):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)
+        # If role has existing wages, hard delete them
+        try:
+            if role.wages and role.wages.deleted_at:
+                role.wages.hard_delete()
+        except ObjectDoesNotExist:
+            pass
 
         # Check for existing wages
         if Wages.objects.filter(role=role).exists():
@@ -1169,9 +1184,8 @@ class RoleWagesCreateView(CreateView):
         form.instance.role = role  # assign manually
         self.object = form.save()
         messages.success(self.request, 'Wages successfully added.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': role.work_request.pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
+
 
     def form_invalid(self, form):
         messages.error(self.request, 'Failed to add wages. Please correct the errors.')
@@ -1182,9 +1196,8 @@ class RoleWagesCreateView(CreateView):
         except Role.DoesNotExist:
             return redirect('recruiting_web:workrequest_list')
 
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': work_request_pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_pk])}?open_role={role.id}')
+
 
 class RoleDeductionsCreateView(CreateView):
     model = Deduction
@@ -1197,17 +1210,15 @@ class RoleDeductionsCreateView(CreateView):
         form.instance.role = role
         self.object = form.save()
         messages.success(self.request, 'Deductions successfully added.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': role.work_request.pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
+
 
     def form_invalid(self, form):
         messages.error(self.request, 'Failed to add deductions. Please correct the errors.')
         try:
             role = Role.all_objects.get(pk=self.kwargs['pk'])
-            return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-                'pk': role.work_request.pk
-            }))
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
+
         except Role.DoesNotExist:
             return redirect('recruiting_web:workrequest_list')
 
@@ -1218,27 +1229,27 @@ class RoleQualificationsCreateView(CreateView):
     def form_valid(self, form):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)
+        # If role has existing qualifications, hard delete them
+        try:
+            if role.qualifications and role.qualifications.deleted_at:
+                role.qualifications.hard_delete()
+        except ObjectDoesNotExist:
+            pass
 
         if Qualification.objects.filter(role=role).exists():
             messages.warning(self.request, 'Qualifications already added for this role.')
-            return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-                'pk': role.work_request.pk
-            }))
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
         form.instance.role = role
         self.object = form.save()
         messages.success(self.request, 'Qualifications successfully added.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': role.work_request.pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
     def form_invalid(self, form):
         messages.error(self.request, 'Failed to add qualifications. Please correct the errors.')
         try:
             role = Role.all_objects.get(pk=self.kwargs['pk'])
-            return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-                'pk': role.work_request.pk
-            }))
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
         except Role.DoesNotExist:
             return redirect('recruiting_web:workrequest_list')
 
@@ -1250,19 +1261,20 @@ class RoleEmpLocationCreateView(CreateView):
     def form_valid(self, form):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)
+        try:
+            if role.employment_location and role.employment_location.deleted_at:
+                role.employment_location.hard_delete()
+        except ObjectDoesNotExist:
+            pass
 
         if EmploymentLocation.objects.filter(role=role).exists():
             messages.warning(self.request, 'Employment location already added for this role.')
-            return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-                'pk': role.work_request.pk
-            }))
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
         form.instance.role = role
         self.object = form.save()
         messages.success(self.request, 'Employment location successfully added.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': role.work_request.pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
     def form_invalid(self, form):
         role_id = self.kwargs['pk']
@@ -1273,9 +1285,7 @@ class RoleEmpLocationCreateView(CreateView):
             return redirect('recruiting_web:workrequest_list')
 
         messages.error(self.request, 'Failed to add employment location. Please correct the errors.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': work_request_pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_pk])}?open_role={role.id}')
 
 class RoleHousingCreateView(CreateView):
     model = HousingInformation
@@ -1284,20 +1294,22 @@ class RoleHousingCreateView(CreateView):
     def form_valid(self, form):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)
+        # If role has existing housing information, hard delete it
+        try:
+            if role.housing_information and role.housing_information.deleted_at:
+                role.housing_information.hard_delete()
+        except ObjectDoesNotExist:
+            pass
 
         # Prevent duplicate housing info
         if HousingInformation.objects.filter(role=role).exists():
             messages.warning(self.request, 'Housing information already added for this role.')
-            return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-                'pk': role.work_request.pk
-            }))
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
         form.instance.role = role
         self.object = form.save()
         messages.success(self.request, 'Housing information successfully added.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': role.work_request.pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
     def form_invalid(self, form):
         role_id = self.kwargs['pk']
@@ -1308,9 +1320,7 @@ class RoleHousingCreateView(CreateView):
             return redirect('recruiting_web:workrequest_list')
 
         messages.error(self.request, 'Failed to add housing information. Please correct the errors.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': work_request_pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_pk])}?open_role={role.id}')
 
 
 class RoleMealsCreateView(CreateView):
@@ -1320,20 +1330,22 @@ class RoleMealsCreateView(CreateView):
     def form_valid(self, form):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)
+        # If role has existing meal provision, hard delete it
+        try:
+            if role.meal_provision and role.meal_provision.deleted_at:
+                role.meal_provision.hard_delete()
+        except ObjectDoesNotExist:
+            pass
 
         # Check if MealProvision already exists for this role
         if MealProvision.objects.filter(role=role).exists():
             messages.warning(self.request, 'Meal Provision already added for this role.')
-            return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-                'pk': role.work_request.pk
-            }))
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
         form.instance.role = role
         self.object = form.save()
         messages.success(self.request, 'Meal Provision successfully added.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': role.work_request.pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
     def form_invalid(self, form):
         messages.error(self.request, 'Failed to add Meal Provision. Please correct the errors.')
@@ -1343,9 +1355,7 @@ class RoleMealsCreateView(CreateView):
         except Role.DoesNotExist:
             return redirect('recruiting_web:workrequest_list')
 
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': work_request_pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_pk])}?open_role={role.id}')
 
 
 class RecruiterTodoView(LoginRequiredMixin, View):
@@ -2098,7 +2108,7 @@ class EditEmploymentLocationView(View):
         if form.is_valid():
             form.save()
             messages.success(request, _('roleEmploymentLocationEmploymentLocationUpdatedSuccessfully'))
-            return redirect('recruiting_web:workrequest_detail', pk=location.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[location.role.work_request.pk])}?open_role={location.role.id}')
         else:
             messages.error(request, _('roleEmploymentLocationThereWasAnErrorUpdatingTheEmploymentLocation'))
 
@@ -2109,7 +2119,7 @@ class DeleteEmploymentLocationView(View):
         try:
             location.delete()
             messages.success(request, _('roleEmploymentLocationEmploymentLocationDeletedSuccessfully'))
-            return redirect('recruiting_web:workrequest_detail', pk=location.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[location.role.work_request.pk])}?open_role={location.role.id}')
         except Exception as e:
             messages.error(request, _('roleEmploymentLocationErrorDeletingEmploymentLocation: %(error)s') % {'error': str(e)})
 
@@ -2121,10 +2131,10 @@ class EditHousingInformationView(View):
         if form.is_valid():
             form.save()
             messages.success(request, _('joDetailsHousingInfoHousingInformationUpdatedSuccessfully'))
-            return redirect('recruiting_web:workrequest_detail', pk=housing.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[housing.role.work_request.pk])}?open_role={housing.role.id}')
         else:
             messages.error(request, _('joDetailsHousingInfoThereWasAnErrorUpdatingTheHousingInformation'))
-            return redirect('recruiting_web:workrequest_detail', pk=housing.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[housing.role.work_request.pk])}?open_role={housing.role.id}')
 
 
 class DeleteHousingInformationView(View):
@@ -2134,10 +2144,10 @@ class DeleteHousingInformationView(View):
             work_request_pk = housing.role.work_request.pk
             housing.delete()
             messages.success(request, _('joDetailsHousingInfoHousingInformationDeletedSuccessfully'))
-            return redirect('recruiting_web:workrequest_detail', pk=work_request_pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_pk])}?open_role={housing.role.id}')
         except Exception as e:
             messages.error(request, _('joDetailsHousingInfoErrorDeletingHousingInformation: %(error)s') % {'error': str(e)})
-            return redirect('recruiting_web:workrequest_detail', pk=housing.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[housing.role.work_request.pk])}?open_role={housing.role.id}')
 
 class EditMealProvisionView(View):
     def post(self, request, pk):
@@ -2147,10 +2157,10 @@ class EditMealProvisionView(View):
         if form.is_valid():
             form.save()
             messages.success(request, _('joDetailsMealsMealProvisionUpdatedSuccessfully'))
-            return redirect('recruiting_web:workrequest_detail', pk=meal_provision.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[meal_provision.role.work_request.pk])}?open_role={meal_provision.role.id}')
         else:
             messages.error(request, _('joDetailsMealsThereWasAnErrorUpdatingTheMealProvision'))
-            return redirect('recruiting_web:workrequest_detail', pk=meal_provision.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[meal_provision.role.work_request.pk])}?open_role={meal_provision.role.id}')
 
 
 class DeleteMealProvisionView(View):
@@ -2160,10 +2170,10 @@ class DeleteMealProvisionView(View):
             work_request_pk = meal_provision.role.work_request.pk
             meal_provision.delete()
             messages.success(request, _('joDetailsMealsMealProvisionDeletedSuccessfully'))
-            return redirect('recruiting_web:workrequest_detail', pk=work_request_pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_pk])}?open_role={meal_provision.role.id}')
         except Exception as e:
             messages.error(request, _('joDetailsMealsErrorDeletingMealProvision: %(error)s') % {'error': str(e)})
-            return redirect('recruiting_web:workrequest_detail', pk=meal_provision.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[meal_provision.role.work_request.pk])}?open_role={meal_provision.role.id}')
 
 
 class EditRoleHoursView(View):
@@ -2180,7 +2190,7 @@ class EditRoleHoursView(View):
             messages.error(request, _('joDetailsHoursThereWasAnErrorUpdatingTheHours'))
 
         if work_request_id:
-            return redirect('recruiting_web:workrequest_detail', pk=work_request_id)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_id])}?open_role={hours.role.id}')
         else:
             return redirect('/')
 
@@ -2196,7 +2206,7 @@ class DeleteRoleHoursView(View):
             messages.error(request, _('joDetailsHoursErrorDeletingHours: %(error)s')% {'error': str(e)})
 
         if work_request_id:
-            return redirect('recruiting_web:workrequest_detail', pk=work_request_id)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_id])}?open_role={hours.role.id}')
         else:
             return redirect('/')
 class EditRoleWagesView(View):
@@ -2204,7 +2214,7 @@ class EditRoleWagesView(View):
         wages = get_object_or_404(Wages, pk=pk)
         form = RoleWagesForm(request.POST, instance=wages)
 
-        work_request_id = request.POST.get('work_request_id', None)
+        work_request_id = request.POST.get('work_request_id', wages.role.work_request.id)
 
         if form.is_valid():
             form.save()
@@ -2213,7 +2223,7 @@ class EditRoleWagesView(View):
             messages.error(request, _('joDetailsWagesThereWasAnErrorUpdatingTheWages'))
 
         if work_request_id:
-            return redirect('recruiting_web:workrequest_detail', pk=work_request_id)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_id])}?open_role={wages.role.id}')
         else:
             return redirect('/')
 
@@ -2223,7 +2233,8 @@ class DeleteRoleWagesView(View):
         wages.deleted_at = timezone.now()
         wages.save()
         messages.success(request, _("joDetailsWagesWagesDeletedSuccessfully"))
-        return redirect('recruiting_web:workrequest_detail', pk=wages.role.work_request.pk)
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[wages.role.work_request.id])}?open_role={wages.role.id}')
+
 class EditRoleQualificationView(View):
     def post(self, request, pk):
         qualification = get_object_or_404(Qualification, pk=pk)
@@ -2234,7 +2245,7 @@ class EditRoleQualificationView(View):
         if form.is_valid():
             form.save()
             messages.success(request, _('joDetailsQualificationsQualificationUpdatedSuccessfully'))
-            return redirect('recruiting_web:workrequest_detail', pk=qualification.role.work_request.pk) 
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[qualification.role.work_request.pk])}?open_role={qualification.role.id}')
         else:
             messages.error(request, _('joDetailsQualificationsThereWasAnErrorUpdatingTheQualification'))
 
@@ -2245,7 +2256,7 @@ class DeleteQualificationView(View):
         qualification.delete()
 
         messages.success(request, _("joDetailsQualificationsQualificationDeletedSuccessfully"))
-        return redirect('recruiting_web:workrequest_detail', pk=qualification.role.work_request.pk)
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[qualification.role.work_request.pk])}?open_role={qualification.role.id}')
 
 class DeleteDeductionView(View):
     def post(self, request, pk):
@@ -2253,7 +2264,8 @@ class DeleteDeductionView(View):
         try:
             deduction.delete()
             messages.success(request, 'DeductionDeletedSuccessfully.')
-            return redirect('recruiting_web:workrequest_detail', pk=deduction.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[deduction.role.work_request.pk])}?open_role={deduction.role.id}')
+
         except Exception as e:
             messages.error(request, f'ErrorDeletingDeduction: {str(e)}')
 
@@ -2272,6 +2284,6 @@ class DeductionEditView(View):
         if form.is_valid():
             form.save()
             messages.success(request, "Deduction updated successfully.")
-            return redirect('recruiting_web:workrequest_detail', pk=deduction.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[deduction.role.work_request.pk])}?open_role={deduction.role.id}')
         else:
-            return redirect('recruiting_web:workrequest_detail', pk=deduction.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[deduction.role.work_request.pk])}?open_role={deduction.role.id}')
