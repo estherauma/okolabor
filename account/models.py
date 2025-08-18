@@ -155,6 +155,7 @@ class UserWorkExperience(AuditableModel):
     supervisor_email = models.EmailField(null=True, blank=True)
     work_under_h2a_in_usa = models.CharField(
         blank=True, null=True, max_length=256, default='No')
+    type_of_work = models.CharField(max_length=256, null=False, blank=False, default='Farmal job')
     
     objects = SoftDeleteManager()
     all_objects = models.Manager()
