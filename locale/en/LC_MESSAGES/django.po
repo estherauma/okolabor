@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-18 10:22+0300\n"
+"POT-Creation-Date: 2025-08-19 11:44+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1309,8 +1309,8 @@ msgid "roleHoursSaturdayHours"
 msgstr "Saturday Hours"
 
 #: recruiting/forms.py:312
-msgid "roleHoursJobDescription"
-msgstr "Job Description"
+msgid "roleHoursJobDescriptions"
+msgstr "Job duties"
 
 #: recruiting/forms.py:365
 #: recruiting/templates/recruiting/work_requests/create_wages.html:19
@@ -1673,6 +1673,26 @@ msgstr "Open"
 #: recruiting/models.py:44
 msgid "createJobOrderClosed"
 msgstr "Closed"
+
+#: recruiting/models.py:89
+msgid "workersListAssigned"
+msgstr "Assigned"
+
+#: recruiting/models.py:90
+msgid "workersListOfferSent"
+msgstr "Offer Sent"
+
+#: recruiting/models.py:91
+msgid "workersListConfirmed"
+msgstr "Confirmed"
+
+#: recruiting/models.py:92
+msgid "workersListRejected"
+msgstr "Rejected"
+
+#: recruiting/models.py:93
+msgid "workersListCancelled"
+msgstr "Cancelled"
 
 #: recruiting/models.py:131 recruiting/models.py:161
 #: recruiting/templates/recruiting/work_requests/edit_deduction_modal.html:54
@@ -2905,7 +2925,7 @@ msgstr "Submit"
 msgid "Add Role"
 msgstr "Add Role"
 
-#: recruiting/templates/recruiting/work_requests/create_role.html:69
+#: recruiting/templates/recruiting/work_requests/create_role.html:70
 msgid "addRoleSubmit"
 msgstr "Submit"
 
@@ -3091,15 +3111,8 @@ msgid "jobOrderDetailsRequestedWorkerCategories"
 msgstr "Requested worker categories"
 
 #: recruiting/templates/recruiting/work_requests/detail.html:99
-#: recruiting/templates/recruiting/work_requests/detail.html:402
-#: recruiting/templates/recruiting/work_requests/detail.html:480
-#: recruiting/templates/recruiting/work_requests/detail.html:558
-#: recruiting/templates/recruiting/work_requests/detail.html:625
-#: recruiting/templates/recruiting/work_requests/detail.html:750
-#: recruiting/templates/recruiting/work_requests/detail.html:823
-#: recruiting/templates/recruiting/work_requests/detail.html:900
-msgid "webCommonAdd"
-msgstr "Add"
+msgid "jobOrderDetailsAddRole"
+msgstr "Add Role"
 
 #: recruiting/templates/recruiting/work_requests/detail.html:116
 msgid "jobOrderDetailsEdit"
@@ -3190,6 +3203,16 @@ msgstr "USDOL Number"
 #: recruiting/templates/recruiting/work_requests/detail.html:396
 msgid "joDetailsHoursHours"
 msgstr "Hours"
+
+#: recruiting/templates/recruiting/work_requests/detail.html:402
+#: recruiting/templates/recruiting/work_requests/detail.html:480
+#: recruiting/templates/recruiting/work_requests/detail.html:558
+#: recruiting/templates/recruiting/work_requests/detail.html:625
+#: recruiting/templates/recruiting/work_requests/detail.html:750
+#: recruiting/templates/recruiting/work_requests/detail.html:823
+#: recruiting/templates/recruiting/work_requests/detail.html:900
+msgid "webCommonAdd"
+msgstr "Add"
 
 #: recruiting/templates/recruiting/work_requests/detail.html:424
 msgid "joDetailsHoursEstimatedWeeklyHours"
@@ -3871,7 +3894,7 @@ msgstr "Add to Shortlist"
 
 #: recruiting/templates/recruiting/workers/detail.html:52
 msgid "workerDetailsSendOffer"
-msgstr "Send offer"
+msgstr "Send Offer"
 
 #: recruiting/templates/recruiting/workers/detail.html:69
 msgid "workerDetailsContact"
@@ -4158,8 +4181,8 @@ msgid "workersListActions"
 msgstr "Actions"
 
 #: recruiting/templates/recruiting/workers/manage_tabs/all_workers_list.html:99
-msgid "workersListAddToShortlist"
-msgstr "Add to shortlist"
+msgid "workersListAddToShortlists"
+msgstr "Add to Shortlist"
 
 #: recruiting/templates/recruiting/workers/manage_tabs/all_workers_list.html:111
 #: recruiting/templates/recruiting/workers/manage_tabs/worker_shortlist.html:69
@@ -4285,8 +4308,7 @@ msgstr "Has video file?"
 
 #: recruiting/templates/recruiting/workers/manage_tabs/worker_confirmed.html:70
 #: recruiting/templates/recruiting/workers/manage_tabs/worker_offersent.html:67
-#: recruiting/templates/recruiting/workers/manage_tabs/worker_shortlist.html:71
-msgid "cancelOffer"
+msgid "workRequestAddWorkerCancelOffer"
 msgstr "Cancel Offer"
 
 #: recruiting/templates/recruiting/workers/manage_tabs/worker_confirmed.html:95
@@ -4295,6 +4317,10 @@ msgstr "Cancel Offer"
 #: recruiting/templates/recruiting/workers/manage_tabs/worker_shortlist.html:101
 msgid "workersWorkRequestRole"
 msgstr "Job Order Role"
+
+#: recruiting/templates/recruiting/workers/manage_tabs/worker_shortlist.html:71
+msgid "workRequestAddWorkerShortlistCancelOffer"
+msgstr "Remove from Shortlist"
 
 #: recruiting/templates/recruiting/workers/offer_sent_modal.html:11
 msgid "workersListOfferSentWorker"
@@ -4307,6 +4333,30 @@ msgstr "Dates of employment"
 #: recruiting/templates/recruiting/workers/work_experience_detail.html:34
 msgid "jobOrderDetailsPresent"
 msgstr "Present"
+
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:41
+msgid "workExperienceDetailsH2APROGRAM"
+msgstr "H2A PROGRAM"
+
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:42
+msgid "Yes,_No"
+msgstr "Yes,No"
+
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:47
+msgid "workExperienceDetailsJobDetails"
+msgstr "Job Details"
+
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:49
+msgid "workExperienceDetailsCompany"
+msgstr "Company"
+
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:50
+msgid "workExperienceDetailsPrimaryJobType"
+msgstr "Primary Job Type"
+
+#: recruiting/templates/recruiting/workers/work_experience_detail.html:53
+msgid "workExperienceDetailsTasks&Responsibilities"
+msgstr "Tasks and Responsibilities"
 
 #: recruiting/templates/recruiting/workers/work_experience_detail.html:75
 msgid "workExperienceDetailsSupervisorDetails"
@@ -5833,6 +5883,12 @@ msgstr "You have successfully logged out."
 msgid "loginYouHaveSuccessfullyLoggedIn"
 msgstr "You have successfully logged in."
 
+#~ msgid "workExperienceDetailsCERTIFICATIONS"
+#~ msgstr "CERTIFICATIONS"
+
+#~ msgid "workExperienceDetailsOTHERMEDIA"
+#~ msgstr "OTHER MEDIA"
+
 #~ msgid "workersListOfferSentSuccessfully"
 #~ msgstr "Offer sent successfully."
 
@@ -5883,9 +5939,6 @@ msgstr "You have successfully logged in."
 
 #~ msgid "workRequestAddWorkerShortlistCopyWorkersToAnotherWorkRequest"
 #~ msgstr "Copy workers to another job order"
-
-#~ msgid "workRequestAddWorkerShortlistClose"
-#~ msgstr "Close"
 
 #~ msgid "workRequestAddWorkerShortlistSelectAWorkRequest"
 #~ msgstr "Select a job order"
@@ -5958,9 +6011,6 @@ msgstr "You have successfully logged in."
 
 #~ msgid "workRequestAddWorkerOfferSentAddWorkers"
 #~ msgstr "Add Workers"
-
-#~ msgid "jobOrderDetailsAddRole"
-#~ msgstr "Add Role"
 
 #~ msgid "joDetailsAddWages"
 #~ msgstr "Add Wages"

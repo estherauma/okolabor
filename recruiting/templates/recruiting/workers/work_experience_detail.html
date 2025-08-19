@@ -38,19 +38,19 @@
 
           <!-- H2A PROGRAM -->
           <div class="mb-3">
-            <p class="fw-bold text-uppercase small text-muted">H2A PROGRAM</p>
-            <p>{{ work_experience.work_under_h2a_in_usa|yesno:"Yes,No" }}</p>
+            <p class="fw-bold text-uppercase small text-muted">{% translate 'workExperienceDetailsH2APROGRAM'%}</p>
+            <p>{{ work_experience.work_under_h2a_in_usa|yesno:_("Yes,_No") }}</p>
           </div>
 
           <!-- Job Details -->
           <div class="mb-4">
-            <p class="fw-bold text-uppercase small text-muted">Job Details</p>
+            <p class="fw-bold text-uppercase small text-muted">{% translate 'workExperienceDetailsJobDetails'%}</p>
             {% for job in job_experiences %}
-              <p><strong>Company:</strong> {{ job.work_experience.company|default:"—" }}</p>
-              <p><strong>Primary Job Type:</strong> {{ job.job_type|default:"—" }}</p>
+              <p><strong>{% translate 'workExperienceDetailsCompany'%}:</strong> {{ job.work_experience.company|default:"—" }}</p>
+              <p><strong>{% translate 'workExperienceDetailsPrimaryJobType'%}:</strong> {{ job.job_type|default:"—" }}</p>
 
               {% if job.type_details %}
-                <p class="fw-bold mb-2">Tasks & Responsibilities:</p>
+                <p class="fw-bold mb-2">{% translate 'workExperienceDetailsTasks&Responsibilities'%}:</p>
                 <div class="d-flex flex-wrap gap-2 mb-3">
                   {% for duty in job.type_details|split:"," %}
                     <span style="

@@ -16,6 +16,12 @@
           {% csrf_token %}
 
           <!-- Always visible fields -->
+
+          <div class="form-group my-3">
+            <label>{{ role_add_form.work_request.label }}</label>
+            {{ role_add_form.work_request }}
+          </div>
+
           <div class="form-group my-3">
             <label>{{ role_add_form.title.label }}</label>
             {{ role_add_form.title }}
@@ -58,11 +64,6 @@
           <div class="form-group my-3">
             <label>{{ role_add_form.number_of_required_workers.label }}</label>
             {{ role_add_form.number_of_required_workers }}
-          </div>
-
-          <div class="form-group my-3">
-            <label>{{ role_add_form.work_request.label }}</label>
-            {{ role_add_form.work_request }}
           </div>
 
           <button class="btn dark-green-button" type="submit">

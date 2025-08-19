@@ -309,7 +309,7 @@ class RoleHoursForm(forms.ModelForm):
             'thursday_hours': _('roleHoursThursdayHours'),
             'friday_hours': _('roleHoursFridayHours'),
             'saturday_hours': _('roleHoursSaturdayHours'),
-            'job_description': _('roleHoursJobDescription'),
+            'job_description': _('roleHoursJobDescriptions'),
         }
         
         widgets = {
