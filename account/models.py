@@ -146,7 +146,7 @@ class UserWorkExperience(AuditableModel):
     state = models.CharField(max_length=256, null=True, blank=True)
     visa_type = models.CharField(max_length=256, null=True, blank=True)
     company = models.CharField(max_length=256, null=False, blank=False)
-    start_date = models.DateField(null=False, blank=False)
+    start_date = models.DateField(null=True, blank=False)
     currently_working = models.BooleanField(default=False)
     end_date = models.DateField(null=True, blank=True)
     work_title = models.CharField(max_length=256, null=True, blank=True)
@@ -155,6 +155,12 @@ class UserWorkExperience(AuditableModel):
     supervisor_email = models.EmailField(null=True, blank=True)
     work_under_h2a_in_usa = models.CharField(
         blank=True, null=True, max_length=256, default='No')
+    type_of_work = models.CharField(
+        max_length=256, null=False,blank=False, default='Formal job')
+    approx_month_and_year = models.CharField(
+        max_length=256, null=True, blank=True, default='Not specified')
+    approx_total_months_worked = models.CharField(
+        max_length=256, null=True, blank=True, default='Not specified')
     
     objects = SoftDeleteManager()
     all_objects = models.Manager()
