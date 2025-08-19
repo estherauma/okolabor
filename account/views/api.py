@@ -222,7 +222,7 @@ class UserWorkExperienceView(APIView):
             if UserWorkExperience.objects.filter(
                 user=user,
                 company=serializer.validated_data['company'],
-                start_date=serializer.validated_data['start_date']
+                approx_month_and_year=serializer.validated_data['approx_month_and_year']
             ).exists():
                 return Response(
                     {
