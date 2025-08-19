@@ -92,7 +92,7 @@
 
           <!-- Certifications Section -->
           <div class="mb-4">
-            <p class="fw-bold text-uppercase small text-muted">{% translate "workExperienceDetailsCERTIFICATIONS" %}</p>
+            <p class="fw-bold text-uppercase small text-muted">{% translate "workExperienceDetailsCertifications" %}</p>
             <div class="d-flex flex-wrap gap-3">
               {% for detail in job_experience_details %}
                 {% if "visa" in detail.kind|lower or "certificate" in detail.kind|lower %}
@@ -110,7 +110,7 @@
 
           <!-- Other Media Section -->
           <div class="mb-4">
-            <p class="fw-bold text-uppercase small text-muted">{% translate "workExperienceDetailsOTHERMEDIA" %}</p>
+            <p class="fw-bold text-uppercase small text-muted">{% translate "workExperienceDetailsOtherMedia" %}</p>
             <div class="d-flex flex-wrap gap-3">
               {% for detail in job_experience_details %}
                 {% if "visa" not in detail.kind|lower and "certificate" not in detail.kind|lower %}
