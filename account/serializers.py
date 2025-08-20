@@ -102,14 +102,26 @@ class UpdateUserPreferencesSerializer(serializers.Serializer):
     preferences = UserPreferenceSerializer(many=True)
 
 
+class BlankableDateField(serializers.DateField):
+    def to_internal_value(self, data):
+        if data in ("", None):
+            return None
+        return super().to_internal_value(data)
+
+class BlankableBooleanField(serializers.BooleanField):
+    def to_internal_value(self, data):
+        if data in ("", None, ""):
+            return None
+        return super().to_internal_value(data)
+
+
 class UserWorkexperienceSerializer(serializers.ModelSerializer):
     country = serializers.CharField(required=False, allow_blank=True)
     state = serializers.CharField(required=False, allow_blank=True)
     visa_type = serializers.CharField(required=False, allow_blank=True)
     company = serializers.CharField(required=True)
-    start_date = serializers.DateField(
-        required=False, allow_null=True, default=None)
-    currently_working = serializers.BooleanField(required=False, allow_null=True)
+    start_date = BlankableDateField(required=False, allow_null=True)
+    currently_working = BlankableBooleanField(required=False, allow_null=True)
     end_date = serializers.DateField(required=False, allow_null=True)
     work_title = serializers.CharField(required=True)
     supervisor_name = serializers.CharField(required=False, allow_blank=True)
@@ -125,6 +137,7 @@ class UserWorkexperienceSerializer(serializers.ModelSerializer):
     )
     
     def validate_start_date(self, value):
+        print(f"Validating start_date: {value}")
         # Convert "" → None
         if value in ["", None]:
             return None
