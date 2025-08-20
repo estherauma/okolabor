@@ -107,7 +107,8 @@ class UserWorkexperienceSerializer(serializers.ModelSerializer):
     state = serializers.CharField(required=False, allow_blank=True)
     visa_type = serializers.CharField(required=False, allow_blank=True)
     company = serializers.CharField(required=True)
-    start_date = serializers.DateField(required=False, allow_null=True, allow_blank=True)
+    start_date = serializers.DateField(
+        required=False, allow_null=True, default=None)
     currently_working = serializers.BooleanField(required=False, allow_null=True)
     end_date = serializers.DateField(required=False, allow_null=True)
     work_title = serializers.CharField(required=True)
@@ -123,6 +124,11 @@ class UserWorkexperienceSerializer(serializers.ModelSerializer):
         required=False, allow_blank=True, default='Not specified'
     )
     
+    def validate_start_date(self, value):
+        # Convert "" → None
+        if value in ["", None]:
+            return None
+        return value
 
     class Meta:
         model = UserWorkExperience
