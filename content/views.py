@@ -487,6 +487,25 @@ class ContentAPI():
             aggregated_data = sorted(aggregated_data, key=lambda x: x['label'] or '')
             return aggregated_data
 
+        def aggregate_page_oko_video_component(video):
+            return video
+
+        def aggregate_page_dynamic_zone(data):
+            videos = []
+            additional_text = []
+
+            for item in data:
+                if item['__component'] == 'okolabor.video':
+                    videos.append(aggregate_page_oko_video_component(item))
+                if item['__component'] == 'okolabor.additional-text':
+                    additional_text = aggregate_key_value_text(
+                        item['repeatable_zone']
+                    )
+            return {
+                'videos': videos,
+                'additional_text': additional_text
+            }
+
         def get_countries():
             file_path = os.path.join(settings.BASE_DIR, 'recruiting','countries.json')
             with open(file_path, 'r', encoding='utf-8') as f:
@@ -567,7 +586,17 @@ class ContentAPI():
                     'data': aggregation_response
                 }
                 aggregated_content[item['page_id']] = page_data
-            
+
+            if item['custom_type'] == 'page':
+                aggregation_response = aggregate_page_dynamic_zone(item.get('dynamic_zone'))
+                page_data = {
+                    'page_id': item.get('page_id', None),
+                    'page_title': item.get('page_title', None),
+                    'last_updated': item.get('last_published_at', None),
+                    'data': aggregation_response
+                }
+                aggregated_content[item['page_id']] = page_data
+
         aggregated_content['countries'] = get_countries()
         return aggregated_content
 
