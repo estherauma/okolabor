@@ -11,11 +11,14 @@ from drf_yasg.utils import swagger_auto_schema
 import os
 import json
 from django.conf import settings
+from urllib.parse import urlparse
 
 
 class ContentAPI():
     def __init__(self) -> None:
         self.api_url = config('CMS_API_URL')
+        parsed = urlparse(self.api_url)
+        self.base_cms_url = f"{parsed.scheme}://{parsed.netloc}"
         self.media_url = self.api_url.split('/api/okolabors')[0]
         self.access_token = config('CMS_API_TOKEN')
         self.headers = {
@@ -488,6 +491,7 @@ class ContentAPI():
             return aggregated_data
 
         def aggregate_page_oko_video_component(video):
+            video['video']['url'] = f"{self.base_cms_url}{video['video']['url']}" if video.get('video') else None
             return video
 
         def aggregate_page_dynamic_zone(data):
