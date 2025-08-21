@@ -57,10 +57,11 @@ class RegistrationSerializer(serializers.Serializer):
             logger.info(f'Invalid CURP format: {value}')
             raise serializers.ValidationError('Invalid CURP format')
 
-        if User.objects.filter(curp=value).exists():
-            logger.info(f'User with the given CURP already exists: {value}')
-            raise serializers.ValidationError(
-                'User with given CURP already exists')
+        # Commenting this out just incase they come back and ask that we put it back.
+        # if User.objects.filter(curp=value).exists():
+        #     logger.info(f'User with the given CURP already exists: {value}')
+        #     raise serializers.ValidationError(
+        #         'User with given CURP already exists')
         return value
 
     def validate_email(self, value):
