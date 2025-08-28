@@ -1,4 +1,5 @@
 {% load user_role_tags %}
+{% load menu_items_filters %}
 {% load static%}
 {% load i18n %}
 <!--APP-SIDEBAR-->
@@ -18,7 +19,8 @@
 		<!-- Workers and employer organizations -->
 		{% if request.user|has_group:"admin" or request.user|has_group:"recruiter_admin" or request.user|has_group:"recruiter" %}
 			<li>
-				<a class="side-menu__item" href="{% url 'recruiting_web:workers' %}"><i class="side-menu__icon fe fe-users"></i>
+				<a class="side-menu__item {% if request.path|startswith:'/workers' or request.path|startswith:'/work-experience'%} active{% endif %}" 
+				href="{% url 'recruiting_web:workers' %}"><i class="side-menu__icon fe fe-users"></i>
 					<span class="side-menu__label">{% translate "workers" %}</span>
 				</a>
 			</li>
@@ -26,7 +28,8 @@
 		
 
 			<li>
-				<a class="side-menu__item" href="{% url 'recruiting_web:employer_list' %}"><i class="side-menu__icon fa fa-building"></i>
+				<a class="side-menu__item {% if request.path|startswith:'/employers'%}active{% endif%}" 
+				href="{% url 'recruiting_web:employer_list' %}"><i class="side-menu__icon fa fa-building"></i>
 					<span class="side-menu__label">{% translate "menuEmployers" %}</span>
 				</a>
 			</li>
@@ -35,7 +38,8 @@
 		<!-- Recruiter organizations  -->
 		{% if request.user|has_group:"admin" %}
 			<li>
-				<a class="side-menu__item" href="{% url 'recruiting_web:recruiter_admin_list' %}"><i class="side-menu__icon fe fe-users"></i>
+				<a class="side-menu__item {% if request.path|startswith:'/recruiter'%}active{% endif %}" 
+				href="{% url 'recruiting_web:recruiter_admin_list' %}"><i class="side-menu__icon fe fe-users"></i>
 					<span class="side-menu__label">{% translate "recruiters" %}</span>
 				</a>
 			</li>
@@ -43,7 +47,8 @@
 
 		<!-- Job orders -->
 		<li>
-			<a class="side-menu__item" href="{% url 'recruiting_web:workrequest_list' %}"><i class="side-menu__icon mdi mdi-tune"></i>
+			<a class="side-menu__item {% if request.path|startswith:'/job-orders' or request.path|startswith:'/job-order'%}active{% endif %}" 
+			href="{% url 'recruiting_web:workrequest_list' %}"><i class="side-menu__icon mdi mdi-tune"></i>
 				<span class="side-menu__label">{% translate "jobOrders" %}</span>
 			</a>
 		</li>
@@ -59,7 +64,8 @@
 		<hr>
 
 		<li>
-			<a class="side-menu__item" href="{% url 'view_logs' %}"><i class="side-menu__icon mdi mdi-tune"></i>
+			<a class="side-menu__item {% if request.path|startswith:'/account/logs'%}active{% endif %}" 
+			href="{% url 'view_logs' %}"><i class="side-menu__icon mdi mdi-tune"></i>
 				<span class="side-menu__label">{% translate "userLogs" %}</span>
 			</a>
 		</li>
@@ -74,7 +80,8 @@
 
 		{% if request.user|has_group:"admin" %}
 		<li>
-			<a class="side-menu__item" href="{% url 'recruiting_web:recruiter-status-list' %}"><i class="side-menu__icon fa fa-handshake-o"></i>
+			<a class="side-menu__item {% if request.path|startswith:'/recruiter-status-list'%}active{% endif %}" 
+			href="{% url 'recruiting_web:recruiter-status-list' %}"><i class="side-menu__icon fa fa-handshake-o"></i>
 				<span class="side-menu__label">{% translate "employerAcceptRejectStatus" %}</span>
 			</a>
 		</li>
@@ -87,7 +94,8 @@
 		</li> -->
 
 		<li>
-			<a class="side-menu__item" href="{% url 'recruiting_web:recruiter_messages' %}"><i class="side-menu__icon fe fe-mail"></i>
+			<a class="side-menu__item {% if request.path|startswith:'/messages' or request.path|startswith:'/create-message' or request.path|startswith:'/message-details'%}active{% endif %}" 
+			href="{% url 'recruiting_web:recruiter_messages' %}"><i class="side-menu__icon fe fe-mail"></i>
 				<span class="side-menu__label">{% translate "messages" %}</span>
 			</a>
 		</li>
