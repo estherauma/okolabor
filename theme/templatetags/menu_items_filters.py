@@ -2,7 +2,9 @@ from django import template
 
 register = template.Library()
 @register.filter
-def startswith(text, starts):
-    if isinstance(text, str):
-        return text.startswith(starts)
-    return False
+def addActive(path,prefixes):
+    for prefix in prefixes.split(","):
+        if path.startswith(prefix.strip()):
+            return "active"
+    return ""
+    
