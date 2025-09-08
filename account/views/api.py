@@ -565,8 +565,10 @@ class UserReportProblem(APIView):
             site_url = "https://test.okolabor.com"
             
             html_content = render_to_string('report_problem_email.html', {
+                
                 'body': description,
                 'site_url': site_url,
+                'reporter_email': request.user.email
             })
             
             plain_content = strip_tags(html_content)
@@ -574,7 +576,7 @@ class UserReportProblem(APIView):
             send_mail(
                 subject=subject,
                 message=plain_content,
-                from_email="noreply@fiftyeight.io", 
+                from_email= user.email, 
                 recipient_list=to_emails,
                 html_message=html_content,
             )
