@@ -1,5 +1,5 @@
 {% load static %}
-
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +9,7 @@
 </head>
 <body style="padding: 20px;">
     <p style="font-style: italic;">
-        This issue has just been reported by a worker: <strong>{{ reporter_email }}</strong>
+        {% translate 'reportIssueEmailInfo'%}: <strong>{{ reporter_email }}</strong>
       </p>
     <p>{{ body }}</p>
     <br>

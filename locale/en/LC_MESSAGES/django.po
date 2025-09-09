@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-19 11:44+0300\n"
+"POT-Creation-Date: 2025-09-09 08:26+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -722,6 +722,10 @@ msgstr ""
 msgid "deleteAccount"
 msgstr "Delete Account"
 
+#: account/templates/report_problem_email.html:12
+msgid "reportIssueEmailInfo"
+msgstr "This issue has just been reported by a worker"
+
 #: account/templates/userlogs/log_detail.html:17
 msgid "userLogsUserDetailsLog"
 msgstr "Details"
@@ -935,41 +939,41 @@ msgstr "Your account has been successfully verified."
 msgid "reportAProbjemEmailSubject"
 msgstr "A new worker issue has been reported."
 
-#: account/views/api.py:655
+#: account/views/api.py:657
 msgid "passwordResetTemplateSubject"
 msgstr "Reset your okolabor password"
 
-#: account/views/api.py:657
+#: account/views/api.py:659
 msgid "passwordResetTemplateEmail"
 msgstr "Your Email"
 
-#: account/views/api.py:658
+#: account/views/api.py:660
 msgid "passwordResetTemplateToken"
 msgstr "Password Reset Token"
 
-#: account/views/api.py:692
+#: account/views/api.py:694
 msgid "passwordChangedEmailSubject"
 msgstr "Your account password has changed."
 
-#: account/views/api.py:694
+#: account/views/api.py:696
 msgid "passwordChangedEmailEmail"
 msgstr "Email"
 
-#: account/views/api.py:695
+#: account/views/api.py:697
 msgid "passwordChangedEmailMessage"
 msgstr "Message"
 
-#: account/views/api.py:695
+#: account/views/api.py:697
 msgid "passwordChangedEmailBody"
 msgstr ""
 "Your account password has been changed. If you did not initiate this "
 "request, please contact support."
 
-#: account/views/api.py:700
+#: account/views/api.py:702
 msgid "passwordChangedEmailSuccessMessage"
 msgstr "Message"
 
-#: account/views/api.py:700
+#: account/views/api.py:702
 msgid "passwordChangedEmailPasswordResetSuccessfully"
 msgstr "Password reset successfully."
 
@@ -2281,7 +2285,7 @@ msgstr "Status"
 
 #: recruiting/templates/recruiting/recruiters_list/details.html:184
 msgid "recruiterDetailsNoWorkRequestsAvailable"
-msgstr "No work requests available."
+msgstr "No job orders available."
 
 #: recruiting/templates/recruiting/recruiters_list/details.html:198
 #: recruiting/templates/recruiting/recruiters_list/details.html:209
@@ -3801,7 +3805,7 @@ msgstr "No recruiters assigned"
 
 #: recruiting/templates/recruiting/work_requests/workrequest_details.html:75
 msgid "workRequestDetailsInProgressWorkRequests"
-msgstr "In progress work requests"
+msgstr "In progress job orders"
 
 #: recruiting/templates/recruiting/work_requests/workrequest_details.html:83
 #: recruiting/templates/recruiting/work_requests/workrequest_details.html:118
@@ -3827,23 +3831,23 @@ msgstr "Status"
 
 #: recruiting/templates/recruiting/work_requests/workrequest_details.html:99
 msgid "workRequestDetailsNoInProgressWorkRequests"
-msgstr "No in progress work requests"
+msgstr "No in progress job orders"
 
 #: recruiting/templates/recruiting/work_requests/workrequest_details.html:110
 msgid "workRequestDetailsClosedWorkRequests"
-msgstr "Closed work requests"
+msgstr "Closed job orders"
 
 #: recruiting/templates/recruiting/work_requests/workrequest_details.html:132
 msgid "workRequestDetailsNoClosedWorkRequests"
-msgstr "No closed work requests"
+msgstr "No closed job orders"
 
 #: recruiting/templates/recruiting/work_requests/workrequest_details.html:143
 msgid "workRequestDetailsDraftWorkRequests"
-msgstr "Draft work requests"
+msgstr "Draft job orders"
 
 #: recruiting/templates/recruiting/work_requests/workrequest_details.html:165
 msgid "workRequestDetailsNoDraftWorkRequests"
-msgstr "No draft work requests"
+msgstr "No draft job orders"
 
 #: recruiting/templates/recruiting/workers/add_shortlist_modal.html:11
 msgid "workersListAssignWorker"
@@ -4460,7 +4464,7 @@ msgstr "Job order created successfully."
 
 #: recruiting/views/web.py:588
 msgid "jobOrderListWorkRequestEditedSuccessfully"
-msgstr "Work request edited successfully"
+msgstr "Job order edited successfully"
 
 #: recruiting/views/web.py:606
 #, python-format

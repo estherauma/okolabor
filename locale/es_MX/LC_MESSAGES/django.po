@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-19 11:43+0300\n"
+"POT-Creation-Date: 2025-09-09 08:26+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -728,6 +728,10 @@ msgstr ""
 msgid "deleteAccount"
 msgstr "Eliminar cuenta"
 
+#: account/templates/report_problem_email.html:12
+msgid "reportIssueEmailInfo"
+msgstr "Este problema acaba de ser reportado por un trabajador"
+
 #: account/templates/userlogs/log_detail.html:17
 msgid "userLogsUserDetailsLog"
 msgstr "Detalles"
@@ -941,41 +945,41 @@ msgstr "Su cuenta ha sido verificada exitosamente."
 msgid "reportAProbjemEmailSubject"
 msgstr "Se ha informado de un nuevo problema con el trabajador."
 
-#: account/views/api.py:655
+#: account/views/api.py:657
 msgid "passwordResetTemplateSubject"
 msgstr "Restablece tu contraseña de okolabor"
 
-#: account/views/api.py:657
+#: account/views/api.py:659
 msgid "passwordResetTemplateEmail"
 msgstr "Tu correo electrónico"
 
-#: account/views/api.py:658
+#: account/views/api.py:660
 msgid "passwordResetTemplateToken"
 msgstr "Token de restablecimiento de contraseña"
 
-#: account/views/api.py:692
+#: account/views/api.py:694
 msgid "passwordChangedEmailSubject"
 msgstr "La contraseña de tu cuenta ha cambiado."
 
-#: account/views/api.py:694
+#: account/views/api.py:696
 msgid "passwordChangedEmailEmail"
 msgstr "Correo electrónico"
 
-#: account/views/api.py:695
+#: account/views/api.py:697
 msgid "passwordChangedEmailMessage"
 msgstr "Mensaje"
 
-#: account/views/api.py:695
+#: account/views/api.py:697
 msgid "passwordChangedEmailBody"
 msgstr ""
 "La contraseña de su cuenta ha cambiado. Si no inició esta solicitud, "
 "comuníquese con el soporte."
 
-#: account/views/api.py:700
+#: account/views/api.py:702
 msgid "passwordChangedEmailSuccessMessage"
 msgstr "Mensaje"
 
-#: account/views/api.py:700
+#: account/views/api.py:702
 msgid "passwordChangedEmailPasswordResetSuccessfully"
 msgstr "Restablecimiento de contraseña exitoso."
 
@@ -2286,7 +2290,7 @@ msgstr "Estado"
 
 #: recruiting/templates/recruiting/recruiters_list/details.html:184
 msgid "recruiterDetailsNoWorkRequestsAvailable"
-msgstr "No hay solicitudes de trabajo disponibles."
+msgstr "No hay órdenes de trabajo disponibles."
 
 #: recruiting/templates/recruiting/recruiters_list/details.html:198
 #: recruiting/templates/recruiting/recruiters_list/details.html:209
@@ -3810,7 +3814,7 @@ msgstr "No hay reclutadores asignados"
 
 #: recruiting/templates/recruiting/work_requests/workrequest_details.html:75
 msgid "workRequestDetailsInProgressWorkRequests"
-msgstr "Solicitudes de trabajo en curso"
+msgstr "Órdenes de trabajo en curso"
 
 #: recruiting/templates/recruiting/work_requests/workrequest_details.html:83
 #: recruiting/templates/recruiting/work_requests/workrequest_details.html:118
@@ -3836,23 +3840,23 @@ msgstr "Estado"
 
 #: recruiting/templates/recruiting/work_requests/workrequest_details.html:99
 msgid "workRequestDetailsNoInProgressWorkRequests"
-msgstr "No hay solicitudes de trabajo en curso"
+msgstr "No hay órdenes de trabajo en curso"
 
 #: recruiting/templates/recruiting/work_requests/workrequest_details.html:110
 msgid "workRequestDetailsClosedWorkRequests"
-msgstr "Solicitudes de trabajo cerradas"
+msgstr "Órdenes de trabajo cerradas"
 
 #: recruiting/templates/recruiting/work_requests/workrequest_details.html:132
 msgid "workRequestDetailsNoClosedWorkRequests"
-msgstr "No hay solicitudes de trabajo cerradas"
+msgstr "No hay órdenes de trabajo cerradas"
 
 #: recruiting/templates/recruiting/work_requests/workrequest_details.html:143
 msgid "workRequestDetailsDraftWorkRequests"
-msgstr "Borradores de solicitudes de trabajo"
+msgstr "Borradores de órdenes de trabajo"
 
 #: recruiting/templates/recruiting/work_requests/workrequest_details.html:165
 msgid "workRequestDetailsNoDraftWorkRequests"
-msgstr "No hay borradores de solicitudes de trabajo"
+msgstr "No hay borradores de órdenes de trabajo"
 
 #: recruiting/templates/recruiting/workers/add_shortlist_modal.html:11
 msgid "workersListAssignWorker"
@@ -4468,7 +4472,7 @@ msgstr "Orden de trabajo creada exitosamente."
 
 #: recruiting/views/web.py:588
 msgid "jobOrderListWorkRequestEditedSuccessfully"
-msgstr "Solicitud de trabajo editada exitosamente"
+msgstr "Orden de trabajo editada exitosamente"
 
 #: recruiting/views/web.py:606
 #, python-format
@@ -4503,7 +4507,7 @@ msgstr "Nueva oferta de trabajo"
 msgid "workRequestAddNotificationBody"
 msgstr ""
 "Para ver los detalles de la nueva oferta de empleo, consulte la sección de "
-"empleos."
+"Trabajos."
 
 #: recruiting/views/web.py:733
 msgid "Offer sent successfully."
