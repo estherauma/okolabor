@@ -250,4 +250,5 @@ urlpatterns = [
     # path('notifications',views.notifications, name='notifications'),
     path('user_documents', views.user_documents, name= 'user_documents'),
     path('workpreferences',views.work_preferences, name='workpreferences'),
+    path("privacy-policy", views.privacy_policy, name='privacy-policy'),
 ]

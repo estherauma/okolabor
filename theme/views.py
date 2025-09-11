@@ -425,6 +425,9 @@ def tags(request):
 def terms(request):
     return render(request, 'ltr/terms.html')
 
+def privacy_policy(request):
+    return render(request, 'ltr/privacy_policy.html')
+
 def thumbnails(request):
     return render(request, 'ltr/thumbnails.html')
 
