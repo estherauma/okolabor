@@ -423,10 +423,22 @@ def tags(request):
     return render(request, 'ltr/tags.html')
 
 def terms(request):
-    return render(request, 'ltr/terms.html')
+    context = {
+      'breadcrumbs': [
+                {'name': 'Register', 'url': reverse_lazy('register')},
+                {'name': 'Terms and Conditions', 'url': None},
+            ],  
+    }
+    return render(request, 'ltr/terms.html',context)
 
 def privacy_policy(request):
-    return render(request, 'ltr/privacy_policy.html')
+    context = {
+        'breadcrumbs': [
+            {'name': 'Register', 'url': reverse_lazy('register')},
+            {'name': 'Privacy policy', 'url': None},
+        ], 
+    }
+    return render(request, 'ltr/privacy_policy.html',context)
 
 def thumbnails(request):
     return render(request, 'ltr/thumbnails.html')
