@@ -426,13 +426,7 @@ def terms_and_conditions(request):
     return render(request, 'ltr/terms_and_conditions.html')
 
 def privacy_policy(request):
-    context = {
-        'breadcrumbs': [
-            {'name': 'Register', 'url': reverse_lazy('register')},
-            {'name': 'Privacy policy', 'url': None},
-        ], 
-    }
-    return render(request, 'ltr/privacy_policy.html',context)
+    return render(request, 'ltr/privacy_policy.html')
 
 def thumbnails(request):
     return render(request, 'ltr/thumbnails.html')
