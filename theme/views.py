@@ -429,7 +429,7 @@ def terms(request):
                 {'name': 'Terms and Conditions', 'url': None},
             ],  
     }
-    return render(request, 'ltr/terms.html',context)
+    return render(request, 'ltr/terms-and-conditions.html',context)
 
 def privacy_policy(request):
     context = {
