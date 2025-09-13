@@ -219,7 +219,7 @@ urlpatterns = [
 
     path("tags", views.tags, name='tags'),
 
-    path("terms-and-conditions", views.terms, name='terms-and-conditions'),
+    path("terms-and-conditions", views.terms_and_conditions, name='terms-and-conditions'),
 
     path("thumbnails", views.thumbnails, name='thumbnails'),
 
