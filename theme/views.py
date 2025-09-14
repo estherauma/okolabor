@@ -422,8 +422,11 @@ def tabs(request):
 def tags(request):
     return render(request, 'ltr/tags.html')
 
-def terms(request):
-    return render(request, 'ltr/terms.html')
+def terms_and_conditions(request):
+    return render(request, 'ltr/terms_and_conditions.html')
+
+def privacy_policy(request):
+    return render(request, 'ltr/privacy_policy.html')
 
 def thumbnails(request):
     return render(request, 'ltr/thumbnails.html')
