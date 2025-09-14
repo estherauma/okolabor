@@ -14,13 +14,7 @@
 {% endblock styles %}
 
 {% block body %}
-<div class="page-header">
- <div>
-  <h1 class="page-title">
-   {% translate "jobOrderListActiveWorkerRequests(Progress)" %}
-  </h1>
- </div>
-</div>
+
 <form method="post" id="statusForm">
     {% csrf_token %}
     <div class="parent-btn-grp d-flex align-items-center gap-2">
@@ -36,22 +30,22 @@
 <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header" style="background-color: #7DBF96;">
-                <h5 class="modal-title text-white" id="statusModalLabel">{% translate "jobOrderListUpdateStatus" %}</h5>
+            <div class="modal-header">
+                <h5 class="modal-title" id="statusModalLabel">{% translate "jobOrderListUpdateStatus" %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'jobOrderListClose'%}"></button>
             </div>
             <div class="modal-body">
                 <label for="statusSelect">{% translate "jobOrderListSelectStatus" %}:</label>
                 <select class="form-select" id="statusSelect">
-                    <option value="Draft">{% translate "jobOrderListDraft" %}</option>
-                    <option value="Requested">{% translate "jobOrderListRequested" %}</option>
-                    <option value="Open">{% translate "jobOrderListOpen" %}</option>
-                    <option value="Closed">{% translate "jobOrderListClosed" %}</option>
+                  <option value="Closed">{% translate "jobOrderListClosed" %}</option>
+                  <option value="Draft">{% translate "jobOrderListDraft" %}</option>
+                  <option value="Open">{% translate "jobOrderListOpen" %}</option>
+                  <option value="Requested">{% translate "jobOrderListRequested" %}</option>
                 </select>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate "jobOrderListClose" %}</button>
-                <button type="button" class="btn" id="saveStatusBtn" style='background-color:#7DBF96; color:white'>{% translate "jobOrderListSave" %}</button>
+                <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate "jobOrderListClose" %}</button>
+                <button type="button" class="btn light-green-button" id="saveStatusBtn">{% translate "jobOrderListSave" %}</button>
             </div>
         </div>
     </div>
@@ -61,8 +55,8 @@
   <div class="modal-dialog modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="jobRequestColumnSettingsLabel">{% translate "Select Columns to Display" %}</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'Close' %}"></button>
+        <h5 class="modal-title" id="jobRequestColumnSettingsLabel">{% translate "webCommonSelectColumnsToDisplay" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'webCommonClose' %}"></button>
       </div>
       <div class="modal-body">
         <form id="job-request-column-settings-form">
@@ -79,8 +73,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Close" %}</button>
-        <button type="button" class="btn btn-primary" id="apply-job-request-column-settings">{% translate "Apply" %}</button>
+        <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate "webCommonClose" %}</button>
+        <button type="button" class="btn light-green-button" id="apply-job-request-column-settings">{% translate "webCommonApply" %}</button>
       </div>
     </div>
   </div>
@@ -112,8 +106,8 @@
 
     <div class="table-responsive">
         <table class="table text-nowrap border-bottom" id="workrequest-datatable">
-          <thead style="background-color: #7DBF96;">
-          <tr class="text-center">
+          <thead>
+          <tr class="text-start">
             <th class="col-checkbox "></th>
             <th class="col-worker-request ">{% translate "jobOrderListWorkerRequest" %}</th>
             <th class="col-deadline ">{% translate "jobOrderListDeadline" %}</th>
@@ -129,7 +123,7 @@
 
             <tbody>
                 {% for item in work_requests %}
-                <tr class="text-center">
+                <tr class="text-start">
                     <td class="tbody">
                         <input type="checkbox" class="row-checkbox" data-id="{{ item.id }}">
                     </td>
@@ -157,20 +151,20 @@
                         {% translate item.status %}
                     </td>
                     {% if request.user|has_group:"admin" %}
-                        <td>
+                      <td>
+                          <button
+                            class="btn btn-sm yellow-button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editModal{{ item.id }}">
+                            {% translate 'jobOrderListEdit'%}
+                          </button>
                         <button
-                            class="btn btn-sm btn-outline-danger"
+                            class="btn btn-sm red-button ms-2"
                             data-bs-toggle="modal"
                             data-bs-target="#deleteModal{{ item.id }}">
                           {% translate 'jobOrderListDelete'%}
                         </button>
-                        <button
-                            class="btn btn-sm btn-outline-secondary ms-2"
-                            data-bs-toggle="modal"
-                            data-bs-target="#editModal{{ item.id }}">
-                            {% translate 'jobOrderListEdit'%}
-                      </button>
-                        </td>
+                      </td>
                     {% endif %}
                 </tr>
                 {% endfor %}
@@ -190,16 +184,16 @@
         <div class="modal-content">
           <form method="POST" action="{% url 'recruiting_web:workrequest_delete' item.id %}">
             {% csrf_token %}
-            <div class="modal-header" style="background-color: #7DBF96;">
-              <h5 class="modal-title text-white" id="deleteModalLabel{{ item.id }}">{% translate "jobOrderListConfirmDelete" %}</h5>
+            <div class="modal-header">
+              <h5 class="modal-title" id="deleteModalLabel{{ item.id }}">{% translate "jobOrderListConfirmDelete" %}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'jobOrderListClose'%}"></button>
             </div>
             <div class="modal-body">
               {% translate 'jobOrderListAreYouSureYouWantToDelete' %} <strong>{{ item.name }}</strong>?
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'jobOrderListCancel' %}</button>
-              <button type="submit" class="btn" style='background-color:#F95406; color:white'>{% translate 'jobOrderListDelete' %}</button>
+              <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'jobOrderListCancel' %}</button>
+              <button type="submit" class="btn red-button">{% translate 'jobOrderListDelete' %}</button>
             </div>
           </form>
         </div>
@@ -212,8 +206,8 @@
         <div class="modal-content">
           <form method="POST" action="{% url 'recruiting_web:workrequest_edit' item.id %}">
             {% csrf_token %}
-            <div class="modal-header" style="background-color: #7DBF96;">
-              <h5 class="modal-title text-white" id="editModalLabel{{ item.id }}">{% translate "jobOrderListEditWorkRequest" %}</h5>
+            <div class="modal-header">
+              <h5 class="modal-title" id="editModalLabel{{ item.id }}">{% translate "jobOrderListEditWorkRequest" %}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'jobOrderListClose'%}"></button>
             </div>
             <div class="modal-body">
@@ -251,8 +245,8 @@
                 </div>
               </div>
             <div class="modal-footer">
-              <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'jobOrderListCancel' %}</button>
-              <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>{% translate 'jobOrderListSave' %}</button>
+              <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'jobOrderListCancel' %}</button>
+              <button type="submit" class="btn light-green-button">{% translate 'jobOrderListSave' %}</button>
             </div>
           </form>
         </div>

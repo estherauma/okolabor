@@ -9,7 +9,7 @@
   <form method="POST" action="{% url 'recruiting_web:edit-role-wages' role.wages.id %}">
     {% csrf_token %}
 
-    <div class="modal-header bg-primary text-white">
+    <div class="modal-header">
       <h5 class="modal-title" id="editWagesLabel{{ role.id }}">{% translate 'joDetailsWagesEditWages' %}</h5>
       <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{% translate 'joDetailsWagesClose'%}"></button>
     </div>
@@ -48,9 +48,9 @@
 
     <div class="modal-footer">
       <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-        {% translate 'Cancel' %}
+        {% translate 'webCommonCancel' %}
       </button>
-      <button type="submit" class="btn btn-success">
+      <button type="submit" class="btn light-green-button">
         {% translate 'joDetailsWagesSave' %}
       </button>
     </div>

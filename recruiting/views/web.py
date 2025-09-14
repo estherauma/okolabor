@@ -13,6 +13,7 @@ from django.views.generic import CreateView,DeleteView,ListView
 from django.views.decorators.csrf import csrf_exempt,csrf_protect
 from django.views.decorators.http import require_POST
 import json
+from django.utils.translation import gettext as _
 from dateutil.relativedelta import relativedelta
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import Group
@@ -22,7 +23,7 @@ from django.urls import reverse
 from django.core.mail import send_mail
 from django.conf import settings
 from django.utils.http import urlsafe_base64_decode
-from django.utils import timezone
+from django.utils import timezone,translation
 from django.utils.encoding import force_str
 from django.http import HttpResponseRedirect,HttpResponseForbidden
 from django.core.exceptions import ObjectDoesNotExist
@@ -31,10 +32,14 @@ from collections import defaultdict
 from django.db.models import Count
 from django.template.loader import render_to_string
 import os
+from common.firebase_utils import send_push_notification
+from common.logger import AppLogger
+from common.utils import StaticContent
 from recruiting.utils import (
     get_worker_preferences, calculate_profile_completion,
     calculate_total_experience
 )
+from recruiting.models import Organization
 from account.models import User
 from recruiting.utils import *
 from recruiting.views.workers import WorkerDetailsView
@@ -88,38 +93,38 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 
-    
+
 class EmployerListView(View):
     def get(self, request):
         user = request.user
         query = request.GET.get('query')
 
         if user.groups.filter(name='admin').exists():
-            employers_list = Organization.objects.filter(type='employer').order_by('-created_at')
+            employers_list = Organization.objects.filter(type='employer').order_by('name')
 
         elif user.groups.filter(name__in=['recruiter', 'recruiter_admin']).exists():
             
-            recruiter_orgs = Organization.objects.filter(type='recruiter', recruiters=user).order_by('-created_at')
+            recruiter_orgs = Organization.objects.filter(type='recruiter', recruiters=user).order_by('name')
 
             recruiter_links = EmployerRecruiterOrgLink.objects.filter(
                 recruiter_org__in=recruiter_orgs,
                 final_status='accepted'
             )
             employer_ids = recruiter_links.values_list('employer_org__id', flat=True)
-            employers = Organization.objects.filter(id__in=employer_ids, type='employer')
+            employers = Organization.objects.filter(id__in=employer_ids, type='employer').order_by('name')
 
-            created_employers = Organization.objects.filter(type='employer', created_by=user)
+            created_employers = Organization.objects.filter(type='employer', created_by=user).order_by('name')
 
             employers_list = (employers | created_employers).distinct()
 
         else:
             employers_list = Organization.objects.none()
 
-        recruiter_organizations = Organization.objects.filter(type='recruiter').order_by('-created_at')
+        recruiter_organizations = Organization.objects.filter(type='recruiter').order_by('name')
 
         employers_data = []
         for employer in employers_list:
-            links = EmployerRecruiterOrgLink.objects.filter(employer_org=employer, final_status='accepted')
+            links = EmployerRecruiterOrgLink.objects.filter(employer_org=employer, final_status='accepted').order_by('recruiter_org__name')
             recruiter_org_names = list(set(link.recruiter_org.name for link in links))
 
             employers_data.append({
@@ -143,14 +148,13 @@ class EmployerListView(View):
             'query': query,
             'recruiters': recruiter_organizations,
             'employer_form': employer_form,
+            'breadcrumbs': [
+                {'name': _('employersHome'), 'url': reverse_lazy('index')},
+                {'name': _('employersEmployers'), 'url': None},
+            ],
         }
         return render(request, 'recruiting/employers/list.html', context)
 
-
-
-
-
-        
 class EmployerDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         user = request.user
@@ -160,7 +164,7 @@ class EmployerDeleteView(LoginRequiredMixin, View):
             employer_name = employer.name
             employer.delete(user=user)
             
-            messages.success(request, _('Employer "%(employer_name)s" DeletedSuccessfully.') % {'employer_name': employer_name})
+            messages.success(request, _('employersEmployer "%(employer_name)s" DeletedSuccessfully') % {'employer_name': employer_name})
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
             return redirect('recruiting_web:employer_list')
@@ -168,7 +172,7 @@ class EmployerDeleteView(LoginRequiredMixin, View):
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
-            return HttpResponseForbidden(_("youDoNotHavePermissionToDeleteThisEmployer."))
+            return HttpResponseForbidden(_("employersYouDoNotHavePermissionToDeleteThisEmployer"))
 
 class EmployerEditView(LoginRequiredMixin, View):
     def post(self, request, pk):
@@ -188,14 +192,14 @@ class EmployerEditView(LoginRequiredMixin, View):
             employer.description = request.POST.get('description')
             employer.save()
 
-            messages.success(request, _('Employer "%(employer_name)s" Edited Successfully.') % {'employer_name': employer.name})
+            messages.success(request, _('employersEmployer "%(employer_name)s" Edited Successfully.') % {'employer_name': employer.name})
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
             return redirect('recruiting_web:employer_list')
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
-            return HttpResponseForbidden(_("You do not have permission to edit this employer."))
+            return HttpResponseForbidden(_("employersYouDoNotHavePermissionToEditThisEmployer"))
 
 class RecruiterListViewInAdmin(View):
     def get(self, request):
@@ -203,7 +207,7 @@ class RecruiterListViewInAdmin(View):
         query = request.GET.get('query')
 
         if user.groups.filter(name='admin').exists():
-            recruiters_list = Organization.objects.filter(type='recruiter').order_by('-created_at')
+            recruiters_list = Organization.objects.filter(type='recruiter').order_by('name')
         else:
             recruiters_list = Organization.objects.none()
 
@@ -222,7 +226,7 @@ class RecruiterListViewInAdmin(View):
 
         recruiters_data = []
         for recruiter in recruiters:
-            assigned_links = EmployerRecruiterOrgLink.objects.filter(recruiter_org=recruiter)
+            assigned_links = EmployerRecruiterOrgLink.objects.filter(recruiter_org=recruiter).order_by('employer_org__name')
             assigned_employers = list(set(
                 link.employer_org.name for link in assigned_links
             ))
@@ -245,7 +249,14 @@ class RecruiterListViewInAdmin(View):
         
         
         employer_form = EmployerForm()
-        context = {'recruiters': recruiters_data, 'query': query, 'employer_form': employer_form}
+        context = {'recruiters': recruiters_data, 
+                   'query': query, 
+                   'employer_form': employer_form,
+                   'breadcrumbs': [
+                            {'name': _('recruiterListHome'), 'url': reverse('index')},
+                            {'name': _('recruiterListRecruiters'), 'url': None},
+                        ],
+                   }
         return render(request, 'recruiting/recruiters_list/list.html', context)
 
 
@@ -257,7 +268,7 @@ class RecruiterDeleteView(LoginRequiredMixin, View):
         if user.groups.filter(name='admin').exists():
             recruiter_name = recruiter.name
             recruiter.delete(user=user)
-            messages.success(request, _('Recruiter "%(recruiter_name)s" deletedSuccessfully.') % {'recruiter_name': recruiter_name})
+            messages.success(request, _('recruiterAdminListRecruiter "%(recruiter_name)s" deletedSuccessfully.') % {'recruiter_name': recruiter_name})
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
             return redirect('recruiting_web:recruiter_admin_list')
@@ -265,7 +276,7 @@ class RecruiterDeleteView(LoginRequiredMixin, View):
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
-            return HttpResponseForbidden(_("youDoNotHavePermissionToDeleteThisRecruiter."))
+            return HttpResponseForbidden(_("recruiterAdminListYouDoNotHavePermissionToDeleteThisRecruiter"))
 
 class RecruiterEditView(LoginRequiredMixin, View):
     def post(self, request, pk):
@@ -286,14 +297,14 @@ class RecruiterEditView(LoginRequiredMixin, View):
             recruiter.description = request.POST.get('description')
             recruiter.save()
 
-            messages.success(request, _('Recruiter "%(recruiter_name)s" editedSuccessfully.') % {'recruiter_name': recruiter.name})
+            messages.success(request, _('recruiterAdminListRecruiter "%(recruiter_name)s" editedSuccessfully.') % {'recruiter_name': recruiter.name})
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
             return redirect('recruiting_web:recruiter_admin_list')
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
-            return HttpResponseForbidden(_("You do not have permission to edit this recruiter."))
+            return HttpResponseForbidden(_("recruiterAdminListYouDoNotHavePermissionToEditThisRecruiter"))
 
 class EmployerCreateView(CreateView):
     model = Organization
@@ -341,7 +352,7 @@ class EmployerCreateView(CreateView):
                     }
                 )
 
-        messages.success(self.request, _('Organization created successfully'))
+        messages.success(self.request, _('employerAminListOrganizationCreatedSuccessfully'))
         self.object = org
         return redirect(self.get_success_url(org.pk))
 
@@ -378,6 +389,8 @@ class EmployerDetailView(View):
         assigned_orgs_data = []
         recruiter_names_org = set()
 
+        assigned_users = employer.recruiters.all()
+
         for org in recruiter_orgs:
             org_recruiters = org.recruiters.all()
             org_recruiter_names = [
@@ -398,16 +411,22 @@ class EmployerDetailView(View):
             })
 
         all_recruiter_names = list(recruiter_names_direct.union(recruiter_names_org))
-
+        users = User.objects.all()
         context = {
             'employer': employer,
+            'users': users,
             'in_progress_work_requests': in_progress_work_requests,
             'closed_work_requests': closed_work_requests,
             'draft_work_requests': draft_work_requests,
             'recruiters': all_recruiter_names,
-            'contacts': employer.contacts.all(),
+            'contacts': assigned_users,
             'work_requests': work_requests,
-            'assigned_organizations': assigned_orgs_data
+            'assigned_organizations': assigned_orgs_data,
+            'breadcrumbs': [
+                {'name': _('employerDetailsHome'), 'url': reverse_lazy('index')},
+                {'name': _('employerDetailsEmployers'), 'url': reverse_lazy('recruiting_web:employer_list')},
+                {'name': employer.name, 'url': None},
+            ],
         }
         return render(request, 'recruiting/employers/detail.html', context)
 
@@ -448,19 +467,25 @@ class RecruiterDetailView(View):
                 'phone': org.phone,
                 'recruiters': recruiter_names
             })
-
-        contacts = recruiter_org.contacts.all()
-
+        assigned_users = recruiter_org.recruiters.all()
+        # contacts = recruiter_org.contacts.all()
+        users = User.objects.all()
         context = {
             'employer': recruiter_org,
+            'users': users,
             'employer_organizations': employer_orgs_data,
             'in_progress_work_requests': in_progress_work_requests,
             'closed_work_requests': closed_work_requests,
             'draft_work_requests': draft_work_requests,
-            'contacts': contacts,
-            'work_requests': work_requests
+            'contacts': assigned_users,
+            'work_requests': work_requests,
+            'breadcrumbs': [
+                            {'name': _('recruiterListHome'), 'url': reverse('index')},
+                            {'name': _('recruiterListRecruiters'), 'url': reverse('recruiting_web:recruiter_admin_list')},
+                            {'name': recruiter_org.name, 'url': None},
+                        ],
         }
-        return render(request, 'recruiting/recruiters_list/workrequest_detail.html', context)
+        return render(request, 'recruiting/recruiters_list/details.html', context)
 
 
 class WorkRequestsListView(View):
@@ -500,9 +525,13 @@ class WorkRequestsListView(View):
         form = WorkRequestForm()
         context = {
             "work_requests": work_requests,
-            "employers": Organization.objects.filter(type='employer'),
-            "recruiter": Organization.objects.filter(type='recruiter'),
+            "employers": Organization.objects.filter(type='employer').order_by('name'),
+            "recruiter": Organization.objects.filter(type='recruiter').order_by('name'),
             "form": form,
+            "breadcrumbs": [
+                        {'name': _('jobOrderListHome'), 'url': 'index'},
+                        {'name': _('jobOrderListJobOrders'), 'url': None},
+                    ],
         }
         return render(request, "recruiting/work_requests/list.html", context)
 
@@ -516,9 +545,8 @@ class DeleteAssignedOrganizationView(View):
             employer_org=employer,
             recruiter_org=recruiter_org
         ).delete()
-        messages.success(self.request, _('employerRecruiterDeletedSuccessfully'))
+        messages.success(self.request, _('employerAminListEmployerRecruiterDeletedSuccessfully'))
         return redirect('recruiting_web:employer_detail', pk=employer.id)
-
 
 
 class DeleteEmployerOrganizationFromRecruiterView(View):
@@ -530,32 +558,11 @@ class DeleteEmployerOrganizationFromRecruiterView(View):
             recruiter_org=recruiter_org,
             employer_org=employer_org
         ).delete()
-        messages.success(self.request, _('employerRecruiterDeletedSuccessfully'))
+        messages.success(self.request, _('employerAminListEmployerRecruiterDeletedSuccessfully'))
 
         return redirect('recruiting_web:recruiter_org_detail', pk=recruiter_org.id)
 
 
-
-# class WorkRequestCreateView(CreateView):
-#     model = WorkRequests
-#     form_class = WorkRequestForm
-#     template_name = 'recruiting/work_requests/create.html'
-
-#     def form_valid(self, form):
-#         messages.success(self.request, _('createJobOrderJobOrderCreatedSuccessfully'))
-#         return super(WorkRequestCreateView, self).form_valid(form)
-
-#     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
-#         for field, errors in form.errors.items():
-#             for error in errors:
-#                 messages.error(self.request, f'{field}: {error}')
-#         return super().form_invalid(form)
-
-#     def get_success_url(self):
-#         return reverse(
-#             'recruiting_web:workrequest_detail',
-#             kwargs={'pk': self.object.pk}
-#         )
 class WorkRequestCreateView(CreateView):
     model = WorkRequests
     form_class = WorkRequestForm
@@ -578,14 +585,14 @@ class WorkRequestEditView(LoginRequiredMixin, View):
         form = WorkRequestForm(request.POST, instance=work_request)
         if form.is_valid():
             form.save()
-            messages.success(request, _('WorkRequestEditedSuccessfully'))
+            messages.success(request, _('jobOrderListWorkRequestEditedSuccessfully'))
             return redirect('recruiting_web:workrequest_detail', pk=work_request.pk)
         else:
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f'{field}: {error}')
             return redirect('recruiting_web:workrequest_list')
-        
+
 class WorkRequestDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         user = request.user
@@ -596,7 +603,7 @@ class WorkRequestDeleteView(LoginRequiredMixin, View):
             work_request.hard_delete()
             messages.success(
                 request,
-                _('WorkRequest "%(work_request_name)s" successfully deleted.') % {'work_request_name': work_request_name}
+                _('jobOrderList "%(work_request_name)s" successfully deleted.') % {'work_request_name': work_request_name}
             )
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
@@ -604,348 +611,8 @@ class WorkRequestDeleteView(LoginRequiredMixin, View):
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
-            return HttpResponseForbidden(_("You do not have permission to delete this job order."))
+            return HttpResponseForbidden(_("jobOrderListYouDoNotHavePermissionToDeleteThisJobOrder"))
 
-
-
-class AddWorkersWorkRequests(View):
-    def get(self, request, pk, role_id):
-        type_sector_value = request.GET.get('type_sector')
-        dynamic_field_1_value = request.GET.get('dynamic_field_1', '')
-        dynamic_field_2_value = request.GET.get('dynamic_field_2', '')
-        work_assign_form = WorkerAssignmentForm()
-        if type_sector_value:
-            type_sector_value = type_sector_value.replace('_', ' ').title()
-        initial_data = {
-            'type_sector': type_sector_value,
-            'dynamic_field_1': dynamic_field_1_value,
-            'dynamic_field_2': dynamic_field_2_value,
-        }
-        form = DynamicWorkExperienceForm(initial=initial_data)
-        filter_form = AdvancedFilterForm(request.GET or None)
-        search_query = request.GET.get('search', '')
-        page_number = request.GET.get('page', 1)
-        per_page = request.GET.get('per_page', 25)
-
-        try:
-            per_page = int(per_page)
-        except ValueError:
-            per_page = 4
-
-        work_request = get_object_or_404(WorkRequests, pk=pk)
-        role = get_object_or_404(Role, pk=role_id)
-        work_requests = WorkRequests.objects.filter(status='Open').prefetch_related('roles')
-
-        session_key = f'role_{role_id}_state'
-        if session_key in request.session:
-            state = request.session[session_key]
-            search_query = state.get('search_query', '')
-            page_number = state.get('page_number', 1)
-            per_page = state.get('per_page', 25)
-
-        workers = User.objects.filter(
-            groups__name='worker'
-        ).distinct().order_by('-created_at')
-        if search_query:
-            workers = workers.filter(
-                Q(first_name__icontains=search_query) |
-                Q(last_name__icontains=search_query) |
-                Q(email__icontains=search_query)
-            )
-        params = request.GET
-        type_sector = request.GET.get('type_sector')
-        if type_sector:
-            workers = workers.filter(
-                crop_experiences__job_type__iexact=type_sector
-            )
-
-        # Filter by Passport
-        passport_filter = next((v for k, v in params.items() if k.startswith("passport_") and v), None)
-        if passport_filter and passport_filter.lower() == 'yes':
-            workers = workers.filter(documents__kind__iexact='passport').distinct()
-
-
-        # Filter by H2A Experience
-        h2a_experience_filter = next((v for k, v in params.items() if k.startswith("h2a_experience_") and v), None)
-        if h2a_experience_filter and h2a_experience_filter.lower() == 'yes':
-            h2a_user_ids = UserWorkExperience.objects.filter(
-                visa_type__iexact="H-2A"
-            ).values_list('user_id', flat=True).distinct()
-            
-            workers = workers.filter(id__in=h2a_user_ids)
-
-        # Filter by H2B Experience
-        h2b_experience_filter = next((v for k, v in params.items() if k.startswith("h2b_experience_") and v), None)
-        if h2b_experience_filter and h2b_experience_filter.lower() == 'yes':
-            h2b_user_ids = UserWorkExperience.objects.filter(
-                visa_type__iexact="H-2B"
-            ).values_list('user_id', flat=True).distinct()
-
-            workers = workers.filter(id__in=h2b_user_ids)
-
-
-
-        # Filter by US Driving License
-        us_license_filter = next((v for k, v in params.items() if k.startswith("us_driving_license_") and v), None)
-        if us_license_filter and us_license_filter.lower() == 'yes':
-            workers = workers.filter(documents__kind='us_driving_license')
-
-        # Filter by Mexico/US Driving License
-        mx_us_license_filter = next((v for k, v in params.items() if k.startswith("mx_us_driving_license_") and v), None)
-        if mx_us_license_filter and mx_us_license_filter.lower() == 'yes':
-            workers = workers.filter(
-                documents__kind='mexico_driving_license'
-            )
-
-
-        # Filter by Work Preference Type
-        work_type_filter = next((v for k, v in params.items() if k.startswith("work_preference_type_") and v), None)
-        if work_type_filter:
-            work_type_values = [v.strip().lower() for v in work_type_filter.split(',') if v.strip()]
-            workers = workers.filter(
-                userpreference__key='kindOfWork',
-                userpreference__value__in=[val.title() for val in work_type_values]  # Adjust casing as needed
-            )
-
-        # Filter by Work Preference Location (multiple comma-separated values)
-        work_location_filter = next((v for k, v in params.items() if k.startswith("work_preference_location_") and v), None)
-        if work_location_filter:
-            location_values = [loc.strip().lower() for loc in work_location_filter.split(',') if loc.strip()]
-            workers = workers.filter(
-                userpreference__key='whereYouWantToWork',
-                userpreference__value__in=[loc.title() for loc in location_values]  # match case (if needed)
-            )
-
-        # Filter by English Proficiency if marked 'yes'
-        language_proficiency_filter = next((v for k, v in params.items() if k.startswith("language_proficiency_") and v), None)
-        if language_proficiency_filter and language_proficiency_filter.lower() == 'yes':
-            workers = workers.filter(
-                userpreference__key='english_proficiency',
-                userpreference__value__iexact='fluent'
-            )
-
-        # Filter by Gender
-        gender_filter = next((v for k, v in params.items() if k.startswith("gender_") and v), None)
-        if gender_filter:
-            workers = workers.filter(gender__iexact=gender_filter)
-
-         # Filter by Availability
-        availability_from = next((v for k, v in params.items() if k.startswith("availability_from_") and v), None)
-        availability_to = next((v for k, v in params.items() if k.startswith("availability_to_") and v), None)
-        if availability_from or availability_to:
-            availability_filter = Q(userpreference__key='availability')
-            if availability_from:
-                try:
-                    availability_filter &= Q(userpreference__value__gte=availability_from)
-                except ValueError:
-                    pass
-
-            if availability_to:
-                try:
-                    availability_filter &= Q(userpreference__value__lte=availability_to)
-                except ValueError:
-                    pass
-
-            workers = workers.filter(availability_filter)
-
-        # Filter by Reference
-
-        references_filter = next((v for k, v in params.items() if k.startswith("references_") and v), None)
-        if references_filter and references_filter.lower() == 'yes':
-            referenced_user_ids = UserWorkExperience.objects.filter(
-                Q(supervisor_name__isnull=False) & ~Q(supervisor_name__exact='') |
-                Q(supervisor_tel__isnull=False) & ~Q(supervisor_tel__exact='') |
-                Q(supervisor_email__isnull=False) & ~Q(supervisor_email__exact='')
-            ).values_list('user_id', flat=True).distinct()
-
-            workers = workers.filter(id__in=referenced_user_ids)
-
-        # Filter by Age (from dob)
-
-        age_min = next((int(v) for k, v in params.items() if k.startswith("age_min_") and v), None)
-        age_max = next((int(v) for k, v in params.items() if k.startswith("age_max_") and v), None)
-        if age_min is not None or age_max is not None:
-            today = date.today()
-            min_dob = today - relativedelta(years=age_max) if age_max is not None else None
-            max_dob = today - relativedelta(years=age_min) if age_min is not None else None
-            dob_filter = Q()
-            if min_dob:
-                dob_filter &= Q(dob__gte=min_dob)
-            if max_dob:
-                dob_filter &= Q(dob__lte=max_dob)
-
-            workers = [w for w in workers if (
-                (w.dob is not None) and
-                (min_dob is None or w.dob >= min_dob) and
-                (max_dob is None or w.dob <= max_dob)
-            )]
-
-        # Filter by Experience
-        min_exp = next((int(v) for k, v in params.items() if k.startswith("years_of_experience_min_") and v), None)
-        max_exp = next((int(v) for k, v in params.items() if k.startswith("years_of_experience_max_") and v), None)
-        if min_exp is not None or max_exp is not None:
-            filtered = []
-            for w in workers:
-                years = calculate_total_experience(w)
-                if ((min_exp is None or years >= min_exp) and
-                    (max_exp is None or years <= max_exp)):
-                    filtered.append(w)
-            workers = filtered
-        paginator = Paginator(workers, per_page)
-        page_obj = paginator.get_page(page_number)
-
-        
-        all_workers = workers.distinct()
-
-        worker_data = []
-        for worker in all_workers:
-            profile_completion = calculate_profile_completion(worker)
-            worker_details = get_worker_preferences(worker)
-            years_of_experience = calculate_total_experience(worker)
-            worker.profile_completion_percentage = profile_completion
-            latest_assignment = WorkAssignment.objects.filter(
-                worker=worker,
-                work_request=work_request,
-                role=role
-            ).order_by('-assigned_date').first()
-            worker.latest_status = latest_assignment.status if latest_assignment else "No Assignment"
-
-            for key, value in worker_details.items():
-                setattr(worker, key, value)
-
-            worker_data.append({
-                'id': worker.id,
-                'firstname': worker.first_name,
-                'lastname': worker.last_name,
-                'email': worker.email,
-                'profile_completion': profile_completion,
-                'years_of_experience': years_of_experience,
-                **worker_details
-            })
-
-        shortlisted_workers = get_shortlisted_workers(status='assigned', role_id=role_id)
-        offersent_workers = get_shortlisted_workers(status='offersent', role_id=role_id)
-        confirmed_workers = get_shortlisted_workers(status='confirmed', role_id=role_id)
-        cancel_workers = get_shortlisted_workers(status='cancelled', role_id=role_id)
-        rejected_workers = get_shortlisted_workers(status='rejected', role_id=role_id)
-
-        shortlisted_workers_data = []
-        for assignment in shortlisted_workers:
-            worker = assignment.worker
-            profile_completion = calculate_profile_completion(worker)
-            worker_details = get_worker_preferences(worker)
-            shortlisted_workers_data.append({
-                'id': worker.id,
-                'firstname': worker.first_name,
-                'lastname': worker.last_name,
-                'email': worker.email,
-                'profile_completion': profile_completion,
-                'status': assignment.status,
-                **worker_details
-            })
-
-        offersent_workers_data = []
-        for assignment in offersent_workers:
-            worker = assignment.worker
-            profile_completion = calculate_profile_completion(worker)
-            worker_details = get_worker_preferences(worker)
-            offersent_workers_data.append({
-                'id': worker.id,
-                'firstname': worker.first_name,
-                'lastname': worker.last_name,
-                'email': worker.email,
-                'profile_completion': profile_completion,
-                'status': assignment.status,
-                **worker_details
-            })
-
-        confirmed_workers_data = []
-        for assignment in confirmed_workers:
-            worker = assignment.worker
-            profile_completion = calculate_profile_completion(worker)
-            worker_details = get_worker_preferences(worker)
-            confirmed_workers_data.append({
-                'id': worker.id,
-                'firstname': worker.first_name,
-                'lastname': worker.last_name,
-                'email': worker.email,
-                'profile_completion': profile_completion,
-                'status': assignment.status,
-                **worker_details
-            })
-
-        cancelled_workers_data = []
-        unique_cancelled_workers = set()
-        for assignment in cancel_workers:
-            worker = assignment.worker
-            if worker.id not in unique_cancelled_workers:
-                unique_cancelled_workers.add(worker.id)
-                profile_completion = calculate_profile_completion(worker)
-                worker_details = get_worker_preferences(worker)
-                cancelled_workers_data.append({
-                    'id': worker.id,
-                    'firstname': worker.first_name,
-                    'lastname': worker.last_name,
-                    'email': worker.email,
-                    'profile_completion': profile_completion,
-                    'status': assignment.status,
-                    **worker_details
-                })
-        
-        rejected_workers_data = []
-        unique_rejected_workers = set()
-        for assignment in rejected_workers:
-            worker = assignment.worker
-            if worker.id not in unique_rejected_workers:
-                unique_rejected_workers.add(worker.id)
-                profile_completion = calculate_profile_completion(worker)
-                worker_details = get_worker_preferences(worker)
-                rejected_workers_data.append({
-                    'id': worker.id,
-                    'firstname': worker.first_name,
-                    'lastname': worker.last_name,
-                    'email': worker.email,
-                    'profile_completion': profile_completion,
-                    'status': assignment.status,
-                    **worker_details
-                })
-
-        shortlisted_count = len(shortlisted_workers_data)
-        offersent_count = len(offersent_workers_data)
-        confirmed_count = len(confirmed_workers_data)
-        cancelled_count = len(cancelled_workers_data)
-        rejected_count = len(rejected_workers_data)
-        workers_count = len(all_workers)
-
-        request.session[session_key] = {
-            'search_query': search_query,
-            'page_number': page_number,
-            'per_page': per_page,
-        }
-
-        context = {
-            'workers': all_workers,
-            'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
-            'form': form,
-            'work_assign_form': work_assign_form,
-            'filter_form': filter_form,
-            'search_query': search_query,
-            'per_page': per_page,
-            'role': role,
-            'work_request': work_request,
-            'shortlisted_workers': shortlisted_workers_data,
-            'offersent_workers': offersent_workers_data,
-            'confirmed_workers': confirmed_workers_data,
-            'cancelled_workers': cancelled_workers_data,
-            'rejected_workers': rejected_workers_data,
-            'shortlisted_count': shortlisted_count,
-            'offersent_count': offersent_count,
-            'confirmed_count': confirmed_count,
-            'cancelled_count': cancelled_count,
-            'rejected_count': rejected_count,
-            'workers_count': workers_count,
-        }
-        return render(request, 'recruiting/work_requests/create_addworker.html', context)
 
 @method_decorator(require_POST, name='dispatch')
 class CopyWorkersView(View):
@@ -953,11 +620,12 @@ class CopyWorkersView(View):
         worker_ids = request.POST.getlist('worker_ids[]')
         work_request_id = request.POST.get('work_request')
         role_id = request.POST.get('role')
-        status = request.POST.get('status', 'Assigned')
+        status = request.POST.get('status', 'assigned')
 
         if not worker_ids or not work_request_id or not role_id:
-            messages.error(request, _('Invalid request, missing data'))
-            return JsonResponse({'error': _('Invalid request, missing data')}, status=400)
+            message = _('workersListInvalidRequestMissingData')
+            messages.error(request, message)
+            return JsonResponse({'success': False, 'response': message}, status=400)
 
         work_request = get_object_or_404(WorkRequests, id=work_request_id)
         role = get_object_or_404(Role, id=role_id)
@@ -974,12 +642,14 @@ class CopyWorkersView(View):
                 work_assignment.status = status
                 work_assignment.save()
 
-            messages.success(request, _('workersAssignedSuccessfully!'))
-            return JsonResponse({'success': _('Workers assigned successfully!')})
-        
+            success_message = _('workersListWorkersAssignedSuccessfully')
+            messages.success(request, success_message)
+            return JsonResponse({'success': True, 'response': success_message})
+
         except Exception as e:
-            messages.error(request, _('anErrorOccurred: ') + str(e))
-            return JsonResponse({'error': _('An error occurred: ') + str(e)}, status=500)
+            error_message = _('workersListAn Error Occurred: ') + str(e)
+            messages.error(request, error_message)
+            return JsonResponse({'success': False, 'response': error_message}, status=500)
 
 class GetRolesView(View):
     def get(self, request, *args, **kwargs):
@@ -998,22 +668,71 @@ class GetRolesView(View):
             return JsonResponse({'error': 'Work request not found'}, status=404)
 
 
-
 @method_decorator(csrf_exempt, name='dispatch')
 class UpdateWorkerStatusView(View):
     def post(self, request, *args, **kwargs):
         worker_ids = request.POST.getlist('worker_ids[]')
-        WorkAssignment.objects.filter(worker_id__in=worker_ids, status='assigned').update(status='offersent')
-        # Need to send an offer notification here for each user
-        for item in worker_ids:
-             UserNotification.objects.create(
-                user=User.objects.get(id=item),
+        work_request_id = request.POST.get('work_request')
+        role_id = request.POST.get('role')
+
+        if not work_request_id or not role_id:
+            messages.error(request, 'Missing work request or role')
+            return JsonResponse({'status': 'fail', 'message': 'Missing work request or role'}, status=400)
+
+        work_request = get_object_or_404(WorkRequests, id=work_request_id)
+        role = get_object_or_404(Role, id=role_id)
+
+        user_push_tokens = []
+
+        for worker_id in worker_ids:
+            user = get_object_or_404(User, id=worker_id)
+
+            assignments = WorkAssignment.objects.filter(
+                worker=user,
+                role=role,
+                work_request=work_request
+            )
+
+            if assignments.exists():
+                for assignment in assignments:
+                    if assignment.status != 'offersent':
+                        assignment.status = 'offersent'
+                        assignment.save()
+            else:
+                WorkAssignment.objects.create(
+                    worker=user,
+                    role=role,
+                    work_request=work_request,
+                    status='offersent'
+                )
+                messages.success(request, f'Offer sent to {user.get_full_name()}')
+
+            # Send notification
+            if user.push_notification_token:
+                user_push_tokens.append(user.push_notification_token)
+
+            UserNotification.objects.create(
+                user=user,
                 title=_("workRequestAddNotificationTitle"),
                 message=_("workRequestAddNotificationBody")
             )
-        messages.success(request, _("workRequestAddWorkerOfferSentSuccessfully"))
-        return JsonResponse({'status':'success','success': 'True', 'message': 'Offer sent successfully.'})
 
+        if user_push_tokens:
+            send_push_notification(
+                tokens=user_push_tokens,
+                title=str(_("workRequestAddNotificationTitle")),
+                body=str(_("workRequestAddNotificationBody")),
+                data={'type': 'job_offer'}
+            )
+
+        messages.success(request, 'Offers sent successfully to selected workers.')
+
+        return JsonResponse({
+            'status': 'success',
+            'success': 'True',
+            'message': _('Offer sent successfully.')
+        })
+        
 @method_decorator(csrf_exempt, name='dispatch')
 class OfferSendWorkerView(View):
     def post(self, request, *args, **kwargs):
@@ -1021,7 +740,8 @@ class OfferSendWorkerView(View):
         work_request_id = request.POST.get('work_request')
         role_id = request.POST.get('role')
         status = request.POST.get('status', 'assigned')
-        
+        user = User.objects.get(id=worker_id)
+
         assignment = WorkAssignment.objects.filter(
             worker_id=worker_id,
             work_request_id=work_request_id,
@@ -1039,15 +759,31 @@ class OfferSendWorkerView(View):
                 role_id=role_id,
                 status='offersent'
             )
-        UserNotification.objects.create(
-                user=User.objects.get(id=worker_id),
-                title=_("workRequestAddNotificationTitle"),
-                message=_("workRequestAddNotificationBody")
-            )
-       
-        messages.success(request, _("OfferSentSuccessfully."))
-        return redirect('recruiting_web:worker_detail', pk=worker_id)
+            
+        current_lang = translation.get_language()
+        try:
+            translation.activate(user.language)
+            UserNotification.objects.create(
+                    user=user,
+                    title=_("workRequestAddNotificationTitle"),
+                    message= _("workRequestAddNotificationBody")
+                )
+        
 
+            if user.push_notification_token:
+                send_push_notification(
+                    tokens=[user.push_notification_token],
+                    title=str(_("workRequestAddNotificationTitle")),
+                    body=str(_("workRequestAddNotificationBody")),
+                    data={"type": "job_offer", "job_id": role_id},
+            )
+                
+        finally:
+            translation.activate(current_lang)
+            
+        messages.success(request, _("OfferSentSuccessfully."))
+
+        return redirect('recruiting_web:worker_detail', pk=worker_id)
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -1055,10 +791,13 @@ class CancelOfferView(View):
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
         worker_ids = data.get('worker_ids', [])
-        WorkAssignment.objects.filter(worker_id__in=worker_ids, status='offersent').update(status='cancelled')
-        messages.success(request, _("OfferCancelledSuccessfully."))
+        WorkAssignment.objects.filter(
+                worker_id__in=worker_ids,
+                status__in=['offersent', 'assigned','confirmed']
+            ).update(status='cancelled')
+        messages.success(request, _("workRequestAddWorkerOfferCancelledSuccessfully"))
         return JsonResponse({'status': 'success', 'message': 'Offer cancelled successfully.'})
-    
+
 @method_decorator(csrf_exempt, name='dispatch')
 class AddToShortlistView(View):
     def post(self, request, *args, **kwargs):
@@ -1117,7 +856,7 @@ class WorkRequestDetailView(View):
                 deleted_at__isnull=True,
             )
         roles_qs = [role for role in roles_qs_raw if hasattr(role, 'hours') and role.hours.deleted_at is None]
-
+    
         role_forms = {
             role.id: WorkRequestRoleForm(instance=role)
             for 
@@ -1143,21 +882,20 @@ class WorkRequestDetailView(View):
             }
         wages_form = {
             role.id: RoleWagesForm(instance=role.wages)
-            for role in roles_qs if hasattr(role, 'wages') and role.wages and role.wages.deleted_at is None 
+            for role in roles_qs_raw if hasattr(role, 'wages') and role.wages and role.wages.deleted_at is None 
         }  
         qualification_forms = {
             role.id: RoleQualificationForm(instance=role.qualifications)
-            for role in roles_qs
-            if hasattr(role, 'qualifications') and role.qualifications and role.qualifications.deleted_at is None
+            for role in roles_qs_raw if hasattr(role, 'qualifications') and role.qualifications and role.qualifications.deleted_at is None
         }
         
         role_deductions = {
             role.id: role.deductions.filter()
-            for role in roles_qs
+            for role in roles_qs_raw
         }
         
         deduction_forms = {}
-        for role in roles_qs:
+        for role in roles_qs_raw:
             deductions = role.deductions.filter()
             for deduction in deductions:
                 deduction_forms[deduction.id] = RoleDeductionForm(instance=deduction)
@@ -1170,6 +908,29 @@ class WorkRequestDetailView(View):
         role_Employment_form = RoleEmploymentLocationForm()
         role_Housing_form = RoleHousingInformationForm()
         role_Meals_form = RoleMealProvision()
+        
+        # for item in roles_qs, find shortlist, offersent, confirmed and rejected count
+        for item in roles_qs:
+            item.shortlist_count = WorkAssignment.objects.filter(
+                work_request=work_request,
+                role=item,
+                status='assigned'
+            ).count()
+            item.offersent_count = WorkAssignment.objects.filter(
+                work_request=work_request,
+                role=item,
+                status='offersent'
+            ).count()
+            item.confirmed_count = WorkAssignment.objects.filter(
+                work_request=work_request,
+                role=item,
+                status='confirmed'
+            ).count()
+            item.rejected_count = WorkAssignment.objects.filter(
+                work_request=work_request,
+                role=item,
+                status='rejected'
+            ).count()
         
         dynamic_fields = [
             'animal_types',
@@ -1207,6 +968,11 @@ class WorkRequestDetailView(View):
             'role_Meals_form': role_Meals_form,
             'role_add_form': role_add_form,
             'dynamic_fields': dynamic_fields,
+            'breadcrumbs' :[
+                        {'name': 'Home', 'url': reverse('index')},
+                        {'name': 'Job Orders', 'url': reverse('recruiting_web:workrequest_list')},
+                        {'name': work_request.name, 'url': None},
+                    ],
 
         }
         return render(request, 'recruiting/work_requests/detail.html', context)
@@ -1244,7 +1010,7 @@ class WorkRequestRoleCreateView(CreateView):
             'licensed_vehicle_operation_types',
         ]
         return context
-    
+
 class EditRoleView(View):
     def post(self, request, pk):
         role = get_object_or_404(Role, pk=pk)
@@ -1255,7 +1021,7 @@ class EditRoleView(View):
             return redirect('recruiting_web:workrequest_detail', pk=role.work_request.pk)
         else:
             return redirect('recruiting_web:workrequest_detail', pk=role.work_request.pk)
-        
+
 class DeleteRoleView(View):
     def post(self, request, pk):
         role = get_object_or_404(Role, pk=pk)
@@ -1269,7 +1035,7 @@ class RecruiterListView(LoginRequiredMixin, View):
         if not request.user.groups.filter(name='recruiter_admin').exists():
             return redirect('recruiting_web:access_denied')
 
-        recruiters = User.objects.filter(groups__name='recruiter').prefetch_related('employerrecruiter_set__employer')
+        recruiters = User.objects.filter(groups__name='recruiter').prefetch_related('employerrecruiter_set__employer').order_by('first_name')
         employers = Organization.objects.all()
 
 
@@ -1283,7 +1049,7 @@ class RecruiterListView(LoginRequiredMixin, View):
                 "employer_names": employer_names if employer_names else "Not Assigned any person"
             })
         return render(request, 'recruiting/recruiters/list.html', {'recruiters': recruiter_data, 'employers': employers})
-    
+
 
 class AddRecruiterToEmployerView(LoginRequiredMixin, View):
     def post(self, request, employer_id, recruiter_id):
@@ -1297,7 +1063,7 @@ class AddRecruiterToEmployerView(LoginRequiredMixin, View):
         employer_recruiter, created = EmployerRecruiter.objects.get_or_create(employer=employer, recruiter=recruiter)
 
         if created:
-            messages.success(request, _("Recruiter {email} assigned to {employer}.").format(email=recruiter.email, employer=employer.name))
+            messages.success(request, _("recruiterAdminListRecruiter {email} assigned to {employer}.").format(email=recruiter.email, employer=employer.name))
         else:
             messages.info(request, _("Recruiter {email} is already assigned to {employer}.").format(email=recruiter.email, employer=employer.name))
 
@@ -1321,12 +1087,11 @@ class RemoveRecruiterFromEmployerView(LoginRequiredMixin, View):
             messages.info(request, _("Recruiter {email} was already removed from {employer}.").format(email=recruiter.email, employer=employer.name))
 
         return redirect('recruiting_web:recruiter_list')
-     
+
 
 class AccessDeniedView(View):
     def get(self, request):
         return render(request, 'recruiting/access_denied.html')
-
 
 
 class RoleDataBaseView(CreateView):
@@ -1359,8 +1124,13 @@ class RoleHoursCreateView(CreateView):
     def form_valid(self, form):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)  # Use all_objects to bypass soft delete
+        # If role has existing hours, hard delete them
+        try:
+            if role.hours and role.hours.deleted_at:
+                role.hours.hard_delete()
+        except ObjectDoesNotExist:
+            pass
 
-        print(role,"role")
         # Prevent duplicates: check if Hours already exist for this role
         if Hours.objects.filter(role=role).exists():
             
@@ -1372,9 +1142,7 @@ class RoleHoursCreateView(CreateView):
         form.instance.role = role
         self.object = form.save()
         messages.success(self.request, 'Hours successfully added.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': role.work_request.pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
     def form_invalid(self, form):
         role_id = self.kwargs['pk']
@@ -1389,9 +1157,9 @@ class RoleHoursCreateView(CreateView):
             return redirect('recruiting_web:workrequest_list')
 
         messages.error(self.request, 'Failed to add hours. Please correct the errors.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': work_request_pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_pk])}?open_role={role.id}')
+    
+
 class RoleWagesCreateView(CreateView):
     model = Wages
     form_class = RoleWagesForm
@@ -1399,6 +1167,12 @@ class RoleWagesCreateView(CreateView):
     def form_valid(self, form):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)
+        # If role has existing wages, hard delete them
+        try:
+            if role.wages and role.wages.deleted_at:
+                role.wages.hard_delete()
+        except ObjectDoesNotExist:
+            pass
 
         # Check for existing wages
         if Wages.objects.filter(role=role).exists():
@@ -1410,9 +1184,8 @@ class RoleWagesCreateView(CreateView):
         form.instance.role = role  # assign manually
         self.object = form.save()
         messages.success(self.request, 'Wages successfully added.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': role.work_request.pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
+
 
     def form_invalid(self, form):
         messages.error(self.request, 'Failed to add wages. Please correct the errors.')
@@ -1423,9 +1196,8 @@ class RoleWagesCreateView(CreateView):
         except Role.DoesNotExist:
             return redirect('recruiting_web:workrequest_list')
 
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': work_request_pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_pk])}?open_role={role.id}')
+
 
 class RoleDeductionsCreateView(CreateView):
     model = Deduction
@@ -1438,17 +1210,15 @@ class RoleDeductionsCreateView(CreateView):
         form.instance.role = role
         self.object = form.save()
         messages.success(self.request, 'Deductions successfully added.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': role.work_request.pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
+
 
     def form_invalid(self, form):
         messages.error(self.request, 'Failed to add deductions. Please correct the errors.')
         try:
             role = Role.all_objects.get(pk=self.kwargs['pk'])
-            return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-                'pk': role.work_request.pk
-            }))
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
+
         except Role.DoesNotExist:
             return redirect('recruiting_web:workrequest_list')
 
@@ -1459,30 +1229,29 @@ class RoleQualificationsCreateView(CreateView):
     def form_valid(self, form):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)
+        # If role has existing qualifications, hard delete them
+        try:
+            if role.qualifications and role.qualifications.deleted_at:
+                role.qualifications.hard_delete()
+        except ObjectDoesNotExist:
+            pass
 
         if Qualification.objects.filter(role=role).exists():
             messages.warning(self.request, 'Qualifications already added for this role.')
-            return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-                'pk': role.work_request.pk
-            }))
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
         form.instance.role = role
         self.object = form.save()
         messages.success(self.request, 'Qualifications successfully added.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': role.work_request.pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
     def form_invalid(self, form):
         messages.error(self.request, 'Failed to add qualifications. Please correct the errors.')
         try:
             role = Role.all_objects.get(pk=self.kwargs['pk'])
-            return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-                'pk': role.work_request.pk
-            }))
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
         except Role.DoesNotExist:
             return redirect('recruiting_web:workrequest_list')
-
 
 
 class RoleEmpLocationCreateView(CreateView):
@@ -1492,19 +1261,20 @@ class RoleEmpLocationCreateView(CreateView):
     def form_valid(self, form):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)
+        try:
+            if role.employment_location and role.employment_location.deleted_at:
+                role.employment_location.hard_delete()
+        except ObjectDoesNotExist:
+            pass
 
         if EmploymentLocation.objects.filter(role=role).exists():
             messages.warning(self.request, 'Employment location already added for this role.')
-            return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-                'pk': role.work_request.pk
-            }))
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
         form.instance.role = role
         self.object = form.save()
         messages.success(self.request, 'Employment location successfully added.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': role.work_request.pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
     def form_invalid(self, form):
         role_id = self.kwargs['pk']
@@ -1515,9 +1285,7 @@ class RoleEmpLocationCreateView(CreateView):
             return redirect('recruiting_web:workrequest_list')
 
         messages.error(self.request, 'Failed to add employment location. Please correct the errors.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': work_request_pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_pk])}?open_role={role.id}')
 
 class RoleHousingCreateView(CreateView):
     model = HousingInformation
@@ -1526,23 +1294,24 @@ class RoleHousingCreateView(CreateView):
     def form_valid(self, form):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)
+        # If role has existing housing information, hard delete it
+        try:
+            if role.housing_information and role.housing_information.deleted_at:
+                role.housing_information.hard_delete()
+        except ObjectDoesNotExist:
+            pass
 
         # Prevent duplicate housing info
         if HousingInformation.objects.filter(role=role).exists():
             messages.warning(self.request, 'Housing information already added for this role.')
-            return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-                'pk': role.work_request.pk
-            }))
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
         form.instance.role = role
         self.object = form.save()
         messages.success(self.request, 'Housing information successfully added.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': role.work_request.pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
     def form_invalid(self, form):
-        print(form.errors, "Form errors")
         role_id = self.kwargs['pk']
         try:
             role = Role.all_objects.get(pk=role_id)
@@ -1551,9 +1320,7 @@ class RoleHousingCreateView(CreateView):
             return redirect('recruiting_web:workrequest_list')
 
         messages.error(self.request, 'Failed to add housing information. Please correct the errors.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': work_request_pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_pk])}?open_role={role.id}')
 
 
 class RoleMealsCreateView(CreateView):
@@ -1563,20 +1330,22 @@ class RoleMealsCreateView(CreateView):
     def form_valid(self, form):
         role_id = self.kwargs['pk']
         role = get_object_or_404(Role.all_objects, pk=role_id)
+        # If role has existing meal provision, hard delete it
+        try:
+            if role.meal_provision and role.meal_provision.deleted_at:
+                role.meal_provision.hard_delete()
+        except ObjectDoesNotExist:
+            pass
 
         # Check if MealProvision already exists for this role
         if MealProvision.objects.filter(role=role).exists():
             messages.warning(self.request, 'Meal Provision already added for this role.')
-            return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-                'pk': role.work_request.pk
-            }))
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
         form.instance.role = role
         self.object = form.save()
         messages.success(self.request, 'Meal Provision successfully added.')
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': role.work_request.pk
-        }))
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
     def form_invalid(self, form):
         messages.error(self.request, 'Failed to add Meal Provision. Please correct the errors.')
@@ -1586,10 +1355,7 @@ class RoleMealsCreateView(CreateView):
         except Role.DoesNotExist:
             return redirect('recruiting_web:workrequest_list')
 
-        return redirect(reverse('recruiting_web:workrequest_detail', kwargs={
-            'pk': work_request_pk
-        }))
-
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_pk])}?open_role={role.id}')
 
 
 class RecruiterTodoView(LoginRequiredMixin, View):
@@ -1608,7 +1374,13 @@ class OkoMessageListView(View):
     def get(self, request):
         form = OkoMessageFilterForm()
         items = OkoMessage.objects.all()
-        context = {'items': items, 'form': form }
+        context = {'items': items, 
+                   'form': form ,
+                    'breadcrumbs': [
+                        {'name': _('messagesHome'), 'url': reverse_lazy('index')},
+                        {'name': _('messagesMessages'), 'url': None},
+                    ],
+                   }
         return render(request, 'recruiting/messages/list.html', context)
 
 
@@ -1616,9 +1388,18 @@ class OkoMessageCreateView(CreateView):
     model = OkoMessage
     form_class = OkoMessageCreateForm
     template_name = 'recruiting/messages/create.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['breadcrumbs'] = [
+            {'name': _('createMessageHome'), 'url': reverse_lazy('index')},
+            {'name': _('createMessageMessages'), 'url': reverse_lazy('recruiting_web:recruiter_messages')},
+            {'name': _('createMessageCreateMessage'), 'url': None},
+        ]
+        return context
 
     def form_valid(self, form):
-        messages.success(self.request, _('messageCreatedSuccessfully'))
+        messages.success(self.request, _('createMessageMessageCreatedSuccessfully'))
         return super(OkoMessageCreateView, self).form_valid(form)
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
@@ -1635,9 +1416,15 @@ class OkoMessageCreateView(CreateView):
 class OkoMessageDetailsView(View):
     def get(self, request,id):
         message = get_object_or_404(OkoMessage, pk=id)
-        context = {'message': message}
+        context = {'message': message,
+                   'breadcrumbs': [
+                            {'name': _('messageDetailsHome'), 'url': reverse('index')},
+                            {'name': _('messageDetailsMessages'), 'url': reverse('recruiting_web:recruiter_messages')},
+                            {'name': _('messageDetailsMessageDetails'), 'url': None},
+                        ],
+                   }
         return render(request, 'recruiting/messages/details.html',context)
-    
+
 class AssignRecruiterView(View):
     def post(self, request):
         try:
@@ -1687,8 +1474,7 @@ class AssignRecruiterView(View):
         except Exception as e:
             return JsonResponse({"success": False, "error": f"anErrorOccurred{str(e)}"}, status=500)
 
-    
-    
+
 @method_decorator(csrf_exempt, name='dispatch')
 class SendRecruiterEmailView(View):
     def post(self, request, *args, **kwargs):
@@ -1767,9 +1553,10 @@ class AcceptRecruiterView(View):
             Team
             """
             send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [recruiter.email])
-
-            messages.success(request, _("recruiterAssignmentAcceptedSuccessfully."))
-            return JsonResponse({"success": True, "message": "recruiterAssignmentAcceptedSuccessfully."})
+            
+            message = _("recruiterAdminListrecruiterAssignmentAcceptedSuccessfully")
+            messages.success(request, message)
+            return JsonResponse({"success": True, "message": message})
 
         except Organization.DoesNotExist:
             return JsonResponse({"success": False, "error": "employerNotFound."}, status=404)
@@ -1790,9 +1577,9 @@ class RejectRecruiterView(View):
             employer = get_object_or_404(Organization, id=employer_id)
             recruiter = get_object_or_404(User, id=recruiter_id)
 
-
-            messages.success(request, _("recruiterAssignmentRejectedSuccessfully."))
-            return JsonResponse({"success": True, "message": "recruiterAssignmentRejectedSuccessfully."})
+            message = _("recruiterAdminListRecruiterAssignmentRejectedSuccessfully")
+            messages.success(request, message)
+            return JsonResponse({"success": True, "message": message})
 
         except Organization.DoesNotExist:
             return JsonResponse({"success": False, "error": "employerNotFound."}, status=404)
@@ -1815,7 +1602,7 @@ class RemoveWorkerFromAssignmentView(View):
             assignment.status = 'Deleted'
             assignment.save()
 
-            messages.success(request, _("WorkerAssignmentSuccessfullyMarkedAsDeleted."))
+            messages.success(request, _("workersListWorkerAssignmentSuccessfullyMarkedAsDeleted"))
         
         except Exception as e:
             messages.error(request, f"errorRemovingWorker_{str(e)}")
@@ -1834,23 +1621,27 @@ class UpdateStatusView(View):
             if work_requests and status:
                 updated_count = WorkRequests.objects.filter(id__in=work_requests).update(status=status)
                 if updated_count > 0:
-                    messages.success(request, _("updateWorkRequestsSuccessfullyUpdatedTo'{}'Status.").format(status))
-                    return JsonResponse({'success': True, 'message': f"workRequestsSuccessfullyUpdatedTo'{status}'Status."})
+                    message = _("jobOrderDetailsWorkRequestsSuccessfullyUpdatedTo'{}'Status.").format(status)
+                    messages.success(request, message)
+                    return JsonResponse({'success': True, 'message': message})
                 else:
-                    messages.error(request, _("noWorkRequestsFoundToUpdate."))
-                    return JsonResponse({'success': False, 'message': 'noWorkRequestsFoundtoUpdate.'})
-            messages.error(request, _("invalidDataProvided."))
-            return JsonResponse({'success': False, 'message': 'invalidDataProvided.'})
+                    message = _("jobOrderListNoWorkRequestsFoundToUpdate")
+                    messages.error(request, message)
+                    return JsonResponse({'success': False, 'message': message})
+            message = _("jobOrderListInvalidDataProvided")
+            messages.error(request, message)
+            return JsonResponse({'success': False, 'message': message})
 
         except json.JSONDecodeError:
-            messages.error(request, "invalidJSONData.")
-            return JsonResponse({'success': False, 'message': 'invalidJSONData.'})
+            message = _("jobOrderListInvalidJSONData")
+            messages.error(request, message)
+            return JsonResponse({'success': False, 'message': message})
 
 
 class ContactWorkRequestsView(View):
     def get(self, request, contact_id):
-        contact = get_object_or_404(EmployerContact, id=contact_id)
-        employer = contact.employer 
+        contact = get_object_or_404(User, id=contact_id)
+        employer = contact.organizations.first()
         recruiters = EmployerRecruiter.objects.filter(employer=employer).select_related('recruiter')
         work_requests = WorkRequests.objects.filter(employer=employer)
         in_progress_work_requests = work_requests.filter(status__in=['Open', 'Requested'])
@@ -1868,54 +1659,53 @@ class ContactWorkRequestsView(View):
         }
 
         return render(request, 'recruiting/work_requests/workrequest_details.html', context)
-    
+
+
 @method_decorator(csrf_exempt, name='dispatch')
 class AssignEmployerContactView(View):
     def post(self, request, *args, **kwargs):
         try:
             data = json.loads(request.body)
             employer_id = data.get("employer_id")
-            name = data.get("name")
-            email = data.get("email")
-            phone = data.get("phone")
-            position = data.get("position", "")
-            is_primary = data.get("is_primary")
-            
+            user_id = data.get("user_id")
 
-            if not employer_id:
-                messages.error(request, "employerIDIsRequired.")
-                return JsonResponse({'error': 'employerIDIsRequired.'}, status=400)
+            if not employer_id or not user_id:
+                return JsonResponse({
+                    "success": False,
+                    "error": _("employersEmployerIDAndUserIDAreRequired")
+                }, status=400)
 
-            if EmployerContact.objects.filter(email=email).exists():
-                messages.error(request, "Email already exists.")
-                return JsonResponse({'error': 'emailAlreadyExists.'}, status=400)
+            employer = get_object_or_404(Organization, id=employer_id)
+            user = get_object_or_404(User, id=user_id)
 
-            try:
-                employer = Organization.objects.get(id=employer_id)
-            except Organization.DoesNotExist:
-                messages.error(request, "Employer not found.")
-                return JsonResponse({'error': 'employerNotFound.'}, status=404)
+            if employer in user.organizations.all():
+                return JsonResponse({
+                    "success": False,
+                    "error": _("employersUserIsAlreadyAssignedToThisOrganization")
+                }, status=400)
 
-            EmployerContact.objects.create(
-                employer=employer,
-                name=name,
-                email=email,
-                phone=phone,
-                position=position,
-                is_primary=is_primary
-            )
+            user.organizations.add(employer)
 
-            messages.success(request, _("ContactAssignedSuccessfully!"))
-            return JsonResponse({'success': True, 'message': 'ContactAssignedSuccessfully!'})
+            return JsonResponse({
+                "success": True,
+                "message": _("employersOrganizationAssignedSuccessfullyToUser")
+            })
 
+        except json.JSONDecodeError:
+            return JsonResponse({
+                "success": False,
+                "error": _("employersInvalidJSONPayload")
+            }, status=400)
         except Exception as e:
-            messages.error(request, str(e))
-            return JsonResponse({'error': str(e)}, status=500)
+            return JsonResponse({
+                "success": False,
+                "error": _("employersFailedToAssignOrganization: ") + str(e)
+            }, status=500)
 
     def get(self, request, *args, **kwargs):
-        messages.error(request, "GET not allowed")
-        return JsonResponse({'error': 'GET not allowed.'}, status=405)
-
+        return JsonResponse({
+            "error": "GET not allowed."
+        }, status=405)
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -1968,13 +1758,13 @@ class AssignEmployersToRecruiterOrgView(View):
             if newly_assigned:
                 messages.success(
                     request,
-                    _("Invitations created, emails sent successfully, and employer(s) assigned to the recruiter organization.")
+                    _("employersInvitationsCreated,EmailsSentSuccessfully,AndEmployer(s)AssignedToTheRecruiterOrganization")
                 )
 
             if already_assigned:
                 messages.warning(
                     request,
-                    _("The following employers are already assigned: {}").format(', '.join(already_assigned))
+                    _("employersTheFollowingEmployersAre AlreadyAssigned: {}").format(', '.join(already_assigned))
                 )
 
             return JsonResponse({
@@ -1989,7 +1779,7 @@ class AssignEmployersToRecruiterOrgView(View):
                 'success': False,
                 'message': str(e)
             })
-            
+
 def get_response_status(receiver_org, other_org):
     try:
         link = EmployerRecruiterOrgLink.objects.get(
@@ -1999,7 +1789,6 @@ def get_response_status(receiver_org, other_org):
         return link.status
     except EmployerRecruiterOrgLink.DoesNotExist:
         return 'pending'
-
 
 
 class InvitationResponseView(View):
@@ -2083,13 +1872,11 @@ def send_invitation_email_to_org(receiver_org, other_org, request, role):
 
 
 def send_invitation_to_primary_contacts(employer_org, recruiter_org, request):
-    print(employer_org, recruiter_org, "employer_org, recruiter_org")
     
     protocol = 'https' if request.is_secure() else 'http'
     domain = request.get_host()
 
     contacts = EmployerContact.objects.filter(employer=recruiter_org, is_primary=True)
-    print(contacts, "contacts")
     
     for contact in contacts:
         accept_url = f"{protocol}://{domain}/invitation-response/?action=accept&receiver_org_id={employer_org.id}&other_org_id={recruiter_org.id}&role=recruiter"
@@ -2118,8 +1905,6 @@ Your Team
             )
 
 
-
-
 def update_employer_recruiter_status(request):
     action = request.GET.get('action')
     employer_org_id = request.GET.get('employer_org_id')
@@ -2146,13 +1931,13 @@ def update_employer_recruiter_status(request):
 
         if action == 'accept':
             relation.status = 'accepted'
-            msg = _('You have accepted the recruiter assignment.')
+            msg = 'You have accepted the recruiter assignment.'
             subject = "Recruiter Assignment Accepted"
             message = f"Your organization '{employer_org.name}' has successfully accepted the assignment from '{recruiter_org.name}'."
 
         elif action == 'reject':
             relation.status = 'rejected'
-            msg = _('You have rejected the recruiter assignment.')
+            msg = 'You have rejected the recruiter assignment.'
             subject = "Recruiter Assignment Rejected"
             message = f"Your organization '{employer_org.name}' has rejected the assignment from '{recruiter_org.name}'."
 
@@ -2184,6 +1969,14 @@ class EmployerRecruiterOrgStatusListView(ListView):
             'recruiter_org',
             'user_updated_by__user'
         )
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['breadcrumbs'] = [
+            {'name': _('recruiterStatusHome'), 'url': reverse_lazy('index')},
+            {'name': _('recruiterStatusRecruiterStatusList'), 'url': None},
+        ]
+        return context
 
 class EmployerRecruiterOrgLinkDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
@@ -2192,7 +1985,7 @@ class EmployerRecruiterOrgLinkDeleteView(LoginRequiredMixin, View):
         if request.user.groups.filter(name='admin').exists():
             link_str = str(link)
             link.delete(user=request.user)
-            messages.success(request, _('Link "%(link_str)s" deleted successfully.') % {'link_str': link_str})
+            messages.success(request, _('employersLink "%(link_str)s" deleted successfully.') % {'link_str': link_str})
 
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
@@ -2202,7 +1995,7 @@ class EmployerRecruiterOrgLinkDeleteView(LoginRequiredMixin, View):
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
 
-            return HttpResponseForbidden(_("You do not have permission to delete this link."))
+            return HttpResponseForbidden(_("employersYouDoNotHavePermissionToDeleteThisLink"))
 
 
 class SummaryViews(View):
@@ -2307,7 +2100,7 @@ class SummaryViews(View):
 
         return render(request, 'recruiting/work_requests/summaryList/summarylist.html', context)
 
-    
+
 class EditEmploymentLocationView(View):
     def post(self, request, pk):
         location = get_object_or_404(EmploymentLocation, pk=pk)
@@ -2315,7 +2108,7 @@ class EditEmploymentLocationView(View):
         if form.is_valid():
             form.save()
             messages.success(request, _('roleEmploymentLocationEmploymentLocationUpdatedSuccessfully'))
-            return redirect('recruiting_web:workrequest_detail', pk=location.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[location.role.work_request.pk])}?open_role={location.role.id}')
         else:
             messages.error(request, _('roleEmploymentLocationThereWasAnErrorUpdatingTheEmploymentLocation'))
 
@@ -2326,7 +2119,7 @@ class DeleteEmploymentLocationView(View):
         try:
             location.delete()
             messages.success(request, _('roleEmploymentLocationEmploymentLocationDeletedSuccessfully'))
-            return redirect('recruiting_web:workrequest_detail', pk=location.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[location.role.work_request.pk])}?open_role={location.role.id}')
         except Exception as e:
             messages.error(request, _('roleEmploymentLocationErrorDeletingEmploymentLocation: %(error)s') % {'error': str(e)})
 
@@ -2338,10 +2131,10 @@ class EditHousingInformationView(View):
         if form.is_valid():
             form.save()
             messages.success(request, _('joDetailsHousingInfoHousingInformationUpdatedSuccessfully'))
-            return redirect('recruiting_web:workrequest_detail', pk=housing.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[housing.role.work_request.pk])}?open_role={housing.role.id}')
         else:
             messages.error(request, _('joDetailsHousingInfoThereWasAnErrorUpdatingTheHousingInformation'))
-            return redirect('recruiting_web:workrequest_detail', pk=housing.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[housing.role.work_request.pk])}?open_role={housing.role.id}')
 
 
 class DeleteHousingInformationView(View):
@@ -2351,11 +2144,11 @@ class DeleteHousingInformationView(View):
             work_request_pk = housing.role.work_request.pk
             housing.delete()
             messages.success(request, _('joDetailsHousingInfoHousingInformationDeletedSuccessfully'))
-            return redirect('recruiting_web:workrequest_detail', pk=work_request_pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_pk])}?open_role={housing.role.id}')
         except Exception as e:
             messages.error(request, _('joDetailsHousingInfoErrorDeletingHousingInformation: %(error)s') % {'error': str(e)})
-            return redirect('recruiting_web:workrequest_detail', pk=housing.role.work_request.pk)
-        
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[housing.role.work_request.pk])}?open_role={housing.role.id}')
+
 class EditMealProvisionView(View):
     def post(self, request, pk):
         meal_provision = get_object_or_404(MealProvision, pk=pk)
@@ -2364,11 +2157,11 @@ class EditMealProvisionView(View):
         if form.is_valid():
             form.save()
             messages.success(request, _('joDetailsMealsMealProvisionUpdatedSuccessfully'))
-            return redirect('recruiting_web:workrequest_detail', pk=meal_provision.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[meal_provision.role.work_request.pk])}?open_role={meal_provision.role.id}')
         else:
             messages.error(request, _('joDetailsMealsThereWasAnErrorUpdatingTheMealProvision'))
-            return redirect('recruiting_web:workrequest_detail', pk=meal_provision.role.work_request.pk)
-        
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[meal_provision.role.work_request.pk])}?open_role={meal_provision.role.id}')
+
 
 class DeleteMealProvisionView(View):
     def post(self, request, pk):
@@ -2377,10 +2170,10 @@ class DeleteMealProvisionView(View):
             work_request_pk = meal_provision.role.work_request.pk
             meal_provision.delete()
             messages.success(request, _('joDetailsMealsMealProvisionDeletedSuccessfully'))
-            return redirect('recruiting_web:workrequest_detail', pk=work_request_pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_pk])}?open_role={meal_provision.role.id}')
         except Exception as e:
             messages.error(request, _('joDetailsMealsErrorDeletingMealProvision: %(error)s') % {'error': str(e)})
-            return redirect('recruiting_web:workrequest_detail', pk=meal_provision.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[meal_provision.role.work_request.pk])}?open_role={meal_provision.role.id}')
 
 
 class EditRoleHoursView(View):
@@ -2397,7 +2190,7 @@ class EditRoleHoursView(View):
             messages.error(request, _('joDetailsHoursThereWasAnErrorUpdatingTheHours'))
 
         if work_request_id:
-            return redirect('recruiting_web:workrequest_detail', pk=work_request_id)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_id])}?open_role={hours.role.id}')
         else:
             return redirect('/')
 
@@ -2413,7 +2206,7 @@ class DeleteRoleHoursView(View):
             messages.error(request, _('joDetailsHoursErrorDeletingHours: %(error)s')% {'error': str(e)})
 
         if work_request_id:
-            return redirect('recruiting_web:workrequest_detail', pk=work_request_id)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_id])}?open_role={hours.role.id}')
         else:
             return redirect('/')
 class EditRoleWagesView(View):
@@ -2421,7 +2214,7 @@ class EditRoleWagesView(View):
         wages = get_object_or_404(Wages, pk=pk)
         form = RoleWagesForm(request.POST, instance=wages)
 
-        work_request_id = request.POST.get('work_request_id', None)
+        work_request_id = request.POST.get('work_request_id', wages.role.work_request.id)
 
         if form.is_valid():
             form.save()
@@ -2430,7 +2223,7 @@ class EditRoleWagesView(View):
             messages.error(request, _('joDetailsWagesThereWasAnErrorUpdatingTheWages'))
 
         if work_request_id:
-            return redirect('recruiting_web:workrequest_detail', pk=work_request_id)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[work_request_id])}?open_role={wages.role.id}')
         else:
             return redirect('/')
 
@@ -2440,7 +2233,8 @@ class DeleteRoleWagesView(View):
         wages.deleted_at = timezone.now()
         wages.save()
         messages.success(request, _("joDetailsWagesWagesDeletedSuccessfully"))
-        return redirect('recruiting_web:workrequest_detail', pk=wages.role.work_request.pk)
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[wages.role.work_request.id])}?open_role={wages.role.id}')
+
 class EditRoleQualificationView(View):
     def post(self, request, pk):
         qualification = get_object_or_404(Qualification, pk=pk)
@@ -2451,11 +2245,9 @@ class EditRoleQualificationView(View):
         if form.is_valid():
             form.save()
             messages.success(request, _('joDetailsQualificationsQualificationUpdatedSuccessfully'))
-            return redirect('recruiting_web:workrequest_detail', pk=qualification.role.work_request.pk) 
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[qualification.role.work_request.pk])}?open_role={qualification.role.id}')
         else:
             messages.error(request, _('joDetailsQualificationsThereWasAnErrorUpdatingTheQualification'))
-
-        
 
 
 class DeleteQualificationView(View):
@@ -2464,7 +2256,7 @@ class DeleteQualificationView(View):
         qualification.delete()
 
         messages.success(request, _("joDetailsQualificationsQualificationDeletedSuccessfully"))
-        return redirect('recruiting_web:workrequest_detail', pk=qualification.role.work_request.pk)
+        return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[qualification.role.work_request.pk])}?open_role={qualification.role.id}')
 
 class DeleteDeductionView(View):
     def post(self, request, pk):
@@ -2472,7 +2264,8 @@ class DeleteDeductionView(View):
         try:
             deduction.delete()
             messages.success(request, 'DeductionDeletedSuccessfully.')
-            return redirect('recruiting_web:workrequest_detail', pk=deduction.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[deduction.role.work_request.pk])}?open_role={deduction.role.id}')
+
         except Exception as e:
             messages.error(request, f'ErrorDeletingDeduction: {str(e)}')
 
@@ -2491,6 +2284,6 @@ class DeductionEditView(View):
         if form.is_valid():
             form.save()
             messages.success(request, "Deduction updated successfully.")
-            return redirect('recruiting_web:workrequest_detail', pk=deduction.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[deduction.role.work_request.pk])}?open_role={deduction.role.id}')
         else:
-            return redirect('recruiting_web:workrequest_detail', pk=deduction.role.work_request.pk)
+            return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[deduction.role.work_request.pk])}?open_role={deduction.role.id}')

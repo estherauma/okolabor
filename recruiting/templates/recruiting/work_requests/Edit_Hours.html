@@ -7,7 +7,7 @@
         <form method="POST" action="{% url 'recruiting_web:edit-role-hours' role.hours.id %}">
           {% csrf_token %}
           
-          <div class="modal-header bg-primary text-white">
+          <div class="modal-header">
             <h5 class="modal-title" id="editHoursLabel{{ role.id }}">{% translate 'joDetailsHoursEditHours' %}</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{% translate 'joDetailsHoursClose'%}"></button>
           </div>
@@ -18,7 +18,7 @@
                 <div class="d-flex flex-column">
                   {% for field in form %}
                     <div class="mb-3 w-100">
-                      {% if field.field.widget.input_type == "checkbox" %}
+                      {% if field.name == "on_call" %}
                         <div class="form-check">
                           {{ field }}
                           <label class="form-check-label ms-2" for="{{ field.id_for_label }}">
@@ -46,9 +46,9 @@
   
           <div class="modal-footer">
             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-              {% translate 'Cancel' %}
+              {% translate 'webCommonCancel' %}
             </button>
-            <button type="submit" class="btn btn-success">
+            <button type="submit" class="btn light-green-button">
               {% translate 'joDetailsHoursSave' %}
             </button>
           </div>

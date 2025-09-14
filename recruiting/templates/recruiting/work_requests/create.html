@@ -2,9 +2,9 @@
 <div class="modal fade" id="jobOrderModal" tabindex="-1" aria-labelledby="jobOrderModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-      <div class="modal-header" style="background-color: #7DBF96;">
-        <h5 class="modal-title text-white" id="jobOrderModalLabel">{% translate "createJobOrderCreateJoborder" %}</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'Close' %}"></button>
+      <div class="modal-header">
+        <h5 class="modal-title" id="jobOrderModalLabel">{% translate "createJobOrderCreateJoborder" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'webCommonClose' %}"></button>
       </div>
       <div class="modal-body">
         <form method="post" action="{% url 'recruiting_web:workrequest_create' %}">

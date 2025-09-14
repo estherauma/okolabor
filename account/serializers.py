@@ -7,6 +7,9 @@ from account.models import (
 import re
 from common.twilio import OTPVerification
 from django.core.exceptions import ObjectDoesNotExist
+from common.logger import AppLogger
+
+logger = AppLogger(log_file='logs/invalid-curps.log')
 
 
 class RegistrationSerializer(serializers.Serializer):
@@ -43,22 +46,30 @@ class RegistrationSerializer(serializers.Serializer):
 
     def validate_curp(self, value):
         if len(value) > 18:
+            logger.info(f'CURP can not be more than 18 characters long: {value}')
             raise serializers.ValidationError(
                 'CURP cannot be more than 18 characters long')
         if len(value) < 18:
+            logger.info(f'CURP cannot be less than 18 characters long: {value}')
             raise serializers.ValidationError(
                 'CURP cannot be less than 18 characters long')
         if not re.match(r'^[A-Za-z]{4}\d{6}[A-Za-z]{6}[A-Za-z0-9]{1}\d{1}$', value):
+            logger.info(f'Invalid CURP format: {value}')
             raise serializers.ValidationError('Invalid CURP format')
 
-        if User.objects.filter(curp=value).exists():
-            raise serializers.ValidationError(
-                'User with given CURP already exists')
+        # Commenting this out just incase they come back and ask that we put it back.
+        # if User.objects.filter(curp=value).exists():
+        #     logger.info(f'User with the given CURP already exists: {value}')
+        #     raise serializers.ValidationError(
+        #         'User with given CURP already exists')
         return value
 
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():
-            raise serializers.ValidationError('Email already exists')
+            raise serializers.ValidationError({
+                'error_key': 'email_exists',
+                'message': 'Email already exists'
+            })
         return value
 
 
@@ -92,27 +103,55 @@ class UpdateUserPreferencesSerializer(serializers.Serializer):
     preferences = UserPreferenceSerializer(many=True)
 
 
+class BlankableDateField(serializers.DateField):
+    def to_internal_value(self, data):
+        if data in ("", None):
+            return None
+        return super().to_internal_value(data)
+
+class BlankableBooleanField(serializers.BooleanField):
+    def to_internal_value(self, data):
+        if data in ("", None, ""):
+            return None
+        return super().to_internal_value(data)
+
+
 class UserWorkexperienceSerializer(serializers.ModelSerializer):
     country = serializers.CharField(required=False, allow_blank=True)
     state = serializers.CharField(required=False, allow_blank=True)
     visa_type = serializers.CharField(required=False, allow_blank=True)
     company = serializers.CharField(required=True)
-    start_date = serializers.DateField(required=True)
-    currently_working = serializers.BooleanField(required=False)    
+    start_date = BlankableDateField(required=False, allow_null=True)
+    currently_working = BlankableBooleanField(required=False, allow_null=True)
     end_date = serializers.DateField(required=False, allow_null=True)
     work_title = serializers.CharField(required=True)
     supervisor_name = serializers.CharField(required=False, allow_blank=True)
     supervisor_tel = serializers.CharField(required=False, allow_blank=True)
-    supervisor_email = serializers.EmailField(required=False, allow_blank=True)
+    supervisor_email = serializers.CharField(required=False, allow_blank=True)
     work_under_h2a_in_usa = serializers.CharField(allow_blank=True, required=False)
+    type_of_work = serializers.CharField(required=True)
+    approx_month_and_year = serializers.CharField(
+        required=False, allow_blank=True, default='Not specified'
+    )
+    approx_total_months_worked = serializers.CharField(
+        required=False, allow_blank=True, default='Not specified'
+    )
     
+    def validate_start_date(self, value):
+        print(f"Validating start_date: {value}")
+        # Convert "" → None
+        if value in ["", None]:
+            return None
+        return value
 
     class Meta:
         model = UserWorkExperience
         fields = [
             'id', 'country', 'state', 'visa_type','company', 'start_date',
             'currently_working','end_date', 'work_title',
-            'supervisor_name', 'supervisor_tel', 'supervisor_email','work_under_h2a_in_usa'
+            'supervisor_name', 'supervisor_tel', 'supervisor_email',
+            'work_under_h2a_in_usa','type_of_work', 'approx_month_and_year',
+            'approx_total_months_worked'
         ]
 
 

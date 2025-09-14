@@ -8,8 +8,8 @@
     <div class="modal-dialog modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="columnSettingsModalLabelTab5">{% translate "Select Columns to Display" %}</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'Close' %}"></button>
+          <h5 class="modal-title" id="columnSettingsModalLabelTab5">{% translate "webCommonSelectColumnsToDisplay" %}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'webCommonClose' %}"></button>
         </div>
         <div class="modal-body">
           <form id="column-settings-form">
@@ -32,8 +32,8 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="display: none;">{% translate "Close" %}</button>
-          <button type="button" class="btn btn-primary" id="apply-column-settingsTab5" style="display: none;">{% translate "Apply" %}</button>
+          <button type="button" class="btn grey-button" data-bs-dismiss="modal" style="display: none;">{% translate "webCommonClose" %}</button>
+          <button type="button" class="btn light-green-button" id="apply-column-settingsTab5" style="display: none;">{% translate "webCommonApply" %}</button>
         </div>
       </div>
     </div>
@@ -60,39 +60,22 @@
 
           <div class="table-responsive">
             <table class="table text-nowrap border-bottom" id="basic-datatable-rejectedTab5">
-              <thead style="background-color: #7DBF96;">
+              <thead>
                 <tr>
-                  <th>{% translate "workersListCheckbox" %}</th>
+                  <th><input type="checkbox" id="select-all-rejected"></th>
                   <th class="col-name">{% translate "workersListName" %}</th>
                   <th class="col-town">{% translate "workersListTown" %}</th>
                   <th class="col-profile">{% translate "workersListProfileCompletion" %}</th>
                   <th class="col-experience">{% translate "workersListExperience" %}</th>
                   <th class="col-english">{% translate "workersListEnglishProficiency" %}</th>
                   <th class="col-location">{% translate "workersListLocationPreference" %}</th>
+                  <th class="col-location">{% translate "workersListWorkRequest" %}</th>
+                  <th class="col-location">{% translate "workersWorkRequestRole" %}</th>
                   <th class="col-offer">{% translate "workersListOfferStatus" %}</th>
                 </tr>
               </thead>
               <tbody>
-                {% for worker in rejected_workers %}
-                <tr class="text-center">
-                  <td>
-                    <input type="checkbox" class="worker-shortlist-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.firstname }} {{ worker.lastname }}">
-                  </td>
-                  <td class="col-name">
-                    {% if worker.first_name and worker.last_name %}
-                    <a href="{{ worker.id }}">{{ worker.first_name }} {{ worker.last_name }}</a>
-                    {% else %}
-                    <a href="{{ worker.id }}">{{ worker.email }}</a>
-                    {% endif %}
-                  </td>
-                  <td class="col-town">{{ worker.town|default:"Not Provided" }}</td>
-                  <td class="col-profile">{{ worker.profile_completion_percentage|default:0 }}%</td>
-                  <td class="col-experience">{{ worker.work_experience|default:"Not Provided" }}</td>
-                  <td class="col-english">{{ worker.english_proficiency|default:"Not Provided" }}</td>
-                  <td class="col-location">{{ worker.location_preference|default:"Not Provided" }}</td>
-                  <td class="col-offer">{{ worker.latest_status }}</td>
-                </tr>
-                {% endfor %}
+               
               </tbody>
             </table>
           </div>

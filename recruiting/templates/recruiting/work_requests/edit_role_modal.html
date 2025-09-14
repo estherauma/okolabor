@@ -1,0 +1,144 @@
+{% load i18n %}
+{% load custom_filters %}
+
+{% for role in workrequest.roles.all %}
+  <div class="modal fade" id="editRoleModal{{ role.id }}" tabindex="-1" aria-labelledby="editRoleModalLabel{{ role.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <form method="POST" action="{% url 'recruiting_web:edit-role' role.id %}" id="editRoleForm{{ role.id }}">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title">{% translate 'Edit Role' %}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+          <div class="modal-body p-3">
+            {% with role_forms|get:role.id as role_form %}
+              <div class="form-group my-3">
+                <label>{{ role_form.title.label }}</label>
+                {{ role_form.title }}
+              </div>
+
+              <div class="form-group my-3">
+                <label>{{ role_form.usdol_case_number.label }}</label>
+                {{ role_form.usdol_case_number }}
+              </div>
+
+              <div class="form-group my-3" id="div_id_type_sector">
+                <label>{{ role_form.work_type.label }}</label>
+                {{ role_form.work_type }}
+              </div>
+
+              {% for field_name in dynamic_fields %}
+                {% with role_form|get_field:field_name as field %}
+                  <div class="form-group my-3" id="div_id_{{ field_name }}" style="display:none;">
+                    <label>{{ field.label }}</label>
+                    <div class="d-flex flex-wrap gap-3">
+                      {% for checkbox in field %}
+                        <div class="form-check form-check-inline">
+                          {{ checkbox.tag }}
+                          <label class="form-check-label ms-1">{{ checkbox.choice_label }}</label>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                {% endwith %}
+              {% endfor %}
+
+              <div class="form-group my-3" id="div_id_description" style="display:none;">
+                <label>{{ role_form.description.label }}</label>
+                {{ role_form.description }}
+              </div>
+
+              <div class="form-group my-3">
+                <label>{{ role_form.number_of_required_workers.label }}</label>
+                {{ role_form.number_of_required_workers }}
+              </div>
+
+              <div class="form-group my-3">
+                <label>{{ role_form.work_request.label }}</label>
+                {{ role_form.work_request }}
+              </div>
+            {% endwith %}
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn grey-button" data-bs-dismiss="modal">
+              {% translate 'jobOrderDetailsCancel' %}
+            </button>
+            <button type="submit" class="btn light-green-button">
+              {% translate 'jobOrderDetailsSave' %}
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+{% endfor %}
+{% block scripts %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const updateVisibility = (formElement) => {
+      const sectorField = formElement.querySelector("#id_type_sector");
+      if (!sectorField) return;
+
+      const value = sectorField.value.trim();
+
+      const allFields = [
+        "id_animal_types",
+        "id_responsibilities_types",
+        "id_crop_types",
+        "id_crop_job_types",
+        "id_mechanic_job_types",
+        "id_supervision_jobs_types",
+        "licensed_vehicle_operation_types",
+        "id_description"
+      ];
+
+      allFields.forEach((id) => {
+        const el = formElement.querySelector(`#div_${id}`);
+        if (el) el.style.display = "none";
+      });
+
+      const show = (id) => {
+        const el = formElement.querySelector(`#div_${id}`);
+        if (el) el.style.display = "block";
+      };
+
+      if (value === "animals") {
+        show("id_animal_types");
+        show("id_responsibilities_types");
+        show("id_description");
+      } else if (value === "crop_and_horticulture") {
+        show("id_crop_types");
+        show("id_crop_job_types");
+        show("id_description");
+      } else if (value === "mechanics") {
+        show("id_mechanic_job_types");
+        show("id_description");
+      } else if (value === "worker_supervision__management") {
+        show("id_supervision_jobs_types");
+        show("id_description");
+      } else if (value === "licensed_vehicle_operation") {
+        show("licensed_vehicle_operation_types");
+        show("id_description");
+      } else if (value === "construction" || value === "other") {
+        show("id_description");
+      }
+    };
+
+    // Get all editRole forms
+    const forms = document.querySelectorAll("form[id^='editRoleForm']");
+
+    forms.forEach((form) => {
+      const sectorField = form.querySelector("#id_type_sector");
+      if (sectorField) {
+        sectorField.addEventListener("change", () => updateVisibility(form));
+        updateVisibility(form); // Run on page load
+      }
+    });
+  });
+</script>
+{% endblock scripts %}

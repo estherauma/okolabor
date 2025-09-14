@@ -14,7 +14,7 @@ from recruiting.views.web import (
     AcceptRecruiterView,RejectRecruiterView,
     RemoveWorkerFromAssignmentView,UpdateStatusView,
     ContactWorkRequestsView,AssignEmployerContactView,
-    AddWorkersWorkRequests,ShowWorkerDetails,AddToShortlistView,
+    ShowWorkerDetails,AddToShortlistView,
     UpdateWorkerStatusView,CancelOfferView,RecruiterListViewInAdmin,
     AssignEmployersToRecruiterOrgView,SummaryViews,RecruiterDetailView,
     GetRolesView,CopyWorkersView,EmployerDeleteView,EmployerEditView, 
@@ -27,12 +27,7 @@ from recruiting.views.web import (
     DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditRoleHoursView,DeleteRoleHoursView,EditRoleWagesView,DeleteRoleWagesView,EditRoleQualificationView,DeleteQualificationView,DeductionEditView,DeleteDeductionView,OfferSendWorkerView,InvitationResponseView
 )
 from recruiting.views.workers import (
-     WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,EditWorkExperienceView,DeleteWorkExperienceView,WorkerEditView,WorkerDeleteView,EditUserPreferenceView,EditLanguageProficiencyView,EditDocumentsView,DeleteAllWorkerInfoView,WorkerEditView,WorkerDeleteView
-)
-from recruiting.views.workers import (
-     CreateWorkExperienceView, WorkExperienceDetailsView,
-     ExportWorkerDetailsView,UploadDocumentsView,
-     UploadLanguageProficiencyView,UploadUserPreferenceView
+     WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,EditWorkExperienceView,DeleteWorkExperienceView,WorkerEditView,WorkerDeleteView,EditUserPreferenceView,EditLanguageProficiencyView,EditDocumentsView,DeleteAllWorkerInfoView,WorkerEditView,WorkerDeleteView,FilteredWorkersAjaxView,SendOfferView,CreateWorkExperienceView, WorkExperienceDetailsView,ExportWorkerDetailsView,UploadDocumentsView,UploadLanguageProficiencyView,UploadUserPreferenceView
 )
 
 
@@ -72,9 +67,6 @@ urlpatterns = [
          SummaryViews.as_view(), 
          name='summary'),
 
-    path('job-order/<str:pk>/add-workers/<str:role_id>/',
-          AddWorkersWorkRequests.as_view(),
-          name='work_request_add_workers'),
     path('get_roles/', 
          GetRolesView.as_view(), 
          name='get_roles'),
@@ -82,9 +74,12 @@ urlpatterns = [
          CopyWorkersView.as_view(), 
          name='copy_workers'),
           
-    path('update-worker-status/', 
-         UpdateWorkerStatusView.as_view(), 
-         name='update_worker_status'),
+     path(
+     'job-order/<str:pk>/add-workers/<str:role_id>/update-worker-status/',
+     UpdateWorkerStatusView.as_view(),
+     name='update_worker_status'
+     ),
+
     path('offer/send-worker/', 
          OfferSendWorkerView.as_view(), 
          name='offer_send_worker'),
@@ -100,6 +95,9 @@ urlpatterns = [
     path('add-to-shortlist/', 
           AddToShortlistView.as_view(), 
           name='add_to_shortlist'),
+    path('send-offer/',
+          SendOfferView.as_view(), 
+          name='send_offer'),
 
     path('job-order/<pk>/',
          WorkRequestDetailView.as_view(),
@@ -159,6 +157,11 @@ urlpatterns = [
     path('workers/',
          WorkerListView.as_view(),
          name='workers'),
+     path('workers/ajax-filtered-workers/',
+          FilteredWorkersAjaxView.as_view(), 
+          name='ajax_filtered_workers'),
+
+
     # urls.py
     path('worker/edit/<str:pk>/', WorkerEditView.as_view(),
          name='edit_worker'),

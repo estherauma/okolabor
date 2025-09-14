@@ -2,3 +2,102 @@
     background-color: #7DBF96;
     color: white;
 }
+
+.table th {
+    color: var(--oko-off-white);
+    text-transform: capitalize;
+    background-color: var(--oko-light-green);
+}
+.table td {
+    color: black !important;
+}
+.table td >a {
+    color: var(--oko-light-green) !important;
+    text-decoration: none !important;
+}
+
+.table td >a:hover {
+    color: var(--oko-light-green) !important;
+    text-decoration: underline !important;
+}
+
+
+.table-responsive nav {
+    display: none
+}
+
+.table-max-height {
+    max-height: 250px !important;
+}
+@media (min-height: 700px) {
+    .table-max-height {
+        max-height: 500px !important;
+    }
+}
+
+
+/* fix table headers */
+.table thead {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 2;
+}
+
+/* fix pagination container */
+.dataTables_wrapper>.row:last-child {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    z-index: 20;
+    padding: 8px 0;
+    border-top: 1px solid #eee;
+}
+
+.table-responsive::-webkit-scrollbar {
+  width: 10px;
+  height: 10px; 
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background:rgba(0, 0, 0, 0.074);
+  border-radius: 4px;
+}
+
+img {
+    max-width: 100%;
+    object-fit: cover;
+}
+
+#mediaContent img {
+    max-height: 75vh;
+    width: 100%;
+    object-fit: contain;
+}
+
+#mediaContent video {
+    max-height: 75vh;
+    width: 100%;
+    object-fit: contain;
+}
+
+.form-check-input:checked, .form-check-input[type="radio"]:checked {
+  background-color: var(--oko-light-green);
+  border-color: var(--oko-light-green);
+}
+
+.form-check{
+  display: flex;
+  align-items: center;
+}
+
+.form-check .form-check-input {
+  margin-top: 0 !important;
+}
+
+ul.form-check-input {
+  border: none;
+  margin-left: 1.25rem;
+  position: relative;
+}
+

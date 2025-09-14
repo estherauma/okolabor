@@ -9500,6 +9500,8 @@ ul.labels-info li a i {
     border-bottom: 1px solid #eaedf1;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
+    background-color: var(--oko-light-green);
+    color: var(--oko-off-white);
 }
 
 .modal-header .btn-close {
@@ -10356,7 +10358,7 @@ body.fixed-header .page {
     display: flex;
     -ms-flex-align: center;
     align-items: center;
-    margin: 1.5rem 0rem 1.5rem;
+    /* margin: 1.5rem 0rem 1.5rem; */
     -ms-flex-wrap: wrap;
     justify-content: space-between;
     padding: 0;
@@ -11556,7 +11558,7 @@ progress {
 
 .table-center td,
 .table-center th {
-    text-align: center;
+    text-align: left;
 }
 
 .table-striped tbody tr:nth-of-type(odd) {
@@ -11574,7 +11576,7 @@ progress {
 .table-calendar td,
 .table-calendar th {
     border: 0;
-    text-align: center;
+    text-align: left;
     padding: 0 !important;
     width: 14.28571429%;
     line-height: 2.5rem;
@@ -39955,28 +39957,42 @@ textarea.form-control {
 /*# sourceMappingURL=style.css.map */
 
 /*List.html (recruiter homepage styling)*/
+.btn {
+    font-weight: 700;
+    border-radius: 23px;
+    border: none;
+    padding: 7px 20px;
+}
+
+.red-button {
+    background-color: var(--oko-red);
+    color: var(--oko-off-white) !important;
+}
+
+.red-button:hover {
+    background-color: transparent !important;
+    border: 1px solid var(--oko-red);
+    color: var(--oko-red) !important;
+}
+
 
 .yellow-button {
-    border-radius: 16px;
-    background-color: #F5BE31;
-    color: #0B4337;
-    padding: 5px;
-    font-weight: 500;
+    background-color: var(--oko-yellow);
+    color: var(--oko-dark-green) !important;
+}
+
+.yellow-button:hover {
+    background-color: transparent !important;
+    border: 1px solid var(--oko-yellow);
 }
 
 .dark-green-button {
-    border-radius: 16px;
-    padding-right: 10px !important;
-    padding-left: 10px !important;
-    background-color: #2A7A62;
-    color: #FAFAE6;
-    padding: 7px;
-    font-weight: 500;
+    background-color: var(--oko-mid-green);
+    color: var(--oko-off-white) !important;
 }
 
 .dark-green-button:hover {
-    background-color: #1F5A47; /* Darker shade for hover effect */
-    color:#FAFAE6;
+    background-color: var(--oko-dark-green); /* Darker shade for hover effect */
 }
 
 .offwhite-color {
@@ -39989,43 +40005,35 @@ textarea.form-control {
 
 .light-green-button {
     min-width: 75px;
-    border-radius: 16px;
-    background-color: #7DBF96;
-    color: #FAFAE6;
-    padding: 7px;
-    font-weight: 500;
+    background-color: var(--oko-light-green);
+    color: var(--oko-off-white) !important;
 }
 
 .light-green-background {
     background-color: #7DBF96 !important;
 }
 
+.light-green-button-outline {
+    min-width: 75px;
+    background-color: transparent;
+    color: var(--oko-light-green) !important;
+}
+
 .grey-green-button {
     min-width: 75px;
-    border-radius: 16px;
-    background-color: #D9D9D9;
+    background-color: var(--oko-light-grey);
     color: #0B4337;
-    padding: 7px;
-    padding-right: 15px;
-    padding-left: 15px;
-    font-weight: 500;
 }
 
 .grey-green-button:hover {
-    background-color: #A9A9A9; /* Darker grey background */
+    background-color:var(--oko-dark-grey); /* Darker grey background */
     color: #0B4337; /* Keep the text green */
 }
 
 .offwhite-button {
     min-width: 75px;
-    border-radius: 16px;
-    background-color: #FAFAE6;
-    color: black;
-    border-color: #2A7A62;
-    padding: 7px;
-    padding-right: 15px;
-    padding-left: 15px;
-    font-weight: 500;
+    background-color:var(--oko-off-white);
+    color: var(--oko-dark-green) !important;
 }
 
 .offwhite-button:hover {
@@ -40073,10 +40081,6 @@ textarea.form-control {
     text-decoration: underline;
 }
 
-.yellow-button:hover {
-    background-color: #FFC107; /* Slightly lighter shade for hover effect */
-    color: #ffffff; /* White text on hover */
-}
 
 .parent-btn-grp {
     display: flex;
@@ -40086,8 +40090,8 @@ textarea.form-control {
 }
 
 .theading-color {
-    color: #9A9898 !important;
-    text-align: center;
+    color: var(--oko-off-white);
+    text-align: left;
 }
 
 .gray-color {
@@ -40100,8 +40104,14 @@ textarea.form-control {
     text-overflow: ellipsis;
   }
 
-.tbody {
-    text-align: center;
+.tbody,.worker-checkbox,
+.col-name,.col-townnn,
+.col-town,.col-profile,
+.col-experience,.col-english,
+.col-location,.col-visa,
+.col-intro-video,.col-offer,
+.col-actions,.col-email {
+    text-align: left;
 }
 
 .dropdown-container {

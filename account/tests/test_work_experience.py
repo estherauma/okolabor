@@ -57,7 +57,9 @@ class UserWorkExperienceViewTests(APITestCase):
             "company": "Company 3",
             "work_title": "Designer",
             "start_date": "2023-06-01",
-            "end_date": "2024-06-01"
+            "end_date": "2024-06-01",
+            "type_of_work": "Farmal job"
+
         }
 
         response = self.client.post(self.url, data, format='json')
@@ -79,7 +81,8 @@ class UserWorkExperienceViewTests(APITestCase):
             "company": "Company 1",
             "work_title": "Developer",
             "start_date": "2022-01-01",
-            "end_date": "2022-12-31"
+            "end_date": "2022-12-31",
+            "type_of_work": "Farmal job"
         }
 
         response = self.client.post(self.url, data, format='json')

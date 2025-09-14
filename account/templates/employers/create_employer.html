@@ -9,8 +9,8 @@
 >
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content modal-bg">
-      <div class="modal-header" style="background-color: #7DBF96;">
-        <h5 class="modal-title text-white" id="inviteEmployeModalLabel">
+      <div class="modal-header">
+        <h5 class="modal-title" id="inviteEmployeModalLabel">
           {% translate "employerAminListInviteUser" %}
         </h5>
       </div>
@@ -70,11 +70,11 @@
               <option value="" disabled selected>
                 {% translate "employerAminListSelectRole" %}
               </option>
-              <option value="employer">
-                {% translate "employerAminListEmployer" %}
-              </option>
               <option value="employer_admin">
                 {% translate "employerAminListAdmin" %}
+              </option>
+              <option value="employer">
+                {% translate "employerAminListEmployer" %}
               </option>
             </select>
           </div>
@@ -82,16 +82,14 @@
           <div class="d-flex justify-content-center gap-2 mt-4">
             <button
               type="button"
-              class="btn"
+              class="btn grey-button"
               data-bs-dismiss="modal"
-              style="background-color: #9A9898; color: white"
             >
               {% translate "employerAminListCancel" %}
             </button>
             <button
               type="submit"
-              class="btn"
-              style="background-color: #7DBF96; color: white"
+              class="btn light-green-button"
             >
               {% translate "employerAminListSendInvite" %}
             </button>

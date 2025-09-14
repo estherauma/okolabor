@@ -1,0 +1,888 @@
+{% extends 'components/base.html' %}
+{% load static %}
+{% load i18n %}
+{% load user_role_tags %}
+{% block styles %}
+<!-- SELECT2 CSS -->
+<link href="{% static 'assets/plugins/select2/select2.min.css' %}" rel="stylesheet"/>
+<!-- DATA TABLE CSS -->
+<link href="{% static 'assets/plugins/datatable/css/dataTables.bootstrap5.css' %}" rel="stylesheet"/>
+<link href="{% static 'assets/plugins/datatable/css/buttons.bootstrap5.min.css' %}" rel="stylesheet"/>
+<link href="{% static 'assets/plugins/datatable/responsive.bootstrap5.css' %}" rel="stylesheet"/>
+<link href="{% static 'assets/css/workers.css' %}" rel="stylesheet"/>
+<style>
+.select2-container--default .select2-selection--single {
+    background-color: white !important;
+}
+.close{
+    color: #000000 !important;
+    background-color: transparent !important;
+    font-size: 1.5rem !important;
+    font-weight: 400;
+}
+
+#toggle-sign-btn{
+    background-color:#eaedcc; 
+    cursor: pointer; 
+    font-size: 1.3rem;
+}
+.advanced-filter-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.8rem;
+    background-color: #eaedcc;
+    cursor: pointer;
+}
+.advanced-filter-title{
+    margin:0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--oko-mid-green);
+}
+#workRequestRoleFilter.row{
+    padding: 0 !important;
+    padding-left: 0.5rem !important;
+    justify-content: space-between !important;
+}
+
+#workRequestRoleFilter .job-order-wrapper,
+#workRequestRoleFilter .role-wrapper {
+    padding: 0 !important;
+}
+.job-order-wrapper .select2{
+    flex: 1 1 0;
+    margin-right: 10px;
+}
+</style>
+{% endblock styles %}
+
+
+{% block body %}
+
+
+   <div class="container-fluid" style="position: relative; height: auto">
+            <div
+            class="advanced-filter-btn"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapseCard"
+            aria-expanded="false"
+            aria-controls="collapseCard"
+        >
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="advanced-filter-title" style="pointer-events: none;">
+                    <i class="fa fa-filter" aria-hidden="true"></i>
+                    {% translate "workersListTabsAdvancedFilter" %}
+                </h4>
+                <div id="selected-filters-summary" class="d-flex flex-wrap align-items-center"></div>  <!-- ⬅️ New pills will appear here -->
+                <div id="active-filters-list" style="margin-top: 0.5rem;"></div>
+                <button  id="toggle-sign-btn"  class="btn green-color-workers collapsed" type="button" style="pointer-events: none;">
+                   +
+                </button>
+            </div>
+            
+        </div>
+    <div class="collapse" id="collapseCard">
+        <div class="card offwhite-color card-body">
+            <span class="d-flex align-items-center">
+                <h3 class="card-title green-color d-contents">
+                    {% translate "workersListSelectPrimaryJobExperience" %}
+                </h3>
+                <button class="btn btn-link green-color-workers" data-bs-placement="top" data-bs-toggle="tooltip" title="Fill in the fields to add job experience">
+                    <i aria-hidden="true" class="fa fa-question-circle-o"></i>
+                    {% translate "workersListWhat'sThis?" %}
+                </button>
+            </span>
+    
+            <div id="form-container">
+                <!-- Combined Filter Form -->
+                <form method="get" id="filter-form">
+                    <!-- Dynamic Filter Inputs -->
+                    <div id="filter-inputs-container">
+                        <div class="job-experience-form">
+                            <div class="row align-items-center">
+                                {% for field in form %}
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label class="form-label gray-color text" for="{{ field.id_for_label }}">
+                                                    {% translate field.label %}
+                                                </label>
+                                                {{ field }}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+
+                                <div class="col-auto">
+                                    <div class="col-auto">
+                                                <button class="btn close " type="button" onclick="removeForm(this)">
+                                                    &times;
+                                                </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            
+                    <!-- Add Another Filter Button -->
+                    <button class="btn light-green-button min-content-width mt-3" type="button" onclick="addAnotherExperience()">
+                        
+
+                        {% translate "workersListAddAnotherExperience" %}
+                    </button>
+            
+                    <!-- Additional Filters Section (Previously separate) -->
+                    <div class="form-row align-items-center">
+                        <span class="mt-5 ms-2 mb-3">
+                            <h3 class="card-title green-color d-contents">
+                                {% translate "workersListFurtherFilters" %}
+                            </h3>
+                        </span>
+                    </div>
+                     <div id="dynamic-random-filters">
+                    <div class="row align-items-center filter-row">
+                        <div class="col-md-4 col-sm-6 col-xs-6">
+                            <div class="form-group">
+                                <label class="form-label gray-color">
+                                    {% translate "filterSectionSelectFilter" %}
+                                </label>
+                                <select class="form-control" name="random_filter">
+                                    <option value="">{% translate "filterSectionChooseAFilter" %}</option>
+                                    <option value="years_of_experience">{% translate "filterSectionYearsofExperience" %}</option>
+                                    <option value="references">{% translate "filterSectionReferences" %}</option>
+                                    <option value="availability">{% translate "filterSectionAvailability" %}</option>
+                                    <option value="h2a_experience">{% translate "filterSectionH-2AExperience" %}</option>
+                                    <option value="h2b_experience">{% translate "filterSectionH-2BExperience" %}</option>
+                                    <option value="work_pictures">{% translate "filterSectionRelevantWorkPictures" %}</option>
+                                    <option value="exclude_physical_limitations">{% translate "filterSectionExcludeWorkerswithPhysicalLaborLimitations" %}</option>
+                                    <option value="age">{% translate "filterSectionAge" %}</option>
+                                    <option value="gender">{% translate "filterSectionGender" %}</option>
+                                    <option value="profile">{% translate "filterSectionProfile" %}</option>
+                                    <option value="passport">{% translate "filterSectionPassport" %}</option>
+                                    <option value="us_driving_license">{% translate "filterSectionUSDrivingLicense" %}</option>
+                                    <option value="mx_us_driving_license">{% translate "filterSectionUS-MexicanDrivingLicense" %}</option>
+                                    <option value="language_proficiency">{% translate "filterSectionLanguageProficiency" %}</option>
+                                    <option value="work_preference_location">{% translate "filterSectionWorkPreferenceLocation" %}</option>
+                                    <option value="work_preference_type">{% translate "filterSectionWorkPreferenceType" %}</option>
+                                    <option value="visa">{% translate "filterSectionVisa" %}</option>
+                                    <option value="explanation_video">{% translate "filterSectionExplanationVideo" %}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn close" type="button" onclick="removeFilterRow(this)">
+                                &times;
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+                    <!-- Add / Clear Buttons -->
+                <div class="mt-3">
+                    <button class="btn light-green-button me-2" type="button" onclick="addRandomFilter()">
+                        <i class="fe fe-plus"></i> {% translate "filterSectionAddAnotherFilter" %}
+                    </button>
+                    <button class="btn light-green-button" type="button" onclick="clearAllFilters()">
+                        {% translate "filterSectionClearFilters" %}
+                    </button>
+                    <button class="btn light-green-button min-content-width ms-3" type="submit">
+                        {% translate "workersListApplyFilters" %}
+                    </button>
+                    </div>
+                </div>
+                </form>
+            
+            <!-- Hidden template for dynamic form cloning -->
+            <div id="form-template" style="display: none;">
+                <div class="job-experience-form">
+                    <div class="row align-items-center">
+                        {% for field in form %}
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="form-label gray-color text" for="{{ field.id_for_label }}">
+                                    {% translate field.label %}
+                                </label>
+                                {{ field }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <div class="col-auto">
+                            <button class="btn close" type="button" onclick="removeForm(this)">
+                                  &times;
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>  
+    </div>    
+</div>
+   
+    
+    <div class="row row-sm">
+        <div class="col-lg-12">
+            <div class="card soft-card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <ul class="nav soft-tabs" role="tablist">
+                                <li class="nav-item">
+                                    <a href="#tab1" class="nav-link active" data-bs-toggle="tab" role="tab">
+                                        {% translate "workRequestAddWorkerAllWorkers" %} <span>({{workers_count}})</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#tab2" class="nav-link" data-bs-toggle="tab" role="tab">
+                                        {% translate "workRequestAddWorkerShortlist" %}<span id="shortlisted-count">(0)</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#tab3" class="nav-link" data-bs-toggle="tab" role="tab">
+                                        {% translate "workRequestAddWorkerOfferSent" %}<span id="offersent-count">(0)</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#tab4" class="nav-link" data-bs-toggle="tab" role="tab">
+                                        {% translate "workRequestAddWorkerConfirmed" %} <span id="confirmed-count">(0)</span>
+                                    </a>
+                                </li>
+                                
+                                <li class="nav-item">
+                                    <a href="#tab5" class="nav-link" data-bs-toggle="tab" role="tab">
+                                        {% translate "workRequestAddWorkerRejected" %}<span id="rejected-count">(0)</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div id="workRequestRoleFilter" class="col-lg-4 row">
+                            <!-- Work Request Dropdown -->
+                            <div class="col-lg-6 d-flex align-items-center gap-1 job-order-wrapper">
+                                <label for="modal_work_request" class="form-label gray-color">
+                                    {% translate "workersListWorkRequest" %}
+                                </label>
+                            
+                                    <select class="form-select form-select-sm" id="modal_work_request" name="work_request">
+                                        <option style="width: 157px;" value="">{% translate "workersListSelectAWorkRequest" %}</option>
+                                        {% if selected_work_request %}
+                                            <option style="width: 157px;" value="{{ selected_work_request.id }}" selected>{{ selected_work_request.name }}</option>
+                                        {% endif %}
+                                        {% for work_request in work_requests %}
+                                            {% if not selected_work_request or work_request.id != selected_work_request.id %}
+                                                <option style="width: 157px;" value="{{ work_request.id }}">{{ work_request.name }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                
+                            </div>
+
+                            <!-- Role Dropdown -->
+                            <div class="col-lg-6 d-flex align-items-center gap-1 role-wrapper">
+                                <label for="modal_role" class="form-label gray-color">
+                                    {% translate "workersListRole" %}
+                                </label>
+                                <select class="form-control" id="modal_role" name="role">
+                                    <option value="">{% translate "workersListSelectARole" %}</option>
+                                    {% if selected_role %}
+                                        <option value="{{ selected_role.id }}" selected>{{ selected_role.name }}</option>
+                                    {% endif %}
+                                    {% for role in roles %}
+                                        {% if not selected_role or role.id != selected_role.id %}
+                                            <option value="{{ role.id }}">{{ role.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <!-- Attempt to set the values -->
+                            <div id="role-workrequest-data"
+                                data-work-request="{{ selected_work_request.id|default:'' }}"
+                                data-role="{{ selected_role.id|default:'' }}">
+                            </div>
+                            
+                        </div>
+
+                    </div>
+    
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="tab1" role="tabpanel">
+                            {% include 'recruiting/workers/manage_tabs/all_workers_list.html' %}
+                        </div>
+                        <div class="tab-pane fade" id="tab2" role="tabpanel">
+                            {% include 'recruiting/workers/manage_tabs/worker_shortlist.html' %}
+                        </div>
+                        <div class="tab-pane fade" id="tab3" role="tabpanel">
+                            {% include 'recruiting/workers/manage_tabs/worker_offersent.html' %}
+                        </div>
+                        <div class="tab-pane fade" id="tab4" role="tabpanel">
+                            {% include 'recruiting/workers/manage_tabs/worker_confirmed.html' %}
+                        </div>
+                        <div class="tab-pane fade" id="tab5" role="tabpanel">
+                            {% include 'recruiting/workers/manage_tabs/worker_rejected.html' %}
+                        </div>
+                    </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+{% endblock body %}
+{% block scripts %}
+<!-- INTERNAL SELECT2 JS -->
+<script src="{% static 'assets/plugins/select2/select2.full.min.js' %}"></script>
+
+<!-- DATA TABLE JS-->
+<script src="{% static ''%}assets/plugins/datatable/js/jquery.dataTables.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/dataTables.bootstrap5.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/dataTables.buttons.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.bootstrap5.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/jszip.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/pdfmake/pdfmake.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/pdfmake/vfs_fonts.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.html5.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.print.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.colVis.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/dataTables.responsive.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.min.js"></script>
+<script src="{% static ''%}assets/js/table-data.js"></script>
+<script src="{% static ''%}assets/js/worker-search.js"></script>
+<script src="{% static ''%}assets/js/table-sorting.js"></script>
+<script src="{% static ''%}assets/js/set-default-role-and-workrequest.js"></script>
+<script src="{% static 'assets/js/worker-get-roles.js'%}"></script>
+<script src="{% static ''%}assets/js/dynamic_filter.js"></script>
+<script src="{% static 'assets/js/cancel-offer.js' %}"></script>
+
+<script>
+function applyColumnVisibilityFromStorage(table) {
+    $.fn.dataTable.ext.errMode = 'none';
+    const savedSettings = JSON.parse(localStorage.getItem('columnVisibilitySettings')) || {};
+    const columnClasses = [
+        'col-name',
+        'col-town',
+        'col-profile',
+        'col-experience',
+        'col-english',
+        'col-location',
+        'col-offer',
+        'col-actions'
+    ];
+    columnClasses.forEach((columnClass, index) => {
+        const isVisible = savedSettings[columnClass] !== false;
+        table.column(index + 1).visible(isVisible);
+        const checkbox = document.querySelector(`.column-toggle[value="${index + 1}"]`);
+        if (checkbox) {
+            checkbox.checked = isVisible;
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const tableId = '#basic-datatable-workers';
+
+    // Destroy any existing DataTable instance before re-initializing
+    if ($.fn.DataTable.isDataTable(tableId)) {
+        $(tableId).DataTable().clear().destroy();
+    }
+
+    const table = $(tableId).DataTable({
+        
+            "ordering": true,
+            "order": [], // No initial ordering
+            "columnDefs": [
+                {
+                    "targets": 0,
+                    "orderable": false
+                },
+                {
+                    "targets": -1,
+                    "orderable": false
+                }
+            ],
+            "paging": true,
+            "info": true
+        
+    });
+
+    applyColumnVisibilityFromStorage(table);
+
+    const applyBtn = document.getElementById('apply-column-settings');
+    if (applyBtn) {
+        applyBtn.addEventListener('click', function () {
+            const savedSettings = {};
+            document.querySelectorAll('.column-toggle').forEach(function (checkbox) {
+                const colIndex = parseInt(checkbox.value);
+                const isVisible = checkbox.checked;
+                const columnClass = [
+                    'col-name',
+                    'col-town',
+                    'col-profile',
+                    'col-experience',
+                    'col-english',
+                    'col-location',
+                    'col-offer',
+                    'col-actions'
+                ][colIndex - 1];
+                savedSettings[columnClass] = isVisible;
+                table.column(colIndex).visible(isVisible);
+            });
+            localStorage.setItem('columnVisibilitySettings', JSON.stringify(savedSettings));
+            const modalEl = document.getElementById('columnSettingsModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            modal?.hide();
+        });
+    }
+});
+</script>
+
+
+<script>
+
+$(document).ready(function () {
+  $.fn.dataTable.ext.errMode = 'none';
+
+  const table = $('#basic-datatable-workers').DataTable();
+
+  // Move the original DataTable controls to a hidden container
+  $('#basic-datatable-workers_length').appendTo('#datatable-controls');
+  $('#basic-datatable-workers_filter').appendTo('#datatable-controls');
+
+  // ---- Custom: Search input in center ----
+  const searchInput = $('#datatable-controls #basic-datatable-workers_filter input')
+    .addClass('form-control')
+    .attr('placeholder', 'Search...')
+    .css('width', '100%');
+  $('#customSearchContainer').append(searchInput);
+
+  // ---- Custom: Length dropdown only ----
+  const lengthDropdown = $('#datatable-controls #basic-datatable-workers_length select').parent();
+  $('#customLengthContainer').append(lengthDropdown);
+
+  // ---- Custom: Settings button (only one!) ----
+  const settingsBtn = `
+    <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#columnWorkersSettingsModal">
+      <i class="fa fa-cog" aria-hidden="true" style="font-size: 1.3rem; color: #9A9898;"></i>
+    </button>
+  `;
+  $('#customSettingsContainer').html(settingsBtn);
+});
+
+</script>
+<script>
+function updateCollapseSummary() {
+    const summaryContainer = document.getElementById('selected-filters-summary');
+    summaryContainer.innerHTML = '';
+
+    const allSelectedTextsSet = new Set();
+    var collapseCard = document.getElementById('collapseCard');
+    var toggleBtn = document.getElementById('toggle-sign-btn');
+
+     if (collapseCard && toggleBtn) {
+        collapseCard.addEventListener('show.bs.collapse', function () {
+            toggleBtn.textContent = '–'; // Change to minus when expanded
+        });
+        collapseCard.addEventListener('hide.bs.collapse', function () {
+            toggleBtn.textContent = '+'; // Change to plus when collapsed
+        });
+    }
+
+    // ✅ 1. Extract filters from URL parameters
+    const params = new URLSearchParams(window.location.search);
+    for (const [key, value] of params.entries()) {
+        if (!value) continue;
+
+        let label = '';
+        let formattedValue = decodeURIComponent(value.replace(/\+/g, ' '));
+
+        if (key.includes('type_sector')) label = 'Type/Sector';
+        else if (key.includes('dynamic_field_1')) label = 'Animal Type';
+        else if (key.includes('dynamic_field_2')) label = 'Tasks';
+        else if (key.includes('gender')) label = 'Gender';
+        else if (key.includes('availability')) label = 'Availability';
+        else if (key.includes('age')) label = 'Age';
+        else if (key.includes('years_of_experience')) label = 'Experience';
+        else if (key.includes('us_driving_license')) label = 'US Driving License';
+        else if (key.includes('visa')) label = 'Visa';
+        else if (key.includes('explanation_video')) label = 'Video';
+        else label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+        // Special handling for range fields like availability, age, years_of_experience
+        if (key.includes('availability')) {
+            const from = params.get('availability_from') || '';
+            const to = params.get('availability_to') || '';
+            if (from && to) formattedValue = `${from} to ${to}`;
+            else if (from) formattedValue = `From ${from}`;
+            else if (to) formattedValue = `To ${to}`;
+        }
+
+        if (key.includes('age_min') || key.includes('age_max')) {
+            const min = params.get('age_min') || '';
+            const max = params.get('age_max') || '';
+            if (min && max) formattedValue = `${min} - ${max}`;
+            else if (min) formattedValue = `Min ${min}`;
+            else if (max) formattedValue = `Max ${max}`;
+        }
+
+        if (key.includes('years_of_experience')) {
+            const min = params.get('years_of_experience_min') || '';
+            const max = params.get('years_of_experience_max') || '';
+            if (min && max) formattedValue = `${min} - ${max}`;
+            else if (min) formattedValue = `Min ${min}`;
+            else if (max) formattedValue = `Max ${max}`;
+        }
+
+        
+
+        allSelectedTextsSet.add(`${label}: ${formattedValue}`);
+    }
+
+    // ✅ 2. Your Existing Logic: Read currently selected form fields
+    const experienceSelects = document.querySelectorAll('select[id$="id_dynamic_field_1"], select[id$="id_dynamic_field_2"], select[id$="id_type_sector"]');
+    experienceSelects.forEach(select => {
+        const selectedOptions = Array.from(select.selectedOptions)
+            .map(opt => opt.text.trim())
+            .filter(text => text && text !== 'Please select...');
+
+        if (selectedOptions.length > 0) {
+            let labelText = '';
+
+            const fieldId = select.getAttribute('id');
+            const labelEl = document.querySelector(`label[for="${fieldId}"]`);
+
+            if (labelEl) {
+                labelText = labelEl.textContent.trim().replace(':', '');
+            } else {
+                if (select.name.includes('type_sector')) labelText = 'Type';
+                else if (select.name.includes('dynamic_field_1')) labelText = 'Animal Type';
+                else if (select.name.includes('dynamic_field_2')) labelText = 'Tasks';
+                else labelText = 'Filter';
+            }
+            allSelectedTextsSet.add(`${labelText}: ${selectedOptions.join(', ')}`);
+        }
+    });
+
+    const randomFilterRows = document.querySelectorAll('#dynamic-random-filters .filter-row');
+    randomFilterRows.forEach(row => {
+        const selectFilter = row.querySelector('select[name="random_filter"]');
+        const filterLabel = selectFilter?.options[selectFilter.selectedIndex]?.text?.trim();
+        if (!filterLabel || filterLabel === 'Choose a filter') return;
+
+        let valueText = '';
+
+        if (selectFilter.value === 'availability') {
+            const fromInput = row.querySelector(`input[name^="availability_from_"]`);
+            const toInput = row.querySelector(`input[name^="availability_to_"]`);
+            const fromVal = fromInput?.value;
+            const toVal = toInput?.value;
+            if (fromVal && toVal) valueText = `${fromVal} to ${toVal}`;
+            else if (fromVal) valueText = `From ${fromVal}`;
+            else if (toVal) valueText = `To ${toVal}`;
+        } else if (['age', 'years_of_experience'].includes(selectFilter.value)) {
+            const minInput = row.querySelector(`input[name^="${selectFilter.value}_min_"]`);
+            const maxInput = row.querySelector(`input[name^="${selectFilter.value}_max_"]`);
+            const minVal = minInput?.value;
+            const maxVal = maxInput?.value;
+            if (minVal && maxVal) valueText = `${minVal} - ${maxVal}`;
+            else if (minVal) valueText = `Min ${minVal}`;
+            else if (maxVal) valueText = `Max ${maxVal}`;
+        } else if (selectFilter.value === 'exclude_physical_limitations') {
+            const questionSelect = row.querySelector(`select[name^="physical_limitation_question_"]`);
+            const answerSelect = row.querySelector(`#physical-yesno-container-${selectFilter.getAttribute('onchange').match(/\d+/)?.[0]} select`);
+            const questionText = questionSelect?.options[questionSelect.selectedIndex]?.text?.trim();
+            const answerText = answerSelect?.options[answerSelect.selectedIndex]?.text?.trim();
+            if (questionText && answerText) {
+                valueText = `${questionText}: ${answerText}`;
+            }
+        } else {
+            const selectsAndInputs = row.querySelectorAll('.col-md-6 select, .col-md-6 input');
+            selectsAndInputs.forEach(input => {
+                if (input.tagName === 'SELECT') {
+                    const selectedOptions = Array.from(input.selectedOptions)
+                        .map(opt => opt.text.trim())
+                        .filter(text => text && text !== 'Please select...');
+                    if (selectedOptions.length > 0) valueText = selectedOptions.join(', ');
+                } else if (input.tagName === 'INPUT') {
+                    const val = input.value.trim();
+                    if (val) valueText = val;
+                }
+            });
+        }
+
+        if (valueText) {
+            allSelectedTextsSet.add(`${filterLabel}: ${valueText}`);
+        }
+    });
+
+    // ✅ 3. Render pills without duplicates
+    if (allSelectedTextsSet.size > 0) {
+        const label = document.createElement('strong');
+        label.textContent = 'Active filters: ';
+        summaryContainer.appendChild(label);
+
+        allSelectedTextsSet.forEach(text => {
+            const pill = document.createElement("span");
+            pill.textContent = text;
+            // If text starts with Role: or Work Request:, display none
+            // This is to hide the role and wr from the pill as there's a form for them
+            if (text.startsWith("Role:") || text.startsWith("Work Request:")) {
+                pill.style.display = "none";
+            } else {
+                pill.style.display = "inline-block";
+            }
+            pill.style.padding = "4px 10px";
+            pill.style.margin = "2px 4px";
+            pill.style.fontSize = "0.75rem";
+            pill.style.color = "#1b4332";
+            pill.style.border = "1px solid #74c69d";
+            pill.style.borderRadius = "999px";
+            pill.style.backgroundColor = "#d8f3dc";
+            pill.style.boxShadow = "0 1px 2px rgba(0, 0, 0, 0.05)";
+            summaryContainer.appendChild(pill);
+        });
+    }
+}
+
+document.addEventListener("DOMContentLoaded", updateCollapseSummary);
+
+function addRandomFilter() {
+    const container = document.getElementById("dynamic-random-filters");
+    const row = document.createElement("div");
+    row.classList.add("row", "align-items-center", "filter-row", "mb-2");
+    const uniqueId = Date.now();
+    row.innerHTML = `
+        <div class="col-md-4 col-sm-6 col-xs-6">
+            <div class="form-group">
+                <label class="form-label gray-color">
+                    {% translate "filterSectionSelectFilter" %}
+                </label>
+                <select class="form-control" name="random_filter" onchange="handleFilterChange(this, ${uniqueId});updateCollapseSummary();">
+                    <option value="">{% translate "filterSectionChooseAFilter" %}</option>
+                    <option value="years_of_experience">{% translate "filterSectionYearsofExperience" %}</option>
+                    <option value="references">{% translate "filterSectionReferences" %}</option>
+                    <option value="availability">{% translate "filterSectionAvailability" %}</option>
+                    <option value="h2a_experience">{% translate "filterSectionH-2AExperience" %}</option>
+                    <option value="h2b_experience">{% translate "filterSectionH-2BExperience" %}</option>
+                    <option value="work_pictures">{% translate "filterSectionRelevantWorkPictures" %}</option>
+                    <option value="exclude_physical_limitations">{% translate "filterSectionExcludeWorkerswithPhysicalLaborLimitations" %}</option>
+                    <option value="age">{% translate "filterSectionAge" %}</option>
+                    <option value="gender">{% translate "filterSectionGender" %}</option>
+                    <option value="profile">{% translate "filterSectionProfile" %}</option>
+                    <option value="passport">{% translate "filterSectionPassport" %}</option>
+                    <option value="us_driving_license">{% translate "filterSectionUSDrivingLicense" %}</option>
+                    <option value="mx_us_driving_license">{% translate "filterSectionUS-MexicanDrivingLicense" %}</option>
+                    <option value="language_proficiency">{% translate "filterSectionLanguageProficiency" %}</option>
+                    <option value="work_preference_location">{% translate "filterSectionWorkPreferenceLocation" %}</option>
+                    <option value="work_preference_type">{% translate "filterSectionWorkPreferenceType" %}</option>
+                    <option value="visa">{% translate "filterSectionVisa" %}</option>
+                    <option value="explanation_video">{% translate "filterSectionExplanationVideo" %}</option>
+                </select>
+
+            </div>
+        </div>
+        <div class="col-md-6" id="extra-fields-${uniqueId}"></div>
+        <div class="col-auto mt-3">
+            <button class="btn btn-sm close mt-2" type="button" onclick="removeFilterRow(this)">
+                &times;
+            </button>
+        </div>
+    `;
+    container.appendChild(row);
+    updateCollapseSummary();
+}
+
+function handleFilterChange(selectEl, uniqueId) {
+    const extraFieldsContainer = document.getElementById(`extra-fields-${uniqueId}`);
+    const selectedValue = selectEl.value;
+    let html = "";
+    switch (selectedValue) {
+            case "availability":
+            html = `
+                <div class="row">
+                    <div class="col">
+                        <label class="form-label gray-color">{% translate "filterSectionAvailabilityFrom" %}</label>
+                        <input type="date" class="form-control" name="availability_from_${uniqueId}" onchange="updateCollapseSummary()" />
+                    </div>
+                    <div class="col">
+                        <label class="form-label gray-color">{% translate "filterSectionAvailabilityTo" %}</label>
+                        <input type="date" class="form-control" name="availability_to_${uniqueId}" onchange="updateCollapseSummary()" />
+                    </div>
+                </div>`;
+            break;
+
+        case "years_of_experience":
+        case "age":
+            html = `
+                <div class="row">
+                    <div class="col">
+                        <label class="form-label gray-color">{% translate "filterSectionMin" %}</label>
+                        <input type="number" class="form-control" name="${selectedValue}_min_${uniqueId}" min="0" onchange="updateCollapseSummary()" />
+                    </div>
+                    <div class="col">
+                        <label class="form-label gray-color">{% translate "filterSectionMax" %}</label>
+                        <input type="number" class="form-control" name="${selectedValue}_max_${uniqueId}" min="0" onchange="updateCollapseSummary()" />
+                    </div>
+                </div>`;
+            break;
+
+        case "gender":
+            html = `
+                <div class="form-group">
+                    <label class="form-label gray-color">{% translate "filterSectionSelectGender" %}</label>
+                    <select class="form-control" name="gender_${uniqueId}" onchange="updateCollapseSummary()>
+                        <option value="">{% translate "filterSectionSelect" %}</option>
+                        <option value="male">{% translate "filterSectionMale" %}</option>
+                        <option value="female">{% translate "filterSectionFemale" %}</option>
+                    </select>
+                </div>`;
+            break;
+
+        case "work_preference_location":
+                html = `
+                    <div class="form-group">
+                        <label class="form-label gray-color">{% translate "filterSectionSelectWorkPreferenceLocation" %}</label>
+                        <select class="form-control" name="work_preference_location_${uniqueId}" multiple onchange="updateCollapseSummary()">
+                            <option value="usa">USA</option>
+                            <option value="mexico">Mexico</option>
+                            <option value="canada">Canada</option>
+                            <option value="australia">Australia</option>
+                        </select>
+                    </div>`;
+                break;
+
+
+        case "exclude_physical_limitations":
+            html = `
+                <div class="form-group">
+                    <label class="form-label gray-color">{% translate "filterSectionSelectaPhysicalLimitationQuestion" %}</label>
+                    <select class="form-control" name="physical_limitation_question_${uniqueId}" onchange="handlePhysicalQuestionChange(this, ${uniqueId});updateCollapseSummary();">
+                        <option value="">{% translate "filterSectionSelect" %}</option>
+                        <option value="condition_limit">{% translate "filterSectionDoYouHaveAnyPhysicalOrMentalConditionThatCouldLimitYouAndShouldBeConsideredForALaborIntensiveJob" %}</option>
+                        <option value="injury_aggravation">{% translate "filterSectionHaveYouSufferedAnInjuryThatCouldBeAggravatedByIntensePhysicalActivity" %}</option>
+                        <option value="stand_long">{% translate "filterSectionAreYouWillingAndAbleToWorkOnYourFeetForLongPeriodsOfTime" %}</option>
+                        <option value="lift_weight">{% translate "filterSectionAreYouWillingAndAbleToLiftCarryUpTo60Pounds27kg" %}</option>
+                        <option value="extreme_temps">{% translate "filterSectionAreYouUnwillingToWorkInEitherHotOrColdTemperatures" %}</option>
+                    </select>
+                </div>
+                <div class="form-group mt-2" id="physical-yesno-container-${uniqueId}"></div>
+            `;
+            break;
+
+        case "work_preference_type":
+            html = `
+                <div class="form-group">
+                    <label class="form-label gray-color">{% translate "filterSectionSelectWorkPreferenceType" %}</label>
+                    <select class="form-control" name="work_preference_type_${uniqueId}" onchange="updateCollapseSummary()">
+                        <option value="">{% translate "filterSectionSelectType" %}</option>
+                        <option value="farm">{% translate "filterSectionFarmWork"%}</option>
+                        <option value="construction">{% translate "filterSectionConstraction"%}</option>
+                        <option value="hospitality">{% translate "filterSectionHospitality"%}</option>
+                        <option value="manufacturing">{% translate "filterSectionManufacturing"%}</option>
+                    </select>
+                </div>`;
+            break;
+
+        case "language_proficiency":
+            html = `
+                <div class="form-group">
+                    <label class="form-label gray-color">{% translate "filterSectionLevelofProficiency" %}</label>
+                    <select class="form-control" name="language_proficiency_level_${uniqueId}" onchange="handleLanguageProficiencyChange(this, ${uniqueId}); updateCollapseSummary();">
+                        <option value="">{% translate "filterSectionSelect" %}</option>
+                        <option value="fluent">{% translate "filterSectionFluent" %}</option>
+                        <option value="medium">{% translate "filterSectionMedium" %}</option>
+                        <option value="basic">{% translate "filterSectionBasic" %}</option>
+                        <option value="none">{% translate "filterSectionNone" %}</option>
+                    </select>
+                </div>
+                <div class="form-group mt-2" id="language-video-container-${uniqueId}"></div>
+            `;
+            break;
+
+        case "visa":
+        case "explanation_video":
+            html = `
+                <div class="form-group">
+                    <label class="form-label gray-color">{% translate "filterSectionHas" %} ${selectEl.options[selectEl.selectedIndex].text}?</label>
+                    <select class="form-control" name="${selectedValue}_${uniqueId}" onchange="updateCollapseSummary()">
+                        <option value="">{% translate "filterSectionSelect" %}</option>
+                        <option value="yes">{% translate "filterSectionYes" %}</option>
+                        <option value="no">{% translate "filterSectionNo" %}</option>
+                    </select>
+                </div>
+            `;
+            break;
+
+        case "references":
+        case "h2a_experience":
+        case "h2b_experience":
+        case "work_pictures":
+        case "exclude_physical_limitations":
+        case "profile":
+        case "passport":
+        case "us_driving_license":
+        case "mx_us_driving_license":
+            html = `
+                <div class="form-group">
+                    <label class="form-label gray-color">{% translate "filterSectionHas" %} ${selectEl.options[selectEl.selectedIndex].text}?</label>
+                    <select class="form-control" name="${selectedValue}_${uniqueId}" onchange="updateCollapseSummary()">
+                        <option value="">{% translate "filterSectionSelect" %}</option>
+                        <option value="yes">{% translate "filterSectionYes" %}</option>
+                        <option value="no">{% translate "filterSectionNo" %}</option>
+                    </select>
+                </div>`;
+            break;
+                
+
+        default:
+            html = "";
+    }
+
+    extraFieldsContainer.innerHTML = html;
+}
+
+function handlePhysicalQuestionChange(selectEl, uniqueId) {
+    const yesNoContainer = document.getElementById(`physical-yesno-container-${uniqueId}`);
+    if (selectEl.value) {
+        yesNoContainer.innerHTML = `
+            <label class="form-label gray-color">{% translate "filterSectionYourAnswer" %}</label>
+            <select class="form-control" name="${selectEl.value}_answer_${uniqueId}" onchange="updateCollapseSummary()">
+                <option value="">{% translate "filterSectionSelect" %}</option>
+                <option value="yes">{% translate "filterSectionYes" %}</option>
+                <option value="no">{% translate "filterSectionNo" %}</option>
+            </select>
+        `;
+    } else {
+        yesNoContainer.innerHTML = "";
+    }
+    updateCollapseSummary();
+}
+
+function handleLanguageProficiencyChange(selectEl, uniqueId) {
+    const videoContainer = document.getElementById(`language-video-container-${uniqueId}`);
+    const selectedValue = selectEl.value;
+
+    if (selectedValue && selectedValue !== 'none') {
+        videoContainer.innerHTML = `
+            <label class="form-label gray-color">{% translate "filterSectionHasVideoFile" %}</label>
+            <select class="form-control" name="language_video_${uniqueId}" onchange="updateCollapseSummary()">
+                <option value="">{% translate "filterSectionSelect" %}</option>
+                <option value="yes">{% translate "filterSectionYes" %}</option>
+                <option value="no">{% translate "filterSectionNo" %}</option>
+            </select>
+        `;
+    } else {
+        videoContainer.innerHTML = '';
+    }
+    updateCollapseSummary();
+}
+
+
+function removeFilterRow(button) {
+    const row = button.closest(".filter-row");
+    if (row) row.remove();
+}
+function clearAllFilters() {
+    const container = document.getElementById("dynamic-random-filters");
+    container.innerHTML = '';
+    addRandomFilter();
+    updateCollapseSummary();
+}
+document.addEventListener("DOMContentLoaded", () => {
+    clearAllFilters();
+});
+</script>
+{% endblock scripts %}

@@ -4,12 +4,12 @@
 <div class="modal fade" id="deleteMealProvisionModal{{ role.id }}" tabindex="-1" aria-labelledby="deleteEmploymentInformationLabel{{ role.id }}" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form method="POST" action="{% url 'recruiting_web:meal_provision_delete' role.employment_location.id %}">
+      <form method="POST" action="{% url 'recruiting_web:meal_provision_delete' role.meal_provision.id %}">
         {% csrf_token %}
         <input type="hidden" name="work_request_id" value="{{ workrequest.id }}">
 
-        <div class="modal-header" style="background-color: #7DBF96;">
-          <h5 class="modal-title text-white" id="deleteMealProvisionLabel{{ role.id }}">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteMealProvisionLabel{{ role.id }}">
             {% translate "roleMealProvisionConfirmDeletion" %}
           </h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{% translate 'roleMealProvisionDeleteClose'%}"></button>
@@ -21,8 +21,8 @@
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'roleMealProvisionDeleteCancel' %}</button>
-          <button type="submit" class="btn" style='background-color:#F95406; color:white'>{% translate 'roleMealProvisionDelete' %}</button>
+          <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'roleMealProvisionDeleteCancel' %}</button>
+          <button type="submit" class="btn red-button">{% translate 'roleMealProvisionDelete' %}</button>
         </div>
       </form>
     </div>

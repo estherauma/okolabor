@@ -8,10 +8,10 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.views import View
-from django.views.generic import CreateView
+from django.views.generic import CreateView,TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
-from account.models import User, UserWorkExperience, UserJobExperience,UserJobExperienceDetails
+from account.models import User, UserWorkExperience, UserJobExperience,UserJobExperienceDetails,UserNotification
 from common.views import BaseCreateView
 from recruiting.forms import WorkerCreateForm, WorkExperienceCreateForm,WorkerAssignmentForm
 from theme.forms import AdvancedFilterForm,DynamicWorkExperienceForm
@@ -21,6 +21,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from content.models import AggregatedContent
 from content.serializers import AggregatedContentSerializer
+from django.db import transaction
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 from django.http import HttpResponse
@@ -28,8 +29,13 @@ import json
 from datetime import date
 from recruiting.utils import get_sector_choices
 from common.utils import StaticContent
-from recruiting.utils import calculate_total_experience,calculate_profile_completion
+from recruiting.utils import calculate_total_experience,calculate_profile_completion,get_worker_preferences
 from common.logger import AppLogger
+from django.contrib.auth import get_user_model
+from common.firebase_utils import send_push_notification
+from django.utils import translation
+
+
 
 
 ONBOARDING_STEPS = [
@@ -41,23 +47,18 @@ ONBOARDING_STEPS = [
     "workPreferenceStepOne",
     "workPreferenceStepTwo"
 ]
-
 class WorkerListView(View):
     def get(self, request):
+        # if coming from add workers button on work request detail page
+        # Get optional parameters from query string
+        role_id = request.GET.get('role')
+        work_request_id = request.GET.get('work_request')
         work_assign_form = WorkerAssignmentForm()
         form = DynamicWorkExperienceForm(request.GET or None)
         filter_form = AdvancedFilterForm(request.GET or None)
         search_query = request.GET.get('search', '')
 
         workers = User.objects.filter(groups__name='worker').order_by('-created_at')
-
-        # 🔍 Search Filter
-        if search_query:
-            workers = workers.filter(
-                Q(first_name__icontains=search_query) |
-                Q(last_name__icontains=search_query) |
-                Q(email__icontains=search_query)
-            )
 
         # 🔍 Experience Filters
         type_sector = request.GET.get('type_sector')
@@ -91,8 +92,22 @@ class WorkerListView(View):
             ).values_list('user_id', flat=True).distinct()
 
             workers = workers.filter(id__in=h2b_user_ids)
+        
+        # Filter: Visa
+        visa_filter = next((v for k, v in params.items() if k.startswith("visa_") and v), None)
+        if visa_filter:
+            if visa_filter.lower() == 'yes':
+                workers = workers.filter(documents__kind='visa').exclude(documents__path__isnull=True).exclude(documents__path__exact='')
+            elif visa_filter.lower() == 'no':
+                workers = workers.exclude(documents__kind='visa', documents__path__isnull=False).exclude(documents__kind='visa', documents__path__exact='')
 
-
+        # Filter: Explanation Video
+        video_filter = next((v for k, v in params.items() if k.startswith("explanation_video_") and v), None)
+        if video_filter:
+            if video_filter.lower() == 'yes':
+                workers = workers.filter(documents__kind='explanation_video').exclude(documents__path__isnull=True).exclude(documents__path__exact='')
+            elif video_filter.lower() == 'no':
+                workers = workers.exclude(documents__kind='explanation_video', documents__path__isnull=False).exclude(documents__kind='explanation_video', documents__path__exact='')
 
         # Filter by US Driving License
         us_license_filter = next((v for k, v in params.items() if k.startswith("us_driving_license_") and v), None)
@@ -201,19 +216,29 @@ class WorkerListView(View):
                     filtered.append(w)
             workers = filtered
         workers = workers.distinct()
-
         worker_data = []
         for worker in workers:
-            profile_completion = self.calculate_profile_completion(worker)
-            worker_details = self.get_worker_preferences(worker)
+            profile_completion = calculate_profile_completion(worker)
+            worker_details = get_worker_preferences(worker)
             years_of_experience = calculate_total_experience(worker)
-            worker.profile_completion_percentage = profile_completion
-
             latest_assignment = WorkAssignment.objects.filter(worker=worker).order_by('-assigned_date').first()
             worker.latest_status = latest_assignment.status if latest_assignment else None
+            visa_uploaded = UserDocuments.objects.filter(
+                user=worker, kind='visa'
+            ).exclude(path__isnull=True).exclude(path__regex=r'^\s*$').exists()
+
+            intro_video_uploaded = UserDocuments.objects.filter(
+                user=worker, kind='explanation_video'
+            ).exclude(path__isnull=True).exclude(path__regex=r'^\s*$').exists()
 
             for key, value in worker_details.items():
                 setattr(worker, key, value)
+
+            worker.years_of_experience = years_of_experience
+            worker.profile_completion_percentage = profile_completion
+            worker.visa_uploaded = visa_uploaded
+            worker.intro_video_uploaded = intro_video_uploaded
+
 
             worker_data.append({
                 'id': worker.id,
@@ -222,9 +247,10 @@ class WorkerListView(View):
                 'email': worker.email,
                 'profile_completion': profile_completion,
                 'years_of_experience': years_of_experience, 
+                'visa_uploaded': visa_uploaded,
+                'intro_video_uploaded': intro_video_uploaded,
                 **worker_details
             })
-         # 🔄 AJAX Support
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({
                 'workers': worker_data,
@@ -232,7 +258,8 @@ class WorkerListView(View):
             })
        
         worker_form = WorkerCreateForm()
-    
+        workers_length = len(workers)
+
         context = {
             'workers': workers,
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
@@ -243,32 +270,15 @@ class WorkerListView(View):
             'years_of_experience': years_of_experience,
             'status_choices': WorkAssignment.STATUS_CHOICES,
             'worker_form': worker_form,
+            'workers_count': workers_length,
+            'breadcrumbs': [
+                        {'name': _('workerListHome'), 'url': reverse('index')},
+                        {'name': _('workerListWorkers'), 'url': None},
+                    ],
+            'selected_work_request':WorkRequests.objects.filter(id=work_request_id).first() if work_request_id else None,
+            'selected_role': Role.objects.filter(id=role_id).first() if role_id else None,
         }
-        return render(request, 'recruiting/workers/list.html', context)
-
-    def calculate_profile_completion(self, user):
-        """Calculate the profile completion percentage for a user"""
-        user_preferences = UserPreference.objects.filter(user=user, key__in=ONBOARDING_STEPS)
-        user_prefs_dict = {pref.key: pref.value.lower() == "true" for pref in user_preferences}
-        completed_steps = sum(user_prefs_dict.get(step, False) for step in ONBOARDING_STEPS)
-        total_steps = len(ONBOARDING_STEPS)
-
-        return round((completed_steps / total_steps) * 100) if total_steps > 0 else 0
-
-    def get_worker_preferences(self, user):
-        """Fetch town, work experience, proficiency, and location preference from UserPreference"""
-        preference_keys = ["town", "workExperienceList", "levelOfProficiency", "locationPreference"]
-
-        preferences = UserPreference.objects.filter(user=user, key__in=preference_keys).values("key", "value")
-    
-        worker_details = {pref["key"]: pref["value"] for pref in preferences}
-
-        return {
-            "town": worker_details.get("town", "Not Provided"),
-            "work_experience": worker_details.get("workExperienceList", "Not Provided"),
-            "english_proficiency": worker_details.get("levelOfProficiency", "Not Provided"),
-            "location_preference": worker_details.get("locationPreference", "Not Provided"),
-        }
+        return render(request, 'recruiting/workers/manage_tabs/tabs.html', context)
 
     def post(self, request):
         """Handles worker assignment"""
@@ -296,7 +306,66 @@ class WorkerListView(View):
                 work_assignment.save()
 
         return JsonResponse({'success': 'Workers assigned successfully!'})
-    
+
+class FilteredWorkersAjaxView(View):
+    def get(self, request):
+        work_request_id = request.GET.get("work_request")
+        role_id = request.GET.get("role")
+        status = request.GET.get("status")
+
+        if not work_request_id or not role_id:
+            return JsonResponse({'error': 'Missing work request or role'}, status=400)
+
+        all_assignments = WorkAssignment.objects.filter(
+            work_request_id=work_request_id,
+            role_id=role_id
+        ).select_related('worker', 'role', 'work_request')
+
+        unique_worker_status_counts = {
+            'assigned': set(),
+            'offersent': set(),
+            'confirmed': set(),
+            'rejected': set()
+        }
+
+        workers = []
+        seen_worker_ids = set()
+
+        for assignment in all_assignments:
+            current_status = assignment.status
+            worker = assignment.worker
+
+            if current_status in unique_worker_status_counts and worker:
+                unique_worker_status_counts[current_status].add(worker.id)
+
+            if current_status == status and worker and worker.id not in seen_worker_ids:
+                seen_worker_ids.add(worker.id)
+
+                profile_completion = calculate_profile_completion(worker)
+                worker_details = get_worker_preferences(worker)
+                experience = calculate_total_experience(worker)
+
+                workers.append({
+                    'id': worker.id,
+                    'name': f"{worker.first_name} {worker.last_name}" if worker.first_name and worker.last_name else worker.email,
+                    'email': worker.email,
+                    'profile_completion': profile_completion,
+                    'experience': experience,
+                    'town': worker_details.get('town', 'Not Provided'),
+                    'work_experience': worker_details.get('work_experience', 'Not Provided'),
+                    'english_proficiency': worker_details.get('english_proficiency', 'Not Provided'),
+                    'location_preference': worker_details.get('location_preference', 'Not Provided'),
+                    'work_request': assignment.work_request.name if assignment.work_request else None,
+                    'role': assignment.role.title if assignment.role else None,
+                    'status': assignment.status,
+                })
+
+        status_counts = {k: len(v) for k, v in unique_worker_status_counts.items()}
+
+        return JsonResponse({
+            'workers': workers,
+            'counts': status_counts
+        })
 class WorkerEditView(LoginRequiredMixin, View):
     def post(self, request, pk):
         user = request.user
@@ -323,7 +392,7 @@ class WorkerEditView(LoginRequiredMixin, View):
                     assignment.status = latest_status
                     assignment.save()
 
-            messages.success(request, _('Worker "%(worker_name)s" EditedSuccessfully.') % {'worker_name': worker.first_name})
+            messages.success(request, _('workersListWorker "%(worker_name)s" EditedSuccessfully.') % {'worker_name': worker.first_name})
             
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
@@ -332,7 +401,7 @@ class WorkerEditView(LoginRequiredMixin, View):
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
-            return HttpResponseForbidden(_("YouDoNotHavePermissionToEditThisWorker."))
+            return HttpResponseForbidden(_("workersListYouDoNotHavePermissionToEditThisWorker"))
 
     def update_user_preference(self, user, key, value):
         if value:
@@ -367,7 +436,7 @@ class WorkerDeleteView(LoginRequiredMixin, View):
             worker_name = f"{worker.first_name} {worker.last_name}"
             worker.delete(user=user)  # Assuming this does a soft delete
 
-            messages.success(request, _('Worker "%(worker_name)s" DeletedSuccessfully.') % {'worker_name': worker_name})
+            messages.success(request, _('workersListWorker "%(worker_name)s" DeletedSuccessfully') % {'worker_name': worker_name})
 
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
@@ -377,7 +446,7 @@ class WorkerDeleteView(LoginRequiredMixin, View):
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
-            return HttpResponseForbidden(_("youDoNotHavePermissionToDeleteThisWorker."))
+            return HttpResponseForbidden(_("workersListYouDoNotHavePermissionToDeleteThisWorker"))
 
     
 class AssignWorkerView(View):
@@ -386,24 +455,24 @@ class AssignWorkerView(View):
             worker_ids_str = request.POST.get("worker_ids")
             work_request_id = request.POST.get("work_request")
             role_id = request.POST.get("role")
-            status = request.POST.get("status", "Assigned")
+            status = request.POST.get("status", "assigned")
+
             if not worker_ids_str or not work_request_id or not role_id:
-                messages.error(request, _("Missing data. Please select workers, job order, and role."))
+                messages.error(request, _("workersMissingData.PleaseSelectWorkers,JobOrder,AndRole"))
                 return JsonResponse({"success": False, "message": "Missing data"}, status=400)
 
             worker_ids = worker_ids_str.split(",")
             work_request = get_object_or_404(WorkRequests, id=work_request_id)
             role = get_object_or_404(Role, id=role_id)
 
-            already_assigned_workers = []
-            newly_assigned_workers = []
+            already_assigned = []
+            newly_assigned = []
 
             for worker_id in worker_ids:
                 worker = get_object_or_404(User, id=worker_id)
 
-                existing_assignment = WorkAssignment.objects.filter(worker=worker, role=role).first()
-                if existing_assignment:
-                    already_assigned_workers.append(worker.get_full_name() or worker.username)
+                if WorkAssignment.objects.filter(worker=worker, role=role).exists():
+                    already_assigned.append(worker.get_full_name() or worker.first_name)
                 else:
                     WorkAssignment.objects.create(
                         worker=worker,
@@ -411,37 +480,97 @@ class AssignWorkerView(View):
                         work_request=work_request,
                         status=status
                     )
-                    newly_assigned_workers.append(worker.get_full_name() or worker.username)
+                    newly_assigned.append(worker.get_full_name() or worker.first_name)
 
-            if already_assigned_workers:
-                messages.warning(
-                    request,
-                    _("The following workers were already assigned: ") + ", ".join(already_assigned_workers)
-                )
+            
+            msg_parts = []
+            if newly_assigned:
+                msg_parts.append(_("workersListSuccessfully assigned: ") + ", ".join(newly_assigned))
+            if already_assigned:
+                msg_parts.append(_("workersListAlready assigned: ") + ", ".join(already_assigned))
 
-            if newly_assigned_workers:
-                messages.success(
-                    request,
-                    _("The following workers have been successfully assigned: ") + ", ".join(newly_assigned_workers)
-                )
-                
-            # Need to create notifications here too for where status is offersent
-            for item in worker_ids:
-                worker = get_object_or_404(User, id=worker_id)
-                if status == 'offersent':
-                    # Create notification for the worker
-                    worker.notifications.create(
+            final_msg = " ".join(msg_parts)
+            messages.success(request, final_msg)
+
+            return JsonResponse({"success": True, "message": final_msg}, status=200)
+
+        except Exception as e:
+            messages.error(request, str(e))
+            return JsonResponse({"success": False, "message": str(e)}, status=400)
+        
+@method_decorator(csrf_exempt, name='dispatch')
+class SendOfferView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            worker_ids_str = request.POST.get("worker_ids")
+            work_request_id = request.POST.get("work_request")
+            role_id = request.POST.get("role")
+
+            if not worker_ids_str or not work_request_id or not role_id:
+                messages.error(request, _("workersMissingData.PleaseSelectWorkers,JobOrder,AndRole"))
+                return JsonResponse({"success": False, "message": "Missing data"}, status=400)
+
+            worker_ids = worker_ids_str.split(",")
+            work_request = get_object_or_404(WorkRequests, id=work_request_id)
+            role = get_object_or_404(Role, id=role_id)
+
+            users_for_notification = []
+            newly_offered = []
+            already_offered = []
+
+            with transaction.atomic():
+                for worker_id in worker_ids:
+                    worker = get_object_or_404(User, id=worker_id)
+
+                    work_assignment, created = WorkAssignment.objects.get_or_create(
+                        worker=worker,
+                        role=role,
+                        work_request=work_request,
+                        defaults={'status': 'offersent'}
+                    )
+
+                    if created or work_assignment.status != 'offersent':
+                        work_assignment.status = 'offersent'
+                        work_assignment.save()
+                        users_for_notification.append(worker)
+                        newly_offered.append(worker.get_full_name() or worker.username)
+                    else:
+                        already_offered.append(worker.get_full_name() or worker.username)
+
+            for user in users_for_notification:
+                current_lang = translation.get_language()
+                try:
+                    translation.activate(user.language)
+                    UserNotification.objects.create(
+                        user=user,
                         title=_("workRequestAddNotificationTitle"),
                         message=_("workRequestAddNotificationBody")
                     )
 
-            return redirect("recruiting_web:workers")
+                    if user.push_notification_token:
+                        send_push_notification(
+                            tokens=[user.push_notification_token],
+                            title=str(_('workRequestAddNotificationTitle')),
+                            body=str(_('workRequestAddNotificationBody')),
+                            data={'type': 'job_offer', 'job_id': role_id}
+                        )
+                finally:
+                    translation.activate(current_lang)
+
+            msg_parts = []
+            if newly_offered:
+                msg_parts.append(_("workersListSuccessfullySentOfferTo: ") + ", ".join(newly_offered))
+            if already_offered:
+                msg_parts.append(_("workersListOfferAlreadySentTo: ") + ", ".join(already_offered))
+
+            final_msg = " ".join(msg_parts)
+            messages.success(request, final_msg)
+            return JsonResponse({'success': True, 'message': final_msg})
 
         except Exception as e:
-            messages.error(request, f"Error: {str(e)}")
+            messages.error(request, str(e))
             return JsonResponse({"success": False, "message": str(e)}, status=400)
-
-
+        
 @method_decorator(csrf_exempt, name='dispatch')
 class GetWorkerDetailsView(View):
     def post(self, request, *args, **kwargs):
@@ -452,42 +581,26 @@ class GetWorkerDetailsView(View):
 
 
 
-class WorkerCreateView(CreateView):
-    model = User
-    form_class = WorkerCreateForm
-    
-
-    def form_valid(self, form):
-        worker = form.save()
-        try:
-            worker_group = Group.objects.get(name='worker')
-            worker.groups.add(worker_group)
-        except Group.DoesNotExist:
-            messages.error(self.request,_("addWorkerWorkerGroupDoesNotExistPleaseCreateIt"))
-            return super().form_invalid(form)
-
-        messages.success(self.request, _('addWorkerWorkerCreatedSuccessfully'))
-        worker.save()
-
-        return super(WorkerCreateView, self).form_valid(form)
-
-    def form_invalid(self, form):
-        for field, errors in form.errors.items():
-            for error in errors:
-                messages.error(self.request, f'{field}: {error}')
-        return super().form_invalid(form)
-
-    def get_success_url(self):
-        return reverse(
-            'recruiting_web:worker_detail',
-            kwargs={'pk': self.object.pk}
-        )
+class WorkerCreateView(View):
+    def post(self, request):
+        form = WorkerCreateForm(request.POST)
+        if form.is_valid():
+            worker = form.save()
+            worker.groups.add(Group.objects.get(name='worker'))
+            messages.success(request, "Worker created successfully")
+            return HttpResponseRedirect(reverse('recruiting_web:worker_detail', kwargs={'pk': worker.pk}))
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field}: {error}')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
 class WorkerDetailsView(View):
     def get(self, request, pk):
         logger = AppLogger(log_file='logs/debug.log')
         worker = get_object_or_404(User, pk=pk)
+        form = WorkExperienceCreateForm(initial={'user': worker})
         base_url = request.build_absolute_uri('/')
         preferences = UserPreference.objects.filter(user=worker)
         preference_data = {pref.key: pref.value for pref in preferences}
@@ -582,7 +695,13 @@ class WorkerDetailsView(View):
             'work_environment_label': work_environment_label,
             'language_options': language_options,
             'language_label': language_label,
-            'experience_forms': experience_forms
+            'experience_forms': experience_forms,
+            'form': form,
+            'breadcrumbs': [
+                        {'name': _('workerDetailsHome'), 'url': reverse('index')},
+                        {'name': _('workerDetailsWorkers'), 'url': reverse('recruiting_web:workers')},
+                        {'name': worker.first_name, 'url': None},
+                    ],
         }
         return render(request, 'recruiting/workers/detail.html', context)
     
@@ -600,7 +719,7 @@ class EditPreferenceView(View):
                 kind="preference",
                 defaults={"value": value},             # ✅ Updates or creates the preference
             )
-            messages.success(request, _("User preference updated successfully."))  # ✅ Feedback
+            messages.success(request, _("workersListUserPreferenceUpdatedSuccessfully"))  # ✅ Feedback
 
         return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))  # ✅ Redirect
 
@@ -617,13 +736,13 @@ class DeletePreferenceView(LoginRequiredMixin, View):
         )
 
         if not preferences.exists():
-            messages.error(request, _("Preference with key '%(key)s' not found.") % {'key': key})
+            messages.error(request, _("workersListPreference with key '%(key)s' not found.") % {'key': key})
             return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": target_user.pk}))
 
         if user.groups.filter(name='admin').exists():
             for pref in preferences:
                 pref.delete(user=user)
-            messages.success(request, _('Preference "%(key)s" deleted successfully.') % {'key': key})
+            messages.success(request, _('workersListPreference "%(key)s" deleted successfully.') % {'key': key})
 
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
@@ -633,7 +752,7 @@ class DeletePreferenceView(LoginRequiredMixin, View):
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'forbidden'}, status=403)
 
-            return HttpResponseForbidden(_("You do not have permission to delete this preference."))
+            return HttpResponseForbidden(_("workersListNoPermission"))
 
 
 class GetRolesForWorkRequestView(View):
@@ -649,8 +768,21 @@ class GetRolesForWorkRequestView(View):
 class CreateWorkExperienceView(BaseCreateView):
     model = UserWorkExperience
     form_class = WorkExperienceCreateForm
-    template_name = 'recruiting/workers/work_experience_create.html'
+    template_name = 'recruiting/workers/detail.html'
     content_service = StaticContent()
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        User = get_user_model()
+        worker = get_object_or_404(User, pk=self.kwargs.get('pk'))
+        context['worker'] = worker
+        context['breadcrumbs'] = [
+                {'name': 'Home', 'url': reverse('index')},
+                {'name': 'Workers', 'url': reverse('recruiting_web:workers')},
+                {'name': 'Worker Details', 'url': reverse('recruiting_web:worker_detail', kwargs={'pk': worker.pk})},
+                {'name': 'Create Work Experience', 'url': None},
+            ]
+        return context
     
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -1168,7 +1300,7 @@ class EditUserPreferenceView(View):
                     obj.value = value
                     obj.save()
 
-        messages.success(request, _("userPreferencesUpdatedSuccessfully."))
+        messages.success(request, _("workersListUserPreferencesUpdatedSuccessfully"))
         return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
 
 
@@ -1254,7 +1386,7 @@ class EditDocumentsView(View):
                     file_type=uploaded_file.content_type
                 )
 
-        messages.success(request, _("Documents updated successfully."))
+        messages.success(request, _("workersListDocumentsUpdatedSuccessfully"))
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
 
 
@@ -1265,5 +1397,5 @@ class DeleteAllWorkerInfoView(View):
         UserPreference.objects.filter(user=user).delete()
         UserDocuments.objects.filter(user=user).delete()
 
-        messages.success(request, _("All information related to the worker has been deleted."))
+        messages.success(request, _("workersListAllInformationDeleted"))
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))

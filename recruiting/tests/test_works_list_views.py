@@ -51,7 +51,7 @@ class WorkerListViewTestCase(TestCase):
         url = reverse('recruiting_web:workers')  # Adjust the URL name as per your configuration
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'recruiting/workers/list.html')
+        self.assertTemplateUsed(response, 'recruiting/workers/manage_tabs/tabs.html')
         self.assertContains(response, 'Test User')
 
     def test_worker_list_view_post_success(self):

@@ -25,32 +25,32 @@
 
           <!-- Employment Dates -->
           <div class="mb-3">
-            <p class="fw-bold text-uppercase small text-muted">{% translate "datesOfEmployment" %}</p>
+            <p class="fw-bold text-uppercase small text-muted">{% translate "jobOrderDetailsDatesOfEmployment" %}</p>
             <p>
               {{ work_experience.start_date|date:"F Y" }} –
               {% if work_experience.end_date %}
                 {{ work_experience.end_date|date:"F Y" }}
               {% else %}
-                {% translate "workExperienceDetailsPresent" %}
+                {% translate "jobOrderDetailsPresent" %}
               {% endif %}
             </p>
           </div>
 
           <!-- H2A PROGRAM -->
           <div class="mb-3">
-            <p class="fw-bold text-uppercase small text-muted">H2A PROGRAM</p>
-            <p>{{ work_experience.work_under_h2a_in_usa|yesno:"Yes,No" }}</p>
+            <p class="fw-bold text-uppercase small text-muted">{% translate 'workExperienceDetailsH2APROGRAM'%}</p>
+            <p>{{ work_experience.work_under_h2a_in_usa|yesno:_("Yes,_No") }}</p>
           </div>
 
           <!-- Job Details -->
           <div class="mb-4">
-            <p class="fw-bold text-uppercase small text-muted">{% translate "jobDetails" %}</p>
+            <p class="fw-bold text-uppercase small text-muted">{% translate 'workExperienceDetailsJobDetails'%}</p>
             {% for job in job_experiences %}
-              <p><strong>Company:</strong> {{ job.work_experience.company|default:"—" }}</p>
-              <p><strong>Primary Job Type:</strong> {{ job.job_type|default:"—" }}</p>
+              <p><strong>{% translate 'workExperienceDetailsCompany'%}:</strong> {{ job.work_experience.company|default:"—" }}</p>
+              <p><strong>{% translate 'workExperienceDetailsPrimaryJobType'%}:</strong> {{ job.job_type|default:"—" }}</p>
 
               {% if job.type_details %}
-                <p class="fw-bold mb-2">Tasks & Responsibilities:</p>
+                <p class="fw-bold mb-2">{% translate 'workExperienceDetailsTasks&Responsibilities'%}:</p>
                 <div class="d-flex flex-wrap gap-2 mb-3">
                   {% for duty in job.type_details|split:"," %}
                     <span style="
@@ -81,8 +81,8 @@
           <!-- Work Authorization -->
           <div class="mb-4">
             <p class="fw-bold text-uppercase small text-muted">{% translate "workExperienceDetailsWorkAuthorization" %}</p>
-            <p>Visa Type: {{ work_experience.visa_type|default:"No Visa Type" }}</p>
-            <p>H2A Work: {{ work_experience.work_under_h2a_in_usa|yesno:"Yes,No" }}</p>
+            <p>{% translate "workExperienceDetailsVisaType"%}: {{ work_experience.visa_type|default:"No Visa Type" }}</p>
+            <p>{% translate "workExperienceDetailsH2AWork"%}: {{ work_experience.work_under_h2a_in_usa|yesno:"Yes,No" }}</p>
           </div>
 
         </div>
@@ -92,7 +92,7 @@
 
           <!-- Certifications Section -->
           <div class="mb-4">
-            <p class="fw-bold text-uppercase small text-muted">{% translate "CERTIFICATIONS" %}</p>
+            <p class="fw-bold text-uppercase small text-muted">{% translate "workExperienceDetailsCertifications" %}</p>
             <div class="d-flex flex-wrap gap-3">
               {% for detail in job_experience_details %}
                 {% if "visa" in detail.kind|lower or "certificate" in detail.kind|lower %}
@@ -110,7 +110,7 @@
 
           <!-- Other Media Section -->
           <div class="mb-4">
-            <p class="fw-bold text-uppercase small text-muted">{% translate "OTHER MEDIA" %}</p>
+            <p class="fw-bold text-uppercase small text-muted">{% translate "workExperienceDetailsOtherMedia" %}</p>
             <div class="d-flex flex-wrap gap-3">
               {% for detail in job_experience_details %}
                 {% if "visa" not in detail.kind|lower and "certificate" not in detail.kind|lower %}

@@ -96,12 +96,16 @@ class WorkRequestForm(forms.ModelForm):
                 'class': 'form-control',
             }),
         }
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['employer'].queryset = Organization.objects.filter(type='employer').order_by('name')
 
 class WorkerAssignmentForm(forms.ModelForm):
     work_request = forms.ModelMultipleChoiceField(
         queryset=WorkRequests.objects.all(),
         widget=forms.SelectMultiple(attrs={'class': 'form-control'}),
-        label=_("Work Request")
+        label=_("workersListWorkRequest")
     )
 
     class Meta:
@@ -109,8 +113,8 @@ class WorkerAssignmentForm(forms.ModelForm):
         fields = ['work_request', 'worker', 'status']
 
         labels = {
-            'worker': _("Worker"),
-            'status': _("Status"),
+            'worker': _("workersListWorker"),
+            'status': _("workersListStatus"),
         }
 
         widgets = {
@@ -184,6 +188,22 @@ class WorkRequestRoleForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'work_request': forms.Select(attrs={'class': 'form-control', 'readonly': True}),
         }
+        
+        labels = {
+            'title': _('addRoleTitle'),
+            'usdol_case_number': _('addRoleUsdolCaseNumber'),
+            'work_type': _('addRoleWorkType'),
+            'animal_types': _('addRoleAnimalTypes'),
+            'crop_types': _('addRoleCropTypes'),
+            'crop_job_types': _('addRoleCropJobTypes'),
+            'mechanic_job_types': _('addRoleMechanicJobTypes'),
+            'supervision_jobs_types': _('addRoleSupervisionJobsTypes'),
+            'responsibilities_types': _('addRoleResponsibilitiesTypes'),
+            'number_of_required_workers': _('addRoleNumberOfRequiredWorkers'),
+            'licensed_vehicle_operation_types': _('addRoleLicensedVehicleOperationTypes'),
+            'work_request': _('addRoleWorkRequest'),
+            'description': _('addRoleDescription'),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -226,6 +246,8 @@ class WorkRequestRoleForm(forms.ModelForm):
             if field_name in self.fields:
                 self.fields[field_name].choices = config['choices']()
                 self.fields[field_name].label = config['label']
+                
+        self.fields['work_request'].queryset = WorkRequests.objects.order_by('name')
 
     def clean(self):
         cleaned_data = super().clean()
@@ -287,7 +309,7 @@ class RoleHoursForm(forms.ModelForm):
             'thursday_hours': _('roleHoursThursdayHours'),
             'friday_hours': _('roleHoursFridayHours'),
             'saturday_hours': _('roleHoursSaturdayHours'),
-            'job_description': _('roleHoursJobDescription'),
+            'job_description': _('roleHoursJobDescriptions'),
         }
         
         widgets = {
@@ -403,7 +425,7 @@ class RoleDeductionForm(forms.ModelForm):
             'role': _('roleDeductionsRole'),
             'description': _('roleDeductionsDescription'),
             'deduction_amount': _('roleDeductionsDeductionAmount'),
-            'frequency_of_pay': _('roleDeductionsFrequencyOfPay'),
+            'frequency_of_pay': _('joDetailsDeductionsFrequencyOfPay'),
         }
 
         widgets = {
@@ -779,6 +801,10 @@ class OkoMessageCreateForm(forms.ModelForm):
                 'class': 'form-control',
             }),
         }
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['job_order'].queryset = WorkRequests.objects.order_by('name')
 
 
 class WorkerCreateForm(forms.ModelForm):
@@ -834,12 +860,12 @@ class RecruiterAdminCreateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['curp', 'first_name', 'last_name', 'email']
-
+        
         labels = {
-            'curp': _("curp"),
-            'first_name': _("firstName"),
-            'last_name': _("lastName"),
-            'email': _("email"),  
+            'curp': _("recruiterAdminListcurp"),
+            'first_name': _("recruiterAdminListFirstName"),
+            'last_name': _("recruiterAdminListLastName"),
+            'email': _("recruiterAdminListEmail"),  
         }
 
         widgets = {

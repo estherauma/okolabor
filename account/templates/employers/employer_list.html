@@ -1,19 +1,18 @@
 {% load i18n %}
 {% load static %}
 
-<!-- DataTables CSS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-
+<!-- SELECT2 CSS -->
+<link href="{% static ''%}assets/plugins/select2/select2.min.css" rel="stylesheet" />
+<!-- DATA TABLE CSS -->
+<link href="{% static ''%}assets/plugins/datatable/css/dataTables.bootstrap5.css" rel="stylesheet" />
+<link href="{% static ''%}assets/plugins/datatable/css/buttons.bootstrap5.min.css" rel="stylesheet" />
+<link href="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.css" rel="stylesheet" />
 <div class="card">
   <div class="card-body">
 
     <!-- Custom Toolbar -->
     <div class="d-flex align-items-center justify-content-between flex-wrap mb-3 custom-toolbar">
       <div class="d-flex">
-        <button type="button" class="btn dark-green-button ms-2 mb-2" id="assign-employer-organization-btn" data-bs-toggle="modal" data-bs-target="#assignEmployerOrganizationModal">
-          {% translate "manageUsersEmployersTableAssignEmployeOrganization" %}
-        </button>
         <button class="btn dark-green-button ms-2 mb-2" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#inviteEmployeModal">
           {% translate "manageUsersEmployersTableNewEmployer" %}
         </button>
@@ -30,7 +29,7 @@
 
     <div class="table-responsive">
       <table class="table text-nowrap border-bottom" id="employers-datatable">
-        <thead style="background-color: #7DBF96;">
+        <thead>
           <tr>
             <th class="text-start"><input type="checkbox" id="select-all-employer-checkbox"></th>
             <th class="text-start">{% translate "manageUsersEmployersTableEmail" %}</th>
@@ -73,7 +72,7 @@
             <td class="text-center">
               <button
                 type="button"
-                class="btn btn-sm btn-outline-secondary"
+                class="btn btn-sm yellow-button"
                 data-bs-toggle="modal"
                 data-bs-target="#editEmployerModal"
                 data-employer-curp="{{ user.curp }}"
@@ -87,7 +86,7 @@
               </button>
               <button
                 type="button"
-                class="btn btn-sm btn-outline-danger ms-2"
+                class="btn btn-sm red-button ms-2"
                 data-bs-toggle="modal"
                 data-bs-target="#deleteModalManageEmployer{{ user.id }}"
                 title="{% translate 'webCommonDelete' %}">
@@ -110,16 +109,16 @@
     <div class="modal-content">
       <form method="POST" action="{% url 'employer_manage_delete' employer.id %}">
         {% csrf_token %}
-        <div class="modal-header" style="background-color: #7DBF96;">
-          <h5 class="modal-title text-white" id="deleteModalManageEmployerLabel{{ employer.id }}">{% translate "webCommonConfirmDelete" %}</h5>
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalManageEmployerLabel{{ employer.id }}">{% translate "employerListConfirmDelete" %}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'webCommonClose'%}"></button>
         </div>
         <div class="modal-body">
           {% translate 'employerListAreYouSureYouWantToDelete'%} <strong>{{ employer.first_name }} {{employer.last_name}}</strong>?
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'webCommonCancel'%}</button>
-          <button type="submit" class="btn" style='background-color:#F95406; color: white'>{% translate 'webCommonDelete'%}</button>
+          <button type="button" class="btn grey-button" data-bs-dismiss="modal" >{% translate 'webCommonCancel'%}</button>
+          <button type="submit" class="btn red-button">{% translate 'webCommonDelete'%}</button>
         </div>
       </form>
     </div>
@@ -134,11 +133,25 @@
 {% include 'employers/assign-employer-organization-modal.html' %}
 
 {% block scripts %}
-<!-- DataTables JS -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
-
+<!-- INTERNAL SELECT2 JS -->
+<script src="{% static ''%}assets/plugins/select2/select2.full.min.js"></script>
+<!-- DATA TABLE JS-->
+<script src="{% static ''%}assets/plugins/datatable/js/jquery.dataTables.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/dataTables.bootstrap5.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/dataTables.buttons.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.bootstrap5.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/jszip.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/pdfmake/pdfmake.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/pdfmake/vfs_fonts.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.html5.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.print.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/js/buttons.colVis.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/dataTables.responsive.min.js"></script>
+<script src="{% static ''%}assets/plugins/datatable/responsive.bootstrap5.min.js"></script>
+<script src="{% static ''%}assets/js/table-data.js"></script>
+<script src="{% static ''%}assets/js/employer_search.js"></script>
+<script src="{% static ''%}assets/js/table-sorting.js"></script>
+<script src="{% static ''%}assets/js/assign_recruiter.js"></script>
 <script>
   $(document).ready(function () {
     $.fn.dataTable.ext.errMode = 'none';

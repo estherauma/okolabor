@@ -37,8 +37,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "employersCancel" %}</button>
-        <button type="button" class="btn btn-primary" id="assignRecruiterBtn">{% translate "employersAssign" %}</button>
+        <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate "employersCancel" %}</button>
+        <button type="button" class="btn light-green-button" id="assignRecruiterBtn">{% translate "employersAssign" %}</button>
       </div>
     </div>
   </div>
@@ -48,8 +48,8 @@
   <div class="modal-dialog modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="employerColumnSettingsModalLabel">{% translate "Select Columns to Display" %}</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'Close' %}"></button>
+        <h5 class="modal-title" id="employerColumnSettingsModalLabel">{% translate "webCommonSelectColumnsToDisplay" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'webCommonClose' %}"></button>
       </div>
       <div class="modal-body">
         <form id="employer-column-settings-form">
@@ -86,8 +86,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Close" %}</button>
-        <button type="button" class="btn btn-primary" id="apply-employer-column-settings">{% translate "Apply" %}</button>
+        <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate "webCommonClose" %}</button>
+        <button type="button" class="btn light-green-button" id="apply-employer-column-settings">{% translate "webCommonApply" %}</button>
       </div>
     </div>
   </div>
@@ -109,7 +109,7 @@
                  <a class="btn dark-green-button ms-3 text-white" 
                     data-bs-toggle="modal" 
                     data-bs-target="#addEmployerModal">
-                    <i class="fa fa-plus me-1"></i> {% translate "employersAddNewEmployer" %}
+                    {% translate "employersAddNewEmployer" %}
                 </a>
           </div>
 
@@ -127,9 +127,11 @@
 
         <div class="table-responsive">
           <table class="table text-nowrap border-bottom" id="employers-list-datatable">
-            <thead style="background-color: #7DBF96;">
+            <thead>
               <tr>
-                <th></th>
+                <th>
+                  <input type="checkbox" id="select-all-employers"/>
+                </th>
                 <th class="col-company">{% translate "employersCompanyName" %}</th>
                 <th class="col-contact">{% translate "employersContactName" %}</th>
                 <th class="col-email">{% translate "employersEmail" %}</th>
@@ -143,7 +145,7 @@
             </thead>
             <tbody>
               {% for employer in employers %}
-              <tr class="text-center" data-id="{{ employer.id }}">
+              <tr class="text-start" data-id="{{ employer.id }}">
                 <td><input class="table-checkbox" type="checkbox"/></td>
                 <td>
                   <a href="/employers/{{ employer.id }}" class="text-decoration-none text-dark">
@@ -165,19 +167,19 @@
                 </td>
                 {% if request.user|has_group:"admin" %}
                   <td>
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-outline-danger"
-                      data-bs-toggle="modal"
-                      data-bs-target="#deleteModal{{ employer.id }}">
-                      {% translate "employersDelete" %}
-                    </button>
                     <button 
                       type="button"
-                      class="btn btn-sm btn-outline-secondary ms-2"
+                      class="btn btn-sm yellow-button"
                       data-bs-toggle="modal"
                       data-bs-target="#editModal{{ employer.id }}" >
-                      {% translate "employersEdit" %}
+                      {% translate "webCommonEdit" %}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-sm red-button ms-2"
+                      data-bs-toggle="modal"
+                      data-bs-target="#deleteModal{{ employer.id }}">
+                      {% translate "webCommonDelete" %}
                     </button>
                   
                   </td>
@@ -267,8 +269,8 @@
               {% translate 'employersAreYouSureYouWantToDelete'%} <strong>{{ employer.name }}</strong>?
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'employersCancel'%}</button>
-              <button type="submit" class="btn" style='background-color:#F95406; color: white'>{% translate 'employersDelete'%}</button>
+              <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'employersCancel'%}</button>
+              <button type="submit" class="btn red-button">{% translate 'employersDelete'%}</button>
             </div>
           </form>
         </div>
@@ -285,8 +287,8 @@
         <div class="modal-content">
           <form method="POST" action="{% url 'recruiting_web:employer_edit' employer.id %}">
             {% csrf_token %}
-            <div class="modal-header" style="background-color: #7DBF96;">
-              <h5 class="modal-title text-white" id="editModalLabel{{ employer.id }}">{% translate "employersEditEmployer" %}</h5>
+            <div class="modal-header">
+              <h5 class="modal-title" id="editModalLabel{{ employer.id }}">{% translate "employersEditEmployer" %}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'employersClose'%}"></button>
             </div>
             <div class="modal-body">
@@ -332,8 +334,8 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'employersCancel' %}</button>
-              <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>{% translate 'employersSave' %}</button>
+              <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'employersCancel' %}</button>
+              <button type="submit" class="btn light-green-button">{% translate 'employersSave' %}</button>
             </div>
           </form>
         </div>
@@ -479,6 +481,25 @@ $(document).ready(function () {
   $('#customSettingsContainer').html(settingsBtn);
 });
 
+</script>
+
+<script>
+  const selectAll = document.getElementById("select-all-employers");
+  const checkboxes = document.querySelectorAll(".table-checkbox");
+
+  selectAll.addEventListener("change", function() {
+    checkboxes.forEach(cb => cb.checked = this.checked);
+  });
+
+  checkboxes.forEach(cb => {
+    cb.addEventListener("change", function() {
+      if (!this.checked) {
+        selectAll.checked = false;
+      } else if ([...checkboxes].every(cb => cb.checked)) {
+        selectAll.checked = true;
+      }
+    });
+  });
 </script>
 
 {% endblock scripts %}

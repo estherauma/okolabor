@@ -40,7 +40,7 @@
     <div class="d-flex justify-content-between">
         <button class="btn green-color-workers">
             <i aria-hidden="true" class="fa fa-filter"></i>
-            {% translate "advancedFilter" %}
+            {% translate "summaryListAdvancedFilter" %}
         </button>
         <button aria-controls="collapsewithbutton" aria-expanded="false" class="btn green-color-workers collapsed toggle-sign" data-bs-target="#collapseCard" data-bs-toggle="collapse" type="button">
             <span class="sign medium-font">+</span>
@@ -51,11 +51,11 @@
         <div class="card offwhite-color card-body">
             <span class="d-flex align-items-center">
                 <h3 class="card-title green-color d-contents">
-                    {% translate "selectPrimaryJobExperience" %}
+                    {% translate "summaryListSelectPrimaryJobExperience" %}
                 </h3>
                 <button class="btn btn-link green-color-workers" data-bs-placement="top" data-bs-toggle="tooltip" title="Fill in the fields to add job experience">
                     <i aria-hidden="true" class="fa fa-question-circle-o"></i>
-                    {% translate "what'sThis?" %}
+                    {% translate "summaryListWhat'sThis?" %}
                 </button>
             </span>
             <form method="post">
@@ -73,14 +73,14 @@
                     {% endfor %}
                     <div class="col-auto">
                         <button class="btn" type="button">
-                            <span class="sign medium-font">{% translate "x" %}</span>
+                            <span class="sign medium-font">x</span>
                         </button>
                     </div>
                 </div>
             </form>
             <span class="d-flex align-items-center mt-3 mb-3">
                 <h3 class="card-title green-color">
-                    {% translate "otherExperience" %}
+                    {% translate "summaryListOtherExperience" %}
                 </h3>
             </span>
             <form method="post">
@@ -98,7 +98,7 @@
                     {% endfor %}
                     <div class="col-auto">
                         <button class="btn" type="button">
-                            <span class="sign medium-font">{% translate "x" %}</span>
+                            <span class="sign medium-font">x</span>
                         </button>
                     </div>
                 </div>
@@ -106,13 +106,13 @@
             <a class="btn light-green-button min-content-width" href="{% url 'recruiting_web:workrequest_create' %}">
                 <span><i class="fe fe-plus"></i></span>
 
-                {% translate "addAnotherExperiences" %}
+                {% translate "summaryListAddAnotherExperiences" %}
 
             </a>
             <div class="form-row align-items-center">
                 <span class="mt-5 ms-2 mb-3">
                     <h3 class="card-title green-color d-contents">
-                        {% translate "furtherFilters" %}
+                        {% translate "summaryListFurtherFilters" %}
                     </h3>
                 </span>
             </div>
@@ -141,17 +141,17 @@
                         <ul class="nav soft-tabs" role="tablist">
                             <li class="nav-item" id="shortlist-li">
                                 <a href="javascript:void(0)" class="nav-link" id="shortlist-tab" onclick="showTab('shortlist')">
-                                    {% translate "shortlist" %}<span> ({{ shortlisted_count }})</span>
+                                    {% translate "summaryListShortlist" %}<span> ({{ shortlisted_count }})</span>
                                 </a>
                             </li>
                             <li class="nav-item" id="offersent-li">
                                 <a href="javascript:void(0)" class="nav-link" id="offersent-tab" onclick="showTab('offersent')">
-                                    {% translate "offersent" %}<span> ({{ offersent_count }})</span>
+                                    {% translate "summaryListOffersent" %}<span> ({{ offersent_count }})</span>
                                 </a>
                             </li>
                             <li class="nav-item" id="confirmed-li">
                                 <a href="javascript:void(0)" class="nav-link" id="confirmed-tab" onclick="showTab('confirmed')">
-                                    {% translate "confirmed" %}<span> ({{ confirmed_count }})</span>
+                                    {% translate "summaryListConfirmed" %}<span> ({{ confirmed_count }})</span>
                                 </a>
                             </li>
                         </ul>

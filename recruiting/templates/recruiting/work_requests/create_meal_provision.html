@@ -5,7 +5,7 @@
     <div class="modal-content">
       
       <div class="modal-header">
-        <h5 class="modal-title" id="MealsModalLabel{{ role.id }}">{% translate "addMeals" %}</h5>
+        <h5 class="modal-title" id="MealsModalLabel{{ role.id }}">{% translate "joDetailsMealsAddMeals" %}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
@@ -27,6 +27,16 @@
 
           {% for field in role_Meals_form %}
             {% if field.name != 'role' %}
+              {% if field.field.widget.input_type == "checkbox" %}
+                <div class="col">
+                  <div class="form-roup my-5">
+                    <div class="form-check">
+                      <label class="form-check-label " for="{{ field.id_for_label }}">{{ field.label }}</label>
+                      {{ field }}
+                    </div>
+                  </div>
+                </div>
+              {% else %}
               <div class="col">
                 <div class="form-group my-3">
                   <label>{{ field.label }}</label>
@@ -38,6 +48,7 @@
                   {% endfor %}
                 </div>
               </div>
+            {% endif %}
             {% endif %}
           {% endfor %}
 

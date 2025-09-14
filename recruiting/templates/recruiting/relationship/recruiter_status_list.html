@@ -31,13 +31,6 @@
 
 {% block body %}
 <div class="container-fluid" style="position: relative; height: auto">
-    <div class="row">
-        <div class="page-header custom-page-header d-flex flex-column">
-            <h1 class="page-title">{% translate "recruiterStatusAcceptRejectStatus" %}</h1>
-        </div>
-    </div>
-    
-
     <div class="row row-sm">
         <div class="col-lg-12">
             <div class="card">
@@ -60,19 +53,19 @@
                         <table class="table text-nowrap border-bottom" id="recruiter-status-datatable">
                             <thead>
                                 <tr>
-                                    <th class="theading-color">{% translate "recruiterStatusEmployerOrganization" %}</th>
-                                    <th class="theading-color">{% translate "recruiterStatusRecruiterOrganization" %}</th>
-                                    <th class="theading-color">{% translate "recruiterStatusEmployerStatus" %}</th>
-                                    <th class="theading-color">{% translate "recruiterStatusRecruiterStatus" %}</th>
-                                    <th class="theading-color">{% translate "recruiterStatusFinalStatus" %}</th>
-                                    <th class="theading-color">{% translate "recruiterStatusUpdatedBy" %}</th>
-                                    <th class="theading-color">{% translate "recruiterStatusUpdatedAt" %}</th>
-                                    <th class="theading-color">{% translate "recruiterStatusActions" %}</th>
+                                    <th>{% translate "recruiterStatusEmployerOrganization" %}</th>
+                                    <th>{% translate "recruiterStatusRecruiterOrganization" %}</th>
+                                    <th>{% translate "recruiterStatusEmployerStatus" %}</th>
+                                    <th>{% translate "recruiterStatusRecruiterStatus" %}</th>
+                                    <th>{% translate "recruiterStatusFinalStatus" %}</th>
+                                    <th>{% translate "recruiterStatusUpdatedBy" %}</th>
+                                    <th>{% translate "recruiterStatusUpdatedAt" %}</th>
+                                    <th>{% translate "recruiterStatusActions" %}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for link in links %}
-                                <tr class="text-center">
+                                <tr class="text-start">
                                     <td>
                                         <a href="{% url 'recruiting_web:employer_detail' link.employer_org.id %}">
                                             {{ link.employer_org.name }}
@@ -101,7 +94,7 @@
                                     <td>{{ link.user_updated_by.name }}</td>
                                     <td>{{ link.updated_at|date:"Y-m-d H:i" }}</td>
                                     <td>
-                                        <button class="btn btn-sm btn-outline-danger ms-2"
+                                        <button class="btn btn-sm red-button ms-2"
                                         style="cursor: pointer;"
                                         data-bs-toggle="modal"
                                         data-bs-target="#deleteModal{{ link.id }}">
@@ -142,8 +135,8 @@
                     {% translate 'recruiterStatusAreYouSureYouWantToDelete' %} <strong>{{ item }}</strong>?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'recruiterStatusCancel' %}</button>
-                    <button type="submit" class="btn" style='background-color:#F95406; color:white'>{% translate 'recruiterStatusDelete' %}</button>
+                    <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'recruiterStatusCancel' %}</button>
+                    <button type="submit" class="btn red-button">{% translate 'recruiterStatusDelete' %}</button>
                 </div>
                 </form>
             </div>

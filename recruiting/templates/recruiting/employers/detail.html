@@ -14,19 +14,62 @@
 {% block body %}
 <div class="page-header">
  <div>
-  <h1 class="page-title">
-   {{employer.name}}
-  </h1>
  </div>
  <button class="btn dark-green-button"
         data-bs-toggle="modal"
         data-bs-target="#assignContactModal"
         id="assignContactBtn"
         data-employer-id="{{ employer.id }}">
-    {% translate "employerDetailsAssignContactEmployer" %}
+    {% translate "recruiterDetailAssignUser" %}
 </button>
 </div>
-<h3>{% translate "employerDetailsEmployerContacts"%}</h3>
+
+<div class="row">
+  <div class="col-md-4">
+    <h3> {% translate "employerDetailsEmployerDetails" %} </h3>
+    <div class="card">
+      <div class="card-body">
+          
+          <ul class="list-group no-margin">
+              <li class="list-group-item">
+                  <span><strong>{% translate "employerDetailsEmail" %}:</strong></span>
+                  <span>{{ employer.email }}</span>
+              </li>
+              <li class="list-group-item">
+                  <span><strong>{% translate "employerDetailsPhone" %}:</strong></span>
+                  <span>{{ employer.phone }}</span>
+              </li>
+              <li class="list-group-item">
+                  <span><strong>{% translate "employerDetailsWebsite" %}:</strong></span>
+                  <span>{{ employer.website }}</span>
+              </li>
+              <li class="list-group-item">
+                  <span><strong>{% translate "employerDetailsAddress" %}:</strong></span>
+                  <span>{{ employer.address }}</span>
+              </li>
+              <li class="list-group-item">
+                  <span><strong>{% translate "employerDetailsCity" %}:</strong></span>
+                  <span>{{ employer.city }}</span>
+              </li>
+              <li class="list-group-item">
+                  <span><strong>{% translate "employerDetailsState" %}:</strong></span>
+                  <span>{{ employer.state }}</span>
+              </li>
+              <li class="list-group-item">
+                  <span><strong>{% translate "employerDetailsCountry" %}:</strong></span>
+                  <span>{{ employer.country }}</span>
+              </li>
+              <li class="list-group-item">
+                  <span><strong>{% translate "employerDetailsZipCode" %}:</strong></span>
+                  <span>{{ employer.zipcode }}</span>
+              </li>
+              
+          </ul>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <h3>{% translate "employerDetailsEmployerContacts"%}</h3>
 
 <div class="modal fade" id="assignContactModal" tabindex="-1" aria-labelledby="assignContactLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -34,7 +77,7 @@
         <form method="POST" id="assignContactForm">
           {% csrf_token %}
           <div class="modal-header">
-            <h5 class="modal-title" id="assignContactLabel">{% translate "employerDetailsAssignContactEmployer" %}</h5>
+            <h5 class="modal-title" id="assignContactLabel">{% translate "employerDetailsAssignUser" %}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'employerDetailsClose' %}"></button>
           </div>
           <input type="hidden" id="employerIdField" name="employer_id">
@@ -42,18 +85,13 @@
             <input type="hidden" id="selectedEmployersForContact" name="selected_employers">
 
             <div class="mb-3">
-              <label for="contactName" class="form-label">{% translate "employerDetailsContactName" %}</label>
-              <input type="text" class="form-control" id="contactName" name="name" required>
-            </div>
-
-            <div class="mb-3">
-              <label for="contactEmail" class="form-label">{% translate "employerDetailsEmail" %}</label>
-              <input type="email" class="form-control" id="contactEmail" name="email" required>
-            </div>
-
-            <div class="mb-3">
-              <label for="contactPhone" class="form-label">{% translate "employerDetailsPhone" %}</label>
-              <input type="text" class="form-control" id="contactPhone" name="phone" required>
+              <label for="userSelect" class="form-label">{% translate "employerDetailsSelectUser" %}</label>
+              <select class="form-select" id="userSelect" name="user_id" required>
+                <option value="">{% translate "recruiterDetailsChooseUser" %}</option>
+                {% for user in users %}
+                  <option value="{{ user.id }}">{{ user.get_full_name }} ({{ user.email }})</option>
+                {% endfor %}
+              </select>
             </div>
 
             <div class="mb-3">
@@ -70,8 +108,8 @@
           </div>
 
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "employerDetailsCancel" %}</button>
-            <button type="submit" class="btn btn-primary" id="assignContactBtn">
+            <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate "employerDetailsCancel" %}</button>
+            <button type="submit" class="btn light-green-button" id="assignContactBtn">
               {% translate "employerDetailsSave" %}
             </button>
 
@@ -79,19 +117,17 @@
         </form>
       </div>
     </div>
-  </div>
+</div>
 <div class="d-flex flex-wrap gap-3">
     {% for contact in contacts %}
-    <a href="{% url 'recruiting_web:contact_work_requests' contact.id %}" class="text-decoration-none text-dark">
+    <a href="#" class="text-decoration-none text-dark">
         <div class="card shadow-sm p-3" style=" cursor: pointer;">
             <div class="card-body">
-                <h5 class="card-title">{{ contact.name }}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">
-                    {{ contact.position|default:"No position specified" }}
-                </h6>
+                <h5 class="card-title">{{ contact.get_full_name }}</h5>
+                 <!--Display user role  -->
                 <p class="card-text">
                     <strong>{% translate "employerDetailsEmail"%}:</strong> {{ contact.email }}<br>
-                    <strong>{% translate "employerDetailsPhone"%}:</strong> {{ contact.phone }}
+                    <strong>{% translate "employerDetailsPhone"%}:</strong> {{ contact.phone|default:"N/A" }}
                 </p>
             </div>
         </div>
@@ -239,8 +275,8 @@
               {% translate 'employerDetailsAreYouSureYouWantToDelete' %} <strong>{{ org.name }}</strong>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate 'employerDetailsCancel' %}</button>
-              <button type="submit" class="btn btn-danger">{% translate 'employerDetailsDelete' %}</button>
+              <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'employerDetailsCancel' %}</button>
+              <button type="submit" class="btn red-button">{% translate 'employerDetailsDelete' %}</button>
             </div>
           </form>
         </div>
@@ -248,6 +284,8 @@
     </div>
   {% endif %}
 {% endfor %}
+  </div>
+</div>
 
 {% endblock body %}
 
@@ -284,29 +322,4 @@
 </script>
 <script src="{% static 'assets/js/table-sorting.js' %}"></script>
 <script src="{% static ''%}assets/js/assign_contact_employer.js"></script>
-<script>
-    $(document).ready(function () {
-        if ($.fn.DataTable.isDataTable('#delete-datatable')) {
-            $('#delete-datatable').DataTable().destroy();
-        }
-
-        $('#delete-datatable').DataTable({
-            "language": {
-                "search": "{% translate 'datatableSearch' %}",
-                "lengthMenu": "{% blocktrans with menu='_MENU_' %}Show {{ menu }} entries{% endblocktrans %}",
-                "info": "{% blocktrans with start='_START_' end='_END_' total='_TOTAL_' %}Showing {{ start }} to {{ end }} of {{ total }} entries{% endblocktrans %}",
-                "infoEmpty": "{% translate 'datatableNoEntriesAvailable' %}",
-                "zeroRecords": "{% translate 'datatableNoMatchingRecordsFound' %}",
-                "paginate": {
-                    "first": "{% translate 'datatableFirst' %}",
-                    "last": "{% translate 'datatableLast' %}",
-                    "next": "{% translate 'datatableNext' %}",
-                    "previous": "{% translate 'datatablePrevious' %}"
-                }
-            }
-        });
-    });
-
-</script>
-
 {% endblock scripts %}
