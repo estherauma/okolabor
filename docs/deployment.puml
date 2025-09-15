@@ -1,0 +1,49 @@
+@startuml
+' Nodes / Servers
+node "Client Device" {
+    artifact "Angular App"
+}
+
+node "Application Server" {
+    artifact "Django Backend"
+}
+
+node "Database Server" {
+    database "PostgreSQL"
+}
+
+node "Cache Server" {
+    artifact "Redis"
+}
+
+node "External Services" {
+    artifact "Google Cloud: Firestore, Storage, Vision"
+    artifact "Firebase"
+    artifact "Twilio"
+    artifact "Sentry"
+    artifact "Okolabor CMS API"
+}
+
+node "CI/CD Pipeline (CircleCI)" {
+    artifact "Test & Lint Job\n(cimg/python, cimg/postgres, redis)"
+    artifact "Deploy Job\n(cimg/python)"
+}
+
+node "Production Server" {
+    artifact "Deployed Django Backend"
+}
+
+' Connections
+"Client Device" --> "Application Server" : HTTP/HTTPS
+"Application Server" --> "Database Server" : SQL
+"Application Server" --> "Cache Server" : Cache Queries
+"Application Server" --> "External Services" : API Calls / HTTP Requests
+
+' CI/CD connections
+"CI/CD Pipeline (CircleCI)" --> "Application Server" : Deploy
+"CI/CD Pipeline (CircleCI)" --> "Test & Lint Job" 
+"CI/CD Pipeline (CircleCI)" --> "Deploy Job"
+
+
+"Deploy Job" --> "Production Server" : SSH Deploy
+@enduml
