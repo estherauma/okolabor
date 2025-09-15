@@ -127,9 +127,11 @@
 
         <div class="table-responsive">
           <table class="table text-nowrap border-bottom" id="employers-list-datatable">
-            <thead style="background-color: #7DBF96;">
+            <thead>
               <tr>
-                <th></th>
+                <th>
+                  <input type="checkbox" id="select-all-employers"/>
+                </th>
                 <th class="col-company">{% translate "employersCompanyName" %}</th>
                 <th class="col-contact">{% translate "employersContactName" %}</th>
                 <th class="col-email">{% translate "employersEmail" %}</th>
@@ -479,6 +481,25 @@ $(document).ready(function () {
   $('#customSettingsContainer').html(settingsBtn);
 });
 
+</script>
+
+<script>
+  const selectAll = document.getElementById("select-all-employers");
+  const checkboxes = document.querySelectorAll(".table-checkbox");
+
+  selectAll.addEventListener("change", function() {
+    checkboxes.forEach(cb => cb.checked = this.checked);
+  });
+
+  checkboxes.forEach(cb => {
+    cb.addEventListener("change", function() {
+      if (!this.checked) {
+        selectAll.checked = false;
+      } else if ([...checkboxes].every(cb => cb.checked)) {
+        selectAll.checked = true;
+      }
+    });
+  });
 </script>
 
 {% endblock scripts %}
