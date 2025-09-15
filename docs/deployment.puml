@@ -46,4 +46,19 @@ node "Production Server" {
 
 
 "Deploy Job" --> "Production Server" : SSH Deploy
+
+note right of "Deploy Job"
+  Runs only on branches:
+  - main
+  - staging
+  - dev
+end note
+
+note right of "Test & Lint Job\n(cimg/python, cimg/postgres, redis)"
+  Uses images:
+  - cimg/python:3.10.1
+  - cimg/postgres:14.1
+  - redis:latest
+end note
+
 @enduml
