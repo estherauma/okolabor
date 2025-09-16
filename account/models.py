@@ -88,14 +88,6 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
     objects = UserManager()
     all_objects = models.Manager()
     
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=['curp'],
-                name='unique_curp_not_null',
-                condition=~Q(curp=None)
-            )
-        ]
 
     @property
     def is_admin(self):
