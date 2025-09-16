@@ -1043,6 +1043,10 @@
 
       // Handle clickable media
       document.querySelectorAll('.clickable-media').forEach(item => {
+        // Pause any playing videos when opening the modal
+        if (item.tagName === 'VIDEO') {
+          item.pause();
+        }
         item.addEventListener('click', event => {
           const type = event.currentTarget.getAttribute('data-type');
           const src = event.currentTarget.getAttribute('data-src');
@@ -1051,7 +1055,7 @@
           if (type === 'image') {
             mediaContent.innerHTML = `<img src="${src}" class="img-fluid" alt="Media">`;
           } else if (type === 'video') {
-            mediaContent.innerHTML = `<video controls class="w-100">
+            mediaContent.innerHTML = `<video controls autoplay class="w-100">
                                               <source src="${src}" type="video/mp4">
                                               {% translate "workerDetailsYourBrowserDoesNotSupportTheVideoTag"%}
                                             </video>`;
@@ -1059,6 +1063,11 @@
 
           // Show the modal
           $('#mediaModal').modal('show');
+        });
+
+        // Clear media content when modal is closed
+        $('#mediaModal').on('hidden.bs.modal', function () {
+          document.getElementById('mediaContent').innerHTML = '';
         });
       });
     });
