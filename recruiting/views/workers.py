@@ -215,11 +215,17 @@ class WorkerListView(View):
                     (max_exp is None or years <= max_exp)):
                     filtered.append(w)
             workers = filtered
+        
+        # Deduplicate workers by ID using a dictionary comprehension.
+        # If duplicates exist, later workers in the list overwrite earlier ones.
+        # This ensures each worker appears only once while preserving the final ordering.
         workers = list({w.id: w for w in workers}.values())
         worker_data = []
-        # Initialize years_of_experience to 0 to avoid UnboundLocalError
-        # This variable is used in the context for the template, representing
-        # either the last worker's experience or 0 if no workers exist.
+        
+        # Initialize years_of_experience to 0 as a default.
+        # This variable is also passed to the template context to ensure it exists
+        # even if the workers list is empty. Individual worker experience is calculated
+        # per worker and included in worker_data.
         years_of_experience = 0
         for worker in workers:
             profile_completion = calculate_profile_completion(worker)
