@@ -214,6 +214,7 @@ class FilterWorkExperienceForm(forms.Form):
 class DynamicWorkExperienceForm(forms.Form):
     type_sector = forms.ChoiceField(
         choices=[],  # set dynamically in __init__
+        required=False,
         label=_("filterSectionType/Sector"),
         widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_type_sector'}),
     )
