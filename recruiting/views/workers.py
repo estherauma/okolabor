@@ -215,7 +215,7 @@ class WorkerListView(View):
                     (max_exp is None or years <= max_exp)):
                     filtered.append(w)
             workers = filtered
-        workers = workers.distinct()
+        workers = list({w.id: w for w in workers}.values())
         worker_data = []
         for worker in workers:
             profile_completion = calculate_profile_completion(worker)
