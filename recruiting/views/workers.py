@@ -217,6 +217,9 @@ class WorkerListView(View):
             workers = filtered
         workers = list({w.id: w for w in workers}.values())
         worker_data = []
+        # Initialize years_of_experience to 0 to avoid UnboundLocalError
+        # This variable is used in the context for the template, representing
+        # either the last worker's experience or 0 if no workers exist.
         years_of_experience = 0
         for worker in workers:
             profile_completion = calculate_profile_completion(worker)
