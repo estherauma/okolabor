@@ -217,6 +217,7 @@ class WorkerListView(View):
             workers = filtered
         workers = list({w.id: w for w in workers}.values())
         worker_data = []
+        years_of_experience = 0
         for worker in workers:
             profile_completion = calculate_profile_completion(worker)
             worker_details = get_worker_preferences(worker)
