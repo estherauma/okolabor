@@ -6,7 +6,7 @@ from account.models import User
 from recruiting.models import (
     Deduction, Organization, Hours, OkoMessage, Qualification,
     EmploymentLocation, HousingInformation, MealProvision,
-    Role, Wages, WorkRequests,WorkAssignment
+    Role, Wages, WorkRequests, WorkAssignment
 )
 from django.core.exceptions import ValidationError
 from account.models import (UserWorkExperience)
@@ -128,6 +128,15 @@ from django.forms import CheckboxSelectMultiple
 from .models import Role
 
 class WorkRequestRoleForm(forms.ModelForm):
+    # Define dynamic fields mapping as a class variable
+    dynamic_fields_by_type = {
+        "animals": ["animal_types", "responsibilities_types"],
+        "crop_and_horticulture": ["crop_types", "crop_job_types"],
+        "mechanics": ["mechanic_job_types"],
+        "worker_supervision__management": ["supervision_jobs_types"],
+        "licensed_vehicle_operation": ["licensed_vehicle_operation_types"],
+    }
+
     work_type = forms.ChoiceField(
         choices=[],
         widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_type_sector'}),
@@ -137,31 +146,32 @@ class WorkRequestRoleForm(forms.ModelForm):
     # Optional dynamic fields using checkboxes now
     animal_types = forms.MultipleChoiceField(
         required=False,
-        widget=CheckboxSelectMultiple(attrs={'class': 'form-check-input', 'id': 'id_animal_types'}),
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_animal_types'}),
+
     )
     crop_types = forms.MultipleChoiceField(
         required=False,
-        widget=CheckboxSelectMultiple(attrs={'class': 'form-check-input', 'id': 'id_crop_types'}),
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_crop_types'}),
     )
     crop_job_types = forms.MultipleChoiceField(
         required=False,
-        widget=CheckboxSelectMultiple(attrs={'class': 'form-check-input', 'id': 'id_crop_job_types'}),
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_crop_job_types'}),
     )
     mechanic_job_types = forms.MultipleChoiceField(
         required=False,
-        widget=CheckboxSelectMultiple(attrs={'class': 'form-check-input', 'id': 'id_mechanic_job_types'}),
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_mechanic_job_types'}),
     )
     supervision_jobs_types = forms.MultipleChoiceField(
         required=False,
-        widget=CheckboxSelectMultiple(attrs={'class': 'form-check-input', 'id': 'id_supervision_jobs_types'}),
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_supervision_jobs_types'}),
     )
     licensed_vehicle_operation_types = forms.MultipleChoiceField(
         required=False,
-        widget=CheckboxSelectMultiple(attrs={'class': 'form-check-input', 'id': 'licensed_vehicle_operation_types'}),
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_licensed_vehicle_operation_types'}),
     )
     responsibilities_types = forms.MultipleChoiceField(
         required=False,
-        widget=CheckboxSelectMultiple(attrs={'class': 'form-check-input', 'id': 'id_responsibilities_types'}),
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_responsibilities_types'}),
     )
 
     class Meta:
@@ -246,6 +256,15 @@ class WorkRequestRoleForm(forms.ModelForm):
             if field_name in self.fields:
                 self.fields[field_name].choices = config['choices']()
                 self.fields[field_name].label = config['label']
+
+        # Set initial values work_type_detail if it`s an edit operation
+        if self.instance and self.instance.pk and self.instance.work_type_detail:
+            work_type = self.instance.work_type
+            if work_type in self.dynamic_fields_by_type:
+                # Set initial values for the fields from work_type_detail
+                for field in self.dynamic_fields_by_type.get(work_type, []):
+                    if field in self.instance.work_type_detail:
+                        self.initial[field] = self.instance.work_type_detail[field]
                 
         self.fields['work_request'].queryset = WorkRequests.objects.order_by('name')
 
@@ -258,16 +277,8 @@ class WorkRequestRoleForm(forms.ModelForm):
         def strip_list(field_name):
             return [item.strip() for item in request.getlist(field_name) if item.strip()]
 
-        dynamic_fields_by_type = {
-            "animals": ["animal_types", "responsibilities_types"],
-            "crop_and_horticulture": ["crop_types", "crop_job_types"],
-            "mechanics": ["mechanic_job_types"],
-            "worker_supervision__management": ["supervision_jobs_types"],
-            "licensed_vehicle_operation": ["licensed_vehicle_operation_types"],
-        }
-
-        if work_type in dynamic_fields_by_type:
-            for field in dynamic_fields_by_type[work_type]:
+        if work_type in self.dynamic_fields_by_type:
+            for field in self.dynamic_fields_by_type[work_type]:
                 work_type_detail[field] = strip_list(field)
 
         cleaned_data["work_type"] = work_type
