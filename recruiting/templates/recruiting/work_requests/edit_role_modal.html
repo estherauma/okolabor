@@ -32,15 +32,10 @@
 
               {% for field_name in dynamic_fields %}
                 {% with role_form|get_field:field_name as field %}
-                  <div class="form-group my-3" id="div_id_{{ field_name }}" style="display:none;">
+                  <div class="form-group my-3" id="div_id_{{ field_name }}" >
                     <label>{{ field.label }}</label>
-                    <div class="d-flex flex-wrap gap-3">
-                      {% for checkbox in field %}
-                        <div class="form-check form-check-inline">
-                          {{ checkbox.tag }}
-                          <label class="form-check-label ms-1">{{ checkbox.choice_label }}</label>
-                        </div>
-                      {% endfor %}
+                    <div class="input-group input-group-outline is_valid my-3">
+                      {{ field }}
                     </div>
                   </div>
                 {% endwith %}
@@ -93,7 +88,7 @@
         "id_crop_job_types",
         "id_mechanic_job_types",
         "id_supervision_jobs_types",
-        "licensed_vehicle_operation_types",
+        "id_licensed_vehicle_operation_types",
         "id_description"
       ];
 
@@ -122,7 +117,7 @@
         show("id_supervision_jobs_types");
         show("id_description");
       } else if (value === "licensed_vehicle_operation") {
-        show("licensed_vehicle_operation_types");
+        show("id_licensed_vehicle_operation_types");
         show("id_description");
       } else if (value === "construction" || value === "other") {
         show("id_description");
