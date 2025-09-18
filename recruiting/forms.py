@@ -16,6 +16,7 @@ import json
 from django.utils.translation import get_language
 from django.conf import settings
 
+
 class EmployerForm(forms.ModelForm):
     class Meta:
         model = Organization
@@ -123,10 +124,6 @@ class WorkerAssignmentForm(forms.ModelForm):
         }
 
 
-from django import forms
-from django.forms import CheckboxSelectMultiple
-from .models import Role
-
 class WorkRequestRoleForm(forms.ModelForm):
     # Define dynamic fields mapping as a class variable
     dynamic_fields_by_type = {
@@ -147,7 +144,6 @@ class WorkRequestRoleForm(forms.ModelForm):
     animal_types = forms.MultipleChoiceField(
         required=False,
         widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_animal_types'}),
-
     )
     crop_types = forms.MultipleChoiceField(
         required=False,
@@ -257,7 +253,7 @@ class WorkRequestRoleForm(forms.ModelForm):
                 self.fields[field_name].choices = config['choices']()
                 self.fields[field_name].label = config['label']
 
-        # Set initial values work_type_detail if it`s an edit operation
+        # Set initial values for work_type_detail if it's an edit operation  
         if self.instance and self.instance.pk and self.instance.work_type_detail:
             work_type = self.instance.work_type
             if work_type in self.dynamic_fields_by_type:
