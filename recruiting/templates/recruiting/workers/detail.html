@@ -429,7 +429,8 @@
         <div class="row">
           {% endif %}
           <div class="col-md-6 mb-3">
-            <video controls class="border w-100 preview-video clickable-media" style="max-height: 200px; cursor: pointer;"
+            <!-- controlslist="nofullscreen" removes conflict with modal -->
+            <video controls  controls controlslist="nofullscreen" class="border w-100 preview-video clickable-media" style="max-height: 200px; cursor: pointer;"
               data-type="video" data-src="{{ base_url }}{{ doc.path }}" data-bs-toggle="modal" data-bs-target="#mediaModal">
               <source src="{{ base_url }}{{ doc.path }}" type="video/mp4">
               {% translate "workerDetailsYourBrowserDoesNotSupportTheVideoTag" %}
@@ -1042,11 +1043,7 @@
       }
 
       // Handle clickable media
-      document.querySelectorAll('.clickable-media').forEach(item => {
-        // Pause any playing videos when opening the modal
-        if (item.tagName === 'VIDEO') {
-          item.pause();
-        }
+      document.querySelectorAll('.clickable-media').forEach(item => {       
         item.addEventListener('click', event => {
           const type = event.currentTarget.getAttribute('data-type');
           const src = event.currentTarget.getAttribute('data-src');
@@ -1055,7 +1052,8 @@
           if (type === 'image') {
             mediaContent.innerHTML = `<img src="${src}" class="img-fluid" alt="Media">`;
           } else if (type === 'video') {
-            mediaContent.innerHTML = `<video controls autoplay class="w-100">
+
+            mediaContent.innerHTML = `<video controls class="w-100">
                                               <source src="${src}" type="video/mp4">
                                               {% translate "workerDetailsYourBrowserDoesNotSupportTheVideoTag"%}
                                             </video>`;
@@ -1064,12 +1062,12 @@
           // Show the modal
           $('#mediaModal').modal('show');
         });
-
+      });
+  
         // Clear media content when modal is closed
         $('#mediaModal').on('hidden.bs.modal', function () {
           document.getElementById('mediaContent').innerHTML = '';
         });
-      });
     });
 
     function handleInfoTypeChange() {
