@@ -134,6 +134,7 @@
                                       <input type="checkbox" id="select-all-workers">
                                     </th>
                                     <th class="col-name">{% translate "workersListName" %}</th>
+                                    <th class="col-created-at">{% translate "workersListCreatedAt" %}</th>
                                     <th class="col-name">{% translate "workersListEmail" %}</th>
                                     <th class="col-town">{% translate "workersListTown" %}</th>
                                     <th class="col-profile">{% translate "workersListFullyComplete" %}</th>
@@ -161,6 +162,9 @@
                                             <a href="{{ worker.id }}">
                                                 {{ worker.first_name }} {{ worker.last_name }}
                                             </a>
+                                    </td>
+                                    <td class="col-created-at">
+                                          {{ worker.created_at|date:"Y-m-d" }}
                                     </td>
                                     <td class="col-townnn">
                                         <a href="{{ worker.id }}">
