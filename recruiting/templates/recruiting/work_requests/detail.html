@@ -108,20 +108,8 @@
         {% for role in  workrequest.roles.all %}
         <div class="accordion-item mb-2 ">
           <div class="d-flex align-items-center ">
-            <div class="d-flex col-11 col-md-9 align-items-center">
-              <div class="job-title-container">
-                <p class="job-title-label-container">
-                  <button class="btn btn-sm btn-icon light-green-button-outline  edit-btn" data-bs-toggle="modal"
-                    data-bs-target="#editRoleModal{{ role.id }}" title="{% translate 'jobOrderDetailsEdit' %}">
-                    <i class="fa fa-edit"></i>
-                  </button>
-                  <!-- Delete Button -->
-                  <button class="btn btn-sm btn-icon btn-outline-danger delete-btn" data-bs-toggle="modal"
-                    data-bs-target="#deleteRoleModal{{ role.id }}" title="{% translate 'jobOrderDetailsDelete' %}">
-                    <i class="fa fa-trash-alt"></i>
-                  </button>
-                </p>
-                <p>
+            <div class="d-flex col-11 col-md-9 align-items-center py-3">
+                <div>
                   <span class="job-title ">{{ role.title }}</span>
       
                   <a href="{% url 'recruiting_web:workers' %}?role={{role.id}}&work_request={{workrequest.id}} ">
@@ -129,8 +117,17 @@
                       {% translate "jobOrderDetailsAddWorkers" %}
                     </button>
                   </a>
-                </p>
-              </div>
+                </div>
+                <div class="job-title-label-container">
+                  <button class="btn btn-sm btn-icon light-green-button-outline  edit-btn" data-bs-toggle="modal"
+                    data-bs-target="#editRoleModal{{ role.id }}" title="{% translate 'jobOrderDetailsEdit' %}">
+                    {% translate 'webCommonEdit' %} 
+                  </button>
+                  <button class="btn btn-sm btn-icon btn-outline-danger delete-btn" data-bs-toggle="modal"
+                    data-bs-target="#deleteRoleModal{{ role.id }}" title="{% translate 'jobOrderDetailsDelete' %}">
+                    {% translate 'webCommonDelete' %} 
+                  </button>
+                </div>
             </div>
             <!-- accordion collapse icon -->
             <button aria-controls="collapse{{ role.id }}" aria-expanded="false" class="accordion-button collapsed"
