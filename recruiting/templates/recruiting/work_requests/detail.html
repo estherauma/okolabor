@@ -403,15 +403,15 @@
                   {% else %}
                 
                   <!-- Edit Icon -->
-                  <button class="btn btn-sm btn-icon edit-btn" data-bs-toggle="modal" data-bs-target="#edithoursModal{{ role.id }}"
+                  <button class="btn btn-sm yellow-button edit-btn" data-bs-toggle="modal" data-bs-target="#edithoursModal{{ role.id }}"
                     title="{% translate 'webCommonEdit' %}">
-                    <i class="fa fa-edit"></i>
+                    {% translate 'webCommonEdit' %}
                   </button>
                   <!-- Delete Icon -->
-                  <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deletehoursModal{{ role.id }}"
+                  <!-- <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deletehoursModal{{ role.id }}"
                     title="{% translate 'Delete' %}">
                     <i class="fa fa-trash-alt"></i>
-                  </button>
+                  </button> -->
                   {% endif %}
                 </div>
                 {% if role.hours and not role.hours.deleted %}
@@ -481,15 +481,15 @@
                   {% else %}
                 
                   <!-- Edit Icon -->
-                  <button class="btn btn-sm btn-icon edit-btn" data-bs-toggle="modal" data-bs-target="#editWagesModal{{ role.id }}"
+                  <button class="btn btn-sm yellow-button " data-bs-toggle="modal" data-bs-target="#editWagesModal{{ role.id }}"
                     title="{% translate 'webCommonEdit' %}">
-                    <i class="fa fa-edit"></i>
+                    {% translate 'webCommonEdit' %}
                   </button>
-                  <!-- Delete Icon -->
+                  <!-- Delete Icon
                   <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteWagesModal{{ role.id }}"
                     title="{% translate 'webCommonDelete' %}">
                     <i class="fa fa-trash-alt"></i>
-                  </button>
+                  </button> -->
                   {% endif %}
                 </div>
                 {% if role.wages and role.wages.deleted_at is None %}
@@ -585,14 +585,14 @@
                               data-bs-toggle="modal"
                               data-bs-target="#editDeductionModal{{ deduction.id }}"
                               title="{% translate 'webCommonEdit' %}">
-                                <i class="fa fa-edit"></i>
+                                {% translate 'webCommonEdit' %}
                               </button>
                 
-                              <button class="btn btn-sm btn-icon delete-btn"
+                              <button class="btn btn-sm delete-btn"
                               data-bs-toggle="modal"
                               data-bs-target="#deleteDeductionModal{{ deduction.id }}"
                               title="{% translate 'webCommonDelete' %}">
-                              <i class="fa fa-trash-alt"></i>
+                             {% translate 'webCommonDelete' %}
                             </button>
                           </td>
                         </tr>
@@ -624,15 +624,15 @@
                   {% else %}
                 
                   <!-- Edit Icon -->
-                  <button class="btn btn-sm btn-icon edit-btn" data-bs-toggle="modal" data-bs-target="#editQualificationModal{{ role.id }}"
+                  <button class="btn btn-sm yellow-button" data-bs-toggle="modal" data-bs-target="#editQualificationModal{{ role.id }}"
                     title="{% translate 'webCommonEdit' %}">
-                    <i class="fa fa-edit"></i>
+                    {% translate 'webCommonEdit' %}
                   </button>
-                  <!-- Delete Icon -->
+                  <!-- Delete Icon
                   <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteQualificationModal{{ role.id }}"
                     title="{% translate 'webCommonDelete' %}">
                     <i class="fa fa-trash-alt"></i>
-                  </button>
+                  </button> -->
                   {% endif %}
                 </div>
                 {% if role.qualifications and role.qualifications.deleted_at is None %}
@@ -751,15 +751,16 @@
                   {% else %}
                 
                   <!-- Edit Icon -->
-                  <button class="btn btn-sm btn-icon edit-btn" data-bs-toggle="modal" data-bs-target="#editEmployementInformationModal{{ role.id }}"
+                  <button class="btn btn-sm yellow-button" data-bs-toggle="modal" data-bs-target="#editEmployementInformationModal{{ role.id }}"
                     title="{% translate 'webCommonEdit' %}">
-                    <i class="fa fa-edit"></i>
+                                       {% translate 'webCommonEdit' %}
+
                   </button>
-                  <!-- Delete Icon -->
+                  <!-- Delete Icon
                   <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteEmploymentInformationModal{{ role.id }}"
                     title="{% translate 'Delete' %}">
                     <i class="fa fa-trash-alt"></i>
-                  </button>
+                  </button> -->
                   {% endif %}
                 </div>
                 {% if role.employment_location and role.employment_location.deleted_at is None %}
@@ -824,15 +825,15 @@
                   {% else %}
                 
                   <!-- Edit Icon -->
-                  <button class="btn btn-sm btn-icon edit-btn" data-bs-toggle="modal" data-bs-target="#editHousingInformationModal{{ role.id }}"
+                  <button class="btn btn-sm yellow-button" data-bs-toggle="modal" data-bs-target="#editHousingInformationModal{{ role.id }}"
                     title="{% translate 'webCommonEdit' %}">
-                    <i class="fa fa-edit"></i>
+                    {% translate 'webCommonEdit' %}
                   </button>
                   <!-- Delete Icon -->
-                  <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteHousingInformationModal{{ role.id }}"
+                  <!-- <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteHousingInformationModal{{ role.id }}"
                     title="{% translate 'Delete' %}">
                     <i class="fa fa-trash-alt"></i>
-                  </button>
+                  </button> -->
                   {% endif %}
                 </div>
                 {% if role.housing_information and role.housing_information.deleted_at is None %}
@@ -901,15 +902,15 @@
                   {% else %}
                 
                   <!-- Edit Icon -->
-                  <button class="btn btn-sm btn-icon edit-btn" data-bs-toggle="modal" data-bs-target="#editMealProvisionModal{{ role.id }}"
+                  <button class="btn btn-sm yellow-button" data-bs-toggle="modal" data-bs-target="#editMealProvisionModal{{ role.id }}"
                     title="{% translate 'webCommonEdit' %}">
-                    <i class="fa fa-edit"></i>
+                    {% translate 'webCommonEdit' %}
                   </button>
                   <!-- Delete Icon -->
-                  <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteMealProvisionModal{{ role.id }}"
+                  <!-- <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteMealProvisionModal{{ role.id }}"
                     title="{% translate 'Delete' %}">
                     <i class="fa fa-trash-alt"></i>
-                  </button>
+                  </button> -->
                   {% endif %}
                 </div>
                 {% if role.meal_provision and role.meal_provision.deleted_at is  None %}
