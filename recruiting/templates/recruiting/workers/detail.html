@@ -77,7 +77,24 @@
             {% translate "workerDetailsAddress" %}
           </p>
           <p class="value">
-            {{worker.address_line_1}}, {{worker.address_line_2}}, {{worker.city}}, {{worker.state}}, {{worker.country}}
+            {% if worker.address_line_1 %}
+              {{worker.address_line_1}}, 
+              {% if worker.address_line_2 %}
+                {{worker.address_line_2}}, 
+              {% endif %}
+            {% endif %}
+            
+            {% if worker.city %}
+              {{worker.city}}, 
+            {% endif %}
+            
+            {% if worker.state %}
+              {{worker.state}}, 
+            {% endif %}
+            
+            {% if worker.country %}
+              {{worker.country}}
+            {% endif %}
           </p>
           <p class="label">
             {% translate "workerDetailsEmail" %}
@@ -190,19 +207,34 @@
             <img alt="flag" src="{% static 'assets/images/farm.png' %}" style="width: 60%;" />
           </div> -->
           <div class="experience-item">
-            <div class="exp-header">
+            <div class="exp-header mb-1">
               <a href="{% url 'recruiting_web:work_experience_details' pk=exp.id %}">
-              <h5 class="green-color">{{exp.company}} <span class="exp-work-title">({{exp.work_title}})</span></h5>
+                <h5 class="green-color m-0">{{exp.company}} <span class="exp-work-title">({{exp.work_title}})</span></h5>
               </a>
-               <i class="fa fa-edit" style="cursor: pointer; font-size: 15px;padding-left:10px;"
-                  data-bs-toggle="modal" data-bs-target="#editExperienceModal{{ exp.id }}"
-                  title="{% translate 'workerDetailsEdit'%}">
-                </i>
-                <!-- Delete Button -->
-                <i class="fa fa-trash text-danger" style="cursor: pointer; font-size: 15px;padding-left:10px;"
-                  data-bs-toggle="modal" data-bs-target="#deleteExperienceModal{{ exp.id }}"
-                  title="{% translate 'workerDetailsDelete'%}">
-                </i>
+              <!-- Edit Button -->
+              <button
+                class="btn btn-sm yellow-button"
+                data-bs-toggle="modal"
+                data-bs-target="#editExperienceModal{{ exp.id }}"
+              >
+                {% translate 'workerDetailsEdit'%}
+              </button>
+              <!-- <i class="fa fa-edit" style="cursor: pointer; font-size: 15px;padding-left:10px;"
+                data-bs-toggle="modal" data-bs-target="#editExperienceModal{{ exp.id }}"
+                title="{% translate 'workerDetailsEdit'%}">
+              </i> -->
+              <!-- Delete Button -->
+              <button
+                class="btn btn-sm red-button ms-2"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteExperienceModal{{ exp.id }}"
+              >
+                {% translate 'workerDetailsDelete'%}
+              </button>
+              <!-- <i class="fa fa-trash text-danger" style="cursor: pointer; font-size: 15px;padding-left:10px;"
+                data-bs-toggle="modal" data-bs-target="#deleteExperienceModal{{ exp.id }}"
+                title="{% translate 'workerDetailsDelete'%}">
+              </i> -->
               </div>
               <div class="exp-detail-row" >
                 <p>
@@ -371,13 +403,16 @@
           {% translate "workerDetailsWorkInformation" %}
         </div>
         <div>
-          <button class="btn dark-green-button" data-bs-toggle="modal" data-bs-target="#infoModal">
+          <button class="btn grey-green-button ms-2" data-bs-toggle="modal" data-bs-target="#infoModal">
             {% translate "workerDetailsAddInformation" %}
           </button>
           {% if preferences %}
-            <i class="fa fa-trash text-danger" style="cursor: pointer; font-size: 20px;padding-left:10px;"
+            <button class="btn btn-sm red-button" data-bs-toggle="modal" data-bs-target="#deleteAllInfoModal">
+              {% translate "webCommonDelete" %}
+            </button>
+            <!-- <i class="fa fa-trash text-danger" style="cursor: pointer; font-size: 20px;padding-left:10px;"
               data-bs-toggle="modal" data-bs-target="#deleteAllInfoModal" title="Delete">
-            </i>
+            </i> -->
           {% endif %}
         </div>
       </div>
@@ -386,13 +421,16 @@
         <!-- Optionally display buttons for editing user information -->
         {% if preferences %}
         <div class="d-flex gap-2 mb-3">
-          <button class="btn btn-sm light-green-button" data-bs-toggle="modal" data-bs-target="#editDocumentsModal">
+          <button class="btn grey-green-button" data-bs-toggle="modal" data-bs-target="#editDocumentsModal">
+            <!-- TODO translate -->
             Edit Documents
           </button>
-          <button class="btn btn-sm light-green-button" data-bs-toggle="modal" data-bs-target="#editLanguageModal">
+          <button class="btn grey-green-button" data-bs-toggle="modal" data-bs-target="#editLanguageModal">
+            <!-- TODO translate -->
             Edit Language
           </button>
-          <button type="button" class="btn btn-sm light-green-button" data-bs-toggle="modal" data-bs-target="#editPreferencesModal">
+          <button type="button" class="btn grey-green-button" data-bs-toggle="modal" data-bs-target="#editPreferencesModal">
+            <!-- TODO translate -->
             Edit Work Preferences
           </button>
         </div>
