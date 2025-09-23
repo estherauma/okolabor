@@ -98,11 +98,9 @@
                   {% endif %}
                 </p>
                 <div class="item-detail-wrapper d-flex flex-wrap gap-2 mb-3">
-                  {% for y in job.type_details|split:"," %}
                     <span class="item-detail" >
-                      {{ y | trim }}
+                      {{ job.type_details | trim }}
                     </span>
-                  {% endfor %}
                 </div>
               {% endif %}
 
@@ -113,11 +111,9 @@
                     {% translate 'workExperienceDetailsTasks&Responsibilities'%}: 
                   </p>
                   <div class="item-detail-wrapper d-flex flex-wrap gap-2 mb-3">
-                  {% for x in item.value|split:"," %}
                     <span class="item-detail" >
-                      {{ x|trim }}
+                      {{ item.value | trim }}
                     </span>
-                  {% endfor %}
                 </div>
                 {% endif %}
                 
