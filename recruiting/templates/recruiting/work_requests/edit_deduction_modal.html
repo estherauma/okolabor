@@ -23,7 +23,7 @@
               <!-- Role field (readonly using hidden input technique) -->
               <div class="mb-2">
                 <div class="form-group mb-1">
-                  <label for="id_role{{ deduction.id }}" class="form-label fw-semibold mb-1">{% trans "roleDeductionsRole" %}</label>
+                  <label for="id_role{{ deduction.id }}" class="form-label mb-1">{% trans "roleDeductionsRole" %}</label>
                   <select id="id_role{{ deduction.id }}" class="form-control" disabled>
                     {% for role in roles %}
                       <option value="{{ role.id }}" name="role" {% if role.id == deduction.role.id %}selected{% endif %}>
@@ -39,7 +39,7 @@
               <!-- Description field -->
               <div class="mb-2">
                 <div class="form-group mb-1">
-                  <label for="id_description{{ deduction.id }}" class="form-label fw-semibold mb-1">{% trans "roleDeductionsDescription" %}</label>
+                  <label for="id_description{{ deduction.id }}" class="form-label mb-1">{% trans "roleDeductionsDescription" %}</label>
                   <textarea id="id_description{{ deduction.id }}" name="description" class="form-control" required rows="4">{{ deduction.description }}</textarea>
                 </div>
               </div>
@@ -47,7 +47,7 @@
               <!-- Deduction Amount field -->
               <div class="mb-2">
                 <div class="form-group mb-1">
-                  <label for="id_deduction_amount{{ deduction.id }}" class="form-label fw-semibold mb-1">{% trans "roleDeductionsDeductionAmount" %}</label>
+                  <label for="id_deduction_amount{{ deduction.id }}" class="form-label mb-1">{% trans "roleDeductionsDeductionAmount" %}</label>
                   <input type="number" id="id_deduction_amount{{ deduction.id }}" name="deduction_amount" class="form-control" step="0.01" required value="{{ deduction.deduction_amount }}">
                 </div>
               </div>
@@ -55,7 +55,7 @@
               <!-- Frequency of Pay field -->
               <div class="mb-2">
                 <div class="form-group mb-1">
-                  <label for="id_frequency_of_pay{{ deduction.id }}" class="form-label fw-semibold mb-1">
+                  <label for="id_frequency_of_pay{{ deduction.id }}" class="form-label mb-1">
                     {% trans "joDetailsDeductionsFrequencyOfPay" %}
                   </label>
                   <select id="id_frequency_of_pay{{ deduction.id }}" name="frequency_of_pay" class="form-control" required>

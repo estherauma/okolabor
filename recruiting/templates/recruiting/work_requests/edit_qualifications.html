@@ -19,7 +19,7 @@
                   {% for field in form %}
                     {% if field.field.widget.input_type == "radio" %}
                     <div class="form-group mb-6">
-                      <label for="{{ field.id_for_label }}" class="form-label fw-semibold mb-1">{{ field.label }}</label>
+                      <label for="{{ field.id_for_label }}" class="form-label mb-1">{{ field.label }}</label>
                       <div class="mt-1">{{ field }}</div>
                       {% if field.errors %}
                         <div class="text-danger small mt-1">
@@ -46,7 +46,7 @@
                     </div>
                     {% else %}
                     <div class="form-group mb-2">
-                      <label for="{{ field.id_for_label }}" class="form-label fw-semibold mb-1">{{ field.label }}</label>
+                      <label for="{{ field.id_for_label }}" class="form-label mb-1">{{ field.label }}</label>
                       <div class="mt-1">{{ field }}</div>
                       {% if field.errors %}
                         <div class="text-danger small mt-1">
