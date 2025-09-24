@@ -10,26 +10,25 @@
                 <div class="d-flex justify-content-between">
                     <form method="post">
                         {% csrf_token %}
-                        <div class="row">
-                            {% for field in form %}
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">{{ field.label }}</label>
-                                    {{ field }}
-                                    {% if field.errors %}
-                                    <small class="text-danger">{{ field.errors.0 }}</small>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            {% endfor %}
-
-                        </div>
-                        <div class="col-md-4 d-flex align-items-end">
-                            <button class="btn light-green-button" type="submit">
-                                {% translate "messagesFilter" %}
+                        <div class="row g-3 align-items-end">
+                          {% for field in form %}
+                          <div class="col-md-4 d-flex flex-column justify-content-end">
+                            <label class="form-label mb-1">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                              <small class="text-danger">{{ field.errors.0 }}</small>
+                            {% endif %}
+                          </div>
+                          {% endfor %}
+                      
+                          <div class="col-md-3 d-flex align-items-end">
+                            <button class="btn light-green-button w-100" type="submit">
+                              {% translate "messagesFilter" %}
                             </button>
+                          </div>
                         </div>
                     </form>
+                      
                     <div>
                         <a class="btn dark-green-button" href="{% url 'recruiting_web:recruiter_create_message' %}">
                             <span>
