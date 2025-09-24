@@ -13,42 +13,41 @@
         <form method="post" id="MealsForm" action="{% url 'recruiting_web:workrequest_meals_create' role.id %}">
           {% csrf_token %}
          
-          <div class="col">
-            <div class="form-group my-3">
+          <div class="mb-3">
+            <div class="form-group mb-2">
               <label>{% translate "roleMealsRole" %}</label>
-              <div class="input-group input-group-outline is_valid my-3">
+              <div class="input-group input-group-outline is_valid mt-1">
                 <input type="text" class="form-control" value="{{ role }}" disabled>
               </div>
             </div>
           </div>
 
-          
           <input type="hidden" name="role" value="{{ role.id }}">
 
           {% for field in role_Meals_form %}
             {% if field.name != 'role' %}
               {% if field.field.widget.input_type == "checkbox" %}
-                <div class="col">
-                  <div class="form-roup my-5">
+                <div class="mb-3">
+                  <div class="form-group mb-2">
                     <div class="form-check">
-                      <label class="form-check-label " for="{{ field.id_for_label }}">{{ field.label }}</label>
+                      <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
                       {{ field }}
                     </div>
                   </div>
                 </div>
               {% else %}
-              <div class="col">
-                <div class="form-group my-3">
-                  <label>{{ field.label }}</label>
-                  <div class="input-group input-group-outline is_valid my-3">
-                    {{ field }}
+                <div class="mb-3">
+                  <div class="form-group mb-1">
+                    <label class="form-label fw-semibold mb-1">{{ field.label }}</label>
+                    <div class="input-group input-group-outline is_valid mt-1">
+                      {{ field }}
+                    </div>
+                    {% for error in field.errors %}
+                      <div class="text-danger small mt-1">{{ error }}</div>
+                    {% endfor %}
                   </div>
-                  {% for error in field.errors %}
-                    <div class="text-danger small">{{ error }}</div>
-                  {% endfor %}
                 </div>
-              </div>
-            {% endif %}
+              {% endif %}
             {% endif %}
           {% endfor %}
 
