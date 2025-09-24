@@ -14,10 +14,10 @@
         <form method="post" id="hoursForm" action="{% url 'recruiting_web:workrequest_hours_create' role.id %}">
           {% csrf_token %}
          
-          <div class="col">
-            <div class="form-group my-3">
+          <div class="mb-3">
+            <div class="form-group mb-2">
               <label>{% translate "roleHoursRole" %}</label>
-              <div class="input-group input-group-outline is_valid my-2">
+              <div class="input-group input-group-outline is_valid mt-1">
                 <input type="text" class="form-control" value="{{ role }}" disabled>
               </div>
             </div>
@@ -30,27 +30,27 @@
           {% for field in role_Hours_form %}
             {% if field.name != 'role' %}
               {% if field.name == 'on_call' %}
-                <div class="col">
-                  <div class="form-roup my-2">
+                <div class="mb-3">
+                  <div class="form-group mb-2">
                     <div class="form-check">
-                      <label class="form-check-label " for="{{ field.id_for_label }}">{{ field.label }}</label>
+                      <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
                       {{ field }}
                     </div>
                   </div>
                 </div>
-                {% else %}
-                  <div class="col">
-                    <div class="form-group my-2">
-                      <label>{{ field.label }}</label>
-                      <div class="input-group input-group-outline is_valid my-2">
-                        {{ field }}
-                      </div>
-                      {% for error in field.errors %}
-                        <div class="text-danger small">{{ error }}</div>
-                      {% endfor %}
+              {% else %}
+                <div class="mb-3">
+                  <div class="form-group mb-1">
+                    <label class="form-label fw-semibold mb-1">{{ field.label }}</label>
+                    <div class="input-group input-group-outline is_valid mt-1">
+                      {{ field }}
                     </div>
+                    {% for error in field.errors %}
+                      <div class="text-danger small mt-1">{{ error }}</div>
+                    {% endfor %}
                   </div>
-                {% endif %}
+                </div>
+              {% endif %}
             {% endif %}
           {% endfor %}
 
