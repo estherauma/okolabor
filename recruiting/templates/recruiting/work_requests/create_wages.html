@@ -14,10 +14,10 @@
         <form method="post" id="wagesForm" action="{% url 'recruiting_web:workrequest_wages_create' role.id %}">
           {% csrf_token %}
          
-          <div class="col">
-            <div class="form-group my-3">
+          <div class="mb-3">
+            <div class="form-group mb-2">
               <label>{% translate "roleWagesRole" %}</label>
-              <div class="input-group input-group-outline is_valid my-3">
+              <div class="input-group input-group-outline is_valid mt-1">
                 <input type="text" class="form-control" value="{{ role }}" disabled>
               </div>
             </div>
@@ -29,14 +29,14 @@
           <!-- Render all other fields except 'role' -->
           {% for field in role_Wages_form %}
             {% if field.name != 'role' %}
-              <div class="col">
-                <div class="form-group my-3">
-                  <label>{{ field.label }}</label>
-                  <div class="input-group input-group-outline is_valid my-3">
+              <div class="mb-3">
+                <div class="form-group mb-1">
+                  <label class="form-label fw-semibold mb-1">{{ field.label }}</label>
+                  <div class="input-group input-group-outline is_valid mt-1">
                     {{ field }}
                   </div>
                   {% for error in field.errors %}
-                    <div class="text-danger small">{{ error }}</div>
+                    <div class="text-danger small mt-1">{{ error }}</div>
                   {% endfor %}
                 </div>
               </div>
