@@ -24,10 +24,16 @@ from recruiting.views.web import (
     EmployerRecruiterOrgLinkDeleteView,DeleteAssignedOrganizationView,
     DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditEmploymentLocationView,DeleteEmploymentLocationView,EditHousingInformationView,DeleteHousingInformationView,EditMealProvisionView,DeleteMealProvisionView,
     DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditEmploymentLocationView,DeleteEmploymentLocationView,
-    DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditRoleHoursView,DeleteRoleHoursView,EditRoleWagesView,DeleteRoleWagesView,EditRoleQualificationView,DeleteQualificationView,DeductionEditView,DeleteDeductionView,OfferSendWorkerView,InvitationResponseView
+    DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditRoleHoursView,DeleteRoleHoursView,EditRoleWagesView,
+    DeleteRoleWagesView,EditRoleQualificationView,DeleteQualificationView,DeductionEditView,DeleteDeductionView,
+    OfferSendWorkerView,InvitationResponseView,WorkRequestCopyView
 )
 from recruiting.views.workers import (
-     WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,EditWorkExperienceView,DeleteWorkExperienceView,WorkerEditView,WorkerDeleteView,EditUserPreferenceView,EditLanguageProficiencyView,EditDocumentsView,DeleteAllWorkerInfoView,WorkerEditView,WorkerDeleteView,FilteredWorkersAjaxView,SendOfferView,CreateWorkExperienceView, WorkExperienceDetailsView,ExportWorkerDetailsView,UploadDocumentsView,UploadLanguageProficiencyView,UploadUserPreferenceView
+     WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,
+     EditWorkExperienceView,DeleteWorkExperienceView,WorkerEditView,WorkerDeleteView,EditUserPreferenceView,EditLanguageProficiencyView,EditDocumentsView,DeleteAllWorkerInfoView,WorkerEditView,WorkerDeleteView,
+     FilteredWorkersAjaxView,SendOfferView,CreateWorkExperienceView, 
+     WorkExperienceDetailsView,ExportWorkerDetailsView,UploadDocumentsView,
+     UploadLanguageProficiencyView,UploadUserPreferenceView
 )
 
 
@@ -55,10 +61,12 @@ urlpatterns = [
     path('job-orders/create/',
          WorkRequestCreateView.as_view(),
          name='workrequest_create'),
-     path('job-order/edit/<str:pk>/', 
+    path('job-order/edit/<str:pk>/', 
          WorkRequestEditView.as_view(),
          name='workrequest_edit'),
-
+    path('job-order/copy/<str:pk>/', 
+         WorkRequestCopyView.as_view(),
+         name='workrequest_copy'),
     path('job-order/delete/<str:pk>/',
          WorkRequestDeleteView.as_view(), 
          name='workrequest_delete'),

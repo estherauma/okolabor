@@ -593,6 +593,27 @@ class WorkRequestEditView(LoginRequiredMixin, View):
                     messages.error(request, f'{field}: {error}')
             return redirect('recruiting_web:workrequest_list')
 
+
+class WorkRequestCopyView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        work_request = get_object_or_404(WorkRequests, pk=pk)
+        form = WorkRequestForm(request.POST)
+        print('work_request', work_request.name)
+
+        if form.is_valid():
+            print(form.cleaned_data)
+            new_work_request = form.save(commit=False)
+
+            if work_request.name.strip().lower() == form.cleaned_data['name'].strip().lower():
+                new_work_request.name = form.cleaned_data['name'] + " (Copy)"
+            new_work_request.save()
+            return redirect('recruiting_web:workrequest_detail', pk=new_work_request.pk)
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field}: {error}')
+            return redirect('recruiting_web:workrequest_detail', pk=work_request.pk)
+        
 class WorkRequestDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         user = request.user
@@ -942,6 +963,8 @@ class WorkRequestDetailView(View):
             'licensed_vehicle_operation_types',
         ]
 
+        employers = Organization.objects.filter(type='employer')
+
         context = {
             'workrequest': work_request,
             'roles': roles_qs,
@@ -968,6 +991,7 @@ class WorkRequestDetailView(View):
             'role_Meals_form': role_Meals_form,
             'role_add_form': role_add_form,
             'dynamic_fields': dynamic_fields,
+            'employers': employers,
             'breadcrumbs' :[
                         {'name': 'Home', 'url': reverse('index')},
                         {'name': 'Job Orders', 'url': reverse('recruiting_web:workrequest_list')},

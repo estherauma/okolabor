@@ -10,6 +10,69 @@
 <div class="row">
   <!-- left hand side -->
   <div class="col-md-9">
+    <!-- TODO:Translate button -->
+     <div>
+        <button 
+        class="btn btn-sm yellow-button"
+         data-bs-toggle="modal"
+         data-bs-target="#copyModal">
+          {% translate "jobOrderDetailsCopyJobOrder" %}
+        </button>
+      </div>
+
+     <!-- Copy modal -->
+    <div class="modal fade" id="copyModal" tabindex="-1" aria-labelledby="copyModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form method="POST" action="{% url 'recruiting_web:workrequest_copy' workrequest.id %}">
+            {% csrf_token %}
+            <div class="modal-header">
+              <h5 class="modal-title" id="copyModalLabel{{ workrequest.id }}">{% translate "jobOrderListEditWorkRequest" %}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'jobOrderListClose'%}"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="name{{ workrequest.id }}" class="form-label">{% translate "jobOrderListName" %}</label>
+                <input type="text" class="form-control" id="name{{ workrequest.id }}" name="name" value="{{ workrequest.name }}">
+              </div>
+              <div class="mb-3">
+                <label for="start_date{{ workrequest.id }}" class="form-label">{% translate "jobOrderListStartDate" %}</label>
+                <input type="date" class="form-control" id="start_date{{ workrequest.id }}" name="start_date" value="{{ workrequest.start_date|date:'Y-m-d' }}">
+              </div>
+              <div class="mb-3">
+                <label for="end_date{{ workrequest.id }}" class="form-label">{% translate "jobOrderListEndDate" %}</label>
+                <input type="date" class="form-control" id="end_date{{ workrequest.id }}" name="end_date" value="{{ workrequest.end_date|date:'Y-m-d' }}">
+              </div>
+              <div class="mb-3">
+                <label for="required_workers{{ workrequest.id }}" class="form-label">{% translate "jobOrderListRequiredWorkers" %}</label>
+                <input type="number" class="form-control" id="required_workers{{ workrequest.id }}" name="required_workers" value="{{ workrequest.required_workers }}">
+              </div>
+              <div class="mb-3">
+                <label for="employer{{ workrequest.id }}" class="form-label">{% translate "jobOrderListEmployer" %}</label>
+                <select class="form-control" id="employer{{ workrequest.id }}" name="employer">
+                  {% for employer in employers %}
+                    <option value="{{ employer.id }}" {% if workrequest.employer.id == employer.id %}selected{% endif %}>{{ employer.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="status{{ workrequest.id }}" class="form-label">{% translate "jobOrderListStatus" %}</label>
+                <select class="form-control" id="status{{ workrequest.id }}" name="status">
+                  {% for choice in workrequest.STATUS_CHOICES %}
+                    <option value="{{ choice.0 }}" {% if workrequest.status == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                  {% endfor %}
+                </select>
+                </div>
+              </div>
+            <div class="modal-footer">
+              <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'jobOrderListCancel' %}</button>
+              <button type="submit" class="btn light-green-button">{% translate 'jobOrderListSave' %}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    
     <!-- Job order overview card -->
     <div class="card">
       <div class="card-header" style="background-color: #7DBF96;">
