@@ -92,6 +92,7 @@ from recruiting.models import (
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from django.forms.models import model_to_dict
 
 
 class EmployerListView(View):
@@ -598,8 +599,10 @@ class WorkRequestCopyView(LoginRequiredMixin, View):
     def post(self, request, pk):
         work_request = get_object_or_404(WorkRequests, pk=pk)
         form = WorkRequestForm(request.POST)
-        print('work_request', work_request.name)
-
+        roles = work_request.roles.filter(
+                deleted_at__isnull=True,
+            )
+     
         if form.is_valid():
             print(form.cleaned_data)
             new_work_request = form.save(commit=False)
@@ -607,6 +610,13 @@ class WorkRequestCopyView(LoginRequiredMixin, View):
             if work_request.name.strip().lower() == form.cleaned_data['name'].strip().lower():
                 new_work_request.name = form.cleaned_data['name'] + " (Copy)"
             new_work_request.save()
+
+            for role in roles:
+                role_data = model_to_dict(role)
+                role_data.pop('id', None)
+                role_data['work_request'] = new_work_request
+                new_role = Role.objects.create(**role_data)
+
             return redirect('recruiting_web:workrequest_detail', pk=new_work_request.pk)
         else:
             for field, errors in form.errors.items():
