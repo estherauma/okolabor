@@ -40468,6 +40468,39 @@ th:last-child, td:last-child {
     padding-bottom: 0;
 }
 
+/* Fix vertical alignment for dynamic filter rows (select filter fields) */
+.filter-row.row.align-items-center {
+    align-items: flex-start !important;
+}
+
+.filter-row .col-md-4 .form-group,
+.filter-row .col-md-6 .form-group,
+.filter-row .col .form-group {
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 100%;
+}
+
+.filter-row .form-group .form-label {
+    margin-bottom: 8px;
+    height: auto;
+    line-height: 1.2;
+}
+
+.filter-row .form-group select,
+.filter-row .form-group input {
+    margin-top: auto;
+}
+
+/* Ensure close button aligns with filter fields */
+.filter-row .col-auto {
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 0;
+}
+
 /* .mt-30{
     margin-top: 30vh !important;
 }
