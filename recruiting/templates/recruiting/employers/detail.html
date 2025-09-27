@@ -15,16 +15,14 @@
 <div class="page-header">
   <div>
   </div>
-  <button class="btn dark-green-button" data-bs-toggle="modal" data-bs-target="#assignContactModal"
-    id="assignContactBtn" data-employer-id="{{ employer.id }}">
-    {% translate "recruiterDetailAssignUser" %}
-  </button>
+  
 </div>
 
 <div class="row">
   <div class="col-md-3">
     <div class="card">
       <div class="card-body">
+        
          <h3> {% translate "employerDetailsEmployerDetails" %} </h3>
           <ul class="list-group no-margin">
               <li class="list-group-item">
@@ -71,7 +69,13 @@
         <div class="card">
           <div class="card-body">
             <div class="table-responsive">
+              <div class="d-flex justify-content-between align-items-center mb-3">
                 <h3>{% translate "employerDetailsEmployerContacts"%}</h3>
+                <button class="btn dark-green-button" data-bs-toggle="modal"  data-bs-target="#assignContactModal" id="assignContactBtn" data-employer-id="{{ employer.id }}">
+      {% translate "recruiterDetailAssignUser" %}
+    </button>
+              </div>
+                
                 <table class="table text-nowrap border-bottom" id="employerUsers">
                     <thead>
                         <tr>
@@ -134,7 +138,12 @@
         <div class="card">
           <div class="card-body">
             <div class="table-responsive">
-                <h3>{% translate "employerDetailsWorkRequests"%}</h3>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h3>{% translate "employerDetailsWorkRequests"%}</h3>
+                  <a href="{% url 'recruiting_web:workrequest_create'  %}" class="btn dark-green-button ms-auto">
+                    {% translate "employerDetailsAddJobOrder" %}
+                  </a>
+                </div>
                 <table class="table text-nowrap border-bottom" id="work-requests-list-datatable">
                     <thead>
                         <tr>
@@ -188,7 +197,13 @@
         <div class="col-12 mt-4">
           <div class="card">
             <div class="card-body">
-              <h3>{% translate 'employerDetailsAssignedRecruiters'%}</h3>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>{% translate 'employerDetailsAssignedRecruiters'%}</h3>
+              <a href="{% url 'recruiting_web:workrequest_create'  %}" class="btn dark-green-button ms-auto">
+                    {% translate "employerDetailsAssignRecruiter" %}
+                  </a>
+              </div>
+              
                 <div class="table-responsive">
                     <table class="table text-nowrap border-bottom" id="assigned-orgs-table">
                         <thead>
