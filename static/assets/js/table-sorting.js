@@ -1,6 +1,6 @@
 $(document).ready(function () {
     if ($.fn.DataTable) {
-        $('#basic-datatable, #another-basic-datatable, #work-requests-list-datatable, #datatable-closed, #datatable-in-progress, #datatable-draft, #logs-table').DataTable({
+        $('#basic-datatable, #another-basic-datatable, #work-requests-list-datatable, #datatable-closed, #datatable-in-progress, #datatable-draft, #logs-table, #employerUsers, #assigned-orgs-table').DataTable({
             "ordering": true,
             "order": [],
             "columnDefs": [{

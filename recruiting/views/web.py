@@ -297,7 +297,7 @@ class RecruiterEditView(LoginRequiredMixin, View):
             recruiter.description = request.POST.get('description')
             recruiter.save()
 
-            messages.success(request, _('recruiterAdminListRecruiter "%(recruiter_name)s" editedSuccessfully.') % {'recruiter_name': recruiter.name})
+            # messages.success(request, _('recruiterAdminListRecruiter "%(recruiter_name)s" editedSuccessfully.') % {'recruiter_name': recruiter.name})
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
             return redirect('recruiting_web:recruiter_admin_list')
