@@ -80,7 +80,7 @@
                             <th class="theading-color">{% translate "employerDetailsCPhone"%}</th>
                             <th class="theading-color">{% translate "employerDetailsCCreated"%}</th>
                             <th class="theading-color">{% translate "employerDetailsCIsAdmin"%}</th>
-                            <th class="theading-color">{% translate "employerDetailsCIsActions"%}</th>
+                            <!-- <th class="theading-color">{% translate "employerDetailsCIsActions"%}</th> -->
                         </tr>
                     </thead>
                     <tbody>
@@ -101,7 +101,23 @@
                                 {% translate "webCommonNo" %}
                               {% endif %}
                             </td>
-                            <td></td>
+                            <!-- <td>
+                              <button
+                                type="button"
+                                class="btn btn-sm yellow-button"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editEmployerModal">
+                                {% translate 'webCommonEdit' %}
+                              </button>
+                              <button
+                                type="button"
+                                class="btn btn-sm red-button ms-2"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteModalManageEmployer{{ user.id }}"
+                                title="{% translate 'webCommonDelete' %}">
+                                {% translate 'webCommonDelete' %}
+                              </button>
+                            </td> -->
                         </tr>        
                         {% endfor %}
                     </tbody>
