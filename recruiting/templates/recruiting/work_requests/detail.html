@@ -38,13 +38,13 @@
                   {% translate "jobOrderDetailsShortlist" %}
                 </th>
                 <th>
-                  {% translate "jobOrderDetailsOfferSentPending" %}
+                  {% translate "jobOrderDetailsOfferSent" %}
                 </th>
                 <th>
-                  {% translate "jobOrderDetailsConfirmed" %}
+                  {% translate "jobOrderDetailsOfferAccepted" %}
                 </th>
                 <th>
-                  {% translate "jobOrderDetailsRejected" %}
+                  {% translate "jobOrderDetailsOffersRejected" %}
                 </th>
               </tr>
             </thead>
@@ -58,16 +58,24 @@
                   {{ role.number_of_required_workers }}
                 </td>
                 <td>
-                  {{ role.shortlist_count }}
+                  <a href="{% url 'recruiting_web:workers' %}?role={{ role.id }}&work_request={{ workrequest.id }}#tab2">
+                    {{ role.shortlist_count }}
+                  </a>
                 </td>
                 <td>
-                  {{ role.offersent_count }}
+                  <a href="{% url 'recruiting_web:workers' %}?role={{ role.id }}&work_request={{ workrequest.id }}#tab3">
+                    {{ role.offersent_count }}
+                  </a>
                 </td>
                 <td>
-                  {{ role.confirmed_count }}
+                    <a href="{% url 'recruiting_web:workers' %}?role={{ role.id }}&work_request={{ workrequest.id }}#tab4">
+                    {{ role.confirmed_count }}
+                    </a>
                 </td>
                 <td>
-                  {{ role.rejected_count }}
+                    <a href="{% url 'recruiting_web:workers' %}?role={{ role.id }}&work_request={{ workrequest.id }}#tab5">
+                    {{ role.rejected_count }}
+                    </a>
                 </td>
               </tr>
               {% empty %}
@@ -971,5 +979,6 @@
     }
   });
 </script>
-{% endblock scripts %}
 
+
+{% endblock scripts %}
