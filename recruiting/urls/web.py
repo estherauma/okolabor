@@ -142,7 +142,7 @@ urlpatterns = [
     path('recruiter/todo/',
          RecruiterTodoView.as_view(),
          name='recruiter_todo'),
-    path('recruiter/messages/',
+    path('messages/',
          OkoMessageListView.as_view(),
          name='recruiter_messages'),
     path('recruiter/create-message/',
