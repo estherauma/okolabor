@@ -111,7 +111,7 @@
                                     {% endfor %}
 
                                 <div class="col-auto">
-                                    <div class="col-auto">
+                                    <div class="col-auto removeFilterButton2">
                                                 <button class="btn close " type="button" onclick="removeForm(this)">
                                                     &times;
                                                 </button>
@@ -123,7 +123,7 @@
             
                     <!-- Add Another Filter Button -->
                     <button class="btn light-green-button min-content-width mt-3" type="button" onclick="addAnotherExperience()">
-                        {% translate "workersListTabsAddAnotherExperience" %}
+                     <i class="fe fe-plus"></i>   {% translate "workersListTabsAddAnotherExperience" %}
                     </button>
             
                     <!-- Additional Filters Section (Previously separate) -->
@@ -202,7 +202,7 @@
                             </div>
                         </div>
                         {% endfor %}
-                        <div class="col-auto">
+                        <div class="col-auto removeFilterButton2">
                             <button class="btn close" type="button" onclick="removeForm(this)">
                                   &times;
                             </button>
@@ -673,7 +673,7 @@ function addRandomFilter() {
             </div>
         </div>
         <div class="col-md-6" id="extra-fields-${uniqueId}"></div>
-        <div class="col-auto mt-3">
+        <div class="col-auto mt-3 removeFilterButton">
             <button class="btn btn-sm close mt-2" type="button" onclick="removeFilterRow(this)">
                 &times;
             </button>
