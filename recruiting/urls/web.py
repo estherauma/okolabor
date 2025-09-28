@@ -145,7 +145,7 @@ urlpatterns = [
     path('messages/',
          OkoMessageListView.as_view(),
          name='recruiter_messages'),
-    path('recruiter/create-message/',
+    path('create-message/',
          OkoMessageCreateView.as_view(),
          name='recruiter_create_message'
          ),
