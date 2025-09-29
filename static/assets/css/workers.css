@@ -193,7 +193,7 @@
     width: min-content;
 }
 #workRequestRoleFilter{
-    gap: 1rem;
+    gap: 0.5rem;
     justify-content: flex-start ;
     margin-top: 10px;
     margin-left: 0.5px ;
@@ -202,7 +202,12 @@
     margin-right: 5px;
 
 }
-  
+  #workRequestRoleFilter> .col-lg-6{
+    max-width: 48%;
+  }
+  #workRequestRoleFilter> .col-12{
+    max-width: 100%;
+  }
   @media (max-width: 768px) {
     .show-text {
       font-size: x-small; /* Smaller devices (tablets) */
@@ -248,11 +253,6 @@
     .col-oko-xxl-4  {
         flex: 0 0 auto;
         max-width: 33.33333333%;
-    }
-    .col-lg-4 {
-        flex: 0 0 auto;
-        max-width: 48% !important;
-
     }
 
     #workRequestRoleFilter{
