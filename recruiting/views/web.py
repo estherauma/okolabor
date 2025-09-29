@@ -596,6 +596,14 @@ class WorkRequestEditView(LoginRequiredMixin, View):
 
 
 class WorkRequestCopyView(LoginRequiredMixin, View):
+    @staticmethod
+    def copy_related_object(obj, model_class, new_role):
+        if obj and getattr(obj, 'deleted_at', None) is None:
+            data = model_to_dict(obj)
+            data.pop('id', None)
+            data['role'] = new_role
+            model_class.objects.create(**data)
+
     def post(self, request, pk):
         work_request = get_object_or_404(WorkRequests, pk=pk)
         form = WorkRequestForm(request.POST)
@@ -616,24 +624,13 @@ class WorkRequestCopyView(LoginRequiredMixin, View):
                 role_data.pop('id', None)
                 role_data['work_request'] = new_work_request
                 new_role = Role.objects.create(**role_data)
-                # Copy hours if exists
-                if hasattr(role, 'hours') and role.hours.deleted_at is None:
-                    hours_data = model_to_dict(role.hours)
-                    hours_data.pop('id', None)
-                    hours_data['role'] = new_role
-                    Hours.objects.create(**hours_data)
-
-                if hasattr(role, 'employment_location')  and role.employment_location.deleted_at is None:
-                    employment_location_data = model_to_dict(role.employment_location)
-                    employment_location_data.pop('id', None)
-                    employment_location_data['role'] = new_role
-                    EmploymentLocation.objects.create(**employment_location_data)
-
-                if hasattr(role, 'housing_information') and role.housing_information.deleted_at is None:
-                    housing_information_data = model_to_dict(role.housing_information)
-                    housing_information_data.pop('id', None)
-                    housing_information_data['role'] = new_role
-                    HousingInformation.objects.create(**housing_information_data)
+                
+                self.copy_related_object(getattr(role, 'hours', None), Hours, new_role)
+                self.copy_related_object(getattr(role, 'employment_location', None), EmploymentLocation, new_role)
+                self.copy_related_object(getattr(role, 'housing_information', None), HousingInformation, new_role)
+                self.copy_related_object(getattr(role, 'wages', None), Wages, new_role)
+                self.copy_related_object(getattr(role, 'meal_provision', None), MealProvision, new_role)
+                self.copy_related_object(getattr(role, 'qualifications', None), Qualification, new_role)
 
             return redirect('recruiting_web:workrequest_detail', pk=new_work_request.pk)
         else:
