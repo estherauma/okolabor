@@ -145,8 +145,7 @@ class UserListView(LoginRequiredMixin, View):
 
         token = PasswordResetTokenGenerator().make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
-        current_site = get_current_site(request)
-        site_url = f"{request.scheme}://{current_site.domain}"
+        site_url = "https://test.okolabor.com"
         invite_link = f"{site_url}{reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})}"
 
         email_subject = _("inviteEmailYou'reInvited!")
