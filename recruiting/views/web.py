@@ -2296,13 +2296,10 @@ class InvalidCurpsView(View):
         curp_errors = []
 
         if os.path.exists(log_file):
-            print('exists')
             with open(log_file, "r") as f:
                 for line in f:
-                  
                     if "CURP" in line:  # Only keep CURP-related logs
                         parts = line.split(" - ", 3)  # Split into [timestamp, level, message...]
-                        print(len(parts))
                         if len(parts) >= 3:
                             timestamp = parts[0].strip()
                             level = parts[1].strip()
@@ -2312,5 +2309,13 @@ class InvalidCurpsView(View):
                                 "level": level,
                                 "message": message
                             })
-        return render(request, "invalid_curps.html", {"curp_errors": curp_errors})
+        breadcrumbs = [
+            {"name": _("Home"), "url": reverse("index")},
+            {"name": _("Invalid CURPs"), "url": None}
+        ]
+        
+        return render(request, "invalid_curps.html", {
+            "curp_errors": curp_errors,
+            "breadcrumbs": breadcrumbs
+        })
         
