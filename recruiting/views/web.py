@@ -2310,8 +2310,8 @@ class InvalidCurpsView(View):
                                 "message": message
                             })
         breadcrumbs = [
-            {"name": _("Home"), "url": reverse("index")},
-            {"name": _("Invalid CURPs"), "url": None}
+            {"name": _("invalidCurpsHome"), "url": reverse("index")},
+            {"name": _("invalidCurpsInvalidCURPs"), "url": None}
         ]
         
         return render(request, "invalid_curps.html", {
