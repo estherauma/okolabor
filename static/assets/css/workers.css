@@ -156,8 +156,52 @@
 .bolder-text{
     font-weight: bold;
 }
+.close{
+    color: #000000 !important;
+    background-color: transparent !important;
+    font-size: 1.5rem !important;
+    font-weight: 400;
+}
 
+#toggle-sign-btn{
+    background-color:#eaedcc; 
+    cursor: pointer; 
+    font-size: 1.3rem;
+}
+.advanced-filter-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.8rem;
+    background-color: #eaedcc;
+    cursor: pointer;
+}
+.advanced-filter-title{
+    margin:0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--oko-mid-green);
+}
 
+#workRequestRoleFilter .job-order-wrapper,
+#workRequestRoleFilter .role-wrapper {
+    padding: 0 !important;
+}
+.job-order-wrapper .select2{
+    flex: 1 1 0;
+    margin-right: 10px;
+}
+.min-content-width {
+    width: min-content;
+}
+#workRequestRoleFilter{
+    gap: 1rem;
+    justify-content: flex-start ;
+    margin-top: 10px;
+    margin-left: 0.5px ;
+}
+.job-order-wrapper>label, .role-wrapper>label{
+    margin-right: 5px;
+
+}
   
   @media (max-width: 768px) {
     .show-text {
@@ -196,6 +240,25 @@
     }
 }
 
-.min-content-width {
-    width: min-content;
+@media (min-width: 1600px) { /* xxxl large screens */
+    .col-oko-xxl-8  {
+        flex: 0 0 auto;
+        max-width: 66.66666667%;
+    }
+    .col-oko-xxl-4  {
+        flex: 0 0 auto;
+        max-width: 33.33333333%;
+    }
+    .col-lg-3{
+        flex: 0 0 auto;
+        max-width: 48% !important;
+
+    }
+
+    #workRequestRoleFilter{
+      margin-top: 0;
+      justify-content: flex-end !important;
+    }
+
 }
+
