@@ -2287,3 +2287,30 @@ class DeductionEditView(View):
             return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[deduction.role.work_request.pk])}?open_role={deduction.role.id}')
         else:
             return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[deduction.role.work_request.pk])}?open_role={deduction.role.id}')
+
+
+
+class InvalidCurpsView(View):
+    def get(self,request):
+        log_file = os.path.join(settings.BASE_DIR, "logs", "invalid-curps.log")
+        curp_errors = []
+
+        if os.path.exists(log_file):
+            print('exists')
+            with open(log_file, "r") as f:
+                for line in f:
+                  
+                    if "CURP" in line:  # Only keep CURP-related logs
+                        parts = line.split(" - ", 3)  # Split into [timestamp, level, message...]
+                        print(len(parts))
+                        if len(parts) >= 3:
+                            timestamp = parts[0].strip()
+                            level = parts[1].strip()
+                            message = parts[2].strip()
+                            curp_errors.append({
+                                "timestamp": timestamp,
+                                "level": level,
+                                "message": message
+                            })
+        return render(request, "invalid_curps.html", {"curp_errors": curp_errors})
+        
