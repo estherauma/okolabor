@@ -4,7 +4,7 @@ $(document).ready(function () {
 
     // Initialize select2
     workRequestSelect.select2({
-        placeholder: roleSelect.data('placeholder'),
+        placeholder: workRequestSelect.data('placeholder'),
         allowClear: true,
         minimumResultsForSearch: 0
     });

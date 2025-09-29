@@ -224,7 +224,6 @@
                                         {% if selected_work_request %}
                                             <option value="{{ selected_work_request.id }}" selected>{{ selected_work_request.name }}</option>
                                         {% endif %}
-                                        <option  value="{{ work_request.id }}"> This is a long option test. le us see if it will wrap to the next line</option>
                                         {% for work_request in work_requests %}
                                             {% if not selected_work_request or work_request.id != selected_work_request.id %}
                                                 <option  value="{{ work_request.id }}">{{ work_request.name }}</option>
