@@ -219,7 +219,7 @@
                                     {% translate "workersListWorkRequest" %}
                                 </label>
                             
-                                    <select class="form-select form-select-sm" id="modal_work_request" name="work_request">
+                                    <select class="form-select form-select-sm" id="modal_work_request" name="work_request" data-placeholder="{% translate 'workersListSelectAWorkRequest' %}">
                                         <option value="">{% translate "workersListSelectAWorkRequest" %}</option>
                                         {% if selected_work_request %}
                                             <option value="{{ selected_work_request.id }}" selected>{{ selected_work_request.name }}</option>
@@ -239,7 +239,7 @@
                                 <label for="modal_role" class="form-label gray-color">
                                     {% translate "workersListRole" %}
                                 </label>
-                                <select class="form-select form-select-sm" id="modal_role" name="role">
+                                <select class="form-select form-select-sm" id="modal_role" name="role" data-placeholder="{% translate 'workersListSelectARole' %}">
                                     <option value="">{% translate "workersListSelectARole" %}</option>
                                     {% if selected_role %}
                                         <option value="{{ selected_role.id }}" selected>{{ selected_role.name }}</option>
@@ -396,8 +396,6 @@ document.addEventListener('DOMContentLoaded', () => {
 <script>
 
 $(document).ready(function () {
-      $('#modal_work_request').select2();
-    $('#modal_role').select2();
   $.fn.dataTable.ext.errMode = 'none';
 
   const table = $('#basic-datatable-workers').DataTable();
