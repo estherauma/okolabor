@@ -625,6 +625,13 @@ class WorkRequestCopyView(LoginRequiredMixin, View):
                 role_data['work_request'] = new_work_request
                 new_role = Role.objects.create(**role_data)
                 
+                deductions = role.deductions.filter(deleted_at__isnull=True)
+                for deduction in deductions:
+                    data = model_to_dict(deduction)
+                    data.pop('id', None)
+                    data['role'] = new_role
+                    Deduction.objects.create(**data)
+
                 self.copy_related_object(getattr(role, 'hours', None), Hours, new_role)
                 self.copy_related_object(getattr(role, 'employment_location', None), EmploymentLocation, new_role)
                 self.copy_related_object(getattr(role, 'housing_information', None), HousingInformation, new_role)
