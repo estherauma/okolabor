@@ -200,7 +200,6 @@
 }
 .job-order-wrapper>label, .role-wrapper>label{
     margin-right: 5px;
-
 }
   #workRequestRoleFilter> .col-lg-6{
     max-width: 48%;
@@ -243,21 +242,27 @@
     .text {
         max-width: 150px;
     }
+    .job-order-wrapper, .role-wrapper{
+        flex: 0 0 auto;
+        max-width: 48% !important
+    }
 }
 
-@media (min-width: 1600px) { /* xxxl large screens */
-    .col-oko-xxl-8  {
-        flex: 0 0 auto;
-        max-width: 66.66666667%;
-    }
-    .col-oko-xxl-4  {
-        flex: 0 0 auto;
-        max-width: 33.33333333%;
-    }
-
+@media (min-width: 1800px) { /* xxxl large screens */
     #workRequestRoleFilter{
       margin-top: 0;
       justify-content: flex-end !important;
+      flex: 0 0 auto;
+      max-width: 45%
+    }
+
+    .workers-tabs {
+        flex: 0 0 auto;
+        max-width: 55% 
+    }
+    .job-order-wrapper, .role-wrapper{
+        flex: 0 0 auto;
+        max-width: 48%
     }
 
 }
