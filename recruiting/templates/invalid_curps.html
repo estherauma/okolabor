@@ -38,9 +38,9 @@
                     <table class="table text-nowrap border-bottom" id="invalidCurpsTable">
                         <thead>
                             <tr>
-                                <th class="theading-color">{% translate "Time Stamp" %}</th>
-                                <th class="theading-color">{% translate "Log Level" %}</th>
-                                <th class="theading-color">{% translate "Message" %}</th>
+                                <th class="theading-color">{% translate "invalidCurpsTimeStamp" %}</th>
+                                <th class="theading-color">{% translate "invalidCurpsLogLevel" %}</th>
+                                <th class="theading-color">{% translate "invalidCurpsMessage" %}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -61,7 +61,10 @@
         </div>
     </div>
 </div>
-
+{% endblock body %}
+{% block scripts %}
+<!-- INTERNAL SELECT2 JS -->
+<script src="{% static ''%}assets/plugins/select2/select2.full.min.js"></script>
 <!-- DATA TABLE JS-->
 <script src="{% static ''%}assets/plugins/datatable/js/jquery.dataTables.min.js"></script>
 <script src="{% static ''%}assets/plugins/datatable/js/dataTables.bootstrap5.js"></script>
@@ -85,4 +88,4 @@
         });
     });
 </script>
-{% endblock%}
+{% endblock scripts%}
