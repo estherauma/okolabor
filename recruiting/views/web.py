@@ -641,7 +641,7 @@ class WorkRequestCopyView(LoginRequiredMixin, View):
                 workers = User.objects.filter(groups__name='worker').distinct().order_by('-created_at')
                 assignments = [
                                 WorkAssignment(
-                                    work_request=work_request,
+                                    work_request=new_work_request,
                                     role=role,
                                     worker=worker,
                                     status='assigned'
