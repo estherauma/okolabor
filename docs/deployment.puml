@@ -24,41 +24,17 @@ node "External Services" {
     artifact "Okolabor CMS API"
 }
 
-node "CI/CD Pipeline (CircleCI)" {
-    artifact "Test & Lint Job\n(cimg/python, cimg/postgres, redis)"
-    artifact "Deploy Job\n(cimg/python)"
-}
-
 node "Production Server" {
     artifact "Deployed Django Backend"
 }
 
 ' Connections
-"Client Device" --> "Application Server" : HTTP/HTTPS
+"Client Device" --> "Application Server" : HTTPS
 "Application Server" --> "Database Server" : SQL
 "Application Server" --> "Cache Server" : Cache Queries
-"Application Server" --> "External Services" : API Calls / HTTP Requests
+"Application Server" --> "External Services" : API Calls / HTTPS Requests
 
-' CI/CD connections
-"CI/CD Pipeline (CircleCI)" --> "Application Server" : Deploy
-"CI/CD Pipeline (CircleCI)" --> "Test & Lint Job" 
-"CI/CD Pipeline (CircleCI)" --> "Deploy Job"
-
-
-"Deploy Job" --> "Production Server" : SSH Deploy
-
-note right of "Deploy Job"
-  Runs only on branches:
-  - main
-  - staging
-  - dev
-end note
-
-note right of "Test & Lint Job\n(cimg/python, cimg/postgres, redis)"
-  Uses images:
-  - cimg/python:3.10.1
-  - cimg/postgres:14.1
-  - redis:latest
-end note
+' Deployment relation
+"Application Server" --> "Production Server" : Runs on
 
 @enduml
