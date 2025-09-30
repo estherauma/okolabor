@@ -7,7 +7,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% translate "inviteEmailDocument" %}</title>
 </head>
-<body style="padding: 20px;">
+<body style="margin: 0; padding: 0; background-color: #7DBF96; font-family: Arial, sans-serif; color: #ffffff;">
+
+  <!-- Centered container -->
+  <div style="max-width: 600px; margin: 40px auto; padding: 40px 20px; background-color: #ffffff; color: #333333; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
 
     <!-- Logo -->
     <div style="text-align: center; margin-bottom: 30px;">
@@ -29,7 +32,7 @@
     </p>
 
     <!-- Call-to-Action Button -->
-    <p>
+    <p style="margin: 30px 0;">
       <a href="{{ invite_link }}" style="background-color: #7DBF96; color: #ffffff; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 4px; display: inline-block;">
         {% translate "inviteEmailUpdateYourPassword" %}
       </a>
@@ -41,10 +44,11 @@
       {% translate "inviteEmailYourTeam" %}
     </p>
 
-
-  <!-- Fallback background (some clients show outer body) -->
-  <div style="font-size: 12px; ">
+    <!-- Fallback background (some clients show outer body) -->
+  <div style="text-align: center; font-size: 12px; margin-top: 20px;">
     © {{ current_year }} Okolabor
+  </div>
+
   </div>
 
 </body>
