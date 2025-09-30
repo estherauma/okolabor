@@ -34,7 +34,7 @@ from common.logger import AppLogger
 from django.contrib.auth import get_user_model
 from common.firebase_utils import send_push_notification
 from django.utils import translation
-
+from django.db.models.functions import Lower
 
 
 
@@ -272,7 +272,7 @@ class WorkerListView(View):
 
         context = {
             'workers': workers,
-            'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
+            'work_requests': WorkRequests.objects.filter(status='Open').order_by(Lower('name')).prefetch_related('roles'),
             'form': form,
             'work_assign_form': work_assign_form,
             'filter_form': filter_form,

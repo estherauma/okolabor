@@ -368,5 +368,17 @@ $(document).ready(function () {
     }
 });
 </script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    let hash = window.location.hash;
+    if (hash) {
+      let tabTrigger = document.querySelector(`[data-bs-toggle="tab"][href="${hash}"]`);
+      if (tabTrigger) {
+        let tab = new bootstrap.Tab(tabTrigger);
+        tab.show();
+      }
+    }
+  });
+</script>
 
 {% endblock %}

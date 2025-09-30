@@ -298,7 +298,7 @@ class RecruiterEditView(LoginRequiredMixin, View):
             recruiter.description = request.POST.get('description')
             recruiter.save()
 
-            messages.success(request, _('recruiterAdminListRecruiter "%(recruiter_name)s" editedSuccessfully.') % {'recruiter_name': recruiter.name})
+            # messages.success(request, _('recruiterAdminListRecruiter "%(recruiter_name)s" editedSuccessfully.') % {'recruiter_name': recruiter.name})
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
             return redirect('recruiting_web:recruiter_admin_list')
@@ -2353,3 +2353,35 @@ class DeductionEditView(View):
             return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[deduction.role.work_request.pk])}?open_role={deduction.role.id}')
         else:
             return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[deduction.role.work_request.pk])}?open_role={deduction.role.id}')
+
+
+
+class InvalidCurpsView(View):
+    def get(self,request):
+        log_file = os.path.join(settings.BASE_DIR, "logs", "invalid-curps.log")
+        curp_errors = []
+
+        if os.path.exists(log_file):
+            with open(log_file, "r") as f:
+                for line in f:
+                    if "CURP" in line:  # Only keep CURP-related logs
+                        parts = line.split(" - ", 3)  # Split into [timestamp, level, message...]
+                        if len(parts) >= 3:
+                            timestamp = parts[0].strip()
+                            level = parts[1].strip()
+                            message = parts[2].strip()
+                            curp_errors.append({
+                                "timestamp": timestamp,
+                                "level": level,
+                                "message": message
+                            })
+        breadcrumbs = [
+            {"name": _("invalidCurpsHome"), "url": reverse("index")},
+            {"name": _("invalidCurpsInvalidCURPs"), "url": None}
+        ]
+        
+        return render(request, "invalid_curps.html", {
+            "curp_errors": curp_errors,
+            "breadcrumbs": breadcrumbs
+        })
+        
