@@ -642,7 +642,7 @@ class WorkRequestCopyView(LoginRequiredMixin, View):
                 assignments = [
                                 WorkAssignment(
                                     work_request=new_work_request,
-                                    role=role,
+                                    role=new_role,
                                     worker=worker,
                                     status='assigned'
                                 ) for worker in workers
