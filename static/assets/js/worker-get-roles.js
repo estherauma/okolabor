@@ -4,8 +4,13 @@ $(document).ready(function () {
 
     // Initialize select2
     workRequestSelect.select2({
-        placeholder: "Search for job orders...",
-        width: '59%',
+        placeholder: workRequestSelect.data('placeholder'),
+        allowClear: true,
+        minimumResultsForSearch: 0
+    });
+
+    roleSelect.select2({
+        placeholder: roleSelect.data('placeholder'),
         allowClear: true,
         minimumResultsForSearch: 0
     });
@@ -34,7 +39,8 @@ $(document).ready(function () {
                     return response.json();
                 })
                 .then(data => {
-                    data.roles.forEach(role => {
+                    const sortedRoles = data.roles.sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }));
+                    sortedRoles.forEach(role => {
                         const option = $('<option></option>')
                             .val(role.id)
                             .text(role.title);
