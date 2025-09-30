@@ -38,13 +38,13 @@
                   {% translate "jobOrderDetailsShortlist" %}
                 </th>
                 <th>
-                  {% translate "jobOrderDetailsOfferSentPending" %}
+                  {% translate "jobOrderDetailsOfferSent" %}
                 </th>
                 <th>
-                  {% translate "jobOrderDetailsConfirmed" %}
+                  {% translate "jobOrderDetailsOfferAccepted" %}
                 </th>
                 <th>
-                  {% translate "jobOrderDetailsRejected" %}
+                  {% translate "jobOrderDetailsOffersRejected" %}
                 </th>
               </tr>
             </thead>
@@ -58,16 +58,24 @@
                   {{ role.number_of_required_workers }}
                 </td>
                 <td>
-                  {{ role.shortlist_count }}
+                  <a href="{% url 'recruiting_web:workers' %}?role={{ role.id }}&work_request={{ workrequest.id }}#tab2">
+                    {{ role.shortlist_count }}
+                  </a>
                 </td>
                 <td>
-                  {{ role.offersent_count }}
+                  <a href="{% url 'recruiting_web:workers' %}?role={{ role.id }}&work_request={{ workrequest.id }}#tab3">
+                    {{ role.offersent_count }}
+                  </a>
                 </td>
                 <td>
-                  {{ role.confirmed_count }}
+                    <a href="{% url 'recruiting_web:workers' %}?role={{ role.id }}&work_request={{ workrequest.id }}#tab4">
+                    {{ role.confirmed_count }}
+                    </a>
                 </td>
                 <td>
-                  {{ role.rejected_count }}
+                    <a href="{% url 'recruiting_web:workers' %}?role={{ role.id }}&work_request={{ workrequest.id }}#tab5">
+                    {{ role.rejected_count }}
+                    </a>
                 </td>
               </tr>
               {% empty %}
@@ -108,20 +116,8 @@
         {% for role in  workrequest.roles.all %}
         <div class="accordion-item mb-2 ">
           <div class="d-flex align-items-center ">
-            <div class="d-flex col-11 col-md-9 align-items-center">
-              <div class="job-title-container">
-                <p class="job-title-label-container">
-                  <button class="btn btn-sm btn-icon light-green-button-outline  edit-btn" data-bs-toggle="modal"
-                    data-bs-target="#editRoleModal{{ role.id }}" title="{% translate 'jobOrderDetailsEdit' %}">
-                    <i class="fa fa-edit"></i>
-                  </button>
-                  <!-- Delete Button -->
-                  <button class="btn btn-sm btn-icon btn-outline-danger delete-btn" data-bs-toggle="modal"
-                    data-bs-target="#deleteRoleModal{{ role.id }}" title="{% translate 'jobOrderDetailsDelete' %}">
-                    <i class="fa fa-trash-alt"></i>
-                  </button>
-                </p>
-                <p>
+            <div class="d-flex col-11 col-md-9 align-items-center py-3">
+                <div>
                   <span class="job-title ">{{ role.title }}</span>
       
                   <a href="{% url 'recruiting_web:workers' %}?role={{role.id}}&work_request={{workrequest.id}} ">
@@ -129,8 +125,17 @@
                       {% translate "jobOrderDetailsAddWorkers" %}
                     </button>
                   </a>
-                </p>
-              </div>
+                </div>
+                <div class="job-title-label-container">
+                  <button class="btn btn-sm btn-icon light-green-button-outline  edit-btn" data-bs-toggle="modal"
+                    data-bs-target="#editRoleModal{{ role.id }}" title="{% translate 'jobOrderDetailsEdit' %}">
+                    {% translate 'webCommonEdit' %} 
+                  </button>
+                  <button class="btn btn-sm btn-icon btn-outline-danger delete-btn" data-bs-toggle="modal"
+                    data-bs-target="#deleteRoleModal{{ role.id }}" title="{% translate 'jobOrderDetailsDelete' %}">
+                    {% translate 'webCommonDelete' %} 
+                  </button>
+                </div>
             </div>
             <!-- accordion collapse icon -->
             <button aria-controls="collapse{{ role.id }}" aria-expanded="false" class="accordion-button collapsed"
@@ -406,15 +411,15 @@
                   {% else %}
                 
                   <!-- Edit Icon -->
-                  <button class="btn btn-sm btn-icon edit-btn" data-bs-toggle="modal" data-bs-target="#edithoursModal{{ role.id }}"
+                  <button class="btn btn-sm yellow-button edit-btn" data-bs-toggle="modal" data-bs-target="#edithoursModal{{ role.id }}"
                     title="{% translate 'webCommonEdit' %}">
-                    <i class="fa fa-edit"></i>
+                    {% translate 'webCommonEdit' %}
                   </button>
                   <!-- Delete Icon -->
-                  <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deletehoursModal{{ role.id }}"
+                  <!-- <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deletehoursModal{{ role.id }}"
                     title="{% translate 'Delete' %}">
                     <i class="fa fa-trash-alt"></i>
-                  </button>
+                  </button> -->
                   {% endif %}
                 </div>
                 {% if role.hours and not role.hours.deleted %}
@@ -484,15 +489,15 @@
                   {% else %}
                 
                   <!-- Edit Icon -->
-                  <button class="btn btn-sm btn-icon edit-btn" data-bs-toggle="modal" data-bs-target="#editWagesModal{{ role.id }}"
+                  <button class="btn btn-sm yellow-button " data-bs-toggle="modal" data-bs-target="#editWagesModal{{ role.id }}"
                     title="{% translate 'webCommonEdit' %}">
-                    <i class="fa fa-edit"></i>
+                    {% translate 'webCommonEdit' %}
                   </button>
-                  <!-- Delete Icon -->
+                  <!-- Delete Icon
                   <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteWagesModal{{ role.id }}"
                     title="{% translate 'webCommonDelete' %}">
                     <i class="fa fa-trash-alt"></i>
-                  </button>
+                  </button> -->
                   {% endif %}
                 </div>
                 {% if role.wages and role.wages.deleted_at is None %}
@@ -588,14 +593,14 @@
                               data-bs-toggle="modal"
                               data-bs-target="#editDeductionModal{{ deduction.id }}"
                               title="{% translate 'webCommonEdit' %}">
-                                <i class="fa fa-edit"></i>
+                                {% translate 'webCommonEdit' %}
                               </button>
                 
-                              <button class="btn btn-sm btn-icon delete-btn"
+                              <button class="btn btn-sm delete-btn"
                               data-bs-toggle="modal"
                               data-bs-target="#deleteDeductionModal{{ deduction.id }}"
                               title="{% translate 'webCommonDelete' %}">
-                              <i class="fa fa-trash-alt"></i>
+                             {% translate 'webCommonDelete' %}
                             </button>
                           </td>
                         </tr>
@@ -627,15 +632,15 @@
                   {% else %}
                 
                   <!-- Edit Icon -->
-                  <button class="btn btn-sm btn-icon edit-btn" data-bs-toggle="modal" data-bs-target="#editQualificationModal{{ role.id }}"
+                  <button class="btn btn-sm yellow-button" data-bs-toggle="modal" data-bs-target="#editQualificationModal{{ role.id }}"
                     title="{% translate 'webCommonEdit' %}">
-                    <i class="fa fa-edit"></i>
+                    {% translate 'webCommonEdit' %}
                   </button>
-                  <!-- Delete Icon -->
+                  <!-- Delete Icon
                   <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteQualificationModal{{ role.id }}"
                     title="{% translate 'webCommonDelete' %}">
                     <i class="fa fa-trash-alt"></i>
-                  </button>
+                  </button> -->
                   {% endif %}
                 </div>
                 {% if role.qualifications and role.qualifications.deleted_at is None %}
@@ -754,15 +759,15 @@
                   {% else %}
                 
                   <!-- Edit Icon -->
-                  <button class="btn btn-sm btn-icon edit-btn" data-bs-toggle="modal" data-bs-target="#editEmployementInformationModal{{ role.id }}"
+                  <button class="btn btn-sm yellow-button" data-bs-toggle="modal" data-bs-target="#editEmployementInformationModal{{ role.id }}"
                     title="{% translate 'webCommonEdit' %}">
-                    <i class="fa fa-edit"></i>
+                      {% translate 'webCommonEdit' %}
                   </button>
-                  <!-- Delete Icon -->
+                  <!-- Delete Icon
                   <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteEmploymentInformationModal{{ role.id }}"
                     title="{% translate 'Delete' %}">
                     <i class="fa fa-trash-alt"></i>
-                  </button>
+                  </button> -->
                   {% endif %}
                 </div>
                 {% if role.employment_location and role.employment_location.deleted_at is None %}
@@ -827,15 +832,15 @@
                   {% else %}
                 
                   <!-- Edit Icon -->
-                  <button class="btn btn-sm btn-icon edit-btn" data-bs-toggle="modal" data-bs-target="#editHousingInformationModal{{ role.id }}"
+                  <button class="btn btn-sm yellow-button" data-bs-toggle="modal" data-bs-target="#editHousingInformationModal{{ role.id }}"
                     title="{% translate 'webCommonEdit' %}">
-                    <i class="fa fa-edit"></i>
+                    {% translate 'webCommonEdit' %}
                   </button>
                   <!-- Delete Icon -->
-                  <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteHousingInformationModal{{ role.id }}"
+                  <!-- <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteHousingInformationModal{{ role.id }}"
                     title="{% translate 'Delete' %}">
                     <i class="fa fa-trash-alt"></i>
-                  </button>
+                  </button> -->
                   {% endif %}
                 </div>
                 {% if role.housing_information and role.housing_information.deleted_at is None %}
@@ -904,15 +909,15 @@
                   {% else %}
                 
                   <!-- Edit Icon -->
-                  <button class="btn btn-sm btn-icon edit-btn" data-bs-toggle="modal" data-bs-target="#editMealProvisionModal{{ role.id }}"
+                  <button class="btn btn-sm yellow-button" data-bs-toggle="modal" data-bs-target="#editMealProvisionModal{{ role.id }}"
                     title="{% translate 'webCommonEdit' %}">
-                    <i class="fa fa-edit"></i>
+                    {% translate 'webCommonEdit' %}
                   </button>
                   <!-- Delete Icon -->
-                  <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteMealProvisionModal{{ role.id }}"
+                  <!-- <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteMealProvisionModal{{ role.id }}"
                     title="{% translate 'Delete' %}">
                     <i class="fa fa-trash-alt"></i>
-                  </button>
+                  </button> -->
                   {% endif %}
                 </div>
                 {% if role.meal_provision and role.meal_provision.deleted_at is  None %}
@@ -974,5 +979,6 @@
     }
   });
 </script>
-{% endblock scripts %}
 
+
+{% endblock scripts %}

@@ -34,7 +34,7 @@ from common.logger import AppLogger
 from django.contrib.auth import get_user_model
 from common.firebase_utils import send_push_notification
 from django.utils import translation
-
+from django.db.models.functions import Lower
 
 
 
@@ -215,8 +215,18 @@ class WorkerListView(View):
                     (max_exp is None or years <= max_exp)):
                     filtered.append(w)
             workers = filtered
-        workers = workers.distinct()
+        
+        # Deduplicate workers by ID using a dictionary comprehension.
+        # If duplicates exist, later workers in the list overwrite earlier ones.
+        # This ensures each worker appears only once while preserving the final ordering.
+        workers = list({w.id: w for w in workers}.values())
         worker_data = []
+        
+        # Initialize years_of_experience to 0 as a default.
+        # This variable is also passed to the template context to ensure it exists
+        # even if the workers list is empty. Individual worker experience is calculated
+        # per worker and included in worker_data.
+        years_of_experience = 0
         for worker in workers:
             profile_completion = calculate_profile_completion(worker)
             worker_details = get_worker_preferences(worker)
@@ -262,7 +272,7 @@ class WorkerListView(View):
 
         context = {
             'workers': workers,
-            'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
+            'work_requests': WorkRequests.objects.filter(status='Open').order_by(Lower('name')).prefetch_related('roles'),
             'form': form,
             'work_assign_form': work_assign_form,
             'filter_form': filter_form,

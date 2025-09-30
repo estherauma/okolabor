@@ -1,5 +1,6 @@
 # utils.py
 from account.models import UserPreference, User
+from common.logger import AppLogger
 from recruiting.models import WorkAssignment
 from django.conf import settings
 from django.contrib import messages
@@ -32,16 +33,14 @@ def calculate_profile_completion(user):
 
 def get_worker_preferences(user):
         """Fetch town, work experience, proficiency, and location preference from UserPreference"""
-        preference_keys = ["town", "workExperienceList", "english_proficiency", "locationPreference"]
-
+        preference_keys = ["Town", "workExperienceList", "level", "whereYouWantToWork"]
         preferences = UserPreference.objects.filter(user=user, key__in=preference_keys).values("key", "value")
         worker_details = {pref["key"]: pref["value"] for pref in preferences}
-
         return {
-            "town": worker_details.get("town", "Not Provided"),
+            "town": worker_details.get("Town"),
             "work_experience": worker_details.get("workExperienceList", "Not Provided"),
-            "english_proficiency": worker_details.get("english_proficiency", "Not Provided"),
-            "location_preference": worker_details.get("locationPreference", "Not Provided"),
+            "english_proficiency": worker_details.get("level", "Not Provided"),
+            "location_preference": worker_details.get("whereYouWantToWork", "Not Provided"),
         }
 
 

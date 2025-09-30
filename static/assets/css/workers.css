@@ -156,9 +156,57 @@
 .bolder-text{
     font-weight: bold;
 }
+.close{
+    color: #000000 !important;
+    background-color: transparent !important;
+    font-size: 1.5rem !important;
+    font-weight: 400;
+}
 
+#toggle-sign-btn{
+    background-color:#eaedcc; 
+    cursor: pointer; 
+    font-size: 1.3rem;
+}
+.advanced-filter-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.8rem;
+    background-color: #eaedcc;
+    cursor: pointer;
+}
+.advanced-filter-title{
+    margin:0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--oko-mid-green);
+}
 
-  
+#workRequestRoleFilter .job-order-wrapper,
+#workRequestRoleFilter .role-wrapper {
+    padding: 0 !important;
+}
+.job-order-wrapper .select2{
+    flex: 1 1 0;
+    margin-right: 10px;
+}
+.min-content-width {
+    width: min-content;
+}
+#workRequestRoleFilter{
+    gap: 0.5rem;
+    justify-content: flex-start ;
+    margin-top: 10px;
+    margin-left: 0.5px ;
+}
+.job-order-wrapper>label, .role-wrapper>label{
+    margin-right: 5px;
+}
+  #workRequestRoleFilter> .col-lg-6{
+    max-width: 48%;
+  }
+  #workRequestRoleFilter> .col-12{
+    max-width: 100%;
+  }
   @media (max-width: 768px) {
     .show-text {
       font-size: x-small; /* Smaller devices (tablets) */
@@ -194,8 +242,28 @@
     .text {
         max-width: 150px;
     }
+    .job-order-wrapper, .role-wrapper{
+        flex: 0 0 auto;
+        max-width: 48% !important
+    }
 }
 
-.min-content-width {
-    width: min-content;
+@media (min-width: 1800px) { /* xxxl large screens */
+    #workRequestRoleFilter{
+      margin-top: 0;
+      justify-content: flex-end !important;
+      flex: 0 0 auto;
+      max-width: 45%
+    }
+
+    .workers-tabs {
+        flex: 0 0 auto;
+        max-width: 55% 
+    }
+    .job-order-wrapper, .role-wrapper{
+        flex: 0 0 auto;
+        max-width: 48%
+    }
+
 }
+

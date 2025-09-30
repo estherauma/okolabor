@@ -19,51 +19,62 @@
         <form id="editDeductionForm{{ deduction.id }}" method="POST" action="{% url 'recruiting_web:edit_deduction' deduction.id %}">
             {% csrf_token %}
             
-            <!-- Role field (readonly using hidden input technique) -->
-            <div class="mb-3">
-              <label for="id_role{{ deduction.id }}" class="form-label">{% trans "roleDeductionsRole" %}</label>
-              <select id="id_role{{ deduction.id }}" class="form-control" disabled>
-                {% for role in roles %}
-                  <option value="{{ role.id }}" name="role" {% if role.id == deduction.role.id %}selected{% endif %}>
-                    {{ role.title }}
-                  </option>
-                {% endfor %}
-              </select>
-              <!-- Hidden input to include actual value in submission -->
-              <input type="hidden" name="role" value="{{ deduction.role.id }}">
-            </div>
-          
-            <!-- Description field -->
-            <div class="mb-3">
-              <label for="id_description{{ deduction.id }}" class="form-label">{% trans "roleDeductionsDescription" %}</label>
-              <textarea id="id_description{{ deduction.id }}" name="description" class="form-control" required rows="5">{{ deduction.description }}</textarea>
-            </div>
-          
-            <!-- Deduction Amount field -->
-            <div class="mb-3">
-              <label for="id_deduction_amount{{ deduction.id }}" class="form-label">{% trans "roleDeductionsDeductionAmount" %}</label>
-              <input type="number" id="id_deduction_amount{{ deduction.id }}" name="deduction_amount" class="form-control" step="0.01" required value="{{ deduction.deduction_amount }}">
-            </div>
-
-            <div class="mb-3">
-              <label for="id_frequency_of_pay{{ deduction.id }}" class="form-label">
-                  {% trans "joDetailsDeductionsFrequencyOfPay" %}
-                </label>
-                <select id="id_frequency_of_pay{{ deduction.id }}" name="frequency_of_pay" class="form-control" required>
-                  <option value="Hourly" {% if deduction.frequency_of_pay == "Hourly" %}selected{% endif %}>
-                    {% trans "roleWagesHourly" %}
-                  </option>
-                  <option value="Daily" {% if deduction.frequency_of_pay == "Daily" %}selected{% endif %}>
-                    {% trans "roleWagesDaily" %}
-                  </option>
-                  <option value="Weekly" {% if deduction.frequency_of_pay == "Weekly" %}selected{% endif %}>
-                    {% trans "roleWagesWeekly" %}
-                  </option>
-                  <option value="Monthly" {% if deduction.frequency_of_pay == "Monthly" %}selected{% endif %}>
-                    {% trans "roleWagesMonthly" %}
-                  </option>
-                </select>
+            <div class="d-flex flex-column gap-1">
+              <!-- Role field (readonly using hidden input technique) -->
+              <div class="mb-2">
+                <div class="form-group mb-1">
+                  <label for="id_role{{ deduction.id }}" class="form-label mb-1">{% trans "roleDeductionsRole" %}</label>
+                  <select id="id_role{{ deduction.id }}" class="form-control" disabled>
+                    {% for role in roles %}
+                      <option value="{{ role.id }}" name="role" {% if role.id == deduction.role.id %}selected{% endif %}>
+                        {{ role.title }}
+                      </option>
+                    {% endfor %}
+                  </select>
+                  <!-- Hidden input to include actual value in submission -->
+                  <input type="hidden" name="role" value="{{ deduction.role.id }}">
+                </div>
               </div>
+            
+              <!-- Description field -->
+              <div class="mb-2">
+                <div class="form-group mb-1">
+                  <label for="id_description{{ deduction.id }}" class="form-label mb-1">{% trans "roleDeductionsDescription" %}</label>
+                  <textarea id="id_description{{ deduction.id }}" name="description" class="form-control" required rows="4">{{ deduction.description }}</textarea>
+                </div>
+              </div>
+            
+              <!-- Deduction Amount field -->
+              <div class="mb-2">
+                <div class="form-group mb-1">
+                  <label for="id_deduction_amount{{ deduction.id }}" class="form-label mb-1">{% trans "roleDeductionsDeductionAmount" %}</label>
+                  <input type="number" id="id_deduction_amount{{ deduction.id }}" name="deduction_amount" class="form-control" step="0.01" required value="{{ deduction.deduction_amount }}">
+                </div>
+              </div>
+
+              <!-- Frequency of Pay field -->
+              <div class="mb-2">
+                <div class="form-group mb-1">
+                  <label for="id_frequency_of_pay{{ deduction.id }}" class="form-label mb-1">
+                    {% trans "joDetailsDeductionsFrequencyOfPay" %}
+                  </label>
+                  <select id="id_frequency_of_pay{{ deduction.id }}" name="frequency_of_pay" class="form-control" required>
+                    <option value="Hourly" {% if deduction.frequency_of_pay == "Hourly" %}selected{% endif %}>
+                      {% trans "roleWagesHourly" %}
+                    </option>
+                    <option value="Daily" {% if deduction.frequency_of_pay == "Daily" %}selected{% endif %}>
+                      {% trans "roleWagesDaily" %}
+                    </option>
+                    <option value="Weekly" {% if deduction.frequency_of_pay == "Weekly" %}selected{% endif %}>
+                      {% trans "roleWagesWeekly" %}
+                    </option>
+                    <option value="Monthly" {% if deduction.frequency_of_pay == "Monthly" %}selected{% endif %}>
+                      {% trans "roleWagesMonthly" %}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
 
               </form>
             </div>

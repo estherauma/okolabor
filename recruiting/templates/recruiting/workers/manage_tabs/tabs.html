@@ -14,44 +14,6 @@
 .select2-container--default .select2-selection--single {
     background-color: white !important;
 }
-.close{
-    color: #000000 !important;
-    background-color: transparent !important;
-    font-size: 1.5rem !important;
-    font-weight: 400;
-}
-
-#toggle-sign-btn{
-    background-color:#eaedcc; 
-    cursor: pointer; 
-    font-size: 1.3rem;
-}
-.advanced-filter-btn {
-    padding: 0.5rem 1rem;
-    border-radius: 0.8rem;
-    background-color: #eaedcc;
-    cursor: pointer;
-}
-.advanced-filter-title{
-    margin:0;
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--oko-mid-green);
-}
-#workRequestRoleFilter.row{
-    padding: 0 !important;
-    padding-left: 0.5rem !important;
-    justify-content: space-between !important;
-}
-
-#workRequestRoleFilter .job-order-wrapper,
-#workRequestRoleFilter .role-wrapper {
-    padding: 0 !important;
-}
-.job-order-wrapper .select2{
-    flex: 1 1 0;
-    margin-right: 10px;
-}
 </style>
 {% endblock styles %}
 
@@ -111,7 +73,7 @@
                                     {% endfor %}
 
                                 <div class="col-auto">
-                                    <div class="col-auto">
+                                    <div class="col-auto removeFilterButton2">
                                                 <button class="btn close " type="button" onclick="removeForm(this)">
                                                     &times;
                                                 </button>
@@ -123,9 +85,7 @@
             
                     <!-- Add Another Filter Button -->
                     <button class="btn light-green-button min-content-width mt-3" type="button" onclick="addAnotherExperience()">
-                        
-
-                        {% translate "workersListAddAnotherExperience" %}
+                     <i class="fe fe-plus"></i>   {% translate "workersListTabsAddAnotherExperience" %}
                     </button>
             
                     <!-- Additional Filters Section (Previously separate) -->
@@ -204,7 +164,7 @@
                             </div>
                         </div>
                         {% endfor %}
-                        <div class="col-auto">
+                        <div class="col-auto removeFilterButton2">
                             <button class="btn close" type="button" onclick="removeForm(this)">
                                   &times;
                             </button>
@@ -221,7 +181,8 @@
             <div class="card soft-card">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-lg-8">
+                        <!-- Using custom-xxl because the bootstrap xxl is not working as expected -->
+                        <div class="col-12 workers-tabs">
                             <ul class="nav soft-tabs" role="tablist">
                                 <li class="nav-item">
                                     <a href="#tab1" class="nav-link active" data-bs-toggle="tab" role="tab">
@@ -251,21 +212,21 @@
                                 </li>
                             </ul>
                         </div>
-                        <div id="workRequestRoleFilter" class="col-lg-4 row">
+                        <div id="workRequestRoleFilter" class="col-12 row ">
                             <!-- Work Request Dropdown -->
-                            <div class="col-lg-6 d-flex align-items-center gap-1 job-order-wrapper">
+                            <div class=" col-12 d-flex align-items-center  job-order-wrapper  ">
                                 <label for="modal_work_request" class="form-label gray-color">
                                     {% translate "workersListWorkRequest" %}
                                 </label>
                             
-                                    <select class="form-select form-select-sm" id="modal_work_request" name="work_request">
-                                        <option style="width: 157px;" value="">{% translate "workersListSelectAWorkRequest" %}</option>
+                                    <select class="form-select form-select-sm" id="modal_work_request" name="work_request" data-placeholder="{% translate 'workersListSelectAWorkRequest' %}">
+                                        <option value="">{% translate "workersListSelectAWorkRequest" %}</option>
                                         {% if selected_work_request %}
-                                            <option style="width: 157px;" value="{{ selected_work_request.id }}" selected>{{ selected_work_request.name }}</option>
+                                            <option value="{{ selected_work_request.id }}" selected>{{ selected_work_request.name }}</option>
                                         {% endif %}
                                         {% for work_request in work_requests %}
                                             {% if not selected_work_request or work_request.id != selected_work_request.id %}
-                                                <option style="width: 157px;" value="{{ work_request.id }}">{{ work_request.name }}</option>
+                                                <option  value="{{ work_request.id }}">{{ work_request.name }}</option>
                                             {% endif %}
                                         {% endfor %}
                                     </select>
@@ -273,11 +234,11 @@
                             </div>
 
                             <!-- Role Dropdown -->
-                            <div class="col-lg-6 d-flex align-items-center gap-1 role-wrapper">
+                            <div class="col-12 d-flex align-items-center  role-wrapper">
                                 <label for="modal_role" class="form-label gray-color">
                                     {% translate "workersListRole" %}
                                 </label>
-                                <select class="form-control" id="modal_role" name="role">
+                                <select class="form-select form-select-sm" id="modal_role" name="role" data-placeholder="{% translate 'workersListSelectARole' %}">
                                     <option value="">{% translate "workersListSelectARole" %}</option>
                                     {% if selected_role %}
                                         <option value="{{ selected_role.id }}" selected>{{ selected_role.name }}</option>
@@ -675,7 +636,7 @@ function addRandomFilter() {
             </div>
         </div>
         <div class="col-md-6" id="extra-fields-${uniqueId}"></div>
-        <div class="col-auto mt-3">
+        <div class="col-auto mt-3 removeFilterButton">
             <button class="btn btn-sm close mt-2" type="button" onclick="removeFilterRow(this)">
                 &times;
             </button>
