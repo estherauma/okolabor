@@ -612,7 +612,6 @@ class WorkRequestCopyView(LoginRequiredMixin, View):
             )
      
         if form.is_valid():
-            print(form.cleaned_data)
             new_work_request = form.save(commit=False)
 
             if work_request.name.strip().lower() == form.cleaned_data['name'].strip().lower():
