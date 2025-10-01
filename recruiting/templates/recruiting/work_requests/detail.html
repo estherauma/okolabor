@@ -11,9 +11,9 @@
   <!-- left hand side -->
   <div class="col-md-9">
     <!-- TODO:Translate button -->
-     <div>
+     <div class="d-flex justify-content-end mb-3">
         <button 
-        class="btn btn-sm yellow-button"
+         class="btn btn-md light-green-button"
          data-bs-toggle="modal"
          data-bs-target="#copyModal">
           {% translate "jobOrderDetailsCopyJobOrder" %}
@@ -27,7 +27,7 @@
           <form method="POST" action="{% url 'recruiting_web:workrequest_copy' workrequest.id %}">
             {% csrf_token %}
             <div class="modal-header">
-              <h5 class="modal-title" id="copyModalLabel{{ workrequest.id }}">{% translate "jobOrderListEditWorkRequest" %}</h5>
+              <h5 class="modal-title" id="copyModalLabel{{ workrequest.id }}">{% translate "jobOrderDetailsCopyJobOrder" %}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'jobOrderListClose'%}"></button>
             </div>
             <div class="modal-body">
@@ -72,6 +72,11 @@
         </div>
       </div>
     </div>
+    <div id="loader" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(255,255,255,0.7); z-index:9999; align-items:center; justify-content:center;">
+  <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
     
     <!-- Job order overview card -->
     <div class="card">
@@ -1018,7 +1023,12 @@
       </div>
     </div>
   </div>
-  
+  <!-- loader -->
+  <div id="loader">
+    <div class="spinner-border text-primary spinner" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
 </div>
 
 {% endblock body %}
@@ -1040,6 +1050,13 @@
         });
       }
     }
+  // Show loader on copy form submission
+  const copyForm = document.querySelector('#copyModal form');
+  if (copyForm) {
+    copyForm.addEventListener('submit', function() {
+      document.getElementById('loader').style.display = 'flex';
+    });
+  }
   });
 </script>
 
