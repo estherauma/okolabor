@@ -467,9 +467,8 @@
         <div class="row">
           {% endif %}
           <div class="col-md-6 mb-3">
-            <!-- controlslist="nofullscreen" removes conflict with modal -->
-            <video controls  controls controlslist="nofullscreen" class="border w-100 preview-video clickable-media" style="max-height: 200px; cursor: pointer;"
-              data-type="video" data-src="{{ base_url }}{{ doc.path }}" data-bs-toggle="modal" data-bs-target="#mediaModal">
+            <video controls  class="border w-100 preview-video" style="max-height: 200px; cursor: pointer;"
+              data-type="video" data-src="{{ base_url }}{{ doc.path }}">
               <source src="{{ base_url }}{{ doc.path }}" type="video/mp4">
               {% translate "workerDetailsYourBrowserDoesNotSupportTheVideoTag" %}
             </video>
@@ -1089,13 +1088,14 @@
 
           if (type === 'image') {
             mediaContent.innerHTML = `<img src="${src}" class="img-fluid" alt="Media">`;
-          } else if (type === 'video') {
+          } 
+          // else if (type === 'video') {
 
-            mediaContent.innerHTML = `<video controls class="w-100">
-                                              <source src="${src}" type="video/mp4">
-                                              {% translate "workerDetailsYourBrowserDoesNotSupportTheVideoTag"%}
-                                            </video>`;
-          }
+          //   mediaContent.innerHTML = `<video controls class="w-100">
+          //                                     <source src="${src}" type="video/mp4">
+          //                                     {% translate "workerDetailsYourBrowserDoesNotSupportTheVideoTag"%}
+          //                                   </video>`;
+          // }
 
           // Show the modal
           $('#mediaModal').modal('show');
