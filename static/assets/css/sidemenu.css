@@ -378,6 +378,10 @@
 }
 
 .app-sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100vh;
   position: fixed;
   top: 0;
   bottom: 0;
@@ -391,6 +395,8 @@
   -webkit-transition: left 0.2s ease, width 0.2s ease;
   transition: left 0.2s ease, width 0.2s ease;
   border-right: 1px solid #eaedf1;
+  overflow: hidden !important;
+
 }
 
 .app-sidebar::-webkit-scrollbar {
@@ -483,6 +489,7 @@
 }
 
 .side-menu {
+  flex: 1 1 auto;
   margin-bottom: 0px;
   margin-top:40px;
   padding: 0 15px 0 0px;
@@ -1255,9 +1262,13 @@
 }
 
 .sidebar-logo {
-  position: absolute;
-  bottom: -17%; /* Align to the bottom */
-  left: 20%; /* Center horizontally relative to the parent */
+  margin-top: auto;
+  margin-bottom: 24px; 
+  margin-left: auto;
+  margin-right: auto;
+  position: static; 
   transform: translateX(-20%); /* Adjust for the offset of the image's width */
 }
-/*# sourceMappingURL=sidemenu.css.map */
+
+
+
