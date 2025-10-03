@@ -425,7 +425,7 @@
                 {% if role.hours and not role.hours.deleted %}
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsHoursEstimatedWeeklyHours" %}
+                    {% translate "joDetailsHoursEstimatedWeeklyHours" %}:
                   </label>
                   <p> Total weekly hours: {{ role.hours.estimate_weekly_hours}}</p>
                   <p class="mt-2">
@@ -454,14 +454,14 @@
                 
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsHoursOnCall" %}
+                    {% translate "joDetailsHoursOnCall" %}:
                   </label>
                 
                   <p>{{ role.hours.on_call }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsHoursJobDescription" %}
+                    {% translate "joDetailsHoursJobDescription" %}:
                   </label>
                 
                   <p>{{ role.hours.job_description }}</p>
@@ -503,14 +503,14 @@
                 {% if role.wages and role.wages.deleted_at is None %}
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsWagesWage" %}
+                    {% translate "joDetailsWagesWage" %}:
                   </label>
                   <p> ${{ role.wages.wage}}</p>
                 </div>
 
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsWagesWageType" %}
+                    {% translate "joDetailsWagesWageType" %}:
                   </label>
                 
                   <p>{{ role.wages.get_wage_type_display }}</p>
@@ -518,27 +518,27 @@
                 {% if role.wages.piece_rate_offerings %}
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsWagesPieceRateOfferings" %}
+                    {% translate "joDetailsWagesPieceRateOfferings" %}:
                   </label>
                   <p>{{ role.wages.piece_rate_offerings }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsWagesPieceRateOfferingsType" %}
+                    {% translate "joDetailsWagesPieceRateOfferingsType" %}:
                   </label>
                   <p>{{ role.wages.get_piece_rate_offerings_type_display }}</p>
                 </div>
                 {% endif %}
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsWagesFrequencyOfPay" %}
+                    {% translate "joDetailsWagesFrequencyOfPay" %}:
                   </label>
                   <p>{{ role.wages.get_frequency_of_pay_display }}</p>
                 </div>
                 {% if role.wages.details %}
                 <div class="details-row">
                 <label>
-                  {% translate "joDetailsWagesDetails" %}
+                  {% translate "joDetailsWagesDetails" %}:
                 </label>
                   <p>{{ role.wages.details }}</p>
                 </div>
@@ -646,27 +646,27 @@
                 {% if role.qualifications and role.qualifications.deleted_at is None %}
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsQualificationsMinimumEducationRequirement" %}
+                    {% translate "joDetailsQualificationsMinimumEducationRequirement" %}:
                   </label>
                   <p> {{ role.qualifications.minimum_education_requirement|default:"" }}</p>
                 </div>
 
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsQualificationsExperienceRequired" %}
+                    {% translate "joDetailsQualificationsExperienceRequired" %}:
                   </label>
 
                   <p>{{ role.qualifications.experience_required|yesno:_("Yes,No") }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsQualificationsNumberOfMonthsExperienceRequired" %}
+                    {% translate "joDetailsQualificationsNumberOfMonthsExperienceRequired" %}:
                   </label>
                   <p>{{ role.qualifications.number_of_months_experience_required|default:"" }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsQualificationsTrainingRequired" %}
+                    {% translate "joDetailsQualificationsTrainingRequired" %}:
                   </label>
                   <p>{{ role.qualifications.lifting_requirements }}</p>
                 </div>
@@ -773,38 +773,38 @@
                 {% if role.employment_location and role.employment_location.deleted_at is None %}
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsPlaceOfEmploymentAddress" %}
+                    {% translate "joDetailsPlaceOfEmploymentAddress" %}:
                   </label>
                   <p>{{ role.employment_location.address|default:"" }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsPlaceOfEmploymentCity" %}
+                    {% translate "joDetailsPlaceOfEmploymentCity" %}:
                   </label>
                   <p>{{ role.employment_location.city|default:"" }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsPlaceOfEmploymentCountry" %}
+                    {% translate "joDetailsPlaceOfEmploymentCountry" %}:
                   </label>
                   <p>{{ role.employment_location.county|default:"" }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsPlaceOfEmploymentState" %}
+                    {% translate "joDetailsPlaceOfEmploymentState" %}:
                   </label>
                   <p>{{ role.employment_location.state|default:"" }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsPlaceOfEmploymentPostalCode" %}
+                    {% translate "joDetailsPlaceOfEmploymentPostalCode" %}:
                   </label>
                   <p>{{ role.employment_location.postal_code|default:"" }}</p>
                 </div>
                 {% if role.employment_location.additional_info %}
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsPlaceOfEmploymentAdditionalInformation" %}
+                    {% translate "joDetailsPlaceOfEmploymentAdditionalInformation" %}:
                   </label>
                   <p>{{ role.employment_location.additional_info }}</p>
                 </div>
@@ -846,43 +846,43 @@
                 {% if role.housing_information and role.housing_information.deleted_at is None %}
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsHousingInfoAddress" %}
+                    {% translate "joDetailsHousingInfoAddress" %}:
                   </label>
                   <p>{{ role.housing_information.address }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsHousingInfoCity" %}
+                    {% translate "joDetailsHousingInfoCity" %}:
                   </label>
                   <p>{{ role.housing_information.city }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsHousingInfoCountry" %}
+                    {% translate "joDetailsHousingInfoCountry" %}:
                   </label>
                   <p>{{ role.housing_information.county }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsHousingInfoState" %}
+                    {% translate "joDetailsHousingInfoState" %}:
                   </label>
                   <p>{{ role.housing_information.state }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsHousingInfoAddress" %}
+                    {% translate "joDetailsHousingInfoAddress" %}:
                   </label>
                   <p>{{ role.housing_information.postal_code }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsHousingInfoHousingType" %}
+                    {% translate "joDetailsHousingInfoHousingType" %}:
                   </label>
                   <p>{{ role.housing_information.type_of_housing }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsHousingInfoAdditionalInfo" %}
+                    {% translate "joDetailsHousingInfoAdditionalInfo" %}:
                   </label>
                   <p>{{ role.housing_information.additional_info }}</p>
                 </div>
@@ -923,19 +923,19 @@
                 {% if role.meal_provision and role.meal_provision.deleted_at is  None %}
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsMealsAreMealsProvided" %}
+                    {% translate "joDetailsMealsAreMealsProvided" %}:
                   </label>
                   <p>{{ role.meal_provision.will_provide_meals|yesno:_("Yes,No") }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsMealsAmountChargedPerDay" %}
+                    {% translate "joDetailsMealsAmountChargedPerDay" %}:
                   </label>
                   <p>{{ role.meal_provision.meal_charge_amount|default:"0" }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsMealsAdditionalInformation" %}
+                    {% translate "joDetailsMealsAdditionalInformation" %}:
                   </label>
                   <p>{{ role.meal_provision.additional_info }}</p>
                 </div>

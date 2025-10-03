@@ -20,7 +20,15 @@
     <span class="d-flex justify-content-center align-items-center">
       <p
         class="mt-3 me-3 d-flex justify-content-center align-items-center rounded-circle light-green-background text-white text-icon">
-        {% translate "workerDetailsAB" %}
+        {% if worker.first_name and worker.last_name %}
+          {{ worker.first_name|first|upper }}{{ worker.last_name|first|upper }}
+        {% elif worker.first_name %}
+          {{ worker.first_name|first|upper }}{{ worker.first_name|slice:"1:2"|upper }}
+        {% elif worker.last_name %}
+          {{ worker.last_name|first|upper }}{{ worker.last_name|slice:"1:2"|upper }}
+        {% else %}
+          {{ worker.email|first|upper }}{{ worker.email|slice:"1:2"|upper }}
+        {% endif %}
       </p>
       {% if worker.first_name and worker.last_name %}
       <h4 class="dark-green-color d-contents fw-bold">
@@ -96,6 +104,14 @@
               {{worker.country}}
             {% endif %}
           </p>
+          {% if worker.curp %}
+          <p class="label">
+            CURP
+          </p>
+          <p class="value">
+            {{worker.curp}}
+          </p>
+          {% endif %}
           <p class="label">
             {% translate "workerDetailsEmail" %}
           </p>
@@ -406,14 +422,6 @@
           <button class="btn grey-green-button ms-2" data-bs-toggle="modal" data-bs-target="#infoModal">
             <i class="fe fe-plus"></i>{% translate "workerDetailsAddInformation" %}
           </button>
-          {% if preferences %}
-            <button class="btn btn-sm red-button" data-bs-toggle="modal" data-bs-target="#deleteAllInfoModal">
-              {% translate "webCommonDelete" %}
-            </button>
-            <!-- <i class="fa fa-trash text-danger" style="cursor: pointer; font-size: 20px;padding-left:10px;"
-              data-bs-toggle="modal" data-bs-target="#deleteAllInfoModal" title="Delete">
-            </i> -->
-          {% endif %}
         </div>
       </div>
 

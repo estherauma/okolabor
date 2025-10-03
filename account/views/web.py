@@ -123,6 +123,8 @@ class UserListView(LoginRequiredMixin, View):
 
 
     def post(self, request):
+        from django.db import IntegrityError
+        
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         user_email = request.POST.get('email')
@@ -132,12 +134,19 @@ class UserListView(LoginRequiredMixin, View):
             messages.error(request, _("manageUsersAddUserAllFieldsAreRequired"))
             return redirect('manage_users')
 
-        user = User.objects.create(
-            first_name=first_name,
-            last_name=last_name,
-            email=user_email,
-            is_active=True
-        )
+        try:
+            user = User.objects.create(
+                first_name=first_name,
+                last_name=last_name,
+                email=user_email,
+                is_active=True
+            )
+        except IntegrityError as e:
+            if 'account_user_email_key' in str(e) or ('email' in str(e) and 'unique constraint' in str(e).lower()):
+                messages.error(request, _("manageUsersA user with the email address '%(email)s' already exists. Please use a different email address") % {'email': user_email})
+            else:
+                messages.error(request, _("manageUsersThere was an error creating the user. Please check your input and try again"))
+            return redirect('manage_users')
 
         if role in ['recruiter', 'recruiter_admin','employer', 'employer_admin']:
             group, created = Group.objects.get_or_create(name=role)
@@ -411,20 +420,39 @@ class WorkerModalCreateView(View):
 
 class RecruiterAdminModalCreateView(View):
     def post(self, request, *args, **kwargs):
+        from django.db import IntegrityError
+        
         form = RecruiterAdminCreateForm(request.POST)
         if form.is_valid():
-            recruiter = form.save()
             try:
-                recruiter_group = Group.objects.get(name='recruiter_admin')
-                recruiter.groups.add(recruiter_group)
-            except Group.DoesNotExist:
-                messages.error(request, _("recruiterAdminListGroupDoesNotExistPleaseCreateIt"))
-                return redirect('manage_users')
+                recruiter = form.save()
+                try:
+                    recruiter_group = Group.objects.get(name='recruiter_admin')
+                    recruiter.groups.add(recruiter_group)
+                except Group.DoesNotExist:
+                    messages.error(request, _("recruiterAdminListGroupDoesNotExistPleaseCreateIt"))
+                    return redirect('manage_users')
 
-            messages.success(request, _("recruiterAdminListCreatedSuccessfully"))
-            return redirect('manage_users')
+                messages.success(request, _("recruiterAdminListCreatedSuccessfully"))
+                return redirect('manage_users')
+            except IntegrityError as e:
+                if 'account_user_email_key' in str(e) or ('email' in str(e) and 'unique constraint' in str(e).lower()):
+                    messages.error(request, "A recruiter with this email address already exists. Please use a different email address.")
+                else:
+                    messages.error(request, "There was an error creating the recruiter. Please check your input and try again.")
+                return redirect('manage_users')
         else:
-            messages.error(request, _("recruiterAdminListPleaseCorrectTheErrorsInTheForm"))
+            # Handle form validation errors more specifically
+            error_messages = []
+            for field, errors in form.errors.items():
+                field_name = form.fields[field].label or field.replace('_', ' ').title()
+                for error in errors:
+                    error_messages.append(f"{field_name}: {error}")
+            
+            if error_messages:
+                messages.error(request, " | ".join(error_messages))
+            else:
+                messages.error(request, _("recruiterAdminListPleaseCorrectTheErrorsInTheForm"))
             return redirect('manage_users')
         
 
