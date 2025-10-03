@@ -114,7 +114,6 @@
                                     <option value="exclude_physical_limitations">{% translate "filterSectionExcludeWorkerswithPhysicalLaborLimitations" %}</option>
                                     <option value="age">{% translate "filterSectionAge" %}</option>
                                     <option value="gender">{% translate "filterSectionGender" %}</option>
-                                    <option value="profile">{% translate "filterSectionProfile" %}</option>
                                     <option value="passport">{% translate "filterSectionPassport" %}</option>
                                     <option value="us_driving_license">{% translate "filterSectionUSDrivingLicense" %}</option>
                                     <option value="mx_us_driving_license">{% translate "filterSectionUS-MexicanDrivingLicense" %}</option>
@@ -639,7 +638,6 @@ function addRandomFilter() {
                 </label>
                 <select class="form-control" name="random_filter" onchange="handleFilterChange(this, ${uniqueId});updateCollapseSummary();">
                                     ${optionsHtml}
-
                 </select>
 
             </div>
@@ -662,14 +660,18 @@ function handleFilterChange(selectEl, uniqueId) {
     switch (selectedValue) {
             case "availability":
             html = `
-                <div class="row">
+                <div class="row align-items-end">
                     <div class="col">
-                        <label class="form-label gray-color">{% translate "filterSectionAvailabilityFrom" %}</label>
-                        <input type="date" class="form-control" name="availability_from_${uniqueId}" onchange="updateCollapseSummary()" />
+                        <div class="form-group">
+                            <label class="form-label gray-color">{% translate "filterSectionAvailabilityFrom" %}</label>
+                            <input type="date" class="form-control" name="availability_from_${uniqueId}" onchange="updateCollapseSummary()" />
+                        </div>
                     </div>
                     <div class="col">
-                        <label class="form-label gray-color">{% translate "filterSectionAvailabilityTo" %}</label>
-                        <input type="date" class="form-control" name="availability_to_${uniqueId}" onchange="updateCollapseSummary()" />
+                        <div class="form-group">
+                            <label class="form-label gray-color">{% translate "filterSectionAvailabilityTo" %}</label>
+                            <input type="date" class="form-control" name="availability_to_${uniqueId}" onchange="updateCollapseSummary()" />
+                        </div>
                     </div>
                 </div>`;
             break;
@@ -685,14 +687,18 @@ function handleFilterChange(selectEl, uniqueId) {
                 break;
         case "age":
             html = `
-                <div class="row">
+                <div class="row align-items-end">
                     <div class="col">
-                        <label class="form-label gray-color">{% translate "filterSectionMin" %}</label>
-                        <input type="number" class="form-control" name="${selectedValue}_min_${uniqueId}" min="0" onchange="updateCollapseSummary()" />
+                        <div class="form-group">
+                            <label class="form-label gray-color">{% translate "filterSectionMin" %}</label>
+                            <input type="number" class="form-control" name="${selectedValue}_min_${uniqueId}" min="0" onchange="updateCollapseSummary()" />
+                        </div>
                     </div>
                     <div class="col">
-                        <label class="form-label gray-color">{% translate "filterSectionMax" %}</label>
-                        <input type="number" class="form-control" name="${selectedValue}_max_${uniqueId}" min="0" onchange="updateCollapseSummary()" />
+                        <div class="form-group">
+                            <label class="form-label gray-color">{% translate "filterSectionMax" %}</label>
+                            <input type="number" class="form-control" name="${selectedValue}_max_${uniqueId}" min="0" onchange="updateCollapseSummary()" />
+                        </div>
                     </div>
                 </div>`;
             break;
