@@ -64,6 +64,12 @@ class WorkRequestCopyViewTest(TestCase):
         )
         worker_group = Group.objects.create(name='worker')
         self.worker.groups.add(worker_group)
+        self.assignment = WorkAssignment.objects.create(
+            work_request=self.work_request,
+            role=self.role,
+            worker=self.worker,
+            status='confirmed'
+        )
 
     def test_copy_work_request_success(self):
         url = reverse('recruiting_web:workrequest_copy', args=[self.work_request.pk])
