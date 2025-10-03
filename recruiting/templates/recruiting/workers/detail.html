@@ -41,7 +41,7 @@
     {% if worker %}
     <button class="btn dark-green-button ms-3 open-shortlist-modal" data-bs-toggle="modal"
       data-bs-target="#workerShortlistModal{{ worker.id }}" data-worker-id="{{ worker.id }}">
-      {% translate "workerDetailsAddToShortlist" %}
+      <i class="fe fe-plus"></i>{% translate "workerDetailsAddToShortlist" %}
     </button>
 
     {% endif %}
@@ -198,7 +198,7 @@
               {% translate "workerDetailsAddWorkExperience" %}
             </a> {% endcomment %}
             <a class="btn grey-green-button" data-bs-toggle="modal" data-bs-target="#addExperienceModal">
-              + {% translate "workerDetailsAddWorkExperience" %}
+              <i class="fe fe-plus"></i> {% translate "workerDetailsAddWorkExperience" %}
             </a>
           </div>
         </div>
@@ -404,7 +404,7 @@
         </div>
         <div>
           <button class="btn grey-green-button ms-2" data-bs-toggle="modal" data-bs-target="#infoModal">
-            {% translate "workerDetailsAddInformation" %}
+            <i class="fe fe-plus"></i>{% translate "workerDetailsAddInformation" %}
           </button>
           {% if preferences %}
             <button class="btn btn-sm red-button" data-bs-toggle="modal" data-bs-target="#deleteAllInfoModal">
