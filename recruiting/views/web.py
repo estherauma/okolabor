@@ -637,17 +637,22 @@ class WorkRequestCopyView(LoginRequiredMixin, View):
                 self.copy_related_object(getattr(role, 'wages', None), Wages, new_role)
                 self.copy_related_object(getattr(role, 'meal_provision', None), MealProvision, new_role)
                 self.copy_related_object(getattr(role, 'qualifications', None), Qualification, new_role)
-                workers = User.objects.filter(groups__name='worker').distinct().order_by('-created_at')
-                assignments = [
+                role_assignments = WorkAssignment.objects.filter(
+                    work_request_id=work_request.id,
+                    role_id=role.id,
+                    status='confirmed',
+                    deleted_at__isnull=True
+                )
+                new_role_assignments = [
                                 WorkAssignment(
                                     work_request=new_work_request,
                                     role=new_role,
-                                    worker=worker,
+                                    worker=assignment.worker,
                                     status='assigned'
-                                ) for worker in workers
+                                ) for assignment in role_assignments
                             ]
 
-                WorkAssignment.objects.bulk_create(assignments)
+                WorkAssignment.objects.bulk_create(new_role_assignments)
             return redirect('recruiting_web:workrequest_detail', pk=new_work_request.pk)
         else:
             for field, errors in form.errors.items():
