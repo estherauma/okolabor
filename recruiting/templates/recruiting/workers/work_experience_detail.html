@@ -126,13 +126,13 @@
         </div>
 
         <!-- Work Authorization -->
-        <div class="mb-3 fst-italic">
+        <div class="mb-3 ">
           <p class="detail-label text-uppercase text-muted mb-1">{% translate "workExperienceDetailsWorkAuthorization" %}</p>
-          <p class="detail-value mb-1">
+          <p class="detail-value mb-1 fst-italic">
             <span class="fw-semibold">{% translate "workExperienceDetailsVisaType"%}: </span>
             {{ work_experience.visa_type|default:"No Visa Type" }}
           </p>
-          <p class="detail-value">
+          <p class="detail-value fst-italic">
             <span class="fw-semibold">{% translate "workExperienceDetailsH2AWork" %}: </span>
             {{ work_experience.work_under_h2a_in_usa|yesno:"Yes,No" }}
           </p>
@@ -214,9 +214,24 @@
         <!-- Supervisor Details -->
         <div class="mb-3">
           <p class="detail-label text-uppercase text-muted mb-1">{% translate "workExperienceDetailsSupervisorDetails" %}</p>
-          <p class="detail-value mb-1">{{ work_experience.supervisor_name|default:"-" }}</p>
-          <p class="detail-value mb-1">{{ work_experience.supervisor_tel|default:"-" }}</p>
-          <p class="detail-value">{{ work_experience.supervisor_email|default:"-" }}</p>
+          <p class="detail-value  mb-2 fst-italic">
+            <span class="fw-semibold">
+              {% translate 'employerDetailsName' %}:
+            </span> 
+            <span>{{ work_experience.supervisor_name|default:"-" }}</span>
+          </p>
+          <p class="detail-value mb-2 fst-italic">
+            <span class="fw-semibold">
+              {% translate 'employersPhone' %}:
+            </span> 
+            <span>{{ work_experience.supervisor_tel|default:"-" }}</span>
+          </p>
+          <p class="detail-value  mb-2 fst-italic">
+            <span class="fw-semibold">
+              {% translate 'accountEmail' %}:
+            </span> 
+            <span>{{ work_experience.supervisor_email|default:"-" }}</span>
+          </p>
         </div>
       </div>
     </div>
