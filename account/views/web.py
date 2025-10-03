@@ -148,14 +148,15 @@ class UserListView(LoginRequiredMixin, View):
         current_site = get_current_site(request)
         site_url = f"{request.scheme}://{current_site.domain}"
         invite_link = f"{site_url}{reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})}"
-
+        logo_url = "https://test.okolabor.com/static/assets/images/login/logo.svg"
         email_subject = _("inviteEmailYou'reInvited!")
         email_body = render_to_string(
             'invite_email.html', 
             {
                 'first_name': first_name,
                 'invite_link': invite_link,
-                'site_url': site_url
+                'site_url': site_url,
+                'logo_url': logo_url,
             }
         )
 
