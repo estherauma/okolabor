@@ -481,7 +481,7 @@ class RecruiterDetailView(View):
         # contacts = recruiter_org.contacts.all()
         users = User.objects.all()
         context = {
-            'employer': recruiter_org,
+            'recruiter': recruiter_org,
             'users': users,
             'employer_organizations': employer_orgs_data,
             'in_progress_work_requests': in_progress_work_requests,
