@@ -353,19 +353,21 @@ class EmployerCreateView(CreateView):
                     }
                 )
 
-        messages.success(self.request, _('employerAminListOrganizationCreatedSuccessfully'))
         self.object = org
         return redirect(self.get_success_url(org.pk))
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
-        for field, errors in form.errors.items():
-            for error in errors:
-                messages.error(self.request, f'{field}: {error}')
-        return super().form_invalid(form)
+        context = self.get_context_data(form=form)
+        context['employer_form'] = form 
+        if form.instance.type == 'recruiter':
+            return render(self.request, 'recruiting/recruiters_list/list.html', context)
+
+        return render(self.request, 'recruiting/employers/list.html', context)
 
     def get_success_url(self, pk):
+        if self.object.type == 'recruiter':
+            return reverse('recruiting_web:recruiter_org_detail', kwargs={'pk': pk})
         return reverse('recruiting_web:employer_detail', kwargs={'pk': pk})
-
 
 class EmployerDetailView(View):
     def get(self, request, pk):
