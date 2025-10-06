@@ -123,6 +123,13 @@
           <p class="value">
             {% if worker.gender %}{{worker.gender}}{% else %}N/A{% endif %}
           </p>
+
+           <p class="label">
+            {% translate "filtersLanguageProficiency" %}
+          </p>
+          <p class="value">
+            {% if worker.level_of_language_proficiency %}{{worker.level_of_language_proficiency}}{% else %}N/A{% endif %}
+          </p>
         </div>
       </div>
     </div>
