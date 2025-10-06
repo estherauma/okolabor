@@ -413,6 +413,12 @@ class EmployerDetailView(View):
 
         all_recruiter_names = list(recruiter_names_direct.union(recruiter_names_org))
         users = User.objects.all()
+        
+        # create job order form
+        form = WorkRequestForm()
+        # set employer in form
+        form.fields['employer'].initial = employer
+
         context = {
             'employer': employer,
             'users': users,
@@ -423,6 +429,7 @@ class EmployerDetailView(View):
             'contacts': assigned_users,
             'work_requests': work_requests,
             'assigned_organizations': assigned_orgs_data,
+            'form': form,
             'breadcrumbs': [
                 {'name': _('employerDetailsHome'), 'url': reverse_lazy('index')},
                 {'name': _('employerDetailsEmployers'), 'url': reverse_lazy('recruiting_web:employer_list')},
