@@ -89,19 +89,6 @@
 		</li>
 		{% endif %}
 
-
-		<!-- <li>
-			<a class="side-menu__item" href="{% url 'recruiting_web:recruiter_todo' %}"><i class="side-menu__icon icon icon-briefcase"></i>
-				<span class="side-menu__label">{% translate "toDo" %}</span></a>
-		</li> -->
-
-		<li>
-			<a class="side-menu__item {{request.path|addActive:'/messages,/create-message,/message-details'}}" 
-			href="{% url 'recruiting_web:recruiter_messages' %}"><i class="side-menu__icon fe fe-mail"></i>
-				<span class="side-menu__label">{% translate "messages" %}</span>
-			</a>
-		</li>
-
 		<li>
 			<a class="side-menu__item {{request.path|addActive:'/invalid-curps'}}" 
 			href="{% url 'recruiting_web:invalid_curps' %}"><i class="side-menu__icon fe fe-alert-triangle"></i>
