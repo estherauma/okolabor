@@ -19,52 +19,55 @@
         data-bs-toggle="modal"
         data-bs-target="#assignContactModal"
         id="assignContactBtn"
-        data-employer-id="{{ employer.id }}">
+        data-employer-id="{{ recruiter.id }}">
     {% translate "assignUser" %}
 </button>
 </div>
 
 <div class="row">
-  <div class="col-md-4">
-    <h3> {% translate "recruiterDetails" %} </h3>
+  <div class="col-md-12">
+  
     <div class="card">
-      <div class="card-body">
-          
-          <ul class="list-group no-margin">
-              <li class="list-group-item">
+
+      <div class="card-body row">
+        <div class="col-12 d-flex justify-content-between align-items-center mb-3">
+      <h3>{% translate "recruiterDetails" %}</h3>
+      <a href="#" class="btn yellow-button" data-bs-toggle="modal" data-bs-target="#editRecruiterModal{{ recruiter.id }}">
+        {% translate "webCommonEdit" %}
+      </a></div>
+              <div class="col-md-3">
                   <span><strong>{% translate "employerDetailsEmail" %}:</strong></span>
-                  <span>{{ employer.email }}</span>
-              </li>
-              <li class="list-group-item">
+                  <span>{{ recruiter.email }}</span>
+              </div>
+              <div class="col-md-3">
                   <span><strong>{% translate "employerDetailsPhone" %}:</strong></span>
-                  <span>{{ employer.phone }}</span>
-              </li>
-              <li class="list-group-item">
+                  <span>{{ recruiter.phone }}</span>
+              </div>
+              <div class="col-md-3">
                   <span><strong>{% translate "employerDetailsWebsite" %}:</strong></span>
-                  <span>{{ employer.website }}</span>
-              </li>
-              <li class="list-group-item">
+                  <span>{{ recruiter.website }}</span>
+              </div>
+              <div class="col-md-3">
                   <span><strong>{% translate "employerDetailsAddress" %}:</strong></span>
-                  <span>{{ employer.address }}</span>
-              </li>
-              <li class="list-group-item">
+                  <span>{{ recruiter.address }}</span>
+              </div>
+              <div class="col-md-3">
                   <span><strong>{% translate "employerDetailsCity" %}:</strong></span>
-                  <span>{{ employer.city }}</span>
-              </li>
-              <li class="list-group-item">
+                  <span>{{ recruiter.city }}</span>
+              </div>
+              <div class="col-md-3">
                   <span><strong>{% translate "employerDetailsState" %}:</strong></span>
-                  <span>{{ employer.state }}</span>
-              </li>
-              <li class="list-group-item">
+                  <span>{{ recruiter.state }}</span>
+              </div>
+              <div class="col-md-3">
                   <span><strong>{% translate "employerDetailsCountry" %}:</strong></span>
-                  <span>{{ employer.country }}</span>
-              </li>
-              <li class="list-group-item">
+                  <span>{{ recruiter.country }}</span>
+              </div>
+              <div class="col-md-3">
                   <span><strong>{% translate "employerDetailsZipCode" %}:</strong></span>
-                  <span>{{ employer.zipcode }}</span>
-              </li>
-              
-          </ul>
+                  <span>{{ recruiter.zipcode }}</span>
+              </div>
+
       </div>
     </div>
   </div>
@@ -171,8 +174,8 @@
                                 {% endif %}
                             </td>
                             <td>
-                                <a href="{% url 'employer_detail' work_request.employer.id %}" class="text-decoration-none text-dark">
-                                    {{ work_request.employer.name }}
+                                <a href="{% url 'employer_detail' work_request.recruiter.id %}" class="text-decoration-none text-dark">
+                                    {{ work_request.recruiter.name }}
                                 </a>
                             </td>
                             <td>
@@ -261,7 +264,7 @@
     <div class="modal fade" id="deleteModal{{ org.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ org.id }}" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <form method="POST" action="{% url 'recruiting_web:delete_employer_org_from_recruiter' employer.id org.id %}">
+          <form method="POST" action="{% url 'recruiting_web:delete_employer_org_from_recruiter' recruiter.id org.id %}">
             {% csrf_token %}
             <div class="modal-header" style="background-color: #7DBF96;">
               <h5 class="modal-title text-white" id="deleteModalLabel{{ org.id }}">{% translate "recruiterDetailsConfirmDelete" %}</h5>
@@ -283,6 +286,7 @@
   </div>
 </div>
 
+{% include 'recruiting/recruiters_list/edit-modal.html' %}
 
 {% endblock body %}
 
@@ -318,5 +322,5 @@
 <script src="{% static 'assets/js/table-data.js' %}">
 </script>
 <script src="{% static 'assets/js/table-sorting.js' %}"></script>
-<script src="{% static ''%}assets/js/assign_contact_employer.js"></script>
+<script src="{% static ''%}assets/js/assign_contact_recruiter.js"></script>
 {% endblock scripts %}

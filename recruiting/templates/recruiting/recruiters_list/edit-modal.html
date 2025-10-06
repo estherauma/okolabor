@@ -1,0 +1,80 @@
+{% load i18n %}
+
+<div class="modal fade" id="editRecruiterModal{{ recruiter.id }}" tabindex="-1"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="{% url 'recruiting_web:recruiter_edit' recruiter.id %}">
+        {% csrf_token %}
+        <div class="modal-header" style="background-color: #7DBF96;">
+          <h5 class="modal-title text-white" id="editRecruiterModalLabel{{ recruiter.id }}">
+            {% translate "recruiterListEditRecruiter" %}
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"
+            aria-label="{% translate 'recruiterListClose'%}"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="name{{ recruiter.id }}" class="form-label">{% translate "recruiterListName" %}</label>
+            <input type="text" class="form-control" id="name{{ recruiter.id }}" name="name"
+              value="{{ recruiter.name }}">
+          </div>
+          <div class="mb-3">
+            <label for="email{{ recruiter.id }}" class="form-label">{% translate "recruiterListEmail" %}</label>
+            <input type="email" class="form-control" id="email{{ recruiter.id }}" name="email"
+              value="{{ recruiter.email }}">
+          </div>
+          <div class="mb-3">
+            <label for="phone{{ recruiter.id }}" class="form-label">{% translate "recruiterListPhone" %}</label>
+            <input type="text" class="form-control" id="phone{{ recruiter.id }}" name="phone"
+              value="{{ recruiter.phone }}">
+          </div>
+          <div class="mb-3">
+            <label for="website{{ recruiter.id }}" class="form-label">{% translate "recruiterListWebsite" %}</label>
+            <input type="url" class="form-control" id="website{{ recruiter.id }}" name="website"
+              value="{{ recruiter.website }}">
+          </div>
+          <div class="mb-3">
+            <label for="address{{ recruiter.id }}" class="form-label">{% translate "recruiterListAddress" %}</label>
+            <input type="text" class="form-control" id="address{{ recruiter.id }}" name="address"
+              value="{{ recruiter.address }}">
+          </div>
+          <div class="mb-3">
+            <label for="city{{ recruiter.id }}" class="form-label">{% translate "recruiterListCity" %}</label>
+            <input type="text" class="form-control" id="city{{ recruiter.id }}" name="city"
+              value="{{ recruiter.city }}">
+          </div>
+          <div class="mb-3">
+            <label for="state{{ recruiter.id }}" class="form-label">{% translate "recruiterListState" %}</label>
+            <input type="text" class="form-control" id="state{{ recruiter.id }}" name="state"
+              value="{{ recruiter.state }}">
+          </div>
+          <div class="mb-3">
+            <label for="country{{ recruiter.id }}" class="form-label">{% translate "recruiterListCountry" %}</label>
+            <input type="text" class="form-control" id="country{{ recruiter.id }}" name="country"
+              value="{{ recruiter.country }}">
+          </div>
+          <div class="mb-3">
+            <label for="zip_code{{ recruiter.id }}" class="form-label">
+              {% translate "recruiterListZipCode" %}
+            </label>
+            <input type="text" class="form-control" id="zip_code{{ recruiter.id }}" name="zip_code"
+              value="{{ recruiter.zip_code }}">
+          </div>
+          <div class="mb-3">
+            <label for="description{{ recruiter.id }}" class="form-label">
+              {% translate 'recruiterListDescription' %}</label>
+            <textarea class="form-control" id="description{{ recruiter.id }}"
+              name="description">{{ recruiter.description }}</textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn grey-button" data-bs-dismiss="modal">
+            {% translate 'recruiterListCancel' %}</button>
+          <button type="submit" class="btn light-green-button">
+            {% translate 'recruiterListSave' %}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
