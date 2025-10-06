@@ -124,7 +124,7 @@
             <div class="table-responsive">
               <div class="d-flex justify-content-between align-items-center mb-3">
                 <h3>{% translate "employerDetailsWorkRequests"%}</h3>
-                <a href="#" class="btn dark-green-button ms-auto">
+                <a href="#" class="btn dark-green-button ms-auto" data-bs-toggle="modal" data-bs-target="#jobOrderModal">
                   {% translate "employerDetailsAddJobOrder" %}
                 </a>
               </div>
@@ -328,6 +328,8 @@
     </div>
   </div>
 </div>
+
+{% include 'recruiting/work_requests/create.html' %}
 
 {% endblock body %}
 
