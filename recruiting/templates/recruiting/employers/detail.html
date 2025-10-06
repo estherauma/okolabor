@@ -46,16 +46,16 @@
     </div>
     <div class="row mt-2">
       <div class="col-md-3">
-        <strong>{% translate "employerDetailsCity" %}:</strong> {{ employer.city }}
+        <strong>{% translate "employerDetailsCountry" %}:</strong> {{ employer.country }}
       </div>
       <div class="col-md-3">
         <strong>{% translate "employerDetailsState" %}:</strong> {{ employer.state }}
       </div>
       <div class="col-md-3">
-        <strong>{% translate "employerDetailsCountry" %}:</strong> {{ employer.country }}
+        <strong>{% translate "employerDetailsCity" %}:</strong> {{ employer.city }}
       </div>
       <div class="col-md-3">
-        <strong>{% translate "employerDetailsZipCode" %}:</strong> {{ employer.zipcode }}
+        <strong>{% translate "employerDetailsZipCode" %}:</strong> {{ employer.zip_code }}
       </div>
     </div>
   </div>
@@ -124,7 +124,7 @@
             <div class="table-responsive">
               <div class="d-flex justify-content-between align-items-center mb-3">
                 <h3>{% translate "employerDetailsWorkRequests"%}</h3>
-                <a href="#" class="btn dark-green-button ms-auto">
+                <a href="#" class="btn dark-green-button ms-auto" data-bs-toggle="modal" data-bs-target="#jobOrderModal">
                   {% translate "employerDetailsAddJobOrder" %}
                 </a>
               </div>
@@ -328,6 +328,8 @@
     </div>
   </div>
 </div>
+
+{% include 'recruiting/work_requests/create.html' %}
 
 {% endblock body %}
 
