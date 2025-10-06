@@ -20,7 +20,15 @@
     <span class="d-flex justify-content-center align-items-center">
       <p
         class="mt-3 me-3 d-flex justify-content-center align-items-center rounded-circle light-green-background text-white text-icon">
-        {% translate "workerDetailsAB" %}
+        {% if worker.first_name and worker.last_name %}
+          {{ worker.first_name|first|upper }}{{ worker.last_name|first|upper }}
+        {% elif worker.first_name %}
+          {{ worker.first_name|first|upper }}{{ worker.first_name|slice:"1:2"|upper }}
+        {% elif worker.last_name %}
+          {{ worker.last_name|first|upper }}{{ worker.last_name|slice:"1:2"|upper }}
+        {% else %}
+          {{ worker.email|first|upper }}{{ worker.email|slice:"1:2"|upper }}
+        {% endif %}
       </p>
       {% if worker.first_name and worker.last_name %}
       <h4 class="dark-green-color d-contents fw-bold">
@@ -41,7 +49,7 @@
     {% if worker %}
     <button class="btn dark-green-button ms-3 open-shortlist-modal" data-bs-toggle="modal"
       data-bs-target="#workerShortlistModal{{ worker.id }}" data-worker-id="{{ worker.id }}">
-      {% translate "workerDetailsAddToShortlist" %}
+      <i class="fe fe-plus"></i>{% translate "workerDetailsAddToShortlist" %}
     </button>
 
     {% endif %}
@@ -74,28 +82,29 @@
         </div>
         <div>
           <p class="label">
+            CURP
+          </p>
+          <p class="value">
+            {% if worker.curp %}{{worker.curp}}{% else %}N/A{% endif %}
+          </p>
+          <p class="label">
             {% translate "workerDetailsAddress" %}
           </p>
           <p class="value">
-            {% if worker.address_line_1 %}
-              {{worker.address_line_1}}, 
-              {% if worker.address_line_2 %}
-                {{worker.address_line_2}}, 
-              {% endif %}
-            {% endif %}
-            
-            {% if worker.city %}
-              {{worker.city}}, 
-            {% endif %}
-            
-            {% if worker.state %}
-              {{worker.state}}, 
-            {% endif %}
-            
-            {% if worker.country %}
-              {{worker.country}}
+            {% if worker.address_line_1 or worker.address_line_2 or worker.city %}
+              {% if worker.address_line_1 %}{{worker.address_line_1}}{% endif %}{% if worker.address_line_2 %}{% if worker.address_line_1 %}, {% endif %}{{worker.address_line_2}}{% endif %}{% if worker.city %}{% if worker.address_line_1 or worker.address_line_2 %}, {% endif %}{{worker.city}}{% endif %}
+            {% else %}
+              N/A
             {% endif %}
           </p>
+          {% if worker.curp %}
+          <p class="label">
+            CURP
+          </p>
+          <p class="value">
+            {{worker.curp}}
+          </p>
+          {% endif %}
           <p class="label">
             {% translate "workerDetailsEmail" %}
           </p>
@@ -106,13 +115,13 @@
             {% translate "workerDetailsPhoneNumber" %}
           </p>
           <p class="value">
-            {{worker.telephone}}
+            {% if worker.telephone %}{{worker.telephone}}{% else %}N/A{% endif %}
           </p>
           <p class="label">
             {% translate "workerDetailsGender" %}
           </p>
           <p class="value">
-            {{worker.gender}}
+            {% if worker.gender %}{{worker.gender}}{% else %}N/A{% endif %}
           </p>
         </div>
       </div>
@@ -198,7 +207,7 @@
               {% translate "workerDetailsAddWorkExperience" %}
             </a> {% endcomment %}
             <a class="btn grey-green-button" data-bs-toggle="modal" data-bs-target="#addExperienceModal">
-              + {% translate "workerDetailsAddWorkExperience" %}
+              <i class="fe fe-plus"></i> {% translate "workerDetailsAddWorkExperience" %}
             </a>
           </div>
         </div>
@@ -364,11 +373,10 @@
             {% for job in job_experiences %}
             <div class="p-4 border rounded-lg bg-white shadow-sm mb-4">
               <p class="text-gray-700 text-lg flex items-center gap-2">
-                🚜 {% translate "workerDetailsJobType"%} - <span>{{ job.job_type|default:"No Job Type" }}</span>
+                🚜 {% translate "workerDetailsJobType"%} - <span>{{ job.job_type|default:"N/A" }}</span>
               </p>
               <p class="text-gray-700 text-lg flex items-center gap-2">
-                📋 {% translate "workerDetailsTypeDetails"%} - <span>{{ job.type_details|default:"No Type Details"
-                  }}</span>
+                📋 {% translate "workerDetailsTypeDetails"%} - <span>{{ job.type_details|default:"N/A" }}</span>
               </p>
             </div>
             {% endfor %}
@@ -404,16 +412,8 @@
         </div>
         <div>
           <button class="btn grey-green-button ms-2" data-bs-toggle="modal" data-bs-target="#infoModal">
-            {% translate "workerDetailsAddInformation" %}
+            <i class="fe fe-plus"></i>{% translate "workerDetailsAddInformation" %}
           </button>
-          {% if preferences %}
-            <button class="btn btn-sm red-button" data-bs-toggle="modal" data-bs-target="#deleteAllInfoModal">
-              {% translate "webCommonDelete" %}
-            </button>
-            <!-- <i class="fa fa-trash text-danger" style="cursor: pointer; font-size: 20px;padding-left:10px;"
-              data-bs-toggle="modal" data-bs-target="#deleteAllInfoModal" title="Delete">
-            </i> -->
-          {% endif %}
         </div>
       </div>
 
@@ -551,6 +551,8 @@
             <div class="value">
                {% if preferences.whereYouWantToWork %}
                   {{ preferences.whereYouWantToWork }}
+                {% else %}
+                  N/A
                 {% endif %}
             </div>
           </div>
@@ -560,6 +562,8 @@
             <div class="value">
               {% if preferences.kindOfWork %}
               {{ preferences.kindOfWork }}
+              {% else %}
+              N/A
               {% endif %}
             </div>
           </div>
@@ -569,6 +573,8 @@
             <div class="value">
               {% if preferences.availability %}
               {{ preferences.availability }}
+              {% else %}
+              N/A
               {% endif %}
             </div>
           </div>
@@ -578,8 +584,9 @@
             <div class="value">
               {% if preferences.healthStatus %}
               {{ preferences.healthStatus }}
+              {% else %}
+              N/A
               {% endif %}
-              
             </div>
           </div>
 
@@ -588,6 +595,8 @@
             <div class="value">
               {% if preferences.HealthCondition %}
               {{ preferences.HealthCondition }}
+              {% else %}
+              N/A
               {% endif %}
             </div>
           </div>
@@ -597,6 +606,8 @@
             <div class="value">
               {% if preferences.sufferedInjury %}
               {{ preferences.sufferedInjury }}
+              {% else %}
+              N/A
               {% endif %}
             </div>
           </div>
@@ -606,6 +617,8 @@
             <div class="value">
               {% if preferences.longerPeriodsOfTime %}
               {{ preferences.longerPeriodsOfTime }}
+              {% else %}
+              N/A
               {% endif %}
             </div>
           </div>
@@ -615,6 +628,8 @@
             <div class="value">
               {% if preferences.consent %}
               {{ preferences.consent }}
+              {% else %}
+              N/A
               {% endif %}
             </div>
           </div>
@@ -624,6 +639,8 @@
             <div class="value">
               {% if preferences.physicalActivities %}
               {{ preferences.physicalActivities }}
+              {% else %}
+              N/A
               {% endif %}
             </div>
           </div>
@@ -633,10 +650,12 @@
             <div class="value">
               {% if preferences.workEnvironment %}
               {{ preferences.workEnvironment }}
+              {% else %}
+              N/A
               {% endif %}
             </div>
           </div>
-        </div> 
+        </div>
       </div>
     </div>
 

@@ -1,0 +1,61 @@
+{% load i18n %}
+
+<div class="modal fade" id="editModal{{ employer.id }}" tabindex="-1" aria-labelledby="editModalLabel{{ employer.id }}" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form method="POST" action="{% url 'recruiting_web:employer_edit' employer.id %}">
+            {% csrf_token %}
+            <div class="modal-header">
+              <h5 class="modal-title" id="editModalLabel{{ employer.id }}">{% translate "employersEditEmployer" %}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'employersClose'%}"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="name{{ employer.id }}" class="form-label">{% translate "employersName" %}</label>
+                <input type="text" class="form-control" id="name{{ employer.id }}" name="name" value="{{ employer.name }}">
+              </div>
+              <div class="mb-3">
+                <label for="email{{ employer.id }}" class="form-label">{% translate "employersEmail" %}</label>
+                <input type="email" class="form-control" id="email{{ employer.id }}" name="email" value="{{ employer.email }}">
+              </div>
+              <div class="mb-3">
+                <label for="phone{{ employer.id }}" class="form-label">{% translate "employersPhone" %}</label>
+                <input type="text" class="form-control" id="phone{{ employer.id }}" name="phone" value="{{ employer.phone }}">
+              </div>
+              <div class="mb-3">
+                <label for="website{{ employer.id }}" class="form-label">{% translate "employersWebsite" %}</label>
+                <input type="url" class="form-control" id="website{{ employer.id }}" name="website" value="{{ employer.website }}">
+              </div>
+              <div class="mb-3">
+                <label for="address{{ employer.id }}" class="form-label">{% translate "employersAddress" %}</label>
+                <input type="text" class="form-control" id="address{{ employer.id }}" name="address" value="{{ employer.address }}">
+              </div>
+              <div class="mb-3">
+                <label for="city{{ employer.id }}" class="form-label">{% translate "employersCity" %}</label>
+                <input type="text" class="form-control" id="city{{ employer.id }}" name="city" value="{{ employer.city }}">
+              </div>
+              <div class="mb-3">
+                <label for="state{{ employer.id }}" class="form-label">{% translate "employersState" %}</label>
+                <input type="text" class="form-control" id="state{{ employer.id }}" name="state" value="{{ employer.state }}">
+              </div>
+              <div class="mb-3">
+                <label for="country{{ employer.id }}" class="form-label">{% translate "employersCountry" %}</label>
+                <input type="text" class="form-control" id="country{{ employer.id }}" name="country" value="{{ employer.country }}">
+              </div>
+              <div class="mb-3">
+                <label for="zip_code{{ employer.id }}" class="form-label">{% translate "employersZipCode" %}</label>
+                <input type="text" class="form-control" id="zip_code{{ employer.id }}" name="zip_code" value="{{ employer.zip_code }}">
+              </div>
+              <div class="mb-3">
+                <label for="description{{ employer.id }}" class="form-label">{% translate "employersDescription" %}</label>
+                <textarea class="form-control" id="description{{ employer.id }}" name="description">{{ employer.description }}</textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'employersCancel' %}</button>
+              <button type="submit" class="btn light-green-button">{% translate 'employersSave' %}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
