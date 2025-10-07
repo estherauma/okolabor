@@ -777,6 +777,17 @@ function handleFilterChange(selectEl, uniqueId) {
             break;
 
         case "visa":
+            html = `
+                <div class="form-group">
+                    <label class="form-label gray-color">{%translate "filterSectionHasHadH-2AVisa"%}</label>
+                    <select class="form-control" name="visa_${uniqueId}" onchange="updateCollapseSummary()">
+                        <option value="">{% translate "filterSectionSelect" %}</option>
+                        <option value="yes">{% translate "filterSectionYes" %}</option>
+                        <option value="no">{% translate "filterSectionNo" %}</option>
+                    </select>
+                </div>
+            `;
+            break;
         case "explanation_video":
             html = `
                 <div class="form-group">
