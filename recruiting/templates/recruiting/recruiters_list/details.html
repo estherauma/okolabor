@@ -15,13 +15,6 @@
 <div class="page-header">
  <div>
  </div>
- <button class="btn dark-green-button"
-        data-bs-toggle="modal"
-        data-bs-target="#assignContactModal"
-        id="assignContactBtn"
-        data-employer-id="{{ recruiter.id }}">
-    {% translate "assignUser" %}
-</button>
 </div>
 
 <div class="row">
@@ -71,219 +64,244 @@
       </div>
     </div>
   </div>
-  <div class="col-md-8">
-<h3>{% translate "recruiterDetailsContacts" %}</h3>
-
-<div class="modal fade" id="assignContactModal" tabindex="-1" aria-labelledby="assignContactLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <form method="POST" id="assignContactForm">
-          {% csrf_token %}
-          <div class="modal-header">
-            <h5 class="modal-title" id="assignContactLabel">{% translate "employerDetailsAssignUser" %}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'employerDetailsClose' %}"></button>
-          </div>
-          <input type="hidden" id="employerIdField" name="employer_id">
-          <div class="modal-body">
-            <input type="hidden" id="selectedEmployersForContact" name="selected_employers">
-
-            <div class="mb-3">
-              <label for="userSelect" class="form-label">{% translate "recruiterDetailsSelectUser" %}</label>
-              <select class="form-select" id="userSelect" name="user_id" required>
-                <option value="">{% translate "recruiterDetailsChooseUser" %}</option>
-                {% for user in users %}
-                  <option value="{{ user.id }}">{{ user.get_full_name }} ({{ user.email }})</option>
-                {% endfor %}
-              </select>
+  <div class="col-md-12">
+    <!-- Recruiter contacts -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="table-responsive">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>{% translate "recruiterDetailsContacts"%}</h3>
+              <button class="btn dark-green-button" data-bs-toggle="modal" data-bs-target="#assignContactModal" id="assignContactBtn"
+                data-employer-id="{{ recruiter.id }}">
+                {% translate "assignUser" %}
+              </button>
+              </div>
+              <table class="table text-nowrap border-bottom" id="employerUsers">
+                <thead>
+                  <tr>
+                    <th class="theading-color">{% translate "employerDetailsCUserName"%}</th>
+                    <th class="theading-color">{% translate "recruiterDetailsEmail"%}</th>
+                    <th class="theading-color">{% translate "recruiterDetailsPhone"%}</th>
+                    <th class="theading-color">{% translate "employerDetailsCCreated"%}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for contact in contacts %}
+                  <tr class="text-center" data-id="{{ work_request.id }}">
+                    <td>
+                      <a href="{% url 'recruiting_web:contact_work_requests' contact.id %}" class="text-decoration-none text-dark">
+                        {{ contact.get_full_name }}
+                      </a>
+                    </td>
+                    <td>{{ contact.email }} </td>
+                    <td>{{ contact.phone|default:"N/A" }} </td>
+                    <td>{{ contact.created_at }}</td>
+                  </tr>        
+                  {% endfor %}
+                </tbody>
+              </table>
             </div>
-
-            <div class="mb-3">
-              <label for="contactPosition" class="form-label">{% translate "employerDetailsPosition" %}</label>
-              <input type="text" class="form-control" id="contactPosition" name="position">
-            </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="true" id="isPrimary" name="is_primary">
-              <label class="form-check-label" for="isPrimary">
-                {% translate "employerDetailsIsPrimaryContact" %}
-              </label>
-            </div>
           </div>
+        </div>
+      </div>
+      <!-- Assign Contact Modal -->
+      <div class="modal fade" id="assignContactModal" tabindex="-1" aria-labelledby="assignContactLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form method="POST" id="assignContactForm" action="">
+              {% csrf_token %}
+              <div class="modal-header">
+                <h5 class="modal-title" id="assignContactLabel">{% translate "employerDetailsAssignUser" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'employerDetailsClose' %}"></button>
+              </div>
+              <input type="hidden" id="employerIdField" name="employer_id">
+              <div class="modal-body">
+                <input type="hidden" id="selectedEmployersForContact" name="selected_employers">
 
-          <div class="modal-footer">
-            <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate "employerDetailsCancel" %}</button>
-            <button type="submit" class="btn light-green-button" id="assignContactBtn">
-              {% translate "employerDetailsSave" %}
-            </button>
+                <div class="mb-3">
+                  <label for="userSelect" class="form-label">{% translate "recruiterDetailsSelectUser" %}</label>
+                  <select class="form-select" id="userSelect" name="user_id" required>
+                    <option value="">{% translate "recruiterDetailsChooseUser" %}</option>
+                    {% for user in users %}
+                      <option value="{{ user.id }}">{{ user.get_full_name }} ({{ user.email }})</option>
+                    {% endfor %}
+                  </select>
+                </div>
 
+                <div class="mb-3">
+                  <label for="contactPosition" class="form-label">{% translate "employerDetailsPosition" %}</label>
+                  <input type="text" class="form-control" id="contactPosition" name="position">
+                </div>
+
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="true" id="isPrimary" name="is_primary">
+                  <label class="form-check-label" for="isPrimary">
+                    {% translate "employerDetailsIsPrimaryContact" %}
+                  </label>
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate "employerDetailsCancel" %}</button>
+                <button type="submit" class="btn light-green-button" id="assignContactBtn">
+                  {% translate "employerDetailsSave" %}
+                </button>
+
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
     </div>
-</div>
-<div class="d-flex flex-wrap gap-3">
-    {% for contact in contacts %}
-    <a href="{% url 'recruiting_web:contact_work_requests' contact.id %}" class="text-decoration-none text-dark">
-        <div class="card shadow-sm p-3" style=" cursor: pointer;">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+              <div class="table-responsive">
+                <h3>{% translate "employerDetailsWorkRequests"%}</h3>
+                  <table class="table text-nowrap border-bottom" id="work-requests-list-datatable">
+                      <thead>
+                          <tr>
+                              <th class="theading-color">{% translate "recruiterDetailsWorkRequestID" %}</th>
+                              <th class="theading-color">{% translate "recruiterDetailsStartDate" %}</th>
+                              <th class="theading-color">{% translate "recruiterDetailsEndDate" %}</th>
+                              <th class="theading-color">{% translate "recruiterDetailsEmployerAminListEmployer" %}</th>
+                              <th class="theading-color">{% translate "recruiterDetailsStatus" %}</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {% for work_request in work_requests %}
+                          <tr class="text-center" data-id="{{ work_request.id }}">
+                              <td>
+                                  <a href="{% url 'recruiting_web:workrequest_detail' work_request.id %}" class="text-decoration-none text-dark">
+                                      {{ work_request.name}}
+                                  </a>
+                              </td>
+                              <td>{{ work_request.start_date }}</td>
+                              <td>
+                                  {% if work_request.end_date %}
+                                      {{ work_request.end_date }}
+                                  {% else %}
+                                      N/A
+                                  {% endif %}
+                              </td>
+                              <td>
+                                  <a href="{% url 'recruiting_web:employer_detail' work_request.employer.id %}" class="text-decoration-none text-dark">
+                                      {{ work_request.employer.name }}
+                                  </a>
+                              </td>
+                              <td>
+                                  <span>{{ work_request.status }}</span>
+                              </td>
+                          </tr>
+                          {% empty %}
+                          <tr>
+                              <td colspan="5" class="text-center">{% translate "recruiterDetailsNoWorkRequestsAvailable" %}</td>
+                          </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+        </div>
+      </div>
+
+        <!-- New Card for Assigned Recruiters -->
+        <div class="col-12 mt-4">
+          <div class="card">
             <div class="card-body">
-                <h5 class="card-title">{{ contact.get_full_name }}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">
-                    {{ contact.position|default:"No position specified" }}
-                </h6>
-                <p class="card-text">
-                  <strong>{% translate "recruiterDetailsEmail" %}:</strong> {{ contact.email }}<br>
-                  <strong>{% translate "recruiterDetailsPhone" %}:</strong> {{ contact.phone|default:"N/A" }}
-                </p>
-            </div>
-        </div>
-    </a>
-    {% empty %}
-        <p>{% translate "recruiterDetailsNoContactsAvailable" %}</p>
-    {% endfor %}
-</div>
-<div class="row">
-    <div class="col-12">
-      <div class="card">
-        <div class="card-body">
-            <div class="table-responsive">
-                <h3></h3>
-                <table class="table text-nowrap border-bottom" id="work-requests-list-datatable">
-                    <thead>
-                        <tr>
-                            <th class="theading-color">{% translate "recruiterDetailsWorkRequestID" %}</th>
-                            <th class="theading-color">{% translate "recruiterDetailsStartDate" %}</th>
-                            <th class="theading-color">{% translate "recruiterDetailsEndDate" %}</th>
-                            <th class="theading-color">{% translate "recruiterDetailsEmployerAminListEmployer" %}</th>
-                            <th class="theading-color">{% translate "recruiterDetailsStatus" %}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for work_request in work_requests %}
-                        <tr class="text-center" data-id="{{ work_request.id }}">
-                            <td>
-                                <a href="{% url 'workrequest_detail' work_request.id %}" class="text-decoration-none text-dark">
-                                    {{ work_request.name }}
-                                </a>
-                            </td>
-                            <td>{{ work_request.start_date }}</td>
-                            <td>
-                                {% if work_request.end_date %}
-                                    {{ work_request.end_date }}
-                                {% else %}
-                                    N/A
-                                {% endif %}
-                            </td>
-                            <td>
-                                <a href="{% url 'employer_detail' work_request.recruiter.id %}" class="text-decoration-none text-dark">
-                                    {{ work_request.recruiter.name }}
-                                </a>
-                            </td>
-                            <td>
-                                <span>{{ work_request.status }}</span>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="5" class="text-center">{% translate "recruiterDetailsNoWorkRequestsAvailable" %}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- New Card for Assigned Recruiters -->
-    <div class="col-12 mt-4">
-      <div class="card">
-        <div class="card-body">
-          <h3>{% translate "recruiterDetailsAssignedEmployers" %}</h3>
-            <div class="table-responsive">
-                <table class="table text-nowrap border-bottom" id="assigned-orgs-table">
-                    <thead>
-                        <tr>
-                            
-                            <th class="theading-color">{% translate "recruiterDetailsName" %}</th>
-                            <th class="theading-color">{% translate "recruiterDetailsEmail" %}</th>
-                            <th class="theading-color">{% translate "recruiterDetailsAddress" %}</th>
-                            <th class="theading-color">{% translate "recruiterDetailsCountry" %}</th>
-                            <th class="theading-color">{% translate "recruiterDetailsPhone" %}</th>
-                            <th class="theading-color">{% translate "recruiterDetailsAssignedEmployers" %}</th>
-                            {% if request.user|has_group:"admin" %}
-                                <th class="theading-color">
-                                    {% translate "recruiterDetailsActions" %}
-                                </th>
-                            {% endif %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for org in employer_organizations %}
-                        <tr class="text-center">
-                            <td>{{ org.name }}</td>
-                            <td>{{ org.email }}</td>
-                            <td>{{ org.address }}</td>
-                            <td>{{ org.country }}</td>
-                            <td>{{ org.phone }}</td>
-                            <td>
-                            {% if org.recruiters %}
-                                {% for recruiter_name in org.recruiters %}
-                                    {{ recruiter_name }}{% if not forloop.last %}, {% endif %}
-                                {% endfor %}
-                            {% else %}
-                                {% translate 'recruiterDetailsNoRecruiters'%}
-                            {% endif %}
-                            </td>
-                            {% if request.user|has_group:"admin" %}
-                                <td>
-                                <i
-                                    class="fa fa-trash text-danger"
-                                    style="cursor: pointer;"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal{{ org.id }}"
-                                    title="{% translate 'recruiterDetailsDelete'%}">
-                                </i>
+              <h3>{% translate "recruiterDetailsAssignedEmployers" %}</h3>
+                <div class="table-responsive">
+                    <table class="table text-nowrap border-bottom" id="assigned-orgs-table">
+                        <thead>
+                            <tr>
                                 
+                                <th class="theading-color">{% translate "recruiterDetailsName" %}</th>
+                                <th class="theading-color">{% translate "recruiterDetailsEmail" %}</th>
+                                <th class="theading-color">{% translate "recruiterDetailsAddress" %}</th>
+                                <th class="theading-color">{% translate "recruiterDetailsCountry" %}</th>
+                                <th class="theading-color">{% translate "recruiterDetailsPhone" %}</th>
+                                <th class="theading-color">{% translate "recruiterDetailsAssignedEmployers" %}</th>
+                                {% if request.user|has_group:"admin" %}
+                                    <th class="theading-color">
+                                        {% translate "recruiterDetailsActions" %}
+                                    </th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for org in employer_organizations %}
+                            <tr class="text-center">
+                                <td>
+                                <a href="{% url 'recruiting_web:employer_detail' org.id %}" class="text-decoration-none text-dark">
+                                  {{ org.name }}
+                                  </a>
                                 </td>
-                            {% endif %}
-                        </tr>
-                        {% empty %}
-                        <tr><td colspan="6" class="text-center">{% translate "recruiterDetailsNoEmployerOrganizationsAssigned" %}</td></tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                                <td>{{ org.email }}</td>
+                                <td>{{ org.address }}</td>
+                                <td>{{ org.country }}</td>
+                                <td>{{ org.phone }}</td>
+                                <td>
+                                {% if org.recruiters %}
+                                    {% for recruiter_name in org.recruiters %}
+                                        {{ recruiter_name }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    {% translate 'recruiterDetailsNoRecruiters'%}
+                                {% endif %}
+                                </td>
+                                {% if request.user|has_group:"admin" %}
+                                    <td>
+                                    <i
+                                        class="fa fa-trash text-danger"
+                                        style="cursor: pointer;"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteModal{{ org.id }}"
+                                        title="{% translate 'recruiterDetailsDelete'%}">
+                                    </i>
+                                    
+                                    </td>
+                                {% endif %}
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="6" class="text-center">{% translate "recruiterDetailsNoEmployerOrganizationsAssigned" %}</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
+          </div>
         </div>
-      </div>
     </div>
-</div>
 
-{% for org in employer_organizations %}
-  {% if org.id %}
-    <!-- Delete Modal -->
-    <div class="modal fade" id="deleteModal{{ org.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ org.id }}" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <form method="POST" action="{% url 'recruiting_web:delete_employer_org_from_recruiter' recruiter.id org.id %}">
-            {% csrf_token %}
-            <div class="modal-header" style="background-color: #7DBF96;">
-              <h5 class="modal-title text-white" id="deleteModalLabel{{ org.id }}">{% translate "recruiterDetailsConfirmDelete" %}</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              {% translate 'webCommonConfirmDelete' %} <strong>{{ org.name }}</strong>?
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'recruiterDetailsCancel' %}</button>
-              <button type="submit" class="btn red-button">{% translate 'recruiterDetailsDelete' %}</button>
-            </div>
-          </form>
+  {% for org in employer_organizations %}
+    {% if org.id %}
+      <!-- Delete Modal -->
+      <div class="modal fade" id="deleteModal{{ org.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ org.id }}" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form method="POST" action="{% url 'recruiting_web:delete_employer_org_from_recruiter' recruiter.id org.id %}">
+              {% csrf_token %}
+              <div class="modal-header" style="background-color: #7DBF96;">
+                <h5 class="modal-title text-white" id="deleteModalLabel{{ org.id }}">{% translate "recruiterDetailsConfirmDelete" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                {% translate 'webCommonConfirmDelete' %} <strong>{{ org.name }}</strong>?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'recruiterDetailsCancel' %}</button>
+                <button type="submit" class="btn red-button">{% translate 'recruiterDetailsDelete' %}</button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
+    {% endif %}
+  {% endfor %}
     </div>
-  {% endif %}
-{% endfor %}
-  </div>
 </div>
 
 {% include 'recruiting/recruiters_list/edit-modal.html' %}
@@ -322,5 +340,5 @@
 <script src="{% static 'assets/js/table-data.js' %}">
 </script>
 <script src="{% static 'assets/js/table-sorting.js' %}"></script>
-<script src="{% static ''%}assets/js/assign_contact_recruiter.js"></script>
+<script src="{% static 'assets/js/assign_contact_employer.js' %}"></script>
 {% endblock scripts %}
