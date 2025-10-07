@@ -540,15 +540,6 @@ function updateCollapseSummary() {
             if (minVal && maxVal) valueText = `${minVal} - ${maxVal}`;
             else if (minVal) valueText = `Min ${minVal}`;
             else if (maxVal) valueText = `Max ${maxVal}`;
-        } else if (selectFilter.value === 'exclude_physical_limitations') {
-            const questionSelect = row.querySelector(`select[name^="physical_limitation_question_"]`);
-            const answerSelect = row.querySelector(`#physical-yesno-container-${selectFilter.getAttribute('onchange').match(/\d+/)?.[0]} select`);
-            const questionText = questionSelect?.options[questionSelect.selectedIndex]?.text?.trim();
-            const answerText = answerSelect?.options[answerSelect.selectedIndex]?.text?.trim();
-            if (questionText && answerText) {
-                valueText = `${questionText}: ${answerText}`;
-            }
-        } else {
             const selectsAndInputs = row.querySelectorAll('.col-md-6 select, .col-md-6 input');
             selectsAndInputs.forEach(input => {
                 if (input.tagName === 'SELECT') {
@@ -732,17 +723,13 @@ function handleFilterChange(selectEl, uniqueId) {
         case "exclude_physical_limitations":
             html = `
                 <div class="form-group">
-                    <label class="form-label gray-color">{% translate "filterSectionSelectaPhysicalLimitationQuestion" %}</label>
-                    <select class="form-control" name="physical_limitation_question_${uniqueId}" onchange="handlePhysicalQuestionChange(this, ${uniqueId});updateCollapseSummary();">
+                    <label class="form-label gray-color">{% translate "filterSectionExcludeWorkersWithPhysicalLimitations" %}</label>
+                    <select class="form-control" name="exclude_physical_limitations_${uniqueId}" onchange="updateCollapseSummary()">
                         <option value="">{% translate "filterSectionSelect" %}</option>
-                        <option value="condition_limit">{% translate "filterSectionDoYouHaveAnyPhysicalOrMentalConditionThatCouldLimitYouAndShouldBeConsideredForALaborIntensiveJob" %}</option>
-                        <option value="injury_aggravation">{% translate "filterSectionHaveYouSufferedAnInjuryThatCouldBeAggravatedByIntensePhysicalActivity" %}</option>
-                        <option value="stand_long">{% translate "filterSectionAreYouWillingAndAbleToWorkOnYourFeetForLongPeriodsOfTime" %}</option>
-                        <option value="lift_weight">{% translate "filterSectionAreYouWillingAndAbleToLiftCarryUpTo60Pounds27kg" %}</option>
-                        <option value="extreme_temps">{% translate "filterSectionAreYouUnwillingToWorkInEitherHotOrColdTemperatures" %}</option>
+                        <option value="yes">{% translate "filterSectionYes" %}</option>
+                        <option value="no">{% translate "filterSectionNo" %}</option>
                     </select>
                 </div>
-                <div class="form-group mt-2" id="physical-yesno-container-${uniqueId}"></div>
             `;
             break;
 
@@ -804,7 +791,6 @@ function handleFilterChange(selectEl, uniqueId) {
         case "h2a_experience":
         case "h2b_experience":
         case "work_pictures":
-        case "exclude_physical_limitations":
         case "passport":
         case "us_driving_license":
         case "mx_us_driving_license":
@@ -827,22 +813,6 @@ function handleFilterChange(selectEl, uniqueId) {
     extraFieldsContainer.innerHTML = html;
 }
 
-function handlePhysicalQuestionChange(selectEl, uniqueId) {
-    const yesNoContainer = document.getElementById(`physical-yesno-container-${uniqueId}`);
-    if (selectEl.value) {
-        yesNoContainer.innerHTML = `
-            <label class="form-label gray-color">{% translate "filterSectionYourAnswer" %}</label>
-            <select class="form-control" name="${selectEl.value}_answer_${uniqueId}" onchange="updateCollapseSummary()">
-                <option value="">{% translate "filterSectionSelect" %}</option>
-                <option value="yes">{% translate "filterSectionYes" %}</option>
-                <option value="no">{% translate "filterSectionNo" %}</option>
-            </select>
-        `;
-    } else {
-        yesNoContainer.innerHTML = "";
-    }
-    updateCollapseSummary();
-}
 
 function handleLanguageProficiencyChange(selectEl, uniqueId) {
     const videoContainer = document.getElementById(`language-video-container-${uniqueId}`);
