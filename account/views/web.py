@@ -540,6 +540,7 @@ class LogListView(LoginRequiredMixin, ListView):
     model = Log
     template_name = 'userlogs/logs.html'
     context_object_name = 'logs'
+    paginate_by = 1000
 
     def get_queryset(self):
         user = self.request.user

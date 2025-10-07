@@ -710,6 +710,7 @@ class WorkerDetailsView(View):
         ).order_by('-assigned_date').first()
 
         current_status = latest_assignment.status if latest_assignment else 'No Assignment'
+        worker.level_of_language_proficiency = preference_data.get('level')
         context = {
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
             'worker': worker,
