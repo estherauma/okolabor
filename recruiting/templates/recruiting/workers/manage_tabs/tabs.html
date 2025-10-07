@@ -60,26 +60,35 @@
                     <!-- Dynamic Filter Inputs -->
                     <div id="filter-inputs-container">
                         <div class="job-experience-form">
-                            <div class="row align-items-center">
-                                {% for field in form %}
-                                        <div class="col-3">
-                                            <div class="form-group">
-                                                <label class="form-label gray-color text" for="{{ field.id_for_label }}">
-                                                    {% translate field.label %}
-                                                </label>
-                                                {{ field }}
-                                            </div>
-                                        </div>
-                                    {% endfor %}
-
-                                <div class="col-auto">
-                                    <div class="col-auto removeFilterButton2">
-                                                <button class="btn close " type="button" onclick="removeForm(this)">
-                                                    &times;
-                                                </button>
+                            <!-- Job Experience Filter Row -->
+                            <div class="row align-items-center g-2">
+                                <!-- Type/Sector select -->
+                                <div class="col-12 col-sm-6 col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label gray-color text" for="{{ form.type_sector.id_for_label }}">{% translate form.type_sector.label %}</label>
+                                        {{ form.type_sector }}
+                                    </div>
+                                </div>
+                                <!-- Close button -->
+                                <div class="col-auto removeFilterButton2 d-flex align-items-center mt-3">
+                                    <button class="btn btn-sm close mt-2" type="button" onclick="removeForm(this)">&times;</button>
+                                </div>
+                                <!-- Dynamic field 1 -->
+                                <div class="col-12 col-sm-6 col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label gray-color text" for="{{ form.dynamic_field_1.id_for_label }}">{% translate form.dynamic_field_1.label %}</label>
+                                        {{ form.dynamic_field_1 }}
+                                    </div>
+                                </div>
+                                <!-- Dynamic field 2 -->
+                                <div class="col-12 col-sm-6 col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label gray-color text" for="{{ form.dynamic_field_2.id_for_label }}">{% translate form.dynamic_field_2.label %}</label>
+                                        {{ form.dynamic_field_2 }}
                                     </div>
                                 </div>
                             </div>
+                            <!-- /Job Experience Filter Row -->
                         </div>
                     </div>
             
@@ -125,8 +134,8 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-auto">
-                            <button class="btn close" type="button" onclick="removeFilterRow(this)">
+<div class="col-auto mt-3 removeFilterButton">
+                            <button class="btn btn-sm close mt-2" type="button" onclick="removeFilterRow(this)">
                                 &times;
                             </button>
                         </div>
@@ -152,25 +161,37 @@
             <!-- Hidden template for dynamic form cloning -->
             <div id="form-template" style="display: none;">
                 <div class="job-experience-form">
-                    <div class="row align-items-center">
-                        {% for field in form %}
-                        <div class="col">
+                    <!-- Job Experience Filter Row (Template) -->
+                    <div class="row align-items-center g-2">
+                        <!-- Type/Sector select -->
+                        <div class="col-12 col-sm-6 col-md-3">
                             <div class="form-group">
-                                <label class="form-label gray-color text" for="{{ field.id_for_label }}">
-                                    {% translate field.label %}
-                                </label>
-                                {{ field }}
+                                <label class="form-label gray-color text" for="{{ form.type_sector.id_for_label }}">{% translate form.type_sector.label %}</label>
+                                {{ form.type_sector }}
                             </div>
                         </div>
-                        {% endfor %}
-                        <div class="col-auto removeFilterButton2">
-                            <button class="btn close" type="button" onclick="removeForm(this)">
-                                  &times;
-                            </button>
+                        <!-- Close button -->
+                        <div class="col-auto removeFilterButton2 d-flex align-items-center mt-3">
+                            <button class="btn btn-sm close mt-2" type="button" onclick="removeForm(this)">&times;</button>
+                        </div>
+                        <!-- Dynamic field 1 -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="form-group">
+                                <label class="form-label gray-color text" for="{{ form.dynamic_field_1.id_for_label }}">{% translate form.dynamic_field_1.label %}</label>
+                                {{ form.dynamic_field_1 }}
+                            </div>
+                        </div>
+                        <!-- Dynamic field 2 -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="form-group">
+                                <label class="form-label gray-color text" for="{{ form.dynamic_field_2.id_for_label }}">{% translate form.dynamic_field_2.label %}</label>
+                                {{ form.dynamic_field_2 }}
+                            </div>
                         </div>
                     </div>
+                    <!-- /Job Experience Filter Row (Template) -->
                 </div>
-            </div>  
+            </div>
     </div>    
 </div>
    
