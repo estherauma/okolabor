@@ -40,6 +40,7 @@ function bindDynamicFieldEvents() {
 
     const dynamicSelectors = document.querySelectorAll('select[id$="id_dynamic_field_1"], select[id$="id_dynamic_field_2"]');
     dynamicSelectors.forEach(selector => {
+        selector.parentElement.style.display = 'none';
         selector.style.display = 'none';  
     });
 }
