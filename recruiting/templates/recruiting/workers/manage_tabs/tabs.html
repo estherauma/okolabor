@@ -14,6 +14,26 @@
 .select2-container--default .select2-selection--single {
     background-color: white !important;
 }
+/* Ensure equal column widths for Select Filter and extra fields */
+#dynamic-random-filters .filter-row .select-col,
+#dynamic-random-filters .filter-row .extra-col {
+    flex: 0 0 33.3333%;
+    max-width: 33.3333%;
+}
+@media (max-width: 991.98px) {
+    #dynamic-random-filters .filter-row .select-col,
+    #dynamic-random-filters .filter-row .extra-col {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+@media (max-width: 575.98px) {
+    #dynamic-random-filters .filter-row .select-col,
+    #dynamic-random-filters .filter-row .extra-col {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
 </style>
 {% endblock styles %}
 
@@ -98,7 +118,7 @@
                     </div>
                      <div id="dynamic-random-filters">
                     <div class="row align-items-center filter-row">
-                        <div class="col-md-4 col-sm-6 col-xs-6">
+<div class="col-md-4 col-sm-6 col-xs-6 select-col">
                             <div class="form-group">
                                 <label class="form-label gray-color">
                                     {% translate "filterSectionSelectFilter" %}
@@ -631,7 +651,7 @@ function addRandomFilter() {
         optionsHtml += `<option value="${opt.value}">${opt.label}</option>`;
     });
     row.innerHTML = `
-        <div class="col-md-4 col-sm-6 col-xs-6">
+<div class="col-md-4 col-sm-6 col-xs-6 select-col">
             <div class="form-group">
                 <label class="form-label gray-color">
                     {% translate "filterSectionSelectFilter" %}
@@ -642,7 +662,7 @@ function addRandomFilter() {
 
             </div>
         </div>
-        <div class="col-md-6" id="extra-fields-${uniqueId}"></div>
+<div class="col-md-4 col-sm-6 col-xs-6 extra-col" id="extra-fields-${uniqueId}"></div>
         <div class="col-auto mt-3 removeFilterButton">
             <button class="btn btn-sm close mt-2" type="button" onclick="removeFilterRow(this)">
                 &times;
@@ -678,11 +698,9 @@ function handleFilterChange(selectEl, uniqueId) {
 
         case "years_of_experience":
             html = `
-                <div class="row">
-                    <div class="col">
-                        <label class="form-label gray-color">{% translate "filterSectionMin" %}</label>
-                        <input type="number" class="form-control" name="${selectedValue}_min_${uniqueId}" min="0" onchange="updateCollapseSummary()" />
-                    </div>
+                <div class="form-group mb-0">
+                    <label class="form-label gray-color">{% translate "filterSectionMin" %}</label>
+                    <input type="number" class="form-control" name="${selectedValue}_min_${uniqueId}" min="0" onchange="updateCollapseSummary()" />
                 </div>`;
                 break;
         case "age":
