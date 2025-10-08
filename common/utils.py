@@ -14,7 +14,7 @@ class StaticContent:
             self._content = {}
             if apps.ready:
                 try:
-                    aggregated = AggregatedContent.objects.first()
+                    aggregated = AggregatedContent.objects.latest('created_at')
                     if aggregated:
                         self._content = aggregated.content.get(self.language, {})
                 except Exception:
