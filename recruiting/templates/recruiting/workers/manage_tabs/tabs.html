@@ -720,11 +720,11 @@ function handleFilterChange(selectEl, uniqueId) {
                     <label class="form-label gray-color">{% translate "filterSectionSelectaPhysicalLimitationQuestion" %}</label>
                         <select class="form-control" name="physical_limitation_question_${uniqueId}" onchange="handlePhysicalQuestionChange(this, ${uniqueId});updateCollapseSummary();">
                         <option value="">{% translate "filterSectionSelect" %}</option>
-                        <option value="condition_limit" title="{% translate "filterSectionDoYouHaveAnyPhysicalOrMentalConditionThatCouldLimitYouAndShouldBeConsideredForALaborIntensiveJob" %}">Condition limits labor?</option>
-                        <option value="injury_aggravation" title="{% translate "filterSectionHaveYouSufferedAnInjuryThatCouldBeAggravatedByIntensePhysicalActivity" %}">Injury aggravated by activity?</option>
-                        <option value="stand_long" title="{% translate "filterSectionAreYouWillingAndAbleToWorkOnYourFeetForLongPeriodsOfTime" %}">On feet for long periods?</option>
-                        <option value="lift_weight" title="{% translate "filterSectionAreYouWillingAndAbleToLiftCarryUpTo60Pounds27kg" %}">Lift/carry up to 60lb (27kg)?</option>
-                        <option value="extreme_temps" title="{% translate "filterSectionAreYouUnwillingToWorkInEitherHotOrColdTemperatures" %}">Work in extreme temperatures?</option>
+                        <option value="condition_limit">{% translate "filterSectionDoYouHaveAnyPhysicalOrMentalConditionThatCouldLimitYouAndShouldBeConsideredForALaborIntensiveJob" %}</option>
+                        <option value="injury_aggravation">{% translate "filterSectionHaveYouSufferedAnInjuryThatCouldBeAggravatedByIntensePhysicalActivity" %}</option>
+                        <option value="stand_long">{% translate "filterSectionAreYouWillingAndAbleToWorkOnYourFeetForLongPeriodsOfTime" %}</option>
+                        <option value="lift_weight">{% translate "filterSectionAreYouWillingAndAbleToLiftCarryUpTo60Pounds27kg" %}</option>
+                        <option value="extreme_temps">{% translate "filterSectionAreYouUnwillingToWorkInEitherHotOrColdTemperatures" %}</option>
                     </select>
                 </div>
                 <div class="form-group mt-2" id="physical-yesno-container-${uniqueId}"></div>
