@@ -215,6 +215,27 @@ class WorkerListView(View):
                     (max_exp is None or years <= max_exp)):
                     filtered.append(w)
             workers = filtered
+            
+
+        # Filter by whether user has language proficiency video
+        lang_video_filter = next((v for k, v in params.items() if k.startswith("has_language_proficiency_video") and v), None)
+        if lang_video_filter:
+            lang_video_filter = lang_video_filter.lower().strip()
+
+            if lang_video_filter == 'yes':
+                # Workers who HAVE an English proficiency video
+                workers = workers.filter(
+                    documents__kind='english_video'
+                ).exclude(documents__path__isnull=True).exclude(documents__path__exact='')
+
+            elif lang_video_filter == 'no':
+                # Workers who do NOT have an English proficiency video
+                workers = workers.exclude(
+                    documents__kind='english_video',
+                    documents__path__isnull=False,
+                ).exclude(documents__path__exact='')
+        
+            
         
         # Deduplicate workers by ID using a dictionary comprehension.
         # If duplicates exist, later workers in the list overwrite earlier ones.
