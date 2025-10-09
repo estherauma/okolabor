@@ -113,6 +113,7 @@
                                     <option value="work_preference_type">{% translate "filterSectionWorkPreferenceType" %}</option>
                                     <option value="visa">{% translate "filterSectionVisa" %}</option>
                                     <option value="explanation_video">{% translate "filterSectionExplanationVideo" %}</option>
+                                    <option value="hasLanguageProficiencyVideo">{% translate "filterSectionLanguageProficiencyVideo" %}</option>
                                 </select>
                             </div>
                         </div>
@@ -611,7 +612,8 @@ function addRandomFilter() {
         { value: "work_preference_location", label: "{% translate 'filterSectionWorkPreferenceLocation' %}" },
         { value: "work_preference_type", label: "{% translate 'filterSectionWorkPreferenceType' %}" },
         { value: "visa", label: "{% translate 'filterSectionVisa' %}" },
-        { value: "explanation_video", label: "{% translate 'filterSectionExplanationVideo' %}" }
+        { value: "explanation_video", label: "{% translate 'filterSectionExplanationVideo' %}" },
+        { value: "has_language_proficiency_video", label: "{% translate 'filterSectionLanguageProficiencyVideo' %}" }
  ];
     filterOptions.sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: 'base' }));
     let optionsHtml = `<option value="">{% translate "filterSectionChooseAFilter" %}</option>`;
@@ -803,6 +805,7 @@ function handleFilterChange(selectEl, uniqueId) {
         case "exclude_physical_limitations":
         case "passport":
         case "us_driving_license":
+        case "has_language_proficiency_video":
         case "mx_us_driving_license":
             html = `
                 <div class="form-group">
@@ -814,8 +817,6 @@ function handleFilterChange(selectEl, uniqueId) {
                     </select>
                 </div>`;
             break;
-                
-
         default:
             html = "";
     }
