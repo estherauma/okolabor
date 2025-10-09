@@ -48,10 +48,9 @@
                     {% translate "workersListWhat'sThis?" %}
                 </button>
             </span>
-    
-            <div id="form-container">
-                <!-- Combined Filter Form -->
-                <form method="get" id="filter-form">
+
+            <form method="get" id="filter-form">
+                <div id="form-container">
                     <!-- Dynamic Filter Inputs -->
                     <div id="filter-inputs-container">
                         <div class="job-experience-form">
@@ -81,17 +80,18 @@
                                         <label class="form-label gray-color text" for="{{ form.dynamic_field_2.id_for_label }}">{% translate form.dynamic_field_2.label %}</label>
                                         {{ form.dynamic_field_2 }}
                                     </div>
+                                </div>
                             </div>
                             <!-- /Job Experience Filter Row -->
                         </div>
                     </div>
-            
+
                     <!-- Add Another Filter Button -->
                     <button class="btn light-green-button min-content-width mt-3" type="button" onclick="addAnotherExperience()">
-                     <i class="fe fe-plus"></i>   {% translate "workersListTabsAddAnotherExperience" %}
+                        <i class="fe fe-plus"></i> {% translate "workersListTabsAddAnotherExperience" %}
                     </button>
-            
-                    <!-- Additional Filters Section (Previously separate) -->
+
+                    <!-- Additional Filters Section -->
                     <div class="form-row align-items-center">
                         <span class="mt-5 ms-2 mb-3">
                             <h3 class="card-title green-color d-contents">
@@ -99,59 +99,57 @@
                             </h3>
                         </span>
                     </div>
-                     <div id="dynamic-random-filters">
-                    <div class="row align-items-center filter-row">
-                        <div class="col-3">
-                            <div class="form-group">
-                                <label class="form-label gray-color">
-                                    {% translate "filterSectionSelectFilter" %}
-                                </label>
-                                <select class="form-control" name="random_filter">
-                                    <option value="">{% translate "filterSectionChooseAFilter" %}</option>
-                                    <option value="years_of_experience">{% translate "filterSectionYearsofExperience" %}</option>
-                                    <option value="references">{% translate "filterSectionReferences" %}</option>
-                                    <option value="availability">{% translate "filterSectionAvailability" %}</option>
-                                    <option value="h2a_experience">{% translate "filterSectionH-2AExperience" %}</option>
-                                    <option value="h2b_experience">{% translate "filterSectionH-2BExperience" %}</option>
-                                    <option value="work_pictures">{% translate "filterSectionRelevantWorkPictures" %}</option>
-                                    <option value="exclude_physical_limitations">{% translate "filterSectionExcludeWorkerswithPhysicalLaborLimitations" %}</option>
-                                    <option value="age">{% translate "filterSectionAge" %}</option>
-                                    <option value="gender">{% translate "filterSectionGender" %}</option>
-                                    <option value="passport">{% translate "filterSectionPassport" %}</option>
-                                    <option value="us_driving_license">{% translate "filterSectionUSDrivingLicense" %}</option>
-                                    <option value="mx_us_driving_license">{% translate "filterSectionUS-MexicanDrivingLicense" %}</option>
-                                    <option value="language_proficiency">{% translate "filterSectionLanguageProficiency" %}</option>
-                                    <option value="work_preference_location">{% translate "filterSectionWorkPreferenceLocation" %}</option>
-                                    <option value="work_preference_type">{% translate "filterSectionWorkPreferenceType" %}</option>
-                                    <option value="visa">{% translate "filterSectionVisa" %}</option>
-                                    <option value="explanation_video">{% translate "filterSectionExplanationVideo" %}</option>
-                                </select>
+
+                    <div id="dynamic-random-filters">
+                        <div class="row align-items-center filter-row">
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label class="form-label gray-color">
+                                        {% translate "filterSectionSelectFilter" %}
+                                    </label>
+                                    <select class="form-control" name="random_filter">
+                                        <option value="">{% translate "filterSectionChooseAFilter" %}</option>
+                                        <option value="years_of_experience">{% translate "filterSectionYearsofExperience" %}</option>
+                                        <option value="references">{% translate "filterSectionReferences" %}</option>
+                                        <option value="availability">{% translate "filterSectionAvailability" %}</option>
+                                        <option value="h2a_experience">{% translate "filterSectionH-2AExperience" %}</option>
+                                        <option value="h2b_experience">{% translate "filterSectionH-2BExperience" %}</option>
+                                        <option value="work_pictures">{% translate "filterSectionRelevantWorkPictures" %}</option>
+                                        <option value="exclude_physical_limitations">{% translate "filterSectionExcludeWorkerswithPhysicalLaborLimitations" %}</option>
+                                        <option value="age">{% translate "filterSectionAge" %}</option>
+                                        <option value="gender">{% translate "filterSectionGender" %}</option>
+                                        <option value="passport">{% translate "filterSectionPassport" %}</option>
+                                        <option value="us_driving_license">{% translate "filterSectionUSDrivingLicense" %}</option>
+                                        <option value="mx_us_driving_license">{% translate "filterSectionUS-MexicanDrivingLicense" %}</option>
+                                        <option value="language_proficiency">{% translate "filterSectionLanguageProficiency" %}</option>
+                                        <option value="work_preference_location">{% translate "filterSectionWorkPreferenceLocation" %}</option>
+                                        <option value="work_preference_type">{% translate "filterSectionWorkPreferenceType" %}</option>
+                                        <option value="visa">{% translate "filterSectionVisa" %}</option>
+                                        <option value="explanation_video">{% translate "filterSectionExplanationVideo" %}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-auto mt-3 removeFilterButton">
+                                <button class="btn btn-sm close mt-2" type="button" onclick="removeFilterRow(this)">&times;</button>
                             </div>
                         </div>
-<div class="col-auto mt-3 removeFilterButton">
-                            <button class="btn btn-sm close mt-2" type="button" onclick="removeFilterRow(this)">
-                                &times;
-                            </button>
-                        </div>
                     </div>
-                </div>
-
 
                     <!-- Add / Clear Buttons -->
-                <div class="mt-3">
-                    <button class="btn light-green-button me-2" type="button" onclick="addRandomFilter()">
-                        <i class="fe fe-plus"></i> {% translate "filterSectionAddAnotherFilter" %}
-                    </button>
-                    <button class="btn light-green-button" type="button" onclick="clearAllFilters()">
-                        {% translate "filterSectionClearFilters" %}
-                    </button>
-                    <button class="btn light-green-button min-content-width ms-3" type="submit">
-                        {% translate "workersListApplyFilters" %}
-                    </button>
+                    <div class="mt-3">
+                        <button class="btn light-green-button me-2" type="button" onclick="addRandomFilter()">
+                            <i class="fe fe-plus"></i> {% translate "filterSectionAddAnotherFilter" %}
+                        </button>
+                        <button class="btn light-green-button" type="button" onclick="clearAllFilters()">
+                            {% translate "filterSectionClearFilters" %}
+                        </button>
+                        <button class="btn light-green-button min-content-width ms-3" type="submit">
+                            {% translate "workersListApplyFilters" %}
+                        </button>
                     </div>
                 </div>
-                </form>
-            
+            </form>
+
             <!-- Hidden template for dynamic form cloning -->
             <div id="form-template" style="display: none;">
                 <div class="job-experience-form">
@@ -186,8 +184,8 @@
                     <!-- /Job Experience Filter Row (Template) -->
                 </div>
             </div>
-    </div>    
-</div>
+        </div>
+    </div>
    
     
     <div class="row row-sm">
@@ -272,30 +270,28 @@
                             
                         </div>
 
-                    </div>
-    
-                    <div class="tab-content">
-                        <div class="tab-pane fade show active" id="tab1" role="tabpanel">
-                            {% include 'recruiting/workers/manage_tabs/all_workers_list.html' %}
                         </div>
-                        <div class="tab-pane fade" id="tab2" role="tabpanel">
-                            {% include 'recruiting/workers/manage_tabs/worker_shortlist.html' %}
+                        
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="tab1" role="tabpanel">
+                                {% include 'recruiting/workers/manage_tabs/all_workers_list.html' %}
+                            </div>
+                            <div class="tab-pane fade" id="tab2" role="tabpanel">
+                                {% include 'recruiting/workers/manage_tabs/worker_shortlist.html' %}
+                            </div>
+                            <div class="tab-pane fade" id="tab3" role="tabpanel">
+                                {% include 'recruiting/workers/manage_tabs/worker_offersent.html' %}
+                            </div>
+                            <div class="tab-pane fade" id="tab4" role="tabpanel">
+                                {% include 'recruiting/workers/manage_tabs/worker_confirmed.html' %}
+                            </div>
+                            <div class="tab-pane fade" id="tab5" role="tabpanel">
+                                {% include 'recruiting/workers/manage_tabs/worker_rejected.html' %}
+                            </div>
                         </div>
-                        <div class="tab-pane fade" id="tab3" role="tabpanel">
-                            {% include 'recruiting/workers/manage_tabs/worker_offersent.html' %}
-                        </div>
-                        <div class="tab-pane fade" id="tab4" role="tabpanel">
-                            {% include 'recruiting/workers/manage_tabs/worker_confirmed.html' %}
-                        </div>
-                        <div class="tab-pane fade" id="tab5" role="tabpanel">
-                            {% include 'recruiting/workers/manage_tabs/worker_rejected.html' %}
-                        </div>
-                    </div>
+                </div>
             </div>
         </div>
-
-
-    </div>
 </div>
 {% endblock body %}
 {% block scripts %}
