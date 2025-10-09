@@ -55,34 +55,22 @@
                     <!-- Dynamic Filter Inputs -->
                     <div id="filter-inputs-container">
                         <div class="job-experience-form">
-                            <!-- Job Experience Filter Row -->
-                            <div class="row align-items-center g-2">
-                                <!-- Type/Sector select -->
-                                <div class="col-12 col-sm-6 col-md-3">
-                                    <div class="form-group">
-                                        <label class="form-label gray-color text" for="{{ form.type_sector.id_for_label }}">{% translate form.type_sector.label %}</label>
-                                        {{ form.type_sector }}
+                            <div class="row align-items-center">
+                                {% for field in form %}
+                                    <div class="form-group col-3">
+                                        <label class="form-label gray-color text" for="{{ field.id_for_label }}">
+                                            {% translate field.label %}
+                                        </label>
+                                        {{ field }}
                                     </div>
-                                </div>
-                                <!-- Close button -->
-                                <div class="col-auto removeFilterButton2 d-flex align-items-center mt-3">
-                                    <button class="btn btn-sm close mt-2" type="button" onclick="removeForm(this)">&times;</button>
-                                </div>
-                                <!-- Dynamic field 1 -->
-                                <div class="col-12 col-sm-6 col-md-3">
-                                    <div class="form-group">
-                                        <label class="form-label gray-color text" for="{{ form.dynamic_field_1.id_for_label }}">{% translate form.dynamic_field_1.label %}</label>
-                                        {{ form.dynamic_field_1 }}
-                                    </div>
-                                </div>
-                                <!-- Dynamic field 2 -->
-                                <div class="col-12 col-sm-6 col-md-3">
-                                    <div class="form-group">
-                                        <label class="form-label gray-color text" for="{{ form.dynamic_field_2.id_for_label }}">{% translate form.dynamic_field_2.label %}</label>
-                                        {{ form.dynamic_field_2 }}
+                                    {% endfor %}
+
+                                    <div class="col-auto removeFilterButton2">
+                                        <button class="btn close " type="button" onclick="removeForm(this)">
+                                            &times;
+                                        </button>
                                     </div>
                             </div>
-                            <!-- /Job Experience Filter Row -->
                         </div>
                     </div>
             
@@ -128,8 +116,8 @@
                                 </select>
                             </div>
                         </div>
-<div class="col-auto mt-3 removeFilterButton">
-                            <button class="btn btn-sm close mt-2" type="button" onclick="removeFilterRow(this)">
+                        <div class="col-auto">
+                            <button class="btn close" type="button" onclick="removeFilterRow(this)">
                                 &times;
                             </button>
                         </div>
@@ -155,37 +143,23 @@
             <!-- Hidden template for dynamic form cloning -->
             <div id="form-template" style="display: none;">
                 <div class="job-experience-form">
-                    <!-- Job Experience Filter Row (Template) -->
-                    <div class="row align-items-center g-2">
-                        <!-- Type/Sector select -->
-                        <div class="col-12 col-sm-6 col-md-3">
-                            <div class="form-group">
-                                <label class="form-label gray-color text" for="{{ form.type_sector.id_for_label }}">{% translate form.type_sector.label %}</label>
-                                {{ form.type_sector }}
+                    <div class="row align-items-center">
+                        {% for field in form %}
+                            <div class="form-group col-3">
+                                <label class="form-label gray-color text" for="{{ field.id_for_label }}">
+                                    {% translate field.label %}
+                                </label>
+                                {{ field }}
                             </div>
-                        </div>
-                        <!-- Close button -->
-                        <div class="col-auto removeFilterButton2 d-flex align-items-center mt-3">
-                            <button class="btn btn-sm close mt-2" type="button" onclick="removeForm(this)">&times;</button>
-                        </div>
-                        <!-- Dynamic field 1 -->
-                        <div class="col-12 col-sm-6 col-md-3">
-                            <div class="form-group">
-                                <label class="form-label gray-color text" for="{{ form.dynamic_field_1.id_for_label }}">{% translate form.dynamic_field_1.label %}</label>
-                                {{ form.dynamic_field_1 }}
-                            </div>
-                        </div>
-                        <!-- Dynamic field 2 -->
-                        <div class="col-12 col-sm-6 col-md-3">
-                            <div class="form-group">
-                                <label class="form-label gray-color text" for="{{ form.dynamic_field_2.id_for_label }}">{% translate form.dynamic_field_2.label %}</label>
-                                {{ form.dynamic_field_2 }}
-                            </div>
+                        {% endfor %}
+                        <div class="col-auto removeFilterButton2">
+                            <button class="btn close" type="button" onclick="removeForm(this)">
+                                  &times;
+                            </button>
                         </div>
                     </div>
-                    <!-- /Job Experience Filter Row (Template) -->
                 </div>
-            </div>
+            </div>  
     </div>    
 </div>
    
@@ -555,6 +529,15 @@ function updateCollapseSummary() {
             if (minVal && maxVal) valueText = `${minVal} - ${maxVal}`;
             else if (minVal) valueText = `Min ${minVal}`;
             else if (maxVal) valueText = `Max ${maxVal}`;
+        } else if (selectFilter.value === 'exclude_physical_limitations') {
+            const questionSelect = row.querySelector(`select[name^="physical_limitation_question_"]`);
+            const answerSelect = row.querySelector(`#physical-yesno-container-${selectFilter.getAttribute('onchange').match(/\d+/)?.[0]} select`);
+            const questionText = questionSelect?.options[questionSelect.selectedIndex]?.text?.trim();
+            const answerText = answerSelect?.options[answerSelect.selectedIndex]?.text?.trim();
+            if (questionText && answerText) {
+                valueText = `${questionText}: ${answerText}`;
+            }
+        } else {
             const selectsAndInputs = row.querySelectorAll('.col-md-6 select, .col-md-6 input');
             selectsAndInputs.forEach(input => {
                 if (input.tagName === 'SELECT') {
@@ -734,13 +717,17 @@ function handleFilterChange(selectEl, uniqueId) {
         case "exclude_physical_limitations":
             html = `
                 <div class="form-group">
-                    <label class="form-label gray-color">{% translate "filterSectionExcludeWorkersWithPhysicalLimitations" %}</label>
-                    <select class="form-control" name="exclude_physical_limitations_${uniqueId}" onchange="updateCollapseSummary()">
+                    <label class="form-label gray-color">{% translate "filterSectionSelectaPhysicalLimitationQuestion" %}</label>
+                        <select class="form-control" name="physical_limitation_question_${uniqueId}" onchange="handlePhysicalQuestionChange(this, ${uniqueId});updateCollapseSummary();">
                         <option value="">{% translate "filterSectionSelect" %}</option>
-                        <option value="yes">{% translate "filterSectionYes" %}</option>
-                        <option value="no">{% translate "filterSectionNo" %}</option>
+                        <option value="condition_limit">{% translate "filterSectionDoYouHaveAnyPhysicalOrMentalConditionThatCouldLimitYouAndShouldBeConsideredForALaborIntensiveJob" %}</option>
+                        <option value="injury_aggravation">{% translate "filterSectionHaveYouSufferedAnInjuryThatCouldBeAggravatedByIntensePhysicalActivity" %}</option>
+                        <option value="stand_long">{% translate "filterSectionAreYouWillingAndAbleToWorkOnYourFeetForLongPeriodsOfTime" %}</option>
+                        <option value="lift_weight">{% translate "filterSectionAreYouWillingAndAbleToLiftCarryUpTo60Pounds27kg" %}</option>
+                        <option value="extreme_temps">{% translate "filterSectionAreYouUnwillingToWorkInEitherHotOrColdTemperatures" %}</option>
                     </select>
                 </div>
+                <div class="form-group mt-2" id="physical-yesno-container-${uniqueId}"></div>
             `;
             break;
 
@@ -813,6 +800,7 @@ function handleFilterChange(selectEl, uniqueId) {
         case "h2a_experience":
         case "h2b_experience":
         case "work_pictures":
+        case "exclude_physical_limitations":
         case "passport":
         case "us_driving_license":
         case "mx_us_driving_license":
@@ -835,6 +823,22 @@ function handleFilterChange(selectEl, uniqueId) {
     extraFieldsContainer.innerHTML = html;
 }
 
+function handlePhysicalQuestionChange(selectEl, uniqueId) {
+    const yesNoContainer = document.getElementById(`physical-yesno-container-${uniqueId}`);
+    if (selectEl.value) {
+        yesNoContainer.innerHTML = `
+            <label class="form-label gray-color">{% translate "filterSectionYourAnswer" %}</label>
+            <select class="form-control" name="${selectEl.value}_answer_${uniqueId}" onchange="updateCollapseSummary()">
+                <option value="">{% translate "filterSectionSelect" %}</option>
+                <option value="yes">{% translate "filterSectionYes" %}</option>
+                <option value="no">{% translate "filterSectionNo" %}</option>
+            </select>
+        `;
+    } else {
+        yesNoContainer.innerHTML = "";
+    }
+    updateCollapseSummary();
+}
 
 function handleLanguageProficiencyChange(selectEl, uniqueId) {
     const videoContainer = document.getElementById(`language-video-container-${uniqueId}`);
