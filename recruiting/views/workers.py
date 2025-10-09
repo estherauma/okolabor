@@ -13,7 +13,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from account.models import User, UserWorkExperience, UserJobExperience,UserJobExperienceDetails,UserNotification
 from common.views import BaseCreateView
-from recruiting.forms import WorkerCreateForm, WorkExperienceCreateForm,WorkerAssignmentForm
+from recruiting.forms import SendMessageForm, WorkerCreateForm, WorkExperienceCreateForm,WorkerAssignmentForm
 from theme.forms import AdvancedFilterForm,DynamicWorkExperienceForm
 from account.models import UserPreference,UserDocuments
 from recruiting.models import WorkAssignment,WorkAssignment,WorkRequests,Role
@@ -269,6 +269,7 @@ class WorkerListView(View):
        
         worker_form = WorkerCreateForm()
         workers_length = len(workers)
+        send_message_form = SendMessageForm()
 
         context = {
             'workers': workers,
@@ -287,6 +288,8 @@ class WorkerListView(View):
                     ],
             'selected_work_request':WorkRequests.objects.filter(id=work_request_id).first() if work_request_id else None,
             'selected_role': Role.objects.filter(id=role_id).first() if role_id else None,
+            'send_message_form': send_message_form
+
         }
         return render(request, 'recruiting/workers/manage_tabs/tabs.html', context)
 

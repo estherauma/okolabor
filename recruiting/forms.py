@@ -2,7 +2,7 @@
 # create modelform for Employer model
 from django import forms
 from django.utils.translation import gettext_lazy as _ 
-from account.models import User
+from account.models import User, UserNotification
 from recruiting.models import (
     Deduction, Organization, Hours, OkoMessage, Qualification,
     EmploymentLocation, HousingInformation, MealProvision,
@@ -1034,3 +1034,25 @@ class WorkExperienceCreateForm(forms.ModelForm):
             'supervisor_email': forms.EmailInput(attrs={'class': 'form-control'}),
             'visa_type': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+        
+class SendMessageForm(forms.ModelForm):
+    class Meta:
+        model = UserNotification
+        fields = ['title', 'message']
+        labels = {
+            'title': "Title",  # TRANSLATE
+            'message': "Message", # TRANSLATE
+        }
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'message': forms.Textarea(attrs={'class': 'form-control'}),
+        }
+
+    def save(self, commit=True, user=None):
+        instance = super().save(commit=False)
+        if user is not None:
+            instance.user = user
+        if commit:
+            instance.save()
+        return instance

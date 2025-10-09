@@ -54,6 +54,7 @@ from recruiting.forms import (
     RoleMealProvision,
     RoleQualificationForm,
     RoleWagesForm,
+    SendMessageForm,
     TodoFilterForm,
     WorkRequestForm,
     WorkRequestRoleForm,
@@ -1491,6 +1492,44 @@ class OkoMessageCreateView(CreateView):
         return reverse(
             'recruiting_web:recruiter_messages'
         )
+
+
+class SendWorkRequestMessageView(CreateView):
+    model = UserNotification
+    form_class = SendMessageForm
+    template_name = 'recruiting/messages/send-workerequest-message.html'
+
+    def form_valid(self, form):
+        work_request_id = self.request.POST.get('work_request')
+        role_id = self.request.POST.get('role')
+        work_assignment_status = self.request.POST.get('work_assignment_status')
+
+        if work_request_id and role_id:
+            assignments = WorkAssignment.objects.filter(
+                status=work_assignment_status,
+                role_id=role_id, 
+                work_request_id=work_request_id, 
+                deleted_at__isnull=True
+                )
+            _messages = [
+                UserNotification(
+                    user=assignment.worker,
+                    title=form.cleaned_data.get('title'),
+                    message=form.cleaned_data.get('message'),
+                    category='work_request',
+                )
+                for assignment in assignments
+            ]
+            UserNotification.objects.bulk_create(_messages)
+        #  translate this
+        messages.success(self.request, _('sendMessageMessageSentSuccessfully'))
+        return redirect(reverse('recruiting_web:workers'))
+
+    def form_invalid(self, form: BaseModelForm) -> HttpResponse:
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(self.request, f'{field}: {error}')
+        return super().form_invalid(form)
 
 class OkoMessageDetailsView(View):
     def get(self, request,id):
