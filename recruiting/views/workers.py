@@ -173,7 +173,6 @@ class WorkerListView(View):
             workers = workers.filter(availability_filter)
 
         # Filter by Reference
-
         references_filter = next((v for k, v in params.items() if k.startswith("references_") and v), None)
         if references_filter and references_filter.lower() == 'yes':
             referenced_user_ids = UserWorkExperience.objects.filter(
@@ -183,6 +182,36 @@ class WorkerListView(View):
             ).values_list('user_id', flat=True).distinct()
 
             workers = workers.filter(id__in=referenced_user_ids)
+
+        # Filter by Physical Labor Limitations
+        exclude_physical_limitations = next((v for k, v in params.items() if k.startswith("exclude_physical_limitations_") and v), None)
+        if exclude_physical_limitations and exclude_physical_limitations.lower() == 'yes':
+            physical_limitation_keys = [
+                'healthStatus',
+                'sufferedInjury',
+                'longerPeriodsOfTime',
+                'workEnvironment'
+            ]
+
+            preference_kinds = ['work-preferences', 'workPreferences', 'preference']
+
+            yes_q = (
+                Q(value__iexact='yes') |
+                Q(value__iexact='true') |
+                Q(value='1') |
+                Q(value__iexact='y')
+            )
+
+            workers_with_limitations = (
+                UserPreference.objects
+                .filter(key__in=physical_limitation_keys, kind__in=preference_kinds)
+                .filter(yes_q)
+                .values_list('user_id', flat=True)
+                .distinct()
+            )
+
+            if workers_with_limitations:
+                workers = workers.exclude(id__in=workers_with_limitations)
 
         # Filter by Age (from dob)
 
