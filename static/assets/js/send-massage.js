@@ -48,9 +48,9 @@ function handleSubmit({
     var roleSelected = $(roleSelector).val();
 
     // Set hidden inputs
-    $('#id_work_request').val(workRequestSelected);
-    $('#id_role').val(roleSelected);
-    $('#id_work_assignment_status').val(work_assignment_status);
+    $(`#id_work_request_${work_assignment_status}`).val(workRequestSelected);
+    $(`#id_role_${work_assignment_status}`).val(roleSelected);
+    $(`#id_work_assignment_status_${work_assignment_status}`).val(work_assignment_status);
   });
 }
 

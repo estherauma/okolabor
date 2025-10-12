@@ -1520,10 +1520,15 @@ class SendWorkRequestMessageView(CreateView):
                 )
                 for assignment in assignments
             ]
+            print(len(_messages))
             UserNotification.objects.bulk_create(_messages)
         #  translate this
-        messages.success(self.request, _('sendMessageMessageSentSuccessfully'))
-        return redirect(reverse('recruiting_web:workers'))
+            messages.success(self.request, _('sendMessageMessageSentSuccessfully'))
+            return redirect(reverse('recruiting_web:workers'))
+        else:
+            #translate this
+            messages.error(self.request, _('sendMessagePleaseSelectWorkRequestAndRole'))
+            return redirect(reverse('recruiting_web:workers'))
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
         for field, errors in form.errors.items():

@@ -1,9 +1,9 @@
 {% load i18n %}
 
-<div class="modal fade" id="sendMessageModal" tabindex="-1" aria-labelledby="sendMessageModalLabel" aria-hidden="true">
+<div class="modal fade" id="sendMessageModal-{{ status }}" tabindex="-1" aria-labelledby="sendMessageModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form method="post" id="{{ formId }}" action="{% url 'recruiting_web:workrequest_send_message' %}">
+      <form method="post" id="sendMessageForm-{{ status }}" action="{% url 'recruiting_web:workrequest_send_message' %}">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="sendMessageModalLabel">
             <!-- Send Message  translate this  -->
@@ -13,9 +13,9 @@
         </div>
         <div class="modal-body">
           {% csrf_token %}
-          <input type="hidden" name="work_request" id="id_work_request">
-          <input type="hidden" name="role" id="id_role">
-          <input type="hidden" name="work_assignment_status" id="id_work_assignment_status">
+          <input type="hidden" name="work_request" id="id_work_request_{{ status }}">
+          <input type="hidden" name="role" id="id_role_{{ status }}">
+          <input type="hidden" name="work_assignment_status" id="id_work_assignment_status_{{ status }}">
           {% for field in form %}
           <div class="col">
             <div class="form-group my-3">
