@@ -47,7 +47,10 @@
 
           <!-- Custom Toolbar -->
           <div class="d-flex align-items-center justify-content-between flex-wrap mb-3 custom-toolbar">
-            <div></div>
+            <div>
+              <button id="send-message-rejected" class="btn dark-green-button ms-3">{% translate "mesagesNewMessage" %}</button>
+              {% include 'recruiting/messages/send-workrequest-message.html' with form=send_message_form status='rejected' %}
+            </div>
             <div class="flex-grow-1 d-flex justify-content-center">
               <div id="customSearchContainerTab5" style="width: 100%; max-width: 400px;"></div>
             </div>
@@ -87,6 +90,8 @@
 </div>
 
 {% block scripts %}
+<script src="{% static 'assets/js/send-massage.js' %}"></script>
+
 <script>
   function applyColumnVisibilityFromStorageTab5(table) {
     const savedSettings = JSON.parse(localStorage.getItem('columnVisibilitySettingsTab5')) || {};
@@ -157,6 +162,18 @@
         modal?.hide();
       });
     }
+
+   
   });
+   $(document).ready(function () {
+     handleSendWorkRequestMessage({
+      triggerSelector: '#send-message-rejected',
+      workRequestSelector: '#modal_work_request',
+      roleSelector: '#modal_role',
+      modalId: '#sendMessageModal-rejected',
+      sendMessageFormSelector: '#sendMessageForm-rejected',
+      work_assignment_status: 'rejected'
+    });
+   });
 </script>
 {% endblock %}
