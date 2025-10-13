@@ -1041,8 +1041,8 @@ class SendMessageForm(forms.ModelForm):
         model = UserNotification
         fields = ['title', 'message']
         labels = {
-            'title': "Title",  # TRANSLATE
-            'message': "Message", # TRANSLATE
+            'title': _("title"),   # TRANSLATE - Title
+            'message': _("message"),  # TRANSLATE - Message
         }
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),

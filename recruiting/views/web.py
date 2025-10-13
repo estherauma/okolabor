@@ -1522,11 +1522,11 @@ class SendWorkRequestMessageView(CreateView):
             ]
             print(len(_messages))
             UserNotification.objects.bulk_create(_messages)
-        #  translate this
+        #  translate this - Message sent successfully.
             messages.success(self.request, _('sendMessageMessageSentSuccessfully'))
             return redirect(reverse('recruiting_web:workers'))
         else:
-            #translate this
+            #translate this - Please select a work request and a role before sending a message.
             messages.error(self.request, _('sendMessagePleaseSelectWorkRequestAndRole'))
             return redirect(reverse('recruiting_web:workers'))
 

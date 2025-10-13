@@ -12,7 +12,6 @@ function setupSendMessageModal({
     if (!workRequestSelected || !roleSelected) {
       e.preventDefault();
       $(modalId).modal('hide');
-              //translate this
       alert(
         'Please select a work request and a role before sending a message.'
       );
@@ -24,11 +23,9 @@ function setupSendMessageModal({
       if (response.workers && response.workers.length > 0) {
         $(modalId).modal('show');
       } else {
-        //translate this
         alert('No workers found for the selected role and work request.');
       }
     }).fail(function() {
-              //translate this
       alert('Error checking workers. Please try again.');
     });
  
