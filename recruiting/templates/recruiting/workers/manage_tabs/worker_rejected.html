@@ -91,6 +91,18 @@
 
 {% block scripts %}
 <script src="{% static 'assets/js/send-massage.js' %}"></script>
+<script>
+  $(document).ready(function () {
+     handleSendWorkRequestMessage({
+      triggerSelector: '#send-message-rejected',
+      workRequestSelector: '#modal_work_request',
+      roleSelector: '#modal_role',
+      modalId: '#sendMessageModal-rejected',
+      sendMessageFormSelector: '#sendMessageForm-rejected',
+      work_assignment_status: 'rejected'
+    });
+  });
+</script>
 
 <script>
   function applyColumnVisibilityFromStorageTab5(table) {
@@ -162,18 +174,7 @@
         modal?.hide();
       });
     }
-
-   
   });
-   $(document).ready(function () {
-     handleSendWorkRequestMessage({
-      triggerSelector: '#send-message-rejected',
-      workRequestSelector: '#modal_work_request',
-      roleSelector: '#modal_role',
-      modalId: '#sendMessageModal-rejected',
-      sendMessageFormSelector: '#sendMessageForm-rejected',
-      work_assignment_status: 'rejected'
-    });
-   });
+
 </script>
 {% endblock %}
