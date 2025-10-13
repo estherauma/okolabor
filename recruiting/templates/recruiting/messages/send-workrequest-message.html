@@ -1,0 +1,54 @@
+{% load i18n %}
+
+<div class="modal fade" id="sendMessageModal-{{ status }}" tabindex="-1" aria-labelledby="sendMessageModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post" id="sendMessageForm-{{ status }}" action="{% url 'recruiting_web:workrequest_send_message' %}">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="sendMessageModalLabel">
+            {% translate "workerDetailsSendMessage" %}
+          </h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'webCommonClose' %}"></button>
+        </div>
+        <div class="modal-body">
+          {% csrf_token %}
+          <input type="hidden" name="work_request" id="id_work_request_{{ status }}">
+          <input type="hidden" name="role" id="id_role_{{ status }}">
+          <input type="hidden" name="work_assignment_status" id="id_work_assignment_status_{{ status }}">
+          {% for field in form %}
+          <div class="col">
+            <div class="form-group my-3">
+              {% if field.field.widget.input_type == "checkbox" %}
+                <div class="form-check">
+                  {{ field }}
+                  <label class="form-check-label ms-2">
+                    {{ field.label }}
+                  </label>
+                </div>
+              {% else %}
+                <label class="gray-color">
+                  {{ field.label }}
+                </label>
+                <div class="input-group input-group-outline is_valid my-3">
+                  {{ field }}
+                </div>
+              {% endif %}
+              {% if field.errors %}
+                <small class="text-danger">{{ field.errors.0 }}</small>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="modal-footer d-flex justify-content-center">
+          <button type="button" class="btn grey-button" data-bs-dismiss="modal">
+            {% translate "createMessageCancel" %}
+          </button>
+          <button class="btn light-green-button ms-2" type="submit">
+            {% translate "createMessageSendMessage" %}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

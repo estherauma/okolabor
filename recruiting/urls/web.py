@@ -26,7 +26,7 @@ from recruiting.views.web import (
     DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditEmploymentLocationView,DeleteEmploymentLocationView,
     DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditRoleHoursView,DeleteRoleHoursView,EditRoleWagesView,
     DeleteRoleWagesView,EditRoleQualificationView,DeleteQualificationView,DeductionEditView,DeleteDeductionView,
-    OfferSendWorkerView,InvitationResponseView,WorkRequestCopyView
+    OfferSendWorkerView,InvitationResponseView,WorkRequestCopyView,SendWorkRequestMessageView
 )
 from recruiting.views.workers import (
      WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,
@@ -156,6 +156,10 @@ urlpatterns = [
     path('create-message/',
          OkoMessageCreateView.as_view(),
          name='recruiter_create_message'
+         ),
+    path('send-message/',
+         SendWorkRequestMessageView.as_view(),
+         name='workrequest_send_message'
          ),
     path('recruiter/create-worker',
          WorkerCreateView.as_view(),

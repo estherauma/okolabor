@@ -68,6 +68,8 @@
             <div>
                 <div>
                   <button id="cancel-confirmed-btn" class="btn dark-green-button">{% translate "workRequestAddWorkerCancelOffer" %}</button>
+                  <button id="send-message-confirmed" class="btn dark-green-button ms-3">{% translate "workerDetailsSendMessage" %}</button>
+                 {% include 'recruiting/messages/send-workrequest-message.html' with form=send_message_form status='confirmed' %}
                 </div>
             </div>
             <div class="flex-grow-1 d-flex justify-content-center">
@@ -118,6 +120,8 @@
 <script src="{% static 'assets/js/copy-confirmed-workers.js' %}"></script>
 <script src="{% static 'assets/js/cancel-offer.js' %}"></script>
 <script src="{% static 'assets/js/tablecolumns_hiding.js' %}"></script>
+<script src="{% static 'assets/js/send-message.js' %}"></script>
+
 <script>
   $(document).ready(function () {
     $.fn.dataTable.ext.errMode = 'none';
@@ -147,6 +151,14 @@
       </button>
     `;
     $('#customConfirmedSettingsContainer').html(settingsBtn);
+    handleSendWorkRequestMessage({
+      triggerSelector: '#send-message-confirmed',
+      workRequestSelector: '#modal_work_request',
+      roleSelector: '#modal_role',
+      modalId: '#sendMessageModal-confirmed',
+      sendMessageFormSelector: '#sendMessageForm-confirmed',
+      work_assignment_status: 'confirmed'
+    });
   });
 </script>
 
