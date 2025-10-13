@@ -8,8 +8,6 @@ function setupSendMessageModal({
   $(triggerSelector).on('click', function (e) {
     var workRequestSelected = $(workRequestSelector).val();
     var roleSelected = $(roleSelector).val();
-    console.log('Work Request Selected:', workRequestSelected);
-    console.log('Role Selected:', roleSelected);
 
     if (!workRequestSelected || !roleSelected) {
       e.preventDefault();

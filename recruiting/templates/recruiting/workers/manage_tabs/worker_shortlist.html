@@ -69,7 +69,7 @@
                 {% translate "workRequestAddWorkerSendOffer" %}
               </button>
               <button id="cancel-offer-shortlist" class="btn dark-green-button ms-3">{% translate "workRequestAddWorkerShortlistCancelOffer" %}</button>
-              <button id="send-message-shortlist" class="btn dark-green-button ms-3" class="btn dark-green-button ms-3">{% translate "mesagesNewMessage" %}</button>
+              <button id="send-message-shortlist" class="btn dark-green-button ms-3">{% translate "mesagesNewMessage" %}</button>
               {% include 'recruiting/messages/send-workrequest-message.html' with form=send_message_form status='assigned' %}
             </div>
 
@@ -128,7 +128,7 @@
   <!-- Your custom scripts -->
   <script src="{% static 'assets/js/send-offer.js' %}"></script>
   <script src="{% static 'assets/js/tablecolumns_hiding.js' %}"></script>
-  <script src="{% static 'assets/js/send-massage.js' %}"></script>
+  <script src="{% static 'assets/js/send-message.js' %}"></script>
 
 <script>
 $(document).ready(function () {
