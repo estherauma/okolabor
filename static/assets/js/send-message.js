@@ -38,7 +38,6 @@ function handleSubmit({
   work_assignment_status,
 }) {
   $(sendMessageFormSelector).on('submit', function (e) {
-    // Get selected values from your selects
     var workRequestSelected = $(workRequestSelector).val();
     var roleSelected = $(roleSelector).val();
 
