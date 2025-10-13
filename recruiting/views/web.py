@@ -92,6 +92,7 @@ from recruiting.models import (
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from django.forms.models import model_to_dict
 
 
 class EmployerListView(View):
@@ -352,19 +353,21 @@ class EmployerCreateView(CreateView):
                     }
                 )
 
-        messages.success(self.request, _('employerAminListOrganizationCreatedSuccessfully'))
         self.object = org
         return redirect(self.get_success_url(org.pk))
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
-        for field, errors in form.errors.items():
-            for error in errors:
-                messages.error(self.request, f'{field}: {error}')
-        return super().form_invalid(form)
+        context = self.get_context_data(form=form)
+        context['employer_form'] = form 
+        if form.instance.type == 'recruiter':
+            return render(self.request, 'recruiting/recruiters_list/list.html', context)
+
+        return render(self.request, 'recruiting/employers/list.html', context)
 
     def get_success_url(self, pk):
+        if self.object.type == 'recruiter':
+            return reverse('recruiting_web:recruiter_org_detail', kwargs={'pk': pk})
         return reverse('recruiting_web:employer_detail', kwargs={'pk': pk})
-
 
 class EmployerDetailView(View):
     def get(self, request, pk):
@@ -412,6 +415,12 @@ class EmployerDetailView(View):
 
         all_recruiter_names = list(recruiter_names_direct.union(recruiter_names_org))
         users = User.objects.all()
+        
+        # create job order form
+        form = WorkRequestForm()
+        # set employer in form
+        form.fields['employer'].initial = employer
+
         context = {
             'employer': employer,
             'users': users,
@@ -422,6 +431,7 @@ class EmployerDetailView(View):
             'contacts': assigned_users,
             'work_requests': work_requests,
             'assigned_organizations': assigned_orgs_data,
+            'form': form,
             'breadcrumbs': [
                 {'name': _('employerDetailsHome'), 'url': reverse_lazy('index')},
                 {'name': _('employerDetailsEmployers'), 'url': reverse_lazy('recruiting_web:employer_list')},
@@ -471,7 +481,7 @@ class RecruiterDetailView(View):
         # contacts = recruiter_org.contacts.all()
         users = User.objects.all()
         context = {
-            'employer': recruiter_org,
+            'recruiter': recruiter_org,
             'users': users,
             'employer_organizations': employer_orgs_data,
             'in_progress_work_requests': in_progress_work_requests,
@@ -593,6 +603,72 @@ class WorkRequestEditView(LoginRequiredMixin, View):
                     messages.error(request, f'{field}: {error}')
             return redirect('recruiting_web:workrequest_list')
 
+
+class WorkRequestCopyView(LoginRequiredMixin, View):
+    @staticmethod
+    def copy_related_object(obj, model_class, new_role):
+        if obj and getattr(obj, 'deleted_at', None) is None:
+            data = model_to_dict(obj)
+            data.pop('id', None)
+            data['role'] = new_role
+            model_class.objects.create(**data)
+
+    def post(self, request, pk):
+        work_request = get_object_or_404(WorkRequests, pk=pk)
+        form = WorkRequestForm(request.POST)
+        roles = work_request.roles.filter(
+                deleted_at__isnull=True,
+            )
+     
+        if form.is_valid():
+            new_work_request = form.save(commit=False)
+
+            if work_request.name.strip().lower() == form.cleaned_data['name'].strip().lower():
+                new_work_request.name = form.cleaned_data['name'] + " (Copy)"
+            new_work_request.save()
+
+            for role in roles:
+                role_data = model_to_dict(role)
+                role_data.pop('id', None)
+                role_data['work_request'] = new_work_request
+                new_role = Role.objects.create(**role_data)
+                
+                deductions = role.deductions.filter(deleted_at__isnull=True)
+                for deduction in deductions:
+                    data = model_to_dict(deduction)
+                    data.pop('id', None)
+                    data['role'] = new_role
+                    Deduction.objects.create(**data)
+
+                self.copy_related_object(getattr(role, 'hours', None), Hours, new_role)
+                self.copy_related_object(getattr(role, 'employment_location', None), EmploymentLocation, new_role)
+                self.copy_related_object(getattr(role, 'housing_information', None), HousingInformation, new_role)
+                self.copy_related_object(getattr(role, 'wages', None), Wages, new_role)
+                self.copy_related_object(getattr(role, 'meal_provision', None), MealProvision, new_role)
+                self.copy_related_object(getattr(role, 'qualifications', None), Qualification, new_role)
+                role_assignments = WorkAssignment.objects.filter(
+                    work_request_id=work_request.id,
+                    role_id=role.id,
+                    status='confirmed',
+                    deleted_at__isnull=True
+                )
+                new_role_assignments = [
+                                WorkAssignment(
+                                    work_request=new_work_request,
+                                    role=new_role,
+                                    worker=assignment.worker,
+                                    status='assigned'
+                                ) for assignment in role_assignments
+                            ]
+
+                WorkAssignment.objects.bulk_create(new_role_assignments)
+            return redirect('recruiting_web:workrequest_detail', pk=new_work_request.pk)
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field}: {error}')
+            return redirect('recruiting_web:workrequest_detail', pk=work_request.pk)
+        
 class WorkRequestDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         user = request.user
@@ -942,6 +1018,8 @@ class WorkRequestDetailView(View):
             'licensed_vehicle_operation_types',
         ]
 
+        employers = Organization.objects.filter(type='employer')
+
         context = {
             'workrequest': work_request,
             'roles': roles_qs,
@@ -968,6 +1046,7 @@ class WorkRequestDetailView(View):
             'role_Meals_form': role_Meals_form,
             'role_add_form': role_add_form,
             'dynamic_fields': dynamic_fields,
+            'employers': employers,
             'breadcrumbs' :[
                         {'name': 'Home', 'url': reverse('index')},
                         {'name': 'Job Orders', 'url': reverse('recruiting_web:workrequest_list')},

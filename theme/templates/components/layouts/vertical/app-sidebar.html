@@ -12,7 +12,7 @@
 	</div>
 	<ul class="side-menu">
 
-		<li class="slide" style="padding-top: 50px;">
+		<li class="slide">
 			<a class="side-menu__item {% if request.path == '/index/' %}active{% endif %}" data-bs-toggle="slide" href="/index"><i
 					class="side-menu__icon fe fe-home"></i>
 					<span class="side-menu__label">{% translate "home" %}</span>
@@ -88,19 +88,6 @@
 			</a>
 		</li>
 		{% endif %}
-
-
-		<!-- <li>
-			<a class="side-menu__item" href="{% url 'recruiting_web:recruiter_todo' %}"><i class="side-menu__icon icon icon-briefcase"></i>
-				<span class="side-menu__label">{% translate "toDo" %}</span></a>
-		</li> -->
-
-		<li>
-			<a class="side-menu__item {{request.path|addActive:'/messages,/create-message,/message-details'}}" 
-			href="{% url 'recruiting_web:recruiter_messages' %}"><i class="side-menu__icon fe fe-mail"></i>
-				<span class="side-menu__label">{% translate "messages" %}</span>
-			</a>
-		</li>
 
 		<li>
 			<a class="side-menu__item {{request.path|addActive:'/invalid-curps'}}" 
