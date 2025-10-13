@@ -19,7 +19,6 @@ function setupSendMessageModal({
     }
     $.get(`/workers/ajax-filtered-workers/?work_request=${workRequestSelected}&role=${roleSelected}&status=${work_assignment_status}`, 
       function(response) {
-        console.log('Response from server:', response.workers);
       if (response.workers && response.workers.length > 0) {
         $(modalId).modal('show');
       } else {
