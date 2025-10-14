@@ -277,13 +277,10 @@
               <input type="text" class="form-control" id="location_preference{{ worker.id }}" name="location_preference" value="{{ worker.location_preference }}">
             </div>
             <div class="mb-3">
-              <label for="latest_status{{ worker.id }}" class="form-label">{% translate "workersListLatestStatus" %}</label>
-              <select class="form-control" id="latest_status{{ worker.id }}" name="latest_status">
-                {% for choice in status_choices %}
-                <option value="{{ choice.0 }}" {% if choice.0|stringformat:"s" == worker.latest_status|stringformat:"s" %}selected{% endif %}>
-                    {{ choice.1 }}
-                </option>
-                {% endfor %}
+              <label for="worker_status{{ worker.id }}" class="form-label">{% translate "workerDetailsWorkerStatus" %}</label>
+              <select class="form-control" id="worker_status{{ worker.id }}" name="worker_status">
+                <option value="available" {% if worker.latest_status|lower == 'available' %}selected{% endif %}>{% translate 'workerDetailsAvailable'%}</option>
+                <option value="on_contract" {% if 'contract' in worker.latest_status|lower %}selected{% endif %}>{% translate 'workerDetailsOnContract'%}</option>
               </select>
             </div>
           </div>

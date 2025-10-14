@@ -26,15 +26,33 @@ document.addEventListener('DOMContentLoaded', function () {
     const sendOfferBtn = document.getElementById('sendOfferBtn');
     const allworkersSendOfferBtn = document.getElementById('workerSendOfferBtn');
 
-    // Extract pk and role_id from URL
-    const urlParts = window.location.pathname.split('/');
-    const jobOrderIndex = urlParts.indexOf('job-order');
-    const pk = urlParts[jobOrderIndex + 1];
-    const role_id = urlParts[jobOrderIndex + 3];
+    // Resolve Job Order and Role from dropdowns on this page, or fall back to URL if present
+    const getWorkRequestAndRole = () => {
+        const workRequestEl = document.getElementById('modal_work_request');
+        const roleEl = document.getElementById('modal_role');
+        let pk = workRequestEl && workRequestEl.value ? workRequestEl.value : null;
+        let role_id = roleEl && roleEl.value ? roleEl.value : null;
 
-    const updateWorkerStatusUrl = `/job-order/${pk}/add-workers/${role_id}/update-worker-status/`;
+        // Fallback to URL structure /job-order/<pk>/add-workers/<role_id>/...
+        if (!pk || !role_id) {
+            const parts = window.location.pathname.split('/').filter(Boolean);
+            const jobOrderIdx = parts.indexOf('job-order');
+            if (jobOrderIdx !== -1) {
+                pk = pk || parts[jobOrderIdx + 1];
+                role_id = role_id || parts[jobOrderIdx + 3];
+            }
+        }
+        return { pk, role_id };
+    };
 
     const handleOfferSend = (checkboxClass) => {
+        const { pk, role_id } = getWorkRequestAndRole();
+
+        if (!pk || !role_id) {
+            alert('Please select a Job Order and Role first.');
+            return;
+        }
+
         const workerCheckboxes = document.querySelectorAll(`${checkboxClass}:checked`);
         const workerIds = Array.from(workerCheckboxes).map(checkbox => checkbox.value);
 
@@ -43,16 +61,17 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        const updateWorkerStatusUrl = `/job-order/${pk}/add-workers/${role_id}/update-worker-status/`;
+
         const formData = new URLSearchParams();
         workerIds.forEach(id => formData.append('worker_ids[]', id));
         formData.append('work_request', pk);
-        formData.append('role', role_id); 
+        formData.append('role', role_id);
 
         fetch(updateWorkerStatusUrl, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-CSRFToken': '{{ csrf_token }}'
+                'Content-Type': 'application/x-www-form-urlencoded'
             },
             body: formData.toString()
         })
