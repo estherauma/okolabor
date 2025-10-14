@@ -182,26 +182,26 @@
                           <td class="col-town">{{ worker.town|default:"Not Provided" }}</td>
                           <td class="col-profile">
                               {% if worker.profile_completion_percentage == 100 %}
-                                  Yes
+                                  {% translate 'webCommonYes' %}
                               {% else %}
-                                  NO
+                                  {% translate 'webCommonNo' %}
                               {% endif %}
                           </td>
                           <td class="col-english">{{ worker.english_proficiency|default:"Not Provided" }}</td>
                           <td class="col-location">{{ worker.location_preference|default:"Not Provided" }}</td>
                           <td class="col-visa">
                           {% if worker.visa_uploaded %}
-                              <span>Yes</span>
+                              <span> {% translate 'webCommonYes' %}</span>
                           {% else %}
-                              <span>No</span>
+                              <span> {% translate 'webCommonNo' %}</span>
                           {% endif %}
                       </td>
 
                       <td class="col-intro-video">
                           {% if worker.intro_video_uploaded %}
-                              <span>Yes</span>
+                              <span> {% translate 'webCommonYes' %}</span>
                           {% else %}
-                              <span>No</span>
+                              <span> {% translate 'webCommonNo' %}</span>
                           {% endif %}
                       </td>
                           <td class="col-offer">{{ worker.latest_status }}</td>
