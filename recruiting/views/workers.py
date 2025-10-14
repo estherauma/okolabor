@@ -735,6 +735,7 @@ class WorkerDetailsView(View):
 
         current_status = latest_assignment.status if latest_assignment else 'No Assignment'
         worker.level_of_language_proficiency = preference_data.get('level')
+        worker_messages = UserNotification.objects.filter(user=worker.id, deleted_at__isnull=True).order_by('-created_at')
         context = {
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
             'worker': worker,
@@ -761,6 +762,7 @@ class WorkerDetailsView(View):
             'language_label': language_label,
             'experience_forms': experience_forms,
             'form': form,
+            'worker_messages': worker_messages,
             'breadcrumbs': [
                         {'name': _('workerDetailsHome'), 'url': reverse('index')},
                         {'name': _('workerDetailsWorkers'), 'url': reverse('recruiting_web:workers')},

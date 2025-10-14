@@ -384,6 +384,47 @@
        {% endfor %}
       </div>
     </div>
+ <!-- messages   section -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex align-items-center justify-content-between flex-wrap mb-5">
+              <h5 class="card-title d-contents">
+                {% translate "messageDetailsMessages" %}
+              </h5>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table text-nowrap border-bottom" id="messages-list-datatable">
+                <thead>
+                  <tr>
+                    <th class="col-recruiter-company">{% translate "title" %}</th>
+                    <th class="col-recruiter-email">{% translate "status" %}</th>
+                    <th class="col-recruiter-location">{% translate "ceatedAt" %}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for message in worker_messages %}
+                  <tr class="text-start" data-id="{{ message.id }}">
+
+                    <td>
+                      <a href="#" data-bs-toggle="modal" data-bs-target="#messageDetailsModal-{{ message.id }}" class="text-decoration-none text-dark">
+                        {{ message.title }}
+                      </a>
+                    </td>
+                    <td>{{ message.status }}</td>
+                    <td>{{ message.created_at }}</td>
+                    {% include "recruiting/messages/message-detail-modal.html" with notification=message %}
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Cards on the right hand side -->
