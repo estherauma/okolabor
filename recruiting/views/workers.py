@@ -27,7 +27,7 @@ from dateutil.relativedelta import relativedelta
 from django.http import HttpResponse
 import json
 from datetime import date
-from recruiting.utils import get_sector_choices
+from recruiting.utils import calculate_months_ofH2A_expererience, get_sector_choices
 from common.utils import StaticContent
 from recruiting.utils import calculate_total_experience,calculate_profile_completion,get_worker_preferences
 from common.logger import AppLogger
@@ -298,6 +298,7 @@ class WorkerListView(View):
             worker.profile_completion_percentage = profile_completion
             worker.visa_uploaded = visa_uploaded
             worker.intro_video_uploaded = intro_video_uploaded
+            worker.total_months_of_h2a_experience = calculate_months_ofH2A_expererience(worker)
 
 
             worker_data.append({

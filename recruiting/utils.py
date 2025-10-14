@@ -118,7 +118,19 @@ def calculate_total_experience(user):
             total_days += (end_date - exp.start_date).days
     return round(total_days / 365, 2)
 
-
+def calculate_months_ofH2A_expererience(user):
+    experiences = user.work_experiences.filter(work_under_h2a_in_usa='No')
+    total_months = 0
+    for exp in experiences:
+        value = exp.approx_total_months_worked
+        if isinstance(value, (int, float)):
+            total_months += value
+        elif isinstance(value, str):
+            try:
+                total_months += float(value)
+            except ValueError:
+                pass
+    return round(total_months)
 
 
 @transaction.atomic

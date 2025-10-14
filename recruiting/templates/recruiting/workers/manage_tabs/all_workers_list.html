@@ -141,7 +141,6 @@
                           <th class="col-name">{% translate "workersListEmail" %}</th>
                           <th class="col-town">{% translate "workersListTown" %}</th>
                           <th class="col-profile">{% translate "workersListFullyComplete" %}</th>
-                          <th class="col-experience">{% translate "workersListYearsOfExperience" %}</th>
                           <th class="col-english">{% translate "filtersLanguageProficiency" %}</th>
                           <th class="col-location">{% translate "workersListLocationPreference" %}</th>
                           <th class="col-visa">{% translate "workersListVisaUploaded" %}</th>
@@ -167,10 +166,10 @@
                                   </a>
                           </td>
                           <td class="col">
-                                
+                                {{ worker.years_of_experience|default:"Not Provided" }}
                           </td>
-                           <td class="">
-                               
+                           <td class="col-h2a-exp">
+                                {{worker.total_months_of_h2a_experience}}
                           </td>
                           <td class="col-created-at">
                                 {{ worker.created_at|date:"Y-m-d" }}
@@ -188,7 +187,6 @@
                                   NO
                               {% endif %}
                           </td>
-                          <td class="col-experience">{{ worker.years_of_experience|default:"Not Provided" }}</td>
                           <td class="col-english">{{ worker.english_proficiency|default:"Not Provided" }}</td>
                           <td class="col-location">{{ worker.location_preference|default:"Not Provided" }}</td>
                           <td class="col-visa">
