@@ -6,7 +6,7 @@ from django.contrib.auth.models import Group
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic import CreateView,TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -47,6 +47,12 @@ ONBOARDING_STEPS = [
     "workPreferenceStepOne",
     "workPreferenceStepTwo"
 ]
+
+worker_profile_status_labels = {
+    "available": _("workerDetailsAvailable"),
+    "on_contract": _("workerDetailsOnContract"),
+}
+
 class WorkerListView(View):
     def get(self, request):
         # if coming from add workers button on work request detail page
@@ -267,22 +273,27 @@ class WorkerListView(View):
             
         
         # Deduplicate workers by ID using a dictionary comprehension.
-        # If duplicates exist, later workers in the list overwrite earlier ones.
-        # This ensures each worker appears only once while preserving the final ordering.
         workers = list({w.id: w for w in workers}.values())
         worker_data = []
         
         # Initialize years_of_experience to 0 as a default.
-        # This variable is also passed to the template context to ensure it exists
-        # even if the workers list is empty. Individual worker experience is calculated
-        # per worker and included in worker_data.
         years_of_experience = 0
         for worker in workers:
             profile_completion = calculate_profile_completion(worker)
             worker_details = get_worker_preferences(worker)
             years_of_experience = calculate_total_experience(worker)
             latest_assignment = WorkAssignment.objects.filter(worker=worker).order_by('-assigned_date').first()
-            worker.latest_status = latest_assignment.status if latest_assignment else None
+
+            worker_status_pref = UserPreference.objects.filter(user=worker, key='worker_status').first()
+            if worker_status_pref and (worker_status_pref.value or '').strip():
+                value = (worker_status_pref.value or '').strip().lower()
+                code = 'on_contract' if value in ['on_contract', 'on contract', 'contract'] else 'available'
+            else:
+                code = 'on_contract' if (latest_assignment and latest_assignment.status == 'confirmed') else 'available'
+
+            worker.latest_status = worker_profile_status_labels[code]
+            worker.latest_status_code = code
+
             visa_uploaded = UserDocuments.objects.filter(
                 user=worker, kind='visa'
             ).exclude(path__isnull=True).exclude(path__regex=r'^\s*$').exists()
@@ -447,13 +458,19 @@ class WorkerEditView(LoginRequiredMixin, View):
             self.update_user_preference(worker, 'levelOfProficiency', request.POST.get('english_proficiency'))
             self.update_user_preference(worker, 'locationPreference', request.POST.get('location_preference'))
 
-            # Optionally, update status (from WorkAssignment)
             latest_status = request.POST.get('latest_status')
             if latest_status:
                 assignment = WorkAssignment.objects.filter(worker=worker).order_by('-assigned_date').first()
                 if assignment:
                     assignment.status = latest_status
                     assignment.save()
+
+            worker_status = request.POST.get('worker_status')
+            if worker_status:
+                normalized = worker_status.strip().lower()
+                if normalized in ['available', 'on_contract', 'on contract', 'contract']:
+                    canonical = 'on_contract' if normalized in ['on_contract', 'on contract', 'contract'] else 'available'
+                    self.update_user_preference(worker, 'worker_status', canonical)
 
             messages.success(request, _('workersListWorker "%(worker_name)s" EditedSuccessfully.') % {'worker_name': worker.first_name})
             
@@ -733,7 +750,14 @@ class WorkerDetailsView(View):
             worker=worker
         ).order_by('-assigned_date').first()
 
-        current_status = latest_assignment.status if latest_assignment else 'No Assignment'
+        worker_status_pref = UserPreference.objects.filter(user=worker, key='worker_status').first()
+        if worker_status_pref and (worker_status_pref.value or '').strip():
+            value = (worker_status_pref.value or '').strip().lower()
+            code = 'on_contract' if value in ['on_contract', 'on contract', 'contract'] else 'available'
+        else:
+            code = 'on_contract' if (latest_assignment and latest_assignment.status == 'confirmed') else 'available'
+        current_status = worker_profile_status_labels[code]
+
         worker.level_of_language_proficiency = preference_data.get('level')
         worker_messages = UserNotification.objects.filter(user=worker.id, deleted_at__isnull=True).order_by('-created_at')
         context = {
