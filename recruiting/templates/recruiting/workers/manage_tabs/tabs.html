@@ -81,7 +81,7 @@
                     </div>
 
                     <!-- Add Another Filter Button -->
-                    <button class="btn light-green-button min-content-width mt-3" type="button" onclick="addAnotherExperience()">
+                    <button class="btn light-green-button min-content-width mt-2" type="button" onclick="addAnotherExperience()">
                         <i class="fe fe-plus"></i> {% translate "workersListTabsAddAnotherExperience" %}
                     </button>
 
@@ -126,7 +126,7 @@
                     </div>
 
                     <!-- Add / Clear Buttons -->
-                    <div class="mt-3">
+                    <div class="mt-2">
                         <button class="btn light-green-button me-2" type="button" onclick="addRandomFilter()">
                             <i class="fe fe-plus"></i> {% translate "filterSectionAddAnotherFilter" %}
                         </button>
@@ -144,7 +144,6 @@
             <div id="form-template" style="display: none;">
                 <div class="job-experience-form row align-items-start">
                     <!-- Job Experience Filter Row (Template) -->
-                    <div class="row align-items-center g-2">
                         <!-- Type/Sector select -->
                         <div class="form-group">
                             <label class="form-label gray-color text" for="{{ form.type_sector.id_for_label }}">{% translate form.type_sector.label %}</label>
@@ -161,7 +160,6 @@
                                 <label class="form-label gray-color text" for="{{ form.dynamic_field_2.id_for_label }}">{% translate form.dynamic_field_2.label %}</label>
                                 {{ form.dynamic_field_2 }}
                             </div>
-                    </div>
                               <!-- Close button -->
                         <div class="col-auto removeFilterButton2 d-flex align-items-center">
                             <button class="btn btn-sm close" type="button" onclick="removeForm(this)">&times;</button>
