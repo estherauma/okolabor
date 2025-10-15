@@ -80,49 +80,44 @@
             {% translate "workerDetailsSendMessage" %}
           </button>
         </div>
-        <div>
-          <p class="label">
-            CURP
-          </p>
-          <p class="value">
-            {% if worker.curp %}{{worker.curp}}{% else %}N/A{% endif %}
-          </p>
-          <p class="label">
-            {% translate "workerDetailsAddress" %}
-          </p>
-          <p class="value">
-            {% if worker.address_line_1 or worker.address_line_2 or worker.city %}
-              {% if worker.address_line_1 %}{{worker.address_line_1}}{% endif %}{% if worker.address_line_2 %}{% if worker.address_line_1 %}, {% endif %}{{worker.address_line_2}}{% endif %}{% if worker.city %}{% if worker.address_line_1 or worker.address_line_2 %}, {% endif %}{{worker.city}}{% endif %}
+        <div class="row align-items-start">
+          <div class="col-md-4 col-12 mb-3 d-flex justify-content-center">
+            {% if documents.profile_picture %}
+              <img src="{{ base_url }}{{ documents.profile_picture.0.path }}" alt="Profile Picture" class="worker-contact-photo border" />
             {% else %}
-              N/A
+              <div class="worker-initials-badge light-green-background text-white">
+                {% if worker.first_name and worker.last_name %}
+                  {{ worker.first_name|first|upper }}{{ worker.last_name|first|upper }}
+                {% elif worker.first_name %}
+                  {{ worker.first_name|first|upper }}{{ worker.first_name|slice:"1:2"|upper }}
+                {% elif worker.last_name %}
+                  {{ worker.last_name|first|upper }}{{ worker.last_name|slice:"1:2"|upper }}
+                {% else %}
+                  {{ worker.email|first|upper }}{{ worker.email|slice:"1:2"|upper }}
+                {% endif %}
+              </div>
             {% endif %}
-          </p>
-          
-          <p class="label">
-            {% translate "workerDetailsEmail" %}
-          </p>
-          <p class="value">
-            {{worker.email}}
-          </p>
-          <p class="label">
-            {% translate "workerDetailsPhoneNumber" %}
-          </p>
-          <p class="value">
-            {% if worker.telephone %}{{worker.telephone}}{% else %}N/A{% endif %}
-          </p>
-          <p class="label">
-            {% translate "workerDetailsGender" %}
-          </p>
-          <p class="value">
-            {% if worker.gender %}{{worker.gender}}{% else %}N/A{% endif %}
-          </p>
-
-           <p class="label">
-            {% translate "filtersLanguageProficiency" %}
-          </p>
-          <p class="value">
-            {% if worker.level_of_language_proficiency %}{{worker.level_of_language_proficiency}}{% else %}N/A{% endif %}
-          </p>
+          </div>
+          <div class="col-md-8 col-12">
+            <p class="label">CURP</p>
+            <p class="value">{% if worker.curp %}{{worker.curp}}{% else %}N/A{% endif %}</p>
+            <p class="label">{% translate "workerDetailsAddress" %}</p>
+            <p class="value">
+              {% if worker.address_line_1 or worker.address_line_2 or worker.city %}
+                {% if worker.address_line_1 %}{{worker.address_line_1}}{% endif %}{% if worker.address_line_2 %}{% if worker.address_line_1 %}, {% endif %}{{worker.address_line_2}}{% endif %}{% if worker.city %}{% if worker.address_line_1 or worker.address_line_2 %}, {% endif %}{{worker.city}}{% endif %}
+              {% else %}
+                N/A
+              {% endif %}
+            </p>
+            <p class="label">{% translate "workerDetailsEmail" %}</p>
+            <p class="value">{{worker.email}}</p>
+            <p class="label">{% translate "workerDetailsPhoneNumber" %}</p>
+            <p class="value">{% if worker.telephone %}{{worker.telephone}}{% else %}N/A{% endif %}</p>
+            <p class="label">{% translate "workerDetailsGender" %}</p>
+            <p class="value">{% if worker.gender %}{{worker.gender}}{% else %}N/A{% endif %}</p>
+            <p class="label">{% translate "filtersLanguageProficiency" %}</p>
+            <p class="value">{% if worker.level_of_language_proficiency %}{{worker.level_of_language_proficiency}}{% else %}N/A{% endif %}</p>
+          </div>
         </div>
       </div>
     </div>
@@ -478,27 +473,6 @@
         {% endif %}
       
       <!-- Display user documents  -->
-      <!-- Display profile picture -->
-      {% if documents.profile_picture %}
-      <div class="mb-4 mt-5">
-        <p class="label mb-3">Profile Picture</p>
-        {% for doc in documents.profile_picture %}
-        {% if forloop.first or forloop.counter0|divisibleby:2 %}
-        <div class="row">
-          {% endif %}
-          <div class="col-md-6 mb-3 ">
-            <img src="{{ base_url }}{{ doc.path }}" alt="Profile Picture" class="border object-contain w-100 clickable-media"
-              style="max-height: 200px; cursor: pointer;" data-type="image" data-src="{{ base_url }}{{ doc.path }}"
-              data-bs-toggle="modal" data-bs-target="#mediaModal" />
-          </div>
-          {% if forloop.counter|divisibleby:2 or forloop.last %}
-        </div>
-        {% endif %}
-        {% endfor %}
-      </div>
-      {% endif %}
-      
-      
       <!-- Display English proficiency video -->
       {% if documents.english_video %}
       <div class="mb-4">
