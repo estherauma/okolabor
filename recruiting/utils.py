@@ -108,17 +108,34 @@ def get_sector_choices():
         return []
     
 def calculate_total_experience(user):
+    # Calculate total work experience in years based on filters. 
+    # Right now we aren't factoring in filters, just summing all experiences.
     experiences = user.work_experiences.all()
-    total_days = 0
+    total_months = 0
     for exp in experiences:
-        if not exp.start_date:
-            continue
-        end_date = exp.end_date if exp.end_date else (date.today() if exp.currently_working else None)
-        if end_date:
-            total_days += (end_date - exp.start_date).days
-    return round(total_days / 365, 2)
+        value = exp.approx_total_months_worked
+        if isinstance(value, (int, float)):
+            total_months += value
+        elif isinstance(value, str):
+            try:
+                total_months += float(value)
+            except ValueError:
+                pass
+    return round(total_months)
 
-
+def calculate_months_ofH2A_expererience(user):
+    experiences = user.work_experiences.filter(work_under_h2a_in_usa='No')
+    total_months = 0
+    for exp in experiences:
+        value = exp.approx_total_months_worked
+        if isinstance(value, (int, float)):
+            total_months += value
+        elif isinstance(value, str):
+            try:
+                total_months += float(value)
+            except ValueError:
+                pass
+    return round(total_months)
 
 
 @transaction.atomic
