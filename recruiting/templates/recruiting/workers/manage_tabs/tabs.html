@@ -120,8 +120,8 @@
                                 <option value="explanation_video">{% translate "filterSectionExplanationVideo" %}</option>
                             </select>
                         </div>
-                        <div class="col-auto mt-3 removeFilterButton">
-                            <button class="btn btn-sm close mt-2" type="button" onclick="removeFilterRow(this)">&times;</button>
+                        <div class="col-auto removeFilterButton d-flex align-items-center">
+                            <button class="btn btn-sm close" type="button" onclick="removeFilterRow(this)">&times;</button>
                         </div>
                     </div>
 
@@ -627,7 +627,7 @@ function addRandomFilter() {
 
         </div>
         <div class="extra-fields-wrapper" id="extra-fields-${uniqueId}" style="display: none;"></div>
-        <div class="col-auto removeFilterButton">
+        <div class="col-auto removeFilterButton d-flex align-items-center">
             <button class="btn btn-sm close" type="button" onclick="removeFilterRow(this)">
                 &times;
             </button>
@@ -815,11 +815,15 @@ function handleFilterChange(selectEl, uniqueId) {
         extraFieldsContainer.style.gap = "1rem";
         formGroups.forEach(group => {
             group.style.width = "50%";
+            group.style.padding = "0";
+
         });
     } else {
       extraFieldsContainer.style.width = "25%";
         if (formGroups?.length > 0) {
             formGroups[0].style.width = "100%";
+            formGroups[0].style.padding = "0";
+
         }
 
     }
