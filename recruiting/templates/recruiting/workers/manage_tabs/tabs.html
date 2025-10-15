@@ -54,7 +54,7 @@
                 <div id="form-container">
                     <!-- Dynamic Filter Inputs -->
                     <div id="filter-inputs-container">
-                        <div class="job-experience-form row align-items-top">
+                        <div class="job-experience-form row align-items-start">
                             <!-- Job Experience Filter Row -->
                                 <!-- Type/Sector select -->
                                     <div class="form-group">
@@ -142,7 +142,7 @@
 
             <!-- Hidden template for dynamic form cloning -->
             <div id="form-template" style="display: none;">
-                <div class="job-experience-form row align-items-top">
+                <div class="job-experience-form row align-items-start">
                     <!-- Job Experience Filter Row (Template) -->
                     <div class="row align-items-center g-2">
                         <!-- Type/Sector select -->
@@ -640,7 +640,6 @@ function addRandomFilter() {
 }
 
 function handleFilterChange(selectEl, uniqueId) {
-    console.log("Filter changed:", selectEl.value);
     const extraFieldsContainer = document.getElementById(`extra-fields-${uniqueId}`);
     const selectedValue = selectEl.value;
     let html = "";
@@ -820,8 +819,10 @@ function handleFilterChange(selectEl, uniqueId) {
             group.style.width = "50%";
         });
     } else {
-    extraFieldsContainer.style.width = "25%";
-    formGroups[0].style.width = "100%";
+      extraFieldsContainer.style.width = "25%";
+        if (formGroups?.length > 0) {
+            formGroups[0].style.width = "100%";
+        }
 
     }
 
