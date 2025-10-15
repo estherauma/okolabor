@@ -8382,61 +8382,6 @@ select.form-control-lg:not([size]):not([multiple]) {
     background-color: white !important;
 }
 
-/* Fixed-width equal lengths for all dynamic filter fields */
-#dynamic-random-filters .form-control,
-#dynamic-random-filters select,
-#dynamic-random-filters input {
-    width: 100% !important;
-    min-width: 280px !important; 
-    max-width: 280px !important;
-    box-sizing: border-box;
-}
-
-/* Distribute columns evenly within each filter row, but exclude the close button column */
-#dynamic-random-filters .filter-row > div[class*="col"]:not(.col-auto) {
-    flex: 1 1 0;
-}
-
-/* Ensure the two main columns always share space equally */
-#dynamic-random-filters .filter-row .select-col,
-#dynamic-random-filters .filter-row .extra-col {
-    flex: 1 1 0;
-    min-width: 0; /* allow flexbox to shrink properly */
-}
-
-/* Filter row layout and spacing */
-#dynamic-random-filters .filter-row {
-    display: flex !important;
-    gap: 14px; /* slightly increased space between Choose-a-filter and extra fields */
-    align-items: center;
-}
-
-/* Remove Bootstrap column padding inside filter-row to avoid double spacing */
-#dynamic-random-filters .filter-row > .select-col,
-#dynamic-random-filters .filter-row > .extra-col,
-#dynamic-random-filters .filter-row > .removeFilterButton,
-#dynamic-random-filters .filter-row > .removeFilterButton2 {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-}
-
-/* Align remove button and keep consistent height */
-#dynamic-random-filters .removeFilterButton,
-#dynamic-random-filters .removeFilterButton2 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 38px;
-}
-/* Bring the close button slightly closer to the fields in secondary rows */
-#dynamic-random-filters .removeFilterButton {
-    margin-left: -8px; /* slightly reduce the gap next to extra fields */
-}
-
-/* Inner row consistency (like Min/Max, From/To) */
-#dynamic-random-filters .row .col .form-control {
-    width: 100% !important;
-}
 
 
 .was-validated .form-file-input:valid~.form-file-label,
@@ -40539,7 +40484,7 @@ th:last-child, td:last-child {
 }
 
 /* Position close button to flow naturally after all job experience content */
-.job-experience-form .col-auto {
+/* .job-experience-form .col-auto {
     position: static !important;
     display: flex;
     align-items: flex-start;
@@ -40548,9 +40493,9 @@ th:last-child, td:last-child {
     margin-top: 0;
     flex: 0 0 auto !important;
     width: auto !important;
-}
+} */
 
-.job-experience-form .col-auto .btn.close {
+/* .job-experience-form .col-auto .btn.close {
     margin: 0;
     padding: 2px 6px;
     height: 24px;
@@ -40561,7 +40506,7 @@ th:last-child, td:last-child {
     justify-content: center;
     line-height: 1;
     font-size: 18px;
-}
+} */
 
 /* Fix vertical alignment for dynamic filter rows (select filter fields) */
 .filter-row.row.align-items-center {
@@ -40633,9 +40578,7 @@ th:last-child, td:last-child {
     margin-top: 35px !important;
 }
 
-.removeFilterButton2 {
-    margin-top: 45px !important;
-}
+
 
 /* .mt-30{
     margin-top: 30vh !important;
