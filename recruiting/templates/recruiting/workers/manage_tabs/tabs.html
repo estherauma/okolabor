@@ -54,7 +54,7 @@
                 <div id="form-container">
                     <!-- Dynamic Filter Inputs -->
                     <div id="filter-inputs-container">
-                        <div class="job-experience-form row align-items-start">
+                        <div class="job-experience-form">
                             <!-- Job Experience Filter Row -->
                                 <!-- Type/Sector select -->
                                     <div class="form-group">
@@ -87,42 +87,45 @@
 
                     <!-- Additional Filters Section -->
                     <div class="form-row align-items-center">
-                        <span class="mt-5 ms-2 mb-3">
+                        <span class="mt-5 ms-1 mb-3">
                             <h3 class="card-title green-color d-contents">
                                 {% translate "workersListFurtherFilters" %}
                             </h3>
                         </span>
                     </div>
-
-                    <div id="dynamic-random-filters" class="row align-items-center g-2">
-                        <div class="form-group">
-                            <label class="form-label gray-color">
-                                {% translate "filterSectionSelectFilter" %}
-                            </label>
-                            <select class="form-control" name="random_filter">
-                                <option value="">{% translate "filterSectionChooseAFilter" %}</option>
-                                <option value="years_of_experience">{% translate "filterSectionYearsofExperience" %}</option>
-                                <option value="references">{% translate "filterSectionReferences" %}</option>
-                                <option value="availability">{% translate "filterSectionAvailability" %}</option>
-                                <option value="h2a_experience">{% translate "filterSectionH-2AExperience" %}</option>
-                                <option value="h2b_experience">{% translate "filterSectionH-2BExperience" %}</option>
-                                <option value="work_pictures">{% translate "filterSectionRelevantWorkPictures" %}</option>
-                                <option value="exclude_physical_limitations">{% translate "filterSectionExcludeWorkerswithPhysicalLaborLimitations" %}</option>
-                                <option value="age">{% translate "filterSectionAge" %}</option>
-                                <option value="gender">{% translate "filterSectionGender" %}</option>
-                                <option value="passport">{% translate "filterSectionPassport" %}</option>
-                                <option value="us_driving_license">{% translate "filterSectionUSDrivingLicense" %}</option>
-                                <option value="mx_us_driving_license">{% translate "filterSectionUS-MexicanDrivingLicense" %}</option>
-                                <option value="language_proficiency">{% translate "filterSectionLanguageProficiency" %}</option>
-                                <option value="work_preference_location">{% translate "filterSectionWorkPreferenceLocation" %}</option>
-                                <option value="work_preference_type">{% translate "filterSectionWorkPreferenceType" %}</option>
-                                <option value="visa">{% translate "filterSectionVisa" %}</option>
-                                <option value="explanation_video">{% translate "filterSectionExplanationVideo" %}</option>
-                            </select>
-                        </div>
-                        <div class="col-auto removeFilterButton d-flex align-items-center">
-                            <button class="btn btn-sm close" type="button" onclick="removeFilterRow(this)">&times;</button>
-                        </div>
+                    <!-- Dynamic Random Filters Container. Fields are added dynamicallly with javascript -->
+                    <div id="dynamic-random-filters">
+                        <!-- leaving this comment intentionally incase we need this logic later -->
+                        <!-- <div class="filter-group">
+                            <div class="form-group">
+                                <label class="form-label gray-color">
+                                    {% translate "filterSectionSelectFilter" %}
+                                </label>
+                                <select class="form-control" name="random_filter">
+                                    <option value="">{% translate "filterSectionChooseAFilter" %}</option>
+                                    <option value="years_of_experience">{% translate "filterSectionYearsofExperience" %}</option>
+                                    <option value="references">{% translate "filterSectionReferences" %}</option>
+                                    <option value="availability">{% translate "filterSectionAvailability" %}</option>
+                                    <option value="h2a_experience">{% translate "filterSectionH-2AExperience" %}</option>
+                                    <option value="h2b_experience">{% translate "filterSectionH-2BExperience" %}</option>
+                                    <option value="work_pictures">{% translate "filterSectionRelevantWorkPictures" %}</option>
+                                    <option value="exclude_physical_limitations">{% translate "filterSectionExcludeWorkerswithPhysicalLaborLimitations" %}</option>
+                                    <option value="age">{% translate "filterSectionAge" %}</option>
+                                    <option value="gender">{% translate "filterSectionGender" %}</option>
+                                    <option value="passport">{% translate "filterSectionPassport" %}</option>
+                                    <option value="us_driving_license">{% translate "filterSectionUSDrivingLicense" %}</option>
+                                    <option value="mx_us_driving_license">{% translate "filterSectionUS-MexicanDrivingLicense" %}</option>
+                                    <option value="language_proficiency">{% translate "filterSectionLanguageProficiency" %}</option>
+                                    <option value="work_preference_location">{% translate "filterSectionWorkPreferenceLocation" %}</option>
+                                    <option value="work_preference_type">{% translate "filterSectionWorkPreferenceType" %}</option>
+                                    <option value="visa">{% translate "filterSectionVisa" %}</option>
+                                    <option value="explanation_video">{% translate "filterSectionExplanationVideo" %}</option>
+                                </select>
+                            </div>
+                            <div class="col-auto removeFilterButton d-flex align-items-center">
+                                <button class="btn btn-sm close" type="button" onclick="removeFilterRow(this)">&times;</button>
+                            </div>
+                        </div> -->
                     </div>
 
                     <!-- Add / Clear Buttons -->
@@ -142,7 +145,7 @@
 
             <!-- Hidden template for dynamic form cloning -->
             <div id="form-template" style="display: none;">
-                <div class="job-experience-form row align-items-start">
+                <div class="job-experience-form">
                     <!-- Job Experience Filter Row (Template) -->
                         <!-- Type/Sector select -->
                         <div class="form-group">
@@ -510,7 +513,7 @@ function updateCollapseSummary() {
         }
     });
 
-    const randomFilterRows = document.querySelectorAll('#dynamic-random-filters .filter-row');
+    const randomFilterRows = document.querySelectorAll('#dynamic-random-filters .filter-group');
     randomFilterRows.forEach(row => {
         const selectFilter = row.querySelector('select[name="random_filter"]');
         const filterLabel = selectFilter?.options[selectFilter.selectedIndex]?.text?.trim();
@@ -586,8 +589,8 @@ document.addEventListener("DOMContentLoaded", updateCollapseSummary);
 
 function addRandomFilter() {
     const container = document.getElementById("dynamic-random-filters");
-    // const row = document.createElement("div");
-    // row.classList.add("row", "align-items-center", "filter-row", "mb-2");
+    const row = document.createElement("div");
+    row.classList.add("filter-group");
     const uniqueId = Date.now();
     const filterOptions = [
         { value: "years_of_experience", label: "{% translate 'filterSectionMonthsofExperience' %}" },
@@ -616,7 +619,7 @@ function addRandomFilter() {
     filterOptions.forEach(opt => {
         optionsHtml += `<option value="${opt.value}">${opt.label}</option>`;
     });
-    container.innerHTML = `
+    row.innerHTML = `
         <div class="form-group">
             <label class="form-label gray-color">
                 {% translate "filterSectionSelectFilter" %}
@@ -852,7 +855,7 @@ function handleLanguageProficiencyChange(selectEl, uniqueId) {
 
 
 function removeFilterRow(button) {
-    const row = button.closest(".filter-row");
+    const row = button.closest("#dynamic-random-filters .filter-group");
     if (row) row.remove();
 }
 function clearAllFilters() {
