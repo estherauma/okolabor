@@ -62,6 +62,7 @@
             <div>
               <button id="cancel-offer-offersent" class="btn dark-green-button ms-3">{% translate "workRequestAddWorkerCancelOffer" %}</button>
               <button id="send-message-offersent" class="btn dark-green-button ms-3">{% translate "workerDetailsSendMessage" %}</button>
+              <button id="export-offersent" class="btn dark-green-button ms-3">{% translate 'webCommonExport'%}</button>
               {% include 'recruiting/messages/send-workrequest-message.html' with form=send_message_form status='offersent' %}
             </div>
 
@@ -127,6 +128,15 @@
             columnDefs: [{ targets: 0, orderable: false }],
             paging: true,
             info: true,
+    });
+
+    $('#export-offersent').on('click', function () {
+      const wr = $('#modal_work_request').val();
+      const role = $('#modal_role').val();
+      let url = "{% url 'recruiting_web:export-workers' %}?status=offersent";
+      if (wr) url += `&work_request=${wr}`;
+      if (role) url += `&role=${role}`;
+      window.location.href = url;
     });
 
     $('#basic-datatable-offersent_length').appendTo('#datatable-offersent-controls');

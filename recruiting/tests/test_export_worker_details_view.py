@@ -42,7 +42,7 @@ class ExportWorkerDetailsTest(TestCase):
         # Assert response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response['Content-Type'], 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        self.assertIn('attachment; filename="worker_preferences.xlsx"', response['Content-Disposition'])
+        self.assertIn('attachment; filename="workers.xlsx"', response['Content-Disposition'])
 
         # Read and check Excel content from BytesIO
         excel_file = BytesIO(response.content)

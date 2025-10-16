@@ -1525,7 +1525,7 @@ class SendWorkRequestMessageView(CreateView):
             messages.success(self.request, _('sendMessageMessageSentSuccessfully'))
             return redirect(reverse('recruiting_web:workers'))
         else:
-            messages.error(self.request, _('sendMessagePleaseSelectWorkRequestAndRole'))
+            messages.error(self.request, 'Please select a work request and role before sending a message')
             return redirect(reverse('recruiting_web:workers'))
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
