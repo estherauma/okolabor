@@ -1043,8 +1043,40 @@ class ExportWorkerDetailsView(View):
         if "englishProficiency" in preference_label_map:
             preference_label_map["englishProficiency"] = english_proficiency_title
 
+        status_param = request.GET.get('status') 
+        work_request_id = request.GET.get('work_request')
+        role_id = request.GET.get('role')
+
+        status_alias_map = {
+            'shortlist': 'assigned',
+            'assigned': 'assigned',
+            'offersent': 'offersent',
+            'confirmed': 'confirmed',
+            'rejected': 'rejected',
+        }
+
+        statuses = []
+        if status_param:
+            parts = [s.strip().lower() for s in status_param.split(',') if s.strip()]
+            for s in parts:
+                mapped = status_alias_map.get(s, s)
+                if mapped in dict(WorkAssignment.STATUS_CHOICES):
+                    statuses.append(mapped)
+        use_assignment_filter = bool(work_request_id or role_id or statuses)
+
         data = []
-        worker_users = User.objects.filter(groups__name="worker")
+        if use_assignment_filter:
+            if not statuses:
+                statuses = ['assigned', 'offersent', 'confirmed', 'rejected']
+            assignments = WorkAssignment.objects.filter(status__in=statuses)
+            if work_request_id:
+                assignments = assignments.filter(work_request_id=work_request_id)
+            if role_id:
+                assignments = assignments.filter(role_id=role_id)
+            worker_ids = assignments.values_list('worker_id', flat=True).distinct()
+            worker_users = User.objects.filter(id__in=worker_ids)
+        else:
+            worker_users = User.objects.filter(groups__name="worker")
 
         for user in worker_users:
             preferences = UserPreference.objects.filter(user=user)
@@ -1061,7 +1093,7 @@ class ExportWorkerDetailsView(View):
         df = pd.DataFrame(data)
 
         response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-        response["Content-Disposition"] = 'attachment; filename="worker_preferences.xlsx"'
+        response["Content-Disposition"] = 'attachment; filename="workers.xlsx"'
 
         with pd.ExcelWriter(response, engine="openpyxl") as writer:
             df.to_excel(writer, index=False, sheet_name="Worker Preferences")

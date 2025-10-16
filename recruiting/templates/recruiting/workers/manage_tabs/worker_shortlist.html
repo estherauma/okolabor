@@ -67,11 +67,12 @@
               </button>
               <button id="cancel-offer-shortlist" class="btn dark-green-button ms-3">{% translate "workRequestAddWorkerShortlistCancelOffer" %}</button>
               <button id="send-message-shortlist" class="btn dark-green-button ms-3">{% translate "workerDetailsSendMessage" %}</button>
+              <button id="export-shortlist" class="btn dark-green-button ms-3">{% translate 'webCommonExport'%}</button>
               {% include 'recruiting/messages/send-workrequest-message.html' with form=send_message_form status='assigned' %}
             </div>
 
             <!-- Center Search Box -->
-            <div class="flex-grow-1 d-flex justify-content-center">
+            <div class="flex-grow-1 d-flex justify-content-center ms-3">
               <div id="customShortlistSearchContainer" style="width: 100%; max-width: 400px;"></div>
             </div>
 
@@ -128,15 +129,24 @@
   <script src="{% static 'assets/js/send-message.js' %}"></script>
 
 <script>
-$(document).ready(function () {
-  $.fn.dataTable.ext.errMode = 'none';
+  $(document).ready(function () {
+    $.fn.dataTable.ext.errMode = 'none';
 
-  const shortlistTable = $('#basic-datatable-shortlist').DataTable({
+    const shortlistTable = $('#basic-datatable-shortlist').DataTable({
             ordering: true,
             order: [],
             columnDefs: [{ targets: 0, orderable: false }],
             paging: true,
             info: true,
+    });
+
+    $('#export-shortlist').on('click', function () {
+      const wr = $('#modal_work_request').val();
+      const role = $('#modal_role').val();
+      let url = "{% url 'recruiting_web:export-workers' %}?status=assigned";
+      if (wr) url += `&work_request=${wr}`;
+      if (role) url += `&role=${role}`;
+      window.location.href = url;
     });
 
   // Move default controls to hidden container to prevent duplication

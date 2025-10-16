@@ -65,6 +65,7 @@
                 <div>
                   <button id="cancel-confirmed-btn" class="btn dark-green-button">{% translate "workRequestAddWorkerCancelOffer" %}</button>
                   <button id="send-message-confirmed" class="btn dark-green-button ms-3">{% translate "workerDetailsSendMessage" %}</button>
+                  <button id="export-confirmed" class="btn dark-green-button ms-3">{% translate 'webCommonExport'%}</button>
                  {% include 'recruiting/messages/send-workrequest-message.html' with form=send_message_form status='confirmed' %}
                 </div>
             </div>
@@ -127,6 +128,15 @@
             columnDefs: [{ targets: 0, orderable: false }],
             paging: true,
             info: true,
+    });
+
+    $('#export-confirmed').on('click', function () {
+      const wr = $('#modal_work_request').val();
+      const role = $('#modal_role').val();
+      let url = "{% url 'recruiting_web:export-workers' %}?status=confirmed";
+      if (wr) url += `&work_request=${wr}`;
+      if (role) url += `&role=${role}`;
+      window.location.href = url;
     });
 
     // Move search input
