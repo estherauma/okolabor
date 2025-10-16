@@ -1,7 +1,5 @@
 #dynamic-random-filters, .job-experience-form{
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
     gap:1rem;
     margin-left: 0!important;
     width: 100%;
@@ -9,8 +7,20 @@
 
 .job-experience-form {
     align-items: start;
+    flex-direction: row;
+    flex-wrap: wrap;
 }
-#dynamic-random-filters{
+
+#dynamic-random-filters {
+  flex-direction: column;
+}
+#dynamic-random-filters .filter-group {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap:1rem;
+    margin-left: 0!important;
+    width: 100%;
     align-items: end !important;
 }
 
