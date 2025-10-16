@@ -184,7 +184,7 @@ class SendWorkRequestMessageViewTests(TestCase):
         }
         response = self.client.post(self.url, data, follow=True)
         self.assertRedirects(response, reverse('recruiting_web:workers'))
-        self.assertContains(response, 'sendMessagePleaseSelectWorkRequestAndRole')
+        self.assertContains(response, 'Please select a work request and role before sending a message')
 
     def test_form_invalid_shows_errors(self):
         data = {

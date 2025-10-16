@@ -18,15 +18,15 @@
         <p class="label">{% translate "status" %}</p>
         <p class="value">{{ notification.status }}</p>
         {% if notification.read_at %}
-          <p class="label">{% translate "readAt" %}</p>
+          <p class="label">{% translate "messageDetailsReadAt" %}</p>
           <p class="value">{{ notification.read_at }}</p>
         {% endif %}
-        <p class="label">{% translate "createdAt" %}</p>
+        <p class="label">{% translate "messageDetailsCreatedAt" %}</p>
         <p class="value">{{ notification.created_at }}</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-gray" data-bs-dismiss="modal">
-          {% translate "close" %}
+          {% translate "messageDetailsClose" %}
         </button>
       </div>
     </div>
