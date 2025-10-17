@@ -6,26 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invitation</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #7DBF96; font-family: Arial, sans-serif; color: #ffffff;display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;">
-    <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px; background-color: #ffffff; color: #333333; border-radius: 8px;">
-        <!-- Logo -->
-        <div style="text-align: center; margin-bottom: 30px;">
-            <img src="{{ request.scheme }}://{{ request.get_host }}/static/assets/images/login/logo.svg" alt="Okolabor" style="max-width: 200px; height: auto;" />
-        </div>
+<body>
+    <div>
         <p>Hi <strong>{{ receiver_org.name }}</strong>,</p>
-
         <p>
           Your organization has received an invitation to collaborate with
           <strong>{{ other_org.name }}</strong>.
         </p>
     
         <p style="margin: 20px 0;">
-          <a href="{{ accept_url }}" style="padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 4px;">✅ Accept</a>
+          <a href="{{ accept_url }}" style="padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 4px;"> Accept</a>
           &nbsp;
-          <a href="{{ reject_url }}" style="padding: 10px 20px; background-color: #dc3545; color: white; text-decoration: none; border-radius: 4px;">❌ Reject</a>
+          <a href="{{ reject_url }}" style="padding: 10px 20px; background-color: #dc3545; color: white; text-decoration: none; border-radius: 4px;"> Reject</a>
         </p>
     
         <p>Regards,<br>Okolabor team</p> 
