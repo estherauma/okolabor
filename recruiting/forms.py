@@ -394,7 +394,7 @@ class RoleWagesForm(forms.ModelForm):
                 'class': 'form-control',
                 'placeholder': '$'
             }),
-            'piece_rate_offerings_type': forms.Select(attrs={
+            'piece_rate_offerings_type': forms.TextInput(attrs={
                 'class': 'form-control',
             }),
             'frequency_of_pay': forms.Select(attrs={
