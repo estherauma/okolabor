@@ -67,11 +67,11 @@
                 <tr>
                   <th><input type="checkbox" id="select-all-rejected"></th>
                   <th class="col-name">{% translate "workersListName" %}</th>
-                  <th class="col-rel-exp">{% translate "workersListMonthsOfRelevantExperience" %}</th>
-                  <th class="col-h2a-exp">{% translate "workersListMonthsOfH2AExperience" %}</th>
-                  <th class="col-offer">{% translate "workersListOfferStatus" %}</th>
-                  <th class="col-profile">{% translate "workersListFullyComplete" %}</th>
-                  <th class="col-visa">{% translate "workersListVisaUploaded" %}</th>
+                  <th class="col-rel-exp" style="max-width: 70px; white-space: break-spaces;">{% translate "workersListMonthsOfRelevantExperience" %}</th>
+                  <th class="col-h2a-exp" style="max-width: 70px; white-space: break-spaces;">{% translate "workersListMonthsOfH2AExperience" %}</span></th>
+                  <th class="col-offer" style="max-width: 70px; white-space: break-spaces;">{% translate "workersListOfferStatus" %}</th>
+                  <th class="col-profile" style="max-width: 70px; white-space: break-spaces;">{% translate "workersListFullyComplete" %}</th>
+                  <th class="col-visa" style="max-width: 70px; white-space: break-spaces;">{% translate "workersListVisaUploaded" %}</th>
                 </tr>
               </thead>
               <tbody>
@@ -111,20 +111,20 @@
 </script>
 
 <script>
-  function applyColumnVisibilityFromStorageTab5(table) {
-    const savedSettings = JSON.parse(localStorage.getItem('columnVisibilitySettingsTab5')) || {};
-    const columnClasses = [
-      'col-name', 'col-town', 'col-profile', 'col-experience',
-      'col-english', 'col-location', 'col-offer', 'col-actions'
-    ];
+  // function applyColumnVisibilityFromStorageTab5(table) {
+  //   const savedSettings = JSON.parse(localStorage.getItem('columnVisibilitySettingsTab5')) || {};
+  //   const columnClasses = [
+  //     'col-name', 'col-town', 'col-profile', 'col-experience',
+  //     'col-english', 'col-location', 'col-offer', 'col-actions'
+  //   ];
 
-    columnClasses.forEach((className, idx) => {
-      const isVisible = savedSettings[className] !== false;
-      table.column(idx + 1).visible(isVisible);
-      const checkbox = document.querySelector(`#columnSettingsModalTab5 .column-toggle[value="${idx + 1}"]`);
-      if (checkbox) checkbox.checked = isVisible;
-    });
-  }
+  //   columnClasses.forEach((className, idx) => {
+  //     const isVisible = savedSettings[className] !== false;
+  //     table.column(idx + 1).visible(isVisible);
+  //     const checkbox = document.querySelector(`#columnSettingsModalTab5 .column-toggle[value="${idx + 1}"]`);
+  //     if (checkbox) checkbox.checked = isVisible;
+  //   });
+  // }
 
   document.addEventListener('DOMContentLoaded', () => {
     const table = $('#basic-datatable-rejectedTab5').DataTable({
