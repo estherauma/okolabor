@@ -53,7 +53,7 @@ worker_profile_status_labels = {
     "on_contract": _("workerDetailsOnContract"),
 }
 
-class WorkerListView(View):
+class WorkerListView(LoginRequiredMixin, View):
     def get(self, request):
         # if coming from add workers button on work request detail page
         # Get optional parameters from query string
@@ -659,7 +659,7 @@ class GetWorkerDetailsView(View):
 
 
 
-class WorkerCreateView(View):
+class WorkerCreateView(LoginRequiredMixin, View):
     def post(self, request):
         form = WorkerCreateForm(request.POST)
         if form.is_valid():
@@ -674,7 +674,7 @@ class WorkerCreateView(View):
             return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
-class WorkerDetailsView(View):
+class WorkerDetailsView(LoginRequiredMixin,View):
     def get(self, request, pk):
         logger = AppLogger(log_file='logs/debug.log')
         worker = get_object_or_404(User, pk=pk)
@@ -797,7 +797,7 @@ class WorkerDetailsView(View):
         }
         return render(request, 'recruiting/workers/detail.html', context)
     
-class EditPreferenceView(View):
+class EditPreferenceView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         worker_id = kwargs.get("worker_id")  # ✅ Gets the user ID from the URL
         key = kwargs.get("key")              # ✅ Gets the preference key from the URL
@@ -979,7 +979,7 @@ class CreateWorkExperienceView(BaseCreateView):
 
 
 
-class WorkExperienceDetailsView(View):
+class WorkExperienceDetailsView(LoginRequiredMixin, View):
     def get(self, request, pk):
         base_url = request.build_absolute_uri('/')
         work_experience = get_object_or_404(UserWorkExperience, pk=pk)
@@ -995,7 +995,7 @@ class WorkExperienceDetailsView(View):
 
 
 
-class ExportWorkerDetailsView(View):
+class ExportWorkerDetailsView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         latest = AggregatedContent.objects.latest('created_at')
         serializer = AggregatedContentSerializer(latest, many=False)
@@ -1102,7 +1102,7 @@ class ExportWorkerDetailsView(View):
         return response
     
 
-class UploadDocumentsView(View):
+class UploadDocumentsView(LoginRequiredMixin, View):
     upload_paths = {
     'contract': 'uploads/visa',
     'passport': 'uploads/passports',
@@ -1145,7 +1145,7 @@ class UploadDocumentsView(View):
         messages.success(request, f"{text} {user.get_full_name() or user.email}.")
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
     
-class UploadLanguageProficiencyView(View):
+class UploadLanguageProficiencyView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         worker_id = request.POST.get("worker_id")
         language_level = request.POST.get("language_level")
@@ -1188,7 +1188,7 @@ class UploadLanguageProficiencyView(View):
         return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
 
 
-class UploadUserPreferenceView(View):
+class UploadUserPreferenceView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         worker_id = request.POST.get("worker_id")
         user = get_object_or_404(User, id=worker_id)
@@ -1226,7 +1226,7 @@ class UploadUserPreferenceView(View):
     
 
 
-class EditWorkExperienceView(View):
+class EditWorkExperienceView(LoginRequiredMixin, View):
     def post(self, request, pk):
         work_experience = get_object_or_404(UserWorkExperience, pk=pk)
         form = WorkExperienceCreateForm(request.POST, request.FILES, instance=work_experience)
@@ -1337,7 +1337,7 @@ class EditWorkExperienceView(View):
         messages.error(request, 'ThereWereSomeErrorsInTheForm.')
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': work_experience.user.pk}))
 
-class DeleteWorkExperienceView(View):
+class DeleteWorkExperienceView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         work_experience_id = kwargs.get('pk')
         work_experience = get_object_or_404(UserWorkExperience, pk=work_experience_id,deleted=False)
@@ -1363,7 +1363,7 @@ class DeleteWorkExperienceView(View):
         messages.success(request, "workExperienceDeletedSuccessfully.")
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
     
-class EditUserPreferenceView(View):
+class EditUserPreferenceView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         worker_id = kwargs.get("worker_id")
         user = get_object_or_404(User, id=worker_id)
@@ -1428,7 +1428,7 @@ class EditUserPreferenceView(View):
         return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
 
 
-class EditLanguageProficiencyView(View):
+class EditLanguageProficiencyView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         worker_id = kwargs.get("worker_id") or request.POST.get("worker_id")
         language_level = request.POST.get("language_level")
@@ -1475,7 +1475,7 @@ class EditLanguageProficiencyView(View):
         return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
     
 
-class EditDocumentsView(View):
+class EditDocumentsView(LoginRequiredMixin, View):
     upload_paths = {
         'passport': 'uploads/passports',
         'profile_picture': 'uploads/profiles',
@@ -1514,7 +1514,7 @@ class EditDocumentsView(View):
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
 
 
-class DeleteAllWorkerInfoView(View):
+class DeleteAllWorkerInfoView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         worker_id = kwargs.get("worker_id")
         user = get_object_or_404(User, pk=worker_id)
