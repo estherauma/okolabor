@@ -28,10 +28,6 @@
     font-size: 0.875rem;
     width: auto;
     min-width: 60px;
-
-    
-
-
   }
 </style>
 
@@ -137,15 +133,18 @@
                           <th class="col-name">{% translate "workersListName" %}</th>
                           <th class="col-name">{% translate "workersListMonthsOfRelevantExperience" %}</th>
                           <th class="col-name">{% translate "workersListMonthsOfH2AExperience" %}</th>
-                          <th class="col-created-at">{% translate "workersListCreatedAt" %}</th>
+                          <th class="col-offer">{% translate "workersListOfferStatus" %}</th>
+                          <th class="col-profile">{% translate "workersListFullyComplete" %}</th>
+                          <th class="col-visa">{% translate "workersListVisaUploaded" %}</th>
+                          <!-- <th class="col-created-at">{% translate "workersListCreatedAt" %}</th>
                           <th class="col-name">{% translate "workersListEmail" %}</th>
                           <th class="col-town">{% translate "workersListTown" %}</th>
-                          <th class="col-profile">{% translate "workersListFullyComplete" %}</th>
+                          
                           <th class="col-english">{% translate "filtersLanguageProficiency" %}</th>
                           <th class="col-location">{% translate "workersListLocationPreference" %}</th>
                           <th class="col-visa">{% translate "workersListVisaUploaded" %}</th>
-                          <th class="col-intro-video">{% translate "workersListIntroVideoUploaded" %}</th>
-                          <th class="col-offer">{% translate "workersListOfferStatus" %}</th>
+                          <th class="col-intro-video">{% translate "workersListIntroVideoUploaded" %}</th> -->
+                          
                           {% if request.user|has_group:"admin" %}
                               <th class="col-actions">
                                   {% translate "workersListActions" %}
@@ -160,10 +159,15 @@
                               <input type="checkbox" class="worker-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.first_name }} {{ worker.last_name }}">
                           </td>
                           <td class="col-name">
-                              
-                                  <a href="{{ worker.id }}">
-                                      {{ worker.first_name }} {{ worker.last_name }}
-                                  </a>
+                            {% if worker.first_name or worker.last_name %}
+                              <a href="{{ worker.id }}">
+                                {{ worker.first_name }} {{ worker.last_name }}
+                              </a>
+                            {% else %}
+                              <a href="{{ worker.id }}">
+                                Not Provided
+                              </a>
+                            {% endif %}
                           </td>
                           <td class="col">
                                 {{ worker.years_of_experience|default:"Not Provided" }}
@@ -171,23 +175,23 @@
                            <td class="col-h2a-exp">
                                 {{worker.total_months_of_h2a_experience}}
                           </td>
-                          <td class="col-created-at">
+                          <!-- <td class="col-created-at">
                                 {{ worker.created_at|date:"Y-m-d" }}
-                          </td>
-                          <td class="col-townnn">
+                          </td> -->
+                          <!-- <td class="col-townnn">
                               <a href="{{ worker.id }}">
                                   {{ worker.email}}
                                 </a>
-                              </td>
-                          <td class="col-town">{{ worker.town|default:"Not Provided" }}</td>
+                              </td> -->
+                          <!-- <td class="col-town">{{ worker.town|default:"Not Provided" }}</td>
                           <td class="col-profile">
                               {% if worker.profile_completion_percentage == 100 %}
                                   {% translate 'webCommonYes' %}
                               {% else %}
                                   {% translate 'webCommonNo' %}
                               {% endif %}
-                          </td>
-                          <td class="col-english">{{ worker.english_proficiency|default:"Not Provided" }}</td>
+                          </td> -->
+                          <!-- <td class="col-english">{{ worker.english_proficiency|default:"Not Provided" }}</td>
                           <td class="col-location">{{ worker.location_preference|default:"Not Provided" }}</td>
                           <td class="col-visa">
                           {% if worker.visa_uploaded %}
@@ -203,8 +207,23 @@
                           {% else %}
                               <span> {% translate 'webCommonNo' %}</span>
                           {% endif %}
-                      </td>
+                      </td> -->
                           <td class="col-offer">{{ worker.latest_status }}</td>
+                          <td class="col-profile">
+                              {% if worker.profile_completion_percentage == 100 %}
+                                  {% translate 'webCommonYes' %}
+                              {% else %}
+                                  {% translate 'webCommonNo' %}
+                              {% endif %}
+                          </td>
+                          
+                          <td class="col-visa">
+                          {% if worker.visa_uploaded %}
+                              <span> {% translate 'webCommonYes' %}</span>
+                          {% else %}
+                              <span> {% translate 'webCommonNo' %}</span>
+                          {% endif %}
+                      </td>
                           {% if request.user|has_group:"admin" %}
                               <td class="col-actions">
                               <!-- Edit Button -->
