@@ -27,7 +27,7 @@ from dateutil.relativedelta import relativedelta
 from django.http import HttpResponse
 import json
 from datetime import date
-from recruiting.utils import calculate_months_ofH2A_expererience, get_sector_choices
+from recruiting.utils import calculate_months_ofH2A_expererience, check_visa_status, get_sector_choices
 from common.utils import StaticContent
 from recruiting.utils import calculate_total_experience,calculate_profile_completion,get_worker_preferences
 from common.logger import AppLogger
@@ -416,23 +416,20 @@ class FilteredWorkersAjaxView(View):
             if current_status == status and worker and worker.id not in seen_worker_ids:
                 seen_worker_ids.add(worker.id)
 
-                profile_completion = calculate_profile_completion(worker)
+                profile_completion = "Yes" if calculate_profile_completion(worker) == 100 else "No"
                 worker_details = get_worker_preferences(worker)
                 experience = calculate_total_experience(worker)
+                h2a_exp = calculate_months_ofH2A_expererience(worker)
+                has_visa = check_visa_status(worker)
 
                 workers.append({
                     'id': worker.id,
                     'name': f"{worker.first_name} {worker.last_name}" if worker.first_name and worker.last_name else worker.email,
-                    'email': worker.email,
-                    'profile_completion': profile_completion,
-                    'experience': experience,
-                    'town': worker_details.get('town', 'Not Provided'),
-                    'work_experience': worker_details.get('work_experience', 'Not Provided'),
-                    'english_proficiency': worker_details.get('english_proficiency', 'Not Provided'),
-                    'location_preference': worker_details.get('location_preference', 'Not Provided'),
-                    'work_request': assignment.work_request.name if assignment.work_request else None,
-                    'role': assignment.role.title if assignment.role else None,
-                    'status': assignment.status,
+                    'relExp': "Relevant experience",
+                    'h2aExp': h2a_exp,
+                    'offer': 'Offer status',
+                    'profile': profile_completion,
+                    "visa": has_visa
                 })
 
         status_counts = {k: len(v) for k, v in unique_worker_status_counts.items()}

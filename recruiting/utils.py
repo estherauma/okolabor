@@ -1,5 +1,5 @@
 # utils.py
-from account.models import UserPreference, User
+from account.models import UserDocuments, UserPreference, User
 from common.logger import AppLogger
 from recruiting.models import WorkAssignment
 from django.conf import settings
@@ -136,6 +136,13 @@ def calculate_months_ofH2A_expererience(user):
             except ValueError:
                 pass
     return round(total_months)
+
+
+def check_visa_status(user):
+    visa_uploaded = UserDocuments.objects.filter(
+        user=user, kind='visa'
+     ).exclude(path__isnull=True).exclude(path__regex=r'^\s*$').exists()
+    return "Yes" if visa_uploaded else "No"
 
 
 @transaction.atomic
