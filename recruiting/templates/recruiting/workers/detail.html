@@ -408,7 +408,7 @@
                         {{ message.title }}
                       </a>
                     </td>
-                    <td>{{ message.status }}</td>
+                    <td>{{ message.status|capfirst }}</td>
                     <td>{{ message.created_at }}</td>
                     {% include "recruiting/messages/message-detail-modal.html" with notification=message %}
                   </tr>

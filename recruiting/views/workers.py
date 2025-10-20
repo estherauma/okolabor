@@ -761,6 +761,10 @@ class WorkerDetailsView(View):
 
         worker.level_of_language_proficiency = preference_data.get('level')
         worker_messages = UserNotification.objects.filter(user=worker.id, deleted_at__isnull=True).order_by('-created_at')
+        # Capitalise status for display
+        for msg in worker_messages:
+            if hasattr(msg, 'status'):
+                msg.status = str(msg.status).capitalize()
         context = {
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
             'worker': worker,
