@@ -40584,7 +40584,7 @@ th:last-child, td:last-child {
 
 
 
-/* .mt-30{
+.mt-30{
     margin-top: 30vh !important;
 }
 
@@ -40592,23 +40592,8 @@ th:last-child, td:last-child {
     margin-top: 35vh !important;
 } */
 
-
-/* Make sure header cells are positioned for absolute icon placement and don't clip children */
-  #basic-datatable-allworkers-workers th,
-  #basic-datatable-offersent th,
-  #basic-datatable-confirmed th,
-  #basic-datatable-rejectedTab5 th,
-  #basic-datatable-shortlist th {
-    position: relative !important;
-    overflow: visible !important;        /* prevents clipping of absolute children (::after icons) */
-    z-index: 2;                           /* so arrows sit above table content if needed */
-    padding-right: 34px !important;      /* reserve space on the right for the arrow */
-    box-sizing: border-box;
-  }
-
-  /* For wrapped header text keep vertical alignment stable */
-  #basic-datatable-allworkers-workers thead th,
-  #basic-datatable-shortlist thead th {
-    white-space: normal !important;
-    vertical-align: auto;
-  }
+/* Fixing table widths */
+.col-rel-exp {
+    max-width: 40px !important;
+    white-space: break-spaces !important;
+}
