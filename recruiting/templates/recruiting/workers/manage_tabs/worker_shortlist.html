@@ -92,14 +92,11 @@
                   <th>
                     <input type="checkbox" id="select-all-shortlist"></th>
                   <th class="col-name">{% translate "workersListName" %}</th>
-                  <th class="col-town">{% translate "workersListTown" %}</th>
-                  <th class="col-profile">{% translate "workersListProfileCompletion" %}</th>
-                  <th class="col-experience">{% translate "workersListExperience" %}</th>
-                  <th class="col-english">{% translate "workersListEnglishProficiency" %}</th>
-                  <th class="col-location">{% translate "workersListLocationPreference" %}</th>
-                  <th class="col-location">{% translate "workersListWorkRequest" %}</th>
-                  <th class="col-location">{% translate "workersWorkRequestRole" %}</th>
+                  <th class="col-rel-exp">{% translate "workersListMonthsOfRelevantExperience" %}</th>
+                  <th class="col-h2a-exp">{% translate "workersListMonthsOfH2AExperience" %}</th>
                   <th class="col-offer">{% translate "workersListOfferStatus" %}</th>
+                  <th class="col-profile">{% translate "workersListFullyComplete" %}</th>
+                  <th class="col-visa">{% translate "workersListVisaUploaded" %}</th>
                 </tr>
               </thead>
               <tbody>
@@ -131,15 +128,6 @@
 <script>
   $(document).ready(function () {
     $.fn.dataTable.ext.errMode = 'none';
-
-    const shortlistTable = $('#basic-datatable-shortlist').DataTable({
-            ordering: true,
-            order: [],
-            columnDefs: [{ targets: 0, orderable: false }],
-            paging: true,
-            info: true,
-    });
-
     $('#export-shortlist').on('click', function () {
       const wr = $('#modal_work_request').val();
       const role = $('#modal_role').val();

@@ -423,16 +423,11 @@ class FilteredWorkersAjaxView(View):
                 workers.append({
                     'id': worker.id,
                     'name': f"{worker.first_name} {worker.last_name}" if worker.first_name and worker.last_name else worker.email,
-                    'email': worker.email,
-                    'profile_completion': profile_completion,
-                    'experience': experience,
-                    'town': worker_details.get('town', 'Not Provided'),
-                    'work_experience': worker_details.get('work_experience', 'Not Provided'),
-                    'english_proficiency': worker_details.get('english_proficiency', 'Not Provided'),
-                    'location_preference': worker_details.get('location_preference', 'Not Provided'),
-                    'work_request': assignment.work_request.name if assignment.work_request else None,
-                    'role': assignment.role.title if assignment.role else None,
-                    'status': assignment.status,
+                    'relExp': "Relevant experience",
+                    'h2aExp': "H2A experience",
+                    'offer': 'Offer status',
+                    'profile': 'Profile status',
+                    "visa": "Visa status"
                 })
 
         status_counts = {k: len(v) for k, v in unique_worker_status_counts.items()}

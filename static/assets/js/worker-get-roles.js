@@ -99,7 +99,16 @@ $(document).ready(function () {
             });
           }
 
-          const table = $(tableId).DataTable();
+          const table = $(tableId).DataTable({
+            ordering: true,
+            order: [],
+            columnDefs: [
+              { targets: 0, orderable: false },
+              { targets: -1, orderable: false },
+            ],
+            paging: true,
+            info: true,
+          });
           table.clear();
 
           if (data.workers.length === 0) {
@@ -128,14 +137,11 @@ $(document).ready(function () {
               table.row.add([
                 `<input type="checkbox" name="${checkboxClass}" class="${checkboxClass}" value="${worker.id}" data-worker-name="${worker.name}">`,
                 `<a href="${worker.id}">${worker.name}</a>`,
-                worker.town || "Not Provided",
-                `${worker.profile_completion || 0}%`,
-                worker.experience || "Not Provided",
-                worker.english_proficiency || "Not Provided",
-                worker.location_preference || "Not Provided",
-                worker.work_request || "N/A",
-                worker.role || "N/A",
-                worker.status || "N/A",
+                worker.relExp,
+                worker.h2aExp,
+                worker.offer,
+                worker.profile,
+                worker.visa
               ]);
             });
           }
