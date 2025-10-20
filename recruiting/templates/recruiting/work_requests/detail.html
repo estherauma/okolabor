@@ -761,7 +761,13 @@
                   <label>
                     {% translate "joDetailsQualificationsLiftingRequirementWeight" %}:
                   </label>
-                  <p>{{ role.qualifications.lifting_requirement_weight}} {% translate "joDetailsQualificationslbs" %}</p>
+                    <p>
+                    {% if role.qualifications.lifting_requirement_weight is not None %}
+                      {{ role.qualifications.lifting_requirement_weight }} {% translate "joDetailsQualificationslbs" %}
+                    {% else %}
+                      None
+                    {% endif %}
+                    </p>
                 </div>
                 <div class="details-row">
                   <label>
