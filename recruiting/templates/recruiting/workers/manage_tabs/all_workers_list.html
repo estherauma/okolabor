@@ -163,11 +163,11 @@
                   <td class="col-rel-exp">
                     {{ worker.years_of_experience|default:"Not Provided" }}
                   </td>
-                  <td class="col-h2a-exp">
+                  <td class="col-h2a-exp" style="text-align: center;">
                     {{worker.total_months_of_h2a_experience}}
                   </td>
           
-                  <td class="col-offer">{{ worker.latest_status }}</td>
+                  <td class="col-offer" style="text-align: center;">{{ worker.latest_status }}</td>
                   <td class="col-profile">
                     {% if worker.profile_completion_percentage == 100 %}
                     {% translate 'webCommonYes' %}
