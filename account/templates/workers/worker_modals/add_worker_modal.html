@@ -26,9 +26,14 @@
             </div>
           </div>
           {% endfor %}
-          <button class="btn light-green-button" type="submit">
-            {% translate "addWorkerInviteSubmit" %}
-          </button>
+          <div class="d-flex justify-content-center gap-2 mt-4">
+            <button type="button" class="btn grey-button me-2" data-bs-dismiss="modal">
+              {% translate "webCommonCancel" %}
+            </button>
+            <button type="submit" class="btn light-green-button" data-bs-dismiss="modal">
+              {% translate "addWorkerInviteSubmit" %}
+            </button>
+          </div>
         </form>
       </div>
     </div>
