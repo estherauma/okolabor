@@ -144,6 +144,14 @@ def check_visa_status(user):
      ).exclude(path__isnull=True).exclude(path__regex=r'^\s*$').exists()
     return "Yes" if visa_uploaded else "No"
 
+def find_worker_status(worker):
+    latest_assignment = WorkAssignment.objects.filter(worker=worker).order_by('-assigned_date').first()
+    if latest_assignment:
+        if latest_assignment.status == 'confirmed':
+            return 'On Contract'
+        else:
+            return 'Available'
+    return 'Available'
 
 @transaction.atomic
 def duplicate_work_request(original_request, new_name, new_start_date, new_end_date):

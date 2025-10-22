@@ -128,6 +128,13 @@
 <script>
   $(document).ready(function () {
     $.fn.dataTable.ext.errMode = 'none';
+    const table = $('#basic-datatable-shortlist').DataTable({
+            ordering: true,
+            order: [],
+            columnDefs: [{ targets: 0, orderable: false }],
+            paging: true,
+            info: true,
+    });
     $('#export-shortlist').on('click', function () {
       const wr = $('#modal_work_request').val();
       const role = $('#modal_role').val();
