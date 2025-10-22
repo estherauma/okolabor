@@ -26,7 +26,7 @@ import pandas as pd
 from dateutil.relativedelta import relativedelta
 from django.http import HttpResponse
 import json
-from datetime import date
+from datetime import date,datetime
 from recruiting.utils import calculate_months_ofH2A_expererience, get_sector_choices
 from common.utils import StaticContent
 from recruiting.utils import calculate_total_experience,calculate_profile_completion,get_worker_preferences
@@ -35,6 +35,7 @@ from django.contrib.auth import get_user_model
 from common.firebase_utils import send_push_notification
 from django.utils import translation
 from django.db.models.functions import Lower
+from decimal import Decimal
 
 
 
@@ -996,8 +997,6 @@ class WorkExperienceDetailsView(View):
         return render(request, 
             'recruiting/workers/work_experience_detail.html', context)
 
-
-
 class ExportWorkerDetailsView(View):
     def get(self, request, *args, **kwargs):
         status_param = request.GET.get('status')
@@ -1121,8 +1120,8 @@ class ExportWorkerDetailsView(View):
             row['first_name'] = getattr(user, 'first_name', '')
             row['language'] = getattr(user, 'language', '')
             row['is_verified'] = getattr(user, 'is_verified', False)
-            row['created_at'] = getattr(getattr(user, 'created_at', ''), 'isoformat', lambda: getattr(user, 'created_at', ''))()
-            row['updated_at'] = getattr(getattr(user, 'updated_at', ''), 'isoformat', lambda: getattr(user, 'updated_at', ''))()
+            row['created_at'] = getattr(user, 'created_at', None)
+            row['updated_at'] = getattr(user, 'updated_at', None)
 
             try:
                 row['profile_completion'] = calculate_profile_completion(user)
@@ -1184,9 +1183,25 @@ class ExportWorkerDetailsView(View):
                 row[f'has_doc_{k}'] = 'Yes' if k in user_doc_kinds else 'No'
 
             rows.append(row)
+            
+        rows_cleaned = []
+        for row in rows:
+            clean_row = {}
+            for k, v in row.items():
+                if isinstance(v, datetime):
+                    v = v.replace(tzinfo=None)
+                elif isinstance(v, Decimal):
+                    v = float(v)
+                elif isinstance(v, bool):
+                    v = str(v)
+                elif not isinstance(v, (str, int, float, datetime)):
+                    v = str(v) if v is not None else ''
+                clean_row[k] = v
+            rows_cleaned.append(clean_row)
+
 
         capitalized_columns = [col.replace('_', ' ').upper() for col in columns]
-        df = pd.DataFrame(rows, columns=columns)
+        df = pd.DataFrame(rows_cleaned, columns=columns)
         df.columns = capitalized_columns
 
         response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
