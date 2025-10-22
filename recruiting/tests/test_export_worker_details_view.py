@@ -28,28 +28,24 @@ class ExportWorkerDetailsTest(TestCase):
         }
         mock_latest_content.return_value = mock_aggregated_content
 
-        # Mock User
         mock_user = MagicMock(spec=User)
         mock_user.username = "worker1"
         mock_user_filter.return_value = [mock_user]
 
-        # Mock UserPreference
         mock_user_preference = MagicMock(spec=UserPreference)
         mock_user_preference.key = 'question1'
         mock_user_preference.value = 'Answer 1'
         mock_user_preferences.return_value = [mock_user_preference]
 
-        # Call the view
         url = reverse('recruiting_web:export-workers')
         response = self.client.get(url)
 
-        # Assert response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response['Content-Type'], 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
         self.assertIn('attachment; filename="workers.xlsx"', response['Content-Disposition'])
 
-        # Read and check Excel content from BytesIO
         excel_file = BytesIO(response.content)
         df = pd.read_excel(excel_file)
-        self.assertIn('question1', df.columns)
-        self.assertEqual(df.iloc[0]['question1'], 'Answer 1')
+
+        self.assertIn('QUESTION1', df.columns)
+        self.assertEqual(df.iloc[0]['QUESTION1'], 'Answer 1')
