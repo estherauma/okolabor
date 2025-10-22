@@ -6,12 +6,16 @@ from rest_framework import status
 from account.models import User, UserPreference
 from content.models import AggregatedContent
 from django.test import TestCase
+from django.contrib.auth import get_user_model
 
 class ExportWorkerDetailsTest(TestCase):
     @patch('content.models.AggregatedContent.objects.latest')
     @patch('account.models.User.objects.filter')
     @patch('account.models.UserPreference.objects.filter')
     def test_export_worker_details(self, mock_user_preferences, mock_user_filter, mock_latest_content):
+        User = get_user_model()
+        user = User.objects.create_user(password='testpass',email='testuser@okolabor.com')
+        self.client.login(email='testuser@okolabor.com', password='testpass') 
         # Mock AggregatedContent
         mock_aggregated_content = MagicMock()
         mock_aggregated_content.get.return_value = {

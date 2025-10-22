@@ -3,10 +3,18 @@ from django.urls import reverse
 from recruiting.models import WorkRequests, Organization, WorkAssignment, Role, User
 from account.models import UserPreference
 from django.contrib.auth.models import Group
+from django.contrib.auth import get_user_model
 
 class WorkerListViewTestCase(TestCase):
     def setUp(self):
         """Set up the test environment before each test."""
+        self.client = Client()
+        User = get_user_model()
+        self.logged_in_user = User.objects.create_user(
+            email="testuser@example.com",
+            password="testpassword"
+        )
+        self.client.login(email="testuser@example.com", password="testpassword")
         # Create an employer instance
         self.employer = Organization.objects.create(name="Test Employer")
 
@@ -43,8 +51,6 @@ class WorkerListViewTestCase(TestCase):
         # Create UserPreferences for the user
         for step in ["profileStepOne", "workExperienceList", "documentsStepOne"]:
             UserPreference.objects.create(user=self.user, key=step, value="True")
-
-        self.client = Client()
 
     def test_worker_list_view_get(self):
         """Test the GET request for WorkerListView."""

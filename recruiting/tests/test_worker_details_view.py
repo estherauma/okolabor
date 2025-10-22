@@ -8,6 +8,11 @@ User = get_user_model()
 class WorkerDetailsViewTest(TestCase):
     def setUp(self):
         self.client = Client()
+        self.user = User.objects.create_user(
+            email="testuser@example.com",
+            password="testpassword"
+        )
+        self.client.login(email="testuser@example.com", password="testpassword")
         self.worker = User.objects.create_user(
             curp="TESTCURP123456789",
             email="testworker@example.com",
