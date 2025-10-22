@@ -1,0 +1,140 @@
+{% extends 'components/base.html' %}
+{% load i18n %}
+
+{% block title %}Work Request Messages{% endblock %}
+
+{% block body %}
+<div class="row">
+	<div class="col-md-12">
+		<div class="card offwhite-color">
+			<div class="card-body">
+				<form method="get" class="row g-3 align-items-end" id="filters-form">
+					<div class="col-md-3">
+						<label class="form-label">{% translate "workersListWorkRequest" %}</label>
+						<select name="workrequest" class="form-select">
+							<option value="">{% translate "workersListSelectAWorkRequest" %}</option>
+											{% for wr in work_requests %}
+							<option value="{{ wr.id }}" {% if selected_work_request == wr.id %}selected{% endif %}>{{ wr.name }}</option>
+											{% endfor %}
+						</select>
+					</div>
+					<div class="col-md-3">
+						<label class="form-label">{% translate "workersListRole" %}</label>
+						<select name="role" class="form-select">
+							<option value="">{% translate "workRequestAddWorkerSelectRole" %}</option>
+															{% for r in roles %}
+																<option value="{{ r.id }}" {% if selected_role == r.id %}selected{% endif %}>{{ r.title }}</option>
+											{% endfor %}
+						</select>
+					</div>
+					<div class="col-md-3">
+						<label class="form-label">{% translate "status" %}</label>
+						<select name="workassignment_status" class="form-select">
+							<option value="">{% translate "webCommonAll" %}</option>
+															{% for st in statuses %}
+																<option value="{{ st }}" {% if selected_status == st %}selected{% endif %}>{{ st }}</option>
+											{% endfor %}
+						</select>
+					</div>
+					<div class="col-md-3 d-flex align-items-end">
+						<button type="submit" class="btn light-green-button w-100">{% translate "messagesFilter" %}</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row mt-3">
+	<div class="col-md-12">
+		<div class="card">
+			<div class="card-body">
+				<div class="table-responsive">
+					<table class="table text-nowrap border-bottom">
+						<thead>
+							<tr>
+								<th>{% translate "title" %}</th>
+								<th>{% translate "status" %}</th>
+								<th>{% translate "message" %}</th>
+								<th>{% translate "webCommonActions" %}</th>
+							</tr>
+						</thead>
+						<tbody>
+											{% for m in items %}
+							<tr>
+												<td class="align-middle">{{ m.title }}</td>
+												<td class="align-middle">{{ m.status }}</td>
+												<td class="align-middle" style="max-width: 500px; white-space: normal;">{{ m.message }}</td>
+								<td class="align-middle">
+													<a href="#recipients-modal-{{ m.batch_id }}" data-bs-toggle="modal" class="btn btn-sm btn-outline-primary">{% translate "Recipients" %}</a>
+								</td>
+							</tr>
+							{% empty %}
+							<tr>
+								<td colspan="4" class="text-center py-4">{% translate "webCommonNoDataAvailable" %}</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+
+				{% if messages.paginator.num_pages > 1 %}
+				<nav aria-label="pagination">
+					<ul class="pagination">
+						{% with wr=selected_work_request r=selected_role st=selected_status %}
+							{% if messages.has_previous %}
+								<li class="page-item">
+									<a class="page-link" href="?page={{ messages.previous_page_number }}{% if wr %}&workrequest={{ wr }}{% endif %}{% if r %}&role={{ r }}{% endif %}{% if st %}&workassignment_status={{ st }}{% endif %}">{% translate "webCommonPrevious" %}</a>
+								</li>
+							{% else %}
+								<li class="page-item disabled"><span class="page-link">{% translate "webCommonPrevious" %}</span></li>
+							{% endif %}
+							{% for i in messages.paginator.page_range %}
+								{% if messages.number == i %}
+									<li class="page-item active"><span class="page-link">{{ i }}</span></li>
+								{% else %}
+									<li class="page-item"><a class="page-link" href="?page={{ i }}{% if wr %}&workrequest={{ wr }}{% endif %}{% if r %}&role={{ r }}{% endif %}{% if st %}&workassignment_status={{ st }}{% endif %}">{{ i }}</a></li>
+								{% endif %}
+							{% endfor %}
+							{% if messages.has_next %}
+								<li class="page-item">
+									<a class="page-link" href="?page={{ messages.next_page_number }}{% if wr %}&workrequest={{ wr }}{% endif %}{% if r %}&role={{ r }}{% endif %}{% if st %}&workassignment_status={{ st }}{% endif %}">{% translate "webCommonNext" %}</a>
+								</li>
+							{% else %}
+								<li class="page-item disabled"><span class="page-link">{% translate "webCommonNext" %}</span></li>
+							{% endif %}
+						{% endwith %}
+					</ul>
+				</nav>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
+
+{% for m in items %}
+<div class="modal fade" id="recipients-modal-{{ m.batch_id }}" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">{% translate "Recipients" %} - {{ m.title }}</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'webCommonClose' %}"></button>
+			</div>
+			<div class="modal-body">
+						<ul class="list-group">
+							{% for rec in m.recipients %}
+								<li class="list-group-item">{{ rec.name|default:rec.email }}</li>
+							{% empty %}
+								<li class="list-group-item text-muted">{% translate "webCommonNoDataAvailable" %}</li>
+							{% endfor %}
+						</ul>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate "webCommonClose" %}</button>
+			</div>
+		</div>
+	</div>
+ </div>
+{% endfor %}
+
+{% endblock %}
