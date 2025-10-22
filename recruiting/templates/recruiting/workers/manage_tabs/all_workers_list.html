@@ -311,7 +311,7 @@ $(document).ready(function () {
         const table = $('#basic-datatable-allworkers-workers').DataTable({
             ordering: true,
             order: [],
-            columnDefs: [{ targets: 0, orderable: false }],
+            columnDefs: [{ targets: 0, orderable: false }, { targets: -1, orderable: false }],
             paging: true,
             info: true,
         });
