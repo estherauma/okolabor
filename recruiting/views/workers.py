@@ -1000,54 +1000,7 @@ class WorkExperienceDetailsView(View):
 
 class ExportWorkerDetailsView(View):
     def get(self, request, *args, **kwargs):
-        latest = AggregatedContent.objects.latest('created_at')
-        serializer = AggregatedContentSerializer(latest, many=False)
-        aggregated_data = serializer.data
-        content = aggregated_data.get('content', {})
-        english_content = content.get('en', {})
-
-        work_preference_step_one = english_content.get('workPreferenceStepOne', {}).get('form_questions', [])
-        work_preference_step_two = english_content.get('workPreferenceStepTwo', {}).get('form_questions', [])
-        profile_step_one = english_content.get('profileStepOne', {}).get('form_questions', [])
-        profile_step_two = english_content.get('profileStepTwo', {}).get('form_questions', [])
-
-        profile_step_two_questions = profile_step_two
-        profile_step_two_page_title = english_content.get('profileStepTwo', {}).get('pageTitle', "")
-
-        english_proficiency_title = next(
-            (q.get("label") for q in profile_step_two_questions if q.get("key") == "englishProficiency"),
-            profile_step_two_page_title
-        ) or "What is your level of English proficiency?"
-
-        excluded_keys = {
-            "English Proficiency",
-            "profileStepOne",
-            "profile",
-            "workExperienceList",
-            "workExperience",
-            "documentsStepOne",
-            "documents",
-            "levelOfProficiency",
-            "englishProficiency",
-            "workPreferenceStepTwo",
-            "workPreferences",
-            "suitabilityForWork",
-            "workPreferenceStepOne",
-            "recordVideo",
-            "englishProficiencyTwo",
-        }
-
-        filtered_questions = [
-            q for q in (work_preference_step_one + work_preference_step_two + profile_step_one + profile_step_two)
-            if q['key'] not in excluded_keys
-        ]
-
-        preference_label_map = {q['key']: q.get('label', q['key']) for q in filtered_questions}
-
-        if "englishProficiency" in preference_label_map:
-            preference_label_map["englishProficiency"] = english_proficiency_title
-
-        status_param = request.GET.get('status') 
+        status_param = request.GET.get('status')
         work_request_id = request.GET.get('work_request')
         role_id = request.GET.get('role')
 
@@ -1068,7 +1021,6 @@ class ExportWorkerDetailsView(View):
                     statuses.append(mapped)
         use_assignment_filter = bool(work_request_id or role_id or statuses)
 
-        data = []
         if use_assignment_filter:
             if not statuses:
                 statuses = ['assigned', 'offersent', 'confirmed', 'rejected']
@@ -1080,27 +1032,168 @@ class ExportWorkerDetailsView(View):
             worker_ids = assignments.values_list('worker_id', flat=True).distinct()
             worker_users = User.objects.filter(id__in=worker_ids)
         else:
-            worker_users = User.objects.filter(groups__name="worker")
+            worker_users = User.objects.filter(groups__name='worker')
+
+        excluded_keys = set([
+            'profileStepOne',
+            'documentsStepOne',
+            'levelOfProficiency',
+            'recordVideo',
+            'workPreferenceStepOne',
+            'workPreferenceStepTwo',
+            'englishProficiencyTwo',
+            'profile',
+            'documents',
+            'workPreferences',
+            'workExperience',
+            'workExperienceList',
+            'suitabilityForWork',
+            'englishProficiency',
+        ])
+
+        preference_keys = set()
+        document_kinds = set()
 
         for user in worker_users:
-            preferences = UserPreference.objects.filter(user=user)
-            worker_data = {}
+            try:
+                prefs = UserPreference.objects.filter(user=user)
+            except Exception:
+                prefs = []
+            for pref in prefs:
+                try:
+                    key = getattr(pref, 'key', None)
+                    if key and key not in excluded_keys:
+                        preference_keys.add(key)
+                except Exception:
+                    continue
 
-            for pref in preferences:
-                if pref.key not in excluded_keys:
-                    question_label = preference_label_map.get(pref.key, pref.key)
-                    worker_data[question_label] = pref.value
+            try:
+                docs = UserDocuments.objects.filter(user=user)
+            except Exception:
+                docs = []
+            for doc in docs:
+                kind = getattr(doc, 'kind', None)
+                if kind:
+                    document_kinds.add(kind)
 
-            if worker_data:
-                data.append(worker_data)
+        latest = AggregatedContent.objects.latest('created_at')
+        serializer = AggregatedContentSerializer(latest, many=False)
+        aggregated_data = serializer.data
+        content = aggregated_data.get('content', {})
+        english_content = content.get('en', {})
 
-        df = pd.DataFrame(data)
+        form_sections = [
+            'workPreferenceStepOne', 'workPreferenceStepTwo',
+            'profileStepOne', 'profileStepTwo'
+        ]
 
-        response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-        response["Content-Disposition"] = 'attachment; filename="workers.xlsx"'
+        preference_label_map = {}
+        for section in form_sections:
+            section_data = english_content.get(section, {})
+            page_title = section_data.get('pageTitle', '')
+            questions = section_data.get('form_questions', []) or section_data.get('formQuestions', [])
+            for question in questions:
+                key = question.get('key')
+                label = question.get('label') or page_title or key
+                if key:
+                    preference_label_map[key] = label   
 
-        with pd.ExcelWriter(response, engine="openpyxl") as writer:
-            df.to_excel(writer, index=False, sheet_name="Worker Preferences")
+        base_fields = [
+            'user_id', 'email', 'curp','language', 'is_verified', 'created_at', 'updated_at',
+            'profile_completion', 'years_of_experience', 'months_of_h2a_experience',
+            'latest_status',
+        ]
+
+        doc_presence_fields = [f'has_doc_{k}' for k in sorted(document_kinds)]
+
+        ordered_pref_fields = sorted(preference_keys)
+        label_columns = [preference_label_map.get(k, k) for k in ordered_pref_fields]
+        columns = base_fields + label_columns + doc_presence_fields
+
+
+        rows = []
+        for user in worker_users:
+            row = {col: '' for col in columns}
+
+            row['user_id'] = getattr(user, 'id', '')
+            row['email'] = getattr(user, 'email', '')
+            row['curp'] = getattr(user, 'curp', '')
+            row['first_name'] = getattr(user, 'first_name', '')
+            row['language'] = getattr(user, 'language', '')
+            row['is_verified'] = getattr(user, 'is_verified', False)
+            row['created_at'] = getattr(getattr(user, 'created_at', ''), 'isoformat', lambda: getattr(user, 'created_at', ''))()
+            row['updated_at'] = getattr(getattr(user, 'updated_at', ''), 'isoformat', lambda: getattr(user, 'updated_at', ''))()
+
+            try:
+                row['profile_completion'] = calculate_profile_completion(user)
+            except Exception:
+                row['profile_completion'] = ''
+            try:
+                row['years_of_experience'] = calculate_total_experience(user)
+            except Exception:
+                row['years_of_experience'] = ''
+            try:
+                row['months_of_h2a_experience'] = calculate_months_ofH2A_expererience(user)
+            except Exception:
+                row['months_of_h2a_experience'] = ''
+
+            code = 'available'
+            try:
+                prefs_for_status = UserPreference.objects.filter(user=user)
+            except Exception:
+                prefs_for_status = []
+            for p in prefs_for_status:
+                if getattr(p, 'key', '') == 'worker_status':
+                    val = (getattr(p, 'value', '') or '').strip().lower()
+                    if val in ['on_contract', 'on contract', 'contract']:
+                        code = 'on_contract'
+                    else:
+                        code = 'available'
+                    break
+            if code == 'available':
+                try:
+                    latest_assignment = WorkAssignment.objects.filter(worker=user).order_by('-assigned_date').first()
+                    if latest_assignment and getattr(latest_assignment, 'status', '') == 'confirmed':
+                        code = 'on_contract'
+                except Exception:
+                    pass
+                
+            row['latest_status'] = worker_profile_status_labels.get(code, code)
+
+            pref_map = {}
+            try:
+                prefs = UserPreference.objects.filter(user=user)
+            except Exception:
+                prefs = []
+            for pref in prefs:
+                key = getattr(pref, 'key', None)
+                if key and key in ordered_pref_fields:
+                    pref_map[key] = getattr(pref, 'value', '')
+            for k in ordered_pref_fields:
+                label = preference_label_map.get(k, k)
+                row[label] = pref_map.get(k, '')
+
+
+            try:
+                user_doc_kinds = set(
+                    d.kind for d in UserDocuments.objects.filter(user=user) if getattr(d, 'kind', None)
+                )
+            except Exception:
+                user_doc_kinds = set()
+            for k in document_kinds:
+                row[f'has_doc_{k}'] = 'Yes' if k in user_doc_kinds else 'No'
+
+            rows.append(row)
+
+        capitalized_columns = [col.replace('_', ' ').upper() for col in columns]
+        df = pd.DataFrame(rows, columns=columns)
+        df.columns = capitalized_columns
+
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="workers.xlsx"'
+
+        with pd.ExcelWriter(response, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False, sheet_name='Workers')
 
         return response
     
