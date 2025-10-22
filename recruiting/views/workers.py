@@ -27,7 +27,7 @@ from dateutil.relativedelta import relativedelta
 from django.http import HttpResponse
 import json
 from datetime import date
-from recruiting.utils import calculate_months_ofH2A_expererience, check_visa_status, get_sector_choices
+from recruiting.utils import calculate_months_ofH2A_expererience, check_visa_status, find_worker_status, get_sector_choices
 from common.utils import StaticContent
 from recruiting.utils import calculate_total_experience,calculate_profile_completion,get_worker_preferences
 from common.logger import AppLogger
@@ -409,6 +409,7 @@ class FilteredWorkersAjaxView(View):
         for assignment in all_assignments:
             current_status = assignment.status
             worker = assignment.worker
+            
 
             if current_status in unique_worker_status_counts and worker:
                 unique_worker_status_counts[current_status].add(worker.id)
@@ -425,9 +426,9 @@ class FilteredWorkersAjaxView(View):
                 workers.append({
                     'id': worker.id,
                     'name': f"{worker.first_name} {worker.last_name}" if worker.first_name and worker.last_name else worker.email,
-                    'relExp': "Relevant experience",
+                    'relExp': experience,
                     'h2aExp': h2a_exp,
-                    'offer': 'Offer status',
+                    'offer': find_worker_status(worker),
                     'profile': profile_completion,
                     "visa": has_visa
                 })
