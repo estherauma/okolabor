@@ -58,7 +58,7 @@ class UserListView(LoginRequiredMixin, View):
         workers_list = User.objects.filter(groups__name='worker').values(
             'id', 'curp', 'email', 'first_name', 'last_name',
             'created_at', 'is_active', 'language'
-        )
+        ).order_by('-created_at')
 
         recruiter_organizations = Organization.objects.filter(type='recruiter').values().order_by('name')
         employer_organizations = Organization.objects.filter(type='employer').values().order_by('name')
