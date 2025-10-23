@@ -1,0 +1,29 @@
+<div class="modal fade" id="{{ modal_id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ modal_title }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group">
+                    {% for rec in recipients %}
+                        <li class="list-group-item">
+                            {% if rec.name %}
+                                <span style="font-weight: 500;">{{ rec.name }}</span><br>
+                                <span style="font-size: 0.95em; color: #888;">{{ rec.email }}</span>
+                            {% else %}
+                                <span style="font-size: 0.95em; color: #888;">{{ rec.email }}</span>
+                            {% endif %}
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item text-muted">No recipients available.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn grey-button" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
