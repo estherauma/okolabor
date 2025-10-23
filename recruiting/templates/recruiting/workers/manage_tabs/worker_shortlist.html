@@ -68,7 +68,7 @@
               <button id="cancel-offer-shortlist" class="btn dark-green-button ms-3">{% translate "workRequestAddWorkerShortlistCancelOffer" %}</button>
               <button id="send-message-shortlist" class="btn dark-green-button ms-3">{% translate "workerDetailsSendMessage" %}</button>
               <button id="export-shortlist" class="btn dark-green-button ms-3">{% translate 'webCommonExport'%}</button>
-              <a id="view-messages" href="#" class="btn btn-outline-primary ms-2">{% translate 'messagesMessages' %}</a>
+              <button id="view-messages-assigned" class="btn dark-green-button ms-3" data-messages-url="{% url 'recruiting_web:work_request_messages' %}" >{% translate 'messagesMessages'%}</button>
               {% include 'recruiting/messages/send-workrequest-message.html' with form=send_message_form status='assigned' %}
             </div>
 
@@ -136,20 +136,6 @@
       if (wr) url += `&work_request=${wr}`;
       if (role) url += `&role=${role}`;
       window.location.href = url;
-    });
-
-    // View Messages button navigates to messages list with current filters
-    $('#view-messages').on('click', function (e) {
-      e.preventDefault();
-      const wr = $('#modal_work_request').val();
-      const role = $('#modal_role').val();
-      const status = 'assigned';
-      const base = "{% url 'recruiting_web:work_request_messages' %}";
-      const params = new URLSearchParams();
-      if (wr) params.set('workrequest', wr);
-      if (role) params.set('role', role);
-      if (status) params.set('workassignment_status', status);
-      window.location.href = `${base}?${params.toString()}`;
     });
 
   // Move default controls to hidden container to prevent duplication
