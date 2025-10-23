@@ -412,7 +412,7 @@ class WorkerModalCreateView(View):
                 return redirect('manage_users')
                 
             messages.success(request, _("workersListWorkerCreatedSuccessfully"))
-            return redirect('manage_users')
+            return redirect(f'/workers/{worker.id}/')
         else:
             messages.error(request, _("workersListPleaseCorrectTheErrorsInTheForm"))
             return redirect('manage_users')

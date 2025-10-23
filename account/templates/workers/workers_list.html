@@ -46,7 +46,7 @@
             <tbody>
               {% for user in workers %}
               <tr class="green-color text-start">
-                <td>{{ user.curp }}</td>
+                <td> <a href="{% url 'recruiting_web:worker_detail' user.id %}">{{ user.curp }}</a></td>
                 <td>{{ user.email }}</td>
                 <td>{{ user.first_name }} {{ user.last_name }}</td>
                 <td>{{ user.created_at }}</td>
