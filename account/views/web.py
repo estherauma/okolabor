@@ -53,7 +53,7 @@ class UserListView(LoginRequiredMixin, View):
         form_worker_class = WorkerCreateForm()
         form_recruiter_admin_class = RecruiterAdminCreateForm()
         language_choices = form.fields["language"].choices
-        status_choices = [(True, "Active"), (False, "Inactive")]
+        status_choices = [(True, _("workersListActive")), (False, _("workersListInactive"))]
 
         workers_list = User.objects.filter(groups__name='worker').values(
             'id', 'curp', 'email', 'first_name', 'last_name',
