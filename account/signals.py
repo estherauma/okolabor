@@ -124,8 +124,9 @@ def log_delete(sender, instance, **kwargs):
 
 @receiver(post_save, sender=UserNotification)
 def create_or_update_message_recipient(sender, instance, created, **kwargs):
-    MessageRecipient.objects.update_or_create(
-        notification=instance,
-        recipient=instance.user,
-        defaults={}
-    )
+    if created:
+        MessageRecipient.objects.update_or_create(
+            notification=instance,
+            recipient=instance.user,
+            defaults={}
+        )

@@ -28,7 +28,6 @@ from django.utils.encoding import force_str
 from django.http import HttpResponseRedirect,HttpResponseForbidden
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
-from collections import defaultdict
 from django.db.models import Count
 import os
 from common.firebase_utils import send_push_notification
@@ -1589,15 +1588,9 @@ class WorkRequestMessagesView(LoginRequiredMixin, View):
         batch_to_recipients = defaultdict(list)
         batch_to_read_by = defaultdict(list)
         for r in recipients_qs:
-            batch_to_recipients[r.notification.batch_id].append({
-                'name': (r.recipient.first_name or '') + (' ' + (r.recipient.last_name or '') if r.recipient.last_name else ''),
-                'email': r.recipient.email,
-            })
+            batch_to_recipients[r.notification.batch_id].append(r.recipient)
             if r.notification.status == 'read':
-                batch_to_read_by[r.notification.batch_id].append({
-                    'name': (r.recipient.first_name or '') + (' ' + (r.recipient.last_name or '') if r.recipient.last_name else ''),
-                    'email': r.recipient.email,
-                })
+                batch_to_read_by[r.notification.batch_id].append(r.recipient)
         # Attach recipients/read_by to grouped items
         for batch_id in grouped:
             grouped[batch_id]['recipients'] = batch_to_recipients[batch_id]

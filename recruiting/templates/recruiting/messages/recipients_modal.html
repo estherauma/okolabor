@@ -9,8 +9,8 @@
                 <ul class="list-group">
                     {% for rec in recipients %}
                         <li class="list-group-item">
-                            {% if rec.name %}
-                                <span style="font-weight: 500;">{{ rec.name }}</span><br>
+                            {% if rec.first_name or rec.last_name %}
+                                <span style="font-weight: 500;">{{ rec.first_name }} {{ rec.last_name }}</span><br>
                                 <span style="font-size: 0.95em; color: #888;">{{ rec.email }}</span>
                             {% else %}
                                 <span style="font-size: 0.95em; color: #888;">{{ rec.email }}</span>
