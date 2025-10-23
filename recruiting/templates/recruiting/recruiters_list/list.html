@@ -159,7 +159,7 @@
                 <td>{{ recruiter.email }}</td>
                 <td>{{ recruiter.address }}, {{ recruiter.country }}</td>
                 <td>{{ recruiter.phone }}</td>
-                <td>
+                <td style="white-space: break-spaces;">
                   {% if recruiter.employers %}
                   {% for employer_name in recruiter.employers %}
                   {{ employer_name }}{% if not forloop.last %}, {% endif %}
