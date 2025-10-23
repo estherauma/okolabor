@@ -333,10 +333,9 @@ class WorkerListView(LoginRequiredMixin, View):
         worker_form = WorkerCreateForm()
         workers_length = len(workers)
         send_message_form = SendMessageForm()
-
         context = {
             'workers': workers,
-            'work_requests': WorkRequests.objects.filter(status='Open').order_by(Lower('name')).prefetch_related('roles'),
+            'work_requests': WorkRequests.objects.filter().order_by(Lower('name')).prefetch_related('roles'),
             'form': form,
             'work_assign_form': work_assign_form,
             'filter_form': filter_form,
