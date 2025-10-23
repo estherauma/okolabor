@@ -454,16 +454,17 @@ class RoleDeductionForm(forms.ModelForm):
 
 class RoleQualificationForm(forms.ModelForm):
     YES_NO_CHOICES = [
-        (True, _('Yes')),
-        (False, _('No')),
+        ('Yes', _('Yes')),
+        ('No', _('No')),
     ]
 
     training_required = forms.ChoiceField(
         choices=YES_NO_CHOICES,
-        widget=forms.RadioSelect(attrs={'class': 'form-check-input'}),  # Use RadioSelect here
+        widget=forms.RadioSelect(attrs={'class': 'form-check-input'}),
         label=_('roleQualificationTrainingRequired'),
         required=False
     )
+    
     class Meta:
         model = Qualification
         fields = [
@@ -519,9 +520,6 @@ class RoleQualificationForm(forms.ModelForm):
             'number_of_months_experience_required': forms.NumberInput(attrs={
                 'class': 'form-control',
             }),
-            'training_required': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
             'number_of_months_training_required': forms.NumberInput(attrs={
                 'class': 'form-control',
             }),
@@ -568,6 +566,14 @@ class RoleQualificationForm(forms.ModelForm):
             for field_name in self.fields:
                 if field_name != 'role':
                     self.fields[field_name].required = False
+            
+            # Set initial value for training_required when editing
+            if self.instance and self.instance.pk:
+                training_value = self.instance.training_required
+                if training_value:
+                    self.initial['training_required'] = training_value
+                else:
+                    self.initial['training_required'] = 'No'
 
 
 class RoleEmploymentLocationForm(forms.ModelForm):
