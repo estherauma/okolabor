@@ -1321,6 +1321,18 @@ class RoleQualificationsCreateView(CreateView):
             return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
         form.instance.role = role
+        months_training = form.cleaned_data.get('number_of_months_training_required', 0)
+        training_value = form.cleaned_data.get('training_required', 'No')
+        
+        if months_training == 0:
+            form.instance.training_required = 'No'
+        else:
+            form.instance.training_required = training_value
+        
+        lifting_weight = form.cleaned_data.get('lifting_requirement_weight', 0)
+        if lifting_weight == 0 or lifting_weight is None:
+            form.instance.lifting_requirements = False
+        
         self.object = form.save()
         messages.success(self.request, 'Qualifications successfully added.')
         return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
@@ -2364,6 +2376,18 @@ class EditRoleQualificationView(View):
         work_request_id = request.POST.get('work_request_id', None)
 
         if form.is_valid():
+            months_training = form.cleaned_data.get('number_of_months_training_required', 0)
+            training_value = form.cleaned_data.get('training_required', 'No')
+            
+            if months_training == 0:
+                form.instance.training_required = 'No'
+            else:
+                form.instance.training_required = training_value
+            
+            lifting_weight = form.cleaned_data.get('lifting_requirement_weight', 0)
+            if lifting_weight == 0 or lifting_weight is None:
+                form.instance.lifting_requirements = False
+            
             form.save()
             messages.success(request, _('joDetailsQualificationsQualificationUpdatedSuccessfully'))
             return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[qualification.role.work_request.pk])}?open_role={qualification.role.id}')

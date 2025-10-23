@@ -500,6 +500,7 @@ class WorkerDeleteView(LoginRequiredMixin, View):
         worker = get_object_or_404(User, pk=pk, groups__name='worker')
 
         if user.groups.filter(name='admin').exists():
+            worker_name = f"{worker.first_name} {worker.last_name}"
             # Randomize identifiable fields
             random_suffix = get_random_string(8)
             worker.first_name = "Deleted"
@@ -512,7 +513,6 @@ class WorkerDeleteView(LoginRequiredMixin, View):
             worker.save()
 
             # Soft delete
-            worker_name = f"{worker.first_name} {worker.last_name}"
             worker.delete(user=user)  # Assuming this does a soft delete
 
             messages.success(request, _('workersListWorker "%(worker_name)s" DeletedSuccessfully') % {'worker_name': worker_name})
