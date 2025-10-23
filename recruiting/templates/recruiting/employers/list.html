@@ -156,7 +156,7 @@
                 <td>{{ employer.address}}</td>
                 <td>{{ employer.country }}</td>
                 <td>{{ employer.phone }}</td>
-                <td>
+                <td style="white-space: break-spaces; min-width: 200px;">
                   {% if employer.recruiters %}
                       {% for recruiter in employer.recruiters %}
                           {{ recruiter }}{% if not forloop.last %}, {% endif %}
