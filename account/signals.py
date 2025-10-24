@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save,post_delete
 from django.dispatch import Signal, receiver
-from account.models import User, UserDocuments, UserNotification
+from account.models import User, UserDocuments, UserNotification, MessageRecipient
 from common.cloud_vision import detect_text_in_image
 from common.logger import AppLogger
 from django.contrib.contenttypes.models import ContentType
@@ -120,3 +120,13 @@ def log_delete(sender, instance, **kwargs):
     if is_migration_running() or sender.__name__ == 'Log':
         return
     log_change(instance, "Deleted")
+
+
+@receiver(post_save, sender=UserNotification)
+def create_or_update_message_recipient(sender, instance, created, **kwargs):
+    if created:
+        MessageRecipient.objects.update_or_create(
+            notification=instance,
+            recipient=instance.user,
+            defaults={}
+        )

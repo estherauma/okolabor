@@ -68,6 +68,7 @@
               <button id="cancel-offer-shortlist" class="btn dark-green-button ms-3">{% translate "workRequestAddWorkerShortlistCancelOffer" %}</button>
               <button id="send-message-shortlist" class="btn dark-green-button ms-3">{% translate "workerDetailsSendMessage" %}</button>
               <button id="export-shortlist" class="btn dark-green-button ms-3">{% translate 'webCommonExport'%}</button>
+              <button id="view-messages-assigned" class="btn dark-green-button ms-3" data-messages-url="{% url 'recruiting_web:work_request_messages' %}" >{% translate 'messagesMessages'%}</button>
               {% include 'recruiting/messages/send-workrequest-message.html' with form=send_message_form status='assigned' %}
             </div>
 

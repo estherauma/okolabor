@@ -1,0 +1,195 @@
+{% extends 'components/base.html' %}
+{% load i18n %}
+{% load static %}
+
+
+{% block styles %}
+<style>
+.table tbody tr:nth-child(even) {
+	background-color: #f9f9f9;
+}
+
+/* Reduce space between users in modals */
+.modal .list-group-item {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+</style>
+{% endblock styles %}
+
+{% block body %}
+<div class="row">
+	<div class="col-md-12">
+		<div class="card offwhite-color">
+			<div class="card-body">
+				<form method="get" class="row g-3 align-items-end" id="filters-form">
+					<div class="col-md-3">
+						<label class="form-label">{% translate "workersListWorkRequest" %}</label>
+						<select name="workrequest" class="form-select">
+							<option value="">{% translate "workersListSelectAWorkRequest" %}</option>
+											{% for wr in work_requests %}
+							<option value="{{ wr.id }}" {% if selected_work_request == wr.id %}selected{% endif %}>{{ wr.name }}</option>
+											{% endfor %}
+						</select>
+					</div>
+					<div class="col-md-3">
+						<label class="form-label">{% translate "workersListRole" %}</label>
+						<select name="role" class="form-select">
+							<option value="">{% translate "workRequestAddWorkerSelectRole" %}</option>
+															{% for r in roles %}
+																<option value="{{ r.id }}" {% if selected_role == r.id %}selected{% endif %}>{{ r.title }}</option>
+											{% endfor %}
+						</select>
+					</div>
+					<div class="col-md-3">
+						<label class="form-label">{% translate "status" %}</label>
+						<select name="workassignment_status" class="form-select">
+															{% for st in statuses %}
+																<option value="{{ st }}" {% if selected_status == st %}selected{% endif %}>{{ st }}</option>
+											{% endfor %}
+						</select>
+					</div>
+					<div class="col-md-3 d-flex align-items-end">
+						<button type="submit" class="btn light-green-button w-100">{% translate "messagesFilter" %}</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row mt-3">
+	<div class="col-md-12">
+		<div class="card">
+			<div class="card-body">
+				<div class="table-responsive">
+					<table class="table text-nowrap border-bottom">
+						<thead>
+							<tr>
+								<th>{% translate "title" %}</th>
+								<th>{% translate "status" %}</th>
+								<th>{% translate "message" %}</th>
+								<th>{% translate "readBy" %}</th>
+								<th>{% translate "recipients" %}</th>
+							</tr>
+						</thead>
+						<tbody>
+											{% for m in items %}
+											<tr>
+												<td class="align-middle">{{ m.title }}</td>
+												<td class="align-middle">{{ m.status }}</td>
+												<td class="align-middle" style="max-width: 500px; white-space: normal; word-break: break-word;">{{ m.message }}</td>
+												<td class="align-middle text-start">
+													{% if m.read_by|length > 0 %}
+														{% with readby_modal_id='readby-modal-'|add:m.batch_id %}
+														<a href="#{{ readby_modal_id }}" data-bs-toggle="modal" >
+															{{ m.read_by|length }} {% translate "recipients" %}
+														</a>
+														{% include "recruiting/messages/recipients_modal.html" with recipients=m.read_by modal_title=_('readBy')|add:' - '|add:m.title modal_id=readby_modal_id %}
+														{% endwith %}
+													{% else %}
+														<span class="text-muted">0 {% translate "recipients" %}</span>
+													{% endif %}
+												</td>
+												<td class="align-middle text-start">
+													{% with recipients_modal_id='recipients-modal-'|add:m.batch_id %}
+													<a href="#{{ recipients_modal_id }}" data-bs-toggle="modal" >
+														{% translate "Recipients" %} ({{ m.recipients|length }})
+													</a>
+													{% include "recruiting/messages/recipients_modal.html" with recipients=m.recipients modal_title=_('Recipients')|add:' - '|add:m.title modal_id=recipients_modal_id %}
+													{% endwith %}
+												</td>
+											</tr>
+							{% empty %}
+							<tr>
+								<td colspan="4" class="text-center py-4">{% translate "webCommonNoDataAvailable" %}</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+
+				{% if notifications.paginator.num_pages > 1 %}
+				<nav aria-label="pagination">
+					<ul class="pagination">
+						{% with wr=selected_work_request r=selected_role st=selected_status %}
+							{% if notifications.has_previous %}
+								<li class="page-item">
+									<a class="page-link" href="?page={{ notifications.previous_page_number }}{% if wr %}&workrequest={{ wr }}{% endif %}{% if r %}&role={{ r }}{% endif %}{% if st %}&workassignment_status={{ st }}{% endif %}">&lt;</a>
+								</li>
+							{% else %}
+								<li class="page-item disabled"><span class="page-link">&lt;</span></li>
+							{% endif %}
+							{% for i in notifications.paginator.page_range %}
+								{% if notifications.number == i %}
+									<li class="page-item active"><span class="page-link">{{ i }}</span></li>
+								{% else %}
+									<li class="page-item"><a class="page-link" href="?page={{ i }}{% if wr %}&workrequest={{ wr }}{% endif %}{% if r %}&role={{ r }}{% endif %}{% if st %}&workassignment_status={{ st }}{% endif %}">{{ i }}</a></li>
+								{% endif %}
+							{% endfor %}
+							{% if notifications.has_next %}
+								<li class="page-item">
+									<a class="page-link" href="?page={{ notifications.next_page_number }}{% if wr %}&workrequest={{ wr }}{% endif %}{% if r %}&role={{ r }}{% endif %}{% if st %}&workassignment_status={{ st }}{% endif %}">&gt;</a>
+								</li>
+							{% else %}
+								<li class="page-item disabled"><span class="page-link">&gt;</span></li>
+							{% endif %}
+						{% endwith %}
+					</ul>
+				</nav>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Reusable Modal for Recipients and Read By -->
+<div class="modal fade" id="user-list-modal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="user-list-modal-title"></h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'webCommonClose' %}"></button>
+			</div>
+			<div class="modal-body">
+				<ul class="list-group" id="user-list-modal-list">
+				</ul>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate "webCommonClose" %}</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock body %}
+
+{% block scripts %}
+<script >
+document.addEventListener('DOMContentLoaded', function() {
+	// Dynamic role dropdown
+	const workRequestSelect = document.querySelector('select[name="workrequest"]');
+	const roleSelect = document.querySelector('select[name="role"]');
+	if (workRequestSelect && roleSelect) {
+		workRequestSelect.addEventListener('change', function() {
+			const workRequestId = this.value;
+			roleSelect.innerHTML = '<option value="">Select a role</option>';
+			if (!workRequestId) return;
+			fetch(`/workers/get-roles-for-work-request/${workRequestId}`)
+				.then(response => response.json())
+				.then(data => {
+					if (data.roles) {
+						data.roles.forEach(role => {
+							const opt = document.createElement('option');
+							opt.value = role.id;
+							opt.textContent = role.title;
+							roleSelect.appendChild(opt);
+						});
+					}
+				});
+		});
+	}
+
+});
+</script>
+{% endblock scripts %}

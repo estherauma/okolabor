@@ -28,9 +28,7 @@ from django.utils.encoding import force_str
 from django.http import HttpResponseRedirect,HttpResponseForbidden
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
-from collections import defaultdict
 from django.db.models import Count
-from django.template.loader import render_to_string
 import os
 from common.firebase_utils import send_push_notification
 from common.logger import AppLogger
@@ -90,11 +88,14 @@ from recruiting.models import (
     EmployerContact,
     EmployerRecruiterOrgLink,
 )
+import uuid
+from django.db.models import Max
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.forms.models import model_to_dict
-
+from account.models import MessageRecipient
+from collections import OrderedDict, defaultdict
 
 class EmployerListView(View):
     def get(self, request):
@@ -1523,17 +1524,27 @@ class SendWorkRequestMessageView(CreateView):
                 work_request_id=work_request_id, 
                 deleted_at__isnull=True
                 )
-            _messages = [
+            title = form.cleaned_data.get('title')
+            message_text = form.cleaned_data.get('message')
+            batch_id = str(uuid.uuid4())
+            notifications = [
                 UserNotification(
                     user=assignment.worker,
-                    title=form.cleaned_data.get('title'),
-                    message=form.cleaned_data.get('message'),
+                    title=title,
+                    message=message_text,
+                    batch_id=batch_id,
                     category='work_request',
+                    work_assignment=assignment,
                 )
                 for assignment in assignments
             ]
-            print(len(_messages))
-            UserNotification.objects.bulk_create(_messages)
+            if notifications:
+                created_notifications = UserNotification.objects.bulk_create(notifications)
+                # Manually create MessageRecipient for each notification (since signals are not triggered by bulk_create)
+                MessageRecipient.objects.bulk_create([
+                    MessageRecipient(notification=n, recipient=n.user)
+                    for n in created_notifications
+                ])
             messages.success(self.request, _('sendMessageMessageSentSuccessfully'))
             return redirect(reverse('recruiting_web:workers'))
         else:
@@ -1545,6 +1556,86 @@ class SendWorkRequestMessageView(CreateView):
             for error in errors:
                 messages.error(self.request, f'{field}: {error}')
         return super().form_invalid(form)
+
+
+class WorkRequestMessagesView(LoginRequiredMixin, View):
+    def get(self, request):
+        workrequest_id = request.GET.get('workrequest')
+        role_id = request.GET.get('role')
+        selected_status = request.GET.get('workassignment_status')
+
+        notif_qs = (
+            UserNotification.objects
+            .filter(
+                work_assignment__work_request_id=workrequest_id, 
+                work_assignment__role_id=role_id, 
+                work_assignment__status=selected_status
+                )
+            .select_related('user', 'work_assignment__work_request', 'work_assignment__role')
+        )
+
+        notif_qs = notif_qs.order_by('-created_at')
+
+        # Group messages by batch_id, aggregating all notifications and recipients per batch
+        grouped = OrderedDict()
+        for notif in notif_qs:
+            batch_id = notif.batch_id
+            if not batch_id:
+                continue
+            if batch_id not in grouped:
+                grouped[batch_id] = {
+                    'batch_id': batch_id,
+                    'title': notif.title,
+                    'status': notif.work_assignment.status if notif.work_assignment else '',
+                    'message': notif.message,
+                    'recipients': [],
+                    'read_by': [],
+                    'created_at': notif.created_at,
+                }
+
+        batch_ids = list(grouped.keys())
+        batch_notifs = UserNotification.objects.filter(batch_id__in=batch_ids)
+        recipients_qs = MessageRecipient.objects.filter(notification__in=batch_notifs)
+        # Build batch_id -> recipients mapping
+        batch_to_recipients = defaultdict(list)
+        batch_to_read_by = defaultdict(list)
+        for r in recipients_qs:
+            batch_to_recipients[r.notification.batch_id].append(r.recipient)
+            if r.notification.status == 'read':
+                batch_to_read_by[r.notification.batch_id].append(r.recipient)
+        # Attach recipients/read_by to grouped items
+        for batch_id in grouped:
+            grouped[batch_id]['recipients'] = batch_to_recipients[batch_id]
+            grouped[batch_id]['read_by'] = batch_to_read_by[batch_id]
+
+        grouped_list = list(grouped.values())
+        paginator = Paginator(grouped_list, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        items = page_obj.object_list
+
+        work_requests = WorkRequests.objects.all().order_by('name')
+        if workrequest_id:
+            roles = Role.objects.filter(work_request_id=workrequest_id).order_by('title')
+        else:
+            roles = Role.objects.none()
+        statuses = [key for key, _ in WorkAssignment.STATUS_CHOICES]
+
+        context = {
+            'notifications': page_obj,
+            'items': items, 
+            'selected_work_request': workrequest_id if workrequest_id else None,
+            'selected_role': role_id if role_id else None,
+            'selected_status': selected_status,
+            'work_requests': work_requests,
+            'roles': roles,
+            'statuses': statuses,
+            'breadcrumbs': [
+              {'name': _('workers'), 'url': reverse('recruiting_web:workers')},
+              {'name': _('messagesMessages'), 'url': None},
+            ],
+        }
+        return render(request, 'recruiting/messages/work-request-messages.html', context)
 
 class OkoMessageDetailsView(View):
     def get(self, request,id):
