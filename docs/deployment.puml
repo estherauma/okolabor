@@ -1,0 +1,40 @@
+@startuml
+' Nodes / Servers
+node "Client Device" {
+    artifact "Angular App"
+}
+
+node "Application Server" {
+    artifact "Django Backend"
+}
+
+node "Database Server" {
+    database "PostgreSQL"
+}
+
+node "Cache Server" {
+    artifact "Redis"
+}
+
+node "External Services" {
+    artifact "Google Cloud: Firestore, Storage, Vision"
+    artifact "Firebase"
+    artifact "Twilio"
+    artifact "Sentry"
+    artifact "Okolabor CMS API"
+}
+
+node "Production Server" {
+    artifact "Deployed Django Backend"
+}
+
+' Connections
+"Client Device" --> "Application Server" : HTTPS
+"Application Server" --> "Database Server" : SQL
+"Application Server" --> "Cache Server" : Cache Queries
+"Application Server" --> "External Services" : API Calls / HTTPS Requests
+
+' Deployment relation
+"Application Server" --> "Production Server" : Runs on
+
+@enduml

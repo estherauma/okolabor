@@ -15,38 +15,40 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{% translate 'joDetailsMealsClose'%}"></button>
         </div>
 
-        <div class="modal-body py-6 px-4">
-          {% with form=role_meal_provision_forms|get_item:role.id %}
-            {% for field in form %}
-              {% if field.name != 'role' %}
-                {% if field.field.widget.input_type == "checkbox" %}
-                  <div class="col">
-                    <div class="form-roup my-5">
-                      <div class="form-check">
-                        <label class="form-check-label " for="{{ field.id_for_label }}">{{ field.label }}</label>
-                        {{ field }}
+        <div class="modal-body py-2 px-4">
+          <div class="d-flex flex-column gap-1">
+            {% with form=role_meal_provision_forms|get_item:role.id %}
+              {% for field in form %}
+                {% if field.name != 'role' %}
+                  {% if field.field.widget.input_type == "checkbox" %}
+                    <div class="mb-2">
+                      <div class="form-group mb-1">
+                        <div class="form-check">
+                          <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                          {{ field }}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                {% else %}
-                <div class="col">
-                  <div class="form-group my-3">
-                    <label>{{ field.label }}</label>
-                    <div class="input-group input-group-outline is_valid my-3">
-                      {{ field }}
+                  {% else %}
+                    <div class="mb-1">
+                      <div class="form-group">
+                        <label class="form-label mb-1">{{ field.label }}</label>
+                        <div class="input-group input-group-outline is_valid">
+                          {{ field }}
+                        </div>
+                        {% for error in field.errors %}
+                          <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                      </div>
                     </div>
-                    {% for error in field.errors %}
-                      <div class="text-danger small">{{ error }}</div>
-                    {% endfor %}
-                  </div>
-                </div>
-              {% endif %}
-              {% endif %}
-            {% endfor %}
-          {% endwith %}
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+            {% endwith %}
+          </div>
         </div>
 
-        <div class="modal-footer bg-light rounded-bottom">
+        <div class="modal-footer">
           <button type="button" class="btn grey-button" data-bs-dismiss="modal">
             {% translate 'joDetailsMealsCancel' %}
           </button>

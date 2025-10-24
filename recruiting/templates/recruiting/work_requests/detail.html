@@ -10,6 +10,69 @@
 <div class="row">
   <!-- left hand side -->
   <div class="col-md-9">
+    <!-- TODO:Translate button -->
+     <div class="d-flex justify-content-end mb-3">
+        <button 
+         class="btn btn-md light-green-button"
+         data-bs-toggle="modal"
+         data-bs-target="#copyModal">
+          {% translate "jobOrderDetailsCopyJobOrder" %}
+        </button>
+      </div>
+
+     <!-- Copy modal -->
+    <div class="modal fade" id="copyModal" tabindex="-1" aria-labelledby="copyModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form method="POST" action="{% url 'recruiting_web:workrequest_copy' workrequest.id %}">
+            {% csrf_token %}
+            <div class="modal-header">
+              <h5 class="modal-title" id="copyModalLabel{{ workrequest.id }}">{% translate "jobOrderDetailsCopyJobOrder" %}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'jobOrderListClose'%}"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="name{{ workrequest.id }}" class="form-label">{% translate "jobOrderListName" %}</label>
+                <input type="text" class="form-control" id="name{{ workrequest.id }}" name="name" value="{{ workrequest.name }}">
+              </div>
+              <div class="mb-3">
+                <label for="start_date{{ workrequest.id }}" class="form-label">{% translate "jobOrderListStartDate" %}</label>
+                <input type="date" class="form-control" id="start_date{{ workrequest.id }}" name="start_date" value="{{ workrequest.start_date|date:'Y-m-d' }}">
+              </div>
+              <div class="mb-3">
+                <label for="end_date{{ workrequest.id }}" class="form-label">{% translate "jobOrderListEndDate" %}</label>
+                <input type="date" class="form-control" id="end_date{{ workrequest.id }}" name="end_date" value="{{ workrequest.end_date|date:'Y-m-d' }}">
+              </div>
+              <div class="mb-3">
+                <label for="required_workers{{ workrequest.id }}" class="form-label">{% translate "jobOrderListRequiredWorkers" %}</label>
+                <input type="number" class="form-control" id="required_workers{{ workrequest.id }}" name="required_workers" value="{{ workrequest.required_workers }}">
+              </div>
+              <div class="mb-3">
+                <label for="employer{{ workrequest.id }}" class="form-label">{% translate "jobOrderListEmployer" %}</label>
+                <select class="form-control" id="employer{{ workrequest.id }}" name="employer">
+                  {% for employer in employers %}
+                    <option value="{{ employer.id }}" {% if workrequest.employer.id == employer.id %}selected{% endif %}>{{ employer.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="status{{ workrequest.id }}" class="form-label">{% translate "jobOrderListStatus" %}</label>
+                <select class="form-control" id="status{{ workrequest.id }}" name="status">
+                  {% for choice in workrequest.STATUS_CHOICES %}
+                    <option value="{{ choice.0 }}" {% if workrequest.status == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                  {% endfor %}
+                </select>
+                </div>
+              </div>
+            <div class="modal-footer">
+              <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'jobOrderListCancel' %}</button>
+              <button type="submit" class="btn light-green-button">{% translate 'jobOrderListSave' %}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    
     <!-- Job order overview card -->
     <div class="card">
       <div class="card-header" style="background-color: #7DBF96;">
@@ -38,13 +101,13 @@
                   {% translate "jobOrderDetailsShortlist" %}
                 </th>
                 <th>
-                  {% translate "jobOrderDetailsOfferSentPending" %}
+                  {% translate "jobOrderDetailsOfferSent" %}
                 </th>
                 <th>
-                  {% translate "jobOrderDetailsConfirmed" %}
+                  {% translate "jobOrderDetailsOfferAccepted" %}
                 </th>
                 <th>
-                  {% translate "jobOrderDetailsRejected" %}
+                  {% translate "jobOrderDetailsOffersRejected" %}
                 </th>
               </tr>
             </thead>
@@ -58,16 +121,24 @@
                   {{ role.number_of_required_workers }}
                 </td>
                 <td>
-                  {{ role.shortlist_count }}
+                  <a href="{% url 'recruiting_web:workers' %}?role={{ role.id }}&work_request={{ workrequest.id }}#tab2">
+                    {{ role.shortlist_count }}
+                  </a>
                 </td>
                 <td>
-                  {{ role.offersent_count }}
+                  <a href="{% url 'recruiting_web:workers' %}?role={{ role.id }}&work_request={{ workrequest.id }}#tab3">
+                    {{ role.offersent_count }}
+                  </a>
                 </td>
                 <td>
-                  {{ role.confirmed_count }}
+                    <a href="{% url 'recruiting_web:workers' %}?role={{ role.id }}&work_request={{ workrequest.id }}#tab4">
+                    {{ role.confirmed_count }}
+                    </a>
                 </td>
                 <td>
-                  {{ role.rejected_count }}
+                    <a href="{% url 'recruiting_web:workers' %}?role={{ role.id }}&work_request={{ workrequest.id }}#tab5">
+                    {{ role.rejected_count }}
+                    </a>
                 </td>
               </tr>
               {% empty %}
@@ -108,20 +179,8 @@
         {% for role in  workrequest.roles.all %}
         <div class="accordion-item mb-2 ">
           <div class="d-flex align-items-center ">
-            <div class="d-flex col-11 col-md-9 align-items-center">
-              <div class="job-title-container">
-                <p class="job-title-label-container">
-                  <button class="btn btn-sm btn-icon light-green-button-outline  edit-btn" data-bs-toggle="modal"
-                    data-bs-target="#editRoleModal{{ role.id }}" title="{% translate 'jobOrderDetailsEdit' %}">
-                    <i class="fa fa-edit"></i>
-                  </button>
-                  <!-- Delete Button -->
-                  <button class="btn btn-sm btn-icon btn-outline-danger delete-btn" data-bs-toggle="modal"
-                    data-bs-target="#deleteRoleModal{{ role.id }}" title="{% translate 'jobOrderDetailsDelete' %}">
-                    <i class="fa fa-trash-alt"></i>
-                  </button>
-                </p>
-                <p>
+            <div class="d-flex col-11 col-md-9 align-items-center py-3">
+                <div>
                   <span class="job-title ">{{ role.title }}</span>
       
                   <a href="{% url 'recruiting_web:workers' %}?role={{role.id}}&work_request={{workrequest.id}} ">
@@ -129,8 +188,17 @@
                       {% translate "jobOrderDetailsAddWorkers" %}
                     </button>
                   </a>
-                </p>
-              </div>
+                </div>
+                <div class="job-title-label-container">
+                  <button class="btn btn-sm btn-icon light-green-button-outline  edit-btn" data-bs-toggle="modal"
+                    data-bs-target="#editRoleModal{{ role.id }}" title="{% translate 'jobOrderDetailsEdit' %}">
+                    {% translate 'webCommonEdit' %} 
+                  </button>
+                  <button class="btn btn-sm btn-icon btn-outline-danger delete-btn" data-bs-toggle="modal"
+                    data-bs-target="#deleteRoleModal{{ role.id }}" title="{% translate 'jobOrderDetailsDelete' %}">
+                    {% translate 'webCommonDelete' %} 
+                  </button>
+                </div>
             </div>
             <!-- accordion collapse icon -->
             <button aria-controls="collapse{{ role.id }}" aria-expanded="false" class="accordion-button collapsed"
@@ -406,21 +474,21 @@
                   {% else %}
                 
                   <!-- Edit Icon -->
-                  <button class="btn btn-sm btn-icon edit-btn" data-bs-toggle="modal" data-bs-target="#edithoursModal{{ role.id }}"
+                  <button class="btn btn-sm yellow-button edit-btn" data-bs-toggle="modal" data-bs-target="#edithoursModal{{ role.id }}"
                     title="{% translate 'webCommonEdit' %}">
-                    <i class="fa fa-edit"></i>
+                    {% translate 'webCommonEdit' %}
                   </button>
                   <!-- Delete Icon -->
-                  <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deletehoursModal{{ role.id }}"
+                  <!-- <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deletehoursModal{{ role.id }}"
                     title="{% translate 'Delete' %}">
                     <i class="fa fa-trash-alt"></i>
-                  </button>
+                  </button> -->
                   {% endif %}
                 </div>
                 {% if role.hours and not role.hours.deleted %}
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsHoursEstimatedWeeklyHours" %}
+                    {% translate "joDetailsHoursEstimatedWeeklyHours" %}:
                   </label>
                   <p> Total weekly hours: {{ role.hours.estimate_weekly_hours}}</p>
                   <p class="mt-2">
@@ -449,14 +517,14 @@
                 
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsHoursOnCall" %}
+                    {% translate "joDetailsHoursOnCall" %}:
                   </label>
                 
                   <p>{{ role.hours.on_call }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsHoursJobDescription" %}
+                    {% translate "joDetailsHoursJobDescription" %}:
                   </label>
                 
                   <p>{{ role.hours.job_description }}</p>
@@ -484,28 +552,28 @@
                   {% else %}
                 
                   <!-- Edit Icon -->
-                  <button class="btn btn-sm btn-icon edit-btn" data-bs-toggle="modal" data-bs-target="#editWagesModal{{ role.id }}"
+                  <button class="btn btn-sm yellow-button " data-bs-toggle="modal" data-bs-target="#editWagesModal{{ role.id }}"
                     title="{% translate 'webCommonEdit' %}">
-                    <i class="fa fa-edit"></i>
+                    {% translate 'webCommonEdit' %}
                   </button>
-                  <!-- Delete Icon -->
+                  <!-- Delete Icon
                   <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteWagesModal{{ role.id }}"
                     title="{% translate 'webCommonDelete' %}">
                     <i class="fa fa-trash-alt"></i>
-                  </button>
+                  </button> -->
                   {% endif %}
                 </div>
                 {% if role.wages and role.wages.deleted_at is None %}
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsWagesWage" %}
+                    {% translate "joDetailsWagesWage" %}:
                   </label>
                   <p> ${{ role.wages.wage}}</p>
                 </div>
 
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsWagesWageType" %}
+                    {% translate "joDetailsWagesWageType" %}:
                   </label>
                 
                   <p>{{ role.wages.get_wage_type_display }}</p>
@@ -513,27 +581,27 @@
                 {% if role.wages.piece_rate_offerings %}
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsWagesPieceRateOfferings" %}
+                    {% translate "joDetailsWagesPieceRateOfferings" %}:
                   </label>
                   <p>{{ role.wages.piece_rate_offerings }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsWagesPieceRateOfferingsType" %}
+                    {% translate "joDetailsWagesPieceRateOfferingsType" %}:
                   </label>
-                  <p>{{ role.wages.get_piece_rate_offerings_type_display }}</p>
+                  <p>{{ role.wages.piece_rate_offerings_type }}</p>
                 </div>
                 {% endif %}
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsWagesFrequencyOfPay" %}
+                    {% translate "joDetailsWagesFrequencyOfPay" %}:
                   </label>
                   <p>{{ role.wages.get_frequency_of_pay_display }}</p>
                 </div>
                 {% if role.wages.details %}
                 <div class="details-row">
                 <label>
-                  {% translate "joDetailsWagesDetails" %}
+                  {% translate "joDetailsWagesDetails" %}:
                 </label>
                   <p>{{ role.wages.details }}</p>
                 </div>
@@ -588,14 +656,14 @@
                               data-bs-toggle="modal"
                               data-bs-target="#editDeductionModal{{ deduction.id }}"
                               title="{% translate 'webCommonEdit' %}">
-                                <i class="fa fa-edit"></i>
+                                {% translate 'webCommonEdit' %}
                               </button>
                 
-                              <button class="btn btn-sm btn-icon delete-btn"
+                              <button class="btn btn-sm delete-btn"
                               data-bs-toggle="modal"
                               data-bs-target="#deleteDeductionModal{{ deduction.id }}"
                               title="{% translate 'webCommonDelete' %}">
-                              <i class="fa fa-trash-alt"></i>
+                             {% translate 'webCommonDelete' %}
                             </button>
                           </td>
                         </tr>
@@ -627,49 +695,49 @@
                   {% else %}
                 
                   <!-- Edit Icon -->
-                  <button class="btn btn-sm btn-icon edit-btn" data-bs-toggle="modal" data-bs-target="#editQualificationModal{{ role.id }}"
+                  <button class="btn btn-sm yellow-button" data-bs-toggle="modal" data-bs-target="#editQualificationModal{{ role.id }}"
                     title="{% translate 'webCommonEdit' %}">
-                    <i class="fa fa-edit"></i>
+                    {% translate 'webCommonEdit' %}
                   </button>
-                  <!-- Delete Icon -->
+                  <!-- Delete Icon
                   <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteQualificationModal{{ role.id }}"
                     title="{% translate 'webCommonDelete' %}">
                     <i class="fa fa-trash-alt"></i>
-                  </button>
+                  </button> -->
                   {% endif %}
                 </div>
                 {% if role.qualifications and role.qualifications.deleted_at is None %}
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsQualificationsMinimumEducationRequirement" %}
+                    {% translate "joDetailsQualificationsMinimumEducationRequirement" %}:
                   </label>
                   <p> {{ role.qualifications.minimum_education_requirement|default:"" }}</p>
                 </div>
 
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsQualificationsExperienceRequired" %}
+                    {% translate "joDetailsQualificationsExperienceRequired" %}:
                   </label>
 
                   <p>{{ role.qualifications.experience_required|yesno:_("Yes,No") }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsQualificationsNumberOfMonthsExperienceRequired" %}
+                    {% translate "joDetailsQualificationsNumberOfMonthsExperienceRequired" %}:
                   </label>
-                  <p>{{ role.qualifications.number_of_months_experience_required|default:"" }}</p>
+                  <p>{{ role.qualifications.number_of_months_experience_required}}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsQualificationsTrainingRequired" %}
+                    {% translate "joDetailsQualificationsTrainingRequired" %}:
                   </label>
-                  <p>{{ role.qualifications.lifting_requirements }}</p>
+                  <p>{{ role.qualifications.training_required }}</p>
                 </div>
                 <div class="details-row">
                   <label>
                     {% translate "joDetailsQualificationsNumberOfMonthsTrainingRequired" %}:
                   </label>
-                  <p>{{ role.qualifications.number_of_months_training_required|default:"" }}</p>
+                  <p>{{ role.qualifications.number_of_months_training_required }}</p>
                 </div>
                 <div class="details-row">
                   <label>
@@ -687,13 +755,19 @@
                   <label>
                     {% translate "joDetailsQualificationsLiftingRequirements" %}:
                   </label>
-                  <p>{{ role.qualifications.lifting_requirements|default:"" }}</p>
+                  <p>{{ role.qualifications.lifting_requirements }}</p>
                 </div>
                 <div class="details-row">
                   <label>
                     {% translate "joDetailsQualificationsLiftingRequirementWeight" %}:
                   </label>
-                  <p>{{ role.qualifications.lifting_requirement_weight|default:"" }} {% translate "joDetailsQualificationslbs" %}</p>
+                    <p>
+                    {% if role.qualifications.lifting_requirement_weight is not None %}
+                      {{ role.qualifications.lifting_requirement_weight }} {% translate "joDetailsQualificationslbs" %}
+                    {% else %}
+                      None
+                    {% endif %}
+                    </p>
                 </div>
                 <div class="details-row">
                   <label>
@@ -754,52 +828,52 @@
                   {% else %}
                 
                   <!-- Edit Icon -->
-                  <button class="btn btn-sm btn-icon edit-btn" data-bs-toggle="modal" data-bs-target="#editEmployementInformationModal{{ role.id }}"
+                  <button class="btn btn-sm yellow-button" data-bs-toggle="modal" data-bs-target="#editEmployementInformationModal{{ role.id }}"
                     title="{% translate 'webCommonEdit' %}">
-                    <i class="fa fa-edit"></i>
+                      {% translate 'webCommonEdit' %}
                   </button>
-                  <!-- Delete Icon -->
+                  <!-- Delete Icon
                   <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteEmploymentInformationModal{{ role.id }}"
                     title="{% translate 'Delete' %}">
                     <i class="fa fa-trash-alt"></i>
-                  </button>
+                  </button> -->
                   {% endif %}
                 </div>
                 {% if role.employment_location and role.employment_location.deleted_at is None %}
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsPlaceOfEmploymentAddress" %}
+                    {% translate "joDetailsPlaceOfEmploymentAddress" %}:
                   </label>
                   <p>{{ role.employment_location.address|default:"" }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsPlaceOfEmploymentCity" %}
+                    {% translate "joDetailsPlaceOfEmploymentCity" %}:
                   </label>
                   <p>{{ role.employment_location.city|default:"" }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsPlaceOfEmploymentCountry" %}
+                    {% translate "joDetailsPlaceOfEmploymentCountry" %}:
                   </label>
                   <p>{{ role.employment_location.county|default:"" }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsPlaceOfEmploymentState" %}
+                    {% translate "joDetailsPlaceOfEmploymentState" %}:
                   </label>
                   <p>{{ role.employment_location.state|default:"" }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsPlaceOfEmploymentPostalCode" %}
+                    {% translate "joDetailsPlaceOfEmploymentPostalCode" %}:
                   </label>
                   <p>{{ role.employment_location.postal_code|default:"" }}</p>
                 </div>
                 {% if role.employment_location.additional_info %}
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsPlaceOfEmploymentAdditionalInformation" %}
+                    {% translate "joDetailsPlaceOfEmploymentAdditionalInformation" %}:
                   </label>
                   <p>{{ role.employment_location.additional_info }}</p>
                 </div>
@@ -827,57 +901,57 @@
                   {% else %}
                 
                   <!-- Edit Icon -->
-                  <button class="btn btn-sm btn-icon edit-btn" data-bs-toggle="modal" data-bs-target="#editHousingInformationModal{{ role.id }}"
+                  <button class="btn btn-sm yellow-button" data-bs-toggle="modal" data-bs-target="#editHousingInformationModal{{ role.id }}"
                     title="{% translate 'webCommonEdit' %}">
-                    <i class="fa fa-edit"></i>
+                    {% translate 'webCommonEdit' %}
                   </button>
                   <!-- Delete Icon -->
-                  <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteHousingInformationModal{{ role.id }}"
+                  <!-- <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteHousingInformationModal{{ role.id }}"
                     title="{% translate 'Delete' %}">
                     <i class="fa fa-trash-alt"></i>
-                  </button>
+                  </button> -->
                   {% endif %}
                 </div>
                 {% if role.housing_information and role.housing_information.deleted_at is None %}
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsHousingInfoAddress" %}
+                    {% translate "joDetailsHousingInfoAddress" %}:
                   </label>
                   <p>{{ role.housing_information.address }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsHousingInfoCity" %}
+                    {% translate "joDetailsHousingInfoCity" %}:
                   </label>
                   <p>{{ role.housing_information.city }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsHousingInfoCountry" %}
+                    {% translate "joDetailsHousingInfoCountry" %}:
                   </label>
                   <p>{{ role.housing_information.county }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsHousingInfoState" %}
+                    {% translate "joDetailsHousingInfoState" %}:
                   </label>
                   <p>{{ role.housing_information.state }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsHousingInfoAddress" %}
+                    {% translate "joDetailsHousingInfoAddress" %}:
                   </label>
                   <p>{{ role.housing_information.postal_code }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsHousingInfoHousingType" %}
+                    {% translate "joDetailsHousingInfoHousingType" %}:
                   </label>
                   <p>{{ role.housing_information.type_of_housing }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsHousingInfoAdditionalInfo" %}
+                    {% translate "joDetailsHousingInfoAdditionalInfo" %}:
                   </label>
                   <p>{{ role.housing_information.additional_info }}</p>
                 </div>
@@ -904,33 +978,33 @@
                   {% else %}
                 
                   <!-- Edit Icon -->
-                  <button class="btn btn-sm btn-icon edit-btn" data-bs-toggle="modal" data-bs-target="#editMealProvisionModal{{ role.id }}"
+                  <button class="btn btn-sm yellow-button" data-bs-toggle="modal" data-bs-target="#editMealProvisionModal{{ role.id }}"
                     title="{% translate 'webCommonEdit' %}">
-                    <i class="fa fa-edit"></i>
+                    {% translate 'webCommonEdit' %}
                   </button>
                   <!-- Delete Icon -->
-                  <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteMealProvisionModal{{ role.id }}"
+                  <!-- <button class="btn btn-sm btn-icon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteMealProvisionModal{{ role.id }}"
                     title="{% translate 'Delete' %}">
                     <i class="fa fa-trash-alt"></i>
-                  </button>
+                  </button> -->
                   {% endif %}
                 </div>
                 {% if role.meal_provision and role.meal_provision.deleted_at is  None %}
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsMealsAreMealsProvided" %}
+                    {% translate "joDetailsMealsAreMealsProvided" %}:
                   </label>
                   <p>{{ role.meal_provision.will_provide_meals|yesno:_("Yes,No") }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsMealsAmountChargedPerDay" %}
+                    {% translate "joDetailsMealsAmountChargedPerDay" %}:
                   </label>
                   <p>{{ role.meal_provision.meal_charge_amount|default:"0" }}</p>
                 </div>
                 <div class="details-row">
                   <label>
-                    {% translate "joDetailsMealsAdditionalInformation" %}
+                    {% translate "joDetailsMealsAdditionalInformation" %}:
                   </label>
                   <p>{{ role.meal_provision.additional_info }}</p>
                 </div>
@@ -950,7 +1024,12 @@
       </div>
     </div>
   </div>
-  
+  <!-- loader -->
+  <div id="loader">
+    <div class="spinner-border text-primary spinner" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
 </div>
 
 {% endblock body %}
@@ -972,7 +1051,15 @@
         });
       }
     }
+  // Show loader on copy form submission
+  const copyForm = document.querySelector('#copyModal form');
+  if (copyForm) {
+    copyForm.addEventListener('submit', function() {
+      document.getElementById('loader').style.display = 'flex';
+    });
+  }
   });
 </script>
-{% endblock scripts %}
 
+
+{% endblock scripts %}

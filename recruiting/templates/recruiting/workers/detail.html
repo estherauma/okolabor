@@ -20,7 +20,15 @@
     <span class="d-flex justify-content-center align-items-center">
       <p
         class="mt-3 me-3 d-flex justify-content-center align-items-center rounded-circle light-green-background text-white text-icon">
-        {% translate "workerDetailsAB" %}
+        {% if worker.first_name and worker.last_name %}
+          {{ worker.first_name|first|upper }}{{ worker.last_name|first|upper }}
+        {% elif worker.first_name %}
+          {{ worker.first_name|first|upper }}{{ worker.first_name|slice:"1:2"|upper }}
+        {% elif worker.last_name %}
+          {{ worker.last_name|first|upper }}{{ worker.last_name|slice:"1:2"|upper }}
+        {% else %}
+          {{ worker.email|first|upper }}{{ worker.email|slice:"1:2"|upper }}
+        {% endif %}
       </p>
       {% if worker.first_name and worker.last_name %}
       <h4 class="dark-green-color d-contents fw-bold">
@@ -41,7 +49,7 @@
     {% if worker %}
     <button class="btn dark-green-button ms-3 open-shortlist-modal" data-bs-toggle="modal"
       data-bs-target="#workerShortlistModal{{ worker.id }}" data-worker-id="{{ worker.id }}">
-      {% translate "workerDetailsAddToShortlist" %}
+      <i class="fe fe-plus"></i>{% translate "workerDetailsAddToShortlist" %}
     </button>
 
     {% endif %}
@@ -72,31 +80,44 @@
             {% translate "workerDetailsSendMessage" %}
           </button>
         </div>
-        <div>
-          <p class="label">
-            {% translate "workerDetailsAddress" %}
-          </p>
-          <p class="value">
-            {{worker.address_line_1}}, {{worker.address_line_2}}, {{worker.city}}, {{worker.state}}, {{worker.country}}
-          </p>
-          <p class="label">
-            {% translate "workerDetailsEmail" %}
-          </p>
-          <p class="value">
-            {{worker.email}}
-          </p>
-          <p class="label">
-            {% translate "workerDetailsPhoneNumber" %}
-          </p>
-          <p class="value">
-            {{worker.telephone}}
-          </p>
-          <p class="label">
-            {% translate "workerDetailsGender" %}
-          </p>
-          <p class="value">
-            {{worker.gender}}
-          </p>
+        <div class="row align-items-start">
+          <div class="col-md-4 col-12 mb-3 d-flex justify-content-center">
+            {% if documents.profile_picture %}
+              <img src="{{ base_url }}{{ documents.profile_picture.0.path }}" alt="Profile Picture" class="worker-contact-photo border" />
+            {% else %}
+              <div class="worker-initials-badge light-green-background text-white">
+                {% if worker.first_name and worker.last_name %}
+                  {{ worker.first_name|first|upper }}{{ worker.last_name|first|upper }}
+                {% elif worker.first_name %}
+                  {{ worker.first_name|first|upper }}{{ worker.first_name|slice:"1:2"|upper }}
+                {% elif worker.last_name %}
+                  {{ worker.last_name|first|upper }}{{ worker.last_name|slice:"1:2"|upper }}
+                {% else %}
+                  {{ worker.email|first|upper }}{{ worker.email|slice:"1:2"|upper }}
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
+          <div class="col-md-8 col-12">
+            <p class="label">CURP</p>
+            <p class="value">{% if worker.curp %}{{worker.curp}}{% else %}N/A{% endif %}</p>
+            <p class="label">{% translate "workerDetailsAddress" %}</p>
+            <p class="value">
+              {% if worker.address_line_1 or worker.address_line_2 or worker.city %}
+                {% if worker.address_line_1 %}{{worker.address_line_1}}{% endif %}{% if worker.address_line_2 %}{% if worker.address_line_1 %}, {% endif %}{{worker.address_line_2}}{% endif %}{% if worker.city %}{% if worker.address_line_1 or worker.address_line_2 %}, {% endif %}{{worker.city}}{% endif %}
+              {% else %}
+                N/A
+              {% endif %}
+            </p>
+            <p class="label">{% translate "workerDetailsEmail" %}</p>
+            <p class="value">{{worker.email}}</p>
+            <p class="label">{% translate "workerDetailsPhoneNumber" %}</p>
+            <p class="value">{% if worker.telephone %}{{worker.telephone}}{% else %}N/A{% endif %}</p>
+            <p class="label">{% translate "workerDetailsGender" %}</p>
+            <p class="value">{% if worker.gender %}{{worker.gender}}{% else %}N/A{% endif %}</p>
+            <p class="label">{% translate "filtersLanguageProficiency" %}</p>
+            <p class="value">{% if worker.level_of_language_proficiency %}{{worker.level_of_language_proficiency}}{% else %}N/A{% endif %}</p>
+          </div>
         </div>
       </div>
     </div>
@@ -181,7 +202,7 @@
               {% translate "workerDetailsAddWorkExperience" %}
             </a> {% endcomment %}
             <a class="btn grey-green-button" data-bs-toggle="modal" data-bs-target="#addExperienceModal">
-              + {% translate "workerDetailsAddWorkExperience" %}
+              <i class="fe fe-plus"></i> {% translate "workerDetailsAddWorkExperience" %}
             </a>
           </div>
         </div>
@@ -190,19 +211,34 @@
             <img alt="flag" src="{% static 'assets/images/farm.png' %}" style="width: 60%;" />
           </div> -->
           <div class="experience-item">
-            <div class="exp-header">
+            <div class="exp-header mb-1">
               <a href="{% url 'recruiting_web:work_experience_details' pk=exp.id %}">
-              <h5 class="green-color">{{exp.company}} <span class="exp-work-title">({{exp.work_title}})</span></h5>
+                <h5 class="green-color m-0">{{exp.company}} <span class="exp-work-title">({{exp.work_title}})</span></h5>
               </a>
-               <i class="fa fa-edit" style="cursor: pointer; font-size: 15px;padding-left:10px;"
-                  data-bs-toggle="modal" data-bs-target="#editExperienceModal{{ exp.id }}"
-                  title="{% translate 'workerDetailsEdit'%}">
-                </i>
-                <!-- Delete Button -->
-                <i class="fa fa-trash text-danger" style="cursor: pointer; font-size: 15px;padding-left:10px;"
-                  data-bs-toggle="modal" data-bs-target="#deleteExperienceModal{{ exp.id }}"
-                  title="{% translate 'workerDetailsDelete'%}">
-                </i>
+              <!-- Edit Button -->
+              <button
+                class="btn btn-sm yellow-button"
+                data-bs-toggle="modal"
+                data-bs-target="#editExperienceModal{{ exp.id }}"
+              >
+                {% translate 'workerDetailsEdit'%}
+              </button>
+              <!-- <i class="fa fa-edit" style="cursor: pointer; font-size: 15px;padding-left:10px;"
+                data-bs-toggle="modal" data-bs-target="#editExperienceModal{{ exp.id }}"
+                title="{% translate 'workerDetailsEdit'%}">
+              </i> -->
+              <!-- Delete Button -->
+              <button
+                class="btn btn-sm red-button ms-2"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteExperienceModal{{ exp.id }}"
+              >
+                {% translate 'workerDetailsDelete'%}
+              </button>
+              <!-- <i class="fa fa-trash text-danger" style="cursor: pointer; font-size: 15px;padding-left:10px;"
+                data-bs-toggle="modal" data-bs-target="#deleteExperienceModal{{ exp.id }}"
+                title="{% translate 'workerDetailsDelete'%}">
+              </i> -->
               </div>
               <div class="exp-detail-row" >
                 <p>
@@ -332,16 +368,56 @@
             {% for job in job_experiences %}
             <div class="p-4 border rounded-lg bg-white shadow-sm mb-4">
               <p class="text-gray-700 text-lg flex items-center gap-2">
-                🚜 {% translate "workerDetailsJobType"%} - <span>{{ job.job_type|default:"No Job Type" }}</span>
+                🚜 {% translate "workerDetailsJobType"%} - <span>{{ job.job_type|default:"N/A" }}</span>
               </p>
               <p class="text-gray-700 text-lg flex items-center gap-2">
-                📋 {% translate "workerDetailsTypeDetails"%} - <span>{{ job.type_details|default:"No Type Details"
-                  }}</span>
+                📋 {% translate "workerDetailsTypeDetails"%} - <span>{{ job.type_details|default:"N/A" }}</span>
               </p>
             </div>
             {% endfor %}
           </div>
        {% endfor %}
+      </div>
+    </div>
+ <!-- messages   section -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex align-items-center justify-content-between flex-wrap mb-5">
+              <h5 class="card-title d-contents">
+                {% translate "messageDetailsMessages" %}
+              </h5>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table text-nowrap border-bottom" id="messages-list-datatable">
+                <thead>
+                  <tr>
+                    <th class="col-recruiter-company">{% translate "title" %}</th>
+                    <th class="col-recruiter-email">{% translate "status" %}</th>
+                    <th class="col-recruiter-location">{% translate "workerDetailsCreatedAt" %}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for message in worker_messages %}
+                  <tr class="text-start" data-id="{{ message.id }}">
+
+                    <td>
+                      <a href="#" data-bs-toggle="modal" data-bs-target="#messageDetailsModal-{{ message.id }}" class="text-decoration-none text-dark">
+                        {{ message.title }}
+                      </a>
+                    </td>
+                    <td>{{ message.status|capfirst }}</td>
+                    <td>{{ message.created_at }}</td>
+                    {% include "recruiting/messages/message-detail-modal.html" with notification=message %}
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -371,14 +447,9 @@
           {% translate "workerDetailsWorkInformation" %}
         </div>
         <div>
-          <button class="btn dark-green-button" data-bs-toggle="modal" data-bs-target="#infoModal">
-            {% translate "workerDetailsAddInformation" %}
+          <button class="btn grey-green-button ms-2" data-bs-toggle="modal" data-bs-target="#infoModal">
+            <i class="fe fe-plus"></i>{% translate "workerDetailsAddInformation" %}
           </button>
-          {% if preferences %}
-            <i class="fa fa-trash text-danger" style="cursor: pointer; font-size: 20px;padding-left:10px;"
-              data-bs-toggle="modal" data-bs-target="#deleteAllInfoModal" title="Delete">
-            </i>
-          {% endif %}
         </div>
       </div>
 
@@ -386,40 +457,22 @@
         <!-- Optionally display buttons for editing user information -->
         {% if preferences %}
         <div class="d-flex gap-2 mb-3">
-          <button class="btn btn-sm light-green-button" data-bs-toggle="modal" data-bs-target="#editDocumentsModal">
+          <button class="btn grey-green-button" data-bs-toggle="modal" data-bs-target="#editDocumentsModal">
+            <!-- TODO translate -->
             Edit Documents
           </button>
-          <button class="btn btn-sm light-green-button" data-bs-toggle="modal" data-bs-target="#editLanguageModal">
+          <button class="btn grey-green-button" data-bs-toggle="modal" data-bs-target="#editLanguageModal">
+            <!-- TODO translate -->
             Edit Language
           </button>
-          <button type="button" class="btn btn-sm light-green-button" data-bs-toggle="modal" data-bs-target="#editPreferencesModal">
+          <button type="button" class="btn grey-green-button" data-bs-toggle="modal" data-bs-target="#editPreferencesModal">
+            <!-- TODO translate -->
             Edit Work Preferences
           </button>
         </div>
         {% endif %}
       
       <!-- Display user documents  -->
-      <!-- Display profile picture -->
-      {% if documents.profile_picture %}
-      <div class="mb-4 mt-5">
-        <p class="label mb-3">Profile Picture</p>
-        {% for doc in documents.profile_picture %}
-        {% if forloop.first or forloop.counter0|divisibleby:2 %}
-        <div class="row">
-          {% endif %}
-          <div class="col-md-6 mb-3 ">
-            <img src="{{ base_url }}{{ doc.path }}" alt="Profile Picture" class="border object-contain w-100 clickable-media"
-              style="max-height: 200px; cursor: pointer;" data-type="image" data-src="{{ base_url }}{{ doc.path }}"
-              data-bs-toggle="modal" data-bs-target="#mediaModal" />
-          </div>
-          {% if forloop.counter|divisibleby:2 or forloop.last %}
-        </div>
-        {% endif %}
-        {% endfor %}
-      </div>
-      {% endif %}
-      
-      
       <!-- Display English proficiency video -->
       {% if documents.english_video %}
       <div class="mb-4">
@@ -429,8 +482,8 @@
         <div class="row">
           {% endif %}
           <div class="col-md-6 mb-3">
-            <video controls class="border w-100 preview-video clickable-media" style="max-height: 200px; cursor: pointer;"
-              data-type="video" data-src="{{ base_url }}{{ doc.path }}" data-bs-toggle="modal" data-bs-target="#mediaModal">
+            <video controls  class="border w-100 preview-video" style="max-height: 200px; cursor: pointer;"
+              data-type="video" data-src="{{ base_url }}{{ doc.path }}">
               <source src="{{ base_url }}{{ doc.path }}" type="video/mp4">
               {% translate "workerDetailsYourBrowserDoesNotSupportTheVideoTag" %}
             </video>
@@ -513,6 +566,8 @@
             <div class="value">
                {% if preferences.whereYouWantToWork %}
                   {{ preferences.whereYouWantToWork }}
+                {% else %}
+                  N/A
                 {% endif %}
             </div>
           </div>
@@ -522,6 +577,8 @@
             <div class="value">
               {% if preferences.kindOfWork %}
               {{ preferences.kindOfWork }}
+              {% else %}
+              N/A
               {% endif %}
             </div>
           </div>
@@ -531,6 +588,8 @@
             <div class="value">
               {% if preferences.availability %}
               {{ preferences.availability }}
+              {% else %}
+              N/A
               {% endif %}
             </div>
           </div>
@@ -540,8 +599,9 @@
             <div class="value">
               {% if preferences.healthStatus %}
               {{ preferences.healthStatus }}
+              {% else %}
+              N/A
               {% endif %}
-              
             </div>
           </div>
 
@@ -550,6 +610,8 @@
             <div class="value">
               {% if preferences.HealthCondition %}
               {{ preferences.HealthCondition }}
+              {% else %}
+              N/A
               {% endif %}
             </div>
           </div>
@@ -559,6 +621,8 @@
             <div class="value">
               {% if preferences.sufferedInjury %}
               {{ preferences.sufferedInjury }}
+              {% else %}
+              N/A
               {% endif %}
             </div>
           </div>
@@ -568,6 +632,8 @@
             <div class="value">
               {% if preferences.longerPeriodsOfTime %}
               {{ preferences.longerPeriodsOfTime }}
+              {% else %}
+              N/A
               {% endif %}
             </div>
           </div>
@@ -577,6 +643,8 @@
             <div class="value">
               {% if preferences.consent %}
               {{ preferences.consent }}
+              {% else %}
+              N/A
               {% endif %}
             </div>
           </div>
@@ -586,6 +654,8 @@
             <div class="value">
               {% if preferences.physicalActivities %}
               {{ preferences.physicalActivities }}
+              {% else %}
+              N/A
               {% endif %}
             </div>
           </div>
@@ -595,10 +665,12 @@
             <div class="value">
               {% if preferences.workEnvironment %}
               {{ preferences.workEnvironment }}
+              {% else %}
+              N/A
               {% endif %}
             </div>
           </div>
-        </div> 
+        </div>
       </div>
     </div>
 
@@ -681,7 +753,7 @@
                 </div>
 
                 <div class="mb-2">
-                  <label for="workSectors" class="form-label">{{ work_sectors_label }}</label>
+                  <label for="workSectors" class="form-label">{{ work_sectors_label }} </label>
                   <select multiple class="form-select" id="workSectors" name="work_sectors">
                     {% for option in work_sectors_options %}
                       <option value="{{ option.value }}">{{ option.label }}</option>
@@ -797,7 +869,7 @@
 
         <div class="modal-body">
           <div class="mt-3">
-            <div class="mb-2">
+            <div class="mb-4">
               <label for="preferredCountries" class="form-label">{{ preferred_countries_label }}</label>
               <select multiple class="form-select" id="preferredCountries" name="preferred_countries">
                 {% for option in preferred_countries_options %}
@@ -806,7 +878,7 @@
               </select>
             </div>
 
-            <div class="mb-2">
+            <div class="mb-4">
               <label for="workSectors" class="form-label">{{ work_sectors_label }}</label>
               <select multiple class="form-select" id="workSectors" name="work_sectors">
                 {% for option in work_sectors_options %}
@@ -815,7 +887,7 @@
               </select>
             </div>
 
-            <div class="mb-2">
+            <div class="mb-4">
               <label for="preferencesNote" class="form-label">{{ preferences_note_label }}</label>
               <textarea class="form-control" id="preferencesNote" name="preferences_note" rows="3"></textarea>
             </div>
@@ -823,7 +895,7 @@
             {% load custom_filters %}
             {% next_12_months as availability_months %}
 
-            <div class="mb-2">
+            <div class="mb-4">
               <label for="availabilityMonths" class="form-label">{{ availability_label }}</label>
               <select multiple class="form-select" id="availabilityMonths" name="availability_months">
                 {% for month in availability_months %}
@@ -832,24 +904,24 @@
               </select>
             </div>
             <!-- Health status -->
-                <div class="mb-2">
+                <div class="mb-3">
                   <label class="form-label">
                       {{ health_status_label }}
-                  </label><br>
+                  </label>
                   <div>
                       <input type="radio" name="healthStatus" value="yes" onchange="toggleHealthConditionField()" > <span class="radio-label">Yes</span>
                       <input type="radio" name="healthStatus" value="no" onchange="toggleHealthConditionField()" > <span class="radio-label">No</span>
                   </div>
               </div>
 
-            <div class="mb-2" id="healthConditionField" style="display: none;">
+            <div class="mb-4" id="healthConditionField" style="display: none;">
               <label for="healthCondition" class="form-label">{{ health_condition_label }}</label>
               <textarea class="form-control" name="healthCondition" rows="3"></textarea>
             </div>
 
             <!-- Suffered Injury -->
-            <div class="mb-2">
-              <label class="form-label">{{ suffered_injury_label }}</label><br>
+            <div class="mb-3">
+              <label class="form-label">{{ suffered_injury_label }}</label>
               <div>
                 <input type="radio" name="suffered_injury" value="yes"><span class="radio-label">Yes</span>
                 <input type="radio" name="suffered_injury" value="no" ><span class="radio-label">No</span>
@@ -857,8 +929,8 @@
             </div>
 
             <!-- Longer Period of Time -->
-            <div class="mb-2">
-              <label class="form-label">{{ longer_period_of_time_label }}</label><br>
+            <div class="mb-3">
+              <label class="form-label">{{ longer_period_of_time_label }}</label>
               <div>
                 <input type="radio" name="longerPeriodOfTime" value="yes" ><span class="radio-label"> Yes</span>
                 <input type="radio" name="longerPeriodOfTime" value="no" ><span class="radio-label"> No</span>
@@ -866,8 +938,8 @@
             </div>
 
             <!-- Lift/Carry Consent -->
-            <div class="mb-2">
-              <label class="form-label">{{ consent_label }}</label><br>
+            <div class="mb-3">
+              <label class="form-label">{{ consent_label }}</label>
               <div>
                 <input type="radio" name="consent" value="yes"><span class="radio-label"> Yes</span>
                 <input type="radio" name="consent" value="no"><span class="radio-label"> No</span>
@@ -875,14 +947,14 @@
             </div>
 
             <!-- Physical Activities Not Preferred -->
-            <div class="mb-2">
+            <div class="mb-3">
               <label for="physicalActivities" class="form-label">{{ physical_activities_label }}</label>
               <textarea class="form-control" name="physicalActivities" rows="3"></textarea>
             </div>
 
             <!-- Work Environment -->
-            <div class="mb-2">
-              <label class="form-label">{{ work_environment_label }}</label><br>
+            <div class="mb-4">
+              <label class="form-label">{{ work_environment_label }}</label>
               <div>
                 <input type="radio" name="workEnvironment" value="yes" ><span class="radio-label"> Yes</span>
                 <input type="radio" name="workEnvironment" value="no" ><span class="radio-label"> No</span>
@@ -1042,7 +1114,7 @@
       }
 
       // Handle clickable media
-      document.querySelectorAll('.clickable-media').forEach(item => {
+      document.querySelectorAll('.clickable-media').forEach(item => {       
         item.addEventListener('click', event => {
           const type = event.currentTarget.getAttribute('data-type');
           const src = event.currentTarget.getAttribute('data-src');
@@ -1050,17 +1122,24 @@
 
           if (type === 'image') {
             mediaContent.innerHTML = `<img src="${src}" class="img-fluid" alt="Media">`;
-          } else if (type === 'video') {
-            mediaContent.innerHTML = `<video controls class="w-100">
-                                              <source src="${src}" type="video/mp4">
-                                              {% translate "workerDetailsYourBrowserDoesNotSupportTheVideoTag"%}
-                                            </video>`;
-          }
+          } 
+          // else if (type === 'video') {
+
+          //   mediaContent.innerHTML = `<video controls class="w-100">
+          //                                     <source src="${src}" type="video/mp4">
+          //                                     {% translate "workerDetailsYourBrowserDoesNotSupportTheVideoTag"%}
+          //                                   </video>`;
+          // }
 
           // Show the modal
           $('#mediaModal').modal('show');
         });
       });
+  
+        // Clear media content when modal is closed
+        $('#mediaModal').on('hidden.bs.modal', function () {
+          document.getElementById('mediaContent').innerHTML = '';
+        });
     });
 
     function handleInfoTypeChange() {

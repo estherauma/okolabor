@@ -1,4 +1,4 @@
-{% extends 'components/base.html' %}
+{% extends 'components/versions/vertical/light.html' %}
 {% load static %}
 {% load i18n %}
 {% load custom_filters %}
@@ -7,131 +7,231 @@
   {% block styles %}
     <link href="{% static 'assets/css/work-experience-details.css' %}" rel="stylesheet" />
   {% endblock %}
+ <div class="title-wrapper d-flex align-items-center justify-content-between mb-5">
+  <a href="javascript:history.back()" >
+    <span aria-hidden="true" class="me-2" >&#8592;</span>
+    <span>{% translate "workExperienceDetailsBack" %}</span>
+  </a>
+  <h2 class="experience-title text-center fw-semibold flex-grow-1 m-0">
+    {{ work_experience.user.get_full_name }} – {% translate 'workerDetailsWorkExperience' %}
+  </h2>
+  <span class="d-none d-md-block" style="width: 70px;"></span> <!-- Spacer for symmetry -->
+</div>
+  <div class="card shadow-sm p-6">
+    <div class="job-title-wrapper mt-2 mb-3">
+      <h3 class="fw-semibold mb-1">{{ work_experience.company }}</h3>
+      <p>
+        {% if work_experience.state %} {{ work_experience.state }}, {% endif %}
+        {% if work_experience.country %} {{ work_experience.country }} {% endif %}
+      </p>
+    </div>
+    
+    <div class="row">
+      <!-- LEFT COLUMN -->
+      <div class="col-md-6">
+        <!-- Type of work -->
+        <div class="mb-3">
+          <p class="detail-label text-uppercase text-muted mb-1">{% translate "typeOfWork" %}</p>
+          <p class="detail-value">{{ work_experience.type_of_work }}</p>
+        </div>
 
-  <div class="container mt-5">
-    <div class="card shadow-sm p-4 position-relative">
+        {% if work_experience.type_of_work != 'Formal job'  %}
+          <!-- Employer -->
+          <div class="mb-3">
+            <p class="detail-label text-uppercase text-muted mb-1">{% translate "jobOrderDetailsEmployer" %}</p>
+            <p class="detail-value">{{ work_experience.company }}</p>
+          </div>
+          
+          <!-- Job title -->
+          <div class="mb-3">
+            <p class="detail-label text-uppercase text-muted mb-1">{% translate "jobOrderDetailsJobTitle" %}</p>
+            <p class="detail-value">{{ work_experience.work_title }}</p>
+          </div>
+        {% endif %}
+        
+        <!-- Employment Dates -->
+        <!-- <div class="mb-3">
+          <p class="detail-label text-uppercase text-muted mb-1">{% translate "jobOrderDetailsDatesOfEmployment" %}</p>
+          <p class="detail-value">
+            {{ work_experience.start_date|date:"F Y" }} –
+            {% if work_experience.end_date %}
+              {{ work_experience.end_date|date:"F Y" }}
+            {% else %}
+              {% translate "jobOrderDetailsPresent" %}
+            {% endif %}
+          </p>
+        </div> -->
+        
+        <!-- Month and year you started -->
+        <div class="mb-3">
+          <p class="detail-label text-uppercase text-muted mb-1">{% translate "monthYearStarted" %}</p>
+          <p class="detail-value">{{ work_experience.approx_month_and_year }}</p>
+        </div>
+        
+        <!-- No of months worked -->
+        <div class="mb-3">
+          <p class="detail-label text-uppercase text-muted mb-1">{% translate "totalMonthsWorked" %}</p>
+          <p class="detail-value">{{ work_experience.approx_total_months_worked }}</p>
+        </div>
 
-      <!-- Header -->
-      <div class="d-flex justify-content-between align-items-start mb-4">
-        <div>
-          <h4 class="fw-bold text-success">{{ work_experience.user.get_full_name }}</h4>
-          <p class="mb-0 text-muted">{{ work_experience.country }}, {{ work_experience.country_display }}</p>
+        <!-- Job Details -->
+        <div class="mb-3">
+          <p class="detail-label text-uppercase text-muted mb-1">{% translate 'workExperienceDetailsJobDetails'%}</p>
+
+          {% for job in job_experiences %}
+            <div class="job-wrapper ">
+              <!-- Job detail type or sector -->
+              <p class="detail-value mb-2">
+                <span class="fst-italic">{% translate 'typeOfSector' %}: </span> 
+                <span>{{ job.job_type | default:"—" }}</span>
+              </p>
+
+              <!-- Job detail type details -->
+              {% if job.type_details %}
+                <p class="detail-value  mb-2">
+                  <span class="fst-italic">
+                    {% if job.job_type == 'Animals' %}
+                      {% translate 'Animal Type'%}:
+                    {% elif job.job_type == 'Crop and horticulture' %}
+                      {% translate 'addRoleCropTypes' %}:
+                    {% else %}
+                      {% translate 'typeDetails' %}:
+                    {% endif %} 
+                  </span> 
+                  <span>{{ job.type_details | default:"—" }}</span>
+                </p>
+              {% endif %}
+
+              {% for item in job_experience_details %}
+                <!-- Job detail tasks/responsibilities -->
+                {% if item.job_experience_id == job.id and item.kind|lower == "responsibilities" %}
+                  <p class="detail-value mb-2">
+                    <span class="fst-italic">
+                      {% translate 'workExperienceDetailsTasks&Responsibilities'%}: 
+                    </span> 
+                    <span>{{ item.value | default:"—" }}</span>
+                  </p>
+                {% endif %}
+                
+                <!-- Job detail description/explanation -->
+                {% if item.job_experience_id == job.id and item.kind|lower == "explanation" %}
+                  <p class="detail-value mb-2">
+                    <span class="fst-italic">{% translate 'employersDescription' %}: </span> 
+                    {{ item.value }}
+                  </p>
+                {% endif %}
+              {% endfor %}
+            </div>
+          {% endfor %}
+        </div>
+
+        <!-- Work Authorization -->
+        <div class="mb-3 ">
+          <p class="detail-label text-uppercase text-muted mb-1">{% translate "workExperienceDetailsWorkAuthorization" %}</p>
+          <p class="detail-value mb-1">
+            <span class="fst-italic">{% translate "workExperienceDetailsVisaType"%}: </span>
+            {{ work_experience.visa_type|default:"No Visa Type" }}
+          </p>
+          <p class="detail-value fst-italic">
+            <span class="fst-italic">{% translate "workExperienceDetailsH2AWork" %}: </span>
+            {{ work_experience.work_under_h2a_in_usa|yesno:"Yes,No" }}
+          </p>
+        </div>
+
+        <!-- H2A PROGRAM -->
+        <div class="mb-3">
+          <p class="detail-label text-uppercase text-muted mb-1">{% translate 'workExperienceDetailsH2APROGRAM'%}</p>
+          <p class="detail-value">{{ work_experience.work_under_h2a_in_usa|yesno:_("Yes,_No") }}</p>
         </div>
       </div>
 
-      <div class="row">
-        <!-- LEFT COLUMN -->
-        <div class="col-md-6">
-
-          <!-- Employment Dates -->
-          <div class="mb-3">
-            <p class="fw-bold text-uppercase small text-muted">{% translate "jobOrderDetailsDatesOfEmployment" %}</p>
-            <p>
-              {{ work_experience.start_date|date:"F Y" }} –
-              {% if work_experience.end_date %}
-                {{ work_experience.end_date|date:"F Y" }}
-              {% else %}
-                {% translate "jobOrderDetailsPresent" %}
-              {% endif %}
-            </p>
-          </div>
-
-          <!-- H2A PROGRAM -->
-          <div class="mb-3">
-            <p class="fw-bold text-uppercase small text-muted">{% translate 'workExperienceDetailsH2APROGRAM'%}</p>
-            <p>{{ work_experience.work_under_h2a_in_usa|yesno:_("Yes,_No") }}</p>
-          </div>
-
-          <!-- Job Details -->
-          <div class="mb-4">
-            <p class="fw-bold text-uppercase small text-muted">{% translate 'workExperienceDetailsJobDetails'%}</p>
-            {% for job in job_experiences %}
-              <p><strong>{% translate 'workExperienceDetailsCompany'%}:</strong> {{ job.work_experience.company|default:"—" }}</p>
-              <p><strong>{% translate 'workExperienceDetailsPrimaryJobType'%}:</strong> {{ job.job_type|default:"—" }}</p>
-
-              {% if job.type_details %}
-                <p class="fw-bold mb-2">{% translate 'workExperienceDetailsTasks&Responsibilities'%}:</p>
-                <div class="d-flex flex-wrap gap-2 mb-3">
-                  {% for duty in job.type_details|split:"," %}
-                    <span style="
-                      background-color: #fefee8;
-                      color: #1f1f1f;
-                      border: 1px solid #b4d7a8;
-                      border-radius: 999px;
-                      padding: 6px 12px;
-                      font-weight: 500;
-                      font-size: 14px;
-                      display: inline-block;">
-                      {{ duty|trim }}
-                    </span>
-                  {% endfor %}
-                </div>
+      <!-- RIGHT COLUMN -->
+      <div class="col-md-6">
+        <!-- Visa Section-->
+        <div class="mb-5">
+          <p class="detail-label text-uppercase text-muted mb-1">{% translate 'filterSectionVisa' %}</p>
+          <div class="d-flex flex-wrap gap-3">
+            {% for detail in job_experience_details %}
+              {% if "visa" in detail.kind|lower %}
+                {% with detail.value|strip_leading_slash as clean_path %}
+                  <div class="media-wrapper">
+                    <a href="{{ base_url }}{{ clean_path }}" target="_blank">
+                      <img src="{{ base_url }}{{ clean_path }}" alt="certification" class="img-thumbnail" />
+                    </a>
+                  </div>
+                {% endwith %}
               {% endif %}
             {% endfor %}
           </div>
-
-          <!-- Supervisor Details -->
-          <div class="mb-4">
-            <p class="fw-bold text-uppercase small text-muted">{% translate "workExperienceDetailsSupervisorDetails" %}</p>
-            <p>{{ work_experience.supervisor_name|default:"No Supervisor Name" }}</p>
-            <p><a href="tel:{{ work_experience.supervisor_tel }}" class="text-decoration-underline text-primary">{{ work_experience.supervisor_tel|default:"No Phone" }}</a></p>
-            <p><a href="mailto:{{ work_experience.supervisor_email }}" class="text-decoration-underline text-primary">{{ work_experience.supervisor_email|default:"No Email" }}</a></p>
-          </div>
-
-          <!-- Work Authorization -->
-          <div class="mb-4">
-            <p class="fw-bold text-uppercase small text-muted">{% translate "workExperienceDetailsWorkAuthorization" %}</p>
-            <p>{% translate "workExperienceDetailsVisaType"%}: {{ work_experience.visa_type|default:"No Visa Type" }}</p>
-            <p>{% translate "workExperienceDetailsH2AWork"%}: {{ work_experience.work_under_h2a_in_usa|yesno:"Yes,No" }}</p>
-          </div>
-
         </div>
 
-        <!-- RIGHT COLUMN -->
-        <div class="col-md-6">
-
-          <!-- Certifications Section -->
-          <div class="mb-4">
-            <p class="fw-bold text-uppercase small text-muted">{% translate "workExperienceDetailsCertifications" %}</p>
-            <div class="d-flex flex-wrap gap-3">
-              {% for detail in job_experience_details %}
-                {% if "visa" in detail.kind|lower or "certificate" in detail.kind|lower %}
-                  {% with detail.value|strip_leading_slash as clean_path %}
-                    <div style="width: 120px;">
-                      <a href="{{ base_url }}{{ clean_path }}" target="_blank">
-                        <img src="{{ base_url }}{{ clean_path }}" alt="certification" class="img-thumbnail" style="height: 100px; object-fit: cover;">
-                      </a>
-                    </div>
-                  {% endwith %}
-                {% endif %}
-              {% endfor %}
-            </div>
+        <!-- Certifications Section -->
+        <div class="mb-5">
+          <p class="detail-label text-uppercase text-muted mb-1">{% translate "workExperienceDetailsCertifications" %}</p>
+          <div class="d-flex flex-wrap gap-3">
+            {% for detail in job_experience_details %}
+              {% if "certificate" in detail.kind|lower %}
+                {% with detail.value|strip_leading_slash as clean_path %}
+                  <div class="media-wrapper">
+                    <a href="{{ base_url }}{{ clean_path }}" target="_blank">
+                      <img src="{{ base_url }}{{ clean_path }}" alt="certification" class="img-thumbnail">
+                    </a>
+                  </div>
+                {% endwith %}
+              {% endif %}
+            {% endfor %}
           </div>
+        </div>
 
-          <!-- Other Media Section -->
-          <div class="mb-4">
-            <p class="fw-bold text-uppercase small text-muted">{% translate "workExperienceDetailsOtherMedia" %}</p>
-            <div class="d-flex flex-wrap gap-3">
-              {% for detail in job_experience_details %}
-                {% if "visa" not in detail.kind|lower and "certificate" not in detail.kind|lower %}
-                  {% with detail.value|strip_leading_slash as clean_path %}
-                    {% with clean_path|lower as filename %}
-                      {% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename %}
-                        <img src="{{ base_url }}{{ clean_path }}" class="img-thumbnail" style="height: 100px; object-fit: cover;" />
-                      {% elif ".mp4" in filename %}
-                        <div style="width: 120px;">
-                          <video controls style="max-width: 100%; max-height: 200px;">
-                            <source src="{{ base_url }}{{ clean_path }}" type="video/mp4">
-                          </video>
-                        </div>
-                      {% endif %}
-                    {% endwith %}
+        <!-- Other Media Section -->
+        <div class="mb-5">
+          <p class="detail-label text-uppercase text-muted mb-1">{% translate "workExperienceDetailsOtherMedia" %}</p>
+          <div class="d-flex flex-wrap gap-3">
+            {% for detail in job_experience_details %}
+              {% if "visa" not in detail.kind|lower and "certificate" not in detail.kind|lower %}
+                {% with detail.value|strip_leading_slash as clean_path %}
+                  {% with clean_path|lower as filename %}
+                    {% if ".jpg" in filename or ".jpeg" in filename or ".png" in filename %}
+                      <div class="media-wrapper">
+                        <a href="{{ base_url }}{{ clean_path }}" target="_blank">
+                          <img src="{{ base_url }}{{ clean_path }}" class="img-thumbnail" />
+                        </a>
+                      </div>
+                    {% elif ".mp4" in filename %}
+                      <div class="media-wrapper">
+                        <video controls>
+                          <source src="{{ base_url }}{{ clean_path }}" type="video/mp4">
+                        </video>
+                      </div>
+                    {% endif %}
                   {% endwith %}
-                {% endif %}
-              {% endfor %}
-            </div>
+                {% endwith %}
+              {% endif %}
+            {% endfor %}
           </div>
+        </div>
 
+        <!-- Supervisor Details -->
+        <div class="mb-3">
+          <p class="detail-label text-uppercase text-muted mb-1">{% translate "workExperienceDetailsSupervisorDetails" %}</p>
+          <p class="detail-value  mb-2">
+            <span class="fst-italic">
+              {% translate 'employerDetailsName' %}:
+            </span> 
+            <span>{{ work_experience.supervisor_name|default:"N/A" }}</span>
+          </p>
+          <p class="detail-value mb-2">
+            <span class="fst-italic">
+              {% translate 'employersPhone' %}:
+            </span> 
+            <span>{{ work_experience.supervisor_tel|default:"N/A" }}</span>
+          </p>
+          <p class="detail-value  mb-2">
+            <span class="fst-italic">
+              {% translate 'accountEmail' %}:
+            </span> 
+            <span>{{ work_experience.supervisor_email|default:"N/A" }}</span>
+          </p>
         </div>
       </div>
     </div>

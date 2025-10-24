@@ -11,31 +11,38 @@
       </div>
 
       <!-- Modal Body -->
-      <div class="modal-body">
+      <div class="modal-body px-3 py-2">
         <form method="post" action="{% url 'recruiting_web:employer_create' %}?type=recruiter" >
         {% csrf_token %}
 
-        {% for field in employer_form.visible_fields %}
-          <div class="col">
-            <div class="form-group my-3">
-              <label>{{ field.label }}</label>
-              <div class="input-group input-group-outline is_valid my-3">
+        <div class="d-flex flex-column">
+          {% for field in employer_form.visible_fields %}
+            <div class="mb-1">
+              <label class="form-label mb-1">{{ field.label }}</label>
+              <div class="input-group input-group-outline is_valid">
                 {{ field }}
               </div>
+              {% if field.errors %}
+                <div class="text-danger small">
+                  {{ field.errors }}
+                </div>
+              {% endif %}
             </div>
-          </div>
-        {% endfor %}
+          {% endfor %}
+        </div>
 
         {# Render hidden fields separately, without labels #}
         {% for hidden in employer_form.hidden_fields %}
           {{ hidden }}
         {% endfor %}
 
+        <div class="mt-2">
           <button class="btn light-green-button" type="submit">
             {% translate "addEmployerSubmit" %}
           </button>
-          </form>
-   </div>
+        </div>
+        </form>
+      </div>
   </div>
  </div>
 </div>

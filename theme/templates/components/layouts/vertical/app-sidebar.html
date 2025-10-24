@@ -6,11 +6,13 @@
 <div class="app-sidebar__overlay" data-bs-toggle="sidebar"></div>
 <aside class="app-sidebar">
 	<div class="side-header">
-		<h3>{% translate "csiVisaProcessing" %}</h3>
+		<a class="header-brand1" href="#">
+			<img src="{% static ''%}assets/images/csi_logo.png" class="" alt="logo">			
+		</a><!-- LOGO -->
 	</div>
 	<ul class="side-menu">
 
-		<li class="slide" style="padding-top: 50px;">
+		<li class="slide">
 			<a class="side-menu__item {% if request.path == '/index/' %}active{% endif %}" data-bs-toggle="slide" href="/index"><i
 					class="side-menu__icon fe fe-home"></i>
 					<span class="side-menu__label">{% translate "home" %}</span>
@@ -87,16 +89,10 @@
 		</li>
 		{% endif %}
 
-
-		<!-- <li>
-			<a class="side-menu__item" href="{% url 'recruiting_web:recruiter_todo' %}"><i class="side-menu__icon icon icon-briefcase"></i>
-				<span class="side-menu__label">{% translate "toDo" %}</span></a>
-		</li> -->
-
 		<li>
-			<a class="side-menu__item {{request.path|addActive:'/messages,/create-message,/message-details'}}" 
-			href="{% url 'recruiting_web:recruiter_messages' %}"><i class="side-menu__icon fe fe-mail"></i>
-				<span class="side-menu__label">{% translate "messages" %}</span>
+			<a class="side-menu__item {{request.path|addActive:'/invalid-curps'}}" 
+			href="{% url 'recruiting_web:invalid_curps' %}"><i class="side-menu__icon fe fe-alert-triangle"></i>
+				<span class="side-menu__label">{% translate 'invalidCurpsInvalidCURPs'%}</span>
 			</a>
 		</li>
 

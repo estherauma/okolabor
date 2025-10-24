@@ -6,14 +6,14 @@ from django.contrib.auth.models import Group
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic import CreateView,TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from account.models import User, UserWorkExperience, UserJobExperience,UserJobExperienceDetails,UserNotification
 from common.views import BaseCreateView
-from recruiting.forms import WorkerCreateForm, WorkExperienceCreateForm,WorkerAssignmentForm
+from recruiting.forms import SendMessageForm, WorkerCreateForm, WorkExperienceCreateForm,WorkerAssignmentForm
 from theme.forms import AdvancedFilterForm,DynamicWorkExperienceForm
 from account.models import UserPreference,UserDocuments
 from recruiting.models import WorkAssignment,WorkAssignment,WorkRequests,Role
@@ -26,15 +26,16 @@ import pandas as pd
 from dateutil.relativedelta import relativedelta
 from django.http import HttpResponse
 import json
-from datetime import date
-from recruiting.utils import get_sector_choices
+from datetime import date,datetime
+from recruiting.utils import calculate_months_ofH2A_expererience, check_visa_status, find_worker_status, get_sector_choices
 from common.utils import StaticContent
 from recruiting.utils import calculate_total_experience,calculate_profile_completion,get_worker_preferences
 from common.logger import AppLogger
 from django.contrib.auth import get_user_model
 from common.firebase_utils import send_push_notification
 from django.utils import translation
-
+from django.db.models.functions import Lower
+from decimal import Decimal
 
 
 
@@ -47,7 +48,13 @@ ONBOARDING_STEPS = [
     "workPreferenceStepOne",
     "workPreferenceStepTwo"
 ]
-class WorkerListView(View):
+
+worker_profile_status_labels = {
+    "available": _("workerDetailsAvailable"),
+    "on_contract": _("workerDetailsOnContract"),
+}
+
+class WorkerListView(LoginRequiredMixin, View):
     def get(self, request):
         # if coming from add workers button on work request detail page
         # Get optional parameters from query string
@@ -173,7 +180,6 @@ class WorkerListView(View):
             workers = workers.filter(availability_filter)
 
         # Filter by Reference
-
         references_filter = next((v for k, v in params.items() if k.startswith("references_") and v), None)
         if references_filter and references_filter.lower() == 'yes':
             referenced_user_ids = UserWorkExperience.objects.filter(
@@ -183,6 +189,36 @@ class WorkerListView(View):
             ).values_list('user_id', flat=True).distinct()
 
             workers = workers.filter(id__in=referenced_user_ids)
+
+        # Filter by Physical Labor Limitations
+        exclude_physical_limitations = next((v for k, v in params.items() if k.startswith("exclude_physical_limitations_") and v), None)
+        if exclude_physical_limitations and exclude_physical_limitations.lower() == 'yes':
+            physical_limitation_keys = [
+                'healthStatus',
+                'sufferedInjury',
+                'longerPeriodsOfTime',
+                'workEnvironment'
+            ]
+
+            preference_kinds = ['work-preferences', 'workPreferences', 'preference']
+
+            yes_q = (
+                Q(value__iexact='yes') |
+                Q(value__iexact='true') |
+                Q(value='1') |
+                Q(value__iexact='y')
+            )
+
+            workers_with_limitations = (
+                UserPreference.objects
+                .filter(key__in=physical_limitation_keys, kind__in=preference_kinds)
+                .filter(yes_q)
+                .values_list('user_id', flat=True)
+                .distinct()
+            )
+
+            if workers_with_limitations:
+                workers = workers.exclude(id__in=workers_with_limitations)
 
         # Filter by Age (from dob)
 
@@ -215,14 +251,50 @@ class WorkerListView(View):
                     (max_exp is None or years <= max_exp)):
                     filtered.append(w)
             workers = filtered
-        workers = workers.distinct()
+            
+
+        # Filter by whether user has language proficiency video
+        lang_video_filter = next((v for k, v in params.items() if k.startswith("has_language_proficiency_video") and v), None)
+        if lang_video_filter:
+            lang_video_filter = lang_video_filter.lower().strip()
+
+            if lang_video_filter == 'yes':
+                # Workers who HAVE an English proficiency video
+                workers = workers.filter(
+                    documents__kind='english_video'
+                ).exclude(documents__path__isnull=True).exclude(documents__path__exact='')
+
+            elif lang_video_filter == 'no':
+                # Workers who do NOT have an English proficiency video
+                workers = workers.exclude(
+                    documents__kind='english_video',
+                    documents__path__isnull=False,
+                ).exclude(documents__path__exact='')
+        
+            
+        
+        # Deduplicate workers by ID using a dictionary comprehension.
+        workers = list({w.id: w for w in workers}.values())
         worker_data = []
+        
+        # Initialize years_of_experience to 0 as a default.
+        years_of_experience = 0
         for worker in workers:
             profile_completion = calculate_profile_completion(worker)
             worker_details = get_worker_preferences(worker)
             years_of_experience = calculate_total_experience(worker)
             latest_assignment = WorkAssignment.objects.filter(worker=worker).order_by('-assigned_date').first()
-            worker.latest_status = latest_assignment.status if latest_assignment else None
+
+            worker_status_pref = UserPreference.objects.filter(user=worker, key='worker_status').first()
+            if worker_status_pref and (worker_status_pref.value or '').strip():
+                value = (worker_status_pref.value or '').strip().lower()
+                code = 'on_contract' if value in ['on_contract', 'on contract', 'contract'] else 'available'
+            else:
+                code = 'on_contract' if (latest_assignment and latest_assignment.status == 'confirmed') else 'available'
+
+            worker.latest_status = worker_profile_status_labels[code]
+            worker.latest_status_code = code
+
             visa_uploaded = UserDocuments.objects.filter(
                 user=worker, kind='visa'
             ).exclude(path__isnull=True).exclude(path__regex=r'^\s*$').exists()
@@ -238,6 +310,7 @@ class WorkerListView(View):
             worker.profile_completion_percentage = profile_completion
             worker.visa_uploaded = visa_uploaded
             worker.intro_video_uploaded = intro_video_uploaded
+            worker.total_months_of_h2a_experience = calculate_months_ofH2A_expererience(worker)
 
 
             worker_data.append({
@@ -259,10 +332,10 @@ class WorkerListView(View):
        
         worker_form = WorkerCreateForm()
         workers_length = len(workers)
-
+        send_message_form = SendMessageForm()
         context = {
             'workers': workers,
-            'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
+            'work_requests': WorkRequests.objects.filter().order_by(Lower('name')).prefetch_related('roles'),
             'form': form,
             'work_assign_form': work_assign_form,
             'filter_form': filter_form,
@@ -277,6 +350,8 @@ class WorkerListView(View):
                     ],
             'selected_work_request':WorkRequests.objects.filter(id=work_request_id).first() if work_request_id else None,
             'selected_role': Role.objects.filter(id=role_id).first() if role_id else None,
+            'send_message_form': send_message_form
+
         }
         return render(request, 'recruiting/workers/manage_tabs/tabs.html', context)
 
@@ -334,6 +409,7 @@ class FilteredWorkersAjaxView(View):
         for assignment in all_assignments:
             current_status = assignment.status
             worker = assignment.worker
+            
 
             if current_status in unique_worker_status_counts and worker:
                 unique_worker_status_counts[current_status].add(worker.id)
@@ -341,23 +417,20 @@ class FilteredWorkersAjaxView(View):
             if current_status == status and worker and worker.id not in seen_worker_ids:
                 seen_worker_ids.add(worker.id)
 
-                profile_completion = calculate_profile_completion(worker)
+                profile_completion = "Yes" if calculate_profile_completion(worker) == 100 else "No"
                 worker_details = get_worker_preferences(worker)
                 experience = calculate_total_experience(worker)
+                h2a_exp = calculate_months_ofH2A_expererience(worker)
+                has_visa = check_visa_status(worker)
 
                 workers.append({
                     'id': worker.id,
                     'name': f"{worker.first_name} {worker.last_name}" if worker.first_name and worker.last_name else worker.email,
-                    'email': worker.email,
-                    'profile_completion': profile_completion,
-                    'experience': experience,
-                    'town': worker_details.get('town', 'Not Provided'),
-                    'work_experience': worker_details.get('work_experience', 'Not Provided'),
-                    'english_proficiency': worker_details.get('english_proficiency', 'Not Provided'),
-                    'location_preference': worker_details.get('location_preference', 'Not Provided'),
-                    'work_request': assignment.work_request.name if assignment.work_request else None,
-                    'role': assignment.role.title if assignment.role else None,
-                    'status': assignment.status,
+                    'relExp': experience,
+                    'h2aExp': h2a_exp,
+                    'offer': find_worker_status(worker),
+                    'profile': profile_completion,
+                    "visa": has_visa
                 })
 
         status_counts = {k: len(v) for k, v in unique_worker_status_counts.items()}
@@ -384,13 +457,19 @@ class WorkerEditView(LoginRequiredMixin, View):
             self.update_user_preference(worker, 'levelOfProficiency', request.POST.get('english_proficiency'))
             self.update_user_preference(worker, 'locationPreference', request.POST.get('location_preference'))
 
-            # Optionally, update status (from WorkAssignment)
             latest_status = request.POST.get('latest_status')
             if latest_status:
                 assignment = WorkAssignment.objects.filter(worker=worker).order_by('-assigned_date').first()
                 if assignment:
                     assignment.status = latest_status
                     assignment.save()
+
+            worker_status = request.POST.get('worker_status')
+            if worker_status:
+                normalized = worker_status.strip().lower()
+                if normalized in ['available', 'on_contract', 'on contract', 'contract']:
+                    canonical = 'on_contract' if normalized in ['on_contract', 'on contract', 'contract'] else 'available'
+                    self.update_user_preference(worker, 'worker_status', canonical)
 
             messages.success(request, _('workersListWorker "%(worker_name)s" EditedSuccessfully.') % {'worker_name': worker.first_name})
             
@@ -421,6 +500,7 @@ class WorkerDeleteView(LoginRequiredMixin, View):
         worker = get_object_or_404(User, pk=pk, groups__name='worker')
 
         if user.groups.filter(name='admin').exists():
+            worker_name = f"{worker.first_name} {worker.last_name}"
             # Randomize identifiable fields
             random_suffix = get_random_string(8)
             worker.first_name = "Deleted"
@@ -433,7 +513,6 @@ class WorkerDeleteView(LoginRequiredMixin, View):
             worker.save()
 
             # Soft delete
-            worker_name = f"{worker.first_name} {worker.last_name}"
             worker.delete(user=user)  # Assuming this does a soft delete
 
             messages.success(request, _('workersListWorker "%(worker_name)s" DeletedSuccessfully') % {'worker_name': worker_name})
@@ -581,7 +660,7 @@ class GetWorkerDetailsView(View):
 
 
 
-class WorkerCreateView(View):
+class WorkerCreateView(LoginRequiredMixin, View):
     def post(self, request):
         form = WorkerCreateForm(request.POST)
         if form.is_valid():
@@ -596,7 +675,7 @@ class WorkerCreateView(View):
             return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
-class WorkerDetailsView(View):
+class WorkerDetailsView(LoginRequiredMixin,View):
     def get(self, request, pk):
         logger = AppLogger(log_file='logs/debug.log')
         worker = get_object_or_404(User, pk=pk)
@@ -670,7 +749,20 @@ class WorkerDetailsView(View):
             worker=worker
         ).order_by('-assigned_date').first()
 
-        current_status = latest_assignment.status if latest_assignment else 'No Assignment'
+        worker_status_pref = UserPreference.objects.filter(user=worker, key='worker_status').first()
+        if worker_status_pref and (worker_status_pref.value or '').strip():
+            value = (worker_status_pref.value or '').strip().lower()
+            code = 'on_contract' if value in ['on_contract', 'on contract', 'contract'] else 'available'
+        else:
+            code = 'on_contract' if (latest_assignment and latest_assignment.status == 'confirmed') else 'available'
+        current_status = worker_profile_status_labels[code]
+
+        worker.level_of_language_proficiency = preference_data.get('level')
+        worker_messages = UserNotification.objects.filter(user=worker.id, deleted_at__isnull=True).order_by('-created_at')
+        # Capitalise status for display
+        for msg in worker_messages:
+            if hasattr(msg, 'status'):
+                msg.status = str(msg.status).capitalize()
         context = {
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
             'worker': worker,
@@ -697,6 +789,7 @@ class WorkerDetailsView(View):
             'language_label': language_label,
             'experience_forms': experience_forms,
             'form': form,
+            'worker_messages': worker_messages,
             'breadcrumbs': [
                         {'name': _('workerDetailsHome'), 'url': reverse('index')},
                         {'name': _('workerDetailsWorkers'), 'url': reverse('recruiting_web:workers')},
@@ -705,7 +798,7 @@ class WorkerDetailsView(View):
         }
         return render(request, 'recruiting/workers/detail.html', context)
     
-class EditPreferenceView(View):
+class EditPreferenceView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         worker_id = kwargs.get("worker_id")  # ✅ Gets the user ID from the URL
         key = kwargs.get("key")              # ✅ Gets the preference key from the URL
@@ -887,7 +980,7 @@ class CreateWorkExperienceView(BaseCreateView):
 
 
 
-class WorkExperienceDetailsView(View):
+class WorkExperienceDetailsView(LoginRequiredMixin, View):
     def get(self, request, pk):
         base_url = request.build_absolute_uri('/')
         work_experience = get_object_or_404(UserWorkExperience, pk=pk)
@@ -902,83 +995,223 @@ class WorkExperienceDetailsView(View):
             'recruiting/workers/work_experience_detail.html', context)
 
 
-
-class ExportWorkerDetailsView(View):
+class ExportWorkerDetailsView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
+        status_param = request.GET.get('status')
+        work_request_id = request.GET.get('work_request')
+        role_id = request.GET.get('role')
+
+        status_alias_map = {
+            'shortlist': 'assigned',
+            'assigned': 'assigned',
+            'offersent': 'offersent',
+            'confirmed': 'confirmed',
+            'rejected': 'rejected',
+        }
+
+        statuses = []
+        if status_param:
+            parts = [s.strip().lower() for s in status_param.split(',') if s.strip()]
+            for s in parts:
+                mapped = status_alias_map.get(s, s)
+                if mapped in dict(WorkAssignment.STATUS_CHOICES):
+                    statuses.append(mapped)
+        use_assignment_filter = bool(work_request_id or role_id or statuses)
+
+        if use_assignment_filter:
+            if not statuses:
+                statuses = ['assigned', 'offersent', 'confirmed', 'rejected']
+            assignments = WorkAssignment.objects.filter(status__in=statuses)
+            if work_request_id:
+                assignments = assignments.filter(work_request_id=work_request_id)
+            if role_id:
+                assignments = assignments.filter(role_id=role_id)
+            worker_ids = assignments.values_list('worker_id', flat=True).distinct()
+            worker_users = User.objects.filter(id__in=worker_ids)
+        else:
+            worker_users = User.objects.filter(groups__name='worker')
+
+        excluded_keys = set([
+            'profileStepOne',
+            'documentsStepOne',
+            'levelOfProficiency',
+            'recordVideo',
+            'workPreferenceStepOne',
+            'workPreferenceStepTwo',
+            'englishProficiencyTwo',
+            'profile',
+            'documents',
+            'workPreferences',
+            'workExperience',
+            'workExperienceList',
+            'suitabilityForWork',
+            'englishProficiency',
+        ])
+
+        preference_keys = set()
+        document_kinds = set()
+
+        for user in worker_users:
+            try:
+                prefs = UserPreference.objects.filter(user=user)
+            except Exception:
+                prefs = []
+            for pref in prefs:
+                try:
+                    key = getattr(pref, 'key', None)
+                    if key and key not in excluded_keys:
+                        preference_keys.add(key)
+                except Exception:
+                    continue
+
+            try:
+                docs = UserDocuments.objects.filter(user=user)
+            except Exception:
+                docs = []
+            for doc in docs:
+                kind = getattr(doc, 'kind', None)
+                if kind:
+                    document_kinds.add(kind)
+
         latest = AggregatedContent.objects.latest('created_at')
         serializer = AggregatedContentSerializer(latest, many=False)
         aggregated_data = serializer.data
         content = aggregated_data.get('content', {})
         english_content = content.get('en', {})
 
-        work_preference_step_one = english_content.get('workPreferenceStepOne', {}).get('form_questions', [])
-        work_preference_step_two = english_content.get('workPreferenceStepTwo', {}).get('form_questions', [])
-        profile_step_one = english_content.get('profileStepOne', {}).get('form_questions', [])
-        profile_step_two = english_content.get('profileStepTwo', {}).get('form_questions', [])
-
-        profile_step_two_questions = profile_step_two
-        profile_step_two_page_title = english_content.get('profileStepTwo', {}).get('pageTitle', "")
-
-        english_proficiency_title = next(
-            (q.get("label") for q in profile_step_two_questions if q.get("key") == "englishProficiency"),
-            profile_step_two_page_title
-        ) or "What is your level of English proficiency?"
-
-        excluded_keys = {
-            "English Proficiency",
-            "profileStepOne",
-            "profile",
-            "workExperienceList",
-            "workExperience",
-            "documentsStepOne",
-            "documents",
-            "levelOfProficiency",
-            "englishProficiency",
-            "workPreferenceStepTwo",
-            "workPreferences",
-            "suitabilityForWork",
-            "workPreferenceStepOne",
-            "recordVideo",
-            "englishProficiencyTwo",
-        }
-
-        filtered_questions = [
-            q for q in (work_preference_step_one + work_preference_step_two + profile_step_one + profile_step_two)
-            if q['key'] not in excluded_keys
+        form_sections = [
+            'workPreferenceStepOne', 'workPreferenceStepTwo',
+            'profileStepOne', 'profileStepTwo'
         ]
 
-        preference_label_map = {q['key']: q.get('label', q['key']) for q in filtered_questions}
+        preference_label_map = {}
+        for section in form_sections:
+            section_data = english_content.get(section, {})
+            page_title = section_data.get('pageTitle', '')
+            questions = section_data.get('form_questions', []) or section_data.get('formQuestions', [])
+            for question in questions:
+                key = question.get('key')
+                label = question.get('label') or page_title or key
+                if key:
+                    preference_label_map[key] = label   
 
-        if "englishProficiency" in preference_label_map:
-            preference_label_map["englishProficiency"] = english_proficiency_title
+        base_fields = [
+            'user_id', 'email', 'curp','language', 'is_verified', 'created_at', 'updated_at',
+            'profile_completion', 'years_of_experience', 'months_of_h2a_experience',
+            'latest_status',
+        ]
 
-        data = []
-        worker_users = User.objects.filter(groups__name="worker")
+        doc_presence_fields = [f'has_doc_{k}' for k in sorted(document_kinds)]
 
+        ordered_pref_fields = sorted(preference_keys)
+        label_columns = [preference_label_map.get(k, k) for k in ordered_pref_fields]
+        columns = base_fields + label_columns + doc_presence_fields
+
+
+        rows = []
         for user in worker_users:
-            preferences = UserPreference.objects.filter(user=user)
-            worker_data = {}
+            row = {col: '' for col in columns}
 
-            for pref in preferences:
-                if pref.key not in excluded_keys:
-                    question_label = preference_label_map.get(pref.key, pref.key)
-                    worker_data[question_label] = pref.value
+            row['user_id'] = getattr(user, 'id', '')
+            row['email'] = getattr(user, 'email', '')
+            row['curp'] = getattr(user, 'curp', '')
+            row['first_name'] = getattr(user, 'first_name', '')
+            row['language'] = getattr(user, 'language', '')
+            row['is_verified'] = getattr(user, 'is_verified', False)
+            row['created_at'] = getattr(user, 'created_at', None)
+            row['updated_at'] = getattr(user, 'updated_at', None)
 
-            if worker_data:
-                data.append(worker_data)
+            try:
+                row['profile_completion'] = calculate_profile_completion(user)
+            except Exception:
+                row['profile_completion'] = ''
+            try:
+                row['years_of_experience'] = calculate_total_experience(user)
+            except Exception:
+                row['years_of_experience'] = ''
+            try:
+                row['months_of_h2a_experience'] = calculate_months_ofH2A_expererience(user)
+            except Exception:
+                row['months_of_h2a_experience'] = ''
 
-        df = pd.DataFrame(data)
+            code = 'available'
+            try:
+                prefs_for_status = UserPreference.objects.filter(user=user)
+            except Exception:
+                prefs_for_status = []
+            for p in prefs_for_status:
+                if getattr(p, 'key', '') == 'worker_status':
+                    val = (getattr(p, 'value', '') or '').strip().lower()
+                    if val in ['on_contract', 'on contract', 'contract']:
+                        code = 'on_contract'
+                    else:
+                        code = 'available'
+                    break
+            if code == 'available':
+                try:
+                    latest_assignment = WorkAssignment.objects.filter(worker=user).order_by('-assigned_date').first()
+                    if latest_assignment and getattr(latest_assignment, 'status', '') == 'confirmed':
+                        code = 'on_contract'
+                except Exception:
+                    pass
+                
+            row['latest_status'] = worker_profile_status_labels.get(code, code)
 
-        response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-        response["Content-Disposition"] = 'attachment; filename="worker_preferences.xlsx"'
+            pref_map = {}
+            try:
+                prefs = UserPreference.objects.filter(user=user)
+            except Exception:
+                prefs = []
+            for pref in prefs:
+                key = getattr(pref, 'key', None)
+                if key and key in ordered_pref_fields:
+                    pref_map[key] = getattr(pref, 'value', '')
+            for k in ordered_pref_fields:
+                label = preference_label_map.get(k, k)
+                row[label] = pref_map.get(k, '')
 
-        with pd.ExcelWriter(response, engine="openpyxl") as writer:
-            df.to_excel(writer, index=False, sheet_name="Worker Preferences")
+
+            try:
+                user_doc_kinds = set(
+                    d.kind for d in UserDocuments.objects.filter(user=user) if getattr(d, 'kind', None)
+                )
+            except Exception:
+                user_doc_kinds = set()
+            for k in document_kinds:
+                row[f'has_doc_{k}'] = 'Yes' if k in user_doc_kinds else 'No'
+
+            rows.append(row)
+            
+        rows_cleaned = []
+        for row in rows:
+            clean_row = {}
+            for k, v in row.items():
+                if isinstance(v, datetime):
+                    v = v.replace(tzinfo=None)
+                elif isinstance(v, Decimal):
+                    v = float(v)
+                elif isinstance(v, bool):
+                    v = str(v)
+                elif not isinstance(v, (str, int, float, datetime)):
+                    v = str(v) if v is not None else ''
+                clean_row[k] = v
+            rows_cleaned.append(clean_row)
+
+
+        capitalized_columns = [col.replace('_', ' ').upper() for col in columns]
+        df = pd.DataFrame(rows_cleaned, columns=columns)
+        df.columns = capitalized_columns
+
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="workers.xlsx"'
+
+        with pd.ExcelWriter(response, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False, sheet_name='Workers')
 
         return response
     
 
-class UploadDocumentsView(View):
+class UploadDocumentsView(LoginRequiredMixin, View):
     upload_paths = {
     'contract': 'uploads/visa',
     'passport': 'uploads/passports',
@@ -1021,7 +1254,7 @@ class UploadDocumentsView(View):
         messages.success(request, f"{text} {user.get_full_name() or user.email}.")
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
     
-class UploadLanguageProficiencyView(View):
+class UploadLanguageProficiencyView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         worker_id = request.POST.get("worker_id")
         language_level = request.POST.get("language_level")
@@ -1064,7 +1297,7 @@ class UploadLanguageProficiencyView(View):
         return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
 
 
-class UploadUserPreferenceView(View):
+class UploadUserPreferenceView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         worker_id = request.POST.get("worker_id")
         user = get_object_or_404(User, id=worker_id)
@@ -1102,7 +1335,7 @@ class UploadUserPreferenceView(View):
     
 
 
-class EditWorkExperienceView(View):
+class EditWorkExperienceView(LoginRequiredMixin, View):
     def post(self, request, pk):
         work_experience = get_object_or_404(UserWorkExperience, pk=pk)
         form = WorkExperienceCreateForm(request.POST, request.FILES, instance=work_experience)
@@ -1213,7 +1446,7 @@ class EditWorkExperienceView(View):
         messages.error(request, 'ThereWereSomeErrorsInTheForm.')
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': work_experience.user.pk}))
 
-class DeleteWorkExperienceView(View):
+class DeleteWorkExperienceView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         work_experience_id = kwargs.get('pk')
         work_experience = get_object_or_404(UserWorkExperience, pk=work_experience_id,deleted=False)
@@ -1239,7 +1472,7 @@ class DeleteWorkExperienceView(View):
         messages.success(request, "workExperienceDeletedSuccessfully.")
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
     
-class EditUserPreferenceView(View):
+class EditUserPreferenceView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         worker_id = kwargs.get("worker_id")
         user = get_object_or_404(User, id=worker_id)
@@ -1304,7 +1537,7 @@ class EditUserPreferenceView(View):
         return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
 
 
-class EditLanguageProficiencyView(View):
+class EditLanguageProficiencyView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         worker_id = kwargs.get("worker_id") or request.POST.get("worker_id")
         language_level = request.POST.get("language_level")
@@ -1351,7 +1584,7 @@ class EditLanguageProficiencyView(View):
         return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
     
 
-class EditDocumentsView(View):
+class EditDocumentsView(LoginRequiredMixin, View):
     upload_paths = {
         'passport': 'uploads/passports',
         'profile_picture': 'uploads/profiles',
@@ -1390,7 +1623,7 @@ class EditDocumentsView(View):
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
 
 
-class DeleteAllWorkerInfoView(View):
+class DeleteAllWorkerInfoView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         worker_id = kwargs.get("worker_id")
         user = get_object_or_404(User, pk=worker_id)

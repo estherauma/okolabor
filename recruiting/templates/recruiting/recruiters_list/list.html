@@ -159,7 +159,7 @@
                 <td>{{ recruiter.email }}</td>
                 <td>{{ recruiter.address }}, {{ recruiter.country }}</td>
                 <td>{{ recruiter.phone }}</td>
-                <td>
+                <td style="white-space: break-spaces;">
                   {% if recruiter.employers %}
                   {% for employer_name in recruiter.employers %}
                   {{ employer_name }}{% if not forloop.last %}, {% endif %}
@@ -394,6 +394,15 @@
 <script src="{% static ''%}assets/js/employer_search.js"></script>
 <script src="{% static ''%}assets/js/table-sorting.js"></script>
 <script src="{% static ''%}assets/js/assign_recruiter.js"></script>
+<!-- Show Add Recruiter Modal if there are form errors -->
+{% if employer_form.errors %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var modal = new bootstrap.Modal(document.getElementById('addRecruiterModal'));
+    modal.show();
+  });
+</script>
+{% endif %}
 <script>
   function applyRecruiterColumnVisibilityFromStorage(table) {
     $.fn.dataTable.ext.errMode = 'none';

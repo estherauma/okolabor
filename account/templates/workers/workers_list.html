@@ -13,7 +13,11 @@
   <div class="card-body">
     <!-- Custom Toolbar -->
     <div class="d-flex align-items-center justify-content-between flex-wrap mb-3 custom-toolbar">
-      <div></div>
+      <div>
+        <button class="btn dark-green-button ms-2 mb-2" data-bs-toggle="modal" data-bs-backdrop="false" data-bs-target="#AddWorkerModal">
+          {% translate 'workersListAddWorker'%}
+        </button>
+      </div>
       <div class="flex-grow-1 d-flex justify-content-center">
         <div id="customSearchContainer" style="width: 100%; max-width: 400px;"></div>
       </div>
@@ -42,12 +46,12 @@
             <tbody>
               {% for user in workers %}
               <tr class="green-color text-start">
-                <td>{{ user.curp }}</td>
+                <td> <a href="{% url 'recruiting_web:worker_detail' user.id %}">{{ user.curp }}</a></td>
                 <td>{{ user.email }}</td>
                 <td>{{ user.first_name }} {{ user.last_name }}</td>
                 <td>{{ user.created_at }}</td>
-                <td>{{ user.is_active|yesno:_("active,inactive") }}</td>
-                <td class="text-center">
+                <td>{{ user.is_active|yesno:_("Active,Inactive") }}</td>
+                <td class="text-center" style="max-width: 200px;">
                   <button
                      type="button"
                      class="btn btn-sm yellow-button"
@@ -96,7 +100,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'workersListClose' %}"></button>
         </div>
         <div class="modal-body">
-          {% translate 'webCommonConfirmDelete' %} <strong>{{ user.first_name }} {{ user.last_name }}</strong>
+          {% translate 'workerListAreYouSureYouWantToDelete' %} <strong>{{ user.first_name }} {{ user.last_name }}?</strong>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn grey-button" data-bs-dismiss="modal">

@@ -1,5 +1,6 @@
 # utils.py
-from account.models import UserPreference, User
+from account.models import UserDocuments, UserPreference, User
+from common.logger import AppLogger
 from recruiting.models import WorkAssignment
 from django.conf import settings
 from django.contrib import messages
@@ -32,16 +33,14 @@ def calculate_profile_completion(user):
 
 def get_worker_preferences(user):
         """Fetch town, work experience, proficiency, and location preference from UserPreference"""
-        preference_keys = ["town", "workExperienceList", "english_proficiency", "locationPreference"]
-
+        preference_keys = ["Town", "workExperienceList", "level", "whereYouWantToWork"]
         preferences = UserPreference.objects.filter(user=user, key__in=preference_keys).values("key", "value")
         worker_details = {pref["key"]: pref["value"] for pref in preferences}
-
         return {
-            "town": worker_details.get("town", "Not Provided"),
+            "town": worker_details.get("Town"),
             "work_experience": worker_details.get("workExperienceList", "Not Provided"),
-            "english_proficiency": worker_details.get("english_proficiency", "Not Provided"),
-            "location_preference": worker_details.get("locationPreference", "Not Provided"),
+            "english_proficiency": worker_details.get("level", "Not Provided"),
+            "location_preference": worker_details.get("whereYouWantToWork", "Not Provided"),
         }
 
 
@@ -109,18 +108,50 @@ def get_sector_choices():
         return []
     
 def calculate_total_experience(user):
+    # Calculate total work experience in years based on filters. 
+    # Right now we aren't factoring in filters, just summing all experiences.
     experiences = user.work_experiences.all()
-    total_days = 0
+    total_months = 0
     for exp in experiences:
-        if not exp.start_date:
-            continue
-        end_date = exp.end_date if exp.end_date else (date.today() if exp.currently_working else None)
-        if end_date:
-            total_days += (end_date - exp.start_date).days
-    return round(total_days / 365, 2)
+        value = exp.approx_total_months_worked
+        if isinstance(value, (int, float)):
+            total_months += value
+        elif isinstance(value, str):
+            try:
+                total_months += float(value)
+            except ValueError:
+                pass
+    return round(total_months)
+
+def calculate_months_ofH2A_expererience(user):
+    experiences = user.work_experiences.filter(work_under_h2a_in_usa='No')
+    total_months = 0
+    for exp in experiences:
+        value = exp.approx_total_months_worked
+        if isinstance(value, (int, float)):
+            total_months += value
+        elif isinstance(value, str):
+            try:
+                total_months += float(value)
+            except ValueError:
+                pass
+    return round(total_months)
 
 
+def check_visa_status(user):
+    visa_uploaded = UserDocuments.objects.filter(
+        user=user, kind='visa'
+     ).exclude(path__isnull=True).exclude(path__regex=r'^\s*$').exists()
+    return "Yes" if visa_uploaded else "No"
 
+def find_worker_status(worker):
+    latest_assignment = WorkAssignment.objects.filter(worker=worker).order_by('-assigned_date').first()
+    if latest_assignment:
+        if latest_assignment.status == 'confirmed':
+            return 'On Contract'
+        else:
+            return 'Available'
+    return 'Available'
 
 @transaction.atomic
 def duplicate_work_request(original_request, new_name, new_start_date, new_end_date):

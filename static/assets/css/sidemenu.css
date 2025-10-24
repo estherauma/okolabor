@@ -17,15 +17,8 @@
   .app.sidenav-toggled .app-sidebar__overlay {
     visibility: hidden;
   }
-  .app-sidebar {
-    padding-top: 55px;
-  }
+ 
   .side-header {
-    width: 270px;
-    left: 0;
-    right: 0;
-    top: 0;
-    position: fixed;
     z-index: 99;
     background: #fff;
   }
@@ -378,6 +371,10 @@
 }
 
 .app-sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100vh;
   position: fixed;
   top: 0;
   bottom: 0;
@@ -483,8 +480,8 @@
 }
 
 .side-menu {
+  flex: 1 1 auto;
   margin-bottom: 0px;
-  margin-top:40px;
   padding: 0 15px 0 0px;
 }
 
@@ -997,10 +994,10 @@
   display: flex;
   /* border-bottom: 1px solid #eaedf1;
   border-right: 1px solid #eaedf1; */
-  padding: 19px 17px;
+  padding-top: 40px;
+  padding-bottom: 20px;
   -webkit-transition: left 0.2s ease, width 0.2s ease;
   transition: left 0.2s ease, width 0.2s ease;
-  height: 75px;
   background-color: #7DBF96;
 }
 
@@ -1254,9 +1251,10 @@
 }
 
 .sidebar-logo {
-  position: absolute;
-  bottom: -17%; /* Align to the bottom */
-  left: 20%; /* Center horizontally relative to the parent */
+  margin-top: auto;
+  margin-bottom: 24px; 
+  margin-left: auto;
+  margin-right: auto;
+  position: static; 
   transform: translateX(-20%); /* Adjust for the offset of the image's width */
 }
-/*# sourceMappingURL=sidemenu.css.map */

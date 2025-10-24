@@ -1,55 +1,26 @@
 {% load i18n %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% translate "inviteEmailDocument" %}</title>
-</head>
-<body style="margin: 0; padding: 0; background-color: #7DBF96; font-family: Arial, sans-serif; color: #ffffff;">
+<p>
+  {% translate "inviteEmailHello" %} {{ first_name }},
+</p>
 
-  <!-- Centered container -->
-  <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px; background-color: #ffffff; color: #333333; border-radius: 8px;">
+<p>
+  {% translate "inviteEmailYouHaveBeenInvitedToJoinOurPlatformAsARecruiter" %}
+</p>
 
-    <!-- Logo -->
-    <div style="text-align: center; margin-bottom: 30px;">
-      <img src="{{ site_url }}{% static 'assets/images/login/logo.svg' %}" alt="Okolabor" style="max-width: 200px; height: auto;" />
-    </div>
+<p >
+  {% translate "inviteEmailClickTheLinkBelowToAcceptYourInvitationAndUpdateYourPassword" %}:
+</p>
 
-    <!-- Greeting -->
-    <p style="font-size: 16px;">
-      {% translate "inviteEmailHello" %} {{ first_name }},
-    </p>
+<p>
+  <a href="{{ invite_link }}" >
+    {% translate "inviteEmailUpdateYourPassword" %}
+  </a>
+</p>
 
-    <!-- Message Body -->
-    <p style="font-size: 16px; line-height: 1.5;">
-      {% translate "inviteEmailYouHaveBeenInvitedToJoinOurPlatformAsARecruiter" %}
-    </p>
+<!-- Closing -->
+<p>
+  {% translate "inviteEmailBestRegards" %}<br/>
+  {% translate "inviteEmailYourTeam" %}
+</p>
 
-    <p style="font-size: 16px; line-height: 1.5;">
-      {% translate "inviteEmailClickTheLinkBelowToAcceptYourInvitationAndUpdateYourPassword" %}:
-    </p>
-
-    <!-- Call-to-Action Button -->
-    <p style="text-align: center; margin: 30px 0;">
-      <a href="{{ invite_link }}" style="background-color: #7DBF96; color: #ffffff; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 4px; display: inline-block;">
-        {% translate "inviteEmailUpdateYourPassword" %}
-      </a>
-    </p>
-
-    <!-- Closing -->
-    <p style="font-size: 16px; line-height: 1.5;">
-      {% translate "inviteEmailBestRegards" %}<br/>
-      {% translate "inviteEmailYourTeam" %}
-    </p>
-
-  </div>
-
-  <!-- Fallback background (some clients show outer body) -->
-  <div style="text-align: center; font-size: 12px; color: #ffffff; margin-top: 20px;">
-    © {{ current_year }} Okolabor
-  </div>
-
-</body>
-</html>

@@ -88,14 +88,6 @@ class User(AbstractBaseUser, AuditableModel, PermissionsMixin):
     objects = UserManager()
     all_objects = models.Manager()
     
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=['curp'],
-                name='unique_curp_not_null',
-                condition=~Q(curp=None)
-            )
-        ]
 
     @property
     def is_admin(self):
@@ -256,9 +248,17 @@ class UserNotification(AuditableModel):
     message = models.TextField(null=False, blank=False)
     status = models.CharField(max_length=256, default='unread')
     read_at = models.DateTimeField(null=True, blank=True)
+    work_assignment = models.ForeignKey('recruiting.WorkAssignment', on_delete=models.SET_NULL, null=True, blank=True, related_name='notifications')
+    batch_id = models.CharField(max_length=64, null=True, blank=True, db_index=True, help_text='Batch identifier for grouping notifications sent together')
+
+
+class MessageRecipient(AuditableModel):
+    notification = models.ForeignKey(UserNotification, on_delete=models.CASCADE, related_name='recipients')
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
 
     def __str__(self):
-        return f'{self.user.curp} - {self.title} - {self.status}'
+        return f"{self.recipient.get_full_name() or self.recipient.email}"
+
 
 
 class UserActivityLog(AuditableModel):

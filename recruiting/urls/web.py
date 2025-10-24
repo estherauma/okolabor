@@ -2,32 +2,45 @@
 from django.urls import path
 
 from recruiting.views.web import (
-    EmployerCreateView, EmployerDetailView,
-    EmployerListView, OkoMessageCreateView, OkoMessageListView, 
-    RecruiterTodoView, RoleDeductionsCreateView, RoleEmpLocationCreateView,
-    RoleHoursCreateView, RoleHousingCreateView, RoleMealsCreateView,
-    RoleQualificationsCreateView, RoleWagesCreateView, WorkRequestCreateView,
-    WorkRequestDetailView, WorkRequestRoleCreateView, WorkRequestsListView,
-    OkoMessageDetailsView,RecruiterListView,AddRecruiterToEmployerView,
-    RemoveRecruiterFromEmployerView,AccessDeniedView,
-    AssignRecruiterView,SendRecruiterEmailView,
-    AcceptRecruiterView,RejectRecruiterView,
-    RemoveWorkerFromAssignmentView,UpdateStatusView,
-    ContactWorkRequestsView,AssignEmployerContactView,
-    ShowWorkerDetails,AddToShortlistView,
-    UpdateWorkerStatusView,CancelOfferView,RecruiterListViewInAdmin,
-    AssignEmployersToRecruiterOrgView,SummaryViews,RecruiterDetailView,
-    GetRolesView,CopyWorkersView,EmployerDeleteView,EmployerEditView, 
-    RecruiterDeleteView,RecruiterEditView,
-    update_employer_recruiter_status,EmployerRecruiterOrgStatusListView,
-    WorkRequestEditView,WorkRequestDeleteView,
-    EmployerRecruiterOrgLinkDeleteView,DeleteAssignedOrganizationView,
-    DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditEmploymentLocationView,DeleteEmploymentLocationView,EditHousingInformationView,DeleteHousingInformationView,EditMealProvisionView,DeleteMealProvisionView,
-    DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditEmploymentLocationView,DeleteEmploymentLocationView,
-    DeleteEmployerOrganizationFromRecruiterView,EditRoleView,DeleteRoleView,EditRoleHoursView,DeleteRoleHoursView,EditRoleWagesView,DeleteRoleWagesView,EditRoleQualificationView,DeleteQualificationView,DeductionEditView,DeleteDeductionView,OfferSendWorkerView,InvitationResponseView
+     EmployerCreateView, EmployerDetailView,
+     EmployerListView, InvalidCurpsView, OkoMessageCreateView, OkoMessageListView,
+     RecruiterTodoView, RoleDeductionsCreateView, RoleEmpLocationCreateView,
+     RoleHoursCreateView, RoleHousingCreateView, RoleMealsCreateView,
+     RoleQualificationsCreateView, RoleWagesCreateView, WorkRequestCreateView,
+     WorkRequestDetailView, WorkRequestRoleCreateView, WorkRequestsListView,
+     OkoMessageDetailsView, RecruiterListView, AddRecruiterToEmployerView,
+     RemoveRecruiterFromEmployerView, AccessDeniedView,
+     AssignRecruiterView, SendRecruiterEmailView,
+     AcceptRecruiterView, RejectRecruiterView,
+     RemoveWorkerFromAssignmentView, UpdateStatusView,
+     ContactWorkRequestsView, AssignEmployerContactView,
+     ShowWorkerDetails, AddToShortlistView,
+     UpdateWorkerStatusView, CancelOfferView, RecruiterListViewInAdmin,
+     AssignEmployersToRecruiterOrgView, SummaryViews, RecruiterDetailView,
+     GetRolesView, CopyWorkersView, EmployerDeleteView, EmployerEditView,
+     RecruiterDeleteView, RecruiterEditView,
+     update_employer_recruiter_status, EmployerRecruiterOrgStatusListView,
+     WorkRequestEditView, WorkRequestDeleteView,
+     EmployerRecruiterOrgLinkDeleteView, DeleteAssignedOrganizationView,
+     DeleteEmployerOrganizationFromRecruiterView, EditRoleView, DeleteRoleView,
+     EditEmploymentLocationView, DeleteEmploymentLocationView,
+     EditHousingInformationView, DeleteHousingInformationView,
+     EditMealProvisionView, DeleteMealProvisionView,
+     EditRoleHoursView, DeleteRoleHoursView, EditRoleWagesView,
+     DeleteRoleWagesView, EditRoleQualificationView, DeleteQualificationView,
+     DeductionEditView, DeleteDeductionView,
+     OfferSendWorkerView, InvitationResponseView, WorkRequestCopyView,
+     SendWorkRequestMessageView, WorkRequestMessagesView
 )
 from recruiting.views.workers import (
-     WorkerCreateView, WorkerDetailsView, WorkerListView,AssignWorkerView,GetWorkerDetailsView,GetRolesForWorkRequestView,EditWorkExperienceView,DeleteWorkExperienceView,WorkerEditView,WorkerDeleteView,EditUserPreferenceView,EditLanguageProficiencyView,EditDocumentsView,DeleteAllWorkerInfoView,WorkerEditView,WorkerDeleteView,FilteredWorkersAjaxView,SendOfferView,CreateWorkExperienceView, WorkExperienceDetailsView,ExportWorkerDetailsView,UploadDocumentsView,UploadLanguageProficiencyView,UploadUserPreferenceView
+     WorkerCreateView, WorkerDetailsView, WorkerListView, AssignWorkerView,
+     GetWorkerDetailsView, GetRolesForWorkRequestView,
+     EditWorkExperienceView, DeleteWorkExperienceView, WorkerEditView,
+     WorkerDeleteView, EditUserPreferenceView, EditLanguageProficiencyView,
+     EditDocumentsView, DeleteAllWorkerInfoView,
+     FilteredWorkersAjaxView, SendOfferView, CreateWorkExperienceView,
+     WorkExperienceDetailsView, ExportWorkerDetailsView, UploadDocumentsView,
+     UploadLanguageProficiencyView, UploadUserPreferenceView,
 )
 
 
@@ -55,10 +68,12 @@ urlpatterns = [
     path('job-orders/create/',
          WorkRequestCreateView.as_view(),
          name='workrequest_create'),
-     path('job-order/edit/<str:pk>/', 
+    path('job-order/edit/<str:pk>/', 
          WorkRequestEditView.as_view(),
          name='workrequest_edit'),
-
+    path('job-order/copy/<str:pk>/', 
+         WorkRequestCopyView.as_view(),
+         name='workrequest_copy'),
     path('job-order/delete/<str:pk>/',
          WorkRequestDeleteView.as_view(), 
          name='workrequest_delete'),
@@ -142,12 +157,16 @@ urlpatterns = [
     path('recruiter/todo/',
          RecruiterTodoView.as_view(),
          name='recruiter_todo'),
-    path('recruiter/messages/',
-         OkoMessageListView.as_view(),
-         name='recruiter_messages'),
-    path('recruiter/create-message/',
+     path('messages/', OkoMessageListView.as_view(), name='recruiter_messages'),
+     # Work Request Messages page (list messages sent via SendWorkRequestMessageView)
+     path('work-request/messages/', WorkRequestMessagesView.as_view(), name='work_request_messages'),
+    path('create-message/',
          OkoMessageCreateView.as_view(),
          name='recruiter_create_message'
+         ),
+    path('send-message/',
+         SendWorkRequestMessageView.as_view(),
+         name='workrequest_send_message'
          ),
     path('recruiter/create-worker',
          WorkerCreateView.as_view(),
@@ -289,6 +308,5 @@ urlpatterns = [
      path('qualification/<str:pk>/edit/', EditRoleQualificationView.as_view(), name='edit-role-qualification'),
      path('qualification/<str:pk>/delete/', DeleteQualificationView.as_view(), name='delete-role-qualification'),
      path('work-request/delete/<int:pk>/', WorkRequestDeleteView.as_view(), name='work_request_delete'),
-
-
+     path('invalid-curps/', InvalidCurpsView.as_view(), name='invalid_curps'),
 ]

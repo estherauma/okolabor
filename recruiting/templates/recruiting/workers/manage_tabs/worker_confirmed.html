@@ -16,10 +16,6 @@
       <div class="modal-body">
         <form id="column-settings-form">
           <div class="form-check">
-            <input class="form-check-input column-toggle" type="checkbox" value="1" checked id="col-name">
-            <label class="form-check-label" for="col-name">{% translate "workersListName" %}</label>
-          </div>
-          <div class="form-check">
             <input class="form-check-input column-toggle" type="checkbox" value="2" checked id="col-town">
             <label class="form-check-label" for="col-town">{% translate "workersListTown" %}</label>
           </div>
@@ -68,6 +64,10 @@
             <div>
                 <div>
                   <button id="cancel-confirmed-btn" class="btn dark-green-button">{% translate "workRequestAddWorkerCancelOffer" %}</button>
+                  <button id="send-message-confirmed" class="btn dark-green-button ms-3">{% translate "workerDetailsSendMessage" %}</button>
+                  <button id="export-confirmed" class="btn dark-green-button ms-3">{% translate 'webCommonExport'%}</button>
+                  <button id="view-messages-confirmed" class="btn dark-green-button ms-3" data-messages-url="{% url 'recruiting_web:work_request_messages' %}" >{% translate 'messagesMessages'%}</button>
+                 {% include 'recruiting/messages/send-workrequest-message.html' with form=send_message_form status='confirmed' %}
                 </div>
             </div>
             <div class="flex-grow-1 d-flex justify-content-center">
@@ -86,14 +86,11 @@
                 <tr>
                   <th><input type="checkbox" id="select-all-confirmed"></th>
                   <th class="col-name">{% translate "workersListName" %}</th>
-                  <th class="col-town">{% translate "workersListTown" %}</th>
-                  <th class="col-profile">{% translate "workersListProfileCompletion" %}</th>
-                  <th class="col-experience">{% translate "workersListExperience" %}</th>
-                  <th class="col-english">{% translate "workersListEnglishProficiency" %}</th>
-                  <th class="col-location">{% translate "workersListLocationPreference" %}</th>
-                  <th class="col-location">{% translate "workersListWorkRequest" %}</th>
-                  <th class="col-location">{% translate "workersWorkRequestRole" %}</th>
-                  <th class="col-offer">{% translate "workersListOfferStatus" %}</th>
+                  <th class="col-rel-exp" style="max-width: 70px; white-space: break-spaces;">{% translate "workersListMonthsOfRelevantExperience" %}</th>
+                  <th class="col-h2a-exp" style="max-width: 70px; white-space: break-spaces;">{% translate "workersListMonthsOfH2AExperience" %}</span></th>
+                  <th class="col-offer" style="max-width: 70px; white-space: break-spaces;">{% translate "workersListOfferStatus" %}</th>
+                  <th class="col-profile" style="max-width: 70px; white-space: break-spaces;">{% translate "workersListFullyComplete" %}</th>
+                  <th class="col-visa" style="max-width: 70px; white-space: break-spaces;">{% translate "workersListVisaUploaded" %}</th>
                 </tr>
               </thead>
               <tbody>
@@ -118,6 +115,8 @@
 <script src="{% static 'assets/js/copy-confirmed-workers.js' %}"></script>
 <script src="{% static 'assets/js/cancel-offer.js' %}"></script>
 <script src="{% static 'assets/js/tablecolumns_hiding.js' %}"></script>
+<script src="{% static 'assets/js/send-message.js' %}"></script>
+
 <script>
   $(document).ready(function () {
     $.fn.dataTable.ext.errMode = 'none';
@@ -127,6 +126,15 @@
             columnDefs: [{ targets: 0, orderable: false }],
             paging: true,
             info: true,
+    });
+
+    $('#export-confirmed').on('click', function () {
+      const wr = $('#modal_work_request').val();
+      const role = $('#modal_role').val();
+      let url = "{% url 'recruiting_web:export-workers' %}?status=confirmed";
+      if (wr) url += `&work_request=${wr}`;
+      if (role) url += `&role=${role}`;
+      window.location.href = url;
     });
 
     // Move search input
@@ -141,12 +149,20 @@
     $('#customConfirmedLengthContainer').append($('#basic-datatable-confirmed_length'));
 
     // Add settings icon
-    const settingsBtn = `
-      <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#columnConfirmedSettingsModal">
-        <i class="fa fa-cog" aria-hidden="true" style="font-size: 1.3rem; color: #9A9898;"></i>
-      </button>
-    `;
-    $('#customConfirmedSettingsContainer').html(settingsBtn);
+    // const settingsBtn = `
+    //   <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#columnConfirmedSettingsModal">
+    //     <i class="fa fa-cog" aria-hidden="true" style="font-size: 1.3rem; color: #9A9898;"></i>
+    //   </button>
+    // `;
+    // $('#customConfirmedSettingsContainer').html(settingsBtn);
+    handleSendWorkRequestMessage({
+      triggerSelector: '#send-message-confirmed',
+      workRequestSelector: '#modal_work_request',
+      roleSelector: '#modal_role',
+      modalId: '#sendMessageModal-confirmed',
+      sendMessageFormSelector: '#sendMessageForm-confirmed',
+      work_assignment_status: 'confirmed'
+    });
   });
 </script>
 

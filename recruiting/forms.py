@@ -2,11 +2,11 @@
 # create modelform for Employer model
 from django import forms
 from django.utils.translation import gettext_lazy as _ 
-from account.models import User
+from account.models import User, UserNotification
 from recruiting.models import (
     Deduction, Organization, Hours, OkoMessage, Qualification,
     EmploymentLocation, HousingInformation, MealProvision,
-    Role, Wages, WorkRequests,WorkAssignment
+    Role, Wages, WorkRequests, WorkAssignment
 )
 from django.core.exceptions import ValidationError
 from account.models import (UserWorkExperience)
@@ -15,6 +15,7 @@ import os
 import json
 from django.utils.translation import get_language
 from django.conf import settings
+
 
 class EmployerForm(forms.ModelForm):
     class Meta:
@@ -123,11 +124,16 @@ class WorkerAssignmentForm(forms.ModelForm):
         }
 
 
-from django import forms
-from django.forms import CheckboxSelectMultiple
-from .models import Role
-
 class WorkRequestRoleForm(forms.ModelForm):
+    # Define dynamic fields mapping as a class variable
+    dynamic_fields_by_type = {
+        "animals": ["animal_types", "responsibilities_types"],
+        "crop_and_horticulture": ["crop_types", "crop_job_types"],
+        "mechanics": ["mechanic_job_types"],
+        "worker_supervision__management": ["supervision_jobs_types"],
+        "licensed_vehicle_operation": ["licensed_vehicle_operation_types"],
+    }
+
     work_type = forms.ChoiceField(
         choices=[],
         widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_type_sector'}),
@@ -137,31 +143,31 @@ class WorkRequestRoleForm(forms.ModelForm):
     # Optional dynamic fields using checkboxes now
     animal_types = forms.MultipleChoiceField(
         required=False,
-        widget=CheckboxSelectMultiple(attrs={'class': 'form-check-input', 'id': 'id_animal_types'}),
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_animal_types'}),
     )
     crop_types = forms.MultipleChoiceField(
         required=False,
-        widget=CheckboxSelectMultiple(attrs={'class': 'form-check-input', 'id': 'id_crop_types'}),
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_crop_types'}),
     )
     crop_job_types = forms.MultipleChoiceField(
         required=False,
-        widget=CheckboxSelectMultiple(attrs={'class': 'form-check-input', 'id': 'id_crop_job_types'}),
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_crop_job_types'}),
     )
     mechanic_job_types = forms.MultipleChoiceField(
         required=False,
-        widget=CheckboxSelectMultiple(attrs={'class': 'form-check-input', 'id': 'id_mechanic_job_types'}),
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_mechanic_job_types'}),
     )
     supervision_jobs_types = forms.MultipleChoiceField(
         required=False,
-        widget=CheckboxSelectMultiple(attrs={'class': 'form-check-input', 'id': 'id_supervision_jobs_types'}),
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_supervision_jobs_types'}),
     )
     licensed_vehicle_operation_types = forms.MultipleChoiceField(
         required=False,
-        widget=CheckboxSelectMultiple(attrs={'class': 'form-check-input', 'id': 'licensed_vehicle_operation_types'}),
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_licensed_vehicle_operation_types'}),
     )
     responsibilities_types = forms.MultipleChoiceField(
         required=False,
-        widget=CheckboxSelectMultiple(attrs={'class': 'form-check-input', 'id': 'id_responsibilities_types'}),
+        widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_responsibilities_types'}),
     )
 
     class Meta:
@@ -246,6 +252,15 @@ class WorkRequestRoleForm(forms.ModelForm):
             if field_name in self.fields:
                 self.fields[field_name].choices = config['choices']()
                 self.fields[field_name].label = config['label']
+
+        # Set initial values for work_type_detail if it's an edit operation  
+        if self.instance and self.instance.pk and self.instance.work_type_detail:
+            work_type = self.instance.work_type
+            if work_type in self.dynamic_fields_by_type:
+                # Set initial values for the fields from work_type_detail
+                for field in self.dynamic_fields_by_type.get(work_type, []):
+                    if field in self.instance.work_type_detail:
+                        self.initial[field] = self.instance.work_type_detail[field]
                 
         self.fields['work_request'].queryset = WorkRequests.objects.order_by('name')
 
@@ -258,16 +273,8 @@ class WorkRequestRoleForm(forms.ModelForm):
         def strip_list(field_name):
             return [item.strip() for item in request.getlist(field_name) if item.strip()]
 
-        dynamic_fields_by_type = {
-            "animals": ["animal_types", "responsibilities_types"],
-            "crop_and_horticulture": ["crop_types", "crop_job_types"],
-            "mechanics": ["mechanic_job_types"],
-            "worker_supervision__management": ["supervision_jobs_types"],
-            "licensed_vehicle_operation": ["licensed_vehicle_operation_types"],
-        }
-
-        if work_type in dynamic_fields_by_type:
-            for field in dynamic_fields_by_type[work_type]:
+        if work_type in self.dynamic_fields_by_type:
+            for field in self.dynamic_fields_by_type[work_type]:
                 work_type_detail[field] = strip_list(field)
 
         cleaned_data["work_type"] = work_type
@@ -387,7 +394,7 @@ class RoleWagesForm(forms.ModelForm):
                 'class': 'form-control',
                 'placeholder': '$'
             }),
-            'piece_rate_offerings_type': forms.Select(attrs={
+            'piece_rate_offerings_type': forms.TextInput(attrs={
                 'class': 'form-control',
             }),
             'frequency_of_pay': forms.Select(attrs={
@@ -447,16 +454,17 @@ class RoleDeductionForm(forms.ModelForm):
 
 class RoleQualificationForm(forms.ModelForm):
     YES_NO_CHOICES = [
-        (True, _('Yes')),
-        (False, _('No')),
+        ('Yes', _('Yes')),
+        ('No', _('No')),
     ]
 
     training_required = forms.ChoiceField(
         choices=YES_NO_CHOICES,
-        widget=forms.RadioSelect(attrs={'class': 'form-check-input'}),  # Use RadioSelect here
+        widget=forms.RadioSelect(attrs={'class': 'form-check-input'}),
         label=_('roleQualificationTrainingRequired'),
         required=False
     )
+    
     class Meta:
         model = Qualification
         fields = [
@@ -512,9 +520,6 @@ class RoleQualificationForm(forms.ModelForm):
             'number_of_months_experience_required': forms.NumberInput(attrs={
                 'class': 'form-control',
             }),
-            'training_required': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
             'number_of_months_training_required': forms.NumberInput(attrs={
                 'class': 'form-control',
             }),
@@ -561,6 +566,14 @@ class RoleQualificationForm(forms.ModelForm):
             for field_name in self.fields:
                 if field_name != 'role':
                     self.fields[field_name].required = False
+            
+            # Set initial value for training_required when editing
+            if self.instance and self.instance.pk:
+                training_value = self.instance.training_required
+                if training_value:
+                    self.initial['training_required'] = training_value
+                else:
+                    self.initial['training_required'] = 'No'
 
 
 class RoleEmploymentLocationForm(forms.ModelForm):
@@ -1027,3 +1040,25 @@ class WorkExperienceCreateForm(forms.ModelForm):
             'supervisor_email': forms.EmailInput(attrs={'class': 'form-control'}),
             'visa_type': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+        
+class SendMessageForm(forms.ModelForm):
+    class Meta:
+        model = UserNotification
+        fields = ['title', 'message']
+        labels = {
+            'title': _("title"),
+            'message': _("message"),
+        }
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'message': forms.Textarea(attrs={'class': 'form-control'}),
+        }
+
+    def save(self, commit=True, user=None):
+        instance = super().save(commit=False)
+        if user is not None:
+            instance.user = user
+        if commit:
+            instance.save()
+        return instance

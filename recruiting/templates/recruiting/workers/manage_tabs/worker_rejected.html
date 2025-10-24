@@ -17,14 +17,13 @@
             <div class="form-check">
               <input class="form-check-input column-toggle" type="checkbox" value="{{ i }}" checked id="col-{{ i }}">
               <label class="form-check-label" for="col-{{ i }}">
-                {% if i == "1" %}{% translate "workersListName" %}
-                {% elif i == "2" %}{% translate "workersListTown" %}
-                {% elif i == "3" %}{% translate "workersListProfileCompletion" %}
-                {% elif i == "4" %}{% translate "workersListExperience" %}
-                {% elif i == "5" %}{% translate "workersListEnglishProficiency" %}
-                {% elif i == "6" %}{% translate "workersListLocationPreference" %}
-                {% elif i == "7" %}{% translate "workersListOfferStatus" %}
-                {% elif i == "8" %}{% translate "workersListActions" %}
+                {% if i == "1" %}{% translate "workersListTown" %}
+                {% elif i == "2" %}{% translate "workersListProfileCompletion" %}
+                {% elif i == "3" %}{% translate "workersListExperience" %}
+                {% elif i == "4" %}{% translate "workersListEnglishProficiency" %}
+                {% elif i == "5" %}{% translate "workersListLocationPreference" %}
+                {% elif i == "6" %}{% translate "workersListOfferStatus" %}
+                {% elif i == "7" %}{% translate "workersListActions" %}
                 {% endif %}
               </label>
             </div>
@@ -47,7 +46,12 @@
 
           <!-- Custom Toolbar -->
           <div class="d-flex align-items-center justify-content-between flex-wrap mb-3 custom-toolbar">
-            <div></div>
+            <div>
+              <button id="send-message-rejected" class="btn dark-green-button ms-3">{% translate "workerDetailsSendMessage" %}</button>
+              <button id="export-rejected" class="btn dark-green-button ms-3">{% translate 'webCommonExport'%}</button>
+              <button id="view-messages-rejected" class="btn dark-green-button ms-3" data-messages-url="{% url 'recruiting_web:work_request_messages' %}" >{% translate 'messagesMessages'%}</button>
+              {% include 'recruiting/messages/send-workrequest-message.html' with form=send_message_form status='rejected' %}
+            </div>
             <div class="flex-grow-1 d-flex justify-content-center">
               <div id="customSearchContainerTab5" style="width: 100%; max-width: 400px;"></div>
             </div>
@@ -64,14 +68,11 @@
                 <tr>
                   <th><input type="checkbox" id="select-all-rejected"></th>
                   <th class="col-name">{% translate "workersListName" %}</th>
-                  <th class="col-town">{% translate "workersListTown" %}</th>
-                  <th class="col-profile">{% translate "workersListProfileCompletion" %}</th>
-                  <th class="col-experience">{% translate "workersListExperience" %}</th>
-                  <th class="col-english">{% translate "workersListEnglishProficiency" %}</th>
-                  <th class="col-location">{% translate "workersListLocationPreference" %}</th>
-                  <th class="col-location">{% translate "workersListWorkRequest" %}</th>
-                  <th class="col-location">{% translate "workersWorkRequestRole" %}</th>
-                  <th class="col-offer">{% translate "workersListOfferStatus" %}</th>
+                  <th class="col-rel-exp" style="max-width: 70px; white-space: break-spaces;">{% translate "workersListMonthsOfRelevantExperience" %}</th>
+                  <th class="col-h2a-exp" style="max-width: 70px; white-space: break-spaces;">{% translate "workersListMonthsOfH2AExperience" %}</span></th>
+                  <th class="col-offer" style="max-width: 70px; white-space: break-spaces;">{% translate "workersListOfferStatus" %}</th>
+                  <th class="col-profile" style="max-width: 70px; white-space: break-spaces;">{% translate "workersListFullyComplete" %}</th>
+                  <th class="col-visa" style="max-width: 70px; white-space: break-spaces;">{% translate "workersListVisaUploaded" %}</th>
                 </tr>
               </thead>
               <tbody>
@@ -87,21 +88,44 @@
 </div>
 
 {% block scripts %}
+<script src="{% static 'assets/js/send-message.js' %}"></script>
 <script>
-  function applyColumnVisibilityFromStorageTab5(table) {
-    const savedSettings = JSON.parse(localStorage.getItem('columnVisibilitySettingsTab5')) || {};
-    const columnClasses = [
-      'col-name', 'col-town', 'col-profile', 'col-experience',
-      'col-english', 'col-location', 'col-offer', 'col-actions'
-    ];
-
-    columnClasses.forEach((className, idx) => {
-      const isVisible = savedSettings[className] !== false;
-      table.column(idx + 1).visible(isVisible);
-      const checkbox = document.querySelector(`#columnSettingsModalTab5 .column-toggle[value="${idx + 1}"]`);
-      if (checkbox) checkbox.checked = isVisible;
+  $(document).ready(function () {
+     handleSendWorkRequestMessage({
+      triggerSelector: '#send-message-rejected',
+      workRequestSelector: '#modal_work_request',
+      roleSelector: '#modal_role',
+      modalId: '#sendMessageModal-rejected',
+      sendMessageFormSelector: '#sendMessageForm-rejected',
+      work_assignment_status: 'rejected'
     });
-  }
+
+    $('#export-rejected').on('click', function () {
+      const wr = $('#modal_work_request').val();
+      const role = $('#modal_role').val();
+      let url = "{% url 'recruiting_web:export-workers' %}?status=rejected";
+      if (wr) url += `&work_request=${wr}`;
+      if (role) url += `&role=${role}`;
+      window.location.href = url;
+    });
+  });
+</script>
+
+<script>
+  // function applyColumnVisibilityFromStorageTab5(table) {
+  //   const savedSettings = JSON.parse(localStorage.getItem('columnVisibilitySettingsTab5')) || {};
+  //   const columnClasses = [
+  //     'col-name', 'col-town', 'col-profile', 'col-experience',
+  //     'col-english', 'col-location', 'col-offer', 'col-actions'
+  //   ];
+
+  //   columnClasses.forEach((className, idx) => {
+  //     const isVisible = savedSettings[className] !== false;
+  //     table.column(idx + 1).visible(isVisible);
+  //     const checkbox = document.querySelector(`#columnSettingsModalTab5 .column-toggle[value="${idx + 1}"]`);
+  //     if (checkbox) checkbox.checked = isVisible;
+  //   });
+  // }
 
   document.addEventListener('DOMContentLoaded', () => {
     const table = $('#basic-datatable-rejectedTab5').DataTable({
@@ -123,12 +147,12 @@
         const lengthDropdown = $('#datatable-controlsTab5 #basic-datatable-rejectedTab5_length select').parent();
         $('#customLengthContainerTab5').append(lengthDropdown);
 
-        const settingsBtn = `
-          <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#columnSettingsModalTab5">
-            <i class="fa fa-cog" aria-hidden="true" style="font-size: 1.3rem; color: #9A9898;"></i>
-          </button>
-        `;
-        $('#customSettingsContainerTab5').html(settingsBtn);
+        // const settingsBtn = `
+        //   <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#columnSettingsModalTab5">
+        //     <i class="fa fa-cog" aria-hidden="true" style="font-size: 1.3rem; color: #9A9898;"></i>
+        //   </button>
+        // `;
+        // $('#customSettingsContainerTab5').html(settingsBtn);
       }
     });
 
@@ -158,5 +182,6 @@
       });
     }
   });
+
 </script>
 {% endblock %}

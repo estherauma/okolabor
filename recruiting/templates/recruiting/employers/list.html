@@ -133,10 +133,10 @@
                   <input type="checkbox" id="select-all-employers"/>
                 </th>
                 <th class="col-company">{% translate "employersCompanyName" %}</th>
-                <th class="col-contact">{% translate "employersContactName" %}</th>
-                <th class="col-email">{% translate "employersEmail" %}</th>
+                <th class="col-contact">{% translate "employersEmail" %}</th>
                 <th class="col-location">{% translate "employersLocation" %}</th>
-                <th class="col-phone">{% translate "employersPhoneNumber" %}</th>
+                <th class="col-phone">{% translate "employersCountry" %}</th>
+                <th class="col-assigned">{% translate "employersPhone" %}</th>
                 <th class="col-assigned">{% translate "employersAssignedTo" %}</th>
                 {% if request.user|has_group:"admin" %}
                   <th class="col-actions">{% translate "employersActions" %}</th>
@@ -156,7 +156,7 @@
                 <td>{{ employer.address}}</td>
                 <td>{{ employer.country }}</td>
                 <td>{{ employer.phone }}</td>
-                <td>
+                <td style="white-space: break-spaces; min-width: 200px;">
                   {% if employer.recruiters %}
                       {% for recruiter in employer.recruiters %}
                           {{ recruiter }}{% if not forloop.last %}, {% endif %}

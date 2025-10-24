@@ -13,10 +13,7 @@
         </div>
         <div class="modal-body">
           <form id="column-settings-form">
-            <div class="form-check">
-              <input class="form-check-input column-toggle" type="checkbox" value="1" checked id="col-name">
-              <label class="form-check-label" for="col-name">{% translate "workersListName" %}</label>
-            </div>
+          
             <div class="form-check">
               <input class="form-check-input column-toggle" type="checkbox" value="2" checked id="col-town">
               <label class="form-check-label" for="col-town">{% translate "workersListTown" %}</label>
@@ -69,10 +66,14 @@
                 {% translate "workRequestAddWorkerSendOffer" %}
               </button>
               <button id="cancel-offer-shortlist" class="btn dark-green-button ms-3">{% translate "workRequestAddWorkerShortlistCancelOffer" %}</button>
+              <button id="send-message-shortlist" class="btn dark-green-button ms-3">{% translate "workerDetailsSendMessage" %}</button>
+              <button id="export-shortlist" class="btn dark-green-button ms-3">{% translate 'webCommonExport'%}</button>
+              <button id="view-messages-assigned" class="btn dark-green-button ms-3" data-messages-url="{% url 'recruiting_web:work_request_messages' %}" >{% translate 'messagesMessages'%}</button>
+              {% include 'recruiting/messages/send-workrequest-message.html' with form=send_message_form status='assigned' %}
             </div>
 
             <!-- Center Search Box -->
-            <div class="flex-grow-1 d-flex justify-content-center">
+            <div class="flex-grow-1 d-flex justify-content-center ms-3">
               <div id="customShortlistSearchContainer" style="width: 100%; max-width: 400px;"></div>
             </div>
 
@@ -92,14 +93,11 @@
                   <th>
                     <input type="checkbox" id="select-all-shortlist"></th>
                   <th class="col-name">{% translate "workersListName" %}</th>
-                  <th class="col-town">{% translate "workersListTown" %}</th>
-                  <th class="col-profile">{% translate "workersListProfileCompletion" %}</th>
-                  <th class="col-experience">{% translate "workersListExperience" %}</th>
-                  <th class="col-english">{% translate "workersListEnglishProficiency" %}</th>
-                  <th class="col-location">{% translate "workersListLocationPreference" %}</th>
-                  <th class="col-location">{% translate "workersListWorkRequest" %}</th>
-                  <th class="col-location">{% translate "workersWorkRequestRole" %}</th>
-                  <th class="col-offer">{% translate "workersListOfferStatus" %}</th>
+                  <th class="col-rel-exp" style="max-width: 70px; white-space: break-spaces;">{% translate "workersListMonthsOfRelevantExperience" %}</th>
+                  <th class="col-h2a-exp" style="max-width: 70px; white-space: break-spaces;">{% translate "workersListMonthsOfH2AExperience" %}</span></th>
+                  <th class="col-offer" style="max-width: 70px; white-space: break-spaces;">{% translate "workersListOfferStatus" %}</th>
+                  <th class="col-profile" style="max-width: 70px; white-space: break-spaces;">{% translate "workersListFullyComplete" %}</th>
+                  <th class="col-visa" style="max-width: 70px; white-space: break-spaces;">{% translate "workersListVisaUploaded" %}</th>
                 </tr>
               </thead>
               <tbody>
@@ -126,16 +124,25 @@
   <!-- Your custom scripts -->
   <script src="{% static 'assets/js/send-offer.js' %}"></script>
   <script src="{% static 'assets/js/tablecolumns_hiding.js' %}"></script>
-<script>
-$(document).ready(function () {
-  $.fn.dataTable.ext.errMode = 'none';
+  <script src="{% static 'assets/js/send-message.js' %}"></script>
 
-  const shortlistTable = $('#basic-datatable-shortlist').DataTable({
+<script>
+  $(document).ready(function () {
+    $.fn.dataTable.ext.errMode = 'none';
+    const table = $('#basic-datatable-shortlist').DataTable({
             ordering: true,
             order: [],
             columnDefs: [{ targets: 0, orderable: false }],
             paging: true,
             info: true,
+    });
+    $('#export-shortlist').on('click', function () {
+      const wr = $('#modal_work_request').val();
+      const role = $('#modal_role').val();
+      let url = "{% url 'recruiting_web:export-workers' %}?status=assigned";
+      if (wr) url += `&work_request=${wr}`;
+      if (role) url += `&role=${role}`;
+      window.location.href = url;
     });
 
   // Move default controls to hidden container to prevent duplication
@@ -153,14 +160,24 @@ $(document).ready(function () {
   const lengthDropdown = $('#datatable-controls #basic-datatable-shortlist_length select').parent();
   $('#customShortlistLengthContainer').append(lengthDropdown);
 
-  // Add custom single settings icon (left)
-  const settingsBtn = `
-    <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#columnShortListSettingsModal">
-      <i class="fa fa-cog" aria-hidden="true" style="font-size: 1.3rem; color: #9A9898;"></i>
-    </button>
-  `;
-  $('#customShortlistSettingsContainer').html(settingsBtn);
+  // // Add custom single settings icon (left)
+  // const settingsBtn = `
+  //   <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#columnShortListSettingsModal">
+  //     <i class="fa fa-cog" aria-hidden="true" style="font-size: 1.3rem; color: #9A9898;"></i>
+  //   </button>
+  // `;
+  // $('#customShortlistSettingsContainer').html(settingsBtn);
+
+  handleSendWorkRequestMessage({
+    triggerSelector: '#send-message-shortlist',
+    workRequestSelector: '#modal_work_request',
+    roleSelector: '#modal_role',
+    modalId: '#sendMessageModal-assigned',
+    sendMessageFormSelector: '#sendMessageForm-assigned',
+    work_assignment_status: 'assigned'
+  });
 });
+
 </script>
 
 {% endblock %}

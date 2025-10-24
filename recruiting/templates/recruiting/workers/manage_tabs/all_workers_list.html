@@ -43,10 +43,7 @@
       </div>
       <div class="modal-body">
         <form id="column-settings-form">
-          <div class="form-check">
-            <input class="form-check-input column-toggle" type="checkbox" value="1" checked id="col-name">
-            <label class="form-check-label" for="col-name">{% translate "workersListName" %}</label>
-          </div>
+          
           <div class="form-check">
             <input class="form-check-input column-toggle" type="checkbox" value="2" checked id="col-town">
             <label class="form-check-label" for="col-town">{% translate "workersListTown" %}</label>
@@ -89,142 +86,128 @@
 <input type="hidden" id="roleId" value="{{ role.id }}">
 
 <div class="row row-sm">
-        <div class="col-lg-12">
-            <div class="card">
-                <div class="card-body">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
 
-                    <div class="d-flex align-items-center justify-content-between flex-wrap mb-3 custom-toolbar">
-                        <div>
-                         <button id="addToShortlistBtn" class="btn dark-green-button ms-3" disabled>
-                            {% translate "workersListAddToShortlists" %}
-                        </button>
-
-
-                            {% comment %} <a class="btn dark-green-button ms-3 text-white" 
-                                data-bs-toggle="modal" 
-                                data-bs-target="#addWorkerModal">
-                                {% translate "workersListAddWorker" %}
-                            </a> {% endcomment %}
-
-                            <button id="sendOfferBtnDirectly" class="btn dark-green-button ms-2"  disabled>
-                              {% translate "workRequestAddWorkerSendOffer" %}
-                            </button>
-                            
-
-                        </div>
+          <div class="d-flex align-items-center justify-content-between flex-wrap mb-3 custom-toolbar">
+              <div>
+                <button id="addToShortlistBtn" class="btn dark-green-button ms-3" disabled>
+                  {% translate "workersListAddToShortlists" %}
+              </button>
 
 
-                        <div class="flex-grow-1 d-flex justify-content-center">
-                            <div id="customAllWorkerSearchContainer" style="width: 100%; max-width: 400px;"></div>
-                        </div>
+                  {% comment %} <a class="btn dark-green-button ms-3 text-white" 
+                      data-bs-toggle="modal" 
+                      data-bs-target="#addWorkerModal">
+                      {% translate "workersListAddWorker" %}
+                  </a> {% endcomment %}
 
-                        <div class="d-flex align-items-center gap-2">
-                            <div id="customAllWorkerSettingsContainer"></div>
-                            <div id="customAllWorkerLengthContainer"></div>
-                        </div>
-                    </div>
-                    <!-- Hidden container to hold original DataTable controls -->
-                    <div id="datatable-controls" style="display: none;"></div>
+                  <button id="sendOfferBtnDirectly" class="btn dark-green-button ms-2"  disabled>
+                    {% translate "workRequestAddWorkerSendOffer" %}
+                  </button>
+                  
 
-                    <div class="table-responsive">
-                        <table class="table text-nowrap border-bottom" id="basic-datatable-allworkers-workers">
-                             <thead>
-                                <tr>
-                                    <th class="col-namee">
-                                      <input type="checkbox" id="select-all-workers">
-                                    </th>
-                                    <th class="col-name">{% translate "workersListName" %}</th>
-                                    <th class="col-name">{% translate "workersListEmail" %}</th>
-                                    <th class="col-town">{% translate "workersListTown" %}</th>
-                                    <th class="col-profile">{% translate "workersListFullyComplete" %}</th>
-                                    <th class="col-experience">{% translate "workersListYearsOfExperience" %}</th>
-                                    <th class="col-english">{% translate "workersListMinimumLanguageProficiencyLevel" %}</th>
-                                    <th class="col-location">{% translate "workersListLocationPreference" %}</th>
-                                    <th class="col-visa">{% translate "workersListVisaUploaded" %}</th>
-                                    <th class="col-intro-video">{% translate "workersListIntroVideoUploaded" %}</th>
-                                    <th class="col-offer">{% translate "workersListOfferStatus" %}</th>
-                                    {% if request.user|has_group:"admin" %}
-                                        <th class="col-actions">
-                                            {% translate "workersListActions" %}
-                                        </th>
-                                    {% endif %}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for worker in workers %}
-                                <tr class="text-center">
-                                    <td>
-                                        <input type="checkbox" class="worker-checkbox" value="{{ worker.id }}" data-worker-name="{{ worker.first_name }} {{ worker.last_name }}">
-                                    </td>
-                                    <td class="col-name">
-                                        
-                                            <a href="{{ worker.id }}">
-                                                {{ worker.first_name }} {{ worker.last_name }}
-                                            </a>
-                                    </td>
-                                    <td class="col-townnn">
-                                        <a href="{{ worker.id }}">
-                                            {{ worker.email}}
-                                         </a>
-                                        </td>
-                                    <td class="col-town">{{ worker.town|default:"Not Provided" }}</td>
-                                    <td class="col-profile">
-                                        {% if worker.profile_completion_percentage == 100 %}
-                                            Yes
-                                        {% else %}
-                                            NO
-                                        {% endif %}
-                                    </td>
-                                    <td class="col-experience">{{ worker.years_of_experience|default:"Not Provided" }}</td>
-                                    <td class="col-english">{{ worker.english_proficiency|default:"Not Provided" }}</td>
-                                    <td class="col-location">{{ worker.location_preference|default:"Not Provided" }}</td>
-                                    <td class="col-visa">
-                                    {% if worker.visa_uploaded %}
-                                        <span>Yes</span>
-                                    {% else %}
-                                        <span>No</span>
-                                    {% endif %}
-                                </td>
+              </div>
 
-                                <td class="col-intro-video">
-                                    {% if worker.intro_video_uploaded %}
-                                        <span>Yes</span>
-                                    {% else %}
-                                        <span>No</span>
-                                    {% endif %}
-                                </td>
-                                    <td class="col-offer">{{ worker.latest_status }}</td>
-                                    {% if request.user|has_group:"admin" %}
-                                        <td class="col-actions">
-                                        <!-- Edit Button -->
-                                          <button type="button"
-                                          class="btn btn-sm yellow-button"
-                                          data-bs-toggle="modal"
-                                          data-bs-target="#editModal{{ worker.id }}"
-                                          title="{% translate 'workersListIconEdit' %}">
-                                          {% translate 'webCommonEdit'%}
-                                          </button>
 
-                                        <!-- Delete Button -->
-                                          <button type="button"
-                                          class="btn btn-sm red-button ms-2"
-                                          data-bs-toggle="modal"
-                                          data-bs-target="#deleteModalWorker{{ worker.id }}"
-                                          title="{% translate 'workersListIconDelete' %}">
-                                          {% translate 'webCommonDelete'%}
-                                          </button>
-                                        
-                                        </td>
-                                    {% endif %}
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+              <div class="flex-grow-1 d-flex justify-content-center">
+                  <div id="customAllWorkerSearchContainer" style="width: 100%; max-width: 400px;"></div>
+              </div>
+
+              <div class="d-flex align-items-center gap-2">
+                  <div id="customAllWorkerSettingsContainer"></div>
+                  <div id="customAllWorkerLengthContainer"></div>
+              </div>
+          </div>
+          <!-- Hidden container to hold original DataTable controls -->
+          <div id="datatable-controls" style="display: none;"></div>
+
+          <div class="table-responsive">
+            <table class="table text-nowrap border-bottom" id="basic-datatable-allworkers-workers">
+              <thead>
+                <tr>
+                  <th class="col-namee">
+                    <input type="checkbox" id="select-all-workers">
+                  </th>
+                  <th class="col-name">{% translate "workersListName" %}</th>
+                  <th class="col-rel-exp" style="max-width: 70px; white-space: break-spaces;">{% translate "workersListMonthsOfRelevantExperience" %}</th>
+                  <th class="col-h2a-exp" style="max-width: 70px; white-space: break-spaces;">{% translate "workersListMonthsOfH2AExperience" %}</span></th>
+                  <th class="col-offer" style="max-width: 70px; white-space: break-spaces;">{% translate "workersListOfferStatus" %}</th>
+                  <th class="col-profile" style="max-width: 70px; white-space: break-spaces;">{% translate "workersListFullyComplete" %}</th>
+                  <th class="col-visa" style="max-width: 70px; white-space: break-spaces;">{% translate "workersListVisaUploaded" %}</th>
+                 
+                  {% if request.user|has_group:"admin" %}
+                    <th class="col-actions">{% translate "workersListActions" %}</th>
+                  {% endif %}
+                </tr>
+              </thead>
+              <tbody>
+                {% for worker in workers %}
+                <tr class="text-center">
+                  <td>
+                    <input type="checkbox" class="worker-checkbox" value="{{ worker.id }}"
+                      data-worker-name="{{ worker.first_name }} {{ worker.last_name }}">
+                  </td>
+                  <td class="col-name">
+                    {% if worker.first_name or worker.last_name %}
+                    <a href="{{ worker.id }}">
+                      {{ worker.first_name }} {{ worker.last_name }}
+                    </a>
+                    {% else %}
+                    <a href="{{ worker.id }}">
+                      Not Provided
+                    </a>
+                    {% endif %}
+                  </td>
+                  <td class="col-rel-exp">
+                    {{ worker.years_of_experience|default:"Not Provided" }}
+                  </td>
+                  <td class="col-h2a-exp" style="text-align: center;">
+                    {{worker.total_months_of_h2a_experience}}
+                  </td>
+          
+                  <td class="col-offer" style="text-align: center;">{{ worker.latest_status }}</td>
+                  <td class="col-profile">
+                    {% if worker.profile_completion_percentage == 100 %}
+                    {% translate 'webCommonYes' %}
+                    {% else %}
+                    {% translate 'webCommonNo' %}
+                    {% endif %}
+                  </td>
+          
+                  <td class="col-visa">
+                    {% if worker.visa_uploaded %}
+                    <span> {% translate 'webCommonYes' %}</span>
+                    {% else %}
+                    <span> {% translate 'webCommonNo' %}</span>
+                    {% endif %}
+                  </td>
+                  {% if request.user|has_group:"admin" %}
+                  <td class="col-actions">
+                    <!-- Edit Button -->
+                    <button type="button" class="btn btn-sm yellow-button" data-bs-toggle="modal"
+                      data-bs-target="#editModal{{ worker.id }}" title="{% translate 'workersListIconEdit' %}">
+                      {% translate 'webCommonEdit'%}
+                    </button>
+          
+                    <!-- Delete Button -->
+                    <button type="button" class="btn btn-sm red-button ms-2" data-bs-toggle="modal"
+                      data-bs-target="#deleteModalWorker{{ worker.id }}" title="{% translate 'workersListIconDelete' %}">
+                      {% translate 'webCommonDelete'%}
+                    </button>
+          
+                  </td>
+                  {% endif %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+      </div>
     </div>
+  </div>
+</div>
 {% for worker in workers %}
   <!-- Edit Modal -->
   <div class="modal fade" id="editModal{{ worker.id }}" tabindex="-1" aria-labelledby="editModalLabel{{ worker.id }}" aria-hidden="true">
@@ -266,13 +249,10 @@
               <input type="text" class="form-control" id="location_preference{{ worker.id }}" name="location_preference" value="{{ worker.location_preference }}">
             </div>
             <div class="mb-3">
-              <label for="latest_status{{ worker.id }}" class="form-label">{% translate "workersListLatestStatus" %}</label>
-              <select class="form-control" id="latest_status{{ worker.id }}" name="latest_status">
-                {% for choice in status_choices %}
-                <option value="{{ choice.0 }}" {% if choice.0|stringformat:"s" == worker.latest_status|stringformat:"s" %}selected{% endif %}>
-                    {{ choice.1 }}
-                </option>
-                {% endfor %}
+              <label for="worker_status{{ worker.id }}" class="form-label">{% translate "workerDetailsWorkerStatus" %}</label>
+              <select class="form-control" id="worker_status{{ worker.id }}" name="worker_status">
+                <option value="available" {% if worker.latest_status|lower == 'available' %}selected{% endif %}>{% translate 'workerDetailsAvailable'%}</option>
+                <option value="on_contract" {% if 'contract' in worker.latest_status|lower %}selected{% endif %}>{% translate 'workerDetailsOnContract'%}</option>
               </select>
             </div>
           </div>
@@ -331,7 +311,7 @@ $(document).ready(function () {
         const table = $('#basic-datatable-allworkers-workers').DataTable({
             ordering: true,
             order: [],
-            columnDefs: [{ targets: 0, orderable: false }],
+            columnDefs: [{ targets: 0, orderable: false }, { targets: -1, orderable: false }],
             paging: true,
             info: true,
         });
@@ -352,17 +332,29 @@ $(document).ready(function () {
         lengthWrapper.find('select').addClass('form-select form-select-sm').css('width', 'auto');
         $('#customAllWorkerLengthContainer').append(lengthWrapper);
 
-        // Settings icon
-        const settingsBtn = `
-            <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#columnSettingsModal">
-                <i class="fa fa-cog" aria-hidden="true" style="font-size: 1.3rem; color: #9A9898;"></i>
-            </button>`;
-        $('#customAllWorkerSettingsContainer').html(settingsBtn);
+        // // Settings icon
+        // const settingsBtn = `
+        //     <button class="btn p-0 border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#columnSettingsModal">
+        //         <i class="fa fa-cog" aria-hidden="true" style="font-size: 1.3rem; color: #9A9898;"></i>
+        //     </button>`;
+        // $('#customAllWorkerSettingsContainer').html(settingsBtn);
 
     } else {
         console.error("DataTables plugin is not loaded.");
     }
 });
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    let hash = window.location.hash;
+    if (hash) {
+      let tabTrigger = document.querySelector(`[data-bs-toggle="tab"][href="${hash}"]`);
+      if (tabTrigger) {
+        let tab = new bootstrap.Tab(tabTrigger);
+        tab.show();
+      }
+    }
+  });
 </script>
 
 {% endblock %}

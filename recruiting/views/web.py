@@ -28,9 +28,7 @@ from django.utils.encoding import force_str
 from django.http import HttpResponseRedirect,HttpResponseForbidden
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
-from collections import defaultdict
 from django.db.models import Count
-from django.template.loader import render_to_string
 import os
 from common.firebase_utils import send_push_notification
 from common.logger import AppLogger
@@ -54,6 +52,7 @@ from recruiting.forms import (
     RoleMealProvision,
     RoleQualificationForm,
     RoleWagesForm,
+    SendMessageForm,
     TodoFilterForm,
     WorkRequestForm,
     WorkRequestRoleForm,
@@ -89,10 +88,14 @@ from recruiting.models import (
     EmployerContact,
     EmployerRecruiterOrgLink,
 )
+import uuid
+from django.db.models import Max
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-
+from django.forms.models import model_to_dict
+from account.models import MessageRecipient
+from collections import OrderedDict, defaultdict
 
 class EmployerListView(View):
     def get(self, request):
@@ -297,7 +300,7 @@ class RecruiterEditView(LoginRequiredMixin, View):
             recruiter.description = request.POST.get('description')
             recruiter.save()
 
-            messages.success(request, _('recruiterAdminListRecruiter "%(recruiter_name)s" editedSuccessfully.') % {'recruiter_name': recruiter.name})
+            # messages.success(request, _('recruiterAdminListRecruiter "%(recruiter_name)s" editedSuccessfully.') % {'recruiter_name': recruiter.name})
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success'})
             return redirect('recruiting_web:recruiter_admin_list')
@@ -352,19 +355,21 @@ class EmployerCreateView(CreateView):
                     }
                 )
 
-        messages.success(self.request, _('employerAminListOrganizationCreatedSuccessfully'))
         self.object = org
         return redirect(self.get_success_url(org.pk))
 
     def form_invalid(self, form: BaseModelForm) -> HttpResponse:
-        for field, errors in form.errors.items():
-            for error in errors:
-                messages.error(self.request, f'{field}: {error}')
-        return super().form_invalid(form)
+        context = self.get_context_data(form=form)
+        context['employer_form'] = form 
+        if form.instance.type == 'recruiter':
+            return render(self.request, 'recruiting/recruiters_list/list.html', context)
+
+        return render(self.request, 'recruiting/employers/list.html', context)
 
     def get_success_url(self, pk):
+        if self.object.type == 'recruiter':
+            return reverse('recruiting_web:recruiter_org_detail', kwargs={'pk': pk})
         return reverse('recruiting_web:employer_detail', kwargs={'pk': pk})
-
 
 class EmployerDetailView(View):
     def get(self, request, pk):
@@ -412,6 +417,12 @@ class EmployerDetailView(View):
 
         all_recruiter_names = list(recruiter_names_direct.union(recruiter_names_org))
         users = User.objects.all()
+        
+        # create job order form
+        form = WorkRequestForm()
+        # set employer in form
+        form.fields['employer'].initial = employer
+
         context = {
             'employer': employer,
             'users': users,
@@ -422,6 +433,7 @@ class EmployerDetailView(View):
             'contacts': assigned_users,
             'work_requests': work_requests,
             'assigned_organizations': assigned_orgs_data,
+            'form': form,
             'breadcrumbs': [
                 {'name': _('employerDetailsHome'), 'url': reverse_lazy('index')},
                 {'name': _('employerDetailsEmployers'), 'url': reverse_lazy('recruiting_web:employer_list')},
@@ -471,7 +483,7 @@ class RecruiterDetailView(View):
         # contacts = recruiter_org.contacts.all()
         users = User.objects.all()
         context = {
-            'employer': recruiter_org,
+            'recruiter': recruiter_org,
             'users': users,
             'employer_organizations': employer_orgs_data,
             'in_progress_work_requests': in_progress_work_requests,
@@ -593,6 +605,72 @@ class WorkRequestEditView(LoginRequiredMixin, View):
                     messages.error(request, f'{field}: {error}')
             return redirect('recruiting_web:workrequest_list')
 
+
+class WorkRequestCopyView(LoginRequiredMixin, View):
+    @staticmethod
+    def copy_related_object(obj, model_class, new_role):
+        if obj and getattr(obj, 'deleted_at', None) is None:
+            data = model_to_dict(obj)
+            data.pop('id', None)
+            data['role'] = new_role
+            model_class.objects.create(**data)
+
+    def post(self, request, pk):
+        work_request = get_object_or_404(WorkRequests, pk=pk)
+        form = WorkRequestForm(request.POST)
+        roles = work_request.roles.filter(
+                deleted_at__isnull=True,
+            )
+     
+        if form.is_valid():
+            new_work_request = form.save(commit=False)
+
+            if work_request.name.strip().lower() == form.cleaned_data['name'].strip().lower():
+                new_work_request.name = form.cleaned_data['name'] + " (Copy)"
+            new_work_request.save()
+
+            for role in roles:
+                role_data = model_to_dict(role)
+                role_data.pop('id', None)
+                role_data['work_request'] = new_work_request
+                new_role = Role.objects.create(**role_data)
+                
+                deductions = role.deductions.filter(deleted_at__isnull=True)
+                for deduction in deductions:
+                    data = model_to_dict(deduction)
+                    data.pop('id', None)
+                    data['role'] = new_role
+                    Deduction.objects.create(**data)
+
+                self.copy_related_object(getattr(role, 'hours', None), Hours, new_role)
+                self.copy_related_object(getattr(role, 'employment_location', None), EmploymentLocation, new_role)
+                self.copy_related_object(getattr(role, 'housing_information', None), HousingInformation, new_role)
+                self.copy_related_object(getattr(role, 'wages', None), Wages, new_role)
+                self.copy_related_object(getattr(role, 'meal_provision', None), MealProvision, new_role)
+                self.copy_related_object(getattr(role, 'qualifications', None), Qualification, new_role)
+                role_assignments = WorkAssignment.objects.filter(
+                    work_request_id=work_request.id,
+                    role_id=role.id,
+                    status='confirmed',
+                    deleted_at__isnull=True
+                )
+                new_role_assignments = [
+                                WorkAssignment(
+                                    work_request=new_work_request,
+                                    role=new_role,
+                                    worker=assignment.worker,
+                                    status='assigned'
+                                ) for assignment in role_assignments
+                            ]
+
+                WorkAssignment.objects.bulk_create(new_role_assignments)
+            return redirect('recruiting_web:workrequest_detail', pk=new_work_request.pk)
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field}: {error}')
+            return redirect('recruiting_web:workrequest_detail', pk=work_request.pk)
+        
 class WorkRequestDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         user = request.user
@@ -942,6 +1020,8 @@ class WorkRequestDetailView(View):
             'licensed_vehicle_operation_types',
         ]
 
+        employers = Organization.objects.filter(type='employer')
+
         context = {
             'workrequest': work_request,
             'roles': roles_qs,
@@ -968,6 +1048,7 @@ class WorkRequestDetailView(View):
             'role_Meals_form': role_Meals_form,
             'role_add_form': role_add_form,
             'dynamic_fields': dynamic_fields,
+            'employers': employers,
             'breadcrumbs' :[
                         {'name': 'Home', 'url': reverse('index')},
                         {'name': 'Job Orders', 'url': reverse('recruiting_web:workrequest_list')},
@@ -1241,6 +1322,18 @@ class RoleQualificationsCreateView(CreateView):
             return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
 
         form.instance.role = role
+        months_training = form.cleaned_data.get('number_of_months_training_required', 0)
+        training_value = form.cleaned_data.get('training_required', 'No')
+        
+        if months_training == 0:
+            form.instance.training_required = 'No'
+        else:
+            form.instance.training_required = training_value
+        
+        lifting_weight = form.cleaned_data.get('lifting_requirement_weight', 0)
+        if lifting_weight == 0 or lifting_weight is None:
+            form.instance.lifting_requirements = False
+        
         self.object = form.save()
         messages.success(self.request, 'Qualifications successfully added.')
         return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[role.work_request.pk])}?open_role={role.id}')
@@ -1412,6 +1505,137 @@ class OkoMessageCreateView(CreateView):
         return reverse(
             'recruiting_web:recruiter_messages'
         )
+
+
+class SendWorkRequestMessageView(CreateView):
+    model = UserNotification
+    form_class = SendMessageForm
+    template_name = 'recruiting/messages/send-workrequest-message.html'
+
+    def form_valid(self, form):
+        work_request_id = self.request.POST.get('work_request')
+        role_id = self.request.POST.get('role')
+        work_assignment_status = self.request.POST.get('work_assignment_status')
+
+        if work_request_id and role_id:
+            assignments = WorkAssignment.objects.filter(
+                status=work_assignment_status,
+                role_id=role_id, 
+                work_request_id=work_request_id, 
+                deleted_at__isnull=True
+                )
+            title = form.cleaned_data.get('title')
+            message_text = form.cleaned_data.get('message')
+            batch_id = str(uuid.uuid4())
+            notifications = [
+                UserNotification(
+                    user=assignment.worker,
+                    title=title,
+                    message=message_text,
+                    batch_id=batch_id,
+                    category='work_request',
+                    work_assignment=assignment,
+                )
+                for assignment in assignments
+            ]
+            if notifications:
+                created_notifications = UserNotification.objects.bulk_create(notifications)
+                # Manually create MessageRecipient for each notification (since signals are not triggered by bulk_create)
+                MessageRecipient.objects.bulk_create([
+                    MessageRecipient(notification=n, recipient=n.user)
+                    for n in created_notifications
+                ])
+            messages.success(self.request, _('sendMessageMessageSentSuccessfully'))
+            return redirect(reverse('recruiting_web:workers'))
+        else:
+            messages.error(self.request, 'Please select a work request and role before sending a message')
+            return redirect(reverse('recruiting_web:workers'))
+
+    def form_invalid(self, form: BaseModelForm) -> HttpResponse:
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(self.request, f'{field}: {error}')
+        return super().form_invalid(form)
+
+
+class WorkRequestMessagesView(LoginRequiredMixin, View):
+    def get(self, request):
+        workrequest_id = request.GET.get('workrequest')
+        role_id = request.GET.get('role')
+        selected_status = request.GET.get('workassignment_status')
+
+        notif_qs = (
+            UserNotification.objects
+            .filter(
+                work_assignment__work_request_id=workrequest_id, 
+                work_assignment__role_id=role_id, 
+                work_assignment__status=selected_status
+                )
+            .select_related('user', 'work_assignment__work_request', 'work_assignment__role')
+        )
+
+        notif_qs = notif_qs.order_by('-created_at')
+
+        # Group messages by batch_id, aggregating all notifications and recipients per batch
+        grouped = OrderedDict()
+        for notif in notif_qs:
+            batch_id = notif.batch_id
+            if not batch_id:
+                continue
+            if batch_id not in grouped:
+                grouped[batch_id] = {
+                    'batch_id': batch_id,
+                    'title': notif.title,
+                    'status': notif.work_assignment.status if notif.work_assignment else '',
+                    'message': notif.message,
+                    'recipients': [],
+                    'read_by': [],
+                    'created_at': notif.created_at,
+                }
+
+        batch_ids = list(grouped.keys())
+        batch_notifs = UserNotification.objects.filter(batch_id__in=batch_ids)
+        recipients_qs = MessageRecipient.objects.filter(notification__in=batch_notifs)
+        # Build batch_id -> recipients mapping
+        batch_to_recipients = defaultdict(list)
+        batch_to_read_by = defaultdict(list)
+        for r in recipients_qs:
+            batch_to_recipients[r.notification.batch_id].append(r.recipient)
+            if r.notification.status == 'read':
+                batch_to_read_by[r.notification.batch_id].append(r.recipient)
+        # Attach recipients/read_by to grouped items
+        for batch_id in grouped:
+            grouped[batch_id]['recipients'] = batch_to_recipients[batch_id]
+            grouped[batch_id]['read_by'] = batch_to_read_by[batch_id]
+
+        grouped_list = list(grouped.values())
+        paginator = Paginator(grouped_list, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        items = page_obj.object_list
+
+        work_requests = WorkRequests.objects.all().order_by('name')
+        if workrequest_id:
+            roles = Role.objects.filter(work_request_id=workrequest_id).order_by('title')
+        else:
+            roles = Role.objects.none()
+        statuses = [key for key, _ in WorkAssignment.STATUS_CHOICES]
+
+        context = {
+            'notifications': page_obj,
+            'items': items, 
+            'selected_work_request': workrequest_id if workrequest_id else None,
+            'selected_role': role_id if role_id else None,
+            'selected_status': selected_status,
+            'work_requests': work_requests,
+            'roles': roles,
+            'statuses': statuses,
+            'breadcrumbs': [
+              {'name': _('workers'), 'url': reverse('recruiting_web:workers')},
+              {'name': _('messagesMessages'), 'url': None},
+            ],
+        }
+        return render(request, 'recruiting/messages/work-request-messages.html', context)
 
 class OkoMessageDetailsView(View):
     def get(self, request,id):
@@ -2243,6 +2467,18 @@ class EditRoleQualificationView(View):
         work_request_id = request.POST.get('work_request_id', None)
 
         if form.is_valid():
+            months_training = form.cleaned_data.get('number_of_months_training_required', 0)
+            training_value = form.cleaned_data.get('training_required', 'No')
+            
+            if months_training == 0:
+                form.instance.training_required = 'No'
+            else:
+                form.instance.training_required = training_value
+            
+            lifting_weight = form.cleaned_data.get('lifting_requirement_weight', 0)
+            if lifting_weight == 0 or lifting_weight is None:
+                form.instance.lifting_requirements = False
+            
             form.save()
             messages.success(request, _('joDetailsQualificationsQualificationUpdatedSuccessfully'))
             return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[qualification.role.work_request.pk])}?open_role={qualification.role.id}')
@@ -2287,3 +2523,35 @@ class DeductionEditView(View):
             return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[deduction.role.work_request.pk])}?open_role={deduction.role.id}')
         else:
             return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[deduction.role.work_request.pk])}?open_role={deduction.role.id}')
+
+
+
+class InvalidCurpsView(View):
+    def get(self,request):
+        log_file = os.path.join(settings.BASE_DIR, "logs", "invalid-curps.log")
+        curp_errors = []
+
+        if os.path.exists(log_file):
+            with open(log_file, "r") as f:
+                for line in f:
+                    if "CURP" in line:  # Only keep CURP-related logs
+                        parts = line.split(" - ", 3)  # Split into [timestamp, level, message...]
+                        if len(parts) >= 3:
+                            timestamp = parts[0].strip()
+                            level = parts[1].strip()
+                            message = parts[2].strip()
+                            curp_errors.append({
+                                "timestamp": timestamp,
+                                "level": level,
+                                "message": message
+                            })
+        breadcrumbs = [
+            {"name": _("invalidCurpsHome"), "url": reverse("index")},
+            {"name": _("invalidCurpsInvalidCURPs"), "url": None}
+        ]
+        
+        return render(request, "invalid_curps.html", {
+            "curp_errors": curp_errors,
+            "breadcrumbs": breadcrumbs
+        })
+        

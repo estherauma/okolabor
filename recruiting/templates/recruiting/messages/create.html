@@ -23,16 +23,28 @@
       {% translate "createMessageThenAShortNotificationMessageGoesHereWithActionButtonsBelow" %}
      </h5>
      {% csrf_token %}
-                    {% for field in form %}
+     {% for field in form %}
      <div class="col">
-      <div class="form-group my-3">
-       <label class="gray-color">
-        {{field.label}}
-       </label>
-       <div class="input-group input-group-outline is_valid my-3">
-        {{ field }}
+       <div class="form-group my-3">
+         {% if field.field.widget.input_type == "checkbox" %}
+           <div class="form-check">
+             {{ field }}
+             <label class="form-check-label ms-2">
+               {{ field.label }}
+             </label>
+           </div>
+         {% else %}
+           <label class="gray-color">
+             {{ field.label }}
+           </label>
+           <div class="input-group input-group-outline is_valid my-3">
+             {{ field }}
+           </div>
+         {% endif %}
+         {% if field.errors %}
+           <small class="text-danger">{{ field.errors.0 }}</small>
+         {% endif %}
        </div>
-      </div>
      </div>
      {% endfor %}
      <div class="d-flex justify-content-center">

@@ -147,8 +147,7 @@ class Wages(AuditableModel):
         blank=True, null=True
     )
     piece_rate_offerings_type = models.CharField(
-        max_length=50,
-        choices=choices,
+        max_length=50
     )
     frequency_of_pay = models.CharField(
         max_length=50,
