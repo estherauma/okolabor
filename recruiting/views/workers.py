@@ -69,13 +69,42 @@ class WorkerListView(LoginRequiredMixin, View):
 
         # 🔍 Experience Filters
         type_sector = request.GET.get('type_sector')
-        dynamic_field_1 = request.GET.get('dynamic_field_1')
-        dynamic_field_2 = request.GET.get('dynamic_field_2')
+        dynamic_field_1 = request.GET.getlist('dynamic_field_1')
+        dynamic_field_2 = request.GET.getlist('dynamic_field_2')
+        fields_with_type_details = ['crop_and_horticulture', 'animals']
         params = request.GET
+        sc = StaticContent()
         if type_sector:
             workers = workers.filter(
-                crop_experiences__job_type__iexact=type_sector
+                crop_experiences__job_type__iexact=type_sector,
+                crop_experiences__deleted_at__isnull=True
             )
+
+        if dynamic_field_1:
+            q = Q()
+            if type_sector in fields_with_type_details:
+                for term in dynamic_field_1:
+                    normalized_value = sc._normalize(term)
+                    q |= Q(crop_experiences__type_details__icontains=normalized_value)
+                workers = workers.filter(q, crop_experiences__deleted_at__isnull=True)
+            else:
+                for term in dynamic_field_1:
+                    normalized_value = sc._normalize(term)
+                    q |= Q(crop_experiences__job_experience_details__value__icontains=normalized_value)
+                workers = workers.filter(
+                    q,
+                    crop_experiences__job_experience_details__kind__icontains='responsibilities',
+                    crop_experiences__job_experience_details__deleted_at__isnull=True
+                )
+        if dynamic_field_2:
+            q = Q()
+            for term in dynamic_field_2:
+                normalized_value = sc._normalize(term)
+                q |= Q(crop_experiences__job_experience_details__value__icontains=term)
+            workers = workers.filter(q, 
+                                     crop_experiences__job_experience_details__kind__icontains='responsibilities',
+                                     crop_experiences__job_experience_details__deleted_at__isnull=True
+                                     )
 
         # Filter by Passport
         passport_filter = next((v for k, v in params.items() if k.startswith("passport_") and v), None)
@@ -885,12 +914,39 @@ class CreateWorkExperienceView(BaseCreateView):
         selected_sector = form.cleaned_data.get('type_sector', 'General')
         sector_dict = dict(self.content_service.get_sector_choices())
         readable_sector = sector_dict.get(selected_sector, selected_sector)
+        type_details = ''
+        responsibilities = [] 
 
+        # Map sector-specific multi-select fields to save details, kind/value
+        conditional_fields = {
+            'animals': {
+                'type_details_key': 'animal_types',
+                'responsibilities_key': 'responsibilities_types',
+            },
+            'crop_and_horticulture': {
+                'type_details_key': 'crop_types',
+                'responsibilities_key': 'crop_job_types',
+            },
+            'mechanics': {
+                'responsibilities_key': 'mechanic_job_types',
+            },
+            'worker_supervision': {
+                'responsibilities_key': 'supervision_jobs_types',
+            },
+        }
         # Create a UserJobExperience with sector as job_type
+        selected_sector_type_keys = conditional_fields.get(selected_sector, {})
+
+        if selected_sector_type_keys:
+            type_details_key = selected_sector_type_keys.get('type_details_key', '')
+            type_details_list = form.cleaned_data.get(type_details_key, [])
+            type_details = ', '.join(type_details_list)
+            responsibilities = form.cleaned_data.get(selected_sector_type_keys.get('responsibilities_key', ''), [])
         job_experience = UserJobExperience.objects.create(
             user=user,
             work_experience=work_experience,
-            job_type=readable_sector
+            job_type=readable_sector,
+            type_details=type_details,
         )
 
         # Save uploaded files to UserDocuments and link in details
@@ -941,37 +997,14 @@ class CreateWorkExperienceView(BaseCreateView):
                 value=description,
                 is_attachment=False,
             )
-
-        # Map sector-specific multi-select fields to be saved as kind/value
-        conditional_fields = {
-            'animals': {
-                'animal_types': 'animal_type',
-                'animal_jobs': 'animal_task',
-            },
-            'crop_horticulture': {
-                'crop_types': 'crop_type',
-                'crop_jobs': 'crop_task',
-            },
-            'mechanics': {
-                'mechanic_jobs': 'mechanic_task',
-            },
-            'worker_supervision': {
-                'supervision_jobs': 'supervision_task',
-            },
-        }
-
-        # Save each selected option from relevant fields to details
-        fields_for_sector = conditional_fields.get(selected_sector, {})
-        for form_field, detail_kind in fields_for_sector.items():
-            values = form.cleaned_data.get(form_field)
-            if values:
-                for val in values:
-                    UserJobExperienceDetails.objects.create(
-                        job_experience=job_experience,
-                        kind=detail_kind,
-                        value=val,
-                        is_attachment=False,
-                    )
+        
+        if responsibilities:
+            UserJobExperienceDetails.objects.create(
+                    job_experience=job_experience,
+                    kind='responsibilities',
+                    value=', '.join(responsibilities),
+                    is_attachment=False,
+                )                
 
         return response
 
