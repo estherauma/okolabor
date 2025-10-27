@@ -65,7 +65,7 @@ class WorkerListView(LoginRequiredMixin, View):
         filter_form = AdvancedFilterForm(request.GET or None)
         search_query = request.GET.get('search', '')
 
-        workers = User.objects.filter(groups__name='worker').order_by('-created_at')
+        workers = User.objects.filter(groups__name='worker', deleted=False).order_by('-created_at')
 
         # 🔍 Experience Filters
         type_sector = request.GET.get('type_sector')
