@@ -96,15 +96,17 @@ class WorkerListView(LoginRequiredMixin, View):
                     crop_experiences__job_experience_details__kind__icontains='responsibilities',
                     crop_experiences__job_experience_details__deleted_at__isnull=True
                 )
+
         if dynamic_field_2:
             q = Q()
             for term in dynamic_field_2:
                 normalized_value = sc._normalize(term)
-                q |= Q(crop_experiences__job_experience_details__value__icontains=term)
-            workers = workers.filter(q, 
-                                     crop_experiences__job_experience_details__kind__icontains='responsibilities',
-                                     crop_experiences__job_experience_details__deleted_at__isnull=True
-                                     )
+                q |= Q(crop_experiences__job_experience_details__value__icontains=normalized_value)
+            workers = workers.filter(
+                    q,
+                    crop_experiences__job_experience_details__kind__icontains='responsibilities',
+                    crop_experiences__job_experience_details__deleted_at__isnull=True
+                )
 
         # Filter by Passport
         passport_filter = next((v for k, v in params.items() if k.startswith("passport_") and v), None)
@@ -997,7 +999,7 @@ class CreateWorkExperienceView(BaseCreateView):
                 value=description,
                 is_attachment=False,
             )
-        
+
         if responsibilities:
             UserJobExperienceDetails.objects.create(
                     job_experience=job_experience,
