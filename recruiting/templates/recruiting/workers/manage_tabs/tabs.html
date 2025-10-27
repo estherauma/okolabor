@@ -410,6 +410,9 @@ function updateCollapseSummary() {
 
     // ✅ 1. Extract filters from URL parameters
     const params = new URLSearchParams(window.location.search);
+    const typeSectorValue = params.get('type_sector'); // Get the value from params
+    const fields_with_type_details = ['Crop and Horticulture', 'Animals']
+
     for (const [key, value] of params.entries()) {
         if (!value) continue;
 
@@ -417,7 +420,16 @@ function updateCollapseSummary() {
         let formattedValue = decodeURIComponent(value.replace(/\+/g, ' '));
 
         if (key.includes('type_sector')) label = 'Type/Sector';
-        else if (key.includes('dynamic_field_1')) label = 'Animal Type';
+        else if (key.includes('dynamic_field_1')) {
+        // Change label based on type_sector value
+            if (typeSectorValue === 'Animals') {
+                label = 'Animal Type';
+            } else if (typeSectorValue === 'Crop and Horticulture') {
+                label = 'Crop Type';
+            } else {
+                label = 'Tasks';
+            }
+      }
         else if (key.includes('dynamic_field_2')) label = 'Tasks';
         else if (key.includes('gender')) label = 'Gender';
         else if (key.includes('availability')) label = 'Availability';
@@ -830,7 +842,7 @@ function handleLanguageProficiencyChange(selectEl, uniqueId) {
     } else {
         videoContainer.remove();
     }
-    
+
     updateExtraContainerStyles(extraFieldsContainer);
     updateCollapseSummary();
 }
