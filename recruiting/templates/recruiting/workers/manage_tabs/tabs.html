@@ -719,7 +719,6 @@ function handleFilterChange(selectEl, uniqueId) {
                         <option value="none">{% translate "filterSectionNone" %}</option>
                     </select>
                 </div>
-                <div class="form-group mt-2" id="language-video-container-${uniqueId}"></div>
             `;
             break;
 
@@ -781,6 +780,9 @@ function handleFilterChange(selectEl, uniqueId) {
     }
 
     extraFieldsContainer.innerHTML = html;
+    updateExtraContainerStyles(extraFieldsContainer);
+}
+function updateExtraContainerStyles (extraFieldsContainer) {
     const childCount = extraFieldsContainer.children.length;
     const formGroups = extraFieldsContainer.querySelectorAll('.form-group');
 
@@ -797,18 +799,25 @@ function handleFilterChange(selectEl, uniqueId) {
         if (formGroups?.length > 0) {
             formGroups[0].style.width = "100%";
             formGroups[0].style.padding = "0";
-
         }
-
     }
-
 }
 
 
 function handleLanguageProficiencyChange(selectEl, uniqueId) {
-    const videoContainer = document.getElementById(`language-video-container-${uniqueId}`);
-    const selectedValue = selectEl.value;
+    const extraFieldsContainer = document.getElementById(`extra-fields-${uniqueId}`);
+    if (!extraFieldsContainer) return;
 
+    // Remove any previous language video select
+    let videoContainer = document.getElementById(`language-video-container-${uniqueId}`);
+    if (!videoContainer) {
+        videoContainer = document.createElement('div');
+        videoContainer.id = `language-video-container-${uniqueId}`;
+        videoContainer.className = 'form-group';
+        extraFieldsContainer.appendChild(videoContainer);
+    }
+
+    const selectedValue = selectEl.value;
     if (selectedValue && selectedValue !== 'none') {
         videoContainer.innerHTML = `
             <label class="form-label gray-color">{% translate "filterSectionHasVideoFile" %}</label>
@@ -819,8 +828,10 @@ function handleLanguageProficiencyChange(selectEl, uniqueId) {
             </select>
         `;
     } else {
-        videoContainer.innerHTML = '';
+        videoContainer.remove();
     }
+    
+    updateExtraContainerStyles(extraFieldsContainer);
     updateCollapseSummary();
 }
 
