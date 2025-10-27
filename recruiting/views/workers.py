@@ -83,13 +83,13 @@ class WorkerListView(LoginRequiredMixin, View):
         if dynamic_field_1:
             q = Q()
             if type_sector in fields_with_type_details:
-                for term in dynamic_field_1:
-                    normalized_value = sc._normalize(term)
+                for item in dynamic_field_1:
+                    normalized_value = sc._normalize(item)
                     q |= Q(crop_experiences__type_details__icontains=normalized_value)
                 workers = workers.filter(q, crop_experiences__deleted_at__isnull=True)
             else:
-                for term in dynamic_field_1:
-                    normalized_value = sc._normalize(term)
+                for item in dynamic_field_1:
+                    normalized_value = sc._normalize(item)
                     q |= Q(crop_experiences__job_experience_details__value__icontains=normalized_value)
                 workers = workers.filter(
                     q,
@@ -99,8 +99,8 @@ class WorkerListView(LoginRequiredMixin, View):
 
         if dynamic_field_2:
             q = Q()
-            for term in dynamic_field_2:
-                normalized_value = sc._normalize(term)
+            for item in dynamic_field_2:
+                normalized_value = sc._normalize(item)
                 q |= Q(crop_experiences__job_experience_details__value__icontains=normalized_value)
             workers = workers.filter(
                     q,
