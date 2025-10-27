@@ -829,14 +829,34 @@ function removeFilterRow(button) {
     const row = button.closest("#dynamic-random-filters .filter-group");
     if (row) row.remove();
 }
+
+function initializeFilters() {
+    const container = document.getElementById("dynamic-random-filters");
+    if (container && container.children.length === 0) {
+        container.innerHTML = '';
+        addRandomFilter();
+    }
+    updateCollapseSummary();
+}
+
 function clearAllFilters() {
+    
+    const primarySelects = document.querySelectorAll('#filter-inputs-container select');
+    primarySelects.forEach(select => {
+        select.selectedIndex = 0; 
+    });
+    
     const container = document.getElementById("dynamic-random-filters");
     container.innerHTML = '';
     addRandomFilter();
+    
     updateCollapseSummary();
+    
+    window.location.href = window.location.pathname;
 }
+
 document.addEventListener("DOMContentLoaded", () => {
-    clearAllFilters();
+    initializeFilters();
 });
 </script>
 {% endblock scripts %}
