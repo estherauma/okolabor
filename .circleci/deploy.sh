@@ -12,7 +12,7 @@ go_to_path_to_deploy() {
   echo -e "Currrent branch variable is: $branch"
   if [ "$branch" = "main" ]; then
     echo "Going to path to deploy master branch"
-    cd "/var/www/production/"
+    cd "/var/www/okolabor-prod/"
   elif [ "$branch" = "staging" ]; then
     echo "Going to path to deploy staging branch"
     cd "/var/www/staging/"
