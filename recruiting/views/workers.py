@@ -71,7 +71,7 @@ class WorkerListView(LoginRequiredMixin, View):
         type_sector = request.GET.get('type_sector')
         dynamic_field_1 = request.GET.getlist('dynamic_field_1')
         dynamic_field_2 = request.GET.getlist('dynamic_field_2')
-        fields_with_type_details = ['crop_and_horticulture', 'animals']
+        fields_with_type_details = ['Crop and Horticulture', 'Animals']
         params = request.GET
         sc = StaticContent()
         if type_sector:
