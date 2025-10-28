@@ -36,14 +36,13 @@ def get_workers_page_params(**kwargs):
         },
     }
     if role:
-        print("role", role)
         params["role"] = getattr(role, "id")
         params["work_request"] = getattr(role, "work_request_id")
         work_type_details = getattr(role, "work_type_detail", None)
 
         if hasattr(role, "work_type"):
             work_type = getattr(role, "work_type")
-            params["type_sector"] = dynamic_fields_keys[work_type]["label"]
+            params["type_sector"] = dynamic_fields_keys.get(work_type, dynamic_fields_keys["other"]).get("label")
         if work_type_details:
             work_type_keys = dynamic_fields_keys.get(getattr(role, "work_type"), None)
             if work_type_keys:
