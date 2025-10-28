@@ -1,6 +1,7 @@
 {% extends 'components/base.html' %}
 {% load static %}
 {% load custom_filters %}
+{% load querystring_tags %}
 {% block styles %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link href="{% static 'assets/css/job-order.css' %}" rel="stylesheet"/>
@@ -183,7 +184,7 @@
                 <div>
                   <span class="job-title ">{{ role.title }}</span>
       
-                  <a href="{% url 'recruiting_web:workers' %}?role={{role.id}}&work_request={{workrequest.id}} ">
+                  <a href="{% url 'recruiting_web:workers' %}{% get_workers_page_params role=role %}">
                     <button class="btn btn-sm yellow-button">
                       {% translate "jobOrderDetailsAddWorkers" %}
                     </button>
