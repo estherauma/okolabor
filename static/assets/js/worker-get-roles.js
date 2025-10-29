@@ -79,7 +79,6 @@ $(document).ready(function () {
      } else if (workRequestId && roleId && status === "all") {
       handleAllWorkerTabFiltering({ workRequestId, roleId });
     } else if (workRequestId && roleId) {
-      let url = `/workers/ajax-filtered-workers/?work_request=${workRequestId}&role=${roleId}&status=${status}`;
       fetch(
         `/workers/ajax-filtered-workers/?work_request=${workRequestId}&role=${roleId}&status=${status}`
       )
@@ -236,7 +235,7 @@ $(document).ready(function () {
 });
 
 function handleAllWorkerTabFiltering({ workRequestId, roleId }) {
-  dynamic_fields_keys = {
+ const  dynamic_fields_keys = {
     animals: {
       type_details_key: 'animal_types',
       responsibilities_key: 'responsibilities_types',
@@ -269,7 +268,6 @@ function handleAllWorkerTabFiltering({ workRequestId, roleId }) {
     .then((res) => res.json())
     .then((data) => {
       const role = data.role;
-      console.log('Fetched role data for All tab filtering:', role);
       let type_sector_keys = dynamic_fields_keys[role.work_type];
       let typeSectorDetails =[]
       let typeSectorResponsibilities =[]
@@ -282,8 +280,8 @@ function handleAllWorkerTabFiltering({ workRequestId, roleId }) {
       let url = `/workers/?work_request=${workRequestId}&role=${roleId}&type_sector=${type_sector_keys?.dbValue}`;
 
       if (role.work_type_detail){
-        details_key = type_sector_keys['type_details_key']
-        responsibilities_key = type_sector_keys['responsibilities_key']
+        let details_key = type_sector_keys['type_details_key']
+        let responsibilities_key = type_sector_keys['responsibilities_key']
 
         typeSectorDetails = role.work_type_detail[details_key] || [] 
         typeSectorResponsibilities = responsibilities_key ? role.work_type_detail[responsibilities_key] || [] : []

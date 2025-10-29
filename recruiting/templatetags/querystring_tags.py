@@ -57,7 +57,7 @@ def get_workers_page_params(**kwargs):
                 if responsibilities_key:
                     responsibilities = work_type_details.get(responsibilities_key, [])
                     if len(responsibilities):
-                        params["dynamic_field_2"] = details
+                        params["dynamic_field_2"] = responsibilities
 
     if params:
         return "?" + urlencode(params, doseq=True)
