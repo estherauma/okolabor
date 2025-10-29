@@ -42,7 +42,9 @@ def get_workers_page_params(**kwargs):
 
         if hasattr(role, "work_type"):
             work_type = getattr(role, "work_type")
-            params["type_sector"] = dynamic_fields_keys.get(work_type, dynamic_fields_keys["other"]).get("label")
+            params["type_sector"] = dynamic_fields_keys.get(
+                work_type, dynamic_fields_keys["other"]
+            ).get("label")
         if work_type_details:
             work_type_keys = dynamic_fields_keys.get(getattr(role, "work_type"), None)
             if work_type_keys:
@@ -50,13 +52,13 @@ def get_workers_page_params(**kwargs):
                 responsibilities_key = work_type_keys.get("responsibilities_key")
                 if details_key:
                     details = work_type_details.get(details_key, [])
-                    for item in details:
-                        params["dynamic_field_1"] = item
+                    if len(details):
+                        params["dynamic_field_1"] = details
                 if responsibilities_key:
                     responsibilities = work_type_details.get(responsibilities_key, [])
-                    for item in responsibilities:
-                        params["dynamic_field_2"] = item
+                    if len(responsibilities):
+                        params["dynamic_field_2"] = details
 
     if params:
-        return "?" + urlencode(params)
+        return "?" + urlencode(params, doseq=True)
     return ""
