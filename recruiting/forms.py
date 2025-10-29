@@ -216,6 +216,7 @@ class WorkRequestRoleForm(forms.ModelForm):
         content_service = StaticContent()
 
         self.fields['work_type'].choices = content_service.get_sector_choices()
+        self.fields['work_type'].label = _('addRoleWorkType')
 
         field_config = {
             'animal_types': {
