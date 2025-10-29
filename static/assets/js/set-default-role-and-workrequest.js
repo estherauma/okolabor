@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (el) {
         var workRequestId = el.getAttribute("data-work-request");
         var roleId = el.getAttribute("data-role");
-        if (workRequestId) sessionStorage.setItem("selectedWorkRequest", workRequestId);
-        if (roleId) sessionStorage.setItem("selectedRole", roleId);
+        // if (workRequestId) sessionStorage.setItem("selectedWorkRequest", workRequestId);
+        // if (roleId) sessionStorage.setItem("selectedRole", roleId);
     }
 });

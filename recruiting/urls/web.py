@@ -3,7 +3,7 @@ from django.urls import path
 
 from recruiting.views.web import (
      EmployerCreateView, EmployerDetailView,
-     EmployerListView, InvalidCurpsView, OkoMessageCreateView, OkoMessageListView,
+     EmployerListView, GetRoleView, InvalidCurpsView, OkoMessageCreateView, OkoMessageListView,
      RecruiterTodoView, RoleDeductionsCreateView, RoleEmpLocationCreateView,
      RoleHoursCreateView, RoleHousingCreateView, RoleMealsCreateView,
      RoleQualificationsCreateView, RoleWagesCreateView, WorkRequestCreateView,
@@ -118,6 +118,9 @@ urlpatterns = [
          WorkRequestDetailView.as_view(),
          name='workrequest_detail'),
 
+    path('roles/<str:pk>/', 
+         GetRoleView.as_view(), 
+         name='get-role'),
     path('role/<str:pk>/edit/', 
          EditRoleView.as_view(), 
          name='edit-role'),
