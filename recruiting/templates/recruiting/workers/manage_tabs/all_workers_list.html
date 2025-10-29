@@ -344,6 +344,7 @@ $(document).ready(function () {
     }
 });
 </script>
+<script>var isAdmin = {{ request.user|has_group:"admin"|yesno:"true,false" }};</script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     let hash = window.location.hash;

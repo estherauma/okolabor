@@ -746,6 +746,17 @@ class GetRolesView(View):
             return JsonResponse({'error': 'Work request not found'}, status=404)
 
 
+class GetRoleView(View):
+    def get(self, request, pk):
+        try:
+            role = Role.objects.get(pk=pk)
+            role_data = model_to_dict(role)
+         
+            return JsonResponse({'role': role_data})
+        except Role.DoesNotExist:
+            return JsonResponse({'error': 'Role not found'}, status=404)
+
+
 @method_decorator(csrf_exempt, name='dispatch')
 class UpdateWorkerStatusView(View):
     def post(self, request, *args, **kwargs):
@@ -2554,4 +2565,4 @@ class InvalidCurpsView(View):
             "curp_errors": curp_errors,
             "breadcrumbs": breadcrumbs
         })
-        
+
