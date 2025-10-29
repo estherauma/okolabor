@@ -353,19 +353,16 @@ class WorkerListView(LoginRequiredMixin, View):
 
             worker_data.append({
                 'id': worker.id,
-                'firstname': worker.first_name,
-                'lastname': worker.last_name,
+                'first_name': worker.first_name,
+                'last_name': worker.last_name,
                 'email': worker.email,
-                'profile_completion': profile_completion,
+                'profile_completion_percentage': profile_completion,
                 'years_of_experience': years_of_experience, 
                 'visa_uploaded': visa_uploaded,
                 'intro_video_uploaded': intro_video_uploaded,
+                'total_months_of_h2a_experience': calculate_months_ofH2A_expererience(worker),
+                'latest_status': worker_profile_status_labels[code],
                 **worker_details
-            })
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({
-                'workers': worker_data,
-                'num_pages': 1  # or len(worker_data) if needed
             })
        
         worker_form = WorkerCreateForm()
@@ -391,6 +388,11 @@ class WorkerListView(LoginRequiredMixin, View):
             'send_message_form': send_message_form
 
         }
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            safe_context = {
+                'workers': worker_data,
+            }
+            return JsonResponse(safe_context)
         return render(request, 'recruiting/workers/manage_tabs/tabs.html', context)
 
     def post(self, request):
