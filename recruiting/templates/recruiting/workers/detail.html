@@ -266,13 +266,11 @@
                   </div>
 
                   <div class="modal-body">
-                    {% translate "workerDetailsAreYouSureYouWantToDeleteTheExperience"%} <strong>{{ exp.company
-                      }}</strong>
+                    {% translate "workerDetailsAreYouSureYouWantToDeleteTheExperience"%} <strong>{{ exp.company }}</strong>?
                   </div>
 
                   <div class="modal-footer">
-                    <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate
-                      "workerDetailsCancel"%}</button>
+                    <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate "workerDetailsCancel"%}</button>
 
                     <form method="POST" action="{% url 'recruiting_web:work_experience_delete' exp.id %}">
                       {% csrf_token %}
