@@ -829,34 +829,36 @@ function removeFilterRow(button) {
     const row = button.closest("#dynamic-random-filters .filter-group");
     if (row) row.remove();
 }
-
-function initializeFilters() {
-    const container = document.getElementById("dynamic-random-filters");
-    if (container && container.children.length === 0) {
-        container.innerHTML = '';
+function clearAllFilters() {
+    const secondaryContainer = document.getElementById("dynamic-random-filters");
+    if (secondaryContainer) {
+        secondaryContainer.innerHTML = '';
         addRandomFilter();
     }
+    
+    const primaryContainer = document.getElementById("filter-inputs-container");
+    if (primaryContainer) {
+        const experienceForms = primaryContainer.querySelectorAll('.job-experience-form');
+        experienceForms.forEach((form, index) => {
+            if (index === 0) {
+                const selects = form.querySelectorAll('select');
+                selects.forEach(select => {
+                    if (select.id && (select.id.includes('dynamic_field_1') || select.id.includes('dynamic_field_2'))) {
+                        select.innerHTML = '';
+                        select.parentElement.style.display = 'none';
+                    }
+                    select.selectedIndex = 0;
+                });
+            } else {
+                form.remove();
+            }
+        });
+    }
+    
     updateCollapseSummary();
 }
-
-function clearAllFilters() {
-    
-    const primarySelects = document.querySelectorAll('#filter-inputs-container select');
-    primarySelects.forEach(select => {
-        select.selectedIndex = 0; 
-    });
-    
-    const container = document.getElementById("dynamic-random-filters");
-    container.innerHTML = '';
-    addRandomFilter();
-    
-    updateCollapseSummary();
-    
-    window.location.href = window.location.pathname;
-}
-
 document.addEventListener("DOMContentLoaded", () => {
-    initializeFilters();
+    clearAllFilters();
 });
 </script>
 {% endblock scripts %}
