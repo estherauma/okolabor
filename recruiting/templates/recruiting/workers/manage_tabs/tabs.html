@@ -714,5 +714,10 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCollapseSummary();
 });
 
+window.addEventListener('beforeunload', function (e) {
+    sessionStorage.removeItem("selectedRole");
+    sessionStorage.removeItem("selectedWorkRequest");
+});
+
 </script>
 {% endblock scripts %}

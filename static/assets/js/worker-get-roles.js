@@ -2,6 +2,7 @@ $(document).ready(function () {
   const workRequestSelect = $("#modal_work_request");
   const roleSelect = $("#modal_role");
 
+
   // Initialize select2
   workRequestSelect.select2({
     placeholder: workRequestSelect.data("placeholder"),
@@ -31,7 +32,10 @@ $(document).ready(function () {
 
   workRequestSelect.on("change", function () {
     const workRequestId = $(this).val();
-    if (!workRequestId ) { 
+
+    if (!workRequestId) {
+      sessionStorage.removeItem("selectedRole");
+      sessionStorage.removeItem("selectedWorkRequest");
       window.location.href = '/workers/';
     }
     roleSelect.html(
