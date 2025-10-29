@@ -202,11 +202,11 @@ class WorkRequestRoleForm(forms.ModelForm):
             'animal_types': _('addRoleAnimalTypes'),
             'crop_types': _('addRoleCropTypes'),
             'crop_job_types': _('addRoleTasks'),
-            'mechanic_job_types': _('addRoleJobTypes'),
-            'supervision_jobs_types': _('addRoleJobTypes'),
+            'mechanic_job_types': _('addRoleTasks'),
+            'supervision_jobs_types': _('addRoleTasks'),
             'responsibilities_types': _('addRoleResponsibilitiesTypes'),
             'number_of_required_workers': _('addRoleNumberOfRequiredWorkers'),
-            'licensed_vehicle_operation_types': _('addRoleJobTypes'),
+            'licensed_vehicle_operation_types': _('addRoleTasks'),
             'work_request': _('addRoleWorkRequest'),
             'description': _('addRoleDescription'),
         }
@@ -237,15 +237,15 @@ class WorkRequestRoleForm(forms.ModelForm):
             },
             'mechanic_job_types': {
                 'choices': content_service.get_mechanics_responsibilities_choices,
-                'label': _('addRoleJobTypes'),
+                'label': _('addRoleTasks'),
             },
             'supervision_jobs_types': {
                 'choices': content_service.get_worker_supervision_choices,
-                'label': _('addRoleJobTypes'),
+                'label': _('addRoleTasks'),
             },
             'licensed_vehicle_operation_types': {
                 'choices': content_service.get_worker_licensed_vehicle_operation_choices,
-                'label': _('addRoleJobTypes'),
+                'label': _('addRoleTasks'),
             },
         }
 
@@ -967,11 +967,11 @@ class WorkExperienceCreateForm(forms.ModelForm):
             },
             'mechanic_job_types': {
                 'choices': content_service.get_mechanics_responsibilities_choices,
-                'label': _('addRoleJobTypes'),
+                'label': _('addRoleTasks'),
             },
             'supervision_jobs_types': {
                 'choices': content_service.get_worker_supervision_choices,
-                'label': _('addRoleJobTypes'),
+                'label': _('addRoleTasks'),
             },
             'company': {
                 'label': content_service.get_label_for_field('company'),
