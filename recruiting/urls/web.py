@@ -6,7 +6,7 @@ from recruiting.views.web import (
      EmployerListView, GetRoleView, InvalidCurpsView, OkoMessageCreateView, OkoMessageListView,
      RecruiterTodoView, RoleDeductionsCreateView, RoleEmpLocationCreateView,
      RoleHoursCreateView, RoleHousingCreateView, RoleMealsCreateView,
-     RoleQualificationsCreateView, RoleWagesCreateView, WorkRequestCreateView,
+     RoleQualificationsCreateView, RoleWagesCreateView, SendGeneralMessageView, WorkRequestCreateView,
      WorkRequestDetailView, WorkRequestRoleCreateView, WorkRequestsListView,
      OkoMessageDetailsView, RecruiterListView, AddRecruiterToEmployerView,
      RemoveRecruiterFromEmployerView, AccessDeniedView,
@@ -167,10 +167,14 @@ urlpatterns = [
          OkoMessageCreateView.as_view(),
          name='recruiter_create_message'
          ),
-    path('send-message/',
+    path('send-workrequest-message/',
          SendWorkRequestMessageView.as_view(),
          name='workrequest_send_message'
          ),
+    path('send-message/',
+         SendGeneralMessageView.as_view(),
+         name='send_message'
+         ),  
     path('recruiter/create-worker',
          WorkerCreateView.as_view(),
          name='recruiter_create_worker'
