@@ -1,0 +1,56 @@
+{% load i18n %}
+
+<div
+  class="modal fade"
+  id="sendGeneralMessage-{{ user_id }}"
+  tabindex="-1"
+  aria-labelledby="sendMessageModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form
+        method="post"
+        id="sendGeneralMessageForm-{{ user_id }}"
+        action="{% url 'recruiting_web:send_message' %}"
+      >
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="sendMessageModalLabel">
+            {% translate "workerDetailsSendMessage" %}
+          </h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="{% translate 'webCommonClose' %}"
+          ></button>
+        </div>
+        <div class="modal-body">
+          {% csrf_token %}
+          <input type="hidden" name="user_id" id="id_user_id" value="{{ user_id }}"  />
+          {% for field in form %}
+          <div class="col">
+            <div class="form-group my-3">
+              <label class="gray-color"> {{ field.label }} </label>
+              <div class="input-group input-group-outline is_valid my-3">
+                {{ field }}
+              </div>
+              {% if field.errors %}
+              <small class="text-danger">{{ field.errors.0 }}</small>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="modal-footer d-flex justify-content-center">
+          <button type="button" class="btn grey-button" data-bs-dismiss="modal">
+            {% translate "createMessageCancel" %}
+          </button>
+          <button class="btn light-green-button ms-2" type="submit">
+            {% translate "createMessageSend" %}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
