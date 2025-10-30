@@ -36,24 +36,32 @@ pull_latest_code() {
 kill_process() {
   echo -e "\n ******************** Stopping the applicaiton ******************************* \n"
   echo "Stopping the application"
-  systemctl stop gunicorn.socket gunicorn.service
+  if [ "$branch" = "main" ]; then
+    systemctl stop gunicorn.socket gunicorn-prod.service
+  else
+    systemctl stop gunicorn.socket gunicorn.service
+  fi
 }
 
 install_depedencies_and_collect_static() {
   echo -e "\n************** Collecting static ****************************** \n"
   echo "Collecting static files"
-  source /var/www/jaguar-web-api/venv/bin/activate
+  source venv/bin/activate
   pip install -r requirements.txt
   python manage.py migrate
   python manage.py export_cms_labels
   python manage.py compilemessages
-  # python manage.py collectstatic --noinput
+  python manage.py collectstatic --noinput
 }
 
 start_process() {
   echo -e "\n*********** Stating the process ******************\n"
   echo "Restarting the application"
-  systemctl start gunicorn.socket gunicorn.service
+  if [ "$branch" = "main" ]; then
+    systemctl start gunicorn.socket gunicorn-prod.service
+  else
+    systemctl start gunicorn.socket gunicorn.service
+  fi
 }
 
 echo "Deploying branch $branch of the web application"
