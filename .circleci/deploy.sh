@@ -34,7 +34,7 @@ pull_latest_code() {
 }
 
 kill_process() {
-  echo -e "\n ******************** Stopping the applicaiton ******************************* \n"
+  echo -e "\n ******************** Stopping the application ******************************* \n"
   echo "Stopping the application"
   if [ "$branch" = "main" ]; then
     systemctl stop gunicorn.socket gunicorn-prod.service

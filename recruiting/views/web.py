@@ -1521,7 +1521,7 @@ class OkoMessageCreateView(CreateView):
 class SendGeneralMessageView(CreateView):
     model = UserNotification
     form_class = SendMessageForm
-    template_name = "recruiting/templates/recruiting/workers/detail.html"
+    template_name = "recruiting/workers/detail.html"
 
     def form_valid(self, form):
         user_id = self.request.POST.get("user_id")
