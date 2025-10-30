@@ -27,7 +27,7 @@ $(document).ready(function () {
   $('a[data-bs-toggle="tab"]').on("shown.bs.tab", function (e) {
     const activeTabId = $(e.target).attr("href").replace("#", "");
     sessionStorage.setItem("activeTabId", activeTabId);
-    roleSelect.trigger("change");
+    // roleSelect.trigger("change");
   });
 
   workRequestSelect.on("change", function () {
@@ -36,7 +36,10 @@ $(document).ready(function () {
     if (!workRequestId) {
       sessionStorage.removeItem("selectedRole");
       sessionStorage.removeItem("selectedWorkRequest");
-      window.location.href = '/workers/';
+    if (window.location.search && window.location.pathname === '/workers/') {
+         window.location.href = '/workers/';
+       }
+      return;
     }
     roleSelect.html(
       '<option value="">{% translate "workersListSelectARole" %}</option>'
@@ -62,6 +65,7 @@ $(document).ready(function () {
   });
 
   roleSelect.on("change", function () {
+    console.log("Role Changed");
     const workRequestId = workRequestSelect.val();
     const roleId = roleSelect.val();
 
@@ -74,11 +78,15 @@ $(document).ready(function () {
     if (!tabInfo) return;
 
     const { tableId, status } = tabInfo;
+    console.log("Filtering table:", roleId, "with status:", window.location.pathname);
      // If roleSelect is cleared (empty), redirect to /workers/
      if (!roleId) {
        sessionStorage.removeItem("selectedRole");
        sessionStorage.removeItem("selectedWorkRequest");
-       window.location.href = '/workers/';
+      
+        if (window.location.search && window.location.pathname === '/workers/') {
+         window.location.href = '/workers/';
+       }
        return;
      } else if (workRequestId && roleId && status === "all") {
       handleAllWorkerTabFiltering({ workRequestId, roleId });
@@ -347,7 +355,7 @@ function handleAllWorkerTabFiltering({ workRequestId, roleId }) {
               const name =
                 worker.first_name || worker.last_name
                   ? `${worker.first_name} ${worker.last_name}`
-                  : `${worker.email}`;
+                  :  'Not Provided';
               let actions = '';
               console.log('isAdmin value:', isAdmin);
               if (typeof isAdmin !== 'undefined' && isAdmin) {
@@ -363,7 +371,7 @@ function handleAllWorkerTabFiltering({ workRequestId, roleId }) {
                 `;
               }
               table.row.add([
-                `<input type="checkbox" name="worker-all-checkbox" class="worker-all-checkbox" value="${worker.id}" data-worker-name="${name}">`,
+                `<input type="checkbox"class="worker-checkbox" value="${worker.id}" data-worker-name="${name}">`,
                 `<a href="${worker.id}">${name}</a>`,
                 worker.years_of_experience ?? '',
                 worker.total_months_of_h2a_experience ?? '',

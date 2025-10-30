@@ -1518,6 +1518,43 @@ class OkoMessageCreateView(CreateView):
         )
 
 
+class SendGeneralMessageView(CreateView):
+    model = UserNotification
+    form_class = SendMessageForm
+    template_name = "recruiting/workers/detail.html"
+
+    def form_valid(self, form):
+        user_id = self.request.POST.get("user_id")
+
+        if user_id:
+            try:
+                user = User.objects.get(id=user_id)
+            except User.DoesNotExist:
+                messages.error(self.request, "User not found.")
+                return redirect(self.request.META.get("HTTP_REFERER", "/"))
+            title = form.cleaned_data.get("title")
+            message_text = form.cleaned_data.get("message")
+
+            UserNotification.objects.create(
+                user=user,
+                title=title,
+                message=message_text,
+            )
+            messages.success(self.request, _("sendMessageMessageSentSuccessfully"))
+            return redirect(
+                reverse("recruiting_web:worker_detail", kwargs={"pk": user_id})
+            )
+        else:
+            messages.error(self.request, "User not found.")
+            return redirect(self.request.META.get("HTTP_REFERER", "/"))
+
+    def form_invalid(self, form: BaseModelForm) -> HttpResponse:
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(self.request, f"{field}: {error}")
+        return super().form_invalid(form)
+
+
 class SendWorkRequestMessageView(CreateView):
     model = UserNotification
     form_class = SendMessageForm
@@ -2536,7 +2573,6 @@ class DeductionEditView(View):
             return redirect(f'{reverse("recruiting_web:workrequest_detail", args=[deduction.role.work_request.pk])}?open_role={deduction.role.id}')
 
 
-
 class InvalidCurpsView(View):
     def get(self,request):
         log_file = os.path.join(settings.BASE_DIR, "logs", "invalid-curps.log")
@@ -2565,4 +2601,3 @@ class InvalidCurpsView(View):
             "curp_errors": curp_errors,
             "breadcrumbs": breadcrumbs
         })
-
