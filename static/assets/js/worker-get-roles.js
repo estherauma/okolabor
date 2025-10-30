@@ -36,7 +36,10 @@ $(document).ready(function () {
     if (!workRequestId) {
       sessionStorage.removeItem("selectedRole");
       sessionStorage.removeItem("selectedWorkRequest");
-      window.location.href = '/workers/';
+    if (window.location.search && window.location.pathname === '/workers/') {
+         window.location.href = '/workers/';
+       }
+      return;
     }
     roleSelect.html(
       '<option value="">{% translate "workersListSelectARole" %}</option>'
@@ -75,11 +78,15 @@ $(document).ready(function () {
     if (!tabInfo) return;
 
     const { tableId, status } = tabInfo;
+    console.log("Filtering table:", roleId, "with status:", window.location.pathname);
      // If roleSelect is cleared (empty), redirect to /workers/
      if (!roleId) {
        sessionStorage.removeItem("selectedRole");
        sessionStorage.removeItem("selectedWorkRequest");
-       window.location.href = '/workers/';
+      
+        if (window.location.search && window.location.pathname === '/workers/') {
+         window.location.href = '/workers/';
+       }
        return;
      } else if (workRequestId && roleId && status === "all") {
       handleAllWorkerTabFiltering({ workRequestId, roleId });
