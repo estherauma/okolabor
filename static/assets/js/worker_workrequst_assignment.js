@@ -16,10 +16,10 @@ function getCookie(name) {
 document.addEventListener("DOMContentLoaded", function () {
     const shortlistBtn = document.getElementById("addToShortlistBtn");
     const sendOfferBtn = document.getElementById("sendOfferBtnDirectly");
-    const workerCheckboxes = document.querySelectorAll(".worker-checkbox");
+    let workerCheckboxes = document.querySelectorAll(".worker-checkbox");
     const workRequestSelect = document.getElementById("modal_work_request");
     const roleSelect = document.getElementById("modal_role");
-    const selectAllCheckbox = document.getElementById("select-all-workers");
+    const selectAllCheckbox = document.getElementById("select-all-workers");  
 
     // Toggle Button State
     function toggleButtonState() {
@@ -38,17 +38,29 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Handle individual checkbox changes
-    workerCheckboxes.forEach(cb => {
-        cb.addEventListener("change", function () {
-            if (!this.checked) {
-                selectAllCheckbox.checked = false;
-            } else {
-                const allChecked = Array.from(workerCheckboxes).every(cb => cb.checked);
-                selectAllCheckbox.checked = allChecked;
+    // workerCheckboxes.forEach(cb => {
+    //     cb.addEventListener("change", function () {
+    //         if (!this.checked) {
+    //             selectAllCheckbox.checked = false;
+    //         } else {
+    //             const allChecked = Array.from(workerCheckboxes).every(cb => cb.checked);
+    //             selectAllCheckbox.checked = allChecked;
+    //         }
+    //         toggleButtonState();
+    //     });
+    // });
+        document.addEventListener("change", function(e) {
+            if (e.target.classList.contains("worker-checkbox")) {
+                    workerCheckboxes = document.querySelectorAll(".worker-checkbox");
+                if (!e.target.checked) {
+                    selectAllCheckbox.checked = false;
+                } else {
+                    const allChecked = Array.from(workerCheckboxes).every(cb => cb.checked);
+                    selectAllCheckbox.checked = allChecked;
+                }
+                toggleButtonState();
             }
-            toggleButtonState();
-        });
-    });
+       });
 
     // Watch dropdown changes too
     workRequestSelect.addEventListener("change", toggleButtonState);
@@ -69,6 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("Please select at least one worker to shortlist.");
             return;
         }
+
         if (!workRequest || !role) {
             alert("Please select both a Work Request and a Role to shortlist.");
             return;
@@ -108,6 +121,7 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("Error shortlisting:", err);
             alert("Something went wrong during shortlisting: " + err.message);
         });
+
     });
 
     // Send Offer button click

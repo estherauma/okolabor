@@ -348,7 +348,7 @@ function handleAllWorkerTabFiltering({ workRequestId, roleId }) {
               const name =
                 worker.first_name || worker.last_name
                   ? `${worker.first_name} ${worker.last_name}`
-                  : `${worker.email}`;
+                  :  'Not Provided';
               let actions = '';
               console.log('isAdmin value:', isAdmin);
               if (typeof isAdmin !== 'undefined' && isAdmin) {
@@ -364,7 +364,7 @@ function handleAllWorkerTabFiltering({ workRequestId, roleId }) {
                 `;
               }
               table.row.add([
-                `<input type="checkbox" name="worker-all-checkbox" class="worker-all-checkbox" value="${worker.id}" data-worker-name="${name}">`,
+                `<input type="checkbox"class="worker-checkbox" value="${worker.id}" data-worker-name="${name}">`,
                 `<a href="${worker.id}">${name}</a>`,
                 worker.years_of_experience ?? '',
                 worker.total_months_of_h2a_experience ?? '',
