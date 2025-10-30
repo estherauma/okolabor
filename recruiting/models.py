@@ -141,19 +141,22 @@ class Wages(AuditableModel):
     wage_type = models.CharField(
         max_length=50,
         choices=choices,
+        blank=True, null=True
     )
     piece_rate_offerings = models.DecimalField(
         max_digits=10, decimal_places=2,
         blank=True, null=True
     )
     piece_rate_offerings_type = models.CharField(
-        max_length=50
+        max_length=50,
+        blank=True, null=True
     )
     frequency_of_pay = models.CharField(
         max_length=50,
         choices=choices,
+        blank=True, null=True
         )
-    details = models.CharField(max_length=100, null=True)
+    details = models.CharField(max_length=100, blank=True, null=True)
 
 choices = sorted(
             [
@@ -170,11 +173,12 @@ class Deduction(AuditableModel):
         Role, on_delete=models.CASCADE,
         related_name='deductions'
     )
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
     deduction_amount = models.DecimalField(max_digits=10, decimal_places=2)
     frequency_of_pay = models.CharField(
         max_length=50,
         choices=choices,
+        blank=True, null=True
         )
     
     objects = SoftDeleteManager()
@@ -199,22 +203,22 @@ class Qualification(AuditableModel):
         
         choices=choices,
     )
-    experience_required = models.CharField(max_length=255)
-    number_of_months_experience_required = models.IntegerField()
-    training_required = models.CharField(max_length=255)
-    number_of_months_training_required = models.IntegerField()
-    certification_license_requirements = models.BooleanField()
-    drug_screen = models.BooleanField()
-    lifting_requirements = models.BooleanField(max_length=50)
+    experience_required = models.CharField(max_length=255, blank=True, null=True)
+    number_of_months_experience_required = models.IntegerField(blank=True, null=True)
+    training_required = models.CharField(max_length=255, blank=True, null=True)
+    number_of_months_training_required = models.IntegerField(blank=True, null=True)
+    certification_license_requirements = models.BooleanField(blank=True, null=True)
+    drug_screen = models.BooleanField(blank=True, null=True)
+    lifting_requirements = models.BooleanField(blank=True, null=True)
     lifting_requirement_weight = models.IntegerField(
         blank=True, null=True
     )
-    exposure_to_temperature = models.BooleanField()
-    extensive_pushing_or_pulling = models.BooleanField()
-    extensive_sitting_or_walking = models.BooleanField()
-    frequent_stooping_or_bending_over = models.BooleanField()
-    repetitive_movements = models.BooleanField()
-    support_of_other_employees = models.BooleanField()
+    exposure_to_temperature = models.BooleanField(blank=True, null=True)
+    extensive_pushing_or_pulling = models.BooleanField(blank=True, null=True)
+    extensive_sitting_or_walking = models.BooleanField(blank=True, null=True)
+    frequent_stooping_or_bending_over = models.BooleanField(blank=True, null=True)
+    repetitive_movements = models.BooleanField(blank=True, null=True)
+    support_of_other_employees = models.BooleanField(blank=True, null=True)
     support_of_other_employees_number = models.IntegerField(
         null=True, blank=True)
     other_qualifications = models.TextField(blank=True, null=True)
@@ -228,8 +232,8 @@ class EmploymentLocation(AuditableModel):
     address = models.CharField(max_length=255)
     city = models.CharField(max_length=50)
     county = models.CharField(max_length=50)
-    state = models.CharField(max_length=2)
-    postal_code = models.CharField(max_length=10)
+    state = models.CharField(max_length=2, blank=True, null=True)
+    postal_code = models.CharField(max_length=10, blank=True, null=True)
     additional_info = models.TextField(blank=True, null=True)
     
 choices = sorted(
@@ -244,11 +248,11 @@ class HousingInformation(AuditableModel):
         Role, on_delete=models.CASCADE,
         related_name='housing_information'
     )
-    address = models.CharField(max_length=255)
-    city = models.CharField(max_length=50)
-    county = models.CharField(max_length=50)
-    state = models.CharField(max_length=2)
-    postal_code = models.CharField(max_length=10)
+    county = models.CharField(max_length=50, blank=True, null=True)
+    address = models.CharField(max_length=255, blank=True, null=True)
+    city = models.CharField(max_length=50, blank=True, null=True)
+    state = models.CharField(max_length=2, blank=True, null=True)
+    postal_code = models.CharField(max_length=10, blank=True, null=True)
     type_of_housing = models.CharField(
         max_length=50,
         
