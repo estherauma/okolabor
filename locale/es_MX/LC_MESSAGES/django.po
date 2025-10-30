@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-30 12:24+0300\n"
+"POT-Creation-Date: 2025-10-30 17:41+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -410,6 +410,7 @@ msgstr "Confirmar eliminación"
 #: recruiting/templates/recruiting/employers/list.html:52
 #: recruiting/templates/recruiting/employers/list.html:89
 #: recruiting/templates/recruiting/messages/message-detail-modal.html:10
+#: recruiting/templates/recruiting/messages/send-general-message-modal.html:25
 #: recruiting/templates/recruiting/messages/send-workrequest-message.html:11
 #: recruiting/templates/recruiting/messages/work-request-messages.html:152
 #: recruiting/templates/recruiting/messages/work-request-messages.html:159
@@ -443,7 +444,7 @@ msgstr "¿Estás seguro de que quieres eliminar"
 #: account/templates/workers/worker_modals/add_worker_modal.html:31
 #: recruiting/templates/recruiting/work_requests/Edit_Hours.html:59
 #: recruiting/templates/recruiting/work_requests/edit_wages.html:61
-#: recruiting/templates/recruiting/workers/detail.html:1070
+#: recruiting/templates/recruiting/workers/detail.html:1071
 #: theme/templates/components/modals/edit_user_modal.html:53
 msgid "webCommonCancel"
 msgstr "Cancelar"
@@ -1323,6 +1324,14 @@ msgstr "Orden de trabajo"
 msgid "addRoleDescription"
 msgstr "Descripción"
 
+#: recruiting/forms.py:224
+msgid "addRoleAnimalType"
+msgstr "Tipo de animal"
+
+#: recruiting/forms.py:232
+msgid "addRoleCropType"
+msgstr "Tipo de cultivo"
+
 #: recruiting/forms.py:310
 #: recruiting/templates/recruiting/work_requests/create_hours.html:19
 msgid "roleHoursRole"
@@ -1702,7 +1711,7 @@ msgstr "Tipo de visa"
 #: recruiting/forms.py:1051
 #: recruiting/templates/recruiting/messages/message-detail-modal.html:13
 #: recruiting/templates/recruiting/messages/work-request-messages.html:69
-#: recruiting/templates/recruiting/workers/detail.html:396
+#: recruiting/templates/recruiting/workers/detail.html:397
 msgid "title"
 msgstr "Título"
 
@@ -2269,6 +2278,7 @@ msgid ""
 msgstr "A continuación aparece una breve notificación con un botón debajo."
 
 #: recruiting/templates/recruiting/messages/create.html:52
+#: recruiting/templates/recruiting/messages/send-general-message-modal.html:47
 #: recruiting/templates/recruiting/messages/send-workrequest-message.html:45
 msgid "createMessageCancel"
 msgstr "Cancelar"
@@ -2308,7 +2318,7 @@ msgstr "Detalles"
 
 #: recruiting/templates/recruiting/messages/message-detail-modal.html:18
 #: recruiting/templates/recruiting/messages/work-request-messages.html:70
-#: recruiting/templates/recruiting/workers/detail.html:397
+#: recruiting/templates/recruiting/workers/detail.html:398
 msgid "status"
 msgstr "Estado"
 
@@ -2324,6 +2334,7 @@ msgstr "Creado en"
 msgid "messageDetailsClose"
 msgstr "Cerca"
 
+#: recruiting/templates/recruiting/messages/send-general-message-modal.html:19
 #: recruiting/templates/recruiting/messages/send-workrequest-message.html:9
 #: recruiting/templates/recruiting/workers/detail.html:80
 #: recruiting/templates/recruiting/workers/manage_tabs/worker_confirmed.html:67
@@ -2333,6 +2344,7 @@ msgstr "Cerca"
 msgid "workerDetailsSendMessage"
 msgstr "Enviar mensaje"
 
+#: recruiting/templates/recruiting/messages/send-general-message-modal.html:50
 #: recruiting/templates/recruiting/messages/send-workrequest-message.html:48
 msgid "createMessageSend"
 msgstr "Pendiente"
@@ -3424,7 +3436,7 @@ msgstr "¿Estás seguro de que quieres eliminar el rol"
 
 #: recruiting/templates/recruiting/work_requests/detail.html:398
 #: recruiting/templates/recruiting/work_requests/edit_role_modal.html:63
-#: recruiting/templates/recruiting/workers/detail.html:179
+#: recruiting/templates/recruiting/workers/detail.html:180
 msgid "jobOrderDetailsCancel"
 msgstr "Cancelar"
 
@@ -4089,198 +4101,198 @@ msgstr "Enviar oferta"
 msgid "workerDetailsContact"
 msgstr "Información general"
 
-#: recruiting/templates/recruiting/workers/detail.html:104
+#: recruiting/templates/recruiting/workers/detail.html:105
 msgid "workerDetailsAddress"
 msgstr "DIRECCIÓN"
 
-#: recruiting/templates/recruiting/workers/detail.html:112
+#: recruiting/templates/recruiting/workers/detail.html:113
 msgid "workerDetailsEmail"
 msgstr "Correo electrónico"
 
-#: recruiting/templates/recruiting/workers/detail.html:114
+#: recruiting/templates/recruiting/workers/detail.html:115
 msgid "workerDetailsPhoneNumber"
 msgstr "Número de teléfono"
 
-#: recruiting/templates/recruiting/workers/detail.html:116
+#: recruiting/templates/recruiting/workers/detail.html:117
 msgid "workerDetailsGender"
 msgstr "Género"
 
-#: recruiting/templates/recruiting/workers/detail.html:118
+#: recruiting/templates/recruiting/workers/detail.html:119
 msgid "filtersLanguageProficiency"
 msgstr "dominio del idioma"
 
-#: recruiting/templates/recruiting/workers/detail.html:130
+#: recruiting/templates/recruiting/workers/detail.html:131
 #: recruiting/templates/recruiting/workers/work_experience_create.html:15
 msgid "addWorkerExperienceAddWorkerExperience"
 msgstr "Añadir experiencia laboral"
 
-#: recruiting/templates/recruiting/workers/detail.html:182
+#: recruiting/templates/recruiting/workers/detail.html:183
 #: recruiting/templates/recruiting/workers/work_experience_create.html:70
 msgid "addWorkerExperienceSubmit"
 msgstr "Entregar"
 
-#: recruiting/templates/recruiting/workers/detail.html:199
+#: recruiting/templates/recruiting/workers/detail.html:200
 #: recruiting/templates/recruiting/workers/work_experience_detail.html:16
 msgid "workerDetailsWorkExperience"
 msgstr "Experiencia laboral"
 
-#: recruiting/templates/recruiting/workers/detail.html:206
+#: recruiting/templates/recruiting/workers/detail.html:207
 msgid "workerDetailsAddWorkExperience"
 msgstr "Añadir experiencia laboral"
 
-#: recruiting/templates/recruiting/workers/detail.html:225
-#: recruiting/templates/recruiting/workers/detail.html:229
+#: recruiting/templates/recruiting/workers/detail.html:226
+#: recruiting/templates/recruiting/workers/detail.html:230
 msgid "workerDetailsEdit"
 msgstr "Editar"
 
-#: recruiting/templates/recruiting/workers/detail.html:237
-#: recruiting/templates/recruiting/workers/detail.html:241
-#: recruiting/templates/recruiting/workers/detail.html:278
+#: recruiting/templates/recruiting/workers/detail.html:238
+#: recruiting/templates/recruiting/workers/detail.html:242
+#: recruiting/templates/recruiting/workers/detail.html:279
 msgid "workerDetailsDelete"
 msgstr "Borrar"
 
-#: recruiting/templates/recruiting/workers/detail.html:264
-#: recruiting/templates/recruiting/workers/detail.html:1061
+#: recruiting/templates/recruiting/workers/detail.html:265
+#: recruiting/templates/recruiting/workers/detail.html:1062
 msgid "workerDetailsConfirmDelete"
 msgstr "Confirmar eliminación"
 
-#: recruiting/templates/recruiting/workers/detail.html:266
-#: recruiting/templates/recruiting/workers/detail.html:296
-#: recruiting/templates/recruiting/workers/detail.html:691
-#: recruiting/templates/recruiting/workers/detail.html:851
-#: recruiting/templates/recruiting/workers/detail.html:1088
+#: recruiting/templates/recruiting/workers/detail.html:267
+#: recruiting/templates/recruiting/workers/detail.html:297
+#: recruiting/templates/recruiting/workers/detail.html:692
+#: recruiting/templates/recruiting/workers/detail.html:852
+#: recruiting/templates/recruiting/workers/detail.html:1089
 msgid "workerDetailsClose"
 msgstr "Cerca"
 
-#: recruiting/templates/recruiting/workers/detail.html:270
+#: recruiting/templates/recruiting/workers/detail.html:271
 msgid "workerDetailsAreYouSureYouWantToDeleteTheExperience"
 msgstr "¿Estás seguro de que deseas eliminar la experiencia"
 
-#: recruiting/templates/recruiting/workers/detail.html:274
-#: recruiting/templates/recruiting/workers/detail.html:354
+#: recruiting/templates/recruiting/workers/detail.html:275
+#: recruiting/templates/recruiting/workers/detail.html:355
 msgid "workerDetailsCancel"
 msgstr "Cancelar"
 
-#: recruiting/templates/recruiting/workers/detail.html:293
+#: recruiting/templates/recruiting/workers/detail.html:294
 msgid "workerDetailsEditWorkExperience"
 msgstr "Editar experiencia laboral"
 
-#: recruiting/templates/recruiting/workers/detail.html:357
+#: recruiting/templates/recruiting/workers/detail.html:358
 msgid "workerDetailsSaveChanges"
 msgstr "Guardar cambios"
 
-#: recruiting/templates/recruiting/workers/detail.html:370
+#: recruiting/templates/recruiting/workers/detail.html:371
 msgid "workerDetailsJobType"
 msgstr "Tipo de trabajo"
 
-#: recruiting/templates/recruiting/workers/detail.html:373
+#: recruiting/templates/recruiting/workers/detail.html:374
 msgid "workerDetailsTypeDetails"
 msgstr "Detalles del tipo de trabajo"
 
-#: recruiting/templates/recruiting/workers/detail.html:388
-#: recruiting/views/web.py:1657
+#: recruiting/templates/recruiting/workers/detail.html:389
+#: recruiting/views/web.py:1694
 msgid "messageDetailsMessages"
 msgstr "Mensajes"
 
-#: recruiting/templates/recruiting/workers/detail.html:398
+#: recruiting/templates/recruiting/workers/detail.html:399
 msgid "workerDetailsCreatedAt"
 msgstr "Creado en"
 
-#: recruiting/templates/recruiting/workers/detail.html:431
+#: recruiting/templates/recruiting/workers/detail.html:432
 #: recruiting/templates/recruiting/workers/manage_tabs/all_workers_list.html:253
 msgid "workerDetailsWorkerStatus"
 msgstr "Estatus de trabajador"
 
-#: recruiting/templates/recruiting/workers/detail.html:446
+#: recruiting/templates/recruiting/workers/detail.html:447
 msgid "workerDetailsWorkInformation"
 msgstr "Detalles"
 
-#: recruiting/templates/recruiting/workers/detail.html:450
-#: recruiting/templates/recruiting/workers/detail.html:690
+#: recruiting/templates/recruiting/workers/detail.html:451
+#: recruiting/templates/recruiting/workers/detail.html:691
 msgid "workerDetailsAddInformation"
 msgstr "Añadir información"
 
-#: recruiting/templates/recruiting/workers/detail.html:487
-#: recruiting/templates/recruiting/workers/detail.html:1129
+#: recruiting/templates/recruiting/workers/detail.html:488
+#: recruiting/templates/recruiting/workers/detail.html:1130
 msgid "workerDetailsYourBrowserDoesNotSupportTheVideoTag"
 msgstr "Su navegador no soporta la etiqueta de vídeo."
 
-#: recruiting/templates/recruiting/workers/detail.html:695
+#: recruiting/templates/recruiting/workers/detail.html:696
 msgid "workerDetailsSelectType"
 msgstr "Seleccionar tipo"
 
-#: recruiting/templates/recruiting/workers/detail.html:697
+#: recruiting/templates/recruiting/workers/detail.html:698
 msgid "workerDetails--Select--"
 msgstr "--Seleccionar--"
 
-#: recruiting/templates/recruiting/workers/detail.html:699
+#: recruiting/templates/recruiting/workers/detail.html:700
 msgid "workerDetailsDocuments"
 msgstr "Documentos"
 
-#: recruiting/templates/recruiting/workers/detail.html:700
+#: recruiting/templates/recruiting/workers/detail.html:701
 msgid "workerDetailsLanguages"
 msgstr "Idiomas"
 
-#: recruiting/templates/recruiting/workers/detail.html:701
+#: recruiting/templates/recruiting/workers/detail.html:702
 msgid "workerDetailsUserPreferences"
 msgstr "Preferencias del usuario"
 
-#: recruiting/templates/recruiting/workers/detail.html:738
+#: recruiting/templates/recruiting/workers/detail.html:739
 msgid "workerDetailsUploadLanguageVideo"
 msgstr "Subir vídeo en idioma"
-
-#: recruiting/templates/recruiting/workers/detail.html:787
-#: recruiting/templates/recruiting/workers/detail.html:803
-#: recruiting/templates/recruiting/workers/detail.html:814
-#: recruiting/templates/recruiting/workers/detail.html:825
-#: recruiting/templates/recruiting/workers/detail.html:844
-msgid "workerDetailsYes"
-msgstr "Sí"
 
 #: recruiting/templates/recruiting/workers/detail.html:788
 #: recruiting/templates/recruiting/workers/detail.html:804
 #: recruiting/templates/recruiting/workers/detail.html:815
 #: recruiting/templates/recruiting/workers/detail.html:826
 #: recruiting/templates/recruiting/workers/detail.html:845
+msgid "workerDetailsYes"
+msgstr "Sí"
+
+#: recruiting/templates/recruiting/workers/detail.html:789
+#: recruiting/templates/recruiting/workers/detail.html:805
+#: recruiting/templates/recruiting/workers/detail.html:816
+#: recruiting/templates/recruiting/workers/detail.html:827
+#: recruiting/templates/recruiting/workers/detail.html:846
 msgid "workerDetailsNo"
 msgstr "No"
 
-#: recruiting/templates/recruiting/workers/detail.html:852
+#: recruiting/templates/recruiting/workers/detail.html:853
 msgid "workerDetailsSave"
 msgstr "Ahorrar"
 
-#: recruiting/templates/recruiting/workers/detail.html:1066
+#: recruiting/templates/recruiting/workers/detail.html:1067
 msgid "workerDetailsConfirmDeleteText"
 msgstr ""
 "¿Está seguro de que desea eliminar toda la información guardada de este "
 "trabajador? Esto incluye preferencias, dominio del idioma y documentos "
 "subidos."
 
-#: recruiting/templates/recruiting/workers/detail.html:1074
+#: recruiting/templates/recruiting/workers/detail.html:1075
 msgid "workerDetailsDeleteAll"
 msgstr "Eliminar todo"
 
-#: recruiting/templates/recruiting/workers/detail.html:1087
+#: recruiting/templates/recruiting/workers/detail.html:1088
 msgid "workerDetailsMediaViewer"
 msgstr "Visor de medios"
 
-#: recruiting/templates/recruiting/workers/detail.html:1216
+#: recruiting/templates/recruiting/workers/detail.html:1217
 msgid "workerDetailsPleaseSelectAnInformationType."
 msgstr "Por favor seleccione un tipo de información."
 
-#: recruiting/templates/recruiting/workers/detail.html:1225
+#: recruiting/templates/recruiting/workers/detail.html:1226
 msgid "workerDetailsPleaseUploadAProfilePictureItIsRequired."
 msgstr "Por favor sube una foto de perfil, es obligatoria."
 
-#: recruiting/templates/recruiting/workers/detail.html:1236
+#: recruiting/templates/recruiting/workers/detail.html:1237
 msgid "workerDetailsPleaseSelectALanguagelevel."
 msgstr "Por favor seleccione un nivel de idioma"
 
-#: recruiting/templates/recruiting/workers/detail.html:1241
+#: recruiting/templates/recruiting/workers/detail.html:1242
 msgid "workerDetailsPleaseUploadAVideoForYourSelectedLanguageLevel."
 msgstr "Sube un vídeo para el nivel de idioma seleccionado."
 
-#: recruiting/templates/recruiting/workers/detail.html:1322
+#: recruiting/templates/recruiting/workers/detail.html:1323
 msgid "workerDetailsEndDateCannotBeEarlierThanStartDate."
 msgstr "La fecha de finalización no puede ser anterior a la fecha de inicio."
 
@@ -4536,7 +4548,7 @@ msgstr "Exportar"
 #: recruiting/templates/recruiting/workers/manage_tabs/worker_offersent.html:66
 #: recruiting/templates/recruiting/workers/manage_tabs/worker_rejected.html:52
 #: recruiting/templates/recruiting/workers/manage_tabs/worker_shortlist.html:71
-#: recruiting/views/web.py:1485 recruiting/views/web.py:1646
+#: recruiting/views/web.py:1485 recruiting/views/web.py:1683
 msgid "messagesMessages"
 msgstr "Mensajes"
 
@@ -4793,197 +4805,197 @@ msgstr "Mensajes"
 msgid "createMessageMessageCreatedSuccessfully"
 msgstr "Mensaje creado exitosamente"
 
-#: recruiting/views/web.py:1559
+#: recruiting/views/web.py:1543 recruiting/views/web.py:1596
 msgid "sendMessageMessageSentSuccessfully"
 msgstr " Mensaje enviado exitosamente"
 
-#: recruiting/views/web.py:1645
+#: recruiting/views/web.py:1682
 #: theme/templates/components/layouts/vertical/app-sidebar.html:26
 msgid "workers"
 msgstr "Trabajadores"
 
-#: recruiting/views/web.py:1656
+#: recruiting/views/web.py:1693
 msgid "messageDetailsHome"
 msgstr "Hogar"
 
-#: recruiting/views/web.py:1658
+#: recruiting/views/web.py:1695
 msgid "messageDetailsMessageDetails"
 msgstr "Detalles del mensaje"
 
-#: recruiting/views/web.py:1792
+#: recruiting/views/web.py:1829
 msgid "recruiterAdminListrecruiterAssignmentAcceptedSuccessfully"
 msgstr "Asignación del reclutador aceptada con éxito"
 
-#: recruiting/views/web.py:1815
+#: recruiting/views/web.py:1852
 msgid "recruiterAdminListRecruiterAssignmentRejectedSuccessfully"
 msgstr "Asignación del reclutador rechazada con éxito"
 
-#: recruiting/views/web.py:1840
+#: recruiting/views/web.py:1877
 msgid "workersListWorkerAssignmentSuccessfullyMarkedAsDeleted"
 msgstr "Asignación de trabajador marcada exitosamente como eliminada."
 
-#: recruiting/views/web.py:1859
+#: recruiting/views/web.py:1896
 msgid "jobOrderDetailsWorkRequestsSuccessfullyUpdatedTo'{}'Status."
 msgstr "La orden de trabajo se actualizó exitosamente al estado '{status}'."
 
-#: recruiting/views/web.py:1863
+#: recruiting/views/web.py:1900
 msgid "jobOrderListNoWorkRequestsFoundToUpdate"
 msgstr "No se encontró ninguna orden de trabajo para actualizar"
 
-#: recruiting/views/web.py:1866
+#: recruiting/views/web.py:1903
 msgid "jobOrderListInvalidDataProvided"
 msgstr "Datos proporcionados no válidos"
 
-#: recruiting/views/web.py:1871
+#: recruiting/views/web.py:1908
 msgid "jobOrderListInvalidJSONData"
 msgstr "Datos JSON no válidos"
 
-#: recruiting/views/web.py:1910
+#: recruiting/views/web.py:1947
 msgid "employersEmployerIDAndUserIDAreRequired"
 msgstr "Se requieren el ID del empleador y el ID del usuario."
 
-#: recruiting/views/web.py:1919
+#: recruiting/views/web.py:1956
 msgid "employersUserIsAlreadyAssignedToThisOrganization"
 msgstr "El usuario ya está asignado a esta organización."
 
-#: recruiting/views/web.py:1926
+#: recruiting/views/web.py:1963
 msgid "employersOrganizationAssignedSuccessfullyToUser"
 msgstr "Organización asignada con éxito al usuario."
 
-#: recruiting/views/web.py:1932
+#: recruiting/views/web.py:1969
 msgid "employersInvalidJSONPayload"
 msgstr "Carga útil JSON no válida."
 
-#: recruiting/views/web.py:1937
+#: recruiting/views/web.py:1974
 msgid "employersFailedToAssignOrganization: "
 msgstr "Asignar empleador"
 
-#: recruiting/views/web.py:1996
+#: recruiting/views/web.py:2033
 msgid ""
 "employersInvitationsCreated,EmailsSentSuccessfully,AndEmployer(s)AssignedToTheRecruiterOrganization"
 msgstr ""
 "Invitaciones creadas, correos electrónicos enviados exitosamente y "
 "empleador(es) asignado(s) al reclutador."
 
-#: recruiting/views/web.py:2002
+#: recruiting/views/web.py:2039
 msgid "employersTheFollowingEmployersAre AlreadyAssigned: {}"
 msgstr "Los siguientes empleadores ya están asignados: {}"
 
-#: recruiting/views/web.py:2211
+#: recruiting/views/web.py:2248
 msgid "recruiterStatusHome"
 msgstr "Hogar"
 
-#: recruiting/views/web.py:2212
+#: recruiting/views/web.py:2249
 msgid "recruiterStatusRecruiterStatusList"
 msgstr "Lista de estados del reclutador"
 
-#: recruiting/views/web.py:2223
+#: recruiting/views/web.py:2260
 #, python-format
 msgid "employersLink \"%(link_str)s\" deleted successfully."
 msgstr "Enlace \"%(link_str)s\" eliminado exitosamente."
 
-#: recruiting/views/web.py:2233
+#: recruiting/views/web.py:2270
 msgid "employersYouDoNotHavePermissionToDeleteThisLink"
 msgstr "No tienes permiso para eliminar este enlace."
 
-#: recruiting/views/web.py:2345
+#: recruiting/views/web.py:2382
 msgid "roleEmploymentLocationEmploymentLocationUpdatedSuccessfully"
 msgstr "Ubicación de empleo actualizada exitosamente."
 
-#: recruiting/views/web.py:2348
+#: recruiting/views/web.py:2385
 msgid "roleEmploymentLocationThereWasAnErrorUpdatingTheEmploymentLocation"
 msgstr "Hubo un error al actualizar la ubicación del empleo."
 
-#: recruiting/views/web.py:2356
+#: recruiting/views/web.py:2393
 msgid "roleEmploymentLocationEmploymentLocationDeletedSuccessfully"
 msgstr "Ubicación de empleo eliminada exitosamente"
 
-#: recruiting/views/web.py:2359
+#: recruiting/views/web.py:2396
 #, python-format
 msgid "roleEmploymentLocationErrorDeletingEmploymentLocation: %(error)s"
 msgstr "Error al eliminar la ubicación de empleo: %(error)s"
 
-#: recruiting/views/web.py:2368
+#: recruiting/views/web.py:2405
 msgid "joDetailsHousingInfoHousingInformationUpdatedSuccessfully"
 msgstr "Información de vivienda actualizada exitosamente."
 
-#: recruiting/views/web.py:2371
+#: recruiting/views/web.py:2408
 msgid "joDetailsHousingInfoThereWasAnErrorUpdatingTheHousingInformation"
 msgstr "Hubo un error al actualizar la información de la vivienda."
 
-#: recruiting/views/web.py:2381
+#: recruiting/views/web.py:2418
 msgid "joDetailsHousingInfoHousingInformationDeletedSuccessfully"
 msgstr "Información de vivienda eliminada exitosamente."
 
-#: recruiting/views/web.py:2384
+#: recruiting/views/web.py:2421
 #, python-format
 msgid "joDetailsHousingInfoErrorDeletingHousingInformation: %(error)s"
 msgstr "Error al eliminar la información de la vivienda: %(error)s"
 
-#: recruiting/views/web.py:2394
+#: recruiting/views/web.py:2431
 msgid "joDetailsMealsMealProvisionUpdatedSuccessfully"
 msgstr ""
 "La información sobre el suministro de comidas se actualizó correctamente."
 
-#: recruiting/views/web.py:2397
+#: recruiting/views/web.py:2434
 msgid "joDetailsMealsThereWasAnErrorUpdatingTheMealProvision"
 msgstr "Hubo un error al actualizar la provisión de comidas."
 
-#: recruiting/views/web.py:2407
+#: recruiting/views/web.py:2444
 msgid "joDetailsMealsMealProvisionDeletedSuccessfully"
 msgstr "Provisión de comida eliminada exitosamente."
 
-#: recruiting/views/web.py:2410
+#: recruiting/views/web.py:2447
 #, python-format
 msgid "joDetailsMealsErrorDeletingMealProvision: %(error)s"
 msgstr "Error al eliminar la provisión de comida: %(error)s"
 
-#: recruiting/views/web.py:2423
+#: recruiting/views/web.py:2460
 msgid "joDetailsHoursHoursUpdatedSuccessfully"
 msgstr "Horas actualizadas exitosamente."
 
-#: recruiting/views/web.py:2425
+#: recruiting/views/web.py:2462
 msgid "joDetailsHoursThereWasAnErrorUpdatingTheHours"
 msgstr "Hubo un error al actualizar las horas."
 
-#: recruiting/views/web.py:2439
+#: recruiting/views/web.py:2476
 msgid "joDetailsHoursHoursDeletedSuccessfully"
 msgstr "Horas eliminadas exitosamente."
 
-#: recruiting/views/web.py:2441
+#: recruiting/views/web.py:2478
 #, python-format
 msgid "joDetailsHoursErrorDeletingHours: %(error)s"
 msgstr "Error al eliminar horas: %(error)s"
 
-#: recruiting/views/web.py:2456
+#: recruiting/views/web.py:2493
 msgid "joDetailsWagesWagesUpdatedSuccessfully"
 msgstr "Salarios actualizados exitosamente."
 
-#: recruiting/views/web.py:2458
+#: recruiting/views/web.py:2495
 msgid "joDetailsWagesThereWasAnErrorUpdatingTheWages"
 msgstr "Hubo un error al actualizar los salarios."
 
-#: recruiting/views/web.py:2470
+#: recruiting/views/web.py:2507
 msgid "joDetailsWagesWagesDeletedSuccessfully"
 msgstr "Salarios eliminados exitosamente."
 
-#: recruiting/views/web.py:2494
+#: recruiting/views/web.py:2531
 msgid "joDetailsQualificationsQualificationUpdatedSuccessfully"
 msgstr "Calificación actualizada exitosamente."
 
-#: recruiting/views/web.py:2497
+#: recruiting/views/web.py:2534
 msgid "joDetailsQualificationsThereWasAnErrorUpdatingTheQualification"
 msgstr "Hubo un error al actualizar la calificación."
 
-#: recruiting/views/web.py:2505
+#: recruiting/views/web.py:2542
 msgid "joDetailsQualificationsQualificationDeletedSuccessfully"
 msgstr "Calificación eliminada exitosamente"
 
-#: recruiting/views/web.py:2560
+#: recruiting/views/web.py:2596
 msgid "invalidCurpsHome"
 msgstr "Hogar"
 
-#: recruiting/views/web.py:2561
+#: recruiting/views/web.py:2597
 #: theme/templates/components/layouts/vertical/app-sidebar.html:96
 msgid "invalidCurpsInvalidCURPs"
 msgstr "CURP no válidos"
@@ -5034,53 +5046,53 @@ msgstr "Oferta enviada exitosamente a:"
 msgid "workersListOfferAlreadySentTo: "
 msgstr "Oferta ya enviada a:"
 
-#: recruiting/views/workers.py:834
+#: recruiting/views/workers.py:836
 msgid "workerDetailsHome"
 msgstr "Hogar"
 
-#: recruiting/views/workers.py:835
+#: recruiting/views/workers.py:837
 msgid "workerDetailsWorkers"
 msgstr "Trabajadores"
 
-#: recruiting/views/workers.py:855
+#: recruiting/views/workers.py:858
 msgid "workersListUserPreferenceUpdatedSuccessfully"
 msgstr "Preferencia de usuario actualizada exitosamente."
 
-#: recruiting/views/workers.py:872
+#: recruiting/views/workers.py:875
 #, python-format
 msgid "workersListPreference with key '%(key)s' not found."
 msgstr "No se encontró la preferencia con la clave '%(key)s'."
 
-#: recruiting/views/workers.py:878
+#: recruiting/views/workers.py:881
 #, python-format
 msgid "workersListPreference \"%(key)s\" deleted successfully."
 msgstr "La preferencia \"%(key)s\" se eliminó correctamente."
 
-#: recruiting/views/workers.py:888
+#: recruiting/views/workers.py:891
 msgid "workersListNoPermission"
 msgstr "No tienes permiso para eliminar esta preferencia."
 
-#: recruiting/views/workers.py:1297
+#: recruiting/views/workers.py:1300
 msgid "documentsUploadedFor"
 msgstr "Documentos cargados exitosamente para"
 
-#: recruiting/views/workers.py:1340 recruiting/views/workers.py:1627
+#: recruiting/views/workers.py:1343 recruiting/views/workers.py:1630
 msgid "languageProficiencyInformationSavedSuccessfully."
 msgstr "Información de competencia lingüística guardada exitosamente."
 
-#: recruiting/views/workers.py:1377
+#: recruiting/views/workers.py:1380
 msgid "userPreferencesSavedSuccessfully."
 msgstr "Preferencias de usuario guardadas exitosamente."
 
-#: recruiting/views/workers.py:1580
+#: recruiting/views/workers.py:1583
 msgid "workersListUserPreferencesUpdatedSuccessfully"
 msgstr "Preferencia de usuario actualizada exitosamente"
 
-#: recruiting/views/workers.py:1666
+#: recruiting/views/workers.py:1669
 msgid "workersListDocumentsUpdatedSuccessfully"
 msgstr "Documentos actualizados exitosamente."
 
-#: recruiting/views/workers.py:1677
+#: recruiting/views/workers.py:1680
 msgid "workersListAllInformationDeleted"
 msgstr "Se ha eliminado toda la información relacionada con el trabajador."
 
