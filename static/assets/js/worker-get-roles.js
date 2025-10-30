@@ -27,7 +27,7 @@ $(document).ready(function () {
   $('a[data-bs-toggle="tab"]').on("shown.bs.tab", function (e) {
     const activeTabId = $(e.target).attr("href").replace("#", "");
     sessionStorage.setItem("activeTabId", activeTabId);
-    roleSelect.trigger("change");
+    // roleSelect.trigger("change");
   });
 
   workRequestSelect.on("change", function () {
@@ -62,6 +62,7 @@ $(document).ready(function () {
   });
 
   roleSelect.on("change", function () {
+    console.log("Role Changed");
     const workRequestId = workRequestSelect.val();
     const roleId = roleSelect.val();
 
