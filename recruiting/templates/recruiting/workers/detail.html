@@ -76,9 +76,10 @@
           <h5 class="card-title d-contents">
             {% translate "workerDetailsContact" %}
           </h5>
-          <button class="btn grey-green-button">
+          <button class="btn grey-green-button" data-bs-toggle="modal" data-bs-target="#sendGeneralMessage-{{ worker.id }}">
             {% translate "workerDetailsSendMessage" %}
           </button>
+          {% include "recruiting/messages/send-general-message-modal.html" with  form=send_message_form user_id=worker.id %}
         </div>
         <div class="row align-items-start">
           <div class="col-md-4 col-12 mb-3 d-flex justify-content-center">

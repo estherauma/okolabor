@@ -803,6 +803,8 @@ class WorkerDetailsView(LoginRequiredMixin,View):
         for msg in worker_messages:
             if hasattr(msg, 'status'):
                 msg.status = str(msg.status).capitalize()
+        send_message_form = SendMessageForm()
+
         context = {
             'work_requests': WorkRequests.objects.filter(status='Open').prefetch_related('roles'),
             'worker': worker,
@@ -835,6 +837,7 @@ class WorkerDetailsView(LoginRequiredMixin,View):
                         {'name': _('workerDetailsWorkers'), 'url': reverse('recruiting_web:workers')},
                         {'name': worker.first_name, 'url': None},
                     ],
+            'send_message_form': send_message_form,
         }
         return render(request, 'recruiting/workers/detail.html', context)
     
