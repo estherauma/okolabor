@@ -55,6 +55,23 @@ worker_profile_status_labels = {
 }
 
 class WorkerListView(LoginRequiredMixin, View):
+    # Helper function to generate text variants for matching since the database has mixed entries eg some valve onions_and_shallots vs Onions and shallots
+    @staticmethod
+    def generate_text_variants(item):
+        sc = StaticContent()
+        variants = set()
+        variants.add(item)
+        normalized_value = sc._normalize(item)
+        variants.add(normalized_value)
+        variants.add(item.lower())
+        variants.add(item.upper())
+        variants.add(item.title())
+        variants.add(item.replace('_', ' '))
+        variants.add(item.replace(' ', '_'))
+        variants.add(normalized_value.replace('_', ' '))
+        variants.add(normalized_value.replace(' ', '_'))
+        return {v for v in variants if v}
+    
     def get(self, request):
         # if coming from add workers button on work request detail page
         # Get optional parameters from query string
@@ -73,7 +90,7 @@ class WorkerListView(LoginRequiredMixin, View):
         dynamic_field_2 = request.GET.getlist('dynamic_field_2')
         fields_with_type_details = ['Crop and Horticulture', 'Animals']
         params = request.GET
-        sc = StaticContent()
+
         if type_sector:
             workers = workers.filter(
                 crop_experiences__job_type__iexact=type_sector,
@@ -84,18 +101,13 @@ class WorkerListView(LoginRequiredMixin, View):
             q = Q()
             if type_sector in fields_with_type_details:
                 for item in dynamic_field_1:
-                    normalized_value = sc._normalize(item)
-                    # Check for both normalized and raw value because the db has mixed entries
-                    q |= Q(crop_experiences__type_details__icontains=normalized_value)
-                    q |= Q(crop_experiences__type_details__icontains=item)
-
+                    for v in WorkerListView.generate_text_variants(item):
+                        q |= Q(crop_experiences__type_details__icontains=v)
                 workers = workers.filter(q, crop_experiences__deleted_at__isnull=True)
             else:
                 for item in dynamic_field_1:
-                    normalized_value = sc._normalize(item)
-                    # Check for both normalized and raw value because the db has mixed entries
-                    q |= Q(crop_experiences__job_experience_details__value__icontains=normalized_value)
-                    q |= Q(crop_experiences__job_experience_details__value__icontains=item)
+                    for v in WorkerListView.generate_text_variants(item):
+                        q |= Q(crop_experiences__job_experience_details__value__icontains=v)
                 workers = workers.filter(
                     q,
                     crop_experiences__job_experience_details__kind__icontains='responsibilities',
@@ -105,16 +117,13 @@ class WorkerListView(LoginRequiredMixin, View):
         if dynamic_field_2:
             q = Q()
             for item in dynamic_field_2:
-                normalized_value = sc._normalize(item)
-                # Check for both normalized and raw value because the db has mixed entries
-                q |= Q(crop_experiences__job_experience_details__value__icontains=normalized_value)
-                q |= Q(crop_experiences__job_experience_details__value__icontains=item)
+                for v in WorkerListView.generate_text_variants(item):
+                    q |= Q(crop_experiences__job_experience_details__value__icontains=v)
             workers = workers.filter(
                     q,
                     crop_experiences__job_experience_details__kind__icontains='responsibilities',
                     crop_experiences__job_experience_details__deleted_at__isnull=True
                 )
-
         # Filter by Passport
         passport_filter = next((v for k, v in params.items() if k.startswith("passport_") and v), None)
         if passport_filter and passport_filter.lower() == 'yes':
