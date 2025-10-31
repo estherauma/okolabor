@@ -55,13 +55,12 @@ worker_profile_status_labels = {
 }
 
 class WorkerListView(LoginRequiredMixin, View):
-    # Helper function to generate text variants for matching since the database has mixed entries eg some valve onions_and_shallots vs Onions and shallots
+    # Helper function to generate text variants for matching since the database has mixed entries eg some value onions_and_shallots vs Onions and shallots
     @staticmethod
-    def generate_text_variants(item):
-        sc = StaticContent()
+    def generate_text_variants(item, static_content):
         variants = set()
         variants.add(item)
-        normalized_value = sc._normalize(item)
+        normalized_value = static_content._normalize(item)
         variants.add(normalized_value)
         variants.add(item.lower())
         variants.add(item.upper())
@@ -81,6 +80,7 @@ class WorkerListView(LoginRequiredMixin, View):
         form = DynamicWorkExperienceForm(request.GET or None)
         filter_form = AdvancedFilterForm(request.GET or None)
         search_query = request.GET.get('search', '')
+        static_content = StaticContent()
 
         workers = User.objects.filter(groups__name='worker', deleted=False).order_by('-created_at')
 
@@ -101,12 +101,12 @@ class WorkerListView(LoginRequiredMixin, View):
             q = Q()
             if type_sector in fields_with_type_details:
                 for item in dynamic_field_1:
-                    for v in WorkerListView.generate_text_variants(item):
+                    for v in WorkerListView.generate_text_variants(item, static_content):
                         q |= Q(crop_experiences__type_details__icontains=v)
                 workers = workers.filter(q, crop_experiences__deleted_at__isnull=True)
             else:
                 for item in dynamic_field_1:
-                    for v in WorkerListView.generate_text_variants(item):
+                    for v in WorkerListView.generate_text_variants(item, static_content):
                         q |= Q(crop_experiences__job_experience_details__value__icontains=v)
                 workers = workers.filter(
                     q,
@@ -117,7 +117,7 @@ class WorkerListView(LoginRequiredMixin, View):
         if dynamic_field_2:
             q = Q()
             for item in dynamic_field_2:
-                for v in WorkerListView.generate_text_variants(item):
+                for v in WorkerListView.generate_text_variants(item, static_content):
                     q |= Q(crop_experiences__job_experience_details__value__icontains=v)
             workers = workers.filter(
                     q,
