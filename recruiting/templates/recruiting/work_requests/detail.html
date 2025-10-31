@@ -756,7 +756,7 @@
                   <label>
                     {% translate "joDetailsQualificationsLiftingRequirements" %}:
                   </label>
-                  <p>{{ role.qualifications.lifting_requirements }}</p>
+                  <p>{{ role.qualifications.lifting_requirements|yesno:_("Yes,No") }}</p>
                 </div>
                 <div class="details-row">
                   <label>

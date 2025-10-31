@@ -122,7 +122,7 @@ class Hours(AuditableModel):
     thursday_hours = models.CharField(max_length=50, blank=True, null=True)
     friday_hours = models.CharField(max_length=50, blank=True, null=True)
     saturday_hours = models.CharField(max_length=50, blank=True, null=True)
-    job_description = models.TextField()
+    job_description = models.TextField(blank=True, null=True)
     
     objects = SoftDeleteManager()  # Only active (non-deleted)
     all_objects = models.Manager()
@@ -137,7 +137,7 @@ class Wages(AuditableModel):
     role = models.OneToOneField(
         Role, on_delete=models.CASCADE, related_name='wages'
     )
-    wage = models.DecimalField(max_digits=10, decimal_places=2)
+    wage = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     wage_type = models.CharField(
         max_length=50,
         choices=choices,
