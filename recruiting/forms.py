@@ -497,7 +497,7 @@ class RoleQualificationForm(forms.ModelForm):
             'certification_license_requirements': _('roleQualificationCertification/LicenseRequirements'),
             'drug_screen': _('roleQualificationDrugScreen'),
             'lifting_requirements': _('roleQualificationLiftingRequirements'),
-            'lifting_requirement_weight': _('roleQualificationLiftingRequirementWeight'),
+            'lifting_requirement_weight': _('joDetailsQualificationsLiftingRequirementWeight'),
             'exposure_to_temperature': _('roleQualificationExposureToTemperature'),
             'extensive_pushing_or_pulling': _('roleQualificationExtensivePushingOrPulling'),
             'extensive_sitting_or_walking': _('roleQualificationExtensiveSittingOrWalking'),
