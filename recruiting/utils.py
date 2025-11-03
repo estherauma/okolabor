@@ -121,7 +121,7 @@ def calculate_total_experience(user, filters=None):
             total_months += value
         elif isinstance(value, str):
             try:
-                # Because  strings are saved with extra text, eg 10 messes, we extract the numeric part using regex
+                # Because  strings are saved with extra text, eg 10 meses, we extract the numeric part using regex
                 match = re.search(r'\d+(\.\d+)?', value)
                 if match:
                     total_months += float(match.group())
