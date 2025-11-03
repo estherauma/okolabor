@@ -63,7 +63,6 @@ class WorkerListView(LoginRequiredMixin, View):
         form = DynamicWorkExperienceForm(request.GET or None)
         filter_form = AdvancedFilterForm(request.GET or None)
         search_query = request.GET.get('search', '')
-        static_content = StaticContent()
 
         workers = User.objects.filter(groups__name='worker', deleted=False).order_by('-created_at')
 
@@ -326,7 +325,7 @@ class WorkerListView(LoginRequiredMixin, View):
                 'years_of_experience': years_of_experience, 
                 'visa_uploaded': visa_uploaded,
                 'intro_video_uploaded': intro_video_uploaded,
-                'total_months_of_h2a_experience': calculate_months_ofH2A_expererience(worker),
+                'total_months_of_h2a_experience': calculate_months_ofH2A_expererience(worker, exp_filters),
                 'latest_status': worker_profile_status_labels[code],
                 **worker_details
             })
