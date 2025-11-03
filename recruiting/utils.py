@@ -115,7 +115,6 @@ def calculate_total_experience(user, filters=None):
     if filters:
         experiences = filter_workers_by_experience(experiences, filters)
     total_months = 0
-    print(user.first_name, len(experiences))
     for exp in experiences:
         value = exp.approx_total_months_worked
         if isinstance(value, (int, float)):
