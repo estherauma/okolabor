@@ -13,7 +13,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'workersListClose' %}"></button>
             </div>
             <div class="modal-body">
-                <form method="post" action="{% url 'recruiting_web:offer_send_worker' %}" id="offerSendWorkerForm{{ worker.id }}">
+                <form method="post" action="{% url 'recruiting_web:offer_send_worker' %}">
                     {% csrf_token %}
                     <input type="hidden" name="worker_ids" value="{{ worker.id }}">
 
@@ -42,7 +42,7 @@
                 <button type="button" class="btn grey-button" data-bs-dismiss="modal">
                     {% translate 'webCommonCancel' %}
                 </button>
-                <button type="submit" form="offerSendWorkerForm{{ worker.id }}" class="btn light-green-button">
+                <button type="submit" class="btn light-green-button">
                     {% translate "workersListAssign" %}
                 </button>
             </div>
