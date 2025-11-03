@@ -944,7 +944,6 @@ class WorkRequestDetailView(View):
         roles_qs_raw = work_request.roles.filter(
                 deleted_at__isnull=True,
             )
-        roles_qs = [role for role in roles_qs_raw if hasattr(role, 'hours') and role.hours.deleted_at is None]
     
         role_forms = {
             role.id: WorkRequestRoleForm(instance=role)
@@ -967,7 +966,7 @@ class WorkRequestDetailView(View):
         }
         hours_form = {
             role.id: RoleHoursForm(instance=role.hours)
-            for role in roles_qs if hasattr(role, 'hours')
+            for role in roles_qs_raw if hasattr(role, 'hours') and role.hours and role.hours.deleted_at is None
             }
         wages_form = {
             role.id: RoleWagesForm(instance=role.wages)
@@ -998,8 +997,7 @@ class WorkRequestDetailView(View):
         role_Housing_form = RoleHousingInformationForm()
         role_Meals_form = RoleMealProvision()
         
-        # for item in roles_qs, find shortlist, offersent, confirmed and rejected count
-        for item in roles_qs:
+        for item in roles_qs_raw:
             item.shortlist_count = WorkAssignment.objects.filter(
                 work_request=work_request,
                 role=item,
@@ -1035,7 +1033,7 @@ class WorkRequestDetailView(View):
 
         context = {
             'workrequest': work_request,
-            'roles': roles_qs,
+            'roles': roles_qs_raw,
             'role_forms': role_forms,
             'worker_summary': worker_summary,
             'total_shortlist_count': total_shortlist_count,

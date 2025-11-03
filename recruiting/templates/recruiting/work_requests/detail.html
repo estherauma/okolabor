@@ -78,7 +78,7 @@
     <div class="card">
       <div class="card-header" style="background-color: #7DBF96;">
         <div class="card-title">
-          <h3 class="card-title text-white">
+          <h3 class="card-title text-white ">
             {% translate "jobOrderDetailsRequestOverview" %}
           </h3>
         </div>
@@ -160,7 +160,7 @@
     <div class="card roles-card">    
         <div class="card-header">
         <div class="card-title">
-        <h3 class="card-title text-white">
+        <h3 class="card-title text-white text-capitalize">
           {% translate "jobOrderDetailsRequestedWorkerCategories" %}
         </h3>
         </div>
@@ -756,7 +756,7 @@
                   <label>
                     {% translate "joDetailsQualificationsLiftingRequirements" %}:
                   </label>
-                  <p>{{ role.qualifications.lifting_requirements }}</p>
+                  <p>{{ role.qualifications.lifting_requirements|yesno:_("Yes,No") }}</p>
                 </div>
                 <div class="details-row">
                   <label>

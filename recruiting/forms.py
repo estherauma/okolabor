@@ -221,7 +221,7 @@ class WorkRequestRoleForm(forms.ModelForm):
         field_config = {
             'animal_types': {
                 'choices': content_service.get_animal_type_choices,
-                'label': content_service.get_label_for_field('animalType'),
+                'label': _('addRoleAnimalType'),
             },
             'responsibilities_types': {
                 'choices': content_service.get_animal_responsibilities_choices,
@@ -229,7 +229,7 @@ class WorkRequestRoleForm(forms.ModelForm):
             },
             'crop_types': {
                 'choices': content_service.get_crop_type_choices,
-                'label': content_service.get_label_for_field('cropType'),
+                'label': _('addRoleCropType'),
             },
             'crop_job_types': {
                 'choices': content_service.get_crop_responsibilities_choices,
@@ -497,7 +497,7 @@ class RoleQualificationForm(forms.ModelForm):
             'certification_license_requirements': _('roleQualificationCertification/LicenseRequirements'),
             'drug_screen': _('roleQualificationDrugScreen'),
             'lifting_requirements': _('roleQualificationLiftingRequirements'),
-            'lifting_requirement_weight': _('roleQualificationLiftingRequirementWeight'),
+            'lifting_requirement_weight': _('joDetailsQualificationsLiftingRequirementWeight'),
             'exposure_to_temperature': _('roleQualificationExposureToTemperature'),
             'extensive_pushing_or_pulling': _('roleQualificationExtensivePushingOrPulling'),
             'extensive_sitting_or_walking': _('roleQualificationExtensiveSittingOrWalking'),
