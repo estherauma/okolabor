@@ -1,6 +1,8 @@
 # utils.py
+import re
 from account.models import UserDocuments, UserPreference, User
 from common.logger import AppLogger
+from common.utils import StaticContent
 from recruiting.models import WorkAssignment
 from django.conf import settings
 from django.contrib import messages
@@ -12,6 +14,7 @@ from datetime import date
 from django.utils import timezone
 from django.db import transaction
 from recruiting.models import WorkRequests, Role, WorkAssignment, OkoMessage
+from django.db.models import Q
 
 
 ONBOARDING_STEPS = [
@@ -106,25 +109,33 @@ def get_sector_choices():
         return choices
     except Exception as e:
         return []
-    
-def calculate_total_experience(user):
-    # Calculate total work experience in years based on filters. 
-    # Right now we aren't factoring in filters, just summing all experiences.
-    experiences = user.work_experiences.all()
+
+def calculate_total_experience(user, filters=None):
+    experiences = user.work_experiences.filter(deleted=False)
+    if filters:
+        experiences = filter_workers_by_experience(experiences, filters)
     total_months = 0
+    print(user.first_name, len(experiences))
     for exp in experiences:
         value = exp.approx_total_months_worked
         if isinstance(value, (int, float)):
             total_months += value
         elif isinstance(value, str):
             try:
-                total_months += float(value)
+                # Because  strings are saved with extra text, eg 10 messes, we extract the numeric part using regex
+                match = re.search(r'\d+(\.\d+)?', value)
+                if match:
+                    total_months += float(match.group())
             except ValueError:
                 pass
     return round(total_months)
 
-def calculate_months_ofH2A_expererience(user):
-    experiences = user.work_experiences.filter(work_under_h2a_in_usa='No')
+def calculate_months_ofH2A_expererience(user, filters=None):
+    experiences = user.work_experiences.filter(work_under_h2a_in_usa='No', deleted=False)
+
+    if filters:
+        experiences = filter_workers_by_experience(experiences, filters)
+
     total_months = 0
     for exp in experiences:
         value = exp.approx_total_months_worked
@@ -132,7 +143,10 @@ def calculate_months_ofH2A_expererience(user):
             total_months += value
         elif isinstance(value, str):
             try:
-                total_months += float(value)
+                # Because  strings are saved with extra text, eg 10 messes, we extract the numeric part using regex
+                match = re.search(r'\d+(\.\d+)?', value)
+                if match:
+                    total_months += float(match.group())
             except ValueError:
                 pass
     return round(total_months)
@@ -198,3 +212,50 @@ def duplicate_work_request(original_request, new_name, new_start_date, new_end_d
         )
 
     return new_request
+
+
+def filter_workers_by_experience(queryset, filters={}):
+    static_content = StaticContent()
+    type_sector = filters.get("type_sector")
+    dynamic_field_1 = filters.get("dynamic_field_1")
+    dynamic_field_2 = filters.get("dynamic_field_2")
+    fields_with_type_details = ["Crop and Horticulture", "Animals"]
+    results = queryset
+
+    if type_sector:
+        results = results.filter(
+            crop_experiences__job_type__iexact=type_sector,
+            crop_experiences__deleted_at__isnull=True,
+        )
+
+        if dynamic_field_1:
+            q = Q()
+            if type_sector in fields_with_type_details:
+                for item in dynamic_field_1:
+                    for v in static_content.generate_text_variants(item):
+                        q |= Q(crop_experiences__type_details__icontains=v)
+                results = results.filter(q, crop_experiences__deleted_at__isnull=True)
+            else:
+                for item in dynamic_field_1:
+                    for v in static_content.generate_text_variants(item):
+                        q |= Q(
+                            crop_experiences__job_experience_details__value__icontains=v
+                        )
+                results = results.filter(
+                    q,
+                    crop_experiences__job_experience_details__kind__icontains="responsibilities",
+                    crop_experiences__job_experience_details__deleted_at__isnull=True,
+                )
+
+        if dynamic_field_2:
+            q = Q()
+            for item in dynamic_field_2:
+                for v in static_content.generate_text_variants(item):
+                    q |= Q(crop_experiences__job_experience_details__value__icontains=v)
+            results = results.filter(
+                q,
+                crop_experiences__job_experience_details__kind__icontains="responsibilities",
+                crop_experiences__job_experience_details__deleted_at__isnull=True,
+            )
+
+    return results
