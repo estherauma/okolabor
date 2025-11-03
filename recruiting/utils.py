@@ -131,7 +131,7 @@ def calculate_total_experience(user, filters=None):
     return round(total_months)
 
 def calculate_months_ofH2A_expererience(user, filters=None):
-    experiences = user.work_experiences.filter(work_under_h2a_in_usa='No', deleted=False)
+    experiences = user.work_experiences.filter(type_of_work='Formal job', visa_type='H-2A', deleted=False)
 
     if filters:
         experiences = filter_workers_by_experience(experiences, filters)
