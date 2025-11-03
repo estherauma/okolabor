@@ -32,13 +32,16 @@ $(document).ready(function () {
 
   workRequestSelect.on("change", function () {
     const workRequestId = $(this).val();
+    const params = new URLSearchParams(window.location.search);
+    const hasRoleParam = params.has('role');
+    const hasWorkRequestParam = params.has('work_request');   
 
     if (!workRequestId) {
       sessionStorage.removeItem("selectedRole");
       sessionStorage.removeItem("selectedWorkRequest");
-    if (window.location.search && window.location.pathname === '/workers/') {
-         window.location.href = '/workers/';
-       }
+      if ((hasRoleParam || hasWorkRequestParam) && window.location.pathname === '/workers/') {
+        window.location.href = '/workers/';
+      }
       return;
     }
     roleSelect.html(
@@ -65,9 +68,11 @@ $(document).ready(function () {
   });
 
   roleSelect.on("change", function () {
-    console.log("Role Changed");
     const workRequestId = workRequestSelect.val();
     const roleId = roleSelect.val();
+     const params = new URLSearchParams(window.location.search);
+    const hasRoleParam = params.has('role');
+    const hasWorkRequestParam = params.has('work_request');
 
     sessionStorage.setItem("selectedWorkRequest", workRequestId);
     sessionStorage.setItem("selectedRole", roleId);
@@ -84,9 +89,9 @@ $(document).ready(function () {
        sessionStorage.removeItem("selectedRole");
        sessionStorage.removeItem("selectedWorkRequest");
       
-        if (window.location.search && window.location.pathname === '/workers/') {
-         window.location.href = '/workers/';
-       }
+      if ((hasRoleParam || hasWorkRequestParam) && window.location.pathname === '/workers/') {
+        window.location.href = '/workers/';
+      }
        return;
      } else if (workRequestId && roleId && status === "all") {
       handleAllWorkerTabFiltering({ workRequestId, roleId });
