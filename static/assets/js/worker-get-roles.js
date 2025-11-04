@@ -1,4 +1,21 @@
 $(document).ready(function () {
+  (async function() {
+     try {
+        const response = await fetch('/api/dynamic-field-data/');
+        if (response.ok) {
+            const fieldData = await response.json();
+            localStorage.setItem('expDynamicFieldData', JSON.stringify(fieldData));
+        } else {
+            console.error("Failed to fetch dynamic field data:", response.status);
+        }
+    } catch (error) {
+        console.error("Error fetching dynamic field data:", error);
+    }
+    await initialize();
+  })();
+})
+
+async function initialize() {
   const workRequestSelect = $("#modal_work_request");
   const roleSelect = $("#modal_role");
 
@@ -24,13 +41,29 @@ $(document).ready(function () {
     tab5: { tableId: "#basic-datatable-rejectedTab5", status: "rejected" },
   };
 
-  $('a[data-bs-toggle="tab"]').on("shown.bs.tab", function (e) {
-    const activeTabId = $(e.target).attr("href").replace("#", "");
-    sessionStorage.setItem("activeTabId", activeTabId);
-    // roleSelect.trigger("change");
+  $('a[data-bs-toggle="tab"]').on('shown.bs.tab', async function (e) {
+    const activeTabId = $(e.target).attr('href').replace('#', '');
+    sessionStorage.setItem('activeTabId', activeTabId);
+    const _savedWorkRequest = sessionStorage.getItem('selectedWorkRequest');
+    const _savedRole = sessionStorage.getItem('selectedRole');
+    if (_savedWorkRequest && _savedRole) {
+      if (activeTabId === 'tab1') {
+        await handleAllWorkerTabFiltering({
+          workRequestId: _savedWorkRequest,
+          roleId: _savedRole,
+        });
+      } else {
+        await handleOtherTabsFiltering({
+          workRequestId: _savedWorkRequest,
+          roleId: _savedRole,
+          activeTabId,
+          tabToTableMap,
+        });
+      }
+    }
   });
 
-  workRequestSelect.on("change", function () {
+  workRequestSelect.on("change",  function () {
     const workRequestId = $(this).val();
     const params = new URLSearchParams(window.location.search);
     const hasRoleParam = params.has('role');
@@ -67,7 +100,7 @@ $(document).ready(function () {
     }
   });
 
-  roleSelect.on("change", function () {
+  roleSelect.on("change", async function () {
     const workRequestId = workRequestSelect.val();
     const roleId = roleSelect.val();
      const params = new URLSearchParams(window.location.search);
@@ -83,102 +116,21 @@ $(document).ready(function () {
     if (!tabInfo) return;
 
     const { tableId, status } = tabInfo;
-    console.log("Filtering table:", roleId, "with status:", window.location.pathname);
-     // If roleSelect is cleared (empty), redirect to /workers/
-     if (!roleId) {
+    if (!roleId) {
        sessionStorage.removeItem("selectedRole");
        sessionStorage.removeItem("selectedWorkRequest");
       
       if ((hasRoleParam || hasWorkRequestParam) && window.location.pathname === '/workers/') {
         window.location.href = '/workers/';
       }
-       return;
-     } else if (workRequestId && roleId && status === "all") {
-      handleAllWorkerTabFiltering({ workRequestId, roleId });
+      return;
+    } 
+
+    await  handleAllWorkerTabFiltering({ workRequestId, roleId });
+    if (workRequestId && roleId && status === "all") {
+      await handleOtherTabsFiltering({ workRequestId: workRequestId, roleId: roleId, activeTabId:"tab2", tabToTableMap });
     } else if (workRequestId && roleId) {
-      fetch(
-        `/workers/ajax-filtered-workers/?work_request=${workRequestId}&role=${roleId}&status=${status}`
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          const counts = data.counts || {};
-          const countIdMap = {
-            assigned: "#shortlisted-count",
-            offersent: "#offersent-count",
-            confirmed: "#confirmed-count",
-            rejected: "#rejected-count",
-          };
-          
-          for (const item in counts) {
-            $(countIdMap[item]).text(`(${counts[item]})`);
-          }
-        
-          if (!$.fn.DataTable.isDataTable(tableId)) {
-            $(tableId).DataTable({
-              ordering: true,
-              order: [],
-              columnDefs: [
-                { targets: 0, orderable: false },
-                { targets: -1, orderable: false },
-              ],
-              paging: true,
-              info: true,
-            });
-          }
-
-          const table = $(tableId).DataTable({
-            ordering: true,
-            order: [],
-            columnDefs: [
-              { targets: 0, orderable: false },
-              { targets: -1, orderable: false },
-            ],
-            paging: true,
-            info: true,
-          });
-          table.clear();
-
-          if (data.workers.length === 0) {
-            table.row.add([
-              "",
-              "No workers found",
-              "",
-              "",
-              "",
-              "",
-              "",
-              "",
-              "",
-              "",
-            ]);
-          } else {
-            data.workers.forEach((worker) => {
-              const tabCheckboxClassMap = {
-                tab2: "worker-shortlist-checkbox",
-                tab3: "worker-offersent-checkbox",
-                tab4: "worker-confirmed-checkbox",
-                tab5: "worker-rejected-checkbox",
-              };
-              const checkboxClass =
-                tabCheckboxClassMap[activeTabId] || "worker-default-checkbox";
-              table.row.add([
-                `<input type="checkbox" name="${checkboxClass}" class="${checkboxClass}" value="${worker.id}" data-worker-name="${worker.name}">`,
-                `<a href="${worker.id}">${worker.name}</a>`,
-                worker.relExp,
-                worker.h2aExp,
-                worker.offer,
-                worker.profile,
-                worker.visa
-              ]);
-            });
-          }
-
-          table.draw();
-          bindSelectAllCheckbox(activeTabId); // ✅ Add this line
-        })
-        .catch((err) => {
-          console.error("Error loading filtered workers:", err);
-        });
+      await handleOtherTabsFiltering({ workRequestId, roleId, activeTabId, tabToTableMap });
     }
   });
 
@@ -212,9 +164,10 @@ $(document).ready(function () {
         console.error("Error restoring previous roles:", error)
       );
   }
+}
 
-  // ✅ Select All Checkbox logic per tab
-  function bindSelectAllCheckbox(tabId) {
+// ✅ Select All Checkbox logic per tab
+function bindSelectAllCheckbox(tabId) {
     let selectAllId = "";
     let checkboxClass = "";
 
@@ -249,10 +202,94 @@ $(document).ready(function () {
         $(selectAllId).prop("checked", total === checked);
       });
   }
-});
 
-function handleAllWorkerTabFiltering({ workRequestId, roleId }) {
- const  dynamic_fields_keys = {
+async function handleOtherTabsFiltering({
+  workRequestId,
+  roleId,
+  activeTabId,
+  tabToTableMap,
+}) {
+  try {
+    const tabInfo = tabToTableMap[activeTabId];
+    const { tableId, status } = tabInfo;
+
+    const response = await fetch(
+      `/workers/ajax-filtered-workers/?work_request=${workRequestId}&role=${roleId}&status=${status}`
+    );
+    if (!response?.ok) {
+      throw new Error(`Failed to load role data ${response.status}`);
+    }
+    const data = await response.json();
+    const counts = data.counts || {};
+    const countIdMap = {
+      assigned: '#shortlisted-count',
+      offersent: '#offersent-count',
+      confirmed: '#confirmed-count',
+      rejected: '#rejected-count',
+    };
+
+    for (const item in counts) {
+      $(countIdMap[item]).text(`(${counts[item]})`);
+    }
+
+    if (!$.fn.DataTable.isDataTable(tableId)) {
+      $(tableId).DataTable({
+        ordering: true,
+        order: [],
+        columnDefs: [
+          { targets: 0, orderable: false },
+          { targets: -1, orderable: false },
+        ],
+        paging: true,
+        info: true,
+      });
+    }
+
+    const table = $(tableId).DataTable({
+      ordering: true,
+      order: [],
+      columnDefs: [
+        { targets: 0, orderable: false },
+        { targets: -1, orderable: false },
+      ],
+      paging: true,
+      info: true,
+    });
+    table.clear();
+
+    if (data.workers.length === 0) {
+      table.row.add(['', 'No workers found', '', '', '', '', '', '', '', '']);
+    } else {
+      data.workers.forEach((worker) => {
+        const tabCheckboxClassMap = {
+          tab2: 'worker-shortlist-checkbox',
+          tab3: 'worker-offersent-checkbox',
+          tab4: 'worker-confirmed-checkbox',
+          tab5: 'worker-rejected-checkbox',
+        };
+        const checkboxClass =
+          tabCheckboxClassMap[activeTabId] || 'worker-default-checkbox';
+        table.row.add([
+          `<input type="checkbox" name="${checkboxClass}" class="${checkboxClass}" value="${worker.id}" data-worker-name="${worker.name}">`,
+          `<a href="${worker.id}">${worker.name}</a>`,
+          worker.relExp,
+          worker.h2aExp,
+          worker.offer,
+          worker.profile,
+          worker.visa,
+        ]);
+      });
+    }
+
+    table.draw();
+    bindSelectAllCheckbox(activeTabId);
+  } catch (error) {
+    console.error('Error fetching role data:', error);
+  }
+}
+
+async function handleAllWorkerTabFiltering({ workRequestId, roleId }) {
+  const dynamic_fields_keys = {
     animals: {
       type_details_key: 'animal_types',
       responsibilities_key: 'responsibilities_types',
@@ -280,89 +317,93 @@ function handleAllWorkerTabFiltering({ workRequestId, roleId }) {
     },
   };
   if (!workRequestId || !roleId) return;
+  try {
+    const response = await fetch(`/roles/${roleId}/`);
+    if (!response?.ok) {
+      throw new Error(`Failed to load role data ${response.status}`);
+    }
 
-  fetch(`/roles/${roleId}/`)
-    .then((res) => res.json())
-    .then((data) => {
-      const role = data.role;
-      let type_sector_keys = dynamic_fields_keys[role.work_type];
-      let typeSectorDetails =[]
-      let typeSectorResponsibilities =[]
+    const roleRespData = await response.json();
+    const role = roleRespData.role;
+    let type_sector_keys = dynamic_fields_keys[role.work_type];
+    let typeSectorDetails = [];
+    let typeSectorResponsibilities = [];
 
-      if (!type_sector_keys) {
-        type_sector_keys = dynamic_fields_keys.other;
-      }
-      let url = `/workers/?work_request=${workRequestId}&role=${roleId}&type_sector=${type_sector_keys?.dbValue}`;
+    if (!type_sector_keys) {
+      type_sector_keys = dynamic_fields_keys.other;
+    }
+    let url = `/workers/?work_request=${workRequestId}&role=${roleId}&type_sector=${type_sector_keys?.dbValue}`;
 
-      if (role.work_type_detail){
-        let details_key = type_sector_keys['type_details_key']
-        let responsibilities_key = type_sector_keys['responsibilities_key']
+    if (role.work_type_detail) {
+      let details_key = type_sector_keys['type_details_key'];
+      let responsibilities_key = type_sector_keys['responsibilities_key'];
 
-        typeSectorDetails = role.work_type_detail[details_key] || [] 
-        typeSectorResponsibilities = responsibilities_key ? role.work_type_detail[responsibilities_key] || [] : []
-      }
-      
-      if (typeSectorDetails.length > 0) {
-        const detailsParams = typeSectorDetails.map(detail => `dynamic_field_1=${encodeURIComponent(detail)}`).join('&');
-        url += `&${detailsParams}`; 
-      }
-      if (typeSectorResponsibilities.length > 0) {
-        const responsibilitiesParams = typeSectorResponsibilities.map(responsibility => `dynamic_field_2=${encodeURIComponent(responsibility)}`).join('&');
-        url += `&${responsibilitiesParams}`; 
-      }
+      typeSectorDetails = role.work_type_detail[details_key] || [];
+      typeSectorResponsibilities = responsibilities_key
+        ? role.work_type_detail[responsibilities_key] || []
+        : [];
+    }
 
-      fetch(url, {
-        headers: {
-          'X-Requested-With': 'XMLHttpRequest',
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          document.getElementById('all-workers-count').textContent = `(${data.workers.length})`;
-          console.log('Filtered workers for All tab:', data);
-          const tableId = '#basic-datatable-allworkers-workers';
-          window.history.replaceState({}, '', url);
-          updateCollapseSummary()
-          if (!$.fn.DataTable.isDataTable(tableId)) {
-            $(tableId).DataTable({
-              ordering: true,
-              order: [],
-              columnDefs: [
-                { targets: 0, orderable: false },
-                { targets: -1, orderable: false },
-              ],
-              paging: true,
-              info: true,
-            });
-          }
+    if (typeSectorDetails.length > 0) {
+      const detailsParams = typeSectorDetails
+        .map((detail) => `dynamic_field_1=${encodeURIComponent(detail)}`)
+        .join('&');
+      url += `&${detailsParams}`;
+    }
+    if (typeSectorResponsibilities.length > 0) {
+      const responsibilitiesParams = typeSectorResponsibilities
+        .map(
+          (responsibility) =>
+            `dynamic_field_2=${encodeURIComponent(responsibility)}`
+        )
+        .join('&');
+      url += `&${responsibilitiesParams}`;
+    }
+    const workersResponse = await fetch(url, {
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+    });
+    if (!workersResponse?.ok) {
+      throw new Error(`Failed to fetch workers ${workersResponse.status}`);
+    }
+    const workersResponseData = await workersResponse.json();
+    document.getElementById(
+      'all-workers-count'
+    ).textContent = `(${workersResponseData.workers.length})`;
+    console.log('Filtered workers for All tab:', workersResponseData);
+    const tableId = '#basic-datatable-allworkers-workers';
+    console.log('Updating URL to:', url);
+    window.history.replaceState({}, '', url);
+    updateCollapseSummary();
+    if (!$.fn.DataTable.isDataTable(tableId)) {
+      $(tableId).DataTable({
+        ordering: true,
+        order: [],
+        columnDefs: [
+          { targets: 0, orderable: false },
+          { targets: -1, orderable: false },
+        ],
+        paging: true,
+        info: true,
+      });
+    }
 
-          const table = $(tableId).DataTable();
-          table.clear();
+    const table = $(tableId).DataTable();
+    table.clear();
 
-          if (data.workers.length === 0) {
-            table.row.add([
-              '',
-              'No workers found',
-              '',
-              '',
-              '',
-              '',
-              '',
-              '',
-              '',
-              '',
-            ]);
-          } else {
-            data.workers.forEach((worker) => {
-
-              const name =
-                worker.first_name || worker.last_name
-                  ? `${worker.first_name} ${worker.last_name}`
-                  :  'Not Provided';
-              let actions = '';
-              console.log('isAdmin value:', isAdmin);
-              if (typeof isAdmin !== 'undefined' && isAdmin) {
-                actions = `
+    if (workersResponseData.workers.length === 0) {
+      table.row.add(['', 'No workers found', '', '', '', '', '', '', '', '']);
+    } else {
+      workersResponseData.workers.forEach((worker) => {
+        const name =
+          worker.first_name || worker.last_name
+            ? `${worker.first_name} ${worker.last_name}`
+            : 'Not Provided';
+        let actions = '';
+        console.log('isAdmin value:', isAdmin);
+        if (typeof isAdmin !== 'undefined' && isAdmin) {
+          actions = `
                   <button type="button" class="btn btn-sm yellow-button" data-bs-toggle="modal"
                     data-bs-target="#editModal${worker.id}" title="Edit">
                     Edit
@@ -372,28 +413,25 @@ function handleAllWorkerTabFiltering({ workRequestId, roleId }) {
                     Delete
                   </button>
                 `;
-              }
-              table.row.add([
-                `<input type="checkbox"class="worker-checkbox" value="${worker.id}" data-worker-name="${name}">`,
-                `<a href="${worker.id}">${name}</a>`,
-                worker.years_of_experience ?? '',
-                worker.total_months_of_h2a_experience ?? '',
-                worker.latest_status ?? '',
-                worker.profile_completion_percentage == 100 ? 'Yes' : 'No',
-                worker.visa_uploaded ? 'Yes' : 'No',
-                actions,
-              ]);
-            });
-          }
+        }
+        table.row.add([
+          `<input type="checkbox"class="worker-checkbox" value="${worker.id}" data-worker-name="${name}">`,
+          `<a href="${worker.id}">${name}</a>`,
+          worker.years_of_experience ?? '',
+          worker.total_months_of_h2a_experience ?? '',
+          worker.latest_status ?? '',
+          worker.profile_completion_percentage == 100 ? 'Yes' : 'No',
+          worker.visa_uploaded ? 'Yes' : 'No',
+          actions,
+        ]);
+      });
+    }
 
-          table.draw();
-        })
-        .catch((err) => {
-          console.error('Error loading filtered workers for All tab:', err);
-        });
-    });
+    table.draw();
+  } catch (error) {
+    console.error('Error fetching dynamic field data:', error);
+  }
 }
-
 function updateCollapseSummary() {
    const expDynamicFieldData = localStorage.getItem('expDynamicFieldData');
    const parsedDynamicFieldData = expDynamicFieldData ? JSON.parse(expDynamicFieldData) : {};
