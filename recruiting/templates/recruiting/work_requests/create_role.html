@@ -60,10 +60,15 @@
             <label>{{ role_add_form.number_of_required_workers.label }}</label>
             {{ role_add_form.number_of_required_workers }}
           </div>
-
-          <button class="btn dark-green-button" type="submit">
-            {% translate "addRoleSubmit" %}
-          </button>
+      
+          <div class="modal-footer">
+            <button type="button" class="btn grey-button" data-bs-dismiss="modal">
+              {% translate 'webCommonCancel' %}
+            </button>
+            <button type="submit" class="btn dark-green-button">
+              {% translate "addRoleSubmit" %}
+            </button>
+          </div>
         </form>
       </div>
     </div>
