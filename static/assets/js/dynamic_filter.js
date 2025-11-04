@@ -5,6 +5,7 @@ async function fetchFieldDataFromAPI() {
         const response = await fetch('/api/dynamic-field-data/');
         if (response.ok) {
             fieldData = await response.json();
+            localStorage.setItem('expDynamicFieldData', JSON.stringify(fieldData));
         } else {
             console.error("Failed to fetch dynamic field data:", response.status);
         }

@@ -292,8 +292,6 @@ function handleAllWorkerTabFiltering({ workRequestId, roleId }) {
       if (!type_sector_keys) {
         type_sector_keys = dynamic_fields_keys.other;
       }
-          // $('#id_type_sector').val(type_sector_keys?.dbValue);
-
       let url = `/workers/?work_request=${workRequestId}&role=${roleId}&type_sector=${type_sector_keys?.dbValue}`;
 
       if (role.work_type_detail){
@@ -397,6 +395,8 @@ function handleAllWorkerTabFiltering({ workRequestId, roleId }) {
 }
 
 function updateCollapseSummary() {
+   const expDynamicFieldData = localStorage.getItem('expDynamicFieldData');
+   const parsedDynamicFieldData = expDynamicFieldData ? JSON.parse(expDynamicFieldData) : {};
     const summaryContainer = document.getElementById('selected-filters-summary');
     summaryContainer.innerHTML = '';
 
@@ -415,27 +415,41 @@ function updateCollapseSummary() {
 
     // ✅ 1. Extract filters from URL parameters
     const params = new URLSearchParams(window.location.search);
-    const typeSectorValue = params.get('type_sector'); // Get the value from params
-    // const fields_with_type_details = ['Crop and Horticulture', 'Animals']
+    const typeSectorValue = params.get('type_sector'); 
 
+    let localizedTypeSectorData;
+    if (typeSectorValue){
+       localizedTypeSectorData = parsedDynamicFieldData[typeSectorValue];
+    }
     for (const [key, value] of params.entries()) {
         if (!value) continue;
 
         let label = '';
+
         let formattedValue = decodeURIComponent(value.replace(/\+/g, ' '));
+
 
         if (key.includes('type_sector')) label = 'Type/Sector';
         else if (key.includes('dynamic_field_1')) {
         // Change label based on type_sector value
+            let newValue = localizedTypeSectorData?.types?.find(item => item.value === value)?.label || value;
             if (typeSectorValue === 'Animals') {
                 label = 'Animal Type';
             } else if (typeSectorValue === 'Crop and Horticulture') {
                 label = 'Crop Type';
             } else {
+                newValue = localizedTypeSectorData?.tasks?.find(item => item.value === value)?.label || value;
                 label = 'Tasks';
             }
+            formattedValue = decodeURIComponent(newValue.replace(/\+/g, ' '));
+
+
       }
-        else if (key.includes('dynamic_field_2')) label = 'Tasks';
+        else if (key.includes('dynamic_field_2')) {
+          label = 'Tasks'
+          const newValue = localizedTypeSectorData?.tasks?.find(item => item.value === value)?.label || value;
+          formattedValue = decodeURIComponent(newValue.replace(/\+/g, ' '))
+        }
         else if (key.includes('gender')) label = 'Gender';
         else if (key.includes('availability')) label = 'Availability';
         else if (key.includes('age')) label = 'Age';
