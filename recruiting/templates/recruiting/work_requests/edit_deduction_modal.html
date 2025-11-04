@@ -76,17 +76,81 @@
               </div>
             </div>
 
-                <div class="modal-footer">
-                  <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% trans "webCommonClose" %}</button>
-                  <button type="submit" class="btn light-green-button">
-                    {% translate "webCommonSave" %}
-                  </button>
-                </div>
-        </form>
+              </form>
+            </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% trans "webCommonClose" %}</button>
+        <button type="button" class="btn light-green-button" onclick="submitEditDeductionForm('{{ deduction.id }}')">
+          {% translate "webCommonSave" %}
+        </button>
       </div>
 
     </div>
   </div>
 </div>
 
+<!-- JavaScript to handle form submission -->
+<script>
+  function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+
+  function submitEditDeductionForm(deductionId) {
+    const form = document.getElementById(`editDeductionForm${deductionId}`);
+    const url = form.action;
+    const csrftoken = getCookie('csrftoken');
+
+    const description = document.getElementById('id_description' + deductionId).value;
+    const deduction_amount = document.getElementById('id_deduction_amount' + deductionId).value;
+    const frequency_of_pay = document.getElementById('id_frequency_of_pay' + deductionId).value;
+    const role = document.getElementById('id_role' + deductionId).value;
+
+    const formData = new FormData();
+    formData.append('description', description);
+    formData.append('deduction_amount', deduction_amount);
+    formData.append('frequency_of_pay', frequency_of_pay);
+
+    formData.append('role', role);
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        body: formData,
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if (response.ok) {
+            const modal = bootstrap.Modal.getInstance(document.getElementById(`editDeductionModal${deductionId}`));
+            if (modal) {
+                modal.hide();
+            }
+            location.reload();
+        } else {
+            return response.text().then(text => {
+                console.error("Form submission failed:", text);
+                alert("Error submitting form. See console for details.");
+            });
+        }
+    })
+    .catch(err => {
+        console.error("Fetch error:", err);
+        alert("An error occurred. Please try again.");
+    });
+}
+
+</script>
 {% endif %}
