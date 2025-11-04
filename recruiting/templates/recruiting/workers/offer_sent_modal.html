@@ -36,16 +36,17 @@
                         </select>
                     </div>
                     <input type="hidden" id="modal_status" name="status" value="assigned">
+                    <div class="modal-footer">
+                        <button type="button" class="btn grey-button" data-bs-dismiss="modal">
+                            {% translate 'webCommonCancel' %}
+                        </button>
+                        <button type="submit" class="btn light-green-button">
+                            {% translate "workersListAssign" %}
+                        </button>
+                    </div>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn grey-button" data-bs-dismiss="modal">
-                    {% translate 'webCommonCancel' %}
-                </button>
-                <button type="submit" class="btn light-green-button">
-                    {% translate "workersListAssign" %}
-                </button>
-            </div>
+            
         </div>
     </div>
 </div>
