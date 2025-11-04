@@ -116,7 +116,9 @@
               {% for role in roles %}
               <tr>
                 <td>
-                  {{ role.title }}
+                  <a href="{% url 'recruiting_web:workers' %}{% get_workers_page_params role=role %}">
+                    {{ role.title }}
+                  </a>
                 </td>
                 <td>
                   {{ role.number_of_required_workers }}
