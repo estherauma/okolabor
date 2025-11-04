@@ -398,7 +398,8 @@ class FilteredWorkersAjaxView(View):
 
         all_assignments = WorkAssignment.objects.filter(
             work_request_id=work_request_id,
-            role_id=role_id
+            role_id=role_id,
+            deleted=False
         ).select_related('worker', 'role', 'work_request')
 
         unique_worker_status_counts = {
