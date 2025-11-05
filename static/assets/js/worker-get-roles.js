@@ -432,6 +432,128 @@ async function handleAllWorkerTabFiltering({ workRequestId, roleId }) {
     console.error('Error fetching dynamic field data:', error);
   }
 }
+
+function getSecondaryFiltersOptions() {
+  const options = localStorage.getItem('secondaryFilterOptions');
+  return options ? JSON.parse(options) : [];
+}
+
+function getMappedlocalizedFilterValues({params}) {
+  const randomFilterMapping = {}
+    const secondaryFiltersOptions = getSecondaryFiltersOptions()
+
+    for (const [key, value] of params.entries()) {
+      if (key.includes('random_filter')) {
+        randomFilterMapping[value] = {
+          label: secondaryFiltersOptions?.find((opt) => opt.value === value)
+              ?.label || value,
+          value: value,
+        };
+        continue;
+      }
+      if (key.includes('age_min')) {
+        let currentKeyValues = randomFilterMapping['age'];
+        if (currentKeyValues) {
+          currentKeyValues['age_min'] = value;
+        } else {
+          currentKeyValues['label'] =
+            secondaryFiltersOptions?.find((opt) => opt.value === 'age')
+              ?.label || 'Age';
+          currentKeyValues['age_min'] = value;
+        }
+        randomFilterMapping['age'] = currentKeyValues;
+      }  else if (key.includes('age_max')) {
+        let currentKeyValues = randomFilterMapping['age'];
+        if (currentKeyValues) {
+          currentKeyValues['age_max'] = value;
+        } else {
+          currentKeyValues['label'] =
+            secondaryFiltersOptions?.find((opt) => opt.value === 'age')
+              ?.label || 'Age';
+          currentKeyValues['age_max'] = value;
+        }
+        randomFilterMapping['age'] = currentKeyValues;
+      } 
+      else if (key.includes('availability_from')) {
+        let currentKeyValues = randomFilterMapping['availability'];
+        if (currentKeyValues) {
+          currentKeyValues['availability_from'] = value;
+        } else {
+          currentKeyValues['label'] =
+            secondaryFiltersOptions?.find((opt) => opt.value === 'availability')
+              ?.label || 'Availability';
+          currentKeyValues['availability_from'] = value;
+        }
+        randomFilterMapping['availability'] = currentKeyValues;
+      } else if (key.includes('language_proficiency_level')) {
+        let currentKeyValues = randomFilterMapping['language_proficiency'];
+        if (currentKeyValues) {
+          currentKeyValues['language_proficiency'] = value;
+        } else {
+          currentKeyValues = {
+            label:
+              secondaryFiltersOptions?.find(
+                (opt) => opt.value === 'language_proficiency'
+              )?.label || 'Language Proficiency',
+            value: value,
+          };
+        }
+        randomFilterMapping['language_proficiency'] = currentKeyValues;
+      } else if (key.includes('language_video')) {
+        let currentKeyValues = randomFilterMapping['language_proficiency'];
+        if (currentKeyValues) {
+          currentKeyValues['language_video'] = value;
+        } else {
+          currentKeyValues = {
+            label:
+              secondaryFiltersOptions?.find(
+                (opt) => opt.value === 'language_proficiency'
+              )?.label || 'Language Proficiency',
+            value: 'language_proficiency',
+            language_video: {
+              value,
+              label:      secondaryFiltersOptions?.find(
+                (opt) => opt.value === 'has_language_proficiency_video'
+              )?.label || 'Language Video',
+            },
+          };
+        }
+        randomFilterMapping['language_proficiency'] = currentKeyValues;
+      } else if (key.includes('years_of_experience_min')) {
+        let currentKeyValues = randomFilterMapping['years_of_experience'];
+        if (currentKeyValues) {
+          currentKeyValues['years_of_experience'] = value;
+        } else {
+          currentKeyValues = {
+            label:
+              secondaryFiltersOptions?.find(
+                (opt) => opt.value === 'years_of_experience'
+              )?.label || 'Months of experience',
+            value: value,
+          };
+        }
+        randomFilterMapping['years_of_experience'] = currentKeyValues;
+      } else if (/_\d+$/.test(key)) {
+        console.log('Processing key for references:', key, value);
+        const cleanedKey = key.replace(/_[^_]+$/, '');
+        let currentKeyValues = randomFilterMapping['references'];
+        if (currentKeyValues) {
+          currentKeyValues[cleanedKey] = value;
+        } else {
+          currentKeyValues = {
+            label:
+              secondaryFiltersOptions?.find((opt) => opt.value === cleanedKey)
+                ?.label || cleanedKey,
+            value: value,
+          };
+        }
+        randomFilterMapping[cleanedKey] = currentKeyValues;
+      }
+    }
+
+    return randomFilterMapping;
+}
+
 function updateCollapseSummary() {
    const expDynamicFieldData = localStorage.getItem('expDynamicFieldData');
    const parsedDynamicFieldData = expDynamicFieldData ? JSON.parse(expDynamicFieldData) : {};
@@ -454,17 +576,21 @@ function updateCollapseSummary() {
     // ✅ 1. Extract filters from URL parameters
     const params = new URLSearchParams(window.location.search);
     const typeSectorValue = params.get('type_sector'); 
-
     let localizedTypeSectorData;
     if (typeSectorValue){
        localizedTypeSectorData = parsedDynamicFieldData[typeSectorValue];
     }
+    const randomFilterMapping = getMappedlocalizedFilterValues({params});
+    
     for (const [key, value] of params.entries()) {
         if (!value) continue;
-
+        const cleanedKey = key.replace(/_[^_]+$/, '');
         let label = '';
 
         let formattedValue = decodeURIComponent(value.replace(/\+/g, ' '));
+        if (key.includes('random_filter')) {  
+          continue;
+        }
 
 
         if (key.includes('type_sector')) label = 'Type/Sector';
@@ -482,53 +608,46 @@ function updateCollapseSummary() {
             formattedValue = decodeURIComponent(newValue.replace(/\+/g, ' '));
 
 
-      }
-        else if (key.includes('dynamic_field_2')) {
-          label = 'Tasks'
-          const newValue = localizedTypeSectorData?.tasks?.find(item => item.value === value)?.label || value;
-          formattedValue = decodeURIComponent(newValue.replace(/\+/g, ' '))
         }
-        else if (key.includes('gender')) label = 'Gender';
-        else if (key.includes('availability')) label = 'Availability';
-        else if (key.includes('age')) label = 'Age';
-        else if (key.includes('years_of_experience')) label = 'Experience';
-        else if (key.includes('us_driving_license')) label = 'US Driving License';
-        else if (key.includes('visa')) label = 'Visa';
-        else if (key.includes('explanation_video')) label = 'Video';
-        else if (key.includes('exclude_physical_limitations')) label = 'Exclude Physical Limitations';
-        else label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-
-        // Special handling for range fields like availability, age, years_of_experience
-        if (key.includes('availability')) {
-            const from = params.get('availability_from') || '';
-            const to = params.get('availability_to') || '';
-            if (from && to) formattedValue = `${from} to ${to}`;
-            else if (from) formattedValue = `From ${from}`;
-            else if (to) formattedValue = `To ${to}`;
-        }
-
-        if (key.includes('age_min') || key.includes('age_max')) {
-            const min = params.get('age_min') || '';
-            const max = params.get('age_max') || '';
-            if (min && max) formattedValue = `${min} - ${max}`;
-            else if (min) formattedValue = `Min ${min}`;
-            else if (max) formattedValue = `Max ${max}`;
-        }
-
-        if (key.includes('years_of_experience')) {
-            const min = params.get('years_of_experience_min') || '';
-            const max = params.get('years_of_experience_max') || '';
-            if (min && max) formattedValue = `${min} - ${max}`;
-            else if (min) formattedValue = `Min ${min}`;
-            else if (max) formattedValue = `Max ${max}`;
-        }
-
+          else if (key.includes('dynamic_field_2')) {
+            label = 'Tasks'
+            const newValue = localizedTypeSectorData?.tasks?.find(item => item.value === value)?.label || value;
+            formattedValue = decodeURIComponent(newValue.replace(/\+/g, ' '))
+          }
+          else if(randomFilterMapping[cleanedKey]){
+            label = randomFilterMapping[cleanedKey]?.label || key;
+          }
         
-
+        // else if (key.includes('availability')){
+        //     label = randomFilterMapping['availability']?.label || 'Availability';
+        //     const from = params.get('availability_from') || '';
+        //     const to = params.get('availability_to') || '';
+        //     if (from && to) formattedValue = `${from} to ${to}`;
+        //     else if (from) formattedValue = `From ${from}`;
+        //     else if (to) formattedValue = `To ${to}`;
+        // }
+        else if (key.includes('language_proficiency_level') ) {
+          label = randomFilterMapping['language_proficiency']?.label 
+        }
+         else if (key.includes('language_video') ) {
+          label = randomFilterMapping['language_proficiency']?.language_video?.label || 'Language Video'; 
+        }
+        else if (key.includes('age_min') || key.includes('age_max')) {
+          const _age = randomFilterMapping['age'];
+            const min = _age.age_min || '';
+            const max = _age.age_max || '';
+            label = _age?.label || 'Age';
+            if (min && max) formattedValue = `${min} - ${max}`;
+            else if (min) formattedValue = `Min ${min}`;
+            else if (max) formattedValue = `Max ${max}`;
+        }else if (key.includes('years_of_experience_min')) {
+            label = randomFilterMapping['years_of_experience']?.label || 'Months of experience';
+        }
+        if(!label) continue;
         allSelectedTextsSet.add(`${label}: ${formattedValue}`);
     }
 
-    // ✅ 2. Your Existing Logic: Read currently selected form fields
+    // ✅ 2.Extract filters from select elements
     const experienceSelects = document.querySelectorAll('select[id$="id_dynamic_field_1"], select[id$="id_dynamic_field_2"], select[id$="id_type_sector"]');
     experienceSelects.forEach(select => {
         const selectedOptions = Array.from(select.selectedOptions)
