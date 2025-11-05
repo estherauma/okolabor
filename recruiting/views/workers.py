@@ -283,10 +283,11 @@ class WorkerListView(LoginRequiredMixin, View):
             'dynamic_field_1': dynamic_field_1,
             'dynamic_field_2': dynamic_field_2,
         }
+        exp_filters_empty = all(not v for v in exp_filters.values())
         for worker in workers:
             profile_completion = calculate_profile_completion(worker)
             worker_details = get_worker_preferences(worker)
-            years_of_experience = calculate_total_experience(worker, exp_filters)
+            years_of_experience = '-' if exp_filters_empty else calculate_total_experience(worker, exp_filters)
             latest_assignment = WorkAssignment.objects.filter(worker=worker).order_by('-assigned_date').first()
 
             worker_status_pref = UserPreference.objects.filter(user=worker, key='worker_status').first()
@@ -314,7 +315,7 @@ class WorkerListView(LoginRequiredMixin, View):
             worker.profile_completion_percentage = profile_completion
             worker.visa_uploaded = visa_uploaded
             worker.intro_video_uploaded = intro_video_uploaded
-            worker.total_months_of_h2a_experience = calculate_months_ofH2A_expererience(worker, exp_filters)
+            worker.total_months_of_h2a_experience = '-' if exp_filters_empty else calculate_months_ofH2A_expererience(worker, exp_filters)
 
             worker_data.append({
                 'id': worker.id,
@@ -325,7 +326,7 @@ class WorkerListView(LoginRequiredMixin, View):
                 'years_of_experience': years_of_experience, 
                 'visa_uploaded': visa_uploaded,
                 'intro_video_uploaded': intro_video_uploaded,
-                'total_months_of_h2a_experience': calculate_months_ofH2A_expererience(worker, exp_filters),
+                'total_months_of_h2a_experience': '-' if exp_filters_empty else calculate_months_ofH2A_expererience(worker, exp_filters),
                 'latest_status': worker_profile_status_labels[code],
                 **worker_details
             })
