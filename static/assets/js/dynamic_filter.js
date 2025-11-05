@@ -1,18 +1,5 @@
 let fieldData = {};
 
-async function fetchFieldDataFromAPI() {
-    try {
-        const response = await fetch('/api/dynamic-field-data/');
-        if (response.ok) {
-            fieldData = await response.json();
-        } else {
-            console.error("Failed to fetch dynamic field data:", response.status);
-        }
-    } catch (error) {
-        console.error("Error fetching dynamic field data:", error);
-    }
-}
-
 function addAnotherExperience() {
     const template = document.getElementById("form-template").innerHTML;
     const container = document.getElementById("filter-inputs-container");
@@ -135,7 +122,8 @@ function updatePills(selectElement) {
 
 
 document.addEventListener("DOMContentLoaded", async () => {
-    await fetchFieldDataFromAPI();
+    const expDynamicFieldData = localStorage.getItem('expDynamicFieldData');
+    fieldData = expDynamicFieldData ? JSON.parse(expDynamicFieldData) : {};
     bindDynamicFieldEvents();
 
     document.querySelectorAll('select[id$="id_type_sector"]').forEach(selector => {

@@ -156,36 +156,48 @@ class DynamicFieldDataView(APIView):
                 "field1Label": _("Animal Type"),
                 "field1Options": content_service.get_animal_type_choices(),
                 "field2Label": _("webCommonTasks"),
-                "field2Options": content_service.get_animal_responsibilities_choices()
+                "field2Options": content_service.get_animal_responsibilities_choices(),
+                "types": content_service.get_animal_type_choices(),
+                "tasks": content_service.get_animal_responsibilities_choices()
             },
             "Crop and Horticulture": {
                 "field1Label": _("Crop Type"),
                 "field1Options": content_service.get_crop_type_choices(),
                 "field2Label": _("webCommonTasks"),
-                "field2Options": content_service.get_crop_responsibilities_choices()
+                "field2Options": content_service.get_crop_responsibilities_choices(),
+                "types": content_service.get_crop_type_choices(),
+                "tasks": content_service.get_crop_responsibilities_choices()
             },
             "Mechanics": {
                 "field1Label": _("webCommonTasks"),
                 "field1Options": content_service.get_mechanics_responsibilities_choices(),
                 "field2Label": None,
-                "field2Options": None
+                "field2Options": None,
+                "tasks": content_service.get_mechanics_responsibilities_choices(),
             },
             "Worker Supervision/Management": {
                 "field1Label": _("webCommonTasks"),
                 "field1Options": content_service.get_worker_supervision_choices(),
                 "field2Label": None,
-                "field2Options": None
+                "field2Options": None,
+                "tasks": content_service.get_worker_supervision_choices(),
             },
             "Licensed Vehicle Operation": {
                 "field1Label": _("webCommonTasks"),
                 "field1Options": content_service.get_worker_licensed_vehicle_operation_choices(),
                 "field2Label": None,
-                "field2Options": None
+                "field2Options": None,
+                "tasks": content_service.get_worker_licensed_vehicle_operation_choices(),
             },
         }
         for category in field_data.values():
             for key in ['field1Options', 'field2Options']:
                 if category[key]:
                     category[key] = sorted([label for _, label in category[key]])
+            for key in ['types', 'tasks']:
+                if category.get(key):
+                    category[key] = [
+                        {"label": v, "value": k, } for k, v in category[key]
+                    ]
 
         return Response(field_data, status=200)

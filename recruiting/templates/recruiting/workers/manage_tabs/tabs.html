@@ -398,27 +398,8 @@ function addRandomFilter() {
     const row = document.createElement("div");
     row.classList.add("filter-group");
     const uniqueId = Date.now();
-    const filterOptions = [
-        { value: "years_of_experience", label: "{% translate 'filterSectionMonthsofExperience' %}" },
-        { value: "references", label: "{% translate 'filterSectionReferences' %}" },
-        { value: "availability", label: "{% translate 'filterSectionAvailability' %}" },
-        { value: "h2a_experience", label: "{% translate 'filterSectionH-2AExperience' %}" },
-        { value: "h2b_experience", label: "{% translate 'filterSectionH-2BExperience' %}" },
-        { value: "work_pictures", label: "{% translate 'filterSectionRelevantWorkPictures' %}" },
-        { value: "exclude_physical_limitations", label: "{% translate 'filterSectionExcludeWorkerswithPhysicalLaborLimitations' %}" },
-        { value: "age", label: "{% translate 'filterSectionAge' %}" },
-        { value: "gender", label: "{% translate 'filterSectionGender' %}" },
-        { value: "profile", label: "{% translate 'filterSectionProfile' %}" },
-        { value: "passport", label: "{% translate 'filterSectionPassport' %}" },
-        { value: "us_driving_license", label: "{% translate 'filterSectionUSDrivingLicense' %}" },
-        { value: "mx_us_driving_license", label: "{% translate 'filterSectionUS-MexicanDrivingLicense' %}" },
-        { value: "language_proficiency", label: "{% translate 'filterSectionLanguageProficiency' %}" },
-        { value: "work_preference_location", label: "{% translate 'filterSectionWorkPreferenceLocation' %}" },
-        { value: "work_preference_type", label: "{% translate 'filterSectionWorkPreferenceType' %}" },
-        { value: "visa", label: "{% translate 'filterSectionVisa' %}" },
-        { value: "explanation_video", label: "{% translate 'filterSectionExplanationVideo' %}" },
-        { value: "has_language_proficiency_video", label: "{% translate 'filterSectionLanguageProficiencyVideo' %}" }
- ];
+    const filterOptions = getSecondaryFiltersOptions();
+
     filterOptions.sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: 'base' }));
     let optionsHtml = `<option value="">{% translate "filterSectionChooseAFilter" %}</option>`;
 
@@ -710,6 +691,28 @@ function clearAllFilters() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  const secondaryFilterOptions = [
+        { value: "years_of_experience", label: "{% translate 'filterSectionMonthsofExperience' %}" },
+        { value: "references", label: "{% translate 'filterSectionReferences' %}" },
+        // { value: "availability", label: "{% translate 'filterSectionAvailability' %}" },
+        { value: "h2a_experience", label: "{% translate 'filterSectionH-2AExperience' %}" },
+        { value: "h2b_experience", label: "{% translate 'filterSectionH-2BExperience' %}" },
+        { value: "work_pictures", label: "{% translate 'filterSectionRelevantWorkPictures' %}" },
+        { value: "exclude_physical_limitations", label: "{% translate 'filterSectionExcludeWorkerswithPhysicalLaborLimitations' %}" },
+        { value: "age", label: "{% translate 'filterSectionAge' %}" },
+        { value: "gender", label: "{% translate 'filterSectionGender' %}" },
+        { value: "profile", label: "{% translate 'filterSectionProfile' %}" },
+        { value: "passport", label: "{% translate 'filterSectionPassport' %}" },
+        { value: "us_driving_license", label: "{% translate 'filterSectionUSDrivingLicense' %}" },
+        { value: "mx_us_driving_license", label: "{% translate 'filterSectionUS-MexicanDrivingLicense' %}" },
+        { value: "language_proficiency", label: "{% translate 'filterSectionLanguageProficiency' %}" },
+        { value: "work_preference_location", label: "{% translate 'filterSectionWorkPreferenceLocation' %}" },
+        { value: "work_preference_type", label: "{% translate 'filterSectionWorkPreferenceType' %}" },
+        { value: "visa", label: "{% translate 'filterSectionVisa' %}" },
+        { value: "explanation_video", label: "{% translate 'filterSectionExplanationVideo' %}" },
+        { value: "has_language_proficiency_video", label: "{% translate 'filterSectionLanguageProficiencyVideo' %}" }
+   ];
+   localStorage.setItem('secondaryFilterOptions', JSON.stringify(secondaryFilterOptions));
     addRandomFilter();
     updateCollapseSummary();
 });
