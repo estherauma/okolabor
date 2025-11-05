@@ -777,6 +777,7 @@ class WorkerDetailsView(LoginRequiredMixin,View):
             'current_status': current_status,
             'documents': document_dict,
             'base_url': base_url,
+            'MEDIA_URL': settings.MEDIA_URL,
             'document_labels': document_labels,
             'preferred_countries_label': preferred_countries_label,
             'preferred_countries_options': preferred_countries_options,
@@ -1222,18 +1223,18 @@ class ExportWorkerDetailsView(LoginRequiredMixin, View):
 
 class UploadDocumentsView(LoginRequiredMixin, View):
     upload_paths = {
-    'contract': 'uploads/visa',
-    'passport': 'uploads/passports',
-    'profile_picture': 'uploads/profiles',
-    'english_video': 'uploads/english_videos',
-    'us_driving_license': 'uploads/driver_licenses',
-    'mexico_driving_license': 'uploads/driver_licenses',
-    'certificate': 'uploads/certificates',
-    'visa': 'uploads/visa',
-    'photo': 'uploads/photos',
-    'job_experience_license': 'uploads/job_experiences/licenses',
-    'job_experience_media': 'uploads/job_experiences/media',
-    'explanation_video': 'uploads/explanation_videos',
+    'contract': 'visa',
+    'passport': 'passports',
+    'profile_picture': 'profiles',
+    'english_video': 'english_videos',
+    'us_driving_license': 'driver_licenses',
+    'mexico_driving_license': 'driver_licenses',
+    'certificate': 'certificates',
+    'visa': 'visa',
+    'photo': 'photos',
+    'job_experience_license': 'job_experiences/licenses',
+    'job_experience_media': 'job_experiences/media',
+    'explanation_video': 'explanation_videos',
     }
 
 
@@ -1243,6 +1244,16 @@ class UploadDocumentsView(LoginRequiredMixin, View):
         for field_name, upload_dir in self.upload_paths.items():
             uploaded_file = request.FILES.get(field_name)
             if uploaded_file:
+                old_docs = UserDocuments.objects.filter(user=user, kind=field_name)
+                for old_doc in old_docs:
+                    old_file_path = os.path.join(settings.MEDIA_ROOT, old_doc.path)
+                    if os.path.exists(old_file_path):
+                        try:
+                            os.remove(old_file_path)
+                        except Exception:
+                            pass
+                old_docs.delete()
+                
                 filename = uploaded_file.name
                 relative_path = os.path.join(upload_dir, filename)
                 full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
@@ -1251,6 +1262,7 @@ class UploadDocumentsView(LoginRequiredMixin, View):
                 with open(full_path, 'wb+') as destination:
                     for chunk in uploaded_file.chunks():
                         destination.write(chunk)
+                        
                 UserDocuments.objects.create(
                     user=user,
                     path=relative_path,
@@ -1283,7 +1295,7 @@ class UploadLanguageProficiencyView(LoginRequiredMixin, View):
         )
 
         if language_level != "none" and language_video:
-            folder = "uploads/explanation"
+            folder = "english_videos"
             filename = language_video.name
             relative_path = os.path.join(folder, filename)
             full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
@@ -1567,7 +1579,7 @@ class EditLanguageProficiencyView(LoginRequiredMixin, View):
 
         # Save video only if selected and uploaded
         if language_level != "none" and language_video:
-            folder = "uploads/english_videos"
+            folder = "english_videos"
             filename = language_video.name
             relative_path = os.path.join(folder, filename)
             full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
@@ -1594,40 +1606,62 @@ class EditLanguageProficiencyView(LoginRequiredMixin, View):
 
 class EditDocumentsView(LoginRequiredMixin, View):
     upload_paths = {
-        'passport': 'uploads/passports',
-        'profile_picture': 'uploads/profiles',
-        'us_driving_license': 'uploads/driver_licenses',
-        'mexico_driving_license': 'uploads/driver_licenses',
+        'passport': 'passports',
+        'profile_picture': 'profiles',
+        'us_driving_license': 'driver_licenses',
+        'mexico_driving_license': 'driver_licenses',
     }
 
     def post(self, request, *args, **kwargs):
         worker_id = kwargs.get("worker_id") or request.POST.get("worker_id")
         user = get_object_or_404(User, pk=worker_id)
+        
+        uploaded_count = 0
+        errors = []
 
         for field_name, upload_dir in self.upload_paths.items():
             uploaded_file = request.FILES.get(field_name)
             if uploaded_file:
-                filename = uploaded_file.name
-                relative_path = os.path.join(upload_dir, filename)
-                full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
+                try:
+                    old_docs = UserDocuments.objects.filter(user=user, kind=field_name)
+                    for old_doc in old_docs:
+                        old_file_path = os.path.join(settings.MEDIA_ROOT, old_doc.path)
+                        if os.path.exists(old_file_path):
+                            try:
+                                os.remove(old_file_path)
+                            except Exception as e:
+                                pass 
+                    old_docs.delete()
+                    
+                    filename = uploaded_file.name
+                    relative_path = os.path.join(upload_dir, filename)
+                    full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
+                    
+                    os.makedirs(os.path.dirname(full_path), exist_ok=True)
+                    with open(full_path, 'wb+') as destination:
+                        for chunk in uploaded_file.chunks():
+                            destination.write(chunk)
 
-                os.makedirs(os.path.dirname(full_path), exist_ok=True)
-                with open(full_path, 'wb+') as destination:
-                    for chunk in uploaded_file.chunks():
-                        destination.write(chunk)
-
-                # Delete old file of the same kind if it exists
-                UserDocuments.objects.filter(user=user, kind=field_name).delete()
-
-                UserDocuments.objects.create(
-                    user=user,
-                    path=relative_path,
-                    kind=field_name,
-                    description=f'{field_name.replace("_", " ").title()} for user profile',
-                    file_type=uploaded_file.content_type
-                )
-
-        messages.success(request, _("workersListDocumentsUpdatedSuccessfully"))
+                    UserDocuments.objects.create(
+                        user=user,
+                        path=relative_path,
+                        kind=field_name,
+                        description=f'{field_name.replace("_", " ").title()} for user profile',
+                        file_type=uploaded_file.content_type
+                    )
+                    uploaded_count += 1
+                except Exception as e:
+                    errors.append(f"Error uploading {field_name}: {str(e)}")
+        
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+        
+        if uploaded_count > 0:
+            messages.success(request, _("workersListDocumentsUpdatedSuccessfully"))
+        elif not errors:
+            messages.warning(request, "No documents were selected for upload.")
+            
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
 
 
