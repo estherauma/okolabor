@@ -1261,9 +1261,9 @@ class UploadDocumentsView(LoginRequiredMixin, View):
                         description=f'{field_name.replace("_", " ").title()} for user profile',
                         file_type=uploaded_file.content_type
                     )
-
+                    
+                    old_docs = UserDocuments.objects.filter(user=user, kind=field_name).exclude(id=new_doc.id)
                     if field_name == 'profile_picture':
-                        old_docs = UserDocuments.objects.filter(user=user, kind=field_name).exclude(id=new_doc.id)
                         for old_doc in old_docs:
                             old_file_path = os.path.join(settings.MEDIA_ROOT, old_doc.path)
                             if os.path.exists(old_file_path):
@@ -1645,12 +1645,7 @@ class EditDocumentsView(LoginRequiredMixin, View):
                     description=f'{field_name.replace("_", " ").title()} for user profile',
                     file_type=uploaded_file.content_type
                 )
-
-                if field_name == 'profile_picture':
-                    old_docs = UserDocuments.objects.filter(user=user, kind=field_name).exclude(id=new_doc.id)
-                else:
-                    old_docs = UserDocuments.objects.filter(user=user, kind=field_name).exclude(id=new_doc.id)
-
+                old_docs = UserDocuments.objects.filter(user=user, kind=field_name).exclude(id=new_doc.id)
                 for old_doc in old_docs:
                     old_file_path = os.path.join(settings.MEDIA_ROOT, old_doc.path)
                     if os.path.exists(old_file_path):
@@ -1659,7 +1654,7 @@ class EditDocumentsView(LoginRequiredMixin, View):
                         except Exception:
                             pass
                 old_docs.delete()
-
+    
             except Exception as e:
                 messages.error(request, f"Failed to upload {field_name}: {str(e)}")
                 continue
