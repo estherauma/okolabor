@@ -84,7 +84,7 @@
         <div class="row align-items-start">
           <div class="col-md-4 col-12 mb-3 d-flex justify-content-center">
             {% if documents.profile_picture %}
-              <img src="{{ base_url }}{{ documents.profile_picture.0.path }}" alt="Profile Picture" class="worker-contact-photo border" />
+              <img src="{{ base_url }}{{MEDIA_URL}}{{ documents.profile_picture.0.path }}" alt="Profile Picture" class="worker-contact-photo border" />
             {% else %}
               <div class="worker-initials-badge light-green-background text-white">
                 {% if worker.first_name and worker.last_name %}

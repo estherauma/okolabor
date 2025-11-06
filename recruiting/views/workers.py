@@ -802,6 +802,7 @@ class WorkerDetailsView(LoginRequiredMixin,View):
                         {'name': worker.first_name, 'url': None},
                     ],
             'send_message_form': send_message_form,
+            'MEDIA_URL': settings.MEDIA_URL
         }
         return render(request, 'recruiting/workers/detail.html', context)
 
@@ -1224,7 +1225,7 @@ class UploadDocumentsView(LoginRequiredMixin, View):
     upload_paths = {
     'contract': 'uploads/visa',
     'passport': 'uploads/passports',
-    'profile_picture': 'uploads/profiles',
+    'profile_picture': 'profiles',
     'english_video': 'uploads/english_videos',
     'us_driving_license': 'uploads/driver_licenses',
     'mexico_driving_license': 'uploads/driver_licenses',
@@ -1236,13 +1237,23 @@ class UploadDocumentsView(LoginRequiredMixin, View):
     'explanation_video': 'uploads/explanation_videos',
     }
 
-
     def post(self, request, *args, **kwargs):
         worker_id = request.POST.get("worker_id")
         user = get_object_or_404(User, pk=worker_id)
         for field_name, upload_dir in self.upload_paths.items():
             uploaded_file = request.FILES.get(field_name)
             if uploaded_file:
+                if field_name == 'profile_picture':
+                    old_docs = UserDocuments.objects.filter(user=user, kind=field_name)
+                    for old_doc in old_docs:
+                        old_file_path = os.path.join(settings.MEDIA_ROOT, old_doc.path)
+                        if os.path.exists(old_file_path):
+                            try:
+                                os.remove(old_file_path)
+                            except Exception:
+                                pass  
+                    old_docs.delete()
+                
                 filename = uploaded_file.name
                 relative_path = os.path.join(upload_dir, filename)
                 full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
@@ -1595,7 +1606,7 @@ class EditLanguageProficiencyView(LoginRequiredMixin, View):
 class EditDocumentsView(LoginRequiredMixin, View):
     upload_paths = {
         'passport': 'uploads/passports',
-        'profile_picture': 'uploads/profiles',
+        'profile_picture': 'profiles',
         'us_driving_license': 'uploads/driver_licenses',
         'mexico_driving_license': 'uploads/driver_licenses',
     }
@@ -1607,6 +1618,17 @@ class EditDocumentsView(LoginRequiredMixin, View):
         for field_name, upload_dir in self.upload_paths.items():
             uploaded_file = request.FILES.get(field_name)
             if uploaded_file:
+                if field_name == 'profile_picture':
+                    old_docs = UserDocuments.objects.filter(user=user, kind=field_name)
+                    for old_doc in old_docs:
+                        old_file_path = os.path.join(settings.MEDIA_ROOT, old_doc.path)
+                        if os.path.exists(old_file_path):
+                            try:
+                                os.remove(old_file_path)
+                            except Exception:
+                                pass  
+                    old_docs.delete()
+                
                 filename = uploaded_file.name
                 relative_path = os.path.join(upload_dir, filename)
                 full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
@@ -1616,8 +1638,8 @@ class EditDocumentsView(LoginRequiredMixin, View):
                     for chunk in uploaded_file.chunks():
                         destination.write(chunk)
 
-                # Delete old file of the same kind if it exists
-                UserDocuments.objects.filter(user=user, kind=field_name).delete()
+                if field_name != 'profile_picture':
+                    UserDocuments.objects.filter(user=user, kind=field_name).delete()
 
                 UserDocuments.objects.create(
                     user=user,
