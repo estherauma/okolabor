@@ -132,12 +132,12 @@
                 <th>
                   <input type="checkbox" id="select-all-employers"/>
                 </th>
-                <th class="col-company oko-table-col-md">{% translate "employersCompanyName" %}</th>
-                <th class="col-contact oko-table-col-lg">{% translate "employersEmail" %}</th>
+                <th class="col-company">{% translate "employersCompanyName" %}</th>
+                <th class="col-contact">{% translate "employersEmail" %}</th>
                 <th class="col-location oko-table-col-sm">{% translate "employersLocation" %}</th>
                 <th class="col-phone oko-table-col-sm">{% translate "employersCountry" %}</th>
                 <!-- <th class="col-assigned">{% translate "employersPhone" %}</th> -->
-                <th class="col-assigned ">{% translate "employersAssignedTo" %}</th>
+                <th class="col-assigned oko-table-col-md">{% translate "employersAssignedTo" %}</th>
                 {% if request.user|has_group:"admin" %}
                   <th class="col-actions oko-table-col-sm">{% translate "employersActions" %}</th>
                 {% endif %}
@@ -147,16 +147,16 @@
               {% for employer in employers %}
               <tr class="text-start" data-id="{{ employer.id }}">
                 <td><input class="table-checkbox" type="checkbox"/></td>
-                <td class="oko-table-col-md">
+                <td>
                   <a href="/employers/{{ employer.id }}" class="text-decoration-none text-dark">
                       {{ employer.name }}
                   </a>
                 </td>
-                <td class="oko-table-col-lg">{{ employer.email}}</td>
+                <td>{{ employer.email}}</td>
                 <td class="oko-table-col-sm">{{ employer.address}}</td>
                 <td class="oko-table-col-sm">{{ employer.country }}</td>
                 <!-- <td>{{ employer.phone }}</td> -->
-                <td >
+                <td class="oko-table-col-md">
                   {% if employer.recruiters %}
                       {% for recruiter in employer.recruiters %}
                           {{ recruiter }}{% if not forloop.last %}, {% endif %}
