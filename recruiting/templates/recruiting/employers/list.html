@@ -134,10 +134,10 @@
                 </th>
                 <th class="col-company">{% translate "employersCompanyName" %}</th>
                 <th class="col-contact">{% translate "employersEmail" %}</th>
-                <th class="col-location oko-table-col-sm">{% translate "employersLocation" %}</th>
-                <th class="col-phone oko-table-col-sm">{% translate "employersCountry" %}</th>
+                <!-- <th class="col-location oko-table-col-sm">{% translate "employersLocation" %}</th> -->
+                <th class="col-phone">{% translate "employersCountry" %}</th>
                 <!-- <th class="col-assigned">{% translate "employersPhone" %}</th> -->
-                <th class="col-assigned oko-table-col-md">{% translate "employersAssignedTo" %}</th>
+                <th class="col-assigned">{% translate "employersAssignedTo" %}</th>
                 {% if request.user|has_group:"admin" %}
                   <th class="col-actions oko-table-col-sm">{% translate "employersActions" %}</th>
                 {% endif %}
@@ -153,10 +153,10 @@
                   </a>
                 </td>
                 <td>{{ employer.email}}</td>
-                <td class="oko-table-col-sm">{{ employer.address}}</td>
-                <td class="oko-table-col-sm">{{ employer.country }}</td>
+                <!-- <td class="oko-table-col-sm">{{ employer.address}}</td> -->
+                <td>{{ employer.country }}</td>
                 <!-- <td>{{ employer.phone }}</td> -->
-                <td class="oko-table-col-md">
+                <td>
                   {% if employer.recruiters %}
                       {% for recruiter in employer.recruiters %}
                           {{ recruiter }}{% if not forloop.last %}, {% endif %}
