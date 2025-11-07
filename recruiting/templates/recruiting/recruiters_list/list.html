@@ -141,25 +141,25 @@
                 <!-- <th></th> -->
                 <th class="col-recruiter-company">{% translate "recruiterListCompanyName" %}</th>
                 <th class="col-recruiter-email">{% translate "recruiterListEmail" %}</th>
-                <th class="col-recruiter-location">{% translate "recruiterListLocation" %}</th>
+                <th class="col-recruiter-location oko-table-col-sm">{% translate "recruiterListLocation" %}</th>
                 <th class="col-recruiter-phone">{% translate "recruiterListPhoneNumber" %}</th>
-                <th class="col-recruiter-assigned">{% translate "recruiterListAssignedTo" %}</th>
-                <th class="col-recruiter-actions">{% translate "recruiterListAction" %}</th>
+                <th class="col-recruiter-assigned oko-table-col-md">{% translate "recruiterListAssignedTo" %}</th>
+                <th class="col-recruiter-actions oko-table-col-sm">{% translate "recruiterListAction" %}</th>
               </tr>
             </thead>
             <tbody>
               {% for recruiter in recruiters %}
               <tr class="text-start" data-id="{{ recruiter.id }}">
                 <!-- <td><input class="table-checkbox" type="checkbox" /></td> -->
-                <td>
+                <td >
                   <a href="/recruiters-org/{{ recruiter.id }}" class="text-decoration-none text-dark">
                     {{ recruiter.name }}
                   </a>
                 </td>
                 <td>{{ recruiter.email }}</td>
-                <td>{{ recruiter.address }}, {{ recruiter.country }}</td>
+                <td class="oko-table-col-sm">{{ recruiter.address }}, {{ recruiter.country }}</td>
                 <td>{{ recruiter.phone }}</td>
-                <td style="white-space: break-spaces;">
+                <td class="oko-table-col-sm" style="white-space: break-spaces;">
                   {% if recruiter.employers %}
                   {% for employer_name in recruiter.employers %}
                   {{ employer_name }}{% if not forloop.last %}, {% endif %}

@@ -107,23 +107,23 @@
     <div class="table-responsive">
         <table class="table text-nowrap border-bottom" id="workrequest-datatable">
           <thead>
-          <tr class="text-start">
+          <tr >
             <th class="col-checkbox "></th>
             <th class="col-worker-request ">{% translate "jobOrderListWorkerRequest" %}</th>
-            <th class="col-deadline ">{% translate "jobOrderListDeadline" %}</th>
-            <th class="col-start-date">{% translate "jobOrderListStartDate" %}</th>
-            <th class="col-workers">{% translate "jobOrderListWorkers" %}</th>
-            <th class="col-company">{% translate "jobOrderListCompany" %}</th>
-            <th class="col-closing">{% translate "jobOrderListClosing" %}</th>
+            <th class="col-deadline oko-table-col-sm">{% translate "jobOrderListDeadline" %}</th>
+            <th class="col-start-date oko-table-col-sm">{% translate "jobOrderListStartDate" %}</th>
+            <th class="col-workers oko-table-col-xs">{% translate "jobOrderListWorkers" %}</th>
+            <th class="col-company oko-table-col-sm">{% translate "jobOrderListCompany" %}</th>
+            <th class="col-closing oko-table-col-xs">{% translate "jobOrderListClosing" %}</th>
             {% if request.user|has_group:"admin" %}
-            <th class="col-actions">{% translate "jobOrderListActions" %}</th>
+            <th class="col-actions oko-table-col-sm">{% translate "jobOrderListActions" %}</th>
             {% endif %}
           </tr>
           </thead>
 
             <tbody>
                 {% for item in work_requests %}
-                <tr class="text-start">
+                <tr >
                     <td class="tbody">
                         <input type="checkbox" class="row-checkbox" data-id="{{ item.id }}">
                     </td>
@@ -139,7 +139,7 @@
                         {{ item.start_date }}
                     </td>
                     
-                    <td class="tbody">
+                    <td class="tbody oko-table-col-xs">
                         {{ item.required_workers }}
                     </td>
                     <td class="tbody">
@@ -147,7 +147,7 @@
                             {{ item.employer }}
                         </a>
                     </td>
-                    <td class="tbody">
+                    <td class="tbody oko-table-col-xs">
                         {% translate item.status %}
                     </td>
                     {% if request.user|has_group:"admin" %}
