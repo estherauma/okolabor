@@ -1244,7 +1244,8 @@ class UploadDocumentsView(LoginRequiredMixin, View):
             uploaded_file = request.FILES.get(field_name)
             if uploaded_file:
                 filename = uploaded_file.name
-                relative_path = os.path.join(upload_dir, filename)
+                clean_dir = upload_dir.replace('uploads', '').strip('/')
+                relative_path = os.path.join(clean_dir, filename)
                 full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
 
                 os.makedirs(os.path.dirname(full_path), exist_ok=True)
@@ -1628,7 +1629,8 @@ class EditDocumentsView(LoginRequiredMixin, View):
                 continue
 
             filename = uploaded_file.name
-            relative_path = os.path.join(upload_dir, filename)
+            clean_dir = upload_dir.replace('uploads', '').strip('/')
+            relative_path = os.path.join(clean_dir, filename)
             full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
 
             os.makedirs(os.path.dirname(full_path), exist_ok=True)
