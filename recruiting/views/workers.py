@@ -804,6 +804,7 @@ class WorkerDetailsView(LoginRequiredMixin,View):
                         {'name': worker.first_name, 'url': None},
                     ],
             'send_message_form': send_message_form,
+            'MEDIA_URL': settings.MEDIA_URL
         }
         return render(request, 'recruiting/workers/detail.html', context)
 
@@ -1226,7 +1227,7 @@ class UploadDocumentsView(LoginRequiredMixin, View):
     upload_paths = {
     'contract': 'uploads/visa',
     'passport': 'uploads/passports',
-    'profile_picture': 'uploads/profiles',
+    'profile_picture': 'profiles',
     'english_video': 'uploads/english_videos',
     'us_driving_license': 'uploads/driver_licenses',
     'mexico_driving_license': 'uploads/driver_licenses',
@@ -1238,7 +1239,6 @@ class UploadDocumentsView(LoginRequiredMixin, View):
     'explanation_video': 'uploads/explanation_videos',
     }
 
-
     def post(self, request, *args, **kwargs):
         worker_id = request.POST.get("worker_id")
         user = get_object_or_404(User, pk=worker_id)
@@ -1246,20 +1246,39 @@ class UploadDocumentsView(LoginRequiredMixin, View):
             uploaded_file = request.FILES.get(field_name)
             if uploaded_file:
                 filename = uploaded_file.name
-                relative_path = os.path.join(upload_dir, filename)
+                clean_dir = upload_dir.replace('uploads', '').strip('/')
+                relative_path = os.path.join(clean_dir, filename)
                 full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
 
                 os.makedirs(os.path.dirname(full_path), exist_ok=True)
-                with open(full_path, 'wb+') as destination:
-                    for chunk in uploaded_file.chunks():
-                        destination.write(chunk)
-                UserDocuments.objects.create(
-                    user=user,
-                    path=relative_path,
-                    kind=field_name,
-                    description=f'{field_name.replace("_", " ").title()} for user profile',
-                    file_type=uploaded_file.content_type
-                )
+
+                try:
+                    with open(full_path, 'wb+') as destination:
+                        for chunk in uploaded_file.chunks():
+                            destination.write(chunk)
+
+                    new_doc = UserDocuments.objects.create(
+                        user=user,
+                        path=relative_path,
+                        kind=field_name,
+                        description=f'{field_name.replace("_", " ").title()} for user profile',
+                        file_type=uploaded_file.content_type
+                    )
+                    
+                    old_docs = UserDocuments.objects.filter(user=user, kind=field_name).exclude(id=new_doc.id)
+                    if field_name == 'profile_picture':
+                        for old_doc in old_docs:
+                            old_file_path = os.path.join(settings.MEDIA_ROOT, old_doc.path)
+                            if os.path.exists(old_file_path):
+                                try:
+                                    os.remove(old_file_path)
+                                except Exception:
+                                    pass
+                        old_docs.delete()
+
+                except Exception as e:
+                    messages.error(request, f"Failed to upload {field_name}: {str(e)}")
+
 
         text = _('documentsUploadedFor')
         messages.success(request, f"{text} {user.get_full_name() or user.email}.")
@@ -1597,7 +1616,7 @@ class EditLanguageProficiencyView(LoginRequiredMixin, View):
 class EditDocumentsView(LoginRequiredMixin, View):
     upload_paths = {
         'passport': 'uploads/passports',
-        'profile_picture': 'uploads/profiles',
+        'profile_picture': 'profiles',
         'us_driving_license': 'uploads/driver_licenses',
         'mexico_driving_license': 'uploads/driver_licenses',
     }
@@ -1608,26 +1627,43 @@ class EditDocumentsView(LoginRequiredMixin, View):
 
         for field_name, upload_dir in self.upload_paths.items():
             uploaded_file = request.FILES.get(field_name)
-            if uploaded_file:
-                filename = uploaded_file.name
-                relative_path = os.path.join(upload_dir, filename)
-                full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
+            if not uploaded_file:
+                continue
 
-                os.makedirs(os.path.dirname(full_path), exist_ok=True)
+            filename = uploaded_file.name
+            clean_dir = upload_dir.replace('uploads', '').strip('/')
+            relative_path = os.path.join(clean_dir, filename)
+            full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
+
+            os.makedirs(os.path.dirname(full_path), exist_ok=True)
+
+            try:
                 with open(full_path, 'wb+') as destination:
                     for chunk in uploaded_file.chunks():
                         destination.write(chunk)
 
-                # Delete old file of the same kind if it exists
-                UserDocuments.objects.filter(user=user, kind=field_name).delete()
-
-                UserDocuments.objects.create(
+                new_doc = UserDocuments.objects.create(
                     user=user,
                     path=relative_path,
                     kind=field_name,
                     description=f'{field_name.replace("_", " ").title()} for user profile',
                     file_type=uploaded_file.content_type
                 )
+                
+                old_docs = UserDocuments.objects.filter(user=user, kind=field_name).exclude(id=new_doc.id)
+                if field_name == 'profile_picture':
+                    for old_doc in old_docs:
+                        old_file_path = os.path.join(settings.MEDIA_ROOT, old_doc.path)
+                    if os.path.exists(old_file_path):
+                        try:
+                            os.remove(old_file_path)
+                        except Exception:
+                            pass
+                old_docs.delete()
+                    
+            except Exception as e:
+                messages.error(request, f"Failed to upload {field_name}: {str(e)}")
+                continue
 
         messages.success(request, _("workersListDocumentsUpdatedSuccessfully"))
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))

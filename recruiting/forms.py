@@ -62,8 +62,7 @@ class WorkRequestForm(forms.ModelForm):
     class Meta:
         model = WorkRequests
         fields = [
-            'name', 'start_date', 'end_date',
-            'required_workers', 'employer', 'status'
+            'name', 'start_date', 'end_date', 'employer', 'status'
         ]
         
         labels = {
@@ -87,9 +86,7 @@ class WorkRequestForm(forms.ModelForm):
                 'class': 'form-control',
                 'type': 'date',
             }),
-            'required_workers': forms.NumberInput(attrs={
-                'class': 'form-control',
-            }),
+           
             'employer': forms.Select(attrs={
                 'class': 'form-control',
             }),
