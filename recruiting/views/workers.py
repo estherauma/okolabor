@@ -27,7 +27,7 @@ from dateutil.relativedelta import relativedelta
 from django.http import HttpResponse
 import json
 from datetime import date,datetime
-from recruiting.utils import calculate_months_ofH2A_expererience, check_visa_status, find_worker_status, get_sector_choices
+from recruiting.utils import calculate_months_ofH2A_expererience, check_visa_status, filter_workers_by_experience, find_worker_status, get_sector_choices
 from common.utils import StaticContent
 from recruiting.utils import calculate_total_experience,calculate_profile_completion,get_worker_preferences
 from common.logger import AppLogger
@@ -36,7 +36,6 @@ from common.firebase_utils import send_push_notification
 from django.utils import translation
 from django.db.models.functions import Lower
 from decimal import Decimal
-
 
 
 ONBOARDING_STEPS = [
@@ -55,22 +54,6 @@ worker_profile_status_labels = {
 }
 
 class WorkerListView(LoginRequiredMixin, View):
-    # Helper function to generate text variants for matching since the database has mixed entries eg some value onions_and_shallots vs Onions and shallots
-    @staticmethod
-    def generate_text_variants(item, static_content):
-        variants = set()
-        variants.add(item)
-        normalized_value = static_content._normalize(item)
-        variants.add(normalized_value)
-        variants.add(item.lower())
-        variants.add(item.upper())
-        variants.add(item.title())
-        variants.add(item.replace('_', ' '))
-        variants.add(item.replace(' ', '_'))
-        variants.add(normalized_value.replace('_', ' '))
-        variants.add(normalized_value.replace(' ', '_'))
-        return {v for v in variants if v}
-    
     def get(self, request):
         # if coming from add workers button on work request detail page
         # Get optional parameters from query string
@@ -80,7 +63,6 @@ class WorkerListView(LoginRequiredMixin, View):
         form = DynamicWorkExperienceForm(request.GET or None)
         filter_form = AdvancedFilterForm(request.GET or None)
         search_query = request.GET.get('search', '')
-        static_content = StaticContent()
 
         workers = User.objects.filter(groups__name='worker', deleted=False).order_by('-created_at')
 
@@ -88,42 +70,16 @@ class WorkerListView(LoginRequiredMixin, View):
         type_sector = request.GET.get('type_sector')
         dynamic_field_1 = request.GET.getlist('dynamic_field_1')
         dynamic_field_2 = request.GET.getlist('dynamic_field_2')
-        fields_with_type_details = ['Crop and Horticulture', 'Animals']
         params = request.GET
+        workers = filter_workers_by_experience(
+            workers,
+            {
+                "type_sector": type_sector,
+                "dynamic_field_1": dynamic_field_1,
+                "dynamic_field_2": dynamic_field_2,
+            },
+        )
 
-        if type_sector:
-            workers = workers.filter(
-                crop_experiences__job_type__iexact=type_sector,
-                crop_experiences__deleted_at__isnull=True
-            )
-
-        if dynamic_field_1:
-            q = Q()
-            if type_sector in fields_with_type_details:
-                for item in dynamic_field_1:
-                    for v in WorkerListView.generate_text_variants(item, static_content):
-                        q |= Q(crop_experiences__type_details__icontains=v)
-                workers = workers.filter(q, crop_experiences__deleted_at__isnull=True)
-            else:
-                for item in dynamic_field_1:
-                    for v in WorkerListView.generate_text_variants(item, static_content):
-                        q |= Q(crop_experiences__job_experience_details__value__icontains=v)
-                workers = workers.filter(
-                    q,
-                    crop_experiences__job_experience_details__kind__icontains='responsibilities',
-                    crop_experiences__job_experience_details__deleted_at__isnull=True
-                )
-
-        if dynamic_field_2:
-            q = Q()
-            for item in dynamic_field_2:
-                for v in WorkerListView.generate_text_variants(item, static_content):
-                    q |= Q(crop_experiences__job_experience_details__value__icontains=v)
-            workers = workers.filter(
-                    q,
-                    crop_experiences__job_experience_details__kind__icontains='responsibilities',
-                    crop_experiences__job_experience_details__deleted_at__isnull=True
-                )
         # Filter by Passport
         passport_filter = next((v for k, v in params.items() if k.startswith("passport_") and v), None)
         if passport_filter and passport_filter.lower() == 'yes':
@@ -135,7 +91,7 @@ class WorkerListView(LoginRequiredMixin, View):
             h2a_user_ids = UserWorkExperience.objects.filter(
                 visa_type__iexact="H-2A"
             ).values_list('user_id', flat=True).distinct()
-            
+
             workers = workers.filter(id__in=h2a_user_ids)
 
         # Filter by H2B Experience
@@ -146,7 +102,7 @@ class WorkerListView(LoginRequiredMixin, View):
             ).values_list('user_id', flat=True).distinct()
 
             workers = workers.filter(id__in=h2b_user_ids)
-        
+
         # Filter: Visa
         visa_filter = next((v for k, v in params.items() if k.startswith("visa_") and v), None)
         if visa_filter:
@@ -174,7 +130,6 @@ class WorkerListView(LoginRequiredMixin, View):
             workers = workers.filter(
                 documents__kind='mexico_driving_license'
             )
-
 
         # Filter by Work Preference Type
         work_type_filter = next((v for k, v in params.items() if k.startswith("work_preference_type_") and v), None)
@@ -207,7 +162,7 @@ class WorkerListView(LoginRequiredMixin, View):
         if gender_filter:
             workers = workers.filter(gender__iexact=gender_filter)
 
-         # Filter by Availability
+        # Filter by Availability
         availability_from = next((v for k, v in params.items() if k.startswith("availability_from_") and v), None)
         availability_to = next((v for k, v in params.items() if k.startswith("availability_to_") and v), None)
         if availability_from or availability_to:
@@ -298,7 +253,6 @@ class WorkerListView(LoginRequiredMixin, View):
                     (max_exp is None or years <= max_exp)):
                     filtered.append(w)
             workers = filtered
-            
 
         # Filter by whether user has language proficiency video
         lang_video_filter = next((v for k, v in params.items() if k.startswith("has_language_proficiency_video") and v), None)
@@ -317,19 +271,23 @@ class WorkerListView(LoginRequiredMixin, View):
                     documents__kind='english_video',
                     documents__path__isnull=False,
                 ).exclude(documents__path__exact='')
-        
-            
-        
+
         # Deduplicate workers by ID using a dictionary comprehension.
         workers = list({w.id: w for w in workers}.values())
         worker_data = []
-        
+
         # Initialize years_of_experience to 0 as a default.
         years_of_experience = 0
+        exp_filters = {
+            'type_sector': type_sector,
+            'dynamic_field_1': dynamic_field_1,
+            'dynamic_field_2': dynamic_field_2,
+        }
+        exp_filters_empty = all(not v for v in exp_filters.values())
         for worker in workers:
             profile_completion = calculate_profile_completion(worker)
             worker_details = get_worker_preferences(worker)
-            years_of_experience = calculate_total_experience(worker)
+            years_of_experience = '-' if exp_filters_empty else calculate_total_experience(worker, exp_filters)
             latest_assignment = WorkAssignment.objects.filter(worker=worker).order_by('-assigned_date').first()
 
             worker_status_pref = UserPreference.objects.filter(user=worker, key='worker_status').first()
@@ -357,8 +315,7 @@ class WorkerListView(LoginRequiredMixin, View):
             worker.profile_completion_percentage = profile_completion
             worker.visa_uploaded = visa_uploaded
             worker.intro_video_uploaded = intro_video_uploaded
-            worker.total_months_of_h2a_experience = calculate_months_ofH2A_expererience(worker)
-
+            worker.total_months_of_h2a_experience = '-' if exp_filters_empty else calculate_months_ofH2A_expererience(worker, exp_filters)
 
             worker_data.append({
                 'id': worker.id,
@@ -369,11 +326,11 @@ class WorkerListView(LoginRequiredMixin, View):
                 'years_of_experience': years_of_experience, 
                 'visa_uploaded': visa_uploaded,
                 'intro_video_uploaded': intro_video_uploaded,
-                'total_months_of_h2a_experience': calculate_months_ofH2A_expererience(worker),
+                'total_months_of_h2a_experience': '-' if exp_filters_empty else calculate_months_ofH2A_expererience(worker, exp_filters),
                 'latest_status': worker_profile_status_labels[code],
                 **worker_details
             })
-       
+
         worker_form = WorkerCreateForm()
         workers_length = len(workers)
         send_message_form = SendMessageForm()
@@ -442,7 +399,8 @@ class FilteredWorkersAjaxView(View):
 
         all_assignments = WorkAssignment.objects.filter(
             work_request_id=work_request_id,
-            role_id=role_id
+            role_id=role_id,
+            deleted=False
         ).select_related('worker', 'role', 'work_request')
 
         unique_worker_status_counts = {
@@ -538,7 +496,7 @@ class WorkerEditView(LoginRequiredMixin, View):
                 key=key,
                 defaults={'value': value}
             )
-            
+
 import random
 import string
 from django.utils.crypto import get_random_string
@@ -576,7 +534,7 @@ class WorkerDeleteView(LoginRequiredMixin, View):
                 return JsonResponse({'status': 'forbidden'}, status=403)
             return HttpResponseForbidden(_("workersListYouDoNotHavePermissionToDeleteThisWorker"))
 
-    
+
 class AssignWorkerView(View):
     def post(self, request):
         try:
@@ -625,7 +583,7 @@ class AssignWorkerView(View):
         except Exception as e:
             messages.error(request, str(e))
             return JsonResponse({"success": False, "message": str(e)}, status=400)
-        
+
 @method_decorator(csrf_exempt, name='dispatch')
 class SendOfferView(View):
     def post(self, request, *args, **kwargs):
@@ -698,7 +656,7 @@ class SendOfferView(View):
         except Exception as e:
             messages.error(request, str(e))
             return JsonResponse({"success": False, "message": str(e)}, status=400)
-        
+
 @method_decorator(csrf_exempt, name='dispatch')
 class GetWorkerDetailsView(View):
     def post(self, request, *args, **kwargs):
@@ -706,7 +664,6 @@ class GetWorkerDetailsView(View):
         workers = User.objects.filter(id__in=worker_ids)
         workers_data = [{'id': worker.id, 'firstname': worker.first_name, 'lastname': worker.last_name, 'email': worker.email} for worker in workers]
         return JsonResponse({'workers': workers_data})
-
 
 
 class WorkerCreateView(LoginRequiredMixin, View):
@@ -847,9 +804,10 @@ class WorkerDetailsView(LoginRequiredMixin,View):
                         {'name': worker.first_name, 'url': None},
                     ],
             'send_message_form': send_message_form,
+            'MEDIA_URL': settings.MEDIA_URL
         }
         return render(request, 'recruiting/workers/detail.html', context)
-    
+
 class EditPreferenceView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         worker_id = kwargs.get("worker_id")  # ✅ Gets the user ID from the URL
@@ -867,7 +825,6 @@ class EditPreferenceView(LoginRequiredMixin, View):
             messages.success(request, _("workersListUserPreferenceUpdatedSuccessfully"))  # ✅ Feedback
 
         return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))  # ✅ Redirect
-
 
 
 class DeletePreferenceView(LoginRequiredMixin, View):
@@ -908,7 +865,7 @@ class GetRolesForWorkRequestView(View):
         roles_data = [{'id': role.id, 'title': role.title} for role in roles]
 
         return JsonResponse({'roles': roles_data})
-    
+
 
 class CreateWorkExperienceView(BaseCreateView):
     model = UserWorkExperience
@@ -1033,7 +990,6 @@ class CreateWorkExperienceView(BaseCreateView):
 
     def get_success_url(self):
         return reverse('recruiting_web:worker_detail', kwargs={'pk': self.object.user.pk})
-
 
 
 class WorkExperienceDetailsView(LoginRequiredMixin, View):
@@ -1296,12 +1252,13 @@ class ExportWorkerDetailsView(LoginRequiredMixin, View):
                 df_experiences.to_excel(writer, index=False, sheet_name='Worker Experiences')
 
         return response
-    
+
+
 class UploadDocumentsView(LoginRequiredMixin, View):
     upload_paths = {
     'contract': 'uploads/visa',
     'passport': 'uploads/passports',
-    'profile_picture': 'uploads/profiles',
+    'profile_picture': 'profiles',
     'english_video': 'uploads/english_videos',
     'us_driving_license': 'uploads/driver_licenses',
     'mexico_driving_license': 'uploads/driver_licenses',
@@ -1313,7 +1270,6 @@ class UploadDocumentsView(LoginRequiredMixin, View):
     'explanation_video': 'uploads/explanation_videos',
     }
 
-
     def post(self, request, *args, **kwargs):
         worker_id = request.POST.get("worker_id")
         user = get_object_or_404(User, pk=worker_id)
@@ -1321,25 +1277,44 @@ class UploadDocumentsView(LoginRequiredMixin, View):
             uploaded_file = request.FILES.get(field_name)
             if uploaded_file:
                 filename = uploaded_file.name
-                relative_path = os.path.join(upload_dir, filename)
+                clean_dir = upload_dir.replace('uploads', '').strip('/')
+                relative_path = os.path.join(clean_dir, filename)
                 full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
 
                 os.makedirs(os.path.dirname(full_path), exist_ok=True)
-                with open(full_path, 'wb+') as destination:
-                    for chunk in uploaded_file.chunks():
-                        destination.write(chunk)
-                UserDocuments.objects.create(
-                    user=user,
-                    path=relative_path,
-                    kind=field_name,
-                    description=f'{field_name.replace("_", " ").title()} for user profile',
-                    file_type=uploaded_file.content_type
-                )
+
+                try:
+                    with open(full_path, 'wb+') as destination:
+                        for chunk in uploaded_file.chunks():
+                            destination.write(chunk)
+
+                    new_doc = UserDocuments.objects.create(
+                        user=user,
+                        path=relative_path,
+                        kind=field_name,
+                        description=f'{field_name.replace("_", " ").title()} for user profile',
+                        file_type=uploaded_file.content_type
+                    )
+                    
+                    old_docs = UserDocuments.objects.filter(user=user, kind=field_name).exclude(id=new_doc.id)
+                    if field_name == 'profile_picture':
+                        for old_doc in old_docs:
+                            old_file_path = os.path.join(settings.MEDIA_ROOT, old_doc.path)
+                            if os.path.exists(old_file_path):
+                                try:
+                                    os.remove(old_file_path)
+                                except Exception:
+                                    pass
+                        old_docs.delete()
+
+                except Exception as e:
+                    messages.error(request, f"Failed to upload {field_name}: {str(e)}")
+
 
         text = _('documentsUploadedFor')
         messages.success(request, f"{text} {user.get_full_name() or user.email}.")
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
-    
+
 class UploadLanguageProficiencyView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         worker_id = request.POST.get("worker_id")
@@ -1418,7 +1393,6 @@ class UploadUserPreferenceView(LoginRequiredMixin, View):
 
         messages.success(request, _("userPreferencesSavedSuccessfully."))
         return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
-    
 
 
 class EditWorkExperienceView(LoginRequiredMixin, View):
@@ -1557,7 +1531,7 @@ class DeleteWorkExperienceView(LoginRequiredMixin, View):
 
         messages.success(request, "workExperienceDeletedSuccessfully.")
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))
-    
+
 class EditUserPreferenceView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         worker_id = kwargs.get("worker_id")
@@ -1668,12 +1642,12 @@ class EditLanguageProficiencyView(LoginRequiredMixin, View):
 
         messages.success(request, _("languageProficiencyInformationSavedSuccessfully."))
         return redirect(reverse("recruiting_web:worker_detail", kwargs={"pk": user.pk}))
-    
+
 
 class EditDocumentsView(LoginRequiredMixin, View):
     upload_paths = {
         'passport': 'uploads/passports',
-        'profile_picture': 'uploads/profiles',
+        'profile_picture': 'profiles',
         'us_driving_license': 'uploads/driver_licenses',
         'mexico_driving_license': 'uploads/driver_licenses',
     }
@@ -1684,26 +1658,43 @@ class EditDocumentsView(LoginRequiredMixin, View):
 
         for field_name, upload_dir in self.upload_paths.items():
             uploaded_file = request.FILES.get(field_name)
-            if uploaded_file:
-                filename = uploaded_file.name
-                relative_path = os.path.join(upload_dir, filename)
-                full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
+            if not uploaded_file:
+                continue
 
-                os.makedirs(os.path.dirname(full_path), exist_ok=True)
+            filename = uploaded_file.name
+            clean_dir = upload_dir.replace('uploads', '').strip('/')
+            relative_path = os.path.join(clean_dir, filename)
+            full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
+
+            os.makedirs(os.path.dirname(full_path), exist_ok=True)
+
+            try:
                 with open(full_path, 'wb+') as destination:
                     for chunk in uploaded_file.chunks():
                         destination.write(chunk)
 
-                # Delete old file of the same kind if it exists
-                UserDocuments.objects.filter(user=user, kind=field_name).delete()
-
-                UserDocuments.objects.create(
+                new_doc = UserDocuments.objects.create(
                     user=user,
                     path=relative_path,
                     kind=field_name,
                     description=f'{field_name.replace("_", " ").title()} for user profile',
                     file_type=uploaded_file.content_type
                 )
+                
+                old_docs = UserDocuments.objects.filter(user=user, kind=field_name).exclude(id=new_doc.id)
+                if field_name == 'profile_picture':
+                    for old_doc in old_docs:
+                        old_file_path = os.path.join(settings.MEDIA_ROOT, old_doc.path)
+                    if os.path.exists(old_file_path):
+                        try:
+                            os.remove(old_file_path)
+                        except Exception:
+                            pass
+                old_docs.delete()
+                    
+            except Exception as e:
+                messages.error(request, f"Failed to upload {field_name}: {str(e)}")
+                continue
 
         messages.success(request, _("workersListDocumentsUpdatedSuccessfully"))
         return redirect(reverse('recruiting_web:worker_detail', kwargs={'pk': user.pk}))

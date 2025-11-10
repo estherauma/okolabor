@@ -119,4 +119,19 @@ class StaticContent:
 
     def get_add_worker_to_work_request_metadata(self):
         additionalText = self.content.get("rweb-add-worker-to-work-request", {}).get("additional_text", [])
-        return additionalText 
+        return additionalText
+
+    def generate_text_variants(self, text):
+        """Generate text variants for matching, including normalized and label forms."""
+        variants = set()
+        variants.add(text)
+        normalized_value = self._normalize(text)
+        variants.add(normalized_value)
+        variants.add(text.lower())
+        variants.add(text.upper())
+        variants.add(text.title())
+        variants.add(text.replace('_', ' '))
+        variants.add(text.replace(' ', '_'))
+        variants.add(normalized_value.replace('_', ' '))
+        variants.add(normalized_value.replace(' ', '_'))
+        return {v for v in variants if v}

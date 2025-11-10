@@ -48,7 +48,7 @@ class WorkRequests(AuditableModel):
     name = models.CharField(max_length=255, null=False, blank=False)
     start_date = models.DateField(null=False, blank=False)
     end_date = models.DateField(null=True, blank=True)
-    required_workers = models.IntegerField(null=False, blank=False)
+    required_workers = models.IntegerField(null=True, blank=True)
     employer = models.ForeignKey(Organization,on_delete=models.SET_NULL,null=True,blank=True)
     status = models.CharField(
         max_length=255, null=False, blank=False,

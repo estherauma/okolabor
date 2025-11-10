@@ -1,28 +1,15 @@
 let fieldData = {};
 
-async function fetchFieldDataFromAPI() {
-    try {
-        const response = await fetch('/api/dynamic-field-data/');
-        if (response.ok) {
-            fieldData = await response.json();
-        } else {
-            console.error("Failed to fetch dynamic field data:", response.status);
-        }
-    } catch (error) {
-        console.error("Error fetching dynamic field data:", error);
-    }
-}
-
 function addAnotherExperience() {
     const template = document.getElementById("form-template").innerHTML;
     const container = document.getElementById("filter-inputs-container");
     container.insertAdjacentHTML("beforeend", template);
-    bindDynamicFieldEvents();
 
     const newForm = container.lastElementChild;
     const typeSectorSelect = newForm.querySelector('select[id$="id_type_sector"]');
     if (typeSectorSelect && typeSectorSelect.value) {
-        typeSectorSelect.dispatchEvent(new Event('change'));
+        typeSectorSelect.value = "";
+        bindDynamicFieldEvents(newForm);
     }
 }
 
@@ -31,14 +18,16 @@ function removeForm(button) {
     form.remove();
 }
 
-function bindDynamicFieldEvents() {
-    const allTypeSelectors = document.querySelectorAll('select[id$="id_type_sector"]');
+function bindDynamicFieldEvents(formEl) {
+    const root = formEl || document;
+
+    const allTypeSelectors = root.querySelectorAll('select[id$="id_type_sector"]');
     allTypeSelectors.forEach(selector => {
         selector.removeEventListener('change', handleTypeSectorChange);
         selector.addEventListener('change', handleTypeSectorChange);
     });
 
-    const dynamicSelectors = document.querySelectorAll('select[id$="id_dynamic_field_1"], select[id$="id_dynamic_field_2"]');
+    const dynamicSelectors = root.querySelectorAll('select[id$="id_dynamic_field_1"], select[id$="id_dynamic_field_2"]');
     dynamicSelectors.forEach(selector => {
         selector.parentElement.style.display = 'none';
         selector.style.display = 'none';  
@@ -46,15 +35,14 @@ function bindDynamicFieldEvents() {
 }
 
 function handleTypeSectorChange(event) {
-    const dynamicSelectors = document.querySelectorAll('select[id$="id_dynamic_field_1"], select[id$="id_dynamic_field_2"]');
+    const typeSelector = event.target;
+    const form = typeSelector.closest(".job-experience-form");
+    const dynamicSelectors = form.querySelectorAll('select[id$="id_dynamic_field_1"], select[id$="id_dynamic_field_2"]');
     dynamicSelectors.forEach(selector => {
         selector.style.display = 'inline-block';  
         selector.removeEventListener('change', () => updatePills(selector));
         selector.addEventListener('change', () => updatePills(selector));
     });
-
-    const typeSelector = event.target;
-    const form = typeSelector.closest(".job-experience-form");
 
     const dynamicField1 = form.querySelector('select[id$="id_dynamic_field_1"]');
     const dynamicField2 = form.querySelector('select[id$="id_dynamic_field_2"]');
@@ -132,10 +120,40 @@ function updatePills(selectElement) {
 
     updateCollapseSummary();
 }
+function normalizeText(text) {
+    return text.trim().toLowerCase().replace(/[\s\-\/]+/g, '_');
+}
+function toTitleCase(str) {
+    return str.replace(/\w\S*/g, function(txt){
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+}
+function generateTextVariants(text) {
+    const normalized = normalizeText(text);
+    const variants = new Set();
 
+    // Original and normalized
+    variants.add(text);
+    variants.add(normalized);
+
+    // Lowercase, uppercase, title case
+    variants.add(text.toLowerCase());
+    variants.add(text.replace(/_/g, ' '));
+    variants.add(text.replace(/ /g, '_'));
+    variants.add(normalized.replace(/_/g, ' '));
+    variants.add(normalized.replace(/ /g, '_'));
+
+    // Title case for both original and normalized
+    variants.add(toTitleCase(text.replace(/_/g, ' ')));
+    variants.add(toTitleCase(normalized.replace(/_/g, ' ')));
+    return Array.from(variants).filter(Boolean);
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
-    await fetchFieldDataFromAPI();
+    const expDynamicFieldData = localStorage.getItem('expDynamicFieldData');
+    fieldData = expDynamicFieldData ? JSON.parse(expDynamicFieldData) : {};
+    const params = new URLSearchParams(window.location.search);
+
     bindDynamicFieldEvents();
 
     document.querySelectorAll('select[id$="id_type_sector"]').forEach(selector => {
@@ -145,6 +163,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     document.querySelectorAll('select[id$="id_dynamic_field_1"], select[id$="id_dynamic_field_2"]').forEach(select => {
+        const values = params.getAll(select.name);
+        if (values.length > 0) {
+            const normalizedValues = values.map(normalizeText);
+
+            console.log("Values Variants:", normalizedValues, values);
+            Array.from(select.options).forEach(option => {
+                const optionNormalized = normalizeText(option.value);
+                console.log('option', option.value, optionNormalized, normalizedValues.includes(optionNormalized));
+
+    option.selected = normalizedValues.includes(optionNormalized);
+            });
+        }
         updatePills(select);
     });
 

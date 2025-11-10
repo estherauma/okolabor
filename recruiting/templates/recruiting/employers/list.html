@@ -37,7 +37,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate "employersCancel" %}</button>
+        <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate "webCommonCancel" %}</button>
         <button type="button" class="btn light-green-button" id="assignRecruiterBtn">{% translate "employersAssign" %}</button>
       </div>
     </div>
@@ -134,12 +134,12 @@
                 </th>
                 <th class="col-company">{% translate "employersCompanyName" %}</th>
                 <th class="col-contact">{% translate "employersEmail" %}</th>
-                <th class="col-location">{% translate "employersLocation" %}</th>
+                <!-- <th class="col-location oko-table-col-sm">{% translate "employersLocation" %}</th> -->
                 <th class="col-phone">{% translate "employersCountry" %}</th>
-                <th class="col-assigned">{% translate "employersPhone" %}</th>
+                <!-- <th class="col-assigned">{% translate "employersPhone" %}</th> -->
                 <th class="col-assigned">{% translate "employersAssignedTo" %}</th>
                 {% if request.user|has_group:"admin" %}
-                  <th class="col-actions">{% translate "employersActions" %}</th>
+                  <th class="col-actions oko-table-col-sm">{% translate "employersActions" %}</th>
                 {% endif %}
               </tr>
             </thead>
@@ -153,10 +153,10 @@
                   </a>
                 </td>
                 <td>{{ employer.email}}</td>
-                <td>{{ employer.address}}</td>
+                <!-- <td class="oko-table-col-sm">{{ employer.address}}</td> -->
                 <td>{{ employer.country }}</td>
-                <td>{{ employer.phone }}</td>
-                <td style="white-space: break-spaces; min-width: 200px;">
+                <!-- <td>{{ employer.phone }}</td> -->
+                <td>
                   {% if employer.recruiters %}
                       {% for recruiter in employer.recruiters %}
                           {{ recruiter }}{% if not forloop.last %}, {% endif %}
@@ -166,7 +166,7 @@
                   {% endif %}
                 </td>
                 {% if request.user|has_group:"admin" %}
-                  <td>
+                  <td >
                     <button 
                       type="button"
                       class="btn btn-sm yellow-button"
@@ -269,7 +269,7 @@
               {% translate 'employersAreYouSureYouWantToDelete'%} <strong>{{ employer.name }}</strong>?
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'employersCancel'%}</button>
+              <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'webCommonCancel'%}</button>
               <button type="submit" class="btn red-button">{% translate 'employersDelete'%}</button>
             </div>
           </form>
@@ -334,8 +334,8 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'employersCancel' %}</button>
-              <button type="submit" class="btn light-green-button">{% translate 'employersSave' %}</button>
+              <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'webCommonCancel' %}</button>
+              <button type="submit" class="btn light-green-button">{% translate 'webCommonSave' %}</button>
             </div>
           </form>
         </div>

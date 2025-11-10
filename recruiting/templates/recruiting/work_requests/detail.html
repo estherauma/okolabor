@@ -67,7 +67,7 @@
               </div>
             <div class="modal-footer">
               <button type="button" class="btn grey-button" data-bs-dismiss="modal">{% translate 'jobOrderListCancel' %}</button>
-              <button type="submit" class="btn light-green-button">{% translate 'jobOrderListSave' %}</button>
+              <button type="submit" class="btn light-green-button">{% translate 'webCommonSave' %}</button>
             </div>
           </form>
         </div>
@@ -116,7 +116,9 @@
               {% for role in roles %}
               <tr>
                 <td>
-                  {{ role.title }}
+                  <a href="{% url 'recruiting_web:workers' %}{% get_workers_page_params role=role %}">
+                    {{ role.title }}
+                  </a>
                 </td>
                 <td>
                   {{ role.number_of_required_workers }}
@@ -252,7 +254,7 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'joDetailsHoursCancel' %}</button>
-                <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>{% translate 'joDetailsHoursSave' %}</button>
+                <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>{% translate 'webCommonSave' %}</button>
               </div>
             </form>
           </div>
@@ -316,7 +318,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn" data-bs-dismiss="modal" style='background-color:#9A9898; color:white'>{% translate 'joDetailsWagesCancel' %}</button>
-          <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>{% translate 'joDetailsWagesSave' %}</button>
+          <button type="submit" class="btn" style='background-color:#7DBF96; color:white'>{% translate 'webCommonSave' %}</button>
         </div>
       </form>
     {% else %}
@@ -738,7 +740,7 @@
                   <label>
                     {% translate "joDetailsQualificationsNumberOfMonthsTrainingRequired" %}:
                   </label>
-                  <p>{{ role.qualifications.number_of_months_training_required }}</p>
+                  <p>{{ role.qualifications.number_of_months_training_required|default:"N/A" }}</p>
                 </div>
                 <div class="details-row">
                   <label>
@@ -766,7 +768,7 @@
                     {% if role.qualifications.lifting_requirement_weight is not None %}
                       {{ role.qualifications.lifting_requirement_weight }} {% translate "joDetailsQualificationslbs" %}
                     {% else %}
-                      None
+                      N/A
                     {% endif %}
                     </p>
                 </div>
