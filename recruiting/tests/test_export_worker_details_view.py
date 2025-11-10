@@ -4,38 +4,43 @@ from io import BytesIO
 import pandas as pd
 from rest_framework import status
 from account.models import User, UserPreference
-from content.models import AggregatedContent
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
+
 
 class ExportWorkerDetailsTest(TestCase):
-    @patch('content.models.AggregatedContent.objects.latest')
-    @patch('account.models.User.objects.filter')
-    @patch('account.models.UserPreference.objects.filter')
-    def test_export_worker_details(self, mock_user_preferences, mock_user_filter, mock_latest_content):
+    @patch('recruiting.views.workers.AggregatedContentSerializer')
+    @patch('recruiting.views.workers.AggregatedContent.objects.latest')
+    def test_export_worker_details(self, mock_latest_content, mock_serializer):
         User = get_user_model()
-        user = User.objects.create_user(password='testpass',email='testuser@okolabor.com')
-        self.client.login(email='testuser@okolabor.com', password='testpass') 
-        # Mock AggregatedContent
-        mock_aggregated_content = MagicMock()
-        mock_aggregated_content.get.return_value = {
-            'en': {
-                'workPreferenceStepOne': {'form_questions': [{'key': 'question1', 'label': 'Question 1'}]},
-                'workPreferenceStepTwo': {'form_questions': [{'key': 'question2', 'label': 'Question 2'}]},
-                'profileStepOne': {'form_questions': [{'key': 'question3', 'label': 'Question 3'}]},
-                'profileStepTwo': {'form_questions': [{'key': 'question4', 'label': 'Question 4'}], 'pageTitle': 'English Proficiency'},
+        
+        user = User.objects.create_user(email='admin@okolabor.com', password='testpass')
+        
+        worker_group, _ = Group.objects.get_or_create(name='worker')
+        
+        worker = User.objects.create_user(email='worker@okolabor.com', password='testpass')
+        worker.groups.add(worker_group)
+        
+        UserPreference.objects.create(user=worker, key='question1', value='Answer 1')
+
+        mock_content = MagicMock()
+        mock_latest_content.return_value = mock_content
+
+        mock_serializer_instance = MagicMock()
+        mock_serializer_instance.data = {
+            'content': {
+                'en': {
+                    'workPreferenceStepOne': {'form_questions': [{'key': 'question1', 'label': 'Question 1'}]},
+                    'workPreferenceStepTwo': {'form_questions': []},
+                    'profileStepOne': {'form_questions': []},
+                    'profileStepTwo': {'form_questions': []},
+                }
             }
         }
-        mock_latest_content.return_value = mock_aggregated_content
+        mock_serializer.return_value = mock_serializer_instance
 
-        mock_user = MagicMock(spec=User)
-        mock_user.username = "worker1"
-        mock_user_filter.return_value = [mock_user]
-
-        mock_user_preference = MagicMock(spec=UserPreference)
-        mock_user_preference.key = 'question1'
-        mock_user_preference.value = 'Answer 1'
-        mock_user_preferences.return_value = [mock_user_preference]
+        self.client.login(email='admin@okolabor.com', password='testpass')
 
         url = reverse('recruiting_web:export-workers')
         response = self.client.get(url)
@@ -45,7 +50,7 @@ class ExportWorkerDetailsTest(TestCase):
         self.assertIn('attachment; filename="workers.xlsx"', response['Content-Disposition'])
 
         excel_file = BytesIO(response.content)
-        df = pd.read_excel(excel_file)
+        df = pd.read_excel(excel_file, sheet_name='Workers')
 
-        self.assertIn('QUESTION1', df.columns)
-        self.assertEqual(df.iloc[0]['QUESTION1'], 'Answer 1')
+        self.assertIn('QUESTION 1', df.columns)
+        self.assertEqual(df.iloc[0]['QUESTION 1'], 'Answer 1')

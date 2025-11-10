@@ -1261,7 +1261,7 @@ class ExportWorkerDetailsView(LoginRequiredMixin, View):
         response = HttpResponse(
             content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
-        response['Content-Disposition'] = 'attachment; filename="workers_export.xlsx"'
+        response['Content-Disposition'] = 'attachment; filename="workers.xlsx"'
 
         with pd.ExcelWriter(response, engine='openpyxl') as writer:
             df_workers.to_excel(writer, index=False, sheet_name='Workers')
