@@ -1005,8 +1005,6 @@ class WorkExperienceDetailsView(LoginRequiredMixin, View):
             'base_url': base_url}
         return render(request, 
             'recruiting/workers/work_experience_detail.html', context)
-
-
 class ExportWorkerDetailsView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         status_param = request.GET.get('status')
@@ -1089,7 +1087,7 @@ class ExportWorkerDetailsView(LoginRequiredMixin, View):
         
         for question in step_one_questions + step_two_questions:
             key = question.get('key')
-            label = question.get('label', key)
+            label = question.get('label') or question.get('pageTitle') or key
             if key and key not in excluded_keys:
                 work_pref_fields.append(key)
                 work_pref_label_map[key] = label
@@ -1101,9 +1099,12 @@ class ExportWorkerDetailsView(LoginRequiredMixin, View):
             questions = section_data.get('form_questions', []) or section_data.get('formQuestions', [])
             for question in questions:
                 key = question.get('key')
-                label = question.get('label', key)
+                label = question.get('label') or question.get('pageTitle') or key
                 if key and key not in excluded_keys:
                     preference_label_map[key] = label
+                if key == 'englishProficiency':
+                    english_prof_label = question.get('label') or question.get('pageTitle') or 'Level of English Proficiency'
+                    preference_label_map['level'] = english_prof_label
         
         preference_label_map.update(work_pref_label_map)
         
@@ -1133,8 +1134,6 @@ class ExportWorkerDetailsView(LoginRequiredMixin, View):
         
         columns = base_fields + work_pref_columns + other_pref_columns + doc_presence_fields
         ordered_pref_fields = work_pref_fields + ordered_other_pref_fields
-
-
 
         rows = []
         for user in worker_users:
