@@ -96,7 +96,7 @@ from django.utils.html import strip_tags
 from django.forms.models import model_to_dict
 from account.models import MessageRecipient
 from collections import OrderedDict, defaultdict
-
+from django.db.models import Sum
 class EmployerListView(View):
     def get(self, request):
         user = request.user
@@ -533,6 +533,9 @@ class WorkRequestsListView(View):
         for wr in work_requests:
             recruiter_link = EmployerRecruiterOrgLink.objects.filter(employer_org=wr.employer).first()
             wr.recruiter_org = recruiter_link.recruiter_org if recruiter_link else None
+            
+            # work request required_workers is the sum of all roles required_workers
+            wr.required_workers = wr.roles.aggregate(total=Sum('number_of_required_workers'))['total']
             
         form = WorkRequestForm()
         context = {
