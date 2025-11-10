@@ -1048,6 +1048,8 @@ class ExportWorkerDetailsView(LoginRequiredMixin, View):
             'documentsStepOne',
             'levelOfProficiency',
             'recordVideo',
+            'workPreferenceStepOne',
+            'workPreferenceStepTwo',
             'englishProficiencyTwo',
             'profile',
             'documents',
@@ -1058,22 +1060,8 @@ class ExportWorkerDetailsView(LoginRequiredMixin, View):
             'englishProficiency',
         ])
 
-        preference_keys = set()
         document_kinds = set()
-
         for user in worker_users:
-            try:
-                prefs = UserPreference.objects.filter(user=user)
-            except Exception:
-                prefs = []
-            for pref in prefs:
-                try:
-                    key = getattr(pref, 'key', None)
-                    if key and key not in excluded_keys:
-                        preference_keys.add(key)
-                except Exception:
-                    continue
-
             try:
                 docs = UserDocuments.objects.filter(user=user)
             except Exception:
@@ -1083,28 +1071,42 @@ class ExportWorkerDetailsView(LoginRequiredMixin, View):
                 if kind:
                     document_kinds.add(kind)
 
+
         latest = AggregatedContent.objects.latest('created_at')
         serializer = AggregatedContentSerializer(latest, many=False)
         aggregated_data = serializer.data
         content = aggregated_data.get('content', {})
         english_content = content.get('en', {})
 
-        form_sections = [
-            'workPreferenceStepOne', 'workPreferenceStepTwo',
-            'profileStepOne', 'profileStepTwo'
-        ]
-
+        work_pref_step_one = english_content.get('workPreferenceStepOne', {})
+        work_pref_step_two = english_content.get('workPreferenceStepTwo', {})
+        
+        step_one_questions = work_pref_step_one.get('form_questions', []) or work_pref_step_one.get('formQuestions', [])
+        step_two_questions = work_pref_step_two.get('form_questions', []) or work_pref_step_two.get('formQuestions', [])
+        
+        work_pref_fields = []
+        work_pref_label_map = {}
+        
+        for question in step_one_questions + step_two_questions:
+            key = question.get('key')
+            label = question.get('label', key)
+            if key and key not in excluded_keys:
+                work_pref_fields.append(key)
+                work_pref_label_map[key] = label
+        
         preference_label_map = {}
+        form_sections = ['profileStepOne', 'profileStepTwo']
         for section in form_sections:
             section_data = english_content.get(section, {})
-            page_title = section_data.get('pageTitle', '')
             questions = section_data.get('form_questions', []) or section_data.get('formQuestions', [])
             for question in questions:
                 key = question.get('key')
-                label = question.get('label') or page_title or key
-                if key:
-                    preference_label_map[key] = label   
-
+                label = question.get('label', key)
+                if key and key not in excluded_keys:
+                    preference_label_map[key] = label
+        
+        preference_label_map.update(work_pref_label_map)
+        
         base_fields = [
             'user_id', 'email', 'curp','language', 'is_verified', 'created_at', 'updated_at',
             'profile_completion', 'years_of_experience', 'months_of_h2a_experience',
@@ -1113,9 +1115,25 @@ class ExportWorkerDetailsView(LoginRequiredMixin, View):
 
         doc_presence_fields = [f'has_doc_{k}' for k in sorted(document_kinds)]
 
-        ordered_pref_fields = sorted(preference_keys)
-        label_columns = [preference_label_map.get(k, k) for k in ordered_pref_fields]
-        columns = base_fields + label_columns + doc_presence_fields
+        work_pref_columns = [work_pref_label_map.get(k, k) for k in work_pref_fields]
+        
+        other_pref_keys = set()
+        for user in worker_users:
+            try:
+                prefs = UserPreference.objects.filter(user=user)
+            except Exception:
+                prefs = []
+            for pref in prefs:
+                key = getattr(pref, 'key', None)
+                if key and key not in excluded_keys and key not in work_pref_fields:
+                    other_pref_keys.add(key)
+        
+        ordered_other_pref_fields = sorted(other_pref_keys)
+        other_pref_columns = [preference_label_map.get(k, k) for k in ordered_other_pref_fields]
+        
+        columns = base_fields + work_pref_columns + other_pref_columns + doc_presence_fields
+        ordered_pref_fields = work_pref_fields + ordered_other_pref_fields
+
 
 
         rows = []
@@ -1226,7 +1244,7 @@ class ExportWorkerDetailsView(LoginRequiredMixin, View):
                 exp_row.update({
                     'EXPERIENCE ID': getattr(exp, 'id', ''),
                     'JOB TITLE': getattr(exp, 'work_title', ''),
-                    'CURRENTLY WORKING': getattr(exp, 'currently_working', ''),
+                    'CURRENTLY WORKING': 'Yes' if getattr(exp, 'currently_working', False) else 'No',
                     'COMPANY': getattr(exp, 'company', ''),
                     'COUNTRY': getattr(exp, 'country', ''),
                     'STATE': getattr(exp, 'state', ''),
