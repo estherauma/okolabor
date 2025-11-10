@@ -1253,7 +1253,10 @@ class ExportWorkerDetailsView(LoginRequiredMixin, View):
                     'SUPERVISOR NAME': getattr(exp, 'supervisor_name', ''),
                     'SUPERVISOR CONTACT': getattr(exp, 'supervisor_tel', ''),
                     'SUPERVISOR EMAIL': getattr(exp, 'supervisor_email', ''),
-                    'DESCRIPTION': getattr(exp, 'description', ''),
+                    'WORK UNDER H2A IN USA': getattr(exp, 'work_under_h2a_in_usa', ''), 
+                    'TYPE OF WORK': getattr(exp, 'type_of_work', ''),
+                    'APPROXIMATE MOTH AND YEARS': getattr(exp, 'approx_month_and_year', ''),
+                    'APPROXIMATE TOTAL MONTHS WORKED': getattr(exp, 'approx_total_months_worked', ''),
                 })
                 experience_rows.append(exp_row)
                 
