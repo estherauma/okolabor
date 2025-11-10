@@ -36,6 +36,7 @@ from common.firebase_utils import send_push_notification
 from django.utils import translation
 from django.db.models.functions import Lower
 from decimal import Decimal
+from django.db.models import Count
 
 
 ONBOARDING_STEPS = [
@@ -65,6 +66,8 @@ class WorkerListView(LoginRequiredMixin, View):
         search_query = request.GET.get('search', '')
 
         workers = User.objects.filter(groups__name='worker', deleted=False).order_by('-created_at')
+        
+       
 
         # 🔍 Experience Filters
         type_sector = request.GET.get('type_sector')
@@ -79,6 +82,18 @@ class WorkerListView(LoginRequiredMixin, View):
                 "dynamic_field_2": dynamic_field_2,
             },
         )
+        
+          # Filter workers with duplicate curps
+        duplicate_curp_filter = next((v for k, v in params.items() if k.startswith("duplicate_curps") and v), None)
+        if duplicate_curp_filter and duplicate_curp_filter.lower() == 'yes':
+            duplicate_curp_users = (
+                User.objects.filter(groups__name='worker', deleted=False)
+                .values('curp')
+                .annotate(count=Count('curp'))
+                .filter(count__gt=1)
+                .values_list('curp', flat=True)
+            )
+            workers = workers.filter(curp__in=duplicate_curp_users)
 
         # Filter by Passport
         passport_filter = next((v for k, v in params.items() if k.startswith("passport_") and v), None)
