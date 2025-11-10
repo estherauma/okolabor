@@ -637,6 +637,7 @@ function handleFilterChange(selectEl, uniqueId, extraFieldValues={}) {
         case "us_driving_license":
         case "has_language_proficiency_video":
         case "mx_us_driving_license":
+        case "duplicate_curps":
             html = `
                 <div class="form-group">
                     <label class="form-label gray-color">{% translate "filterSectionHas" %} ${selectEl.options[selectEl.selectedIndex].text}?</label>
@@ -766,7 +767,8 @@ document.addEventListener("DOMContentLoaded", () => {
         { value: "work_preference_type", label: "{% translate 'filterSectionWorkPreferenceType' %}" },
         { value: "visa", label: "{% translate 'filterSectionVisa' %}" },
         { value: "explanation_video", label: "{% translate 'filterSectionExplanationVideo' %}" },
-        { value: "has_language_proficiency_video", label: "{% translate 'filterSectionLanguageProficiencyVideo' %}" }
+        { value: "has_language_proficiency_video", label: "{% translate 'filterSectionLanguageProficiencyVideo' %}" },
+        { value: "duplicate_curps", label: "Duplicate CURP" }
    ];
    localStorage.setItem('secondaryFilterOptions', JSON.stringify(secondaryFilterOptions));
     addRandomFilter(true);
