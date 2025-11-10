@@ -1092,8 +1092,6 @@ class ExportWorkerDetailsView(LoginRequiredMixin, View):
             'documentsStepOne',
             'levelOfProficiency',
             'recordVideo',
-            'workPreferenceStepOne',
-            'workPreferenceStepTwo',
             'englishProficiencyTwo',
             'profile',
             'documents',
@@ -1255,18 +1253,50 @@ class ExportWorkerDetailsView(LoginRequiredMixin, View):
 
 
         capitalized_columns = [col.replace('_', ' ').upper() for col in columns]
-        df = pd.DataFrame(rows_cleaned, columns=columns)
-        df.columns = capitalized_columns
-
-        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        response['Content-Disposition'] = 'attachment; filename="workers.xlsx"'
+        df_workers = pd.DataFrame(rows_cleaned, columns=columns)
+        df_workers.columns = capitalized_columns
+        
+        experience_rows = []
+        for user in worker_users:
+            experiences = UserWorkExperience.objects.filter(user=user)
+            if not experiences.exists():
+                continue
+            worker_row = df_workers[df_workers['USER ID'] == user.id]
+            if worker_row.empty:
+                continue
+            base_data = worker_row.iloc[0].to_dict()
+            for exp in experiences:
+                exp_row = base_data.copy()
+                exp_row.update({
+                    'EXPERIENCE ID': getattr(exp, 'id', ''),
+                    'JOB TITLE': getattr(exp, 'work_title', ''),
+                    'CURRENTLY WORKING': getattr(exp, 'currently_working', ''),
+                    'COMPANY': getattr(exp, 'company', ''),
+                    'COUNTRY': getattr(exp, 'country', ''),
+                    'STATE': getattr(exp, 'state', ''),
+                    'VISA TYPE': getattr(exp, 'visa_type', ''),
+                    'START DATE': getattr(exp, 'start_date', ''),
+                    'END DATE': getattr(exp, 'end_date', ''),
+                    'SUPERVISOR NAME': getattr(exp, 'supervisor_name', ''),
+                    'SUPERVISOR CONTACT': getattr(exp, 'supervisor_tel', ''),
+                    'SUPERVISOR EMAIL': getattr(exp, 'supervisor_email', ''),
+                    'DESCRIPTION': getattr(exp, 'description', ''),
+                })
+                experience_rows.append(exp_row)
+                
+        df_experiences = pd.DataFrame(experience_rows)
+        response = HttpResponse(
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = 'attachment; filename="workers_export.xlsx"'
 
         with pd.ExcelWriter(response, engine='openpyxl') as writer:
-            df.to_excel(writer, index=False, sheet_name='Workers')
+            df_workers.to_excel(writer, index=False, sheet_name='Workers')
+            if not df_experiences.empty:
+                df_experiences.to_excel(writer, index=False, sheet_name='Worker Experiences')
 
         return response
     
-
 class UploadDocumentsView(LoginRequiredMixin, View):
     upload_paths = {
     'contract': 'uploads/visa',
