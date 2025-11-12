@@ -829,6 +829,18 @@ class WorkerCreateForm(forms.ModelForm):
         widget=forms.Select(attrs={'class': 'form-control'}),
         label=_("addWorkerGender")
     )
+    
+    emergency_contact_name = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        label=_("addWorkerEmergencyContactName"),
+        required=False
+    )
+    
+    emergency_contact_phone = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        label=_("addWorkerEmergencyContactPhone"),
+        required=False
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
