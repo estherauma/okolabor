@@ -1273,6 +1273,24 @@ class ExportWorkerDetailsView(LoginRequiredMixin, View):
                     'APPROXIMATE MONTH AND YEAR': getattr(exp, 'approx_month_and_year', ''),
                     'APPROXIMATE TOTAL MONTHS WORKED': getattr(exp, 'approx_total_months_worked', ''),
                 })
+                
+                excluded_detail_kinds = {'job_experience_media', 'explanation_video', 'license', 'evidence', 'visa'}
+                job_experiences = UserJobExperience.objects.filter(work_experience=exp)
+                job_details_map = {}
+                for job_exp in job_experiences:
+                    details = UserJobExperienceDetails.objects.filter(job_experience=job_exp)
+                    for detail in details:
+                        kind = getattr(detail, 'kind', '')
+                        value = getattr(detail, 'value', '')
+                        if kind and kind not in excluded_detail_kinds:
+                            key = f'JOB DETAILS - {kind.upper()}'
+                            if key not in job_details_map:
+                                job_details_map[key] = []
+                            job_details_map[key].append(value)
+                
+                for key, values in job_details_map.items():
+                    exp_row[key] = '; '.join(values)
+                
                 experience_rows.append(exp_row)
                 
         df_experiences = pd.DataFrame(experience_rows)
