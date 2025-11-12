@@ -330,7 +330,7 @@ class WorkerListView(LoginRequiredMixin, View):
             worker.profile_completion_percentage = profile_completion
             worker.visa_uploaded = visa_uploaded
             worker.intro_video_uploaded = intro_video_uploaded
-            worker.total_months_of_h2a_experience = '-' if exp_filters_empty else calculate_months_ofH2A_expererience(worker, exp_filters)
+            worker.total_months_of_h2a_experience = calculate_months_ofH2A_expererience(worker, exp_filters)
 
             worker_data.append({
                 'id': worker.id,
@@ -341,7 +341,7 @@ class WorkerListView(LoginRequiredMixin, View):
                 'years_of_experience': years_of_experience, 
                 'visa_uploaded': visa_uploaded,
                 'intro_video_uploaded': intro_video_uploaded,
-                'total_months_of_h2a_experience': '-' if exp_filters_empty else calculate_months_ofH2A_expererience(worker, exp_filters),
+                'total_months_of_h2a_experience': calculate_months_ofH2A_expererience(worker, exp_filters),
                 'latest_status': worker_profile_status_labels[code],
                 **worker_details
             })
