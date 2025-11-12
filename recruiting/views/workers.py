@@ -1020,8 +1020,6 @@ class WorkExperienceDetailsView(LoginRequiredMixin, View):
             'base_url': base_url}
         return render(request, 
             'recruiting/workers/work_experience_detail.html', context)
-
-
 class ExportWorkerDetailsView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         status_param = request.GET.get('status')
@@ -1075,22 +1073,8 @@ class ExportWorkerDetailsView(LoginRequiredMixin, View):
             'englishProficiency',
         ])
 
-        preference_keys = set()
         document_kinds = set()
-
         for user in worker_users:
-            try:
-                prefs = UserPreference.objects.filter(user=user)
-            except Exception:
-                prefs = []
-            for pref in prefs:
-                try:
-                    key = getattr(pref, 'key', None)
-                    if key and key not in excluded_keys:
-                        preference_keys.add(key)
-                except Exception:
-                    continue
-
             try:
                 docs = UserDocuments.objects.filter(user=user)
             except Exception:
@@ -1100,28 +1084,45 @@ class ExportWorkerDetailsView(LoginRequiredMixin, View):
                 if kind:
                     document_kinds.add(kind)
 
+
         latest = AggregatedContent.objects.latest('created_at')
         serializer = AggregatedContentSerializer(latest, many=False)
         aggregated_data = serializer.data
         content = aggregated_data.get('content', {})
         english_content = content.get('en', {})
 
-        form_sections = [
-            'workPreferenceStepOne', 'workPreferenceStepTwo',
-            'profileStepOne', 'profileStepTwo'
-        ]
-
+        work_pref_step_one = english_content.get('workPreferenceStepOne', {})
+        work_pref_step_two = english_content.get('workPreferenceStepTwo', {})
+        
+        step_one_questions = work_pref_step_one.get('form_questions', []) or work_pref_step_one.get('formQuestions', [])
+        step_two_questions = work_pref_step_two.get('form_questions', []) or work_pref_step_two.get('formQuestions', [])
+        
+        work_pref_fields = []
+        work_pref_label_map = {}
+        
+        for question in step_one_questions + step_two_questions:
+            key = question.get('key')
+            label = question.get('label') or question.get('pageTitle') or key
+            if key and key not in excluded_keys:
+                work_pref_fields.append(key)
+                work_pref_label_map[key] = label
+        
         preference_label_map = {}
+        form_sections = ['profileStepOne', 'profileStepTwo']
         for section in form_sections:
             section_data = english_content.get(section, {})
-            page_title = section_data.get('pageTitle', '')
             questions = section_data.get('form_questions', []) or section_data.get('formQuestions', [])
             for question in questions:
                 key = question.get('key')
-                label = question.get('label') or page_title or key
-                if key:
-                    preference_label_map[key] = label   
-
+                label = question.get('label') or question.get('pageTitle') or key
+                if key and key not in excluded_keys:
+                    preference_label_map[key] = label
+                if key == 'englishProficiency':
+                    english_prof_label = question.get('label') or question.get('pageTitle') or 'Level of English Proficiency'
+                    preference_label_map['level'] = english_prof_label
+        
+        preference_label_map.update(work_pref_label_map)
+        
         base_fields = [
             'user_id', 'email', 'curp','language', 'is_verified', 'created_at', 'updated_at',
             'profile_completion', 'years_of_experience', 'months_of_h2a_experience',
@@ -1130,10 +1131,24 @@ class ExportWorkerDetailsView(LoginRequiredMixin, View):
 
         doc_presence_fields = [f'has_doc_{k}' for k in sorted(document_kinds)]
 
-        ordered_pref_fields = sorted(preference_keys)
-        label_columns = [preference_label_map.get(k, k) for k in ordered_pref_fields]
-        columns = base_fields + label_columns + doc_presence_fields
-
+        work_pref_columns = [work_pref_label_map.get(k, k) for k in work_pref_fields]
+        
+        other_pref_keys = set()
+        for user in worker_users:
+            try:
+                prefs = UserPreference.objects.filter(user=user)
+            except Exception:
+                prefs = []
+            for pref in prefs:
+                key = getattr(pref, 'key', None)
+                if key and key not in excluded_keys and key not in work_pref_fields:
+                    other_pref_keys.add(key)
+        
+        ordered_other_pref_fields = sorted(other_pref_keys)
+        other_pref_columns = [preference_label_map.get(k, k) for k in ordered_other_pref_fields]
+        
+        columns = base_fields + work_pref_columns + other_pref_columns + doc_presence_fields
+        ordered_pref_fields = work_pref_fields + ordered_other_pref_fields
 
         rows = []
         for user in worker_users:
@@ -1226,14 +1241,50 @@ class ExportWorkerDetailsView(LoginRequiredMixin, View):
 
 
         capitalized_columns = [col.replace('_', ' ').upper() for col in columns]
-        df = pd.DataFrame(rows_cleaned, columns=columns)
-        df.columns = capitalized_columns
-
-        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        df_workers = pd.DataFrame(rows_cleaned, columns=columns)
+        df_workers.columns = capitalized_columns
+        
+        experience_rows = []
+        for user in worker_users:
+            experiences = UserWorkExperience.objects.filter(user=user)
+            if not experiences.exists():
+                continue
+            worker_row = df_workers[df_workers['USER ID'] == user.id]
+            if worker_row.empty:
+                continue
+            base_data = worker_row.iloc[0].to_dict()
+            for exp in experiences:
+                exp_row = base_data.copy()
+                exp_row.update({
+                    'EXPERIENCE ID': getattr(exp, 'id', ''),
+                    'JOB TITLE': getattr(exp, 'work_title', ''),
+                    'CURRENTLY WORKING': 'Yes' if getattr(exp, 'currently_working', False) else 'No',
+                    'COMPANY': getattr(exp, 'company', ''),
+                    'COUNTRY': getattr(exp, 'country', ''),
+                    'STATE': getattr(exp, 'state', ''),
+                    'VISA TYPE': getattr(exp, 'visa_type', ''),
+                    'START DATE': getattr(exp, 'start_date', ''),
+                    'END DATE': getattr(exp, 'end_date', ''),
+                    'SUPERVISOR NAME': getattr(exp, 'supervisor_name', ''),
+                    'SUPERVISOR TELEPHONE': getattr(exp, 'supervisor_tel', ''),
+                    'SUPERVISOR EMAIL': getattr(exp, 'supervisor_email', ''),
+                    'WORK UNDER H2A IN USA': getattr(exp, 'work_under_h2a_in_usa', ''), 
+                    'TYPE OF WORK': getattr(exp, 'type_of_work', ''),
+                    'APPROXIMATE MONTH AND YEAR': getattr(exp, 'approx_month_and_year', ''),
+                    'APPROXIMATE TOTAL MONTHS WORKED': getattr(exp, 'approx_total_months_worked', ''),
+                })
+                experience_rows.append(exp_row)
+                
+        df_experiences = pd.DataFrame(experience_rows)
+        response = HttpResponse(
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
         response['Content-Disposition'] = 'attachment; filename="workers.xlsx"'
 
         with pd.ExcelWriter(response, engine='openpyxl') as writer:
-            df.to_excel(writer, index=False, sheet_name='Workers')
+            df_workers.to_excel(writer, index=False, sheet_name='Workers')
+            if not df_experiences.empty:
+                df_experiences.to_excel(writer, index=False, sheet_name='Worker Experiences')
 
         return response
 
