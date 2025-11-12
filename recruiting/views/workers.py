@@ -1124,7 +1124,7 @@ class ExportWorkerDetailsView(LoginRequiredMixin, View):
         preference_label_map.update(work_pref_label_map)
         
         base_fields = [
-            'user_id', 'email', 'curp','language', 'is_verified', 'created_at', 'updated_at',
+            'user_id','email', 'curp','language', 'is_verified', 'created_at', 'updated_at',
             'profile_completion', 'years_of_experience', 'months_of_h2a_experience',
             'latest_status',
         ]
@@ -1153,11 +1153,16 @@ class ExportWorkerDetailsView(LoginRequiredMixin, View):
         rows = []
         for user in worker_users:
             row = {col: '' for col in columns}
-
             row['user_id'] = getattr(user, 'id', '')
             row['email'] = getattr(user, 'email', '')
             row['curp'] = getattr(user, 'curp', '')
             row['first_name'] = getattr(user, 'first_name', '')
+            row['last_name'] = getattr(user, 'last_name', '')
+            row['date_of_birth'] = getattr(user, 'dob', '')
+            row['telephone'] = getattr(user, 'telelephone', '')
+            row['gender'] = getattr(user, 'gender', '')
+            row['address_line_1'] = getattr(user, 'address_line_1', '')
+            row['address_line_2'] = getattr(user, 'address_line_2', '')
             row['language'] = getattr(user, 'language', '')
             row['is_verified'] = getattr(user, 'is_verified', False)
             row['created_at'] = getattr(user, 'created_at', None)
@@ -1259,19 +1264,16 @@ class ExportWorkerDetailsView(LoginRequiredMixin, View):
                     'EXPERIENCE ID': getattr(exp, 'id', ''),
                     'JOB TITLE': getattr(exp, 'work_title', ''),
                     'CURRENTLY WORKING': 'Yes' if getattr(exp, 'currently_working', False) else 'No',
-                    'COMPANY': getattr(exp, 'company', ''),
-                    'COUNTRY': getattr(exp, 'country', ''),
-                    'STATE': getattr(exp, 'state', ''),
+                    'COMPANY YOU WORKED FOR': getattr(exp, 'company', ''),
+                    'LOCATION': getattr(exp, 'country', ''),
                     'VISA TYPE': getattr(exp, 'visa_type', ''),
-                    'START DATE': getattr(exp, 'start_date', ''),
-                    'END DATE': getattr(exp, 'end_date', ''),
                     'SUPERVISOR NAME': getattr(exp, 'supervisor_name', ''),
                     'SUPERVISOR TELEPHONE': getattr(exp, 'supervisor_tel', ''),
                     'SUPERVISOR EMAIL': getattr(exp, 'supervisor_email', ''),
                     'WORK UNDER H2A IN USA': getattr(exp, 'work_under_h2a_in_usa', ''), 
                     'TYPE OF WORK': getattr(exp, 'type_of_work', ''),
-                    'APPROXIMATE MONTH AND YEAR': getattr(exp, 'approx_month_and_year', ''),
-                    'APPROXIMATE TOTAL MONTHS WORKED': getattr(exp, 'approx_total_months_worked', ''),
+                    'APPROXIMATE MONTH AND YEAR YOU STARTED': getattr(exp, 'approx_month_and_year', ''),
+                    'APPROXIMATE TOTAL NUMBER OF MONTHS WORKED': getattr(exp, 'approx_total_months_worked', ''),
                 })
                 
                 excluded_detail_kinds = {'job_experience_media', 'explanation_video', 'license', 'evidence', 'visa', 'description', 'responsibilities'}
