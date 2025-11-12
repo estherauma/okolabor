@@ -1274,7 +1274,7 @@ class ExportWorkerDetailsView(LoginRequiredMixin, View):
                     'APPROXIMATE TOTAL MONTHS WORKED': getattr(exp, 'approx_total_months_worked', ''),
                 })
                 
-                excluded_detail_kinds = {'job_experience_media', 'explanation_video', 'license', 'evidence', 'visa'}
+                excluded_detail_kinds = {'job_experience_media', 'explanation_video', 'license', 'evidence', 'visa', 'description', 'responsibilities'}
                 job_experiences = UserJobExperience.objects.filter(work_experience=exp)
                 job_details_map = {}
                 for job_exp in job_experiences:
