@@ -13,7 +13,12 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ('curp','email', 'first_name', 'last_name', 'is_active', 'created_at')
     ordering = ('-created_at',)
 
-admin.site.register(UserDocuments)
+
+@admin.register(UserDocuments)
+class UserDocumentsAdmin(admin.ModelAdmin):
+    list_display = ('user', 'kind', 'path', 'created_at')
+    ordering = ('-created_at',)
+
 @admin.register(UserPreference)
 class UserPreferenceAdmin(admin.ModelAdmin):
     list_display = ('user', 'kind', 'key', 'value', 'created_at')

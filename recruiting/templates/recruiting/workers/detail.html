@@ -84,7 +84,7 @@
         <div class="row align-items-start">
           <div class="col-md-4 col-12 mb-3 d-flex justify-content-center">
             {% if documents.profile_picture %}
-              <img src="{{MEDIA_URL}}{{ documents.profile_picture.0.path }}" alt="Profile Picture" class="worker-contact-photo border" />
+              <img src="{{base_url}}{{ documents.profile_picture.0.path }}" alt="Profile Picture" class="worker-contact-photo border" />
             {% else %}
               <div class="worker-initials-badge light-green-background text-white">
                 {% if worker.first_name and worker.last_name %}
@@ -713,11 +713,11 @@
               </div>
               <div class="mb-2">
                 <label for="usDriving" class="form-label">{{ document_labels.us_driver_license }}</label>
-                <input type="file" class="form-control" id="usDriving" name="us_driving_license">
+                <input type="file" class="form-control" id="usDriving" name="us_driver_license">
               </div>
               <div class="mb-2">
                 <label for="mexicoDriving" class="form-label">{{ document_labels.mexico_driver_license }}</label>
-                <input type="file" class="form-control" id="mexicoDriving" name="mexico_driving_license">
+                <input type="file" class="form-control" id="mexicoDriving" name="mexico_driver_license">
               </div>
             </div>
             
@@ -1033,11 +1033,11 @@
           </div>
           <div class="mb-2">
             <label for="usDriving" class="form-label">{{ document_labels.us_driver_license }}</label>
-            <input type="file" class="form-control" id="usDriving" name="us_driving_license">
+            <input type="file" class="form-control" id="usDriving" name="us_driver_license">
           </div>
           <div class="mb-2">
             <label for="mexicoDriving" class="form-label">{{ document_labels.mexico_driver_license }}</label>
-            <input type="file" class="form-control" id="mexicoDriving" name="mexico_driving_license">
+            <input type="file" class="form-control" id="mexicoDriving" name="mexico_driver_license">
           </div>
         </div>
 

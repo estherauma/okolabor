@@ -1242,7 +1242,7 @@ class UploadDocumentsView(LoginRequiredMixin, View):
     upload_paths = {
     'contract': 'uploads/visa',
     'passport': 'uploads/passports',
-    'profile_picture': 'profiles',
+    'profile_picture': 'uploads/profiles',
     'english_video': 'uploads/english_videos',
     'us_driving_license': 'uploads/driver_licenses',
     'mexico_driving_license': 'uploads/driver_licenses',
@@ -1274,7 +1274,7 @@ class UploadDocumentsView(LoginRequiredMixin, View):
 
                     new_doc = UserDocuments.objects.create(
                         user=user,
-                        path=relative_path,
+                        path=f"uploads/{relative_path}",
                         kind=field_name,
                         description=f'{field_name.replace("_", " ").title()} for user profile',
                         file_type=uploaded_file.content_type
@@ -1524,17 +1524,17 @@ class EditUserPreferenceView(LoginRequiredMixin, View):
 
         preferences = {}
         fields = {
-            "preferred_countries": static_content.get_label_for_preference_field("whereYouWantToWork"),
-            "work_sectors": static_content.get_label_for_preference_field("kindOfWork"),
-            "preferences_note": static_content.get_label_for_preference_field("tellUsMore"),
-            "availability_months": static_content.get_label_for_preference_field("availability"),
-            "healthStatus": static_content.get_label_for_preference_field_two("healthStatus"),
-            "healthCondition": static_content.get_label_for_preference_field_two("healthCondition"),
-            "suffred_injury": static_content.get_label_for_preference_field_two("suffred_injury"),
-            "longerPeriodOfTime": static_content.get_label_for_preference_field_two("longerPeriodOfTime"),
-            "consent": static_content.get_label_for_preference_field_two("consent"),
-            "physicalActivities": static_content.get_label_for_preference_field_two("physicalActivities"),
-            "workEnvironment": static_content.get_label_for_preference_field_two("workEnvironment"),
+            "preferred_countries": "whereYouWantToWork",
+            "work_sectors": "kindOfWork",
+            "preferences_note": "tellUsMore",
+            "availability_months": "availability",
+            "healthStatus": "healthStatus",
+            "healthCondition": "healthCondition",
+            "suffred_injury": "suffred_injury",
+            "longerPeriodOfTime": "longerPeriodOfTime",
+            "consent": "consent",
+            "physicalActivities": "physicalActivities",
+            "workEnvironment": "workEnvironment",
         }
 
         for field_name, label in fields.items():
@@ -1555,17 +1555,17 @@ class EditUserPreferenceView(LoginRequiredMixin, View):
         static_content = StaticContent()
 
         fields = {
-            "preferred_countries": static_content.get_label_for_preference_field("whereYouWantToWork"),
-            "work_sectors": static_content.get_label_for_preference_field("kindOfWork"),
-            "preferences_note": static_content.get_label_for_preference_field("tellUsMore"),
-            "availability_months": static_content.get_label_for_preference_field("availability"),
-            "healthStatus": static_content.get_label_for_preference_field_two("healthStatus"),
-            "healthCondition": static_content.get_label_for_preference_field_two("healthCondition"),
-            "suffred_injury": static_content.get_label_for_preference_field_two("suffred_injury"),
-            "longerPeriodOfTime": static_content.get_label_for_preference_field_two("longerPeriodOfTime"),
-            "consent": static_content.get_label_for_preference_field_two("consent"),
-            "physicalActivities": static_content.get_label_for_preference_field_two("physicalActivities"),
-            "workEnvironment": static_content.get_label_for_preference_field_two("workEnvironment"),
+            "preferred_countries": "whereYouWantToWork",
+            "work_sectors": "kindOfWork",
+            "preferences_note": "tellUsMore",
+            "availability_months": "availability",
+            "healthStatus": "healthStatus",
+            "healthCondition": "healthCondition",
+            "suffred_injury": "suffred_injury",
+            "longerPeriodOfTime": "longerPeriodOfTime",
+            "consent": "consent",
+            "physicalActivities": "physicalActivities",
+            "workEnvironment": "workEnvironment",
         }
 
         for field_name, key in fields.items():
@@ -1631,9 +1631,9 @@ class EditLanguageProficiencyView(LoginRequiredMixin, View):
 class EditDocumentsView(LoginRequiredMixin, View):
     upload_paths = {
         'passport': 'uploads/passports',
-        'profile_picture': 'profiles',
-        'us_driving_license': 'uploads/driver_licenses',
-        'mexico_driving_license': 'uploads/driver_licenses',
+        'profile_picture': 'uploads/profiles',
+        'us_driver_license': 'uploads/driver_licenses',
+        'mexico_driver_license': 'uploads/driver_licenses',
     }
 
     def post(self, request, *args, **kwargs):
@@ -1649,6 +1649,8 @@ class EditDocumentsView(LoginRequiredMixin, View):
             clean_dir = upload_dir.replace('uploads', '').strip('/')
             relative_path = os.path.join(clean_dir, filename)
             full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
+            print('testing')
+            print(relative_path, full_path)
 
             os.makedirs(os.path.dirname(full_path), exist_ok=True)
 
@@ -1659,7 +1661,7 @@ class EditDocumentsView(LoginRequiredMixin, View):
 
                 new_doc = UserDocuments.objects.create(
                     user=user,
-                    path=relative_path,
+                    path=f"uploads/{relative_path}",
                     kind=field_name,
                     description=f'{field_name.replace("_", " ").title()} for user profile',
                     file_type=uploaded_file.content_type
