@@ -1304,6 +1304,7 @@ class UploadLanguageProficiencyView(LoginRequiredMixin, View):
         worker_id = request.POST.get("worker_id")
         language_level = request.POST.get("language_level")
         language_video = request.FILES.get("language_video")
+        capitalised_level = language_level.capitalize()
 
         if not worker_id or not language_level:
             messages.error(request, "WorkerOrLanguageLevelIsMissing.")
@@ -1313,9 +1314,9 @@ class UploadLanguageProficiencyView(LoginRequiredMixin, View):
 
         UserPreference.objects.update_or_create(
             user=user,
-            key="english_proficiency",
+            key="level",
             kind="language",
-            defaults={"value": language_level},
+            defaults={"value": capitalised_level},
         )
 
         if language_level != "none" and language_video:
@@ -1586,6 +1587,7 @@ class EditLanguageProficiencyView(LoginRequiredMixin, View):
         worker_id = kwargs.get("worker_id") or request.POST.get("worker_id")
         language_level = request.POST.get("language_level")
         language_video = request.FILES.get("language_video")
+        capitalised_level = language_level.strip().capitalize()
 
         if not worker_id or not language_level:
             messages.error(request, "WorkerOrLanguageLevelIsMissing.")
@@ -1596,9 +1598,9 @@ class EditLanguageProficiencyView(LoginRequiredMixin, View):
         # Update or create language level preference
         UserPreference.objects.update_or_create(
             user=user,
-            key="english_proficiency",
+            key="level",
             kind="language",
-            defaults={"value": language_level},
+            defaults={"value": capitalised_level},
         )
 
         # Save video only if selected and uploaded
@@ -1649,8 +1651,6 @@ class EditDocumentsView(LoginRequiredMixin, View):
             clean_dir = upload_dir.replace('uploads', '').strip('/')
             relative_path = os.path.join(clean_dir, filename)
             full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
-            print('testing')
-            print(relative_path, full_path)
 
             os.makedirs(os.path.dirname(full_path), exist_ok=True)
 
