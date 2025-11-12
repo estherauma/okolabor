@@ -905,6 +905,10 @@ class WorkExperienceCreateForm(forms.ModelForm):
     type_sector = forms.ChoiceField(
         widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_type_sector'}),
     )
+    
+    type_of_work = forms.ChoiceField(
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_type_of_work'}),
+    )
 
     animal_types = forms.MultipleChoiceField(
         widget=forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'id_animal_types'}),
@@ -997,6 +1001,11 @@ class WorkExperienceCreateForm(forms.ModelForm):
             'video_file': {
                 'label': content_service.get_label_for_field('explanation_video'),
             },
+            'type_of_work': {
+                'choices': content_service.get_work_type_choices,
+                'label': content_service.get_label_for_field('typeOfWork'),
+                }
+            
         }
 
         for field_name, config in field_config.items():
@@ -1018,7 +1027,7 @@ class WorkExperienceCreateForm(forms.ModelForm):
     class Meta:
         model = UserWorkExperience
         fields = [
-            'user', 'company', 'work_title', 'start_date', 'end_date',
+            'user', 'type_of_work', 'company', 'work_title', 'approx_month_and_year', 'approx_total_months_worked',
             'country', 'supervisor_name', 'supervisor_tel', 'supervisor_email',
             'visa_type'
         ]
@@ -1042,13 +1051,14 @@ class WorkExperienceCreateForm(forms.ModelForm):
             }),
             'company': forms.TextInput(attrs={'class': 'form-control'}),
             'work_title': forms.TextInput(attrs={'class': 'form-control'}),
-            'start_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'end_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'approx_month_and_year': forms.TextInput(attrs={'class': 'form-control'}),
+            'approx_total_months_worked': forms.TextInput(attrs={'class': 'form-control'}),
             'country': forms.TextInput(attrs={'class': 'form-control'}),
             'supervisor_name': forms.TextInput(attrs={'class': 'form-control'}),
             'supervisor_tel': forms.TextInput(attrs={'class': 'form-control'}),
             'supervisor_email': forms.EmailInput(attrs={'class': 'form-control'}),
             'visa_type': forms.TextInput(attrs={'class': 'form-control'}),
+            'type_of_work': forms.Select(attrs={'class': 'form-control'}),
         }
 
         

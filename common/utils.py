@@ -135,3 +135,7 @@ class StaticContent:
         variants.add(normalized_value.replace('_', ' '))
         variants.add(normalized_value.replace(' ', '_'))
         return {v for v in variants if v}
+
+    def get_work_type_choices(self):
+        
+        return [('Formal job', 'Company Employee'), ('Informal/self-employed', 'Independent Work')]

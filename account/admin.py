@@ -8,7 +8,11 @@ from account.models import (
 )
 
 # Register your models here.
-admin.site.register(User)
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ('curp','email', 'first_name', 'last_name', 'is_active', 'created_at')
+    ordering = ('-created_at',)
+
 admin.site.register(UserDocuments)
 @admin.register(UserPreference)
 class UserPreferenceAdmin(admin.ModelAdmin):
