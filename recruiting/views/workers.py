@@ -330,7 +330,7 @@ class WorkerListView(LoginRequiredMixin, View):
             worker.profile_completion_percentage = profile_completion
             worker.visa_uploaded = visa_uploaded
             worker.intro_video_uploaded = intro_video_uploaded
-            worker.total_months_of_h2a_experience = '-' if exp_filters_empty else calculate_months_ofH2A_expererience(worker, exp_filters)
+            worker.total_months_of_h2a_experience = calculate_months_ofH2A_expererience(worker, exp_filters)
 
             worker_data.append({
                 'id': worker.id,
@@ -341,7 +341,7 @@ class WorkerListView(LoginRequiredMixin, View):
                 'years_of_experience': years_of_experience, 
                 'visa_uploaded': visa_uploaded,
                 'intro_video_uploaded': intro_video_uploaded,
-                'total_months_of_h2a_experience': '-' if exp_filters_empty else calculate_months_ofH2A_expererience(worker, exp_filters),
+                'total_months_of_h2a_experience': calculate_months_ofH2A_expererience(worker, exp_filters),
                 'latest_status': worker_profile_status_labels[code],
                 **worker_details
             })
@@ -1242,7 +1242,7 @@ class UploadDocumentsView(LoginRequiredMixin, View):
     upload_paths = {
     'contract': 'uploads/visa',
     'passport': 'uploads/passports',
-    'profile_picture': 'profiles',
+    'profile_picture': 'uploads/profiles',
     'english_video': 'uploads/english_videos',
     'us_driving_license': 'uploads/driver_licenses',
     'mexico_driving_license': 'uploads/driver_licenses',
@@ -1274,7 +1274,7 @@ class UploadDocumentsView(LoginRequiredMixin, View):
 
                     new_doc = UserDocuments.objects.create(
                         user=user,
-                        path=relative_path,
+                        path=f"uploads/{relative_path}",
                         kind=field_name,
                         description=f'{field_name.replace("_", " ").title()} for user profile',
                         file_type=uploaded_file.content_type
@@ -1304,6 +1304,7 @@ class UploadLanguageProficiencyView(LoginRequiredMixin, View):
         worker_id = request.POST.get("worker_id")
         language_level = request.POST.get("language_level")
         language_video = request.FILES.get("language_video")
+        capitalised_level = language_level.capitalize()
 
         if not worker_id or not language_level:
             messages.error(request, "WorkerOrLanguageLevelIsMissing.")
@@ -1313,9 +1314,9 @@ class UploadLanguageProficiencyView(LoginRequiredMixin, View):
 
         UserPreference.objects.update_or_create(
             user=user,
-            key="english_proficiency",
+            key="level",
             kind="language",
-            defaults={"value": language_level},
+            defaults={"value": capitalised_level},
         )
 
         if language_level != "none" and language_video:
@@ -1349,17 +1350,17 @@ class UploadUserPreferenceView(LoginRequiredMixin, View):
         static_content = StaticContent()
 
         preferences = {
-        static_content.get_label_for_preference_field("whereYouWantToWork"): request.POST.getlist("preferred_countries"),
-        static_content.get_label_for_preference_field("kindOfWork"): request.POST.getlist("work_sectors"),
-        static_content.get_label_for_preference_field("tellUsMore"): request.POST.get("preferences_note"),
-        static_content.get_label_for_preference_field("availability"): request.POST.getlist("availability_months"),
-        static_content.get_label_for_preference_field_two("healthStatus"): request.POST.get("healthStatus"),
-        static_content.get_label_for_preference_field_two("healthCondition"): request.POST.get("healthCondition"),
-        static_content.get_label_for_preference_field_two("suffred_injury"): request.POST.get("suffred_injury"),
-        static_content.get_label_for_preference_field_two("longerPeriodOfTime"): request.POST.get("longerPeriodOfTime"),
-        static_content.get_label_for_preference_field_two("consent"): request.POST.get("consent"),
-        static_content.get_label_for_preference_field_two("physicalActivities"): request.POST.get("physicalActivities"),
-        static_content.get_label_for_preference_field_two("workEnvironment"): request.POST.get("workEnvironment"),
+        "whereYouWantToWork": request.POST.getlist("preferred_countries"),
+        "kindOfWork": request.POST.getlist("work_sectors"),
+        "tellUsMore": request.POST.get("preferences_note"),
+        "availability": request.POST.getlist("availability_months"),
+        "healthStatus": request.POST.get("healthStatus"),
+        "healthCondition": request.POST.get("healthCondition"),
+        "suffred_injury": request.POST.get("suffred_injury"),
+        "longerPeriodOfTime": request.POST.get("longerPeriodOfTime"),
+        "consent": request.POST.get("consent"),
+        "physicalActivities": request.POST.get("physicalActivities"),
+        "workEnvironment": request.POST.get("workEnvironment"),
         }
 
 
@@ -1524,17 +1525,17 @@ class EditUserPreferenceView(LoginRequiredMixin, View):
 
         preferences = {}
         fields = {
-            "preferred_countries": static_content.get_label_for_preference_field("whereYouWantToWork"),
-            "work_sectors": static_content.get_label_for_preference_field("kindOfWork"),
-            "preferences_note": static_content.get_label_for_preference_field("tellUsMore"),
-            "availability_months": static_content.get_label_for_preference_field("availability"),
-            "healthStatus": static_content.get_label_for_preference_field_two("healthStatus"),
-            "healthCondition": static_content.get_label_for_preference_field_two("healthCondition"),
-            "suffred_injury": static_content.get_label_for_preference_field_two("suffred_injury"),
-            "longerPeriodOfTime": static_content.get_label_for_preference_field_two("longerPeriodOfTime"),
-            "consent": static_content.get_label_for_preference_field_two("consent"),
-            "physicalActivities": static_content.get_label_for_preference_field_two("physicalActivities"),
-            "workEnvironment": static_content.get_label_for_preference_field_two("workEnvironment"),
+            "preferred_countries": "whereYouWantToWork",
+            "work_sectors": "kindOfWork",
+            "preferences_note": "tellUsMore",
+            "availability_months": "availability",
+            "healthStatus": "healthStatus",
+            "healthCondition": "healthCondition",
+            "suffred_injury": "suffred_injury",
+            "longerPeriodOfTime": "longerPeriodOfTime",
+            "consent": "consent",
+            "physicalActivities": "physicalActivities",
+            "workEnvironment": "workEnvironment",
         }
 
         for field_name, label in fields.items():
@@ -1555,17 +1556,17 @@ class EditUserPreferenceView(LoginRequiredMixin, View):
         static_content = StaticContent()
 
         fields = {
-            "preferred_countries": static_content.get_label_for_preference_field("whereYouWantToWork"),
-            "work_sectors": static_content.get_label_for_preference_field("kindOfWork"),
-            "preferences_note": static_content.get_label_for_preference_field("tellUsMore"),
-            "availability_months": static_content.get_label_for_preference_field("availability"),
-            "healthStatus": static_content.get_label_for_preference_field_two("healthStatus"),
-            "healthCondition": static_content.get_label_for_preference_field_two("healthCondition"),
-            "suffred_injury": static_content.get_label_for_preference_field_two("suffred_injury"),
-            "longerPeriodOfTime": static_content.get_label_for_preference_field_two("longerPeriodOfTime"),
-            "consent": static_content.get_label_for_preference_field_two("consent"),
-            "physicalActivities": static_content.get_label_for_preference_field_two("physicalActivities"),
-            "workEnvironment": static_content.get_label_for_preference_field_two("workEnvironment"),
+            "preferred_countries": "whereYouWantToWork",
+            "work_sectors": "kindOfWork",
+            "preferences_note": "tellUsMore",
+            "availability_months": "availability",
+            "healthStatus": "healthStatus",
+            "healthCondition": "healthCondition",
+            "suffred_injury": "suffred_injury",
+            "longerPeriodOfTime": "longerPeriodOfTime",
+            "consent": "consent",
+            "physicalActivities": "physicalActivities",
+            "workEnvironment": "workEnvironment",
         }
 
         for field_name, key in fields.items():
@@ -1586,6 +1587,7 @@ class EditLanguageProficiencyView(LoginRequiredMixin, View):
         worker_id = kwargs.get("worker_id") or request.POST.get("worker_id")
         language_level = request.POST.get("language_level")
         language_video = request.FILES.get("language_video")
+        capitalised_level = language_level.strip().capitalize()
 
         if not worker_id or not language_level:
             messages.error(request, "WorkerOrLanguageLevelIsMissing.")
@@ -1596,9 +1598,9 @@ class EditLanguageProficiencyView(LoginRequiredMixin, View):
         # Update or create language level preference
         UserPreference.objects.update_or_create(
             user=user,
-            key="english_proficiency",
+            key="level",
             kind="language",
-            defaults={"value": language_level},
+            defaults={"value": capitalised_level},
         )
 
         # Save video only if selected and uploaded
@@ -1631,9 +1633,9 @@ class EditLanguageProficiencyView(LoginRequiredMixin, View):
 class EditDocumentsView(LoginRequiredMixin, View):
     upload_paths = {
         'passport': 'uploads/passports',
-        'profile_picture': 'profiles',
-        'us_driving_license': 'uploads/driver_licenses',
-        'mexico_driving_license': 'uploads/driver_licenses',
+        'profile_picture': 'uploads/profiles',
+        'us_driver_license': 'uploads/driver_licenses',
+        'mexico_driver_license': 'uploads/driver_licenses',
     }
 
     def post(self, request, *args, **kwargs):
@@ -1659,7 +1661,7 @@ class EditDocumentsView(LoginRequiredMixin, View):
 
                 new_doc = UserDocuments.objects.create(
                     user=user,
-                    path=relative_path,
+                    path=f"uploads/{relative_path}",
                     kind=field_name,
                     description=f'{field_name.replace("_", " ").title()} for user profile',
                     file_type=uploaded_file.content_type

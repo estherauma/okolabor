@@ -84,7 +84,7 @@
         <div class="row align-items-start">
           <div class="col-md-4 col-12 mb-3 d-flex justify-content-center">
             {% if documents.profile_picture %}
-              <img src="{{MEDIA_URL}}{{ documents.profile_picture.0.path }}" alt="Profile Picture" class="worker-contact-photo border" />
+              <img src="{{base_url}}{{ documents.profile_picture.0.path }}" alt="Profile Picture" class="worker-contact-photo border" />
             {% else %}
               <div class="worker-initials-badge light-green-background text-white">
                 {% if worker.first_name and worker.last_name %}
@@ -713,11 +713,11 @@
               </div>
               <div class="mb-2">
                 <label for="usDriving" class="form-label">{{ document_labels.us_driver_license }}</label>
-                <input type="file" class="form-control" id="usDriving" name="us_driving_license">
+                <input type="file" class="form-control" id="usDriving" name="us_driver_license">
               </div>
               <div class="mb-2">
                 <label for="mexicoDriving" class="form-label">{{ document_labels.mexico_driver_license }}</label>
-                <input type="file" class="form-control" id="mexicoDriving" name="mexico_driving_license">
+                <input type="file" class="form-control" id="mexicoDriving" name="mexico_driver_license">
               </div>
             </div>
             
@@ -784,8 +784,8 @@
                       {{ health_status_label }}
                   </label><br>
                   <div>
-                      <input type="radio" name="healthStatus" value="yes" onchange="toggleHealthConditionField()" class="me-2"> {% translate "workerDetailsYes"%}
-                      <input type="radio" name="healthStatus" value="no" onchange="toggleHealthConditionField()" class="me-1"> {% translate "workerDetailsNo"%}
+                      <input type="radio" name="healthStatus" value="Yes" onchange="toggleHealthConditionField()" class="me-2"> {% translate "workerDetailsYes"%}
+                      <input type="radio" name="healthStatus" value="No" onchange="toggleHealthConditionField()" class="me-1"> {% translate "workerDetailsNo"%}
                   </div>
               </div>
               
@@ -800,8 +800,8 @@
                       {{ suffered_injury_label }}
                   </label><br>
                   <div>
-                      <input type="radio" name="suffred_injury" value="yes" class="me-2"> {% translate "workerDetailsYes"%}
-                      <input type="radio" name="suffred_injury" value="no" class="me-1"> {% translate "workerDetailsNo"%}
+                      <input type="radio" name="suffred_injury" value="Yes" class="me-2"> {% translate "workerDetailsYes"%}
+                      <input type="radio" name="suffred_injury" value="No" class="me-1"> {% translate "workerDetailsNo"%}
                   </div>
               </div>
               
@@ -811,8 +811,8 @@
                       {{ longer_period_of_time_label }}
                   </label><br>
                   <div>
-                      <input type="radio" name="longerPeriodOfTime" value="yes" class="me-2"> {% translate "workerDetailsYes"%}
-                      <input type="radio" name="longerPeriodOfTime" value="no" class="me-1"> {% translate "workerDetailsNo"%}
+                      <input type="radio" name="longerPeriodOfTime" value="Yes" class="me-2"> {% translate "workerDetailsYes"%}
+                      <input type="radio" name="longerPeriodOfTime" value="No" class="me-1"> {% translate "workerDetailsNo"%}
                   </div>
               </div>
               
@@ -822,8 +822,8 @@
                       {{ consent_label }}
                   </label><br>
                   <div>
-                      <input type="radio" name="consent" value="yes" class="me-2"> {% translate "workerDetailsYes"%}
-                      <input type="radio" name="consent" value="no" class="me-1"> {% translate "workerDetailsNo"%}
+                      <input type="radio" name="consent" value="Yes" class="me-2"> {% translate "workerDetailsYes"%}
+                      <input type="radio" name="consent" value="No" class="me-1"> {% translate "workerDetailsNo"%}
                   </div>
               </div>
               
@@ -841,8 +841,8 @@
                       {{ work_environment_label }}
                   </label><br>
                   <div>
-                      <input type="radio" name="workEnvironment" value="yes" class="me-2"> {% translate "workerDetailsYes"%}
-                      <input type="radio" name="workEnvironment" value="no" class="me-1"> {% translate "workerDetailsNo"%}
+                      <input type="radio" name="workEnvironment" value="Yes" class="me-2"> {% translate "workerDetailsYes"%}
+                      <input type="radio" name="workEnvironment" value="No" class="me-1"> {% translate "workerDetailsNo"%}
                   </div>
               </div>
               </div>
@@ -908,8 +908,8 @@
                       {{ health_status_label }}
                   </label>
                   <div>
-                      <input type="radio" name="healthStatus" value="yes" onchange="toggleHealthConditionField()" > <span class="radio-label">Yes</span>
-                      <input type="radio" name="healthStatus" value="no" onchange="toggleHealthConditionField()" > <span class="radio-label">No</span>
+                      <input type="radio" name="healthStatus" value="Yes" onchange="toggleHealthConditionField()" > <span class="radio-label">Yes</span>
+                      <input type="radio" name="healthStatus" value="No" onchange="toggleHealthConditionField()" > <span class="radio-label">No</span>
                   </div>
               </div>
 
@@ -922,8 +922,8 @@
             <div class="mb-3">
               <label class="form-label">{{ suffered_injury_label }}</label>
               <div>
-                <input type="radio" name="suffered_injury" value="yes"><span class="radio-label">Yes</span>
-                <input type="radio" name="suffered_injury" value="no" ><span class="radio-label">No</span>
+                <input type="radio" name="suffered_injury" value="Yes"><span class="radio-label">Yes</span>
+                <input type="radio" name="suffered_injury" value="No" ><span class="radio-label">No</span>
               </div>
             </div>
 
@@ -931,8 +931,8 @@
             <div class="mb-3">
               <label class="form-label">{{ longer_period_of_time_label }}</label>
               <div>
-                <input type="radio" name="longerPeriodOfTime" value="yes" ><span class="radio-label"> Yes</span>
-                <input type="radio" name="longerPeriodOfTime" value="no" ><span class="radio-label"> No</span>
+                <input type="radio" name="longerPeriodOfTime" value="Yes" ><span class="radio-label"> Yes</span>
+                <input type="radio" name="longerPeriodOfTime" value="No" ><span class="radio-label"> No</span>
               </div>
             </div>
 
@@ -940,8 +940,8 @@
             <div class="mb-3">
               <label class="form-label">{{ consent_label }}</label>
               <div>
-                <input type="radio" name="consent" value="yes"><span class="radio-label"> Yes</span>
-                <input type="radio" name="consent" value="no"><span class="radio-label"> No</span>
+                <input type="radio" name="consent" value="Yes"><span class="radio-label"> Yes</span>
+                <input type="radio" name="consent" value="No"><span class="radio-label"> No</span>
               </div>
             </div>
 
@@ -955,8 +955,8 @@
             <div class="mb-4">
               <label class="form-label">{{ work_environment_label }}</label>
               <div>
-                <input type="radio" name="workEnvironment" value="yes" ><span class="radio-label"> Yes</span>
-                <input type="radio" name="workEnvironment" value="no" ><span class="radio-label"> No</span>
+                <input type="radio" name="workEnvironment" value="Yes" ><span class="radio-label"> Yes</span>
+                <input type="radio" name="workEnvironment" value="No" ><span class="radio-label"> No</span>
               </div>
             </div>
           </div>
@@ -1033,11 +1033,11 @@
           </div>
           <div class="mb-2">
             <label for="usDriving" class="form-label">{{ document_labels.us_driver_license }}</label>
-            <input type="file" class="form-control" id="usDriving" name="us_driving_license">
+            <input type="file" class="form-control" id="usDriving" name="us_driver_license">
           </div>
           <div class="mb-2">
             <label for="mexicoDriving" class="form-label">{{ document_labels.mexico_driver_license }}</label>
-            <input type="file" class="form-control" id="mexicoDriving" name="mexico_driving_license">
+            <input type="file" class="form-control" id="mexicoDriving" name="mexico_driver_license">
           </div>
         </div>
 
@@ -1237,11 +1237,11 @@
             e.preventDefault();
             return;
           }
-          if (selectedLevel.value !== "none" && videoInput.files.length === 0) {
-            alert("{% translate 'workerDetailsPleaseUploadAVideoForYourSelectedLanguageLevel.'%}");
-            e.preventDefault();
-            return;
-          }
+          // if (selectedLevel.value !== "none" && videoInput.files.length === 0) {
+          //   alert("{% translate 'workerDetailsPleaseUploadAVideoForYourSelectedLanguageLevel.'%}");
+          //   e.preventDefault();
+          //   return;
+          // }
         }
       });
     }
@@ -1250,7 +1250,7 @@
       const selected = document.querySelector('input[name="healthStatus"]:checked');
       const conditionField = document.getElementById("healthConditionField");
       if (selected && conditionField) {
-        conditionField.style.display = (selected.value === "yes") ? "block" : "none";
+        conditionField.style.display = (selected.value === "Yes") ? "block" : "none";
       }
     }
 

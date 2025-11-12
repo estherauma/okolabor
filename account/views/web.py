@@ -22,7 +22,7 @@ from account.forms.account_update import UpdateAccountDetailsForm
 from account.forms.filter_logs import UserLogsFilterForm
 from django.utils import timezone
 from django.utils.timezone import now
-from account.models import UserNotification
+from account.models import UserNotification, UserPreference
 from django.conf import settings
 from django.urls import reverse
 from django.contrib.auth.models import Group
@@ -410,6 +410,28 @@ class WorkerModalCreateView(View):
             except Group.DoesNotExist:
                 messages.error(request, _("workersListWorkerGroupDoesNotExistPleaseCreateIt"))
                 return redirect('manage_users')
+            
+            # Save emergency contact info if provided
+            emergency_contact_name = form.cleaned_data.get('emergency_contact_name')
+            emergency_contact_phone = form.cleaned_data.get('emergency_contact_phone')
+            # save in user preferences with keys emergencyContactPhone emergencyContactFullName
+            # Save them into UserPreference (if they exist)
+            if emergency_contact_name:
+                UserPreference.objects.create(
+                    user=worker,
+                    kind='preference',
+                    key='emergencyContactFullName',
+                    value=emergency_contact_name
+                )
+
+            if emergency_contact_phone:
+                UserPreference.objects.create(
+                    user=worker,
+                    kind='preference',
+                    key='emergencyContactPhone',
+                    value=emergency_contact_phone
+                )
+            
                 
             messages.success(request, _("workersListWorkerCreatedSuccessfully"))
             return redirect(f'/workers/{worker.id}/')
