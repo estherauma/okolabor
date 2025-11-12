@@ -1349,17 +1349,17 @@ class UploadUserPreferenceView(LoginRequiredMixin, View):
         static_content = StaticContent()
 
         preferences = {
-        static_content.get_label_for_preference_field("whereYouWantToWork"): request.POST.getlist("preferred_countries"),
-        static_content.get_label_for_preference_field("kindOfWork"): request.POST.getlist("work_sectors"),
-        static_content.get_label_for_preference_field("tellUsMore"): request.POST.get("preferences_note"),
-        static_content.get_label_for_preference_field("availability"): request.POST.getlist("availability_months"),
-        static_content.get_label_for_preference_field_two("healthStatus"): request.POST.get("healthStatus"),
-        static_content.get_label_for_preference_field_two("healthCondition"): request.POST.get("healthCondition"),
-        static_content.get_label_for_preference_field_two("suffred_injury"): request.POST.get("suffred_injury"),
-        static_content.get_label_for_preference_field_two("longerPeriodOfTime"): request.POST.get("longerPeriodOfTime"),
-        static_content.get_label_for_preference_field_two("consent"): request.POST.get("consent"),
-        static_content.get_label_for_preference_field_two("physicalActivities"): request.POST.get("physicalActivities"),
-        static_content.get_label_for_preference_field_two("workEnvironment"): request.POST.get("workEnvironment"),
+        "whereYouWantToWork": request.POST.getlist("preferred_countries"),
+        "kindOfWork": request.POST.getlist("work_sectors"),
+        "tellUsMore": request.POST.get("preferences_note"),
+        "availability": request.POST.getlist("availability_months"),
+        "healthStatus": request.POST.get("healthStatus"),
+        "healthCondition": request.POST.get("healthCondition"),
+        "suffred_injury": request.POST.get("suffred_injury"),
+        "longerPeriodOfTime": request.POST.get("longerPeriodOfTime"),
+        "consent": request.POST.get("consent"),
+        "physicalActivities": request.POST.get("physicalActivities"),
+        "workEnvironment": request.POST.get("workEnvironment"),
         }
 
 
