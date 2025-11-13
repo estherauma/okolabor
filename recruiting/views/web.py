@@ -417,6 +417,7 @@ class EmployerDetailView(View):
 
         all_recruiter_names = list(recruiter_names_direct.union(recruiter_names_org))
         users = User.objects.all()
+        system_recruiters = Organization.objects.filter(type='recruiter').order_by('name')
         
         # create job order form
         form = WorkRequestForm()
@@ -430,6 +431,7 @@ class EmployerDetailView(View):
             'closed_work_requests': closed_work_requests,
             'draft_work_requests': draft_work_requests,
             'recruiters': all_recruiter_names,
+            'system_recruiters': system_recruiters,
             'contacts': assigned_users,
             'work_requests': work_requests,
             'assigned_organizations': assigned_orgs_data,
@@ -1985,7 +1987,26 @@ class AssignEmployerContactView(View):
 class AssignEmployersToRecruiterOrgView(View):
     def post(self, request, *args, **kwargs):
         try:
-            data = json.loads(request.body)
+            normalised = False
+            try:
+                # Try to parse the body as JSON
+                data = json.loads(request.body)
+            except json.JSONDecodeError:
+                # If it's not valid JSON, fallback to request.POST
+                normalised = True
+                data = request.POST.dict()
+
+        #    Normalize employer_org_id to a list
+            if "employer_org_id" in data:
+                # If it's a single string, wrap it in a list
+                if not isinstance(data["employer_org_id"], list):
+                    data["employer_org_id"] = [data["employer_org_id"]]
+
+            # recruiter_org_id should remain a single string
+            if "recruiter_org_id" not in data:
+                # fallback if missing
+                data["recruiter_org_id"] = None
+
             employer_ids = data.get('employer_org_id')
             recruiter_org_id = data.get('recruiter_org_id')
 
@@ -2040,12 +2061,17 @@ class AssignEmployersToRecruiterOrgView(View):
                     _("employersTheFollowingEmployersAre AlreadyAssigned: {}").format(', '.join(already_assigned))
                 )
 
-            return JsonResponse({
-                'success': True,
-                'newly_assigned': newly_assigned,
-                'already_assigned': already_assigned,
-                'message': "Processed employer assignment."
-            })
+            print('normalised:', normalised)
+            if normalised:
+                if employer_ids:
+                    return redirect('recruiting_web:employer_detail', pk=employer_ids[0])
+            else:
+                return JsonResponse({
+                    'success': True,
+                    'newly_assigned': newly_assigned,
+                    'already_assigned': already_assigned,
+                    'message': "Processed employer assignment."
+                })
 
         except Exception as e:
             return JsonResponse({

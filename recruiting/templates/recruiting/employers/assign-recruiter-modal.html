@@ -1,0 +1,43 @@
+{% load i18n %}
+<div class="modal fade" id="assignRecruiterModal" tabindex="-1" aria-labelledby="assignRecruiterModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="assignRecruiterModalLabel">
+          {% translate "employerDetailsAssignRecruiter" %}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% translate 'webCommonClose' %}"></button>
+      </div>
+
+      <form id="assignRecruiterForm" method="post" action="{% url 'recruiting_web:assign_employers_to_recruiter_org' %}">
+        {% csrf_token %}
+
+        <!-- Submit employer_org_id as a list -->
+        <input type="hidden" name="employer_org_id" value="{{ employer.id }}">
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="recruiter_org_id" class="form-label">{% translate "Recruiter" %}</label>
+            <select class="form-select" name="recruiter_org_id" id="recruiter_org_id" required>
+              <option value="" disabled selected>Select recruiter</option>
+              {% for recruiter in system_recruiters %}
+                <option value="{{ recruiter.id }}">{{ recruiter }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            {% translate "employerDetailsCancel" %}
+          </button>
+          <button type="submit" class="btn btn-success" id="assignContactBtn">
+            {% translate "webCommonSave" %}
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

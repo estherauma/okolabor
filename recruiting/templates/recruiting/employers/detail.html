@@ -183,8 +183,8 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <h3>{% translate 'employerDetailsAssignedRecruiters'%}</h3>
-              <a href="#" class="btn dark-green-button ms-auto">
-                {% translate "employerDetailsAssignRecruiter" %}
+              <href="#" class="btn dark-green-button ms-auto" data-bs-toggle="modal" data-bs-target="#assignRecruiterModal">{% translate "employerDetailsAssignRecruiter" %}</a>
+                
               </a>
             </div>
             <div class="table-responsive">
@@ -276,8 +276,6 @@
   </div>
 </div>
 
-
-
 <!-- Assign employer contact modal -->
 <div class="modal fade" id="assignContactModal" tabindex="-1" aria-labelledby="assignContactLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -331,6 +329,7 @@
 
 {% include 'recruiting/work_requests/create.html' %}
 {% include 'recruiting/employers/edit-modal.html' %}
+{% include 'recruiting/employers/assign-recruiter-modal.html' %}
 
 {% endblock body %}
 
